@@ -52,14 +52,16 @@ public class ApiEvidenceController extends DataQueryController {
 		return ret;
 	}
 
-	@RequestMapping(value = "{id}/top3events", method = RequestMethod.GET)
+	@RequestMapping(value = "{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map<String, Object>>> getTop3Events(@PathVariable String id,
+	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
 															 @RequestParam(defaultValue = "false") boolean requestTotal,
 															 @RequestParam(defaultValue = "true") boolean useCache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
-															 @RequestParam(defaultValue = "20") Integer size) {
+															 @RequestParam(defaultValue = "20") Integer size,
+															 @RequestParam(required=false) String sortField,
+															 @RequestParam(required=false) String sortDirection) {
 
 		Evidence evidence = evidencesDao.findById(id);
 		if (evidence == null || evidence.getId() == null){
@@ -79,6 +81,15 @@ public class ApiEvidenceController extends DataQueryController {
 			page -=1;
 		}
 
+		//set sort order
+		SortDirection sortDir = SortDirection.DESC;
+		String sortFieldStr = dataEntityTimestampField;
+		if (sortField != null) {
+			if (sortDirection != null){
+				sortDir = SortDirection.valueOf(sortDirection);
+				sortFieldStr = sortField;
+			}
+		}
 
 		switch (dataEntityId) {
 			case "amt_session":
@@ -103,7 +114,7 @@ public class ApiEvidenceController extends DataQueryController {
 		term = dataQueryHelper.createDateRangeTerm(dataEntityTimestampField, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate) );
 		termsMap.add(term);
 		//sort according to event times for continues forwarding
-		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(dataEntityTimestampField, SortDirection.DESC);
+		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
 
 
 		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
