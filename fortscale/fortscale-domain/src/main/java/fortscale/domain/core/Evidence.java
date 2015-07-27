@@ -1,11 +1,14 @@
 package fortscale.domain.core;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -46,7 +49,7 @@ public class Evidence extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
-	public static final String dataSourceField = "dataSource";
+	public static final String dataEntityIdField = "dataEntityId";
 	public static final String evidenceTypeField = "evidenceType";
 
 	// The 3 top events
@@ -82,7 +85,7 @@ public class Evidence extends AbstractDocument{
 	// Index for expiration (TTL): one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
-	private Long retentionDate;
+	private Date retentionDate;
 
 	@Field(anomalyTypeField)
 	private String anomalyType;
@@ -93,8 +96,8 @@ public class Evidence extends AbstractDocument{
 	@Field(anomalyValueField)
 	private String anomalyValue;
 
-	@Field(dataSourceField)
-	private String dataSource;
+	@Field(dataEntityIdField)
+	private String dataEntityId;
 
 	@Field(evidenceTypeField)
 	private EvidenceType evidenceType;
@@ -108,6 +111,10 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
+	// keeping the events as map - not kept in MongoDB
+	@Transient
+	private Map<String,Object>[] top3events;
+
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
@@ -117,7 +124,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
+			String name, String anomalyValue, String dataEntityId, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -125,13 +132,13 @@ public class Evidence extends AbstractDocument{
 		this.anomalyType = anomalyType;
 		this.name = name;
 		this.anomalyValue = anomalyValue;
-		this.dataSource = dataSource;
+		this.dataEntityId = dataEntityId;
 		this.score = score;
 		this.severity = severity;
 
 
 		// set retention to start date
-		this.retentionDate = startDate;
+		this.retentionDate = new Date(startDate);
 
 		// We must create ID for the evidence so the alert can have reference to it
 		this.setId(UUID.randomUUID().toString());
@@ -148,7 +155,7 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Long retentionDate) {
+	public void setRetentionDate(Date retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
@@ -162,6 +169,10 @@ public class Evidence extends AbstractDocument{
 
 	public void setEvidenceType(EvidenceType evidenceType) {
 		this.evidenceType = evidenceType;
+	}
+
+	public void setTop3events(Map<String, Object>[] top3events) {
+		this.top3events = top3events;
 	}
 
 	// Getters
@@ -182,7 +193,7 @@ public class Evidence extends AbstractDocument{
 		return endDate;
 	}
 
-	public Long getRetentionDate() {
+	public Date getRetentionDate() {
 		return retentionDate;
 	}
 
@@ -202,8 +213,8 @@ public class Evidence extends AbstractDocument{
 		return severity;
 	}
 
-	public String getDataSource() {
-		return dataSource;
+	public String getDataEntityId() {
+		return dataEntityId;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
@@ -224,6 +235,10 @@ public class Evidence extends AbstractDocument{
 
 	public EvidenceType getEvidenceType() {
 		return evidenceType;
+	}
+
+	public Map<String, Object>[] getTop3events() {
+		return top3events;
 	}
 }
 

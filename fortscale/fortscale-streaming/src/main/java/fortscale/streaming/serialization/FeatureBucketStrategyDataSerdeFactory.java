@@ -4,7 +4,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.serializers.Serde;
 import org.apache.samza.serializers.SerdeFactory;
 
-import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 
 public class FeatureBucketStrategyDataSerdeFactory  implements SerdeFactory<FeatureBucketStrategyData>{
 

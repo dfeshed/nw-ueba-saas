@@ -12,19 +12,19 @@ import java.util.Map;
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
  */
-public class BasicAlertSubscriber {
+public class BasicAlertSubscriber implements AlertSubscriber{
 
     /**
      * Logger
      */
     private static Logger logger = LoggerFactory.getLogger(BasicAlertSubscriber.class);
 
-    public BasicAlertSubscriber(AlertsService alertsService) {
-        this.alertsService = alertsService;
-    }
-
     protected AlertsService alertsService;
 
+    @Override
+    public void init(AlertsService alertsService) {
+        this.alertsService = alertsService;
+    }
 
     /**
      * Listener method called when Esper has detected a pattern match.
@@ -50,7 +50,7 @@ public class BasicAlertSubscriber {
                 Double score = (Double) insertStream[0].get("score");
                 Integer roundScore = score.intValue();
                 Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-                Alert alert = new Alert(title, startDate, endDate, entityType, entityName, null, evidences, null, roundScore, severity, AlertStatus.Unread, null);
+                Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Unread, "");
 
                 //Save alert to mongoDB
                 alertsService.saveAlertInRepository(alert);

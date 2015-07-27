@@ -105,7 +105,7 @@ public class SshSshdTest {
                 $(
                 "Target Machine as IP",
 						Nov_19_14_58_32 + " 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-                 null
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,192.168.0.30,root,Accepted,password,,,,false,,,,"
                 )
 
 

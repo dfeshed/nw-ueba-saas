@@ -104,7 +104,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<!-- ip validating tools -->
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		
 		<!-- Hibernate Validator -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -134,6 +140,7 @@
             <artifactId>json-smart</artifactId>
             <version>${json-smart.version}</version>
         </dependency>
+
 
     </dependencies>
 
