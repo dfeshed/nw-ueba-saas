@@ -171,9 +171,6 @@ public class ApiEvidenceController extends DataQueryController {
 			histogram.add(new HistogramPair(entry.getKey(),entry.getValue()));
 		}
 
-		Map<String,Object> info = new HashMap<>();
-		info.put("test1","count1");
-
 		//set data of the web bean
 		toReturn.setData(histogram);
 
