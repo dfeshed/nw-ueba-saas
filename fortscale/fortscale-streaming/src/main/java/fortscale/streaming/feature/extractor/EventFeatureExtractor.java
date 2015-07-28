@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -43,13 +45,31 @@ public class EventFeatureExtractor implements FeatureExtractor{
 	}
 
 	protected Object extractValue(JSONObject message) {
-		Object ret = message.get(originalFieldName);
+		Object ret = extractValueFromJson(message);
 
 		if (featureAdjustor != null) {
 			return featureAdjustor.adjust(ret, message);
 		} else {
 			return ret;
 		}
+	}
+	
+	private Object extractValueFromJson(JSONObject message){
+		String featurePathElems[] = originalFieldName.split("\\.");
+		JSONObject jsonObject = message;
+		try{
+			for(int i = 0; i<featurePathElems.length-1; i++){
+				jsonObject = (JSONObject) jsonObject.get(featurePathElems[i]);
+			}
+		} catch(Exception e){
+			return null;
+		}
+		
+		if(jsonObject == null){
+			return null;
+		}
+		
+		return jsonObject.get(featurePathElems[featurePathElems.length-1]);
 	}
 
 	protected void saveToMessage(JSONObject message, Object val) {
