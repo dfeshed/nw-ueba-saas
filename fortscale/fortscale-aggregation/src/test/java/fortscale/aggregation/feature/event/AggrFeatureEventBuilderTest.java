@@ -76,7 +76,7 @@ public class AggrFeatureEventBuilderTest {
         funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
         funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
         List<String> dataSources = new ArrayList<>();
         dataSources.add("ssh");
@@ -152,13 +152,14 @@ public class AggrFeatureEventBuilderTest {
         Long startTime = startTime1 + (startTimeDayNumber-1)*day;
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
-        Assert.assertEquals("aggregated_feature_event", event.get("event_type"));
+        Assert.assertEquals("F", event.get("aggregated_feature_type"));
         Assert.assertEquals("bc1", event.get("bucket_conf_name"));
         String date_time = format.format(new Date(startTime * 1000));
         Assert.assertEquals(date_time, event.get("start_time"));
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get("end_time"));
-        Assert.assertEquals(numberOfDistinctValues, ((Map<String, Object>)event.get("my_number_of_distinct_values")).get("number_of_distinct_values"));
+        Assert.assertEquals("my_number_of_distinct_values", event.get("aggregated_feature_name"));
+        Assert.assertEquals(numberOfDistinctValues, event.get("aggregated_feature_value"));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get("context")).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get("context")).get("machine"));
         Assert.assertEquals(startTime, event.get("start_time_unix"));

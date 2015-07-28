@@ -23,9 +23,11 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private long waitAfterBucketCloseSeconds;
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
+	private String type;
 
 	public AggregatedFeatureEventConf(
 			@JsonProperty("name") String name,
+			@JsonProperty("type") String type,
 			@JsonProperty("bucketConfName") String bucketConfName,
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
@@ -34,6 +36,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
 
 		Assert.isTrue(StringUtils.isNotBlank(name));
+		Assert.isTrue(StringUtils.isNotBlank(type));
 		Assert.isTrue(StringUtils.isNotBlank(bucketConfName));
 		Assert.isTrue(numberOfBuckets >= 1);
 		Assert.isTrue(bucketsLeap >= 1);
@@ -49,6 +52,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 		}
 
 		this.name = name;
+		this.type = type;
 		this.bucketConfName = bucketConfName;
 		this.bucketConf = null;
 		this.numberOfBuckets = numberOfBuckets;
@@ -60,6 +64,10 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public String getBucketConfName() {

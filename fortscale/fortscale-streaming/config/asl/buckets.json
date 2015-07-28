@@ -6,14 +6,14 @@
         "normalized_username"
       ],
       "dataSources": [
-        "4769"
+        "kerberos_logins"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
           "name": "dst_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
+            "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
@@ -26,21 +26,21 @@
         "normalized_username"
       ],
       "dataSources": [
-        "4769"
+        "kerberos_logins"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
           "name": "src_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"]
+            "groupBy": ["source_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
           "name": "dst_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
+            "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }

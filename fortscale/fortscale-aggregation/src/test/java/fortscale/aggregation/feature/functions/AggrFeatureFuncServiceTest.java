@@ -980,6 +980,7 @@ public class AggrFeatureFuncServiceTest {
         String aggregatedFeatureEventName = "testAggregatedFeatureEvent";
         AggregatedFeatureEventConf aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
                 aggregatedFeatureEventName,
+                "aggregated_feature_event_type_F",
                 "testBucketConf",
                 3, 1, 300,
                 aggregatedFeatureNamesMap,
@@ -1009,6 +1010,7 @@ public class AggrFeatureFuncServiceTest {
         // Prepare new aggregated feature event configuration (with Histogram as the function)
         aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
                 aggregatedFeatureEventName,
+                "aggregated_feature_event_type_F",
                 "testBucketConf",
                 3, 1, 300,
                 aggregatedFeatureNamesMap,
@@ -1039,6 +1041,7 @@ public class AggrFeatureFuncServiceTest {
         // Prepare new aggregated feature event configuration (with AvgStdN as the function)
         aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
                 aggregatedFeatureEventName,
+                "aggregated_feature_event_type_F",
                 "testBucketConf",
                 3, 1, 300,
                 aggregatedFeatureNamesMap,
@@ -1074,6 +1077,7 @@ public class AggrFeatureFuncServiceTest {
 
         AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf(
                 "testAggregatedFeatureEvent",
+                "aggregated_feature_event_type_F",
                 "testBucketConf",
                 3, 1, 300,
                 aggregatedFeatureNamesMap,
@@ -1112,6 +1116,7 @@ public class AggrFeatureFuncServiceTest {
 
         AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf(
                 "testAggregatedFeatureEvent",
+                "aggregated_feature_event_type_F",
                 "testBucketConf",
                 3, 1, 300,
                 aggregatedFeatureNamesMap,

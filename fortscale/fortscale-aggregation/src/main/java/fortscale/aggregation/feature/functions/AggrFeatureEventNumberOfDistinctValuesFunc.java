@@ -19,6 +19,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
     public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
     public final static String FEATURE_NAME = "number_of_distinct_values";
     private static final String FEATURE_DISTINCT_VALUES = "distinct_values";
+    private static final String FEATURE_VALUE = "value";
 
     private boolean includeValues = false;
 
@@ -38,7 +39,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
         }
         GenericHistogram histogram = (GenericHistogram)feature.getValue();
         JSONObject value = new JSONObject();
-        value.put(FEATURE_NAME, histogram.getN());
+        value.put(FEATURE_VALUE, histogram.getN());
         if (includeValues) {
             value.put(FEATURE_DISTINCT_VALUES, histogram.getObjects());
         }

@@ -3,6 +3,7 @@
     "Events": [
       {
         "name": "distinct_number_of_src_machines",
+        "type": "F",
         "bucketConfName": "distinct_source_machines_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -19,6 +20,7 @@
       },
       {
         "name": "name2",
+        "type": "P",
         "bucketConfName": "bc2",
         "numberOfBuckets": 2,
         "bucketsLeap": 2,

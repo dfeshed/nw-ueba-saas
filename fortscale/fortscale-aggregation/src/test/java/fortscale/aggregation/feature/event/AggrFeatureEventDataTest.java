@@ -217,7 +217,7 @@ public class AggrFeatureEventDataTest {
         funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
         funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "aggregated_feature_event_type_F", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
         List<String> dataSources = new ArrayList<>();
         dataSources.add("ssh");
