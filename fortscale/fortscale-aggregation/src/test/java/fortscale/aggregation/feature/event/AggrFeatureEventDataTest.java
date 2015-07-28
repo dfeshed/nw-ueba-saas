@@ -136,55 +136,7 @@ public class AggrFeatureEventDataTest {
         Assert.assertEquals(endTime2, bucketData.getEndTime());
     }
 
-    @Test(expected = Exception.class)
-    public void testAddBucketID_existingStrategy_wrongTime() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
-        Map<String, String> context = new HashMap<>();
-        context.put("username", "john");
-        context.put("machine", "m1");
-        AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
 
-        String startegyName = "dailyStrategy";
-        String strategyContextId = "dailyStrategy_"+startTime1;
-
-        FeatureBucketStrategyData strategyData = new FeatureBucketStrategyData(strategyContextId, startegyName, startTime1, endTime1);
-        String strategyId = strategyData.getStrategyId();
-        String bucketID3 = strategyId+"username_john_machine_m1";
-
-        eventData.nextBucketEndTimeUpdate(strategyData);
-
-        // bucketID3 should not be added because the times are not matching those of the strategy
-        eventData.addBucketID(bucketID3, startTime2, endTime2);
-
-     }
-
-    @Test(expected = Exception.class)
-    public void testAddBucketID_bucketIdNotMatchStrategyID() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
-        Map<String, String> context = new HashMap<>();
-        context.put("username", "john");
-        context.put("machine", "m1");
-        AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
-
-        String startegyName = "dailyStrategy";
-        String strategyContextId = "dailyStrategy_"+startTime1;
-
-        FeatureBucketStrategyData strategyData = new FeatureBucketStrategyData(strategyContextId, startegyName, startTime1, endTime1);
-        String bucketID2 = "bucketID2";
-
-        eventData.nextBucketEndTimeUpdate(strategyData);
-
-        // bucketID2 should not be added because the bucketID not match the strategyID of the last bucket in the list.
-        eventData.addBucketID(bucketID2, startTime2, endTime2);
-    }
 
     @Test
     public void testSetEndTime() {
