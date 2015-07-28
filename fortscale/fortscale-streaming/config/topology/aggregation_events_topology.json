@@ -1,0 +1,5 @@
+{
+  "event_topology" : {
+    "aggregated_feature_event": "fortscale-aggregated-feature-event"
+  }
+}

@@ -1,15 +1,10 @@
 package fortscale.streaming.cache;
 
-import fortscale.services.cache.CacheHandler;
-import org.apache.samza.storage.kv.Entry;
-import org.apache.samza.storage.kv.KeyValueIterator;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.io.IOException;
-import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.samza.storage.kv.KeyValueStore;
+
+import fortscale.services.cache.CacheHandler;
 
 /**
  * Resolving cached value which is based on leveldb keyvalue store provided by streaming
