@@ -66,7 +66,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@RequestMapping(value = "{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map<String, Object>>> getTop3Events(@PathVariable String id,
+	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
 															 @RequestParam(defaultValue = "false") boolean request_total,
 															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
