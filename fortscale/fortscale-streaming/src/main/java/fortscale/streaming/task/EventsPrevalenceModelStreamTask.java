@@ -8,6 +8,7 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 
+import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskService;
 import fortscale.streaming.service.EventsScoreStreamTaskService;
 
@@ -20,53 +21,34 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 
 //	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 	
-	
-	private boolean skipScore;
-	private boolean skipModel;
-	
-	private EventsPrevalenceModelStreamTaskService eventsPrevalenceModelStreamTaskService;
-	private EventsScoreStreamTaskService eventsScoreStreamTaskService;
+	private EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager;
 	
 	
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		// get task configuration parameters
-		skipScore = config.getBoolean("fortscale.skip.score", false);
-		skipModel = config.getBoolean("fortscale.skip.model", false);
-		
-		eventsPrevalenceModelStreamTaskService = new EventsPrevalenceModelStreamTaskService(config, context);		
-		eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, eventsPrevalenceModelStreamTaskService.getModelStreamingService(), 
-				eventsPrevalenceModelStreamTaskService.getFeatureExtractionService());
+		eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(config, context);
 	}
 	
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		if (!skipModel) {
-			eventsPrevalenceModelStreamTaskService.process(envelope, collector, coordinator);
-		}
-		
-		if(!skipScore){
-			eventsScoreStreamTaskService.process(envelope, collector, coordinator);
-		}
+		eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
 	}
 
 	
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		if(eventsPrevalenceModelStreamTaskService != null){
-			eventsPrevalenceModelStreamTaskService.window(collector, coordinator);
+		if(eventsPrevalenceModelStreamTaskManager != null){
+			eventsPrevalenceModelStreamTaskManager.window(collector, coordinator);
 		}
 	}
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override protected void wrappedClose() throws Exception {
-		if(eventsPrevalenceModelStreamTaskService != null){
-			eventsPrevalenceModelStreamTaskService.close();
-			eventsPrevalenceModelStreamTaskService = null;
-		}
-		
-		eventsScoreStreamTaskService = null;
+		if(eventsPrevalenceModelStreamTaskManager != null){
+			eventsPrevalenceModelStreamTaskManager.close();
+			eventsPrevalenceModelStreamTaskManager = null;
+		}		
 	}
 }

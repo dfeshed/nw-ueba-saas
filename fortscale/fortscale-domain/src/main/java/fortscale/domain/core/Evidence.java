@@ -189,8 +189,16 @@ public class Evidence extends AbstractDocument{
 		return startDate;
 	}
 
+	public void setStartDate(Long startDate) {
+		this.startDate = startDate;
+	}
+
 	public Long getEndDate() {
 		return endDate;
+	}
+
+	public void setEndDate(Long endDate) {
+		this.endDate = endDate;
 	}
 
 	public Date getRetentionDate() {
@@ -215,6 +223,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getDataEntityId() {
 		return dataEntityId;
+	}
+
+	public void setDataEntityId(String dataEntityId) {
+		this.dataEntityId = dataEntityId;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
