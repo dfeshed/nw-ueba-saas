@@ -39,7 +39,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationScoreField;
 	private String notificationCauseField;
 	private String normalizedUsernameField;
-	private int score;
+	private String score;
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -53,6 +53,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Running notification to evidence job");
 		//get the last runtime from the fetchConfiguration Mongo repository
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
+		if (fetchConfiguration == null) {
+			//if no last runtime - create a one and save it in the collection
+			fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
+		}
+		//TODO - do we really need sort?
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, timestampField));
 		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
 		logger.debug("Getting notifications after time {}", lastFetchTime);
@@ -74,8 +79,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			streamWriter.send(notification.getIndex(), messageToWrite);
 		}
 		Date date = new Date();
-		logger.debug("Finished running notification to evidence job at {}, updating timestamp", date);
+		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", date);
 		fetchConfiguration.setLastFetchTime(date.getTime() + "");
+		fetchConfigurationRepository.save(fetchConfiguration);
 	}
 
 	private String getNormalizedUsername(Notification notification) {
@@ -113,7 +119,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-		score = Integer.parseInt(jobDataMapExtension.getJobDataMapStringValue(map, "score"));
+		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
 	}
 
