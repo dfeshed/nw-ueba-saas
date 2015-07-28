@@ -34,7 +34,7 @@
           "name": "number_of_failed_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
-          "filter": {"jsonPath": "[?(@.failure_code == 'FAILED KERBEROS EVENT??')]"}
+          "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         }
       ]
     },
