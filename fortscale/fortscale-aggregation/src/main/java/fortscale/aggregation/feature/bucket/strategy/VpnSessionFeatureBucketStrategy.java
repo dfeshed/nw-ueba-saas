@@ -171,6 +171,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
 	}
 
+
 	private void notifyListeners(String username, String sourceIpAddress, FeatureBucketStrategyData strategyData) {
 		UserNameAndSourceIp userNameAndSourceIp = new UserNameAndSourceIp(username, sourceIpAddress);
 		List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(userNameAndSourceIp);
@@ -197,19 +198,34 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
 	}
 
-
-	private UserNameAndSourceIp getUserNameAndSourceIpFromStrategyId(String strategyId) throws IllegalArgumentException{
+	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
 		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
 		if(strings.length !=4 || !strings[0].equals(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
 		try {
-			Long endTime = Long.parseLong(strings[3]); // Validating that the forth element is long (end time), getting exception if not.
-			return new UserNameAndSourceIp(strings[1],strings[2]);
+			Long.parseLong(strings[3]); // Validating that the forth element is long (startTime), getting exception if not.
+			return strings;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
+	}
+
+	private UserNameAndSourceIp getUserNameAndSourceIpFromStrategyId(String strategyId) throws IllegalArgumentException{
+		String[] strategyIdParts = getStrategyIdParts(strategyId);
+		return new UserNameAndSourceIp(strategyIdParts[1],strategyIdParts[2]);
+	}
+
+	/**
+	 * @param strategyId
+	 * @return the strategy context of the given startegyId
+	 * @throws IllegalArgumentException
+	 */
+	@Override
+	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException {
+		String[] strategyIdParts = getStrategyIdParts(strategyId);
+		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 2);
 	}
 
 	private void AddOpenUserSessions(String username, String sourceIP) {

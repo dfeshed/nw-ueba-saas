@@ -56,5 +56,15 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 		listener.nextBucketEndTimeUpdate(getNextBucketStrategyData(bucketConf, strategyId, startAfterEpochtimeInSeconds));
 	}
 
+	/**
+	 * @param strategyId
+	 * @return the strategy context of the given startegyId
+	 * @throws IllegalArgumentException
+	 */
+	@Override
+	public String getStrategyContextIdFromStrategyId(String strategyId) {
+		return strategyName;
+	}
+
 
 }
