@@ -1,7 +1,6 @@
 {
   "AggregatedFeatureEvents": {
     "Events": [
-      /*Evidence 206*/
       {
         "name": "distinct_number_of_src_machines_kerberos",
         "bucketConfName": "user_kerberos_daily",
@@ -18,7 +17,6 @@
           "includeValues": false
           }
       },
-      /*Evidence 207*/
       {
         "name": "distinct_number_of_dst_machines_kerberos",
         "bucketConfName": "user_kerberos_daily",
@@ -35,7 +33,6 @@
           "includeValues": false
         }
       },
-      /*Evidence 306*/
       {
         "name": "distinct_number_of_src_machines_ssh",
         "bucketConfName": "user_ssh_daily",
@@ -52,7 +49,6 @@
           "includeValues": false
         }
       },
-      /*Evidence 307*/
       {
         "name": "distinct_number_of_dst_machines_ssh",
         "bucketConfName": "user_ssh_daily",
@@ -69,7 +65,6 @@
           "includeValues": false
         }
       },
-      /*Evidence 104*/
       {
         "name": "number_of_failed_vpn_events",
         "bucketConfName": "user_vpn_events_daily",
@@ -85,7 +80,6 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 204*/
       {
         "name": "number_of_successful_kerberos_events",
         "bucketConfName": "user_kerberos_daily",
@@ -101,7 +95,6 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 205*/
       {
         "name": "number_of_failed_kerberos_events",
         "bucketConfName": "user_kerberos_daily",
@@ -109,15 +102,14 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
+          "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
           ]
         },
-        "aggregated_feature_name_to_sum": {
+        "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 305*/
       {
         "name": "number_of_successful_ssh_events",
         "bucketConfName": "user_ssh_daily",
@@ -133,7 +125,6 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 306*/
       {
         "name": "number_of_failed_events",
         "bucketConfName": "user_ssh_daily",
@@ -149,7 +140,6 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 106*/
       {
         "name": "new_countries_for_user",
         "bucketConfName": "user_vpn_events_daily",
@@ -166,7 +156,6 @@
           "includeValues": true
         }
       },
-      /*Evidence 208*/
       {
         "name": "new_src_machine_kerberos",
         "bucketConfName": "user_kerberos_daily",
@@ -183,7 +172,6 @@
           "includeValues": true
         }
       },
-      /*Evidence 209*/
       {
         "name": "new_dst_machine_kerberos",
         "bucketConfName": "user_kerberos_daily",
@@ -200,7 +188,6 @@
           "includeValues": true
         }
       },
-      /*Evidence 309*/
       {
         "name": "new_src_machine_ssh",
         "bucketConfName": "user_ssh_daily",
@@ -217,7 +204,6 @@
           "includeValues": true
         }
       },
-      /*Evidence 310*/
       {
         "name": "new_dst_machine_ssh",
         "bucketConfName": "user_ssh_daily",
