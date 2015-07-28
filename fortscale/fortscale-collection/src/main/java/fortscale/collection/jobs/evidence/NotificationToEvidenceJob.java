@@ -11,6 +11,7 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,13 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
-	private final String TOPIC_NAME = "fortscale-notification-event-score";
-	private final String TIME_STAMP_FIELD = "ts";
-	private final String NOTIFICATION_SCORE_FIELD = "notification_score";
-	private final String NOTIFICATION_CAUSE_FIELD = "notification_cause";
-	private final String NORMALIZED_USERNAME_FIELD = "normalized_username";
-	private final int SCORE = 80;
+	// job parameters:
+	private String topicName;
+	private String timestampField;
+	private String notificationScoreField;
+	private String notificationCauseField;
+	private String normalizedUsernameField;
+	private int score;
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -44,24 +46,27 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Override protected void runSteps() throws Exception {
+	@Override
+	protected void runSteps() throws Exception {
 		logger.debug("Running notification to evidence job");
 		//get the last runtime from the stateful_internal_stash Mongo repository
 		StatefulInternalStash stash = statefulInternalStashRepository.findBySuuid(StatefulInternalStash.SUUID);
-		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP_FIELD));
+		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, timestampField));
 		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
-		KafkaEventsWriter streamWriter = new KafkaEventsWriter(TOPIC_NAME);
-		//get all notifications that occured after the last runtime of the job
+		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
+		//get all notifications that occurred after the last runtime of the job
 		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort);
 		logger.debug("Found {} notifications, starting to send", notifications.size());
 		for (Notification notification: notifications) {
 			//convert each notification to evidence and send it to the appropriate Kafka topic
 			JSONObject evidence = new JSONObject();
-			//TODO - need to understand score better, put properties in xml file and investigate normalized_username
-			evidence.put(NOTIFICATION_SCORE_FIELD, SCORE);
-			evidence.put(NOTIFICATION_CAUSE_FIELD, notification.getCause());
-			evidence.put(NORMALIZED_USERNAME_FIELD, getNormalizedUsername(notification));
-			streamWriter.send(notification.getIndex(), evidence.toJSONString(JSONStyle.NO_COMPRESS));
+			//TODO - need to understand score better
+			evidence.put(notificationScoreField, score);
+			evidence.put(notificationCauseField, notification.getCause());
+			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
+			String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
+			logger.debug("Writing to topic evidence - {}", messageToWrite);
+			streamWriter.send(notification.getIndex(), messageToWrite);
 		}
 		Date date = new Date();
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp", date);
@@ -69,13 +74,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private String getNormalizedUsername(Notification notification) {
-		String normalizedUsername;
-		//attempt to normalize username
 		if (notification.getCause().equals("VPN_user_creds_share")) {
-			normalizedUsername = notification.getDisplayName();
-		} else {
-			normalizedUsername = notification.getName();
+			return notification.getDisplayName();
 		}
+		//attempt to normalize username
+		String normalizedUsername = notification.getName();
 		//if username is an active directory distinguished name
 		if (normalizedUsername.toLowerCase().contains("dc=")) {
 			User user = userRepository.findByAdDn(normalizedUsername);
@@ -93,10 +96,21 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		return normalizedUsername;
 	}
 
-	@Override protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
+	@Override
+	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
+		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
+		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
+		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
+		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
+		score = Integer.parseInt(jobDataMapExtension.getJobDataMapStringValue(map, "score"));
+	}
 
-	@Override protected int getTotalNumOfSteps() { return 1; }
+	@Override
+	protected int getTotalNumOfSteps() { return 1; }
 
-	@Override protected boolean shouldReportDataReceived() { return false; }
+	@Override
+	protected boolean shouldReportDataReceived() { return false; }
 
 }
