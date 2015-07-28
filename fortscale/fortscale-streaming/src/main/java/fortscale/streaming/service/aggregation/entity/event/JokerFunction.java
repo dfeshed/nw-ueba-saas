@@ -1,48 +1,44 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
-import fortscale.utils.ConversionUtils;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class JokerFunction {
 	private static final Logger logger = Logger.getLogger(JokerFunction.class);
 
-	private static final String PARAMS_FIELD = "params";
-	private static final String CLUSTERS_PARAMS_FIELD = "clusters";
-	private static final String ALPHAS_MAP_PARAMS_FIELD = "alphasMap";
-	private static final String BETAS_MAP_PARAMS_FIELD = "betasMap";
+	private Map<String, List<String>> clusters;
+	private Map<String, Double> alphas;
+	private Map<String, Double> betas;
 
-	public double calculateEntityEventValue(EntityEventConf entityEventConf, Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
-		Assert.notNull(entityEventConf, "Must accept an entity event configuration");
-		Assert.notNull(aggrFeatureEventsMap, "Must accept an aggregated feature events map");
+	public JokerFunction(
+			@JsonProperty("clusters") Map<String, List<String>> clusters,
+			@JsonProperty("alphas") Map<String, Double> alphas,
+			@JsonProperty("betas") Map<String, Double> betas) {
 
-		JSONObject entityEventFunction = entityEventConf.getEntityEventFunction();
-		Assert.isInstanceOf(JSONObject.class, entityEventFunction.get(PARAMS_FIELD));
-		JSONObject params = (JSONObject)entityEventFunction.get(PARAMS_FIELD);
-
-		Map<String, Double> clusterNameToMaxScoreMap = getClusterNameToMaxScoreMap(params, aggrFeatureEventsMap);
-		Map<String, Double> alphasMap = getAlphasMap(params);
-		Map<String, Double> betasMap = getBetasMap(params);
-		return calculateEntityEventValue(aggrFeatureEventsMap, clusterNameToMaxScoreMap, alphasMap, betasMap);
+		// TODO: Validate input
+		this.clusters = clusters;
+		this.alphas = alphas;
+		this.betas = betas;
 	}
 
-	private Map<String, Set<AggrFeatureEventWrapper>> getClustersMap(JSONObject params, Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
-		Assert.isInstanceOf(JSONObject.class, params.get(CLUSTERS_PARAMS_FIELD));
-		JSONObject clustersJson = (JSONObject)params.get(CLUSTERS_PARAMS_FIELD);
+	public double calculateEntityEventValue(Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
+		Assert.notNull(aggrFeatureEventsMap, "Must accept an aggregated feature events map");
 
+		Map<String, Double> clusterNameToMaxScoreMap = getClusterNameToMaxScoreMap(aggrFeatureEventsMap);
+		return calculateEntityEventValue(aggrFeatureEventsMap, clusterNameToMaxScoreMap);
+	}
+
+	private Map<String, Set<AggrFeatureEventWrapper>> getClustersMap(Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
 		Map<String, Set<AggrFeatureEventWrapper>> clustersMap = new HashMap<>();
-		for (Map.Entry<String, Object> entry : clustersJson.entrySet()) {
-			Assert.hasText(entry.getKey());
-			Assert.isInstanceOf(JSONArray.class, entry.getValue());
-
+		for (Map.Entry<String, List<String>> entry : clusters.entrySet()) {
 			Set<AggrFeatureEventWrapper> aggrFeatureEvents = new HashSet<>();
-			for (Object jsonArrayObject : (JSONArray)entry.getValue()) {
-				Assert.isInstanceOf(String.class, jsonArrayObject);
-				String aggrFeatureEventName = (String)jsonArrayObject;
+			for (String aggrFeatureEventName : entry.getValue()) {
 				AggrFeatureEventWrapper aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
 				if (aggrFeatureEvent != null) {
 					if (!aggrFeatureEvent.isOfTypeF() || aggrFeatureEvent.getScore() == null) {
@@ -61,8 +57,8 @@ public class JokerFunction {
 		return clustersMap;
 	}
 
-	private Map<String, Double> getClusterNameToMaxScoreMap(JSONObject params, Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
-		Map<String, Set<AggrFeatureEventWrapper>> clustersMap = getClustersMap(params, aggrFeatureEventsMap);
+	private Map<String, Double> getClusterNameToMaxScoreMap(Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap) {
+		Map<String, Set<AggrFeatureEventWrapper>> clustersMap = getClustersMap(aggrFeatureEventsMap);
 		Map<String, Double> clusterNameToMaxScoreMap = new HashMap<>();
 
 		for (Map.Entry<String, Set<AggrFeatureEventWrapper>> entry : clustersMap.entrySet()) {
@@ -85,48 +81,16 @@ public class JokerFunction {
 		return clusterNameToMaxScoreMap;
 	}
 
-	private Map<String, Double> getAlphasMap(JSONObject params) {
-		Assert.isInstanceOf(JSONObject.class, params.get(ALPHAS_MAP_PARAMS_FIELD));
-		JSONObject alphasJson = (JSONObject)params.get(ALPHAS_MAP_PARAMS_FIELD);
-
-		Map<String, Double> alphasMap = new HashMap<>();
-		for (Map.Entry<String, Object> entry : alphasJson.entrySet()) {
-			Assert.hasText(entry.getKey());
-			Double alpha = ConversionUtils.convertToDouble(entry.getValue());
-			Assert.notNull(alpha);
-			alphasMap.put(entry.getKey(), alpha);
-		}
-
-		return alphasMap;
-	}
-
-	private Map<String, Double> getBetasMap(JSONObject params) {
-		Assert.isInstanceOf(JSONObject.class, params.get(BETAS_MAP_PARAMS_FIELD));
-		JSONObject betasJson = (JSONObject)params.get(BETAS_MAP_PARAMS_FIELD);
-
-		Map<String, Double> betasMap = new HashMap<>();
-		for (Map.Entry<String, Object> entry : betasJson.entrySet()) {
-			Assert.hasText(entry.getKey());
-			Double beta = ConversionUtils.convertToDouble(entry.getValue());
-			Assert.notNull(beta);
-			betasMap.put(entry.getKey(), beta);
-		}
-
-		return betasMap;
-	}
-
 	private double calculateEntityEventValue(
 			Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap,
-			Map<String, Double> clusterNameToMaxScoreMap,
-			Map<String, Double> alphasMap,
-			Map<String, Double> betasMap) {
+			Map<String, Double> clusterNameToMaxScoreMap) {
 
 		double maxScoresSum = 0;
 		for (Map.Entry<String, Double> entry : clusterNameToMaxScoreMap.entrySet()) {
 			String clusterName = entry.getKey();
 			Double maxScore = entry.getValue();
 			if (maxScore != null) {
-				Double alpha = alphasMap.get(clusterName);
+				Double alpha = alphas.get(clusterName);
 				if (alpha == null) {
 					String errorMsg = String.format("Missing alpha for cluster %s", clusterName);
 					logger.error(errorMsg);
@@ -148,7 +112,7 @@ public class JokerFunction {
 					logger.error(errorMsg);
 					throw new IllegalArgumentException(errorMsg);
 				} else {
-					Double beta = betasMap.get(pEventName);
+					Double beta = betas.get(pEventName);
 					if (beta == null) {
 						String errorMsg = String.format("Missing beta for P event %s", pEventName);
 						logger.error(errorMsg);

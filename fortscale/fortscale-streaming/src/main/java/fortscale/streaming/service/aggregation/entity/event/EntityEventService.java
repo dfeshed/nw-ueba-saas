@@ -6,9 +6,10 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Configurable;
 import java.util.*;
 
+@Configurable(preConstruction = true)
 public class EntityEventService {
 	private static final Logger logger = Logger.getLogger(EntityEventService.class);
 	private static final String SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD = "secondsToWaitBeforeFiring";

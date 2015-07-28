@@ -33,6 +33,10 @@ public class AggrFeatureEventWrapper {
 		createContextMap();
 	}
 
+	public JSONObject unwrap() {
+		return aggrFeatureEvent;
+	}
+
 	public String getEventType() {
 		return ConversionUtils.convertToString(aggrFeatureEvent.get(EVENT_TYPE_FIELD));
 	}

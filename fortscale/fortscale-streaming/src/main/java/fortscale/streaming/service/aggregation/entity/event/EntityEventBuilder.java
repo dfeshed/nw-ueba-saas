@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -26,7 +27,12 @@ public class EntityEventBuilder {
 
 		this.secondsToWaitBeforeFiring = secondsToWaitBeforeFiring;
 		this.entityEventConf = entityEventConf;
-		this.jokerFunction = new JokerFunction();
+		String jokerFunctionJson = entityEventConf.getEntityEventFunction().toJSONString();
+		try {
+			this.jokerFunction = (new ObjectMapper()).readValue(jokerFunctionJson, JokerFunction.class);
+		} catch (Exception e) {
+			// TODO
+		}
 	}
 
 	public void updateEntityEventData(AggrFeatureEventWrapper aggrFeatureEvent) {
@@ -61,7 +67,8 @@ public class EntityEventBuilder {
 
 		EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
 		if (entityEventData == null) {
-			entityEventData = new EntityEventData(secondsToWaitBeforeFiring, entityEventConf.getName(), context, contextId, startTime, endTime);
+			long firingTimeInSeconds = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
+			entityEventData = new EntityEventData(firingTimeInSeconds, entityEventConf.getName(), context, contextId, startTime, endTime);
 		}
 
 		return entityEventData;
@@ -86,11 +93,17 @@ public class EntityEventBuilder {
 
 	private void createEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
 		Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap = new HashMap<>();
+		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
 		for (AggrFeatureEventWrapper aggrFeatureEvent : entityEventData.getAggrFeatureEvents()) {
-			aggrFeatureEventsMap.put(aggrFeatureEvent.getAggregatedFeatureEventName(), aggrFeatureEvent);
+			aggrFeatureEventsMap.put(
+					String.format("%s.%s",
+							aggrFeatureEvent.getBucketConfName(),
+							aggrFeatureEvent.getAggregatedFeatureEventName()),
+					aggrFeatureEvent);
+			aggrFeatureEvents.add(aggrFeatureEvent.unwrap());
 		}
 
-		double entityEventValue = jokerFunction.calculateEntityEventValue(entityEventConf, aggrFeatureEventsMap);
+		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
 
 		JSONObject entityEvent = new JSONObject();
 		entityEvent.put("event_type", "entity_event");
@@ -99,7 +112,7 @@ public class EntityEventBuilder {
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());
 		entityEvent.put("context", entityEventData.getContext());
-		entityEvent.put("aggregated_feature_events", entityEventData.getAggrFeatureEvents());
+		entityEvent.put("aggregated_feature_events", aggrFeatureEvents);
 
 		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), entityEvent.toJSONString()));
 	}

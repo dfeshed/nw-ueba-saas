@@ -39,9 +39,8 @@ public class EntityEventData {
 	@Field(FIRED_FIELD)
 	private boolean fired;
 
-	public EntityEventData(long secondsToWaitBeforeFiring, String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
-
-		Assert.isTrue(secondsToWaitBeforeFiring >= 0);
+	public EntityEventData(long firingTimeInSeconds, String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
+		Assert.isTrue(firingTimeInSeconds >= 0);
 		Assert.isTrue(StringUtils.isNotBlank(entityEventName));
 		Assert.notEmpty(context);
 		Assert.isTrue(StringUtils.isNotBlank(contextId));
@@ -54,7 +53,7 @@ public class EntityEventData {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.aggrFeatureEvents = new HashSet<>();
-		this.firingTimeInSeconds = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
+		this.firingTimeInSeconds = firingTimeInSeconds;
 		this.fired = false;
 	}
 
