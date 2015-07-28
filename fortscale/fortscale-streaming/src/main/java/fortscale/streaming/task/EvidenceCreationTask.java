@@ -187,7 +187,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				// add the event to the top events
 				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
 				String jsonString = newMessage.toJSONString();
-				evidence.setTop3eventsJsonStr("[" + jsonString + "]");
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 

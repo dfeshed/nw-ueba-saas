@@ -67,6 +67,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				}
 			}
 		}
+		else{
+			logger.warn("Can't handle events arriving from topic " + inputTopic + ", Doesn't have TopicConfiguration");
+		}
 	}
 
 	/*
@@ -87,7 +90,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				info = inputTopicMapping.get(inputTopic).getMethod().invoke(this, (String) envelope.getKey(), messageText);
 			}
 		} catch (Exception ex) {
-			logger.error("error parsing: " + messageText, ex);
+			logger.error("error parsing: " + messageText + " from topic " + inputTopic, ex);
 		}
 		return info;
 	}
@@ -158,7 +161,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				}
 				catch (NoSuchMethodException e){
 					e.printStackTrace();
-					logger.error("can't find class " + methodName + " for input topic " + inputTopic);
+					logger.error("can't find method " + methodName + " for input topic " + inputTopic);
 				}
 			}
 			if (isConfigContainKey(config, String.format("fortscale.input.info.cache-name.%s", inputInfo))) {
