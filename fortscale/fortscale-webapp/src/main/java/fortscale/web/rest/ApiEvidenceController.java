@@ -15,6 +15,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,9 @@ public class ApiEvidenceController extends DataQueryController {
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
 
+	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
+	private String normalizedUsernameField;
+
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
 	 * @param id The ID of the requested evidence
@@ -59,14 +63,16 @@ public class ApiEvidenceController extends DataQueryController {
 		return ret;
 	}
 
-	@RequestMapping(value = "{id}/top3events", method = RequestMethod.GET)
+	@RequestMapping(value = "{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map<String, Object>>> getTop3Events(@PathVariable String id,
-															 @RequestParam(defaultValue = "false") boolean requestTotal,
-															 @RequestParam(defaultValue = "true") boolean useCache,
+	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
+															 @RequestParam(defaultValue = "false") boolean request_total,
+															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
-															 @RequestParam(defaultValue = "20") Integer size) {
+															 @RequestParam(defaultValue = "20") Integer size,
+															 @RequestParam(required=false) String sort_field,
+															 @RequestParam(required=false) String sort_direction) {
 
 		Evidence evidence = evidencesDao.findById(id);
 		if (evidence == null || evidence.getId() == null){
@@ -86,6 +92,15 @@ public class ApiEvidenceController extends DataQueryController {
 			page -=1;
 		}
 
+		//set sort order
+		SortDirection sortDir = SortDirection.DESC;
+		String sortFieldStr = dataEntityTimestampField;
+		if (sort_field != null) {
+			if (sort_direction != null){
+				sortDir = SortDirection.valueOf(sort_direction);
+				sortFieldStr = sort_field;
+			}
+		}
 
 		switch (dataEntityId) {
 			case "amt_session":
@@ -103,18 +118,18 @@ public class ApiEvidenceController extends DataQueryController {
 		//add conditions
 		List<Term> termsMap = new ArrayList<>();
 		//add condition to filter user
-		Term term = dataQueryHelper.createUserTerm(entityName);
+		Term term = dataQueryHelper.createUserTerm(entityName, normalizedUsernameField);
 		termsMap.add(term);
 		//add condition about time range
 		Long currentTimestamp = System.currentTimeMillis();
 		term = dataQueryHelper.createDateRangeTerm(dataEntityTimestampField, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate) );
 		termsMap.add(term);
 		//sort according to event times for continues forwarding
-		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(dataEntityTimestampField, SortDirection.DESC);
+		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
 
 
 		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
-		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, size);
+		return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 	}
 
 	/**
