@@ -26,4 +26,12 @@ public interface FeatureBucketStrategy {
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, String strategyId, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds);
+
+	/**
+	 *
+	 * @param strategyId
+	 * @return the strategy context of the given startegyId
+	 * @throws IllegalArgumentException
+	 */
+	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException;
 }

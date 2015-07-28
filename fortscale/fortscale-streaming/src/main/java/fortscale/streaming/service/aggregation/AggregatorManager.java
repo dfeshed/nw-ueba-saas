@@ -79,7 +79,9 @@ public class AggregatorManager {
 			featureEventService.featureBucketsEndTimeUpdate(updatedFeatureBucketsWithNewEndTime);
 			//TODO: Update AggregationEventsManager with updatedFeatureBucketsWithNewEndTime
 			List<FeatureBucket> newFeatureBuckets = featureBucketsService.updateFeatureBucketsWithNewEvent(event, featureBucketConfs);
-			featureEventService.newFeatureBuckets(newFeatureBuckets);
+			if(newFeatureBuckets.size()>0) {
+				featureEventService.newFeatureBuckets(newFeatureBuckets);
+			}
 		}
 	}
 

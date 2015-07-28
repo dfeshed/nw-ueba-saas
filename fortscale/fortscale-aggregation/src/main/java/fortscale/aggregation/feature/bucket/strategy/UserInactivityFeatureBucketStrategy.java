@@ -131,18 +131,34 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	}
 
 	private String getUserNameFromStrategyId(String strategyId) throws IllegalArgumentException{
+		String[] strategyIdParts = getStrategyIdParts(strategyId);
+		return strategyIdParts[3];
+	}
+
+	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
 		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
 		if(strings.length !=5 || !strings[0].equals(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
 		try {
-			Long inactivityDurationInMinutes = Long.parseLong(strings[2]); // Validating that the forth element is long, getting exception if not.
-			Long endTime = Long.parseLong(strings[5]); // Validating that the forth element is long (end time), getting exception if not.
-			return strings[3];
+			Long inactivityDurationInMinutes = Long.parseLong(strings[2]); // Validating that the third element is long, getting exception if not.
+			Long.parseLong(strings[4]); // Validating that the fifth element is long (stratTime), getting exception if not.
+			return strings;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
+	}
+
+	/**
+	 * @param strategyId
+	 * @return the strategy context of the given startegyId
+	 * @throws IllegalArgumentException
+	 */
+	@Override
+	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException{
+		String[] strategyIdParts = getStrategyIdParts(strategyId);
+		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 3);
 	}
 
 	private long getInactivityDurationInSeconds() {
@@ -163,7 +179,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds)
 			throws IllegalArgumentException{
 		String username = getUserNameFromStrategyId(strategyId);
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, username, startAfterEpochtimeInSeconds +1);
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, username, startAfterEpochtimeInSeconds + 1);
 		return strategyDatas.size()>0 ? strategyDatas.get(0) : null;
 	}
 
@@ -187,6 +203,8 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		}
 		listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
 	}
+
+
 
 	private void notifyListeners(String username, FeatureBucketStrategyData strategyData) {
 		List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);

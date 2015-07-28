@@ -190,7 +190,8 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	private static final class SendingSystemTimeComparator implements Comparator<Registration> {
 		@Override
 		public int compare(Registration reg1, Registration reg2) {
-			return Long.compare(reg1.getSendingSystemTime(), reg2.getSendingSystemTime());
+			int res = Long.compare(reg1.getSendingSystemTime(), reg2.getSendingSystemTime());
+			return res == 0 ? Long.compare(reg1.getEpochtime(), reg2.getEpochtime()) : res;
 		}
 	}
 }
