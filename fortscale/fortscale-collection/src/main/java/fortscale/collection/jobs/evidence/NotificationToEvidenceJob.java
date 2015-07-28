@@ -60,7 +60,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		for (Notification notification: notifications) {
 			//convert each notification to evidence and send it to the appropriate Kafka topic
 			JSONObject evidence = new JSONObject();
-			//TODO - need to understand score better
+			//TODO - need to understand scores better
 			evidence.put(notificationScoreField, score);
 			evidence.put(notificationCauseField, notification.getCause());
 			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
@@ -79,6 +79,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		}
 		//attempt to normalize username
 		String normalizedUsername = notification.getName();
+		//TODO - what about cache?
 		//if username is an active directory distinguished name
 		if (normalizedUsername.toLowerCase().contains("dc=")) {
 			User user = userRepository.findByAdDn(normalizedUsername);
@@ -87,7 +88,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			}
 		//if username is a short name
 		} else if (!normalizedUsername.contains("@")) {
-			//TODO - what about cache?
 			List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
 			if (users.size() == 1) {
 				normalizedUsername = users.get(0).getUsername();
@@ -98,7 +98,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing Notification to Evidence job, getting job parameters");
+		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
