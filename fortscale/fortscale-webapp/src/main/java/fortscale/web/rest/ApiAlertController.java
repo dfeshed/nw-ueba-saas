@@ -47,28 +47,28 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public @ResponseBody
 	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-										  @RequestParam(required=false) String sortField,
-										  @RequestParam(required=false) String sortDirection,
+										  @RequestParam(required=false) String sort_field,
+										  @RequestParam(required=false) String sort_direction,
 										  @RequestParam(required=false)  Integer size,
-										  @RequestParam(required=false, value = "page") Integer pageFromRequest) {
+										  @RequestParam(required=false, value = "page") Integer page_from_request) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
-		if (sortField != null) {
-			if (sortDirection != null){
-				sortDir = Sort.Direction.valueOf(sortDirection);
+		if (sort_field != null) {
+			if (sort_direction != null){
+				sortDir = Sort.Direction.valueOf(sort_direction);
 			}
-			sortByTSDesc = new Sort(new Sort.Order(sortDir, sortField));
+			sortByTSDesc = new Sort(new Sort.Order(sortDir, sort_field));
 		} else {
 			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
 		}
 		//if pageForMongo is not set, get first pageForMongo
 		//Mongo pages start with 0. While on the API the first page is 1.
 		int pageForMongo;
-		if (pageFromRequest == null) {
+		if (page_from_request == null) {
 			pageForMongo = 0;
 		} else {
-			pageForMongo = pageFromRequest -1;
+			pageForMongo = page_from_request -1;
 		}
 		if (size == null){
 			size = DEFAULT_PAGE_SIZE;

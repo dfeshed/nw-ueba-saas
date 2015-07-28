@@ -67,12 +67,12 @@ public class ApiEvidenceController extends DataQueryController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
-															 @RequestParam(defaultValue = "false") boolean requestTotal,
-															 @RequestParam(defaultValue = "true") boolean useCache,
+															 @RequestParam(defaultValue = "false") boolean request_total,
+															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
 															 @RequestParam(defaultValue = "20") Integer size,
-															 @RequestParam(required=false) String sortField,
-															 @RequestParam(required=false) String sortDirection) {
+															 @RequestParam(required=false) String sort_field,
+															 @RequestParam(required=false) String sort_direction) {
 
 		Evidence evidence = evidencesDao.findById(id);
 		if (evidence == null || evidence.getId() == null){
@@ -95,10 +95,10 @@ public class ApiEvidenceController extends DataQueryController {
 		//set sort order
 		SortDirection sortDir = SortDirection.DESC;
 		String sortFieldStr = dataEntityTimestampField;
-		if (sortField != null) {
-			if (sortDirection != null){
-				sortDir = SortDirection.valueOf(sortDirection);
-				sortFieldStr = sortField;
+		if (sort_field != null) {
+			if (sort_direction != null){
+				sortDir = SortDirection.valueOf(sort_direction);
+				sortFieldStr = sort_field;
 			}
 		}
 
@@ -129,7 +129,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 
 		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
-		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, size);
+		return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 	}
 
 	/**
