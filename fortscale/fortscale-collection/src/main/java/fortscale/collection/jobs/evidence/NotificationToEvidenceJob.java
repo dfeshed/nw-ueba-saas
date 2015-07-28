@@ -98,6 +98,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		logger.debug("Initializing Notification to Evidence job, getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
@@ -105,6 +106,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
 		score = Integer.parseInt(jobDataMapExtension.getJobDataMapStringValue(map, "score"));
+		logger.debug("Job initialized");
 	}
 
 	@Override
