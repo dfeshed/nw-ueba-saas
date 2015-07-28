@@ -77,7 +77,7 @@ public class ApiEvidenceControllerTest {
 		evidence.setStartDate(System.currentTimeMillis());
 		evidence.setEndDate(System.currentTimeMillis());
 		when(repository.findById(EVIDENCE_ID)).thenReturn(evidence);
-		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/top3events")
+		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
@@ -89,7 +89,7 @@ public class ApiEvidenceControllerTest {
 	@Test(expected = NestedServletException.class)
 	public void testGetTop3EventsWithWrongId() throws Exception {
 
-		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/top3events")
+		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
