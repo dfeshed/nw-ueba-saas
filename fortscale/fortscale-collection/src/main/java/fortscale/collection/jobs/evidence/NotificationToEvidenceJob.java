@@ -60,30 +60,37 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			//TODO - need to understand score better, put properties in xml file and investigate normalized_username
 			evidence.put(NOTIFICATION_SCORE_FIELD, SCORE);
 			evidence.put(NOTIFICATION_CAUSE_FIELD, notification.getCause());
-			String normalizedUsername = notification.getName();
-			//attempt to normalize username
-			if (notification.getCause().equals("VPN_user_creds_share")) {
-				normalizedUsername = notification.getDisplayName();
-			//if username is an active directory distinguished name
-			} else if (normalizedUsername.toLowerCase().contains("dc=")) {
-				User user = userRepository.findByAdDn(normalizedUsername);
-				if (user != null) {
-					normalizedUsername = user.getUsername();
-				}
-			//if username is a short name
-			} else if (!normalizedUsername.contains("@")) {
-				//TODO - what about cache?
-				List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
-				if (users.size() == 1) {
-					normalizedUsername = users.get(0).getUsername();
-				}
-			}
-			evidence.put(NORMALIZED_USERNAME_FIELD, normalizedUsername);
+			evidence.put(NORMALIZED_USERNAME_FIELD, getNormalizedUsername(notification));
 			streamWriter.send(notification.getIndex(), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 		}
 		Date date = new Date();
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp", date);
 		statefulInternalStashRepository.updateLatestTS(stash.getSuuid(), date.getTime());
+	}
+
+	private String getNormalizedUsername(Notification notification) {
+		String normalizedUsername;
+		//attempt to normalize username
+		if (notification.getCause().equals("VPN_user_creds_share")) {
+			normalizedUsername = notification.getDisplayName();
+		} else {
+			normalizedUsername = notification.getName();
+		}
+		//if username is an active directory distinguished name
+		if (normalizedUsername.toLowerCase().contains("dc=")) {
+			User user = userRepository.findByAdDn(normalizedUsername);
+			if (user != null) {
+				normalizedUsername = user.getUsername();
+			}
+		//if username is a short name
+		} else if (!normalizedUsername.contains("@")) {
+			//TODO - what about cache?
+			List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
+			if (users.size() == 1) {
+				normalizedUsername = users.get(0).getUsername();
+			}
+		}
+		return normalizedUsername;
 	}
 
 	@Override protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
