@@ -58,12 +58,13 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		function.setIncludeValues(true);
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
-		Assert.assertEquals(AggrFeatureEventNumberOfNewOccurencesFunc.FEATURE_NAME, actual1.getName());
-		Assert.assertTrue(actual1.getValue() instanceof JSONObject);
-		JSONObject jsonObject = (JSONObject)actual1.getValue();
-		Assert.assertEquals(2, jsonObject.size());
-		Assert.assertTrue(jsonObject.get(AggrFeatureEventNumberOfNewOccurencesFunc.FEATURE_DISTINCT_VALUES) instanceof Set);
-		Set<Feature> newOccurencesSet = (Set<Feature>)(jsonObject.get(AggrFeatureEventNumberOfNewOccurencesFunc.FEATURE_DISTINCT_VALUES));
+		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
+		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
+		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
+		Assert.assertEquals(1, aggrFeatureValue.getValue());
+		Assert.assertTrue(aggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES) instanceof Set);
+		@SuppressWarnings("unchecked")
+		Set<Feature> newOccurencesSet = (Set<Feature>)(aggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES));
 		Assert.assertEquals(1, newOccurencesSet.size());
 		Assert.assertTrue(newOccurencesSet.contains(newOccurenceValue));
 	}

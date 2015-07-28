@@ -1,14 +1,14 @@
 package fortscale.aggregation.feature.functions;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import net.minidev.json.JSONObject;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by amira on 20/07/2015.
@@ -17,7 +17,6 @@ import java.util.Map;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHistogramFunc {
     public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
-    public final static String FEATURE_NAME = "number_of_distinct_values";
     private final static String FEATURE_DISTINCT_VALUES = "distinct_values";
 
     private boolean includeValues = false;
@@ -37,12 +36,11 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
             return null;
         }
         GenericHistogram histogram = (GenericHistogram)feature.getValue();
-        JSONObject value = new JSONObject();
-        value.put(FEATURE_NAME, histogram.getN());
+        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(histogram.getN());
         if (includeValues) {
-            value.put(FEATURE_DISTINCT_VALUES, histogram.getObjects());
+            aggrFeatureValue.putAdditionalInformation(FEATURE_DISTINCT_VALUES, histogram.getObjects());
         }
-        Feature resFeature = new Feature(FEATURE_NAME, value);
+        Feature resFeature = new Feature(aggrFeatureEventConf.getName(), aggrFeatureValue);
 
         return resFeature;
     }

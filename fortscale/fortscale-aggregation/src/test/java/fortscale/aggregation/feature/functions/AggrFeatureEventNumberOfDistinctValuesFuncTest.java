@@ -57,11 +57,10 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 		AggrFeatureEventNumberOfDistinctValuesFunc function = new AggrFeatureEventNumberOfDistinctValuesFunc();
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
-		Assert.assertEquals(AggrFeatureEventNumberOfDistinctValuesFunc.FEATURE_NAME, actual1.getName());
-		Assert.assertTrue(actual1.getValue() instanceof JSONObject);
-		JSONObject jsonObject = (JSONObject)actual1.getValue();
-		Assert.assertEquals(1, jsonObject.size());
-		Assert.assertEquals(6L, (long) jsonObject.get(AggrFeatureEventNumberOfDistinctValuesFunc.FEATURE_NAME));
+		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
+		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
+		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
+		Assert.assertEquals(6L, (long) aggrFeatureValue.getValue());
 	}
 
 	@Test

@@ -59,10 +59,15 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 
 		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
 
-		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf("aggregatedFeatureEventTestName", 1), listOfFeatureMaps);
+		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
-		Assert.assertEquals(AggrFeatureEventHistogramMaxCountObjectFunc.FEATURE_NAME, actual1.getName());
-		Assert.assertEquals(maxHistogramKey, actual1.getValue());
+		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
+		Assert.assertEquals(createExpected(maxHistogramKey), actual1.getValue());
+	}
+	
+	private AggrFeatureValue createExpected(String maxHistogramKey){
+		return new AggrFeatureValue(maxHistogramKey);
 	}
 
 	@Test

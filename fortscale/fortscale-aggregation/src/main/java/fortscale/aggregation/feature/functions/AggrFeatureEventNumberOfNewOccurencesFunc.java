@@ -1,13 +1,17 @@
 package fortscale.aggregation.feature.functions;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import net.minidev.json.JSONObject;
-
-import java.util.*;
 
 /**
  * Created by orend on 23/07/2015.
@@ -16,8 +20,7 @@ import java.util.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistogramFunc {
 	public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_new_occurences_func";
-	public final static String FEATURE_NAME = "number_of_new_occurences";
-	public final static String FEATURE_DISTINCT_VALUES = "new_occurences_values";
+	public final static String NEW_OCCURENCES_VALUES = "new_occurences_values";
 
 	private boolean includeValues = false;
 
@@ -51,12 +54,11 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 		currentFeaturesSet = ((GenericHistogram)lastFeaturesAggr.getValue()).getObjects();
 
 		Set<Object> newOccurencesSet = substractSets(currentFeaturesSet, previousFeaturesSet);
-		JSONObject value = new JSONObject();
-		value.put(FEATURE_NAME, newOccurencesSet.size());
+		AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(newOccurencesSet.size());
 		if (includeValues) {
-			value.put(FEATURE_DISTINCT_VALUES, newOccurencesSet);
+			aggrFeatureValue.putAdditionalInformation(NEW_OCCURENCES_VALUES, newOccurencesSet);
 		}
-		Feature resFeature = new Feature(FEATURE_NAME, value);
+		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), aggrFeatureValue);
 
 		return resFeature;
 	}
