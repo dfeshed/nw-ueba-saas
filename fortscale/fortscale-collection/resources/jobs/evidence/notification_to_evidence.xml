@@ -15,6 +15,10 @@
             <recover>true</recover>
             <job-data-map>
                 <entry>
+                    <key>fetchType</key>
+                    <value>${collection.evidence.notification.fetch.type}</value>
+                </entry>
+                <entry>
                     <key>topicName</key>
                     <value>${collection.evidence.notification.topic}</value>
                 </entry>
@@ -38,8 +42,23 @@
                     <key>score</key>
                     <value>${collection.evidence.notification.score}</value>
                 </entry>
+                <entry>
+                    <key>notificationsToIgnore</key>
+                    <value>${collection.evidence.notification.ignore}</value>
+                </entry>
             </job-data-map>
         </job>
+
+        <!-- trigger the job every hour -->
+        <trigger>
+            <cron>
+                <name>notification_to_evidence_every_60min_trigger</name>
+                <group>EVIDENCE</group>
+                <job-name>Notification_ETL</job-name>
+                <job-group>EVIDENCE</job-group>
+                <cron-expression>0 * * * * ?</cron-expression>
+            </cron>
+        </trigger>
 
     </schedule>
 

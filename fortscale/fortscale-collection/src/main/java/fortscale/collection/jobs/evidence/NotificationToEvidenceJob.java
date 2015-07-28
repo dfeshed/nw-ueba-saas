@@ -2,11 +2,11 @@ package fortscale.collection.jobs.evidence;
 
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Notification;
-import fortscale.domain.core.StatefulInternalStash;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.domain.core.dao.StatefulInternalStashRepository;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fetch.FetchConfiguration;
+import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -32,6 +32,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
 	// job parameters:
+	private String notificationsToIgnore;
+	private String fetchType;
 	private String topicName;
 	private String timestampField;
 	private String notificationScoreField;
@@ -42,25 +44,28 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	@Autowired
 	private NotificationsRepository notificationsRepository;
 	@Autowired
-	private StatefulInternalStashRepository statefulInternalStashRepository;
+	private FetchConfigurationRepository fetchConfigurationRepository;
 	@Autowired
 	private UserRepository userRepository;
 
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running notification to evidence job");
-		//get the last runtime from the stateful_internal_stash Mongo repository
-		StatefulInternalStash stash = statefulInternalStashRepository.findBySuuid(StatefulInternalStash.SUUID);
+		//get the last runtime from the fetchConfiguration Mongo repository
+		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, timestampField));
-		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
+		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
+		logger.debug("Getting notifications after time {}", lastFetchTime);
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
 		//get all notifications that occurred after the last runtime of the job
-		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort);
+		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(lastFetchTime, sort);
 		logger.debug("Found {} notifications, starting to send", notifications.size());
 		for (Notification notification: notifications) {
+			if (notificationsToIgnore.contains(notification.getCause())) {
+				continue;
+			}
 			//convert each notification to evidence and send it to the appropriate Kafka topic
 			JSONObject evidence = new JSONObject();
-			//TODO - need to understand scores better
 			evidence.put(notificationScoreField, score);
 			evidence.put(notificationCauseField, notification.getCause());
 			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
@@ -70,10 +75,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		}
 		Date date = new Date();
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp", date);
-		statefulInternalStashRepository.updateLatestTS(stash.getSuuid(), date.getTime());
+		fetchConfiguration.setLastFetchTime(date.getTime() + "");
 	}
 
 	private String getNormalizedUsername(Notification notification) {
+		//TODO - save this notification name somewhere?
 		if (notification.getCause().equals("VPN_user_creds_share")) {
 			return notification.getDisplayName();
 		}
@@ -100,6 +106,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
+		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
