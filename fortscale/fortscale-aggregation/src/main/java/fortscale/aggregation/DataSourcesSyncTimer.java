@@ -1,12 +1,19 @@
 package fortscale.aggregation;
 
-import fortscale.utils.ConversionUtils;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-import java.util.*;
+
+import fortscale.utils.ConversionUtils;
 
 public class DataSourcesSyncTimer implements InitializingBean {
 	private static final int DEFAULT_INITIAL_CAPACITY = 100;

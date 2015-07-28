@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.extraction;
 
-import net.minidev.json.JSONObject;
-
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -25,7 +23,7 @@ public class IPv4FeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, JSONObject message) {
+	public Object adjust(Object value, Event event) {
 		String ret = null;
 
 		try {

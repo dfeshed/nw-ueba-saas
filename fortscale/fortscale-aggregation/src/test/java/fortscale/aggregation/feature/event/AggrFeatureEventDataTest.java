@@ -9,7 +9,6 @@ import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +32,14 @@ public class AggrFeatureEventDataTest {
     @Test(expected = Exception.class)
     public void testNewEventData_nullBuilder() {
         Map<String, String> context = new HashMap<>();
+        @SuppressWarnings("unused")
         AggrFeatureEventData eventData = new AggrFeatureEventData(null, context, "strategyId");
     }
 
     @Test(expected = Exception.class)
     public void testNewEventData_nullContext() {
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
+        @SuppressWarnings("unused")
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, null, "strategyId");
     }
 
@@ -110,7 +111,6 @@ public class AggrFeatureEventDataTest {
         String strategyId = strategyData.getStrategyId();
         String bucketID1 = strategyId+"username_john_machine_m1";
         String bucketID2 = "bucketID2";
-        String bucketID3 = strategyId+"username_john_machine_m1";
 
         eventData.nextBucketEndTimeUpdate(strategyData);
 
@@ -178,7 +178,6 @@ public class AggrFeatureEventDataTest {
         String strategyContextId = "dailyStrategy_"+startTime1;
 
         FeatureBucketStrategyData strategyData = new FeatureBucketStrategyData(strategyContextId, startegyName, startTime1, endTime1);
-        String strategyId = strategyData.getStrategyId();
         String bucketID2 = "bucketID2";
 
         eventData.nextBucketEndTimeUpdate(strategyData);

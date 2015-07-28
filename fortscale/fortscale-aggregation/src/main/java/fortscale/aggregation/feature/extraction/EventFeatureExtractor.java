@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.extraction;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -30,11 +28,11 @@ public class EventFeatureExtractor implements FeatureExtractor {
 	}
 
 	@Override
-	public Object extract(JSONObject message) {
+	public Object extract(Event event) {
 		Object ret = null;
 
 		try {
-			ret = extractValue(message);
+			ret = extractValue(event);
 		} catch (Exception e) {
 			logger.debug("got the following exception while trying to extract feature", e);
 		}
@@ -42,12 +40,12 @@ public class EventFeatureExtractor implements FeatureExtractor {
 		return ret;
 	}
 
-	protected Object extractValue(JSONObject message) {
-		Object value = message.get(fieldName);
+	protected Object extractValue(Event event) throws Exception {
+		Object value = event.get(fieldName);
 
 
 		if (featureAdjustor != null) {
-			return featureAdjustor.adjust(value, message);
+			return featureAdjustor.adjust(value, event);
 		} else {
 			return value;
 		}

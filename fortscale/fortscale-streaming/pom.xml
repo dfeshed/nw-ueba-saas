@@ -68,11 +68,6 @@
 		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
 		<!-- maven plugins versions -->
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<mavanagaiata.version>0.7.0</mavanagaiata.version>
-        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
-		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-		<esper-version>5.2.0</esper-version>
-		<jsonpath.version>2.0.0</jsonpath.version>
 	</properties>
 
 	<dependencies>
@@ -121,18 +116,6 @@
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
 			<version>${json-smart.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.minidev</groupId>
-			<artifactId>asm</artifactId>
-			<version>${net.minidev.asm.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.jayway.jsonpath</groupId>
-			<artifactId>json-path</artifactId>
-			<version>${jsonpath.version}</version>
 		</dependency>
 
 		<!-- samza dependencies -->
@@ -190,7 +173,6 @@
 		<dependency>
 			<groupId>com.espertech</groupId>
 			<artifactId>esper</artifactId>
-			<version>${esper-version}</version>
 		</dependency>
 
 		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->

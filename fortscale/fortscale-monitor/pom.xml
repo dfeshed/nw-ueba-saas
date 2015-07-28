@@ -61,8 +61,6 @@
 		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
 		<commons-cli.version>1.2</commons-cli.version>
 		<!-- maven plugins versions -->
-		<mavanagaiata.version>0.7.0</mavanagaiata.version>
-		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 

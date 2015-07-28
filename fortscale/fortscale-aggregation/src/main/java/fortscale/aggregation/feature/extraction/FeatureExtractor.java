@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.extraction;
 
-import net.minidev.json.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -15,5 +13,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value= PriorityContainerFeatureExtractor.class, name= PriorityContainerFeatureExtractor.PRIORITY_CONTAINER_FEATURE_EXTRACTOR_TYPE)
 })
 public interface FeatureExtractor {
-    Object extract(JSONObject message);
+    Object extract(Event event) throws Exception;
 }

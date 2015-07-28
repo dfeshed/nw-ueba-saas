@@ -1,19 +1,19 @@
-package fortscale.streaming.service.aggregation.feature.bucket.strategy;
+package fortscale.aggregation.feature.bucket.strategy;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import fortscale.aggregation.feature.bucket.strategy.*;
+import java.util.List;
+
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
@@ -54,7 +54,6 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject openEvent = createDataSourceEvent(username, sourceIp, epochtime, openStatus);
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
 		String strategyContextId = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp);
-		FeatureBucketStrategyData activeStrategyData = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 
 		FeatureBucketStrategyData actual = strategy.update(openEvent);
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
@@ -75,7 +74,6 @@ public class VpnSessionFeatureBucketStrategyTest {
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		JSONObject event = createDataSourceEvent(username, sourceIp, epochtime, status);
 		String strategyContextId = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp);
-		FeatureBucketStrategyData activeStrategyData = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 
 		FeatureBucketStrategyData actual = strategy.update(event); // Creating the session
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
@@ -150,9 +148,8 @@ public class VpnSessionFeatureBucketStrategyTest {
 		when(strategyJson.getParams()).thenReturn(params);
 		when(strategyJson.getName()).thenReturn(DEFAULT_STRATEGY_NAME);
 
-		FeatureBucketStrategyFactory factory = new VpnSessionFeatureBucketStrategyFactorySamza();
+		FeatureBucketStrategyFactory factory = new VpnSessionFeatureBucketStrategyFactoryForTest(store);
 		VpnSessionFeatureBucketStrategy strategy = (VpnSessionFeatureBucketStrategy) factory.createFeatureBucketStrategy(strategyJson);
-		strategy.setFeatureBucketStrategyStore(store);
 
 		return strategy;
 	}

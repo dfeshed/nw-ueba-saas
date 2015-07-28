@@ -10,12 +10,14 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.utils.logging.Logger;
 
 @Service
@@ -30,6 +32,12 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 
 	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json:}")
 	String featuresConfJsonFileName;
+	
+	@Value("${impala.table.fields.data.source}")
+	private String eventTypeFieldName;
+	
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -90,14 +98,29 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 
 	@Override
 	public Feature extract(String featureName, JSONObject eventMessage) {
+		Feature ret = null;
+
+		String eventType = eventMessage.getAsString(eventTypeFieldName);
+		Event event = new Event(eventMessage, dataEntitiesConfig, eventType);
+
+		try{
+			ret = extract(featureName, event);
+		} catch (Exception e) {
+			logger.error(String.format("Got exception while trying to extract the feature name %s", featureName),e);
+		}
+		
+		return ret;
+	}
+	
+	private Feature extract(String featureName, Event event) throws Exception {
 		FeatureExtractor featureExtractor = getFeatureExtractor(featureName);
 
 		Object value;
 
 		if(featureExtractor != null){
-			value = featureExtractor.extract(eventMessage);
+			value = featureExtractor.extract(event);
 		} else {
-			value = eventMessage.get(featureName);
+			value = event.get(featureName);
 		}
 		return new Feature(featureName, value);
 
@@ -108,11 +131,19 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 		if(featureNames == null || message	== null) {
 			return null;
 		}
+		
+		String eventType = message.getAsString(eventTypeFieldName);
 		Map<String, Feature> features = new HashMap<>();
-
+		Event event = new Event(message, dataEntitiesConfig, eventType);
 		for (String featureName : featureNames) {
-			Feature feature = extract(featureName, message);
-			features.put(featureName, feature);
+			Feature feature;
+			try {
+				feature = extract(featureName, event);
+				features.put(featureName, feature);
+			} catch (Exception e) {
+				logger.error(String.format("Got exception while trying to extract the feature name %s", featureName),e);
+				return null;
+			}
 		}
 		return features;
 	}

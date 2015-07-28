@@ -8,9 +8,11 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +24,7 @@ import java.util.*;
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
-    private static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
+    public static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
     private static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
     private static final String EVENT_FIELD_DATE_TIME = "date_time";
     private static final String EVENT_FIELD_CONTEXT = "context";
@@ -39,6 +41,8 @@ public class AggrFeatureEventBuilder {
     private Map<Map<String, String>, AggrFeatureEventData> context2featureDataMap;
     private Map<String, AggrFeatureEventData> bucktID2featureDataMap;
 
+    @Value("${fetch.data.cycle.in.seconds}")
+    private long fetchDataCycleInSeconds;
 
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -210,7 +214,7 @@ public class AggrFeatureEventBuilder {
 
     void registerInTimerForNextBucketEndTime(AggrFeatureEventData.BucketData bucketData, Long time) {
         if(bucketData!=null && time!=null) {
-            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time, bucketData);
+            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time + fetchDataCycleInSeconds, bucketData);
             bucketData.setSyncTimerRegistrationID(registrationID);
         }
     }

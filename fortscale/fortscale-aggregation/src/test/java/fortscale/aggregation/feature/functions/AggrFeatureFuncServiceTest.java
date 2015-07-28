@@ -5,7 +5,9 @@ import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.filter.JsonFilter;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +30,7 @@ public class AggrFeatureFuncServiceTest {
     @Autowired
     AggrFeatureFuncService funcService;
 
-    private AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName) {
-        return createAggrFeatureConf3(aggrFeatureName, funcName, null, null);
-    }
+    
     
     private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName, String funcParam, JsonFilter filter) {
         List<String> featureNames = new ArrayList<>();

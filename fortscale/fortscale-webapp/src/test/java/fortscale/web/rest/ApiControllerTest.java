@@ -5,6 +5,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.web.DataQueryController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -50,7 +51,7 @@ public class ApiControllerTest {
 	private static final String QUERY_1 = "select foo";
 	private static final String QUERY_2 = "select bar";
 	private static final String QUERY_3 = "select a from b limit 45";
-	private static final String QUERY_LIMIT = " LIMIT " + ApiController.CACHE_LIMIT + " OFFSET ";
+	private static final String QUERY_LIMIT = " LIMIT " + DataQueryController.CACHE_LIMIT + " OFFSET ";
 	public static final String QUERY_1_OFFSET_200 = QUERY_1 + QUERY_LIMIT + "200";
 	public static final String QUERY_2_OFFSET_0 = QUERY_2 + QUERY_LIMIT + "0";
 	public static final String QUERY_1_OFFSET_0 = QUERY_1 + QUERY_LIMIT + "0";

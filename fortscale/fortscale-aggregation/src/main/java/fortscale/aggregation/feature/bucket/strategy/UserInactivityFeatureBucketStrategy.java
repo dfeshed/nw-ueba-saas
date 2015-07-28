@@ -1,14 +1,20 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.utils.ConversionUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.utils.ConversionUtils;
 
 @Configurable(preConstruction = true)
 public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrategy {

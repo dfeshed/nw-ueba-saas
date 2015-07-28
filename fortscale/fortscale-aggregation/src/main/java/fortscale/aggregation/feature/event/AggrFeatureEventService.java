@@ -1,17 +1,18 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.utils.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.utils.logging.Logger;
 
 /**
  * Created by amira on 08/07/2015.
@@ -21,7 +22,6 @@ public class AggrFeatureEventService {
     private static final String INFO_MSG_NO_EVENT_CONFS = "No aggregated feature event definitions were received.";
     private static final String ERROR_MSG_REMOVE_BUCKET_ID_MAPPING_INVALID_PARAMS = "Null or empty params for removeBucketID2builderMapping()";
 
-    private AggregatedFeatureEventsConfService aggrFeatureEventsConfService;
     private FeatureBucketStrategyService featureBucketStrategyService;
     private FeatureBucketsService featureBucketsService;
 
@@ -30,7 +30,6 @@ public class AggrFeatureEventService {
     private Map<String, List<AggrFeatureEventBuilder>> bucketID2eventBuildersListMap = new HashMap<>();
 
     public AggrFeatureEventService(AggregatedFeatureEventsConfService aggrFeatureEventsConfService, FeatureBucketStrategyService featureBucketStrategyService, FeatureBucketsService featureBucketsService) {
-        this.aggrFeatureEventsConfService = aggrFeatureEventsConfService;
         this.featureBucketStrategyService = featureBucketStrategyService;
         this.featureBucketsService = featureBucketsService;
         Assert.notNull(aggrFeatureEventsConfService);
