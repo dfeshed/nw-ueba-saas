@@ -1,0 +1,36 @@
+{
+  "EntityEvents": {
+    "GlobalParams": {
+      "secondsToWaitBeforeFiring": 60,
+      "fireEventsEverySeconds": 1800
+    },
+    "EntityEventDefinitions": [
+      {
+        "name": "entityEventDefinition1",
+        "contextFields": ["normalized_username"],
+        "aggregatedFeatureEventNamesMap": {
+          "functionArgument": ["bucketConf1.aggregatedFeatureEvent1"]
+        },
+        "entityEventFunction": {
+          "type": "type1",
+          "params": {
+            "functionParam": "valueOfFunctionParam"
+          }
+        }
+      },
+      {
+        "name": "entityEventDefinition2",
+        "contextFields": ["normalized_username"],
+        "aggregatedFeatureEventNamesMap": {
+          "functionArgument": ["bucketConf2.aggregatedFeatureEvent2"]
+        },
+        "entityEventFunction": {
+          "type": "type2",
+          "params": {
+            "functionParam": "valueOfFunctionParam"
+          }
+        }
+      }
+    ]
+  }
+}
