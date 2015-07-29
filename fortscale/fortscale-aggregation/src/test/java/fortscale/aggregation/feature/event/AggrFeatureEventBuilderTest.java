@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
@@ -164,6 +165,7 @@ public class AggrFeatureEventBuilderTest {
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get("context")).get("machine"));
         Assert.assertEquals(startTime, event.get("start_time_unix"));
         Assert.assertEquals(endTime, event.get("end_time_unix"));
+        Assert.assertEquals("ssh", ((JSONArray)event.get("data_sources")).get(0));
 
     }
 
