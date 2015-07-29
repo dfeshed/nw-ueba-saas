@@ -93,6 +93,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		if (notification.getCause().toLowerCase().contains("vpn")) {
 			return "vpn";
 		}
+		//TODO - what type of entity should AD notifications have? what about other types?
 		return "user";
 	}
 
