@@ -49,6 +49,18 @@ public class AlertsRepositoryImplTest {
 	}
 
 	@Test
+	public void testFindAlertsByFilter() throws IOException{
+		List<Alert> alertsList = new ArrayList<>();
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+
+		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium");
+		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
+		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
+	}
+
+	@Test
 	public void testCount() throws IOException{
 		when (mongoTemplate.count(any(Query.class), eq(Alert.class))).thenReturn(20L);
 		Long count = subject.count(new PageRequest(1,0));
