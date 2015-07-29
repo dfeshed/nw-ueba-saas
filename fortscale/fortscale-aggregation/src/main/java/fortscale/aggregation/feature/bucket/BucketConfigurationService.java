@@ -1,6 +1,8 @@
 package fortscale.aggregation.feature.bucket;
 
+import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +18,14 @@ import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Loads BucketConfs from JSON file.
  * Provides API to get list of related BucketConfs for a given event based on the
  * context fields within the BucketConfs.
  */
+@Component("נucketConfigurationService")
 public class BucketConfigurationService implements InitializingBean{
     private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
 
@@ -45,7 +49,16 @@ public class BucketConfigurationService implements InitializingBean{
         JSONArray BucketConfsJson;
 
         try {
-            JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(bucketConfJsonFilePath));
+            JSONObject jsonObj;
+            File bucketsJsonFile = new File(bucketConfJsonFilePath);
+            if (bucketsJsonFile.exists()) {
+                jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(bucketConfJsonFilePath));
+            }
+            else { // workaround for FV-7981
+                ClassLoader currentClassLoader = getClass().getClassLoader();
+                URL bucketsJsonResource = currentClassLoader.getResource(bucketConfJsonFilePath);
+                jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(new File(bucketsJsonResource.getFile())));
+            }
             BucketConfsJson =  (JSONArray)jsonObj.get(JSON_CONF_BUCKET_CONFS_NODE_NAME);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to load BucketConfs from json file %s", bucketConfJsonFilePath);

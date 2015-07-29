@@ -11,7 +11,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,18 @@ public class AggregatedFeatureEventsConfService implements InitializingBean {
 		String errorMsg;
 
 		try {
-			JSONObject jsonObject = (JSONObject)JSONValue.parseWithException(new FileReader(aggregatedFeatureEventConfJsonFilePath));
+			JSONObject jsonObject;
+			File aggregatedFeatureEventConfJsonFile = new File(aggregatedFeatureEventConfJsonFilePath);
+
+			if (aggregatedFeatureEventConfJsonFile.exists()) {
+				jsonObject = (JSONObject)JSONValue.parseWithException(new FileReader(aggregatedFeatureEventConfJsonFilePath));
+			}
+			else { // workaround for FV-7981
+				ClassLoader currentClassLoader = getClass().getClassLoader();
+				URL aggregatedFeatureEventConfJsonFileUrl = currentClassLoader.getResource(aggregatedFeatureEventConfJsonFilePath);
+				jsonObject = (JSONObject) JSONValue.parseWithException(new FileReader(aggregatedFeatureEventConfJsonFileUrl.getFile()));
+			}
+
 			aggregatedFeatureEvents = (JSONObject)jsonObject.get(AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME);
 		} catch (Exception e) {
 			errorMsg = String.format("Failed to parse JSON file %s", aggregatedFeatureEventConfJsonFilePath);

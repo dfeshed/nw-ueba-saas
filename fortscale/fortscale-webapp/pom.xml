@@ -95,6 +95,11 @@
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-aggregation</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
