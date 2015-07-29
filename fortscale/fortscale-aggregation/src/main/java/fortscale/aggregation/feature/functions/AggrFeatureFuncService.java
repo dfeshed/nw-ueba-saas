@@ -1,17 +1,15 @@
 package fortscale.aggregation.feature.functions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.minidev.json.JSONObject;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by amira on 17/06/2015.

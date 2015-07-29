@@ -54,7 +54,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 
 	@Override
-	public Evidence createTransientEvidence(EntityType entityType, String entityName, Date date,
+	public Evidence createTransientEvidence(EntityType entityType, String entityName, EvidenceType evidenceType, Date date,
 			String scoreFieldName, String classifier, Double score, String anomalyValue, String anomalyType) {
 
 		// casting score to int
@@ -67,7 +67,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s", entityType.toString().toLowerCase(), entityName, anomalyType);
 
 		// create new transient evidence (do not save to Mongo yet)
-		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName,
+		return new Evidence(entityType, entityName, evidenceType, date.getTime(), date.getTime(), anomalyType, evidenceName,
 				anomalyValue, classifier, intScore, severity);
 	}
 

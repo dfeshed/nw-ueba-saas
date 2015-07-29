@@ -109,6 +109,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			List<String> scoreFieldTypes = getConfigStringList(config, String.format("fortscale.events.score.fields.types.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s", dataSource));
 			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
+			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
 			String dataEntityId;
 			HashMap<String, String> fieldColumnToFieldId = null;
 			//if dataEntityId is a field name not a value
@@ -131,8 +132,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				}
 			}
 
+
+
 			topicToDataSourceMap.put(inputTopic,
-					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, dataEntityId, fieldColumnToFieldId));
+					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, dataEntityId, evidenceType, fieldColumnToFieldId));
 
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
@@ -190,18 +193,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				}
 
 				// Create evidence from event
-				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername,
+				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername, dataSourceConfiguration.evidenceType,
 						new Date(timestamp), scoreField, dataSourceConfiguration.dataEntityId, score, anomalyValue, anomalyType);
-
-				// if dataEntity is available (not a notification based evidence)
-				if (dataSourceConfiguration.fieldColumnToFieldId != null) {
-					// add the event to the top events
-					JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
-					String jsonString = newMessage.toJSONString();
-					evidence.setTop3eventsJsonStr("[" + jsonString + "]");
-					evidence.setNumOfEvents(1);
-					evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
-				}
 
 				// Save evidence to MongoDB
 				try {
@@ -212,9 +205,13 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					continue;
 				}
 
-				// add the map of events to the evidence instead of the string - for alerts topic only!
-				evidence.setTop3eventsJsonStr(null); // for performance
-				evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) }); // for Esper to query event's fields
+				// add the map of events to the evidence for alerts topic only!
+				if (dataSourceConfiguration.fieldColumnToFieldId != null) {
+					// add the event to the top events
+					JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
+					String jsonString = newMessage.toJSONString();
+					evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) }); // for Esper to query event's fields
+				}
 
 				// Send evidence to output topic
 				try {
@@ -302,7 +299,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected static class DataSourceConfiguration {
 
 		protected DataSourceConfiguration(String userNameField, List<String> scoreFields, List<String> scoreFieldValues,
-				List<String> scoreFieldTypes, String partitionField, String dataEntityId,
+				List<String> scoreFieldTypes, String partitionField, String dataEntityId, EvidenceType evidenceType,
 				HashMap<String, String> fieldColumnToFieldId) {
 			this.dataEntityId = dataEntityId;
 			this.userNameField = userNameField;
@@ -311,9 +308,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.scoreFieldValues = scoreFieldValues;
 			this.scoreFieldTypes = scoreFieldTypes;
 			this.fieldColumnToFieldId = fieldColumnToFieldId;
+			this.evidenceType = evidenceType;
 
 		}
 
+		public EvidenceType evidenceType;
 		public String dataEntityId;
 		public String userNameField;
 		public String partitionField;

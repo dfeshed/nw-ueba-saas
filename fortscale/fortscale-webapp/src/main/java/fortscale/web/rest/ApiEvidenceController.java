@@ -63,7 +63,7 @@ public class ApiEvidenceController extends DataQueryController {
 		return ret;
 	}
 
-	@RequestMapping(value = "{id}/events", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
@@ -156,7 +156,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param entity_name the entity name (e.g. mike@cnn.com)
 	 * @param data_entity_id the data source (ssh, kerberos, etc.), or combination of some
 	 * @param feature the related feature
-	 * @param start_time the evidence start time in seconds
+	 * @param end_time the evidence start time in seconds
 	 *
 	 * @return list of histogramPair
 	 */
@@ -168,7 +168,7 @@ public class ApiEvidenceController extends DataQueryController {
 																@RequestParam String entity_name,
 																@RequestParam String data_entity_id,
 																@RequestParam String feature,
-																@RequestParam long start_time){
+																@RequestParam long end_time){
 		DataBean<List<HistogramPair>> toReturn = new DataBean<>();
 
 		List<HistogramPair> histogram = new ArrayList<>();

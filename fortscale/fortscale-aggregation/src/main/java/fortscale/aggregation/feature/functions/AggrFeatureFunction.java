@@ -10,12 +10,13 @@ import java.util.Map;
 /**
  * Created by amira on 16/06/2015.
  */
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME,include=JsonTypeInfo.As.PROPERTY,property="type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value= AggrFeatureHistogramFunc.class, name= AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE),
-        @JsonSubTypes.Type(value= AggrFeatureAvgStdNFunc.class, name= AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE)
+		@JsonSubTypes.Type(value = AggrFeatureHistogramFunc.class, name = AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE),
+		@JsonSubTypes.Type(value = AggrFeatureAvgStdNFunc.class, name = AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE),
+		@JsonSubTypes.Type(value = AggrFeatureEventNumberOfEventsFunc.class, name = AggrFeatureEventNumberOfEventsFunc.AGGR_FEATURE_FUNCTION_TYPE),
+		@JsonSubTypes.Type(value = AggrFeatureMaxIntegerFunc.class, name = AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
-
 
 public interface AggrFeatureFunction {
 
