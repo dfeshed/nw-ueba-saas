@@ -65,7 +65,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
 		//get all notifications that occurred after the last runtime of the job
 		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(lastFetchTime, sort);
-		logger.debug("Found {} notifications, starting to send", notifications.size());
+		if (notifications.size() > 0) {
+			logger.debug("Found {} notifications, starting to send", notifications.size());
+		} else {
+			logger.debug("No new notifications found");
+		}
 		for (Notification notification: notifications) {
 			if (notificationsToIgnore.contains(notification.getCause())) {
 				continue;
