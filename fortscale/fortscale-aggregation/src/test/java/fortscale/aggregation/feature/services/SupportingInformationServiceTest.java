@@ -44,30 +44,28 @@ public class SupportingInformationServiceTest {
     @Mock
     private FeatureBucketsMongoStore featureBucketsStore;
 
-    @Mock
     private BucketConfigurationService bucketConfigurationService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(featureBucketsStore.getFeatureBuckets(any(FeatureBucketConf.class), anyString(), anyString(), anyString(), anyLong(), anyLong())).thenReturn(new ArrayList<FeatureBucket>());
     }
 
     @Test
-    public void testSupportingInformation() {
-//        String entityType = "normalized_username";
-//        String entityName = "dan@gmail.com";
-//        String dataSource = "kerberos";
-//        String feature = "zzz";
-//        Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
-//
-//        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataSource, feature, TimestampUtils.convertToMilliSeconds(evidenceTime));
-//
-//        Assert.assertTrue(evidenceSupportingInformationData.getHistogram().isEmpty());
+    public void testNoFeatureBucketsFound() {
+        String entityType = "normalized_username";
+        String entityName = "dan@gmail.com";
+        String dataSource = "kerberos";
+        String feature = "dst_machine_histogram";
+        Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
+
+        when(featureBucketsStore.getFeatureBuckets(any(FeatureBucketConf.class), anyString(), anyString(), anyString(), anyLong(), anyLong())).thenReturn(new ArrayList<FeatureBucket>());
+
+        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataSource, feature, TimestampUtils.convertToMilliSeconds(evidenceTime));
+
+        Assert.assertTrue(evidenceSupportingInformationData.getHistogram().isEmpty());
     }
 
-
-    @Test(expected = SupportingInformationException.class)
     public void testUnknownFeature() {
         String entityType = "normalized_username";
         String entityName = "dan@gmail.com";
@@ -75,7 +73,9 @@ public class SupportingInformationServiceTest {
         String feature = "zzz";
         Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
 
-        supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataSource, feature, TimestampUtils.convertToMilliSeconds(evidenceTime));
+        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataSource, feature, TimestampUtils.convertToMilliSeconds(evidenceTime));
+
+        Assert.assertTrue(evidenceSupportingInformationData.getHistogram().isEmpty());
     }
 
     @Test(expected = SupportingInformationException.class)

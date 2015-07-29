@@ -86,16 +86,20 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     }
 
     private SupportingInformationData populateSupportingInformationData(List<FeatureBucket> featureBuckets, String featureName) {
-        logger.info("Creating supporting information data");
         SupportingInformationData supportingInformationData = new SupportingInformationData();
 
-        GenericHistogram supportingInformationHistogram = createSupportingInformationHistogram(featureBuckets, featureName);
+        if (!featureBuckets.isEmpty()) {
+            logger.info("Creating supporting information data");
 
-        Map<Object, Double> histogramMap = supportingInformationHistogram.getHistogramMap();
+            GenericHistogram supportingInformationHistogram = createSupportingInformationHistogram(featureBuckets, featureName);
 
-        supportingInformationData.setHistogram(histogramMap);
+            Map<Object, Double> histogramMap = supportingInformationHistogram.getHistogramMap();
+
+            supportingInformationData.setHistogram(histogramMap);
+        }
 
         return supportingInformationData;
+
     }
 
     private GenericHistogram createSupportingInformationHistogram(List<FeatureBucket> featureBuckets, String featureName) {
