@@ -88,8 +88,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			String timestampField = getConfigString(config, "fortscale.events.timestamp.field.%s");
-			int scoreThreshold = config.getInt("fortscale.events.score.threshold.%s");
+			String timestampField = getConfigString(config, String.format("fortscale.events.timestamp.field.%s", dataSource));
+			int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.score.threshold.%s", dataSource)));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
 			List<String> scoreFieldValues = getConfigStringList(config, String.format("fortscale.events.score.fields.values.%s", dataSource));
 			List<String> scoreFieldTypes = getConfigStringList(config, String.format("fortscale.events.score.fields.types.%s", dataSource));
