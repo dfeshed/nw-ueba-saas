@@ -39,6 +39,10 @@
                     <value>${collection.evidence.notification.normalizedusername.field}</value>
                 </entry>
                 <entry>
+                    <key>notificationEntityField</key>
+                    <value>${collection.evidence.notification.entity.field}</value>
+                </entry>
+                <entry>
                     <key>score</key>
                     <value>${collection.evidence.notification.score}</value>
                 </entry>

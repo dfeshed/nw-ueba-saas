@@ -32,6 +32,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.*;
 
@@ -103,25 +104,29 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			String dataEntityId = getConfigString(config, String.format("fortscale.events.dataEntityId.%s", dataSource));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
 			List<String> scoreFieldValues = getConfigStringList(config, String.format("fortscale.events.score.fields.values.%s", dataSource));
 			List<String> scoreFieldTypes = getConfigStringList(config, String.format("fortscale.events.score.fields.types.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s", dataSource));
 			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
-
-
-
-			// get the default fields for the data source, to be used later for top-3-events
-			DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
-			HashMap<String, String> fieldColumnToFieldId = new HashMap<>(); // Mapping: field-name-in-DB -> field-id
-			if (dataEntity==null) {
-				logger.error("Could not get metadata for entity {} . Top events won't be available", dataSource);
+			String dataEntityId;
+			HashMap<String, String> fieldColumnToFieldId = null;
+			//if dataEntityId is a field name not a value
+			if (isConfigContainKey(config, String.format("fortscale.events.dataEntityId.field.%s", dataSource))) {
+				dataEntityId = getConfigString(config, String.format("fortscale.events.dataEntityId.field.%s", dataSource));
 			} else {
-				for (DataEntityField field : dataEntity.getFields()) {
-					if (field.getIsDefaultEnabled() && !field.isLogicalOnly() &&  (field.getAttributes() == null || !field.getAttributes().contains("internal"))) {
-						String fieldColumn = dataEntitiesConfig.getFieldColumn(dataEntity.getId(), field.getId());
-						fieldColumnToFieldId.put(fieldColumn, field.getId());
+				dataEntityId = getConfigString(config, String.format("fortscale.events.dataEntityId.%s", dataSource));
+				// get the default fields for the data source, to be used later for top-3-events
+				DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
+				fieldColumnToFieldId = new HashMap<>(); // Mapping: field-name-in-DB -> field-id
+				if (dataEntity==null) {
+					logger.error("Could not get metadata for entity {} . Top events won't be available", dataSource);
+				} else {
+					for (DataEntityField field : dataEntity.getFields()) {
+						if (field.getIsDefaultEnabled() && !field.isLogicalOnly() &&  (field.getAttributes() == null || !field.getAttributes().contains("internal"))) {
+							String fieldColumn = dataEntitiesConfig.getFieldColumn(dataEntity.getId(), field.getId());
+							fieldColumnToFieldId.put(fieldColumn, field.getId());
+						}
 					}
 				}
 			}
@@ -156,7 +161,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			return;
 		}
 
-
 		// Go over score fields, check each one of them for anomaly
 		int index = 0;
 		for (String scoreField : dataSourceConfiguration.scoreFields) {
@@ -180,16 +184,24 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				// Get the type of the anomaly
 				String anomalyType = dataSourceConfiguration.scoreFieldTypes.get(index);
 
+				// if datEntityId is a field name, get the dataEntityId from that field
+				if (dataSourceConfiguration.fieldColumnToFieldId == null) {
+					dataSourceConfiguration.dataEntityId = message.getAsString(dataSourceConfiguration.dataEntityId);
+				}
+
 				// Create evidence from event
 				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername,
 						new Date(timestamp), scoreField, dataSourceConfiguration.dataEntityId, score, anomalyValue, anomalyType);
 
-				// add the event to the top events
-				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
-				String jsonString = newMessage.toJSONString();
-				evidence.setTop3eventsJsonStr("[" + jsonString + "]");
-				evidence.setNumOfEvents(1);
-				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
+				// if dataEntity is available (not a notification based evidence)
+				if (dataSourceConfiguration.fieldColumnToFieldId != null) {
+					// add the event to the top events
+					JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
+					String jsonString = newMessage.toJSONString();
+					evidence.setTop3eventsJsonStr("[" + jsonString + "]");
+					evidence.setNumOfEvents(1);
+					evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
+				}
 
 				// Save evidence to MongoDB
 				try {

@@ -39,6 +39,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationScoreField;
 	private String notificationCauseField;
 	private String normalizedUsernameField;
+	private String notificationEntityField;
 	private String score;
 
 	@Autowired
@@ -73,6 +74,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			JSONObject evidence = new JSONObject();
 			evidence.put(notificationScoreField, score);
 			evidence.put(notificationCauseField, notification.getCause());
+			evidence.put(notificationEntityField, getEntity(notification));
 			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 			String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 			logger.debug("Writing to topic evidence - {}", messageToWrite);
@@ -82,6 +84,16 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", date);
 		fetchConfiguration.setLastFetchTime(date.getTime() + "");
 		fetchConfigurationRepository.save(fetchConfiguration);
+	}
+
+	private String getEntity(Notification notification) {
+		if (notification.getCause().toLowerCase().contains("amt")) {
+			return "amt";
+		}
+		if (notification.getCause().toLowerCase().contains("vpn")) {
+			return "vpn";
+		}
+		return "user";
 	}
 
 	private String getNormalizedUsername(Notification notification) {
@@ -119,6 +131,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
+		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
 	}
