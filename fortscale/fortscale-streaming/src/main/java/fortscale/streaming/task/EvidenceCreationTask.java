@@ -68,6 +68,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * Threshold for creating evidences
 	 */
 	protected int scoreThreshold;
+	protected int notificationScoreThreshold;
 
 	/**
 	 * Map between the input topic and the relevant data-source
@@ -99,6 +100,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 		// get the threshold for creating evidences
 		scoreThreshold = config.getInt("fortscale.score.threshold");
+		notificationScoreThreshold = config.getInt("fortscale.notification.score.threshold");
 
 		// Fill the map between the input topic and the data source
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
@@ -170,7 +172,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 			// check score
 			Double score = convertToDouble(validateFieldExistsAndGetValue(message, messageText, scoreField));
-			if (score >= scoreThreshold) {
+			if (score >= scoreThreshold || (dataSourceConfiguration.evidenceType == EvidenceType.Notification &&
+					score >= notificationScoreThreshold)) {
 
 				// create evidence
 
