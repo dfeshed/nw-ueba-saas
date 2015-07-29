@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -12,9 +15,6 @@ import fortscale.utils.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.Entry;
-import org.apache.samza.storage.kv.KeyValueIterator;
-import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -22,11 +22,13 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.mongodb.core.MongoOperations;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -85,6 +87,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		// Get the user service (for Mongo) from spring
 		evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
 
+		// Configuration for data sources (relevant for top-3-events)
+		DataEntitiesConfig dataEntitiesConfig = SpringService.getInstance().resolve(DataEntitiesConfig.class);
+
 		// Get the output topic
 		outputTopic = getConfigString(config, "fortscale.output.topic");
 
@@ -98,15 +103,37 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+			String dataEntityId = getConfigString(config, String.format("fortscale.events.dataEntityId.%s", dataSource));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
 			List<String> scoreFieldValues = getConfigStringList(config, String.format("fortscale.events.score.fields.values.%s", dataSource));
 			List<String> scoreFieldTypes = getConfigStringList(config, String.format("fortscale.events.score.fields.types.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s", dataSource));
 			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
+
+
+
+			// get the default fields for the data source, to be used later for top-3-events
+			DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
+			HashMap<String, String> fieldColumnToFieldId = new HashMap<>(); // Mapping: field-name-in-DB -> field-id
+			if (dataEntity==null) {
+				logger.error("Could not get metadata for entity {} . Top events won't be available", dataSource);
+			} else {
+				for (DataEntityField field : dataEntity.getFields()) {
+					if (field.getIsDefaultEnabled() && !field.isLogicalOnly() &&  (field.getAttributes() == null || !field.getAttributes().contains("internal"))) {
+						String fieldColumn = dataEntitiesConfig.getFieldColumn(dataEntity.getId(), field.getId());
+						fieldColumnToFieldId.put(fieldColumn, field.getId());
+					}
+				}
+			}
+
 			topicToDataSourceMap.put(inputTopic,
-					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, classifier));
+					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, dataEntityId, fieldColumnToFieldId));
+
+
 			logger.info("Finished loading configuration for data source {}", dataSource);
+
+
+
 		}
 
 	}
@@ -155,10 +182,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 				// Create evidence from event
 				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername,
-						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
+						new Date(timestamp), scoreField, dataSourceConfiguration.dataEntityId, score, anomalyValue, anomalyType);
 
 				// add the event to the top events
-				evidence.setTop3eventsJsonStr("[" + messageText + "]");
+				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
+				String jsonString = newMessage.toJSONString();
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 
@@ -170,6 +198,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					// In case this evidence is duplicated, we don't send it to output topic and continue to next score
 					continue;
 				}
+
+				// add the map of events to the evidence instead of the string - for alerts topic only!
+				evidence.setTop3eventsJsonStr(null); // for performance
+				evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) }); // for Esper to query event's fields
 
 				// Send evidence to output topic
 				try {
@@ -189,6 +221,24 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		}
 
 
+	}
+
+	/**
+	 * Convert the event JSON to thin event with only the required fields, and with field-id from entities.properties
+	 * @param message    The original event
+	 * @param dataSourceConfiguration    The configuration of the specific data source
+	 * @return	New message
+	 */
+	private JSONObject convertMessageToStandardFormat(JSONObject message,
+			DataSourceConfiguration dataSourceConfiguration) {
+		JSONObject newMessage = new JSONObject();
+		for (Map.Entry<String, String> columnToId : dataSourceConfiguration.fieldColumnToFieldId.entrySet()) {
+			Object valueOfColumn = message.get(columnToId.getKey());
+			if (valueOfColumn != null) {
+				newMessage.put(columnToId.getValue(), valueOfColumn);
+			}
+		}
+		return newMessage;
 	}
 
 	/**
@@ -239,21 +289,24 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected static class DataSourceConfiguration {
 
 		protected DataSourceConfiguration(String userNameField, List<String> scoreFields, List<String> scoreFieldValues,
-				List<String> scoreFieldTypes, String partitionField, String classifier) {
-			this.classifier = classifier;
+				List<String> scoreFieldTypes, String partitionField, String dataEntityId,
+				HashMap<String, String> fieldColumnToFieldId) {
+			this.dataEntityId = dataEntityId;
 			this.userNameField = userNameField;
 			this.partitionField = partitionField;
 			this.scoreFields = scoreFields;
 			this.scoreFieldValues = scoreFieldValues;
 			this.scoreFieldTypes = scoreFieldTypes;
+			this.fieldColumnToFieldId = fieldColumnToFieldId;
 
 		}
 
-		public String classifier;
+		public String dataEntityId;
 		public String userNameField;
 		public String partitionField;
 		public List<String> scoreFields;
 		public List<String> scoreFieldValues;
 		public List<String> scoreFieldTypes;
+		public Map<String, String> fieldColumnToFieldId;
 	}
 }

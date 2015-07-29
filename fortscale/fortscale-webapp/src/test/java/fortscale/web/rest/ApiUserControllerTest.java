@@ -52,6 +52,7 @@ public class ApiUserControllerTest {
 
 	private static String UID = "123";
 	private static String USER_NAME = "John Dow";
+	private static String USER_NORMALIZEDNAME = "jdow@somebigcompany.com";
 	private static String USER_DN = "CN=John Dow,DC=somebigcompany,DC=com";
 	private static final String DIRECT_REPORT_DN = "CM=Direct report,OU=employees,DC=somebigcompany,DC=com";
 	private static final String DIRECT_REPORT_NAME = "Directreport";
@@ -93,6 +94,34 @@ public class ApiUserControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 		verify(userRepository, times(1)).findOne(eq(UID));
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		assertEquals(1, jsonObject.get("total"));
+		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
+		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
+	}
+
+	@Test
+	public void testDetailsByUserName() throws Exception {
+
+		User user = new User();
+		user.setUsername(USER_NAME);
+		user.setAdDn(USER_DN);
+		UserAdInfo adInfo = new UserAdInfo();
+		AdUserDirectReport directReport = new AdUserDirectReport(DIRECT_REPORT_DN, "drepoert");
+		adInfo.setAdDirectReports(new HashSet<AdUserDirectReport>(Arrays.asList(directReport)));
+		adInfo.setManagerDN(MANAGER_DN);
+		user.setAdInfo(adInfo);
+		User employee = new User();
+		employee.setUsername(DIRECT_REPORT_NAME);
+		employee.setAdDn(DIRECT_REPORT_DN);
+		when(userRepository.findByUsername(USER_NORMALIZEDNAME)).thenReturn(user);
+		when(userRepository.findByDNs(any(Collection.class))).thenReturn(new ArrayList(Arrays.asList(employee)));
+		MvcResult result = mockMvc.perform(get("/api/user/jdow@somebigcompany.com/userdata")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andReturn();
+		verify(userRepository, times(1)).findByUsername(eq(USER_NORMALIZEDNAME));
 		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 		assertEquals(1, jsonObject.get("total"));
 		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));

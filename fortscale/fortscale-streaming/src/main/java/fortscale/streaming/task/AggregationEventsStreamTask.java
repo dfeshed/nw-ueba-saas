@@ -1,28 +1,24 @@
 package fortscale.streaming.task;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
 import com.google.common.collect.Iterables;
-
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import org.apache.samza.config.Config;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
+@Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
@@ -62,8 +58,8 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		if(!event.containsKey(dataSourceFieldName)){
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
 		}
-		
-		aggregatorManager.processEvent(event);
+
+		aggregatorManager.processEvent(event, collector);
 	}
 
 	@Override

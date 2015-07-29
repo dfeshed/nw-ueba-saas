@@ -9,10 +9,17 @@
         }
       },
       {
+        "name": "fixed_duration_daily",
+        "type": "fixed_duration",
+        "params": {
+          "durationInSeconds": 86400
+        }
+      },
+      {
         "name": "user_inactivity_hourly",
         "type": "user_inactivity",
         "params": {
-          "dataSources": ["4769"],
+          "dataSources": ["kerberos_logins"],
           "inactivityDurationInMinutes": 60,
           "endTimeDeltaInMinutes": 5
         }

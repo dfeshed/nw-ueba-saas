@@ -12,15 +12,19 @@
 	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-services-entities-context.xml" />
 	<import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
-	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 	<import resource="classpath*:META-INF/spring/fortscale-aggr-context.xml" />
+	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+	
+	
+	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService"/>
 
     <context:annotation-config />	
 
     <context:spring-configured />
-    <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain" />
+    <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.services.dataentity,fortscale.aggregation.feature.extraction" />
 
 	
 
