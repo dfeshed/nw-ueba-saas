@@ -89,6 +89,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", date);
 		fetchConfiguration.setLastFetchTime(date.getTime() + "");
 		fetchConfigurationRepository.save(fetchConfiguration);
+		finishStep();
 	}
 
 	private String getEntity(Notification notification) {
