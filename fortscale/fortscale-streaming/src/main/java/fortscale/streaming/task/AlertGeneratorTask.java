@@ -22,10 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
@@ -70,6 +67,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				}
 			}
 		}
+		else{
+			logger.warn("Can't handle events arriving from topic " + inputTopic + ", Doesn't have TopicConfiguration");
+		}
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				info = inputTopicMapping.get(inputTopic).getMethod().invoke(this, (String) envelope.getKey(), messageText);
 			}
 		} catch (Exception ex) {
-			logger.error("error parsing: " + messageText, ex);
+			logger.error("error parsing: " + messageText + " from topic " + inputTopic, ex);
 		}
 		return info;
 	}
@@ -122,7 +122,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	private void createEsperConfiguration(Config config){
 		//subscribe instances of Esper EPL statements
 		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");
-		for (String rule : fieldsSubset.keySet()) {
+		ArrayList<String> fields = new ArrayList<String>(fieldsSubset.keySet());
+		Collections.sort(fields);
+		for (String rule : fields) {
 			String ruleName = getConfigString(config, String.format("fortscale.esper.rule.name.%s", rule));
 			String statement = getConfigString(config, String.format("fortscale.esper.rule.statement.%s", rule));
 			String subscriberBeanName = getConfigString(config, String.format("fortscale.esper.rule.subscriberBean.%s", rule));
@@ -159,7 +161,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				}
 				catch (NoSuchMethodException e){
 					e.printStackTrace();
-					logger.error("can't find class " + methodName + " for input topic " + inputTopic);
+					logger.error("can't find method " + methodName + " for input topic " + inputTopic);
 				}
 			}
 			if (isConfigContainKey(config, String.format("fortscale.input.info.cache-name.%s", inputInfo))) {

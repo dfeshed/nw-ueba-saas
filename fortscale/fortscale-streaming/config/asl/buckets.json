@@ -1,27 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "user_kerberos_dst_machine_daily",
-      "contextFieldNames": [
-        "normalized_username"
-      ],
-      "dataSources": [
-        "kerberos_logins"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "dst_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["destination_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-
-    {
-      "name": "distinct_source_machines_kerberos_daily",
+      "name": "user_kerberos_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -43,49 +23,82 @@
             "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "number_of_successful_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.failure_code == '0x0')]"}
+        },
+        {
+          "name": "number_of_failed_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         }
       ]
     },
 
     {
-      "name": "bc1",
+      "name": "user_ssh_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
       "dataSources": [
-        "ssh",
-        "4769"
+        "ssh"
       ],
-      "strategyName": "fixed_duration_hourly",
+      "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "aggr-feature-1",
+          "name": "src_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
+            "groupBy": ["source_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "dst_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["destination_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "number_of_susccessful_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Accepted')]"}
+        },
+        {
+          "name": "number_of_failed_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         }
       ]
     },
 
     {
-      "name": "bc2",
+      "name": "user_vpn_events_daily",
       "contextFieldNames": [
-        "normalized_username",
-        "normalized_src_machine"
+        "normalized_username"
       ],
       "dataSources": [
-        "ssh",
-        "4769"
+        "vpn"
       ],
-      "strategyName": "fixed_duration_hourly",
+      "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "aggr-feature-2",
-          "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "name": "number_of_failed_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
+        },
+        {
+          "name": "number_of_successful_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.status == 'SUCCESS')]"}
         }
       ]
     }

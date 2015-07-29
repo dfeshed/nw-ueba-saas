@@ -35,6 +35,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
 /**
@@ -142,7 +143,6 @@ public class AggrFeatureEventBuilderTest {
     }
 
 
-    @SuppressWarnings("unchecked")
 	private void assertEvent(JSONObject event, int startTimeDayNumber, int endTimeDayNumber, Long numberOfDistinctValues) {
         //{"start_time_unix":1436918400,"max_cout_object":"c","end_time":"2015-07-16 02:59:59","bucket_conf_name":null,"event_type":"aggregated_feature_event","context":{"username":"john","machine":"m1"},"start_time":"2015-07-15 03:00:00","end_time_unix":1437004799,"date_time":"2015-07-20 10:14:49","date_time_unix":1437376489}
         System.out.println(event.toString());

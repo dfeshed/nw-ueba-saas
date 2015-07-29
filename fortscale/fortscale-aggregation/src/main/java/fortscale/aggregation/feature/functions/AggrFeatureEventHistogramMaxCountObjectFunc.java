@@ -1,13 +1,14 @@
 package fortscale.aggregation.feature.functions;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.util.GenericHistogram;
 
 /**
  * Created by amira on 20/07/2015.
@@ -16,7 +17,6 @@ import java.util.Map;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventHistogramMaxCountObjectFunc extends AggrFeatureHistogramFunc {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_max_count_obj_func";
-    public final static String FEATURE_NAME = "max_cout_object";
     /**
      * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
      * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
@@ -32,7 +32,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFunc extends AggrFeatureHist
             return null;
         }
         GenericHistogram histogram = (GenericHistogram)feature.getValue();
-        Feature resFeature = new Feature(FEATURE_NAME, histogram.getMaxCountObject());
+        Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(histogram.getMaxCountObject()));
 
         return resFeature;
     }

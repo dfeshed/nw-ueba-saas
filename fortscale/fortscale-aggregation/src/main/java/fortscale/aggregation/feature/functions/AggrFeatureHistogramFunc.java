@@ -3,14 +3,16 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.Assert;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import org.springframework.util.Assert;
+import fortscale.aggregation.feature.util.GenericHistogram;
+
 
 
 @JsonTypeName(AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
