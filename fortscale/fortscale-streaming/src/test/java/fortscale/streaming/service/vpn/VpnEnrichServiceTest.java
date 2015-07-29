@@ -144,8 +144,8 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
         assertTrue(event.containsKey(cityFieldName));
         assertTrue(event.containsKey(ispFieldName));
         assertTrue(event.containsKey(usageTypeFieldName));
-        assertTrue(event.containsKey(longtitudeFieldName));
-        assertTrue(event.containsKey(latitudeFieldName));
+        //assertTrue(event.containsKey(longtitudeFieldName));
+        //assertTrue(event.containsKey(latitudeFieldName));
         //assert data buckets fields:
         assertEquals(event.get(durationFieldName), DURATUIN);
         assertEquals(event.get(totalbytesFieldName), TOTAL_BYTES);
