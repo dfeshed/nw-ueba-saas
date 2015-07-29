@@ -37,7 +37,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureEventNumberOfEventsFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
-		return new AggregatedFeatureEventConf(name, "bucketConfName", 3, 1, 300, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
 	}
 
 	@Test
