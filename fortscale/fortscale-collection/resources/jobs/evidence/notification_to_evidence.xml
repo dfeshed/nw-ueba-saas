@@ -23,16 +23,16 @@
                     <value>${collection.evidence.notification.topic}</value>
                 </entry>
                 <entry>
-                    <key>timestampField</key>
-                    <value>${collection.evidence.notification.timestamp.field}</value>
-                </entry>
-                <entry>
                     <key>notificationScoreField</key>
                     <value>${collection.evidence.notification.score.field}</value>
                 </entry>
                 <entry>
                     <key>notificationCauseField</key>
                     <value>${collection.evidence.notification.cause.field}</value>
+                </entry>
+                <entry>
+                    <key>notificationTimestampField</key>
+                    <value>${collection.evidence.notification.timestamp.field}</value>
                 </entry>
                 <entry>
                     <key>normalizedUsernameField</key>

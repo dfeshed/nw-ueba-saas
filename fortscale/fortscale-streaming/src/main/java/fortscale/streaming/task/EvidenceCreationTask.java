@@ -60,6 +60,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected String outputTopic;
 
 	/**
+	 * The time field in the input event
+	 */
+	protected String timestampField;
+
+	/**
 	 * Map between the input topic and the relevant data-source
 	 */
 	protected Map<String, DataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
@@ -84,11 +89,13 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		// Get the output topic
 		outputTopic = getConfigString(config, "fortscale.output.topic");
 
+		// get the timestamp field
+		timestampField = getConfigString(config, "fortscale.timestamp.field");
+
 		// Fill the map between the input topic and the data source
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			String timestampField = getConfigString(config, String.format("fortscale.events.timestamp.field.%s", dataSource));
 			int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.score.threshold.%s", dataSource)));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
 			List<String> scoreFieldValues = getConfigStringList(config, String.format("fortscale.events.score.fields.values.%s", dataSource));
@@ -121,7 +128,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 			topicToDataSourceMap.put(inputTopic,
-					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, dataEntityId, evidenceType, timestampField, scoreThreshold, fieldColumnToFieldId));
+					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, dataEntityId, evidenceType, scoreThreshold, fieldColumnToFieldId));
 
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
@@ -161,7 +168,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				// create evidence
 
 				// get the timestamp from the event
-				Long timestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, messageText, dataSourceConfiguration.timestampField));
+				Long timestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, messageText, timestampField));
 				Long timestamp = TimestampUtils.convertToMilliSeconds(timestampSeconds);
 
 				// get the username from the event
@@ -285,7 +292,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected static class DataSourceConfiguration {
 
 		protected DataSourceConfiguration(String userNameField, List<String> scoreFields, List<String> scoreFieldValues,
-				List<String> scoreFieldTypes, String partitionField, String dataEntityId, EvidenceType evidenceType, String timestampField, int scoreThreshold,
+				List<String> scoreFieldTypes, String partitionField, String dataEntityId, EvidenceType evidenceType, int scoreThreshold,
 				HashMap<String, String> fieldColumnToFieldId) {
 			this.dataEntityId = dataEntityId;
 			this.userNameField = userNameField;
@@ -295,11 +302,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.scoreFieldTypes = scoreFieldTypes;
 			this.fieldColumnToFieldId = fieldColumnToFieldId;
 			this.evidenceType = evidenceType;
-			this.timestampField = timestampField;
 			this.scoreThreshold = scoreThreshold;
+
 		}
 
-		public String timestampField;
 		public int scoreThreshold;
 		public EvidenceType evidenceType;
 		public String dataEntityId;

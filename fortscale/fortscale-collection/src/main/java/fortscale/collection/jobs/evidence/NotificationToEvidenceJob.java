@@ -35,11 +35,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationsToIgnore;
 	private String fetchType;
 	private String topicName;
-	private String timestampField;
 	private String notificationScoreField;
 	private String notificationCauseField;
 	private String normalizedUsernameField;
 	private String notificationEntityField;
+	private String notificationTimestampField;
 	private String score;
 
 	@Autowired
@@ -59,7 +59,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
 		}
 		//TODO - do we really need sort?
-		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, timestampField));
+		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "ts"));
 		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
 		logger.debug("Getting notifications after time {}", lastFetchTime);
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
@@ -77,6 +77,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			//convert each notification to evidence and send it to the appropriate Kafka topic
 			JSONObject evidence = new JSONObject();
 			evidence.put(notificationScoreField, score);
+			evidence.put(notificationTimestampField, notification.getTs());
 			evidence.put(notificationCauseField, notification.getCause());
 			evidence.put(notificationEntityField, getEntity(notification));
 			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
@@ -132,11 +133,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
 		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
-		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
 		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
+		notificationTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTimestampField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
 	}
