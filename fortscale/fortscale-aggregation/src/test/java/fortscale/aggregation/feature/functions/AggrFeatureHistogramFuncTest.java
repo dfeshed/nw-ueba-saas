@@ -142,7 +142,7 @@ public class AggrFeatureHistogramFuncTest {
     public void testUpdateWithNullAggrFeatureValue() {
         String s1 = "one", s2 = "two", s3 = "three";
         Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1",s1));
+        featureMap.put("feature1", new Feature("feature1", s1));
         featureMap.put("feature2", new Feature("feature2", s1));
         featureMap.put("feature3", new Feature("feature3", s1));
         featureMap.put("feature4", new Feature("feature4", s1)); // 4
@@ -465,5 +465,27 @@ public class AggrFeatureHistogramFuncTest {
 
         AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 3), null));
+    }
+
+    @Test
+    public void testUpdate_FeatureWithEmptyValue() {
+        GenericHistogram histogram = new GenericHistogram();
+        Feature aggrFeature = new Feature("MyAggrFeature", histogram);
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        Map<String, Feature> features = new HashMap<>();
+
+        features.put("feature1", new Feature("feature1", ""));
+        Object value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
+
+        // Validating that the histogram value was not changed
+        GenericHistogram aggrValue = (GenericHistogram)value;
+        Assert.assertEquals((Double)1.0, (Double)aggrValue.get("N/A"));
+
+
+        features.put("feature1", new Feature("feature1", null));
+        value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
+        Assert.assertEquals((Double)2.0, (Double)aggrValue.get("N/A"));
+
     }
 }
