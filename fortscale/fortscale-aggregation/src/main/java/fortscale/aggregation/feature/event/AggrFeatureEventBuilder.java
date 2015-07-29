@@ -8,6 +8,7 @@ import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
-    private static final String FEATURE_VALUE_KEY = "value";
+    private static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
@@ -230,26 +231,39 @@ public class AggrFeatureEventBuilder {
     /**
      * Builds an event in the following format:
      * <pre>
-     *     {
-     *        "event_type": "aggregated_feature_event",
-     *        "aggregated feature name": "the value",
-     *        "bucket_conf_name": "the BucketConf name from which this aggrFeature was created",
+     *    {
+     *      "aggregated_feature_type": "F",
+     *      "aggregated_feature_name": "number_of_distinct_src_machines",
+     *      "aggregated_feature_value": 42,
+     *      "aggregated_feature_info": {
+     *          "list_of_distinct_src_machines": [
+     *              "src_machine_1",
+     *              "src_machine_2",
+     *              "src_machine_3"
+     *          ]
+     *      },
      *
-     *        "date_time_unix": 1430460833,
-     *        "date_time": "2015-05-01 06:13:53",
+     *     "bucket_conf_name": "bucket_conf_1",
      *
-     *        "start_time_unix": 1430460833,
-     *        "start_time": "2015-05-01 06:13:53",
+     *     "date_time_unix": 1430460833,
+     *     "date_time": "2015-05-01 06:13:53",
      *
-     *        "end_time_unix": 1430460833,
-     *        "end_time": "2015-05-01 06:13:53",
+     *     "start_time_unix": 1430460833,
+     *     "start_time": "2015-05-01 06:13:53",
      *
-     *        "context": {
-     *          // Context fields, e.g.:
-     *          "user" : "John Smith",
-     *          "machine": "m1"
-     *        }
-     *      }
+     *     "end_time_unix": 1430460833,
+     *     "end_time": "2015-05-01 06:13:53",
+     *
+     *     "context": {
+     *          "user": "John Smith",
+     *          "machine": "machine_1"
+     *     },
+     *
+     *     "data_sources": ["ssh", "vpn"],
+     *
+     *     "score": 85
+     *
+     *   }
      *</pre>
      * @param context
      * @param feature
@@ -280,7 +294,7 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
         if(additionalInfoMap!=null) {
-            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap).toJSONString());
+            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
         }
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
@@ -302,6 +316,11 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
         String end_time = format.format(new Date(endTimeSec * 1000));
         event.put(EVENT_FIELD_END_TIME, end_time);
+
+        // Data Sources
+        JSONArray dataSourcesJsonArray = new JSONArray();
+        dataSourcesJsonArray.addAll(conf.getBucketConf().getDataSources());
+        event.put(EVENT_FIELD_DATA_SOURCES, dataSourcesJsonArray);
 
         return event;
     }
