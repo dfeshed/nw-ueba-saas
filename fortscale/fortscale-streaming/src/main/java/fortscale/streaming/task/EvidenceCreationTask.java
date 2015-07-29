@@ -182,7 +182,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 				// if datEntityId is a field name, get the dataEntityId from that field
 				if (dataSourceConfiguration.fieldColumnToFieldId == null) {
-					dataSourceConfiguration.dataEntityId = message.getAsString(dataSourceConfiguration.dataEntityId);
+					dataSourceConfiguration.dataEntityId = convertToString(validateFieldExistsAndGetValue(message, messageText, dataSourceConfiguration.dataEntityId));
 				}
 
 				// Create evidence from event
