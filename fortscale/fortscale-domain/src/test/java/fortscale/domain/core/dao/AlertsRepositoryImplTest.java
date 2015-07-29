@@ -60,8 +60,8 @@ public class AlertsRepositoryImplTest {
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a");
 
 		List<Evidence> evidences = new ArrayList<>();
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		Evidence evidence0 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);
