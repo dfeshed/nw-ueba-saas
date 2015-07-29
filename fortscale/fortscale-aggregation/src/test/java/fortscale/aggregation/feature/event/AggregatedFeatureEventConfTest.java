@@ -9,6 +9,7 @@ import java.util.*;
 public class AggregatedFeatureEventConfTest {
 	// Default parameters
 	private static final String NAME = "aggregatedFeatureEventConf1";
+	private static final String TYPE = "F";
 	private static final String BUCKET_CONF_NAME = "bucketConf1";
 	private static final int NUMBER_OF_BUCKETS = 3;
 	private static final int BUCKETS_LEAP = 1;
@@ -54,6 +55,7 @@ public class AggregatedFeatureEventConfTest {
 
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -78,6 +80,7 @@ public class AggregatedFeatureEventConfTest {
 	public void configuration_should_be_deserialized_from_event_json_with_empty_aggregated_feature_event_function() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -105,6 +108,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_name() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				null,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -118,6 +122,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_bucket_conf_name() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				"",
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -131,6 +136,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_number_of_buckets() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				0,
 				BUCKETS_LEAP,
@@ -144,6 +150,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_buckets_leap() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				0,
@@ -157,6 +164,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_wait_after_bucket_close_seconds() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -170,6 +178,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_null_aggregated_feature_names_map() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -183,6 +192,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_empty_aggregated_feature_names_map() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -198,6 +208,7 @@ public class AggregatedFeatureEventConfTest {
 		aggregatedFeatureNamesMap.put("functionArgument", new ArrayList<String>());
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -211,6 +222,7 @@ public class AggregatedFeatureEventConfTest {
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_null_aggregated_feature_event_function() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
+				TYPE,
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
@@ -229,6 +241,7 @@ public class AggregatedFeatureEventConfTest {
 
 	private static String createAggregatedFeatureEvent(
 			String name,
+			String type,
 			String bucketConfName,
 			int numberOfBuckets,
 			int bucketsLeap,
@@ -238,6 +251,7 @@ public class AggregatedFeatureEventConfTest {
 
 		JSONObject result = new JSONObject();
 		result.put("name", name);
+		result.put("type", type);
 		result.put("bucketConfName", bucketConfName);
 		result.put("numberOfBuckets", numberOfBuckets);
 		result.put("bucketsLeap", bucketsLeap);

@@ -20,7 +20,7 @@ import java.util.Map;
 public class AggrKafkaEventTopologyService implements AggrEventTopologyService, InitializingBean {
     private static final Logger logger = Logger.getLogger(AggrKafkaEventTopologyService.class);
     private static final String EVENT_TOPOLOGY_JSON_NODE_NAME = "event_topology";
-    private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
+    private static final String EVENT_FIELD_EVENT_TYPE = "aggregated_feature_type";
     private static final String WARN_MSG_NO_OUTPUT_TOPIC_FOR_EVENT_TYPE = "No output topic for event type: %s";
     private static final String ERROR_MSG_FAILED_TO_SEND_EVENT = "Failed to send event: %s";
     private static final String ERROR_MSG_NULL_EVENT = "Got a null event to send";

@@ -4,6 +4,7 @@ import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
@@ -28,12 +29,15 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
     private static final String EVENT_FIELD_DATE_TIME = "date_time";
     private static final String EVENT_FIELD_CONTEXT = "context";
-    private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
-    private static final String AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
+    private static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     private static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
     private static final String EVENT_FIELD_START_TIME = "start_time";
     private static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
     private static final String EVENT_FIELD_END_TIME = "end_time";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
+    private static final String FEATURE_VALUE_KEY = "value";
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
@@ -253,11 +257,31 @@ public class AggrFeatureEventBuilder {
      * @param endTimeSec
      * @return the event as JSONObject
      */
-    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) {
+    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) throws IllegalArgumentException{
+        AggrFeatureValue featureValue = null;
+        Object value = null;
+        Map<String, Object> additionalInfoMap = null;
+        String additionalInfoJsonString = null;
+
+        try {
+            featureValue = (AggrFeatureValue)feature.getValue();
+            value = featureValue.getValue();
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(String.format("Feature is null or value is null or value is not a AggrFeatureValue object: %s", feature), ex);
+        }
+        if(value==null) {
+            throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
+        }
+        additionalInfoMap = featureValue.getAdditionalInformationMap();
+
         JSONObject event = new JSONObject();
         event.put(EVENT_FIELD_CONTEXT, context);
-        event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
-        event.put(conf.getName(), feature.getValue());
+        event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
+        event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
+        event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
+        if(additionalInfoMap!=null) {
+            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap).toJSONString());
+        }
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
         // Event time

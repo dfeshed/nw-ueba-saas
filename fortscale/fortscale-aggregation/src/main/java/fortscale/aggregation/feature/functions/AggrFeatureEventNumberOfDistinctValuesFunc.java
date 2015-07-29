@@ -17,7 +17,9 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHistogramFunc {
     public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
-    private final static String FEATURE_DISTINCT_VALUES = "distinct_values";
+    public final static String FEATURE_NAME = "number_of_distinct_values";
+    private static final String FEATURE_DISTINCT_VALUES = "distinct_values";
+    private static final String FEATURE_VALUE = "value";
 
     private boolean includeValues = false;
 
