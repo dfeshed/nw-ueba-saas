@@ -24,7 +24,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureEventHistogramMaxCountObjectFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "bucketConfName", 3, 1, 300, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
 	}
 
 	@Test

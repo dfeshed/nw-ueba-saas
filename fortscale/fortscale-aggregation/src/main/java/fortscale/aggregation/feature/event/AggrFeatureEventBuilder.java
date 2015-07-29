@@ -4,6 +4,7 @@ import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
@@ -257,23 +258,30 @@ public class AggrFeatureEventBuilder {
      * @return the event as JSONObject
      */
     private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) throws IllegalArgumentException{
-        Map<String, Object> featureValue = null;
+        AggrFeatureValue featureValue = null;
         Object value = null;
+        Map<String, Object> additionalInfoMap = null;
+        String additionalInfoJsonString = null;
+
         try {
-            featureValue = (Map) feature.getValue();
-            value = featureValue.remove(FEATURE_VALUE_KEY);
+            featureValue = (AggrFeatureValue)feature.getValue();
+            value = featureValue.getValue();
         } catch (Exception ex) {
-            throw new IllegalArgumentException(String.format("Feature is null or value is null or value is not a Map object: %s", feature), ex);
+            throw new IllegalArgumentException(String.format("Feature is null or value is null or value is not a AggrFeatureValue object: %s", feature), ex);
         }
         if(value==null) {
             throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
         }
+        additionalInfoMap = featureValue.getAdditionalInformationMap();
+
         JSONObject event = new JSONObject();
         event.put(EVENT_FIELD_CONTEXT, context);
         event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
-        event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(featureValue));
+        if(additionalInfoMap!=null) {
+            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap).toJSONString());
+        }
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
         // Event time
