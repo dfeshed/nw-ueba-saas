@@ -1,7 +1,5 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.Alert;
@@ -10,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -47,36 +46,42 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public @ResponseBody
 	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-										  @RequestParam(required=false) String sort_field,
-										  @RequestParam(required=false) String sort_direction,
-										  @RequestParam(required=false)  Integer size,
-										  @RequestParam(required=false, value = "page") Integer page_from_request) {
+										  @RequestParam(required=false, value = "sort_field") String sortField,
+										  @RequestParam(required=false, value = "sort_direction") String sortDirection,
+										  @RequestParam(required=false, value = "size")  Integer size,
+										  @RequestParam(required=false, value = "page") Integer fromPage,
+										  @RequestParam(required=false, value = "severity") String severity) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
-		if (sort_field != null) {
-			if (sort_direction != null){
-				sortDir = Sort.Direction.valueOf(sort_direction);
+		if (sortField != null) {
+			if (sortDirection != null){
+				sortDir = Sort.Direction.valueOf(sortDirection);
 			}
-			sortByTSDesc = new Sort(new Sort.Order(sortDir, sort_field));
+			sortByTSDesc = new Sort(new Sort.Order(sortDir, sortField));
 		} else {
 			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
 		}
 		//if pageForMongo is not set, get first pageForMongo
 		//Mongo pages start with 0. While on the API the first page is 1.
 		int pageForMongo;
-		if (page_from_request == null) {
+		if (fromPage == null) {
 			pageForMongo = 0;
 		} else {
-			pageForMongo = page_from_request -1;
+			pageForMongo = fromPage -1;
 		}
 		if (size == null){
 			size = DEFAULT_PAGE_SIZE;
 		}
 
-
+		Alerts alerts;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
-		Alerts alerts = alertsDao.findAll(pageRequest);
+		if (severity == null){
+			alerts = alertsDao.findAll(pageRequest);
+
+		} else {
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity);
+		}
 
 		DataBean<List<Alert>> entities = new DataBean<>();
 		entities.setData(alerts.getAlerts());

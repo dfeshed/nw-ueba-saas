@@ -34,4 +34,12 @@ public interface AlertsRepositoryCustom {
 	 */
 	 Alert getAlertById(String id);
 
+	/**
+	 * find alerts by filters
+	 * @param pageRequest
+	 * @param severityArray comma separated list of severity to filter by
+	 * @return
+	 */
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray);
+
 	}
