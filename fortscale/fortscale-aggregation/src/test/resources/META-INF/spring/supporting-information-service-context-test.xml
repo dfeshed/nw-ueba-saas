@@ -16,10 +16,4 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.global,fortscale.streaming.service.aggregation"/>
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="classpath:supporting_information_test.properties"/>
-        <!--<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>-->
-        <!--<property name="ignoreUnresolvablePlaceholders" value="true"/>-->
-        <!--<property name="localOverride" value="true"/>-->
-    </bean>
 </beans>
