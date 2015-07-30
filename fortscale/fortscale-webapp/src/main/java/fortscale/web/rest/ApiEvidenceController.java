@@ -1,33 +1,21 @@
 package fortscale.web.rest;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.Histogram;
 import fortscale.domain.core.HistogramPair;
 import fortscale.domain.core.dao.EvidencesRepository;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.domain.core.Histogram;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * REST API for Evidences querying
@@ -45,11 +33,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private EvidencesRepository evidencesDao;
 
 	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
-
-	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
-	private String normalizedUsernameField;
-
+	DataQueryHelper dataQueryHelper;
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
 	 * @param id The ID of the requested evidence
@@ -80,56 +64,50 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 
 		String entityName = evidence.getEntityName();
-		String dataEntityId = evidence.getDataEntityId();
-		String dataEntityTimestampField = "event_time_utc";
-		Long startDate = evidence.getStartDate();
-		Long endDate = evidence.getEndDate();
-		//The convention is to ask for the first page by index (1) but the real index is (0)
-		if (page != null) {
-			if (page < 1) {
-				throw new InvalidValueException("Page number must be greater than 0");
+		List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
+		//TODO: add support to multiple dataEntitiies in a single query
+		//TODO: need to create a kind of union the same for base entity but also fo the case of multiple entities which are not under the same base entity
+		//TODO: currently the solution is using only the first entity
+		if (dataEntitiesIds != null && dataEntitiesIds.size() > 0) {
+			String dataEntity = dataEntitiesIds.get(0);
+
+			Long startDate = evidence.getStartDate();
+			Long endDate = evidence.getEndDate();
+			//The convention is to ask for the first page by index (1) but the real index is (0)
+			if (page != null) {
+				if (page < 1) {
+					throw new InvalidValueException("Page number must be greater than 0");
+				}
+				page -= 1;
 			}
-			page -=1;
-		}
 
-		//set sort order
-		SortDirection sortDir = SortDirection.DESC;
-		String sortFieldStr = dataEntityTimestampField;
-		if (sort_field != null) {
-			if (sort_direction != null){
-				sortDir = SortDirection.valueOf(sort_direction);
-				sortFieldStr = sort_field;
+			//add conditions
+			List<Term> termsMap = new ArrayList<>();
+			//add condition to filter user
+			Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
+			termsMap.add(term);
+			//add condition about time range
+			Long currentTimestamp = System.currentTimeMillis();
+			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate));
+			termsMap.add(term);
+
+			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
+			//set sort order
+			SortDirection sortDir = SortDirection.DESC;
+			String sortFieldStr = timestampField;
+			if (sort_field != null) {
+				if (sort_direction != null) {
+					sortDir = SortDirection.valueOf(sort_direction);
+					sortFieldStr = sort_field;
+				}
 			}
-		}
+			//sort according to event times for continues forwarding
+			List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
 
-		switch (dataEntityId) {
-			case "amt_session":
-				dataEntityTimestampField = "end_time_utc";
-				break;
-			case "vpn_session":
-				dataEntityTimestampField = "end_time_utc";
-				break;
-			default:
-				dataEntityTimestampField = "event_time_utc";
-		}
-
-		ObjectMapper mapper = new ObjectMapper();
-		DataQueryHelper dataQueryHelper = new DataQueryHelper(dataEntitiesConfig);
-		//add conditions
-		List<Term> termsMap = new ArrayList<>();
-		//add condition to filter user
-		Term term = dataQueryHelper.createUserTerm(entityName, normalizedUsernameField);
-		termsMap.add(term);
-		//add condition about time range
-		Long currentTimestamp = System.currentTimeMillis();
-		term = dataQueryHelper.createDateRangeTerm(dataEntityTimestampField, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate) );
-		termsMap.add(term);
-		//sort according to event times for continues forwarding
-		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
-
-
-		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
-		return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
+			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList, size);
+			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
+		} else
+			return null;
 	}
 
 	/**

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -97,7 +98,7 @@ public class Evidence extends AbstractDocument{
 	private String anomalyValue;
 
 	@Field(dataEntityIdField)
-	private String dataEntityId;
+	private List<String> dataEntitiesIds;
 
 	@Field(evidenceTypeField)
 	private EvidenceType evidenceType;
@@ -124,7 +125,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataEntityId, Integer score, Severity severity) {
+			String name, String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.evidenceType = evidenceType;
@@ -138,7 +139,7 @@ public class Evidence extends AbstractDocument{
 		this.anomalyType = anomalyType;
 		this.name = name;
 		this.anomalyValue = anomalyValue;
-		this.dataEntityId = dataEntityId;
+		this.dataEntitiesIds = dataEntitiesIds;
 		this.score = score;
 		this.severity = severity;
 
@@ -181,6 +182,9 @@ public class Evidence extends AbstractDocument{
 		this.top3events = top3events;
 	}
 
+	public void setDataEntitiesIds(List<String> dataEntitiesIds) {
+		this.dataEntitiesIds = dataEntitiesIds;
+	}
 	// Getters
 
 	public EntityType getEntityType() {
@@ -227,12 +231,8 @@ public class Evidence extends AbstractDocument{
 		return severity;
 	}
 
-	public String getDataEntityId() {
-		return dataEntityId;
-	}
-
-	public void setDataEntityId(String dataEntityId) {
-		this.dataEntityId = dataEntityId;
+	public List<String> getDataEntitiesIds() {
+		return dataEntitiesIds;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
