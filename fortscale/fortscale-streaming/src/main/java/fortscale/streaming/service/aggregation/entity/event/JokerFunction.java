@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
-
 import java.util.*;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -21,7 +20,29 @@ public class JokerFunction {
 			@JsonProperty("alphas") Map<String, Double> alphas,
 			@JsonProperty("betas") Map<String, Double> betas) {
 
-		// TODO: Validate input
+		Assert.notNull(clusters);
+		for (Map.Entry<String, List<String>> entry : clusters.entrySet()) {
+			Assert.hasText(entry.getKey());
+			Assert.notNull(entry.getValue());
+			for (String f : entry.getValue()) {
+				Assert.hasText(f);
+			}
+		}
+
+		Assert.notNull(alphas);
+		for (Map.Entry<String, Double> entry : alphas.entrySet()) {
+			Assert.hasText(entry.getKey());
+			Double alpha = entry.getValue();
+			Assert.isTrue(!alpha.isInfinite() && !alpha.isNaN());
+		}
+
+		Assert.notNull(betas);
+		for (Map.Entry<String, Double> entry : betas.entrySet()) {
+			Assert.hasText(entry.getKey());
+			Double beta = entry.getValue();
+			Assert.isTrue(!beta.isInfinite() && !beta.isNaN());
+		}
+
 		this.clusters = clusters;
 		this.alphas = alphas;
 		this.betas = betas;
@@ -72,7 +93,7 @@ public class JokerFunction {
 						return Double.compare(aggrFeatureEvent1.getScore(), aggrFeatureEvent2.getScore());
 					}
 				});
-				maxScore = fWithMaxScore.getScore();
+				maxScore = fWithMaxScore.getScore() / 100;
 			}
 
 			clusterNameToMaxScoreMap.put(entry.getKey(), maxScore);

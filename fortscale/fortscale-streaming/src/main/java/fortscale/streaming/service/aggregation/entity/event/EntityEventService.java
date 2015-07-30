@@ -3,7 +3,6 @@ package fortscale.streaming.service.aggregation.entity.event;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -18,10 +17,8 @@ public class EntityEventService {
 	private Long secondsToWaitBeforeFiring;
 	private Long fireEventsEverySeconds;
 	private Long lastTimeEventsWereFired;
-	// Mapping from a full aggregated feature event name
-	// (bucket conf name -> aggregated feature event name)
-	// to its related entity event builders
-	private Map<String, Map<String, Set<EntityEventBuilder>>> fullEventNameToBuilders;
+	// Mapping from a full event name (bucketConfName.aggregatedFeatureEventName) to its related entity event builders
+	private Map<String, Set<EntityEventBuilder>> fullEventNameToBuilders;
 
 	@Autowired
 	private EntityEventConfService entityEventConfService;
@@ -35,13 +32,10 @@ public class EntityEventService {
 	public void process(JSONObject message) {
 		AggrFeatureEventWrapper aggrFeatureEvent = new AggrFeatureEventWrapper(message);
 
-		Map<String, Set<EntityEventBuilder>> eventNameToBuilders = fullEventNameToBuilders.get(aggrFeatureEvent.getBucketConfName());
-		if (eventNameToBuilders != null) {
-			Set<EntityEventBuilder> builders = eventNameToBuilders.get(aggrFeatureEvent.getAggregatedFeatureEventName());
-			if (builders != null) {
-				for (EntityEventBuilder builder : builders) {
-					builder.updateEntityEventData(aggrFeatureEvent);
-				}
+		Set<EntityEventBuilder> builders = fullEventNameToBuilders.get(getFullEventName(aggrFeatureEvent));
+		if (builders != null) {
+			for (EntityEventBuilder builder : builders) {
+				builder.updateEntityEventData(aggrFeatureEvent);
 			}
 		}
 	}
@@ -87,28 +81,11 @@ public class EntityEventService {
 
 			// Add the new builder to the mapping of each aggregated feature event in the conf
 			for (String fullEventName : entityEventConf.getAllAggregatedFeatureEventNames()) {
-				String[] bucketConfAndEvent = StringUtils.split(fullEventName, '.');
-
-				if (bucketConfAndEvent.length != 2) {
-					// Ignore illegal full aggregated feature event name
-					continue;
-				}
-
-				String bucketConfName = bucketConfAndEvent[0];
-				String eventName = bucketConfAndEvent[1];
-
-				Map<String, Set<EntityEventBuilder>> eventNameToBuilders = fullEventNameToBuilders.get(bucketConfName);
-				// In case there isn't yet a mapping for this bucket configuration
-				if (eventNameToBuilders == null) {
-					eventNameToBuilders = new HashMap<>();
-					fullEventNameToBuilders.put(bucketConfName, eventNameToBuilders);
-				}
-
-				Set<EntityEventBuilder> builders = eventNameToBuilders.get(eventName);
+				Set<EntityEventBuilder> builders = fullEventNameToBuilders.get(fullEventName);
 				// In case there isn't yet a mapping for this aggregated feature event
 				if (builders == null) {
 					builders = new HashSet<>();
-					eventNameToBuilders.put(eventName, builders);
+					fullEventNameToBuilders.put(fullEventName, builders);
 				}
 
 				builders.add(entityEventBuilder);
@@ -118,12 +95,14 @@ public class EntityEventService {
 
 	private Set<EntityEventBuilder> getAllEntityEventBuilders() {
 		Set<EntityEventBuilder> allEntityEventBuilders = new HashSet<>();
-		for (Map<String, Set<EntityEventBuilder>> eventNameToBuilders : fullEventNameToBuilders.values()) {
-			for (Set<EntityEventBuilder> builders : eventNameToBuilders.values()) {
-				allEntityEventBuilders.addAll(builders);
-			}
+		for (Set<EntityEventBuilder> builders : fullEventNameToBuilders.values()) {
+			allEntityEventBuilders.addAll(builders);
 		}
 
 		return allEntityEventBuilders;
+	}
+
+	private String getFullEventName(AggrFeatureEventWrapper aggrFeatureEvent) {
+		return String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureEventName());
 	}
 }

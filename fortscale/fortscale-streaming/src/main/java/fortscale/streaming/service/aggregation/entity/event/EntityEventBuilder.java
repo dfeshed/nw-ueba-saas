@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -9,11 +10,13 @@ import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
-
 import java.util.*;
 
 @Configurable(preConstruction = true)
 public class EntityEventBuilder {
+	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
+	private static final String CONTEXT_ID_SEPARATOR = "_";
+
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
 
@@ -31,7 +34,9 @@ public class EntityEventBuilder {
 		try {
 			this.jokerFunction = (new ObjectMapper()).readValue(jokerFunctionJson, JokerFunction.class);
 		} catch (Exception e) {
-			// TODO
+			String errorMsg = String.format("Failed to deserialize Joker function JSON %s", jokerFunctionJson);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
 		}
 	}
 
@@ -45,9 +50,10 @@ public class EntityEventBuilder {
 	}
 
 	public void fireEntityEvents(long currentTimeInSeconds, String outputTopic, MessageCollector collector) {
-		List<EntityEventData> listOfEntityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), currentTimeInSeconds);
+		List<EntityEventData> listOfEntityEventData =
+				entityEventDataStore.getEntityEventDataWithFiringTimeLteThatWereNotFired(entityEventConf.getName(), currentTimeInSeconds);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
-			createEntityEvent(entityEventData, outputTopic, collector);
+			createAndSendEntityEvent(entityEventData, outputTopic, collector);
 			entityEventData.setFired(true);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
@@ -85,13 +91,13 @@ public class EntityEventBuilder {
 
 		List<String> listOfPairs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : listOfEntries) {
-			listOfPairs.add(String.format("%s = %s", entry.getKey(), entry.getValue()));
+			listOfPairs.add(String.format("%s%s%s", entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()));
 		}
 
-		return StringUtils.join(listOfPairs, ", ");
+		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);
 	}
 
-	private void createEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
+	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
 		Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
 		for (AggrFeatureEventWrapper aggrFeatureEvent : entityEventData.getAggrFeatureEvents()) {
@@ -106,7 +112,7 @@ public class EntityEventBuilder {
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
 
 		JSONObject entityEvent = new JSONObject();
-		entityEvent.put("event_type", "entity_event");
+		entityEvent.put("event_type", String.format("entity_event.%s", entityEventData.getEntityEventName()));
 		entityEvent.put(entityEventData.getEntityEventName(), entityEventValue);
 		entityEvent.put("date_time_unix", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
@@ -116,6 +122,4 @@ public class EntityEventBuilder {
 
 		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), entityEvent.toJSONString()));
 	}
-
-	// TODO: equals + hash code?
 }

@@ -31,11 +31,24 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventData(String entityEventName, long firingTimeInSeconds) {
+	public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds) {
 		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
 			query.addCriteria(where(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD).lte(firingTimeInSeconds));
+			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
+		}
+
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
+		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
+			Query query = new Query();
+			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
+			query.addCriteria(where(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD).lte(firingTimeInSeconds));
+			query.addCriteria(where(EntityEventData.FIRED_FIELD).is(false));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
 
@@ -51,5 +64,12 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		}
 
 		mongoTemplate.save(entityEventData, COLLECTION_NAME);
+	}
+
+	@Override
+	public void emptyEntityEventDataStore() {
+		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
+			mongoTemplate.dropCollection(COLLECTION_NAME);
+		}
 	}
 }

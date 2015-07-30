@@ -1,34 +1,38 @@
 {
   "EntityEvents": {
     "GlobalParams": {
-      "secondsToWaitBeforeFiring": 60,
-      "fireEventsEverySeconds": 1800
+      "secondsToWaitBeforeFiring": 1,
+      "fireEventsEverySeconds": 3
     },
     "EntityEventDefinitions": [
       {
-        "name": "entityEventDefinition1",
+        "name": "conf1",
         "contextFields": ["normalized_username"],
         "aggregatedFeatureEventNamesMap": {
-          "functionArgument": ["bucketConf1.aggregatedFeatureEvent1"]
+          "aggregatedFeatureEventNames": ["bc1.f1", "bc2.f2", "bc3.f3", "bc1.p1"]
         },
         "entityEventFunction": {
-          "type": "type1",
-          "params": {
-            "functionParam": "valueOfFunctionParam"
-          }
+          "clusters": {
+            "c1": ["bc1.f1", "bc2.f2"],
+            "c2": ["bc3.f3"]
+          },
+          "alphas": {"c1": 0.9, "c2": 0.8},
+          "betas": {"bc1.p1": 0.7}
         }
       },
       {
-        "name": "entityEventDefinition2",
-        "contextFields": ["normalized_username"],
+        "name": "conf2",
+        "contextFields": ["normalized_username", "normalized_src_machine"],
         "aggregatedFeatureEventNamesMap": {
-          "functionArgument": ["bucketConf2.aggregatedFeatureEvent2"]
+          "aggregatedFeatureEventNames": ["bc2.f1", "bc2.f2", "bc3.f3", "bc4.f4", "bc3.p3", "bc4.p4"]
         },
         "entityEventFunction": {
-          "type": "type2",
-          "params": {
-            "functionParam": "valueOfFunctionParam"
-          }
+          "clusters": {
+            "c1": ["bc2.f1", "bc4.f4"],
+            "c10": ["bc2.f2", "bc3.f3"]
+          },
+          "alphas": {"c1": 0.85, "c10": 0.95},
+          "betas": {"bc3.p3": 0.5, "bc4.p4": 0.1}
         }
       }
     ]
