@@ -39,11 +39,12 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     private static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
+    private static final String STRATEGY_CONTEXT_ID = "strategyContextId";
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
     private AggrFeatureEventService aggrFeatureEventService;
-    private Map<Map<String, String>, AggrFeatureEventData> context2featureDataMap;
+    private Map<Map<String, String>, AggrFeatureEventData> bucketAndStrategyContexts2featureDataMap;
     private Map<String, AggrFeatureEventData> bucktID2featureDataMap;
 
     @Value("${fetch.data.cycle.in.seconds}")
@@ -66,7 +67,7 @@ public class AggrFeatureEventBuilder {
         this.bucketStrategy = bucketStrategy;
         this.aggrFeatureEventService = aggrFeatureEventService;
         this.featureBucketsService = featureBucketsService;
-        context2featureDataMap = new HashMap<>();
+        bucketAndStrategyContexts2featureDataMap = new HashMap<>();
         bucktID2featureDataMap = new HashMap<>();
     }
 
@@ -110,10 +111,23 @@ public class AggrFeatureEventBuilder {
      * @param endTime
      */
     void updateAggrFeatureEventData(String bucketID, String strategyId, Map<String, String> context, long startTime, long endTime) {
-        AggrFeatureEventData eventData = context2featureDataMap.get(context);
+        Assert.notNull(bucketID);
+        Assert.isTrue(StringUtils.isNotEmpty(bucketID));
+        Assert.notNull(strategyId);
+        Assert.isTrue(StringUtils.isNotEmpty(strategyId));
+        Assert.notNull(context);
+        Assert.notEmpty(context);
+        Assert.isTrue(endTime > startTime && startTime > 946684800); //01 Jan 2000 00:00:00 GMT
+
+        String startegyContextId = bucketStrategy.getStrategyContextIdFromStrategyId(strategyId);
+        Assert.notNull(startegyContextId);
+        Assert.isTrue(StringUtils.isNotEmpty(startegyContextId));
+
+        context.put(STRATEGY_CONTEXT_ID, startegyContextId);
+        AggrFeatureEventData eventData = bucketAndStrategyContexts2featureDataMap.get(context);
         if(eventData==null) {
             eventData = new AggrFeatureEventData(this, context, strategyId);
-            context2featureDataMap.put(context, eventData);
+            bucketAndStrategyContexts2featureDataMap.put(context, eventData);
         }
 
         AggrFeatureEventData.BucketData bucketData =  eventData.addBucketID(bucketID, startTime, endTime);
@@ -289,7 +303,8 @@ public class AggrFeatureEventBuilder {
         additionalInfoMap = featureValue.getAdditionalInformationMap();
 
         JSONObject event = new JSONObject();
-        event.put(EVENT_FIELD_CONTEXT, context);
+
+        // Feature Data
         event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
@@ -297,6 +312,10 @@ public class AggrFeatureEventBuilder {
             event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
         }
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
+
+        // Context
+        context.remove(STRATEGY_CONTEXT_ID);
+        event.put(EVENT_FIELD_CONTEXT, context);
 
         // Event time
         Long date_time_unix = System.currentTimeMillis() / 1000;

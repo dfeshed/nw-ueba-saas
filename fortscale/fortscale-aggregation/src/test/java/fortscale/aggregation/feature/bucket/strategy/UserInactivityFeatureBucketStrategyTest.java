@@ -50,6 +50,25 @@ public class UserInactivityFeatureBucketStrategyTest {
 	}
 
 	@Test
+	public void getStrategyConextId_from_StrategyId() throws Exception{
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
+
+		String username = "user2";
+		String strategyContextId = String.format("%s_%s_%d_%s",
+				AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
+
+		long startEpochtime = 1435737600;
+		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime);
+
+		FeatureBucketStrategyData actual = strategy.update(event);
+		String strategyId = actual.getStrategyId();
+		String actualContextId = strategy.getStrategyContextIdFromStrategyId(strategyId);
+		Assert.assertEquals(strategyContextId, actualContextId);
+
+	}
+
+	@Test
 	public void update_method_should_create_new_data_and_update_the_end_time_afterwards() throws Exception {
 		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
