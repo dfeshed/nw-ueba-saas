@@ -12,6 +12,8 @@
 
     <context:component-scan base-package="fortscale.aggregation.feature.services"/>
 
+    <bean id="supportingInformationService" class="fortscale.aggregation.feature.services.SupportingInformationServiceImpl"/>
+
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.global,fortscale.streaming.service.aggregation"/>

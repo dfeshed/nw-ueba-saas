@@ -22,7 +22,6 @@ import java.util.*;
  * @author gils
  * Date: 29/07/2015
  */
-@Component("supportingInformationService")
 public class SupportingInformationServiceImpl implements SupportingInformationService {
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
