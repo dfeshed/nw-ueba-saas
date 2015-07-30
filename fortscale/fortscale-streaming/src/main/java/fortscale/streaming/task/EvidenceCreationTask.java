@@ -100,10 +100,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			String startTimestampField = getConfigString(config, String.format("fortscale.events.startTimestamp.field.%s", dataSource));
 			String endTimestampField = getConfigString(config, String.format("fortscale.events.endTimestamp.field.%s", dataSource));
 			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
-			String typeField = null;
-			if (isConfigContainKey(config, String.format("fortscale.events.type.field.%s", dataSource))) {
-				typeField = getConfigString(config, String.format("fortscale.events.type.field.%s", dataSource));
-			}
 			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
@@ -117,7 +113,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			if (isConfigContainKey(config, String.format("fortscale.events.defaultFields.%s", dataSource))) {
 				defaultFields = getConfigStringList(config, String.format("fortscale.events.defaultFields.%s", dataSource));
 			}
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(entityType, entityNameField, scoreFields, scoreFieldValues, scoreFieldTypes, scoreFieldTypesFields, startTimestampField, endTimestampField, partitionField, dataEntitiesIdsField, dataEntitiesIds, evidenceType, scoreThreshold, typeField, defaultFields));
+			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(entityType, entityNameField, scoreFields, scoreFieldValues, scoreFieldTypes, scoreFieldTypesFields, startTimestampField, endTimestampField, partitionField, dataEntitiesIdsField, dataEntitiesIds, evidenceType, scoreThreshold, defaultFields));
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
@@ -169,9 +165,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				String anomalyType = null;
 				if (dataSourceConfiguration.scoreFieldTypes != null){
 					anomalyType = dataSourceConfiguration.scoreFieldTypes.get(index);
-				}
 				// if type of the anomaly doesn't exists and instead we have scoreFieldTypesFields, need to get the anomalyType from that field in the message
-				else if (dataSourceConfiguration.scoreFieldTypesFields != null) {
+				} else if (dataSourceConfiguration.scoreFieldTypesFields != null) {
 					anomalyType = convertToString(message.get(dataSourceConfiguration.scoreFieldTypesFields.get(index)));
 				}
 
@@ -182,10 +177,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				// if datEntitiesIds doesn't exists and instead we have dataEntitiesIdsField, need to get the dataEntitiesIds from that field in the message
 				} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
 					dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, messageText, dataSourceConfiguration.dataEntitiesIdsField);
-				}
-
-				if (anomalyType.equals("fake")) {
-					anomalyType = convertToString(validateFieldExistsAndGetValue(message, messageText, dataSourceConfiguration.typeField));
 				}
 
 				// Create evidence from event
@@ -307,7 +298,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 		protected DataSourceConfiguration(EntityType entityType, String entityNameField, List<String> scoreFields, List<String> scoreFieldValues, List<String> scoreFieldTypes, List<String> scoreFieldTypesFields,
 				String startTimestampField, String endTimestampField, String partitionField, String dataEntitiesIdsField, List<String> dataEntitiesIds,
-				EvidenceType evidenceType, int scoreThreshold, String typeField, List<String> defaultFields) {
+				EvidenceType evidenceType, int scoreThreshold, List<String> defaultFields) {
 			this.evidenceType = evidenceType;
 			this.dataEntitiesIds = dataEntitiesIds;
 			this.dataEntitiesIdsField = dataEntitiesIdsField;
@@ -322,7 +313,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.scoreFieldTypesFields = scoreFieldTypesFields;
 			this.defaultFields = defaultFields;
 			this.scoreThreshold = scoreThreshold;
-			this.typeField = typeField;
 		}
 
 		public int scoreThreshold;
