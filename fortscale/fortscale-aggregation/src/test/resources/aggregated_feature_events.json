@@ -3,6 +3,7 @@
     "Events": [
       {
         "name": "name1",
+        "type": "F",
         "bucketConfName": "bc1",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -25,6 +26,7 @@
       },
       {
         "name": "name2",
+        "type": "F",
         "bucketConfName": "bc2",
         "numberOfBuckets": 2,
         "bucketsLeap": 2,

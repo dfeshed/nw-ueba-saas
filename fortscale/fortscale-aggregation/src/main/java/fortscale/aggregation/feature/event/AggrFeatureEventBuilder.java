@@ -4,9 +4,11 @@ import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,12 +30,15 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
     private static final String EVENT_FIELD_DATE_TIME = "date_time";
     private static final String EVENT_FIELD_CONTEXT = "context";
-    private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
-    private static final String AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
+    private static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     private static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
     private static final String EVENT_FIELD_START_TIME = "start_time";
     private static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
     private static final String EVENT_FIELD_END_TIME = "end_time";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
+    private static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
+    private static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
@@ -226,26 +231,39 @@ public class AggrFeatureEventBuilder {
     /**
      * Builds an event in the following format:
      * <pre>
-     *     {
-     *        "event_type": "aggregated_feature_event",
-     *        "aggregated feature name": "the value",
-     *        "bucket_conf_name": "the BucketConf name from which this aggrFeature was created",
+     *    {
+     *      "aggregated_feature_type": "F",
+     *      "aggregated_feature_name": "number_of_distinct_src_machines",
+     *      "aggregated_feature_value": 42,
+     *      "aggregated_feature_info": {
+     *          "list_of_distinct_src_machines": [
+     *              "src_machine_1",
+     *              "src_machine_2",
+     *              "src_machine_3"
+     *          ]
+     *      },
      *
-     *        "date_time_unix": 1430460833,
-     *        "date_time": "2015-05-01 06:13:53",
+     *     "bucket_conf_name": "bucket_conf_1",
      *
-     *        "start_time_unix": 1430460833,
-     *        "start_time": "2015-05-01 06:13:53",
+     *     "date_time_unix": 1430460833,
+     *     "date_time": "2015-05-01 06:13:53",
      *
-     *        "end_time_unix": 1430460833,
-     *        "end_time": "2015-05-01 06:13:53",
+     *     "start_time_unix": 1430460833,
+     *     "start_time": "2015-05-01 06:13:53",
      *
-     *        "context": {
-     *          // Context fields, e.g.:
-     *          "user" : "John Smith",
-     *          "machine": "m1"
-     *        }
-     *      }
+     *     "end_time_unix": 1430460833,
+     *     "end_time": "2015-05-01 06:13:53",
+     *
+     *     "context": {
+     *          "user": "John Smith",
+     *          "machine": "machine_1"
+     *     },
+     *
+     *     "data_sources": ["ssh", "vpn"],
+     *
+     *     "score": 85
+     *
+     *   }
      *</pre>
      * @param context
      * @param feature
@@ -253,11 +271,31 @@ public class AggrFeatureEventBuilder {
      * @param endTimeSec
      * @return the event as JSONObject
      */
-    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) {
+    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) throws IllegalArgumentException{
+        AggrFeatureValue featureValue = null;
+        Object value = null;
+        Map<String, Object> additionalInfoMap = null;
+        String additionalInfoJsonString = null;
+
+        try {
+            featureValue = (AggrFeatureValue)feature.getValue();
+            value = featureValue.getValue();
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(String.format("Feature is null or value is null or value is not a AggrFeatureValue object: %s", feature), ex);
+        }
+        if(value==null) {
+            throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
+        }
+        additionalInfoMap = featureValue.getAdditionalInformationMap();
+
         JSONObject event = new JSONObject();
         event.put(EVENT_FIELD_CONTEXT, context);
-        event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
-        event.put(conf.getName(), feature.getValue());
+        event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
+        event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
+        event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
+        if(additionalInfoMap!=null) {
+            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
+        }
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
         // Event time
@@ -278,6 +316,11 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
         String end_time = format.format(new Date(endTimeSec * 1000));
         event.put(EVENT_FIELD_END_TIME, end_time);
+
+        // Data Sources
+        JSONArray dataSourcesJsonArray = new JSONArray();
+        dataSourcesJsonArray.addAll(conf.getBucketConf().getDataSources());
+        event.put(EVENT_FIELD_DATA_SOURCES, dataSourcesJsonArray);
 
         return event;
     }

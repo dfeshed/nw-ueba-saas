@@ -3,6 +3,7 @@
     "Events": [
       {
         "name": "distinct_number_of_src_machines_kerberos",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -19,6 +20,7 @@
       },
       {
         "name": "distinct_number_of_dst_machines_kerberos",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -35,6 +37,7 @@
       },
       {
         "name": "distinct_number_of_src_machines_ssh",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -51,6 +54,7 @@
       },
       {
         "name": "distinct_number_of_dst_machines_ssh",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -67,6 +71,7 @@
       },
       {
         "name": "number_of_failed_vpn_events",
+        "type": "F",
         "bucketConfName": "user_vpn_events_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -82,6 +87,7 @@
       },
       {
         "name": "number_of_successful_kerberos_events",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -97,6 +103,7 @@
       },
       {
         "name": "number_of_failed_kerberos_events",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -112,6 +119,7 @@
       },
       {
         "name": "number_of_successful_ssh_events",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -127,6 +135,7 @@
       },
       {
         "name": "number_of_failed_events",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -142,6 +151,7 @@
       },
       {
         "name": "new_countries_for_user",
+        "type": "F",
         "bucketConfName": "user_vpn_events_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
@@ -158,6 +168,7 @@
       },
       {
         "name": "new_src_machine_kerberos",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
@@ -174,6 +185,7 @@
       },
       {
         "name": "new_dst_machine_kerberos",
+        "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
@@ -190,6 +202,7 @@
       },
       {
         "name": "new_src_machine_ssh",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
@@ -206,6 +219,7 @@
       },
       {
         "name": "new_dst_machine_ssh",
+        "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,

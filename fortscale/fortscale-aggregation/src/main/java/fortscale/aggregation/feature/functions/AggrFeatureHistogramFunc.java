@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -52,7 +53,11 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
             for (String featureName : featureNames) {
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                	histogram.add(feature.getValue(), 1.0);
+                    Object featureValue = feature.getValue();
+                    if(featureValue==null || (featureValue instanceof String && StringUtils.isEmpty((String)featureValue))) {
+                        featureValue = "N/A";
+                    }
+                	histogram.add(featureValue, 1.0);
                 }
             }
         }

@@ -75,7 +75,7 @@ public class AggrFeatureEventDataTest {
         Assert.assertEquals(endTime2, bucketData.getEndTime());
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void testAddBucketID_wrongOrder() {
         Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
         Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
@@ -90,6 +90,8 @@ public class AggrFeatureEventDataTest {
 
         eventData.addBucketID(bucketID2, startTime2, endTime2);
         eventData.addBucketID(bucketID1, startTime1, endTime1);
+        Assert.assertEquals(bucketID1, eventData.getBucketIDs().get(0).getBucketID());
+        Assert.assertEquals(bucketID2, eventData.getBucketIDs().get(1).getBucketID());
     }
 
     @Test
@@ -217,7 +219,7 @@ public class AggrFeatureEventDataTest {
         funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
         funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "aggregated_feature_event_type_F", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
         List<String> dataSources = new ArrayList<>();
         dataSources.add("ssh");

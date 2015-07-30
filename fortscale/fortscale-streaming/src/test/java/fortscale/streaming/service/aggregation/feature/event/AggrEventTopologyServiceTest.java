@@ -19,7 +19,9 @@ public class AggrEventTopologyServiceTest {
 
     @Test
     public void testLoadingJsonFile() {
-        String topic = aggrEventTopologyService.getTopicForEventType("aggregated_feature_event");
-        Assert.assertEquals("fortscale-aggregated-feature-event", topic);
+        String topic_f = aggrEventTopologyService.getTopicForEventType("F");
+        String topic_p = aggrEventTopologyService.getTopicForEventType("P");
+        Assert.assertEquals("fortscale-aggregated-feature-f-event", topic_f);
+        Assert.assertEquals("fortscale-aggregated-feature-p-event", topic_p);
     }
 }

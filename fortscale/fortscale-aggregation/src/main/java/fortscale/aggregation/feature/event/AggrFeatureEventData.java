@@ -4,6 +4,7 @@ import fortscale.aggregation.DataSourcesSyncTimerListener;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * AggrFeatureEventBuilder to generate Aggregated Feature Events of a specific type for a specific context.
  */
 class AggrFeatureEventData implements NextBucketEndTimeListener {
+    private static final Logger logger = Logger.getLogger(AggrFeatureEventData.class);
     private AggrFeatureEventBuilder builder;
     private List<BucketData> bucketIDs;
     private Map<String, String> context;
@@ -101,7 +103,11 @@ class AggrFeatureEventData implements NextBucketEndTimeListener {
                 found = true;
             } else {
                 // The last item in the list contains bucketID
-                Assert.isTrue(startTime > bucketData.getEndTime());
+                if(startTime <= bucketData.getEndTime()) {
+                    String errorMessage = String.format("Assumption of bucket creation order failed! new bucket values: bucketId: %s startTime: %d endTime: %d last bucket values:  bucketId: %s startTime: %d endTime: %d",
+                            bucketID, startTime, endTime, bucketData.getBucketID(), bucketData.getStartTime(), bucketData.getEndTime());
+                    logger.error(errorMessage);
+                }
             }
         }
         if(!found) {
@@ -121,7 +127,23 @@ class AggrFeatureEventData implements NextBucketEndTimeListener {
 
     private void addBucketData(BucketData bucketData) {
         Assert.notNull(bucketData);
-        bucketIDs.add(bucketData);
+
+        if(bucketIDs.size()==0) {
+            bucketIDs.add(bucketData);
+        } else {
+            boolean added = false;
+            for (int i = bucketIDs.size() - 1; i >= 0; i--) {
+                BucketData bd = bucketIDs.get(i);
+                if (bd.getEndTime() < bucketData.getStartTime()) {
+                    bucketIDs.add(i + 1, bucketData);
+                    added = true;
+                    break;
+                }
+            }
+            if(!added) {
+                bucketIDs.add(0,bucketData);
+            }
+        }
     }
 
     /**
@@ -194,6 +216,7 @@ class AggrFeatureEventData implements NextBucketEndTimeListener {
             this.strategyData = strategyData;
             this.aggrFeatureEventData = aggrFeatureEventData;
             this.endTime = strategyData.getEndTime();
+            this.startTime = strategyData.getStartTime();
         }
 
         public BucketData(String bucketID, Long startTime, Long endTime, AggrFeatureEventData aggrFeatureEventData) {
