@@ -29,7 +29,9 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,8 +250,10 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     json.put(fieldRegexMatcherConverter.getOutputField(), newVal);
                 }
             }
-        } else {
-            json.put(fieldName, val);
+        } else if(val instanceof Timestamp){
+            json.put(fieldName, val.toString());
+        } else{
+        	json.put(fieldName, val);
         }
     }
 
