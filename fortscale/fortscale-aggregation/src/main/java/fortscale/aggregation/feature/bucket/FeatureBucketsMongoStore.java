@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("featureBucketsStore")
 public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
 	

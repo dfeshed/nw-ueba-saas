@@ -29,8 +29,8 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
     private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
-    @Value("${evidence.supporting.information.time.period.in.months:3}")
-    private int timePeriodInMonths;
+    @Value("${evidence.supporting.information.time.period.in.days:90}")
+    private int timePeriodInDays;
 
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
@@ -39,9 +39,9 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private FeatureBucketsStore featureBucketsStore;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long evidenceTime) {
+    public SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long aggregationEventEndTime) {
         logger.info("Going to fetch Evidence Supporting Information. Entity type = {} # Entity name = {} # Data source = {} " +
-                "# Feature = {} # Evidence time = {} . Time period = {} months..", entityType, entityName, dataSource, feature, getFormattedTime(evidenceTime), timePeriodInMonths);
+                "# Feature = {} # Evidence time = {} . Time period = {} days..", entityType, entityName, dataSource, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
 
         String bucketConfigName = getBucketConfigurationName(entityType, dataSource);
 
@@ -57,9 +57,9 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
         }
 
-        Long supportingInformationStartTime = calculateSupportingInformationStartTime(evidenceTime, timePeriodInMonths);
+        Long supportingInformationStartTime = calculateSupportingInformationStartTime(aggregationEventEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, entityType, entityName, feature, supportingInformationStartTime, evidenceTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, entityType, entityName, feature, supportingInformationStartTime, aggregationEventEndTime);
 
         logger.info("Found {} relevant feature buckets", featureBuckets.size());
 
@@ -76,11 +76,11 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
         return formatter.format(calInstance.getTime());
     }
 
-    private Long calculateSupportingInformationStartTime(Long evidenceTime, int timePeriodInMonths) {
+    private Long calculateSupportingInformationStartTime(Long evidenceTime, int timePeriodInDays) {
         Calendar calEvidenceTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calEvidenceTime.setTimeInMillis(evidenceTime);
 
-        calEvidenceTime.add(Calendar.MONTH, -1 * timePeriodInMonths);
+        calEvidenceTime.add(Calendar.DAY_OF_MONTH, -1 * timePeriodInDays);
 
         return calEvidenceTime.getTimeInMillis();
     }

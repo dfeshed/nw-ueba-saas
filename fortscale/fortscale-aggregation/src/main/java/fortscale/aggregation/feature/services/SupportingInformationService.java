@@ -16,9 +16,9 @@ public interface SupportingInformationService {
      * @param entityName the entity name (e.g. mike@cnn.com)
      * @param dataSource the data source (ssh, kerberos, etc.)
      * @param feature the related feature
-     * @param evidenceTime the evidence time in milliseconds
+     * @param aggregationEventEndTime the evidence time in milliseconds
      *
      * @return supporting information representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long evidenceTime);
+    SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long aggregationEventEndTime);
 }
