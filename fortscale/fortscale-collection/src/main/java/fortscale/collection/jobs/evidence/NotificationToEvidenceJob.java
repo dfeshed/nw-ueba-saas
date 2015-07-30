@@ -16,6 +16,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,15 +106,18 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		return notification.getCause();
 	}
 
-	private String getEntity(Notification notification) {
+	private List<String> getEntity(Notification notification) {
+		List<String> result = new ArrayList();
 		if (notification.getCause().toLowerCase().contains("amt")) {
-			return "amt";
+			result.add("amt");
 		}
-		if (notification.getCause().toLowerCase().contains("vpn")) {
-			return "vpn";
+		else if (notification.getCause().toLowerCase().contains("vpn")) {
+			result.add("vpn");
+		} else {
+			//TODO - what type of entity should AD notifications have? what about other types?
+			result.add("user");
 		}
-		//TODO - what type of entity should AD notifications have? what about other types?
-		return "user";
+		return result;
 	}
 
 	private String getNormalizedUsername(Notification notification) {
