@@ -98,6 +98,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		//TODO - get relevant field from attributes, should it be a
 		if (notification.getCause().equals("vpn_geo_hopping")) {
 			return notification.getAttributes().get("country");
+		} else if (notification.getCause().toLowerCase().contains("amt")) {
+			return notification.getAttributes().get("yid");
 		}
 		return notification.getCause();
 	}
