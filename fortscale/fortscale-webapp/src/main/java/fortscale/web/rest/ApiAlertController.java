@@ -75,18 +75,21 @@ public class ApiAlertController extends BaseController {
 		}
 
 		Alerts alerts;
+		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		if (severity == null){
 			alerts = alertsDao.findAll(pageRequest);
+			//total count of the total items in query.
+			count = alertsDao.count(pageRequest);
 
 		} else {
 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity);
 		}
 
 		DataBean<List<Alert>> entities = new DataBean<>();
 		entities.setData(alerts.getAlerts());
-		//total count of the total items in query.
-		Long count = alertsDao.count(pageRequest);
+
 		entities.setTotal(count.intValue());
 		entities.setOffset(pageForMongo * size);
 		return entities;

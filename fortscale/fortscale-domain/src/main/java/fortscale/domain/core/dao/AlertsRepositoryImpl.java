@@ -86,21 +86,42 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         if (severityList.size() == Severity.values().length){
             severityList = null;
         }
-        List<Alert> alertsList = findByField(pageRequest, Alert.severityField, severityList, pageRequest);
+        Query query = buildQuery(pageRequest, Alert.severityField, severityList, pageRequest);
+        List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
         Alerts alerts = new Alerts();
         alerts.setAlerts(alertsList);
         return alerts;
     }
 
+
+    @Override
+    public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter) {
+        String[] filterVals = severityArrayFilter.split(",");
+        List<String> severityList = new ArrayList<>();
+        for (String val : filterVals){
+            Severity severity = Severity.getByStringCaseInsensitive(val);
+            if (severity != null){
+                severityList.add(severity.name());
+            }
+        }
+        //If filter includes all entries, remove the filter as it is the same as without filter
+        if (severityList.size() == Severity.values().length){
+            severityList = null;
+        }
+        Query query = buildQuery(pageRequest, Alert.severityField, severityList, pageRequest);
+        return mongoTemplate.count(query, Alert.class);
+    }
+
+
     /**
-     *
+     * Build a query to be used by mongo API
      * @param pageRequest
      * @param severityFieldName
      * @param severityList
      * @param pageable
      * @return
      */
-    private List<Alert> findByField(PageRequest pageRequest, String severityFieldName, List<String> severityList, Pageable pageable) {
+    private Query buildQuery(PageRequest pageRequest, String severityFieldName, List<String> severityList, Pageable pageable) {
         List<Alert> result;
 
         Criteria criteria = new Criteria();
@@ -115,7 +136,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         if (pageable != null) {
             query.with(pageable);
         }
-        result = mongoTemplate.find(query, Alert.class);
-        return result;
+        return query;
     }
 }
