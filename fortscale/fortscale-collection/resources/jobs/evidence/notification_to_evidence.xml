@@ -27,8 +27,12 @@
                     <value>${collection.evidence.notification.score.field}</value>
                 </entry>
                 <entry>
-                    <key>notificationCauseField</key>
-                    <value>${collection.evidence.notification.cause.field}</value>
+                    <key>notificationTypeField</key>
+                    <value>${collection.evidence.notification.type.field}</value>
+                </entry>
+                <entry>
+                    <key>notificationValueField</key>
+                    <value>${collection.evidence.notification.value.field}</value>
                 </entry>
                 <entry>
                     <key>notificationTimestampField</key>

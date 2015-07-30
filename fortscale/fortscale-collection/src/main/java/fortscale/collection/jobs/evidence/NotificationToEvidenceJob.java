@@ -36,10 +36,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String fetchType;
 	private String topicName;
 	private String notificationScoreField;
-	private String notificationCauseField;
+	private String notificationValueField;
 	private String normalizedUsernameField;
 	private String notificationEntityField;
 	private String notificationTimestampField;
+	private String notificationTypeField;
 	private String score;
 
 	@Autowired
@@ -78,7 +79,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			JSONObject evidence = new JSONObject();
 			evidence.put(notificationScoreField, score);
 			evidence.put(notificationTimestampField, notification.getTs());
-			evidence.put(notificationCauseField, notification.getCause());
+			evidence.put(notificationTypeField, notification.getCause());
+			evidence.put(notificationValueField, getAnomalyField(notification));
 			evidence.put(notificationEntityField, getEntity(notification));
 			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 			String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
@@ -90,6 +92,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchConfiguration.setLastFetchTime(date.getTime() + "");
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
+	}
+
+	private String getAnomalyField(Notification notification) {
+		//TODO - get relevant field from attributes, should it be a
+		if (notification.getCause().equals("vpn_geo_hopping")) {
+			return notification.getAttributes().get("country");
+		}
+		return notification.getCause();
 	}
 
 	private String getEntity(Notification notification) {
@@ -135,10 +145,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
-		notificationCauseField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationCauseField");
+		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
 		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
 		notificationTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTimestampField");
+		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
 	}
