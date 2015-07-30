@@ -19,7 +19,7 @@
         "name": "user_inactivity_hourly",
         "type": "user_inactivity",
         "params": {
-          "dataSources": ["4769"],
+          "dataSources": ["kerberos_logins"],
           "inactivityDurationInMinutes": 60,
           "endTimeDeltaInMinutes": 5
         }
