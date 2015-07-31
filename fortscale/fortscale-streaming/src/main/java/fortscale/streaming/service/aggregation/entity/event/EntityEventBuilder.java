@@ -104,7 +104,7 @@ public class EntityEventBuilder {
 			aggrFeatureEventsMap.put(
 					String.format("%s.%s",
 							aggrFeatureEvent.getBucketConfName(),
-							aggrFeatureEvent.getAggregatedFeatureEventName()),
+							aggrFeatureEvent.getAggregatedFeatureName()),
 					aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEvent.unwrap());
 		}
@@ -112,8 +112,8 @@ public class EntityEventBuilder {
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
 
 		JSONObject entityEvent = new JSONObject();
-		entityEvent.put("event_type", String.format("entity_event.%s", entityEventData.getEntityEventName()));
-		entityEvent.put(entityEventData.getEntityEventName(), entityEventValue);
+		entityEvent.put("entity_event_type", String.format("entity_event.%s", entityEventData.getEntityEventName()));
+		entityEvent.put("entity_event_value", entityEventValue);
 		entityEvent.put("date_time_unix", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());

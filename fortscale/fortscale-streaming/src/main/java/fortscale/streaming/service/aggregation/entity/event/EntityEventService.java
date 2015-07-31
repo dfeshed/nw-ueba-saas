@@ -103,6 +103,6 @@ public class EntityEventService {
 	}
 
 	private String getFullEventName(AggrFeatureEventWrapper aggrFeatureEvent) {
-		return String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureEventName());
+		return String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
 	}
 }

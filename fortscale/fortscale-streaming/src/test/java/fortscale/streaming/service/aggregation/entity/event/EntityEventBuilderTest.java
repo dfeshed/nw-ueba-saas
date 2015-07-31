@@ -23,20 +23,22 @@ public class EntityEventBuilderTest {
 	private static final String SRC_MACHINE_CONTEXT_FIELD = "normalized_src_machine";
 	private static final String DST_MACHINE_CONTEXT_FIELD = "normalized_dst_machine";
 	private static final String DEFAULT_BUCKET_CONF_NAME = "testBucketConf";
-	private static final String DEFAULT_AGGR_FEATURE_EVENT_NAME = "testAggrFeatureEvent";
+	private static final String DEFAULT_AGGR_FEATURE_NAME = "testAggrFeature";
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
 
 	private EntityEventConf createDefaultEntityEventConf(List<String> contextFields) {
 		List<String> aggregatedFeatureEventNames = new ArrayList<>();
-		aggregatedFeatureEventNames.add(String.format("%s.%s", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME));
+		aggregatedFeatureEventNames.add(String.format("%s.%s", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME));
 		Map<String, List<String>> aggregatedFeatureEventNamesMap = new HashMap<>();
 		aggregatedFeatureEventNamesMap.put("aggregatedFeatureEventNames", aggregatedFeatureEventNames);
 		JSONObject entityEventFunction = new JSONObject();
 		entityEventFunction.put("clusters", new JSONObject());
 		entityEventFunction.put("alphas", new JSONObject());
-		entityEventFunction.put("betas", new JSONObject());
+		JSONObject betas = new JSONObject();
+		betas.put(String.format("%s.%s", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME), 0.5);
+		entityEventFunction.put("betas", betas);
 		return new EntityEventConf(DEFAULT_ENTITY_EVENT_NAME, contextFields, aggregatedFeatureEventNamesMap, entityEventFunction);
 	}
 
@@ -67,7 +69,7 @@ public class EntityEventBuilderTest {
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, username);
 		AggrFeatureEventWrapper wrapper = new AggrFeatureEventWrapper(createMessage(
-				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 10, 20, 1000, 800, 900, context));
+				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 10, 20, 1000, 800, 900, context));
 
 		builder.updateEntityEventData(wrapper);
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
@@ -125,13 +127,13 @@ public class EntityEventBuilderTest {
 		JSONObject context1 = new JSONObject();
 		context1.put(USERNAME_CONTEXT_FIELD, "user3");
 		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
-				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 10, 20, 1000, 800, 900, context1));
+				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 10, 20, 1000, 800, 900, context1));
 		builder.updateEntityEventData(wrapper1);
 
 		JSONObject context2 = new JSONObject();
 		context2.put(USERNAME_CONTEXT_FIELD, "user4");
 		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
-				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 30, 40, 2000, 800, 900, context2));
+				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 30, 40, 2000, 800, 900, context2));
 		builder.updateEntityEventData(wrapper2);
 
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
@@ -166,7 +168,7 @@ public class EntityEventBuilderTest {
 		context.put(USERNAME_CONTEXT_FIELD, "user5");
 		context.put(DST_MACHINE_CONTEXT_FIELD, "machine1");
 		AggrFeatureEventWrapper wrapper = new AggrFeatureEventWrapper(createMessage(
-				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 50, 100, 1000, 250, 750, context));
+				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 50, 100, 1000, 250, 750, context));
 		builder.updateEntityEventData(wrapper);
 
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
@@ -218,7 +220,7 @@ public class EntityEventBuilderTest {
 		context1.put(USERNAME_CONTEXT_FIELD, username);
 		context1.put(SRC_MACHINE_CONTEXT_FIELD, "machine2");
 		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
-				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 42, 81, 500, 300, 400, context1));
+				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 42, 81, 500, 300, 400, context1));
 		builder.updateEntityEventData(wrapper1);
 		long estimatedFiringTimeInSecondsOfEntityEvent1 = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
 
@@ -227,7 +229,7 @@ public class EntityEventBuilderTest {
 		context2.put(USERNAME_CONTEXT_FIELD, username);
 		context2.put(SRC_MACHINE_CONTEXT_FIELD, "machine3");
 		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
-				"P", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_EVENT_NAME, 64, 0, 500, 300, 400, context2));
+				"P", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 64, 0, 500, 300, 400, context2));
 		builder.updateEntityEventData(wrapper2);
 		long estimatedFiringTimeInSecondsOfEntityEvent2 = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
 

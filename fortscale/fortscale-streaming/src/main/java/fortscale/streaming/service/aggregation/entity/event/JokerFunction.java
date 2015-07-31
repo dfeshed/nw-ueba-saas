@@ -127,7 +127,7 @@ public class JokerFunction {
 			AggrFeatureEventWrapper aggrFeatureEvent = entry.getValue();
 			if (aggrFeatureEvent.isOfTypeP()) {
 				String pEventName = entry.getKey();
-				Double pValue = aggrFeatureEvent.getValue();
+				Double pValue = aggrFeatureEvent.getAggregatedFeatureValue();
 				if (pValue == null) {
 					String errorMsg = String.format("Event %s of type P must have a value field", pEventName);
 					logger.error(errorMsg);

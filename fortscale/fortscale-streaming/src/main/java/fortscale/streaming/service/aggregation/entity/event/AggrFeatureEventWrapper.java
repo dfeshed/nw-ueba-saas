@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Move to different package after Aggregation project renaming
 public class AggrFeatureEventWrapper {
 	private static final String BLANK_STRING = "";
 
-	private static final String EVENT_TYPE_FIELD = "event_type";
-	private static final String EVENT_TYPE_F_VALUE = "F";
-	private static final String EVENT_TYPE_P_VALUE = "P";
+	private static final String AGGREGATED_FEATURE_TYPE_FIELD = "aggregated_feature_type";
+	private static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
+	private static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
 	private static final String BUCKET_CONF_NAME_FIELD = "bucket_conf_name";
-	private static final String AGGREGATED_FEATURE_EVENT_NAME_FIELD = "aggregated_feature_event_name";
+	private static final String AGGREGATED_FEATURE_NAME_FIELD = "aggregated_feature_name";
+	private static final String AGGREGATED_FEATURE_VALUE_FIELD = "aggregated_feature_value";
 	private static final String SCORE_FIELD = "score";
 	private static final String CONTEXT_FIELD = "context";
 	private static final String START_TIME_FIELD = "start_time_unix";
@@ -37,31 +37,28 @@ public class AggrFeatureEventWrapper {
 		return aggrFeatureEvent;
 	}
 
-	public String getEventType() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(EVENT_TYPE_FIELD));
+	public String getAggregatedFeatureType() {
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(AGGREGATED_FEATURE_TYPE_FIELD));
 	}
 
 	public boolean isOfTypeF() {
-		String eventType = getEventType();
-		return EVENT_TYPE_F_VALUE.equals(eventType);
+		return AGGREGATED_FEATURE_TYPE_F_VALUE.equals(getAggregatedFeatureType());
 	}
 
 	public boolean isOfTypeP() {
-		String eventType = getEventType();
-		return EVENT_TYPE_P_VALUE.equals(eventType);
+		return AGGREGATED_FEATURE_TYPE_P_VALUE.equals(getAggregatedFeatureType());
 	}
 
 	public String getBucketConfName() {
 		return ConversionUtils.convertToString(aggrFeatureEvent.get(BUCKET_CONF_NAME_FIELD));
 	}
 
-	public String getAggregatedFeatureEventName() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(AGGREGATED_FEATURE_EVENT_NAME_FIELD));
+	public String getAggregatedFeatureName() {
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(AGGREGATED_FEATURE_NAME_FIELD));
 	}
 
-	public Double getValue() {
-		String aggrFeatureEventName = getAggregatedFeatureEventName();
-		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(aggrFeatureEventName));
+	public Double getAggregatedFeatureValue() {
+		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(AGGREGATED_FEATURE_VALUE_FIELD));
 	}
 
 	public Double getScore() {
