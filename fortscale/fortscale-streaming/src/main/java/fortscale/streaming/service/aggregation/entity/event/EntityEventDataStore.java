@@ -7,5 +7,4 @@ public interface EntityEventDataStore {
 	public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds);
 	public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds);
 	public void storeEntityEventData(EntityEventData entityEventData);
-	public void emptyEntityEventDataStore();
 }

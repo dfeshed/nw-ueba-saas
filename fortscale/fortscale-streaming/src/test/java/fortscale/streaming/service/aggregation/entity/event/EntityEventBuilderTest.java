@@ -1,22 +1,31 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import static fortscale.streaming.service.aggregation.entity.event.EntityEventServiceTest.createMessage;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import java.util.*;
-
-import static fortscale.streaming.service.aggregation.entity.event.EntityEventServiceTest.createMessage;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
 public class EntityEventBuilderTest {
 	private static final String DEFAULT_ENTITY_EVENT_NAME = "testEntityEvent";
 	private static final String USERNAME_CONTEXT_FIELD = "normalized_username";
@@ -27,7 +36,15 @@ public class EntityEventBuilderTest {
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
-
+	
+	
+	
+	@Before
+    public void setUp() {
+		((EntityEventDataTestStore)entityEventDataStore).emptyEntityEventDataStore();
+	}
+	
+	
 	private EntityEventConf createDefaultEntityEventConf(List<String> contextFields) {
 		List<String> aggregatedFeatureEventNames = new ArrayList<>();
 		aggregatedFeatureEventNames.add(String.format("%s.%s", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME));
@@ -44,7 +61,6 @@ public class EntityEventBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructor_should_fail_when_seconds_to_wait_before_firing_is_illegal() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -53,13 +69,11 @@ public class EntityEventBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructor_should_fail_when_entity_event_conf_is_null() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		new EntityEventBuilder(60, null);
 	}
 
 	@Test
 	public void builder_should_create_a_new_entity_event_data_and_store_it() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -92,7 +106,6 @@ public class EntityEventBuilderTest {
 
 	@Test
 	public void builder_should_update_an_existing_entity_event_data_and_restore_it() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -118,7 +131,6 @@ public class EntityEventBuilderTest {
 
 	@Test
 	public void builder_should_create_two_new_entity_event_data_and_store_them() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -147,7 +159,6 @@ public class EntityEventBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void update_entity_event_data_should_fail_when_aggregated_feature_event_is_null() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -157,7 +168,6 @@ public class EntityEventBuilderTest {
 
 	@Test
 	public void builder_should_not_create_entity_event_data_when_context_is_missing_fields() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		contextFields.add(SRC_MACHINE_CONTEXT_FIELD);
@@ -177,7 +187,6 @@ public class EntityEventBuilderTest {
 
 	@Test
 	public void builder_should_not_update_entity_event_data_when_it_was_already_fired() {
-		entityEventDataStore.emptyEntityEventDataStore();
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
@@ -207,7 +216,6 @@ public class EntityEventBuilderTest {
 
 	@Test
 	public void builder_should_fire_entity_events_on_time() throws InterruptedException {
-		entityEventDataStore.emptyEntityEventDataStore();
 		long secondsToWaitBeforeFiring = 60;
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);

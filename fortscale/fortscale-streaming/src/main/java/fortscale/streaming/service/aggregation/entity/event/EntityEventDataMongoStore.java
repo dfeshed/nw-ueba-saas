@@ -65,11 +65,4 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 
 		mongoTemplate.save(entityEventData, COLLECTION_NAME);
 	}
-
-	@Override
-	public void emptyEntityEventDataStore() {
-		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
-			mongoTemplate.dropCollection(COLLECTION_NAME);
-		}
-	}
 }

@@ -54,7 +54,6 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 		return String.format("%s.%s.%d.%d", entityEventName, contextId, startTime, endTime);
 	}
 
-	@Override
 	public void emptyEntityEventDataStore() {
 		entityEventDataMap.clear();
 	}
