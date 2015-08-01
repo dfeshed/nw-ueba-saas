@@ -25,6 +25,14 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "dst_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["destination_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.eventscore > 50)]"}
+        },
+        {
           "name": "number_of_successful_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},

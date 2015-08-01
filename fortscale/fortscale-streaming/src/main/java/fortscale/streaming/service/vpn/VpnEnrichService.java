@@ -86,8 +86,8 @@ public class VpnEnrichService {
             event.put(vpnGeolocationConfig.getCityFieldName() != null ? vpnGeolocationConfig.getCityFieldName() : "missingCityFieldName", geoIPInfo.getCityName() != null ? geoIPInfo.getCityName() : "");
             event.put(vpnGeolocationConfig.getIspFieldName() != null ? vpnGeolocationConfig.getIspFieldName() : "missingIspFieldName" , geoIPInfo.getISP() != null ? geoIPInfo.getISP() : "");
             event.put(vpnGeolocationConfig.getUsageTypeFieldName() != null ? vpnGeolocationConfig.getUsageTypeFieldName() : "missingUsageTypeFieldName", geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
-            event.put(vpnGeolocationConfig.getLongtitudeFieldName() != null ? vpnGeolocationConfig.getLongtitudeFieldName() : "missinglongtitudeFieldName", geoIPInfo.getLongitude());
-            event.put(vpnGeolocationConfig.getLatitudeFieldName() != null ? vpnGeolocationConfig.getLatitudeFieldName() : "missingLatitudeFieldName", geoIPInfo.getLatitude());
+            //event.put(vpnGeolocationConfig.getLongtitudeFieldName() != null ? vpnGeolocationConfig.getLongtitudeFieldName() : "missinglongtitudeFieldName", geoIPInfo.getLongitude());
+            //event.put(vpnGeolocationConfig.getLatitudeFieldName() != null ? vpnGeolocationConfig.getLatitudeFieldName() : "missingLatitudeFieldName", geoIPInfo.getLatitude());
         } catch (Exception e) {
             logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
         }
