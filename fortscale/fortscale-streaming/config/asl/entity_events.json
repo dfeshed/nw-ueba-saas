@@ -18,7 +18,8 @@
             "user_kerberos_daily.new_src_machine_kerberos",
             "user_kerberos_daily.new_dst_machine_kerberos",
             "user_ssh_daily.new_src_machine_ssh",
-            "user_ssh_daily.new_dst_machine_ssh"
+            "user_ssh_daily.new_dst_machine_ssh",
+            "user_kerberos_daily.distinct_number_of_dst_machines_with_high_score_kerberos"
           ]
         },
         "entityEventFunction": {
@@ -42,11 +43,13 @@
           },
           "alphas": {
             "distinct_machines_kerberos": 1.0,
-            "distinct_machines_ssh": 1.0
+            "distinct_machines_ssh": 1.0,
             "new_machines_kerberos": 1.0,
             "new_machines_ssh": 1.0
           },
-          "betas": {}
+          "betas": {
+            "user_kerberos_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0
+          }
         }
       }
     ]
