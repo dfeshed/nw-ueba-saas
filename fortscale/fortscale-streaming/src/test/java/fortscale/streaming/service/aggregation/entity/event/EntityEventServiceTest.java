@@ -3,6 +3,7 @@ package fortscale.streaming.service.aggregation.entity.event;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
@@ -15,10 +16,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Map;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-context-test.xml"})
 public class EntityEventServiceTest {
 	private static final double DELTA = 0.00001;
 
@@ -113,7 +115,7 @@ public class EntityEventServiceTest {
 				caseChecker |= 0b100;
 			} else {
 				@SuppressWarnings("unchecked")
-				Map<String, String> context = (Map)entityEventJson.get("context");
+				Map<String, String> context = (Map<String, String>)entityEventJson.get("context");
 				if ("user1".equals(context.get("normalized_username"))) {
 					Assert.assertEquals(70.93, entityEventValue, DELTA);
 					caseChecker |= 0b010;

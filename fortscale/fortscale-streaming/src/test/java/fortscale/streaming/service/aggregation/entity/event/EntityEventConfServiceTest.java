@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-conf-service-context.xml"})
 public class EntityEventConfServiceTest {
 	@Autowired
 	EntityEventConfService entityEventConfService;
