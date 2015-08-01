@@ -36,6 +36,23 @@
         }
       },
       {
+        "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
+        "type": "P",
+        "bucketConfName": "user_kerberos_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "dst_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
         "name": "distinct_number_of_src_machines_ssh",
         "type": "F",
         "bucketConfName": "user_ssh_daily",
