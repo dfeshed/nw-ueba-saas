@@ -1,13 +1,13 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.functions.AggrFeatureValue;
-import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -17,8 +17,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.functions.AggrFeatureValue;
+import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 
 /**
  * Created by amira on 08/07/2015.
@@ -39,6 +45,14 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     private static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     private static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
+    
+    private static final SimpleDateFormat format = getSimpleDateFormat();
+    
+    private static SimpleDateFormat getSimpleDateFormat(){
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        return format;
+    }
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
@@ -302,8 +316,6 @@ public class AggrFeatureEventBuilder {
         Long date_time_unix = System.currentTimeMillis() / 1000;
         event.put(EVENT_FIELD_DATE_TIME_UNIX, date_time_unix);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         String date_time = format.format(new Date(date_time_unix * 1000));
         event.put(EVENT_FIELD_DATE_TIME, date_time);
 

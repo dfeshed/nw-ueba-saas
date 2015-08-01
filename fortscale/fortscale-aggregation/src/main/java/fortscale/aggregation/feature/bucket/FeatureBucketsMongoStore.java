@@ -1,6 +1,8 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,15 +11,20 @@ import org.springframework.data.mongodb.core.index.Index.Duplicates;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import java.util.Collections;
-import java.util.List;
 
-public class FeatureBucketsMongoStore implements FeatureBucketsStore {
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class FeatureBucketsMongoStore implements FeatureBucketsStore, InitializingBean{
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
 	
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	private Set<String> collectionNames;
 
 	
 	@Override
@@ -45,7 +52,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
+		if (isCollectionExist(collectionName)) {
 			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 			
 			return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
@@ -59,15 +66,21 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 			mongoTemplate.createCollection(collectionName);
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(FeatureBucket.BUCKET_ID_FIELD,Direction.DESC).unique(Duplicates.DROP));
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(FeatureBucket.STRATEGY_ID_FIELD,Direction.DESC));
+			collectionNames.add(collectionName);
 		}
 		mongoTemplate.save(featureBucket, collectionName);
 	}
 	
 	private boolean isCollectionExist(String collectionName){
-		return mongoTemplate.collectionExists(collectionName);
+		return collectionNames.contains(collectionName);
 	}
 	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());			
 	}
 }
