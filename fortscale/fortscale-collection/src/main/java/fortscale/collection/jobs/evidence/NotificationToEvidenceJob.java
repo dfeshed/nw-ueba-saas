@@ -17,9 +17,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -33,6 +31,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
+	private String SORT_FIELD = "ts";
+	private String SPECIAL_NOTIFICATION = "VPN_user_creds_share";
+
 	// job parameters:
 	private String notificationsToIgnore;
 	private String fetchType;
@@ -44,6 +45,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationTimestampField;
 	private String notificationTypeField;
 	private String score;
+	private Map<String, String> notificationAnomalyMap;
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -55,14 +57,15 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running notification to evidence job");
+		Date date = new Date();
+		String dateStr = date.getTime() + "";
 		//get the last runtime from the fetchConfiguration Mongo repository
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
 		if (fetchConfiguration == null) {
 			//if no last runtime - create a one and save it in the collection
 			fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
 		}
-		//TODO - do we really need sort?
-		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "ts"));
+		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, SORT_FIELD));
 		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
 		logger.debug("Getting notifications after time {}", lastFetchTime);
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
@@ -89,20 +92,18 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			logger.debug("Writing to topic evidence - {}", messageToWrite);
 			streamWriter.send(notification.getIndex(), messageToWrite);
 		}
-		Date date = new Date();
-		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", date);
-		fetchConfiguration.setLastFetchTime(date.getTime() + "");
+		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", dateStr);
+		fetchConfiguration.setLastFetchTime(dateStr);
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
 	}
 
 	private String getAnomalyField(Notification notification) {
-		//TODO - get relevant field from attributes, should it be a
-		if (notification.getCause().equals("vpn_geo_hopping")) {
-			return notification.getAttributes().get("country");
-		} else if (notification.getCause().toLowerCase().contains("amt")) {
-			return notification.getAttributes().get("yid");
+		String value = notificationAnomalyMap.get(notification.getCause());
+		if (value != null && notification.getAttributes().containsKey(value)) {
+			return notification.getAttributes().get(value);
 		}
+		//default value
 		return notification.getCause();
 	}
 
@@ -114,20 +115,17 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		else if (notification.getCause().toLowerCase().contains("vpn")) {
 			result.add("vpn");
 		} else {
-			//TODO - what type of entity should AD notifications have? what about other types?
-			result.add("user");
+			result.add("active_directory");
 		}
 		return result;
 	}
 
 	private String getNormalizedUsername(Notification notification) {
-		//TODO - save this notification name somewhere?
-		if (notification.getCause().equals("VPN_user_creds_share")) {
+		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
 			return notification.getDisplayName();
 		}
 		//attempt to normalize username
 		String normalizedUsername = notification.getName();
-		//TODO - what about cache?
 		//if username is an active directory distinguished name
 		if (normalizedUsername.toLowerCase().contains("dc=")) {
 			User user = userRepository.findByAdDn(normalizedUsername);
@@ -157,6 +155,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
 		notificationTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTimestampField");
 		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+		String notificationAnomalyString = jobDataMapExtension.getJobDataMapStringValue(map, "notificationAnomalyMap");
+		notificationAnomalyMap = new HashMap();
+		for (String pair: notificationAnomalyString.split(",")) {
+			notificationAnomalyMap.put(pair.split(":")[0], pair.split(":")[1]);
+		}
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
 	}
