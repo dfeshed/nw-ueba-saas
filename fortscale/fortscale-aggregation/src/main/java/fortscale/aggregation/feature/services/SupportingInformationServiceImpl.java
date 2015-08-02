@@ -125,6 +125,6 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     }
 
     private String getBucketConfigurationName(String entityType, String dataSource) {
-        return entityType + "_" + dataSource;
+        return entityType + "_" + dataSource + "_daily";
     }
 }
