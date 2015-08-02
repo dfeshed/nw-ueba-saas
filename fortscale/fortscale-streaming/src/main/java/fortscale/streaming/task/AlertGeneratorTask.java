@@ -108,9 +108,6 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		// define package for Esper event type, each new event type should be part of this package
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
 
-		// define a Esper custom view - use for filtering out of order events from calender pre defined  windows
-		esperConfig.addPlugInView("fortscale", "ext_timed_batch", "fortscale.streaming.alert.plugins.ExternallyTimedBatchViewFortscaleFactory");
-
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 		createEsperConfiguration(config);
