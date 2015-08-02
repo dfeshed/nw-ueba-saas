@@ -134,7 +134,7 @@ public class BatchScheduler {
 		startJob("ETL", "SSH", params);
 		startJob("Fetch", "AMT", params);
 		startJob("ETL", "AMT", params);
-		startJob("Notification_ETL", "EVIDENCE", params);
+		//startJob("Notification_ETL", "EVIDENCE", params);
 		startJob("Scoring", "TOTAL", params);
 		startJob("Export", "USER", params);
 	}

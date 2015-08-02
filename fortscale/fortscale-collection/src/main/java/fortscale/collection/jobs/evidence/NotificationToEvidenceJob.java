@@ -45,7 +45,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationTimestampField;
 	private String notificationTypeField;
 	private String score;
-	private Map<String, String> notificationAnomalyMap;
+	private Map<String, List<String>> notificationAnomalyMap;
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -99,9 +99,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private String getAnomalyField(Notification notification) {
-		String value = notificationAnomalyMap.get(notification.getCause());
-		if (value != null && notification.getAttributes().containsKey(value)) {
-			return notification.getAttributes().get(value);
+		List<String> values = notificationAnomalyMap.get(notification.getCause());
+		//TODO - allow for taking more than one of the values as anomaly fields
+		if (values != null && values.size() > 0 && notification.getAttributes().containsKey(values.get(0))) {
+			return notification.getAttributes().get(values.get(0));
 		}
 		//default value
 		return notification.getCause();
@@ -155,17 +156,27 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
 		notificationTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTimestampField");
 		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
-		String notificationAnomalyString = jobDataMapExtension.getJobDataMapStringValue(map, "notificationAnomalyMap");
-		notificationAnomalyMap = new HashMap();
-		for (String pair: notificationAnomalyString.split(",")) {
-			if (pair.split(":").length > 1) {
-				notificationAnomalyMap.put(pair.split(":")[0], pair.split(":")[1]);
-			} else {
-				notificationAnomalyMap.put(pair.split(":")[0], "");
-			}
-		}
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
+		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationAnomalyMap"));
 		logger.debug("Job initialized");
+	}
+
+	private Map<String, List<String>> createAnomalyMap(String notificationAnomalyString) {
+		Map<String, List<String>> result = new HashMap();
+		//notificationAnomalyString is of format - notification1:[value1|value2...],notification2:[value1|value2...],...
+		for (String pair: notificationAnomalyString.split(",")) {
+			String notification = pair.split(":")[0];
+			String valuesString = pair.split(":")[1];
+			//get list of values inside []
+			valuesString = valuesString.substring(1, valuesString.length() - 1);
+			List<String> tempList = new ArrayList();
+			for (String value: valuesString.split("\\|")) {
+				tempList.add(value);
+			}
+			notificationAnomalyMap.put(notification, tempList);
+		}
+		return result;
 	}
 
 	@Override
