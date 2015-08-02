@@ -1,28 +1,24 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
-import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minidev.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
+import fortscale.utils.ConversionUtils;
+
 public class AggrFeatureEventWrapper {
 	private static final String BLANK_STRING = "";
 
-	private static final String AGGREGATED_FEATURE_TYPE_FIELD = "aggregated_feature_type";
 	private static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
 	private static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
-	private static final String BUCKET_CONF_NAME_FIELD = "bucket_conf_name";
-	private static final String AGGREGATED_FEATURE_NAME_FIELD = "aggregated_feature_name";
-	private static final String AGGREGATED_FEATURE_VALUE_FIELD = "aggregated_feature_value";
 	private static final String SCORE_FIELD = "score";
-	private static final String CONTEXT_FIELD = "context";
-	private static final String START_TIME_FIELD = "start_time_unix";
-	private static final String END_TIME_FIELD = "end_time_unix";
 
 	private JSONObject aggrFeatureEvent;
 	private Map<String, String> context;
@@ -38,7 +34,7 @@ public class AggrFeatureEventWrapper {
 	}
 
 	public String getAggregatedFeatureType() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(AGGREGATED_FEATURE_TYPE_FIELD));
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
 	}
 
 	public boolean isOfTypeF() {
@@ -50,15 +46,15 @@ public class AggrFeatureEventWrapper {
 	}
 
 	public String getBucketConfName() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(BUCKET_CONF_NAME_FIELD));
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
 	}
 
 	public String getAggregatedFeatureName() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(AGGREGATED_FEATURE_NAME_FIELD));
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
 	}
 
 	public Double getAggregatedFeatureValue() {
-		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(AGGREGATED_FEATURE_VALUE_FIELD));
+		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
 	}
 
 	public Double getScore() {
@@ -89,11 +85,11 @@ public class AggrFeatureEventWrapper {
 	}
 
 	public Long getStartTime() {
-		return ConversionUtils.convertToLong(aggrFeatureEvent.get(START_TIME_FIELD));
+		return ConversionUtils.convertToLong(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX));
 	}
 
 	public Long getEndTime() {
-		return ConversionUtils.convertToLong(aggrFeatureEvent.get(END_TIME_FIELD));
+		return ConversionUtils.convertToLong(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX));
 	}
 
 	private void createContextMap() {
@@ -101,7 +97,7 @@ public class AggrFeatureEventWrapper {
 		this.context = new HashMap<>();
 
 		try {
-			context = (JSONObject)aggrFeatureEvent.get(CONTEXT_FIELD);
+			context = (JSONObject)aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT);
 			Assert.notNull(context);
 		} catch (Exception e) {
 			return;
