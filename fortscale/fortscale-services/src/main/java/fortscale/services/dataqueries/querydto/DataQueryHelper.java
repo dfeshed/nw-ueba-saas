@@ -5,6 +5,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by rans on 23/07/15.
  * This is a helper class that helps generate a Data Query object to pass to the Data Query mechanism that will then generate SQL statement on Impala
  */
+@Component
 public class DataQueryHelper {
 
 
@@ -29,9 +31,6 @@ public class DataQueryHelper {
         return dataEntitiesConfig;
     }
 
-    public DataQueryHelper(DataEntitiesConfig dataEntitiesConfig) {
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
 
     /**
      * Creates a data query based on passed parameters
