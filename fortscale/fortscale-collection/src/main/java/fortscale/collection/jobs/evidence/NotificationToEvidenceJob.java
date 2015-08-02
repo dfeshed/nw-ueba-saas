@@ -158,7 +158,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		String notificationAnomalyString = jobDataMapExtension.getJobDataMapStringValue(map, "notificationAnomalyMap");
 		notificationAnomalyMap = new HashMap();
 		for (String pair: notificationAnomalyString.split(",")) {
-			notificationAnomalyMap.put(pair.split(":")[0], pair.split(":")[1]);
+			if (pair.split(":").length > 1) {
+				notificationAnomalyMap.put(pair.split(":")[0], pair.split(":")[1]);
+			} else {
+				notificationAnomalyMap.put(pair.split(":")[0], "");
+			}
 		}
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		logger.debug("Job initialized");
