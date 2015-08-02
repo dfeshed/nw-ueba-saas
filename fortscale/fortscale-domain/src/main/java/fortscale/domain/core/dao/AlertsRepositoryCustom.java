@@ -40,7 +40,7 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
-	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray);
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter);
 
 	/**
 	 *
@@ -48,6 +48,6 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return count of alert objects that apply to the filter
 	 */
-	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray);
+	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter);
 
 	}

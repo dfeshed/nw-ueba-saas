@@ -55,7 +55,7 @@ public class AlertsRepositoryImplTest {
 		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
-		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium");
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium", "Read,Rejected");
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}
