@@ -174,7 +174,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			for (String value: valuesString.split("\\|")) {
 				tempList.add(value);
 			}
-			notificationAnomalyMap.put(notification, tempList);
+			result.put(notification, tempList);
 		}
 		return result;
 	}
