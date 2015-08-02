@@ -55,14 +55,6 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	}
 
 	@Override
-	public List<Notification> findByTsGreaterThan(long ts, Sort sort) {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("ts").gt(ts));
-		query.with(sort);
-		return mongoTemplate.find(query, Notification.class);
-	}
-	
-	@Override
 	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();

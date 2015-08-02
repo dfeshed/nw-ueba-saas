@@ -140,10 +140,4 @@
 			<group>ISE</group>
 		</second>
 	</chain>
-	<chain>
-		<first>
-			<name>Notification_ETL</name>
-			<group>EVIDENCE</group>
-		</first>
-	</chain>
 </chains-data>

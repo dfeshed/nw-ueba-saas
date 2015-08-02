@@ -7,6 +7,7 @@ import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
+import fortscale.services.impl.SamAccountNameService;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -53,6 +54,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private FetchConfigurationRepository fetchConfigurationRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private SamAccountNameService samAccountNameService;
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -70,7 +73,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Getting notifications after time {}", lastFetchTime);
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
 		//get all notifications that occurred after the last runtime of the job
-		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(lastFetchTime, sort);
+		List<Notification> notifications = notificationsRepository.findByTsGreaterThanExcludeComments(lastFetchTime,
+				sort);
 		if (notifications.size() > 0) {
 			logger.debug("Found {} notifications, starting to send", notifications.size());
 		} else {
@@ -135,9 +139,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			}
 		//if username is a short name
 		} else if (!normalizedUsername.contains("@")) {
-			List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
-			if (users.size() == 1) {
-				normalizedUsername = users.get(0).getUsername();
+			List<String> usernames = samAccountNameService.getUsersBysAMAccountName(normalizedUsername);
+			if (usernames.size() == 1) {
+				normalizedUsername = usernames.get(0);
 			}
 		}
 		return normalizedUsername;
