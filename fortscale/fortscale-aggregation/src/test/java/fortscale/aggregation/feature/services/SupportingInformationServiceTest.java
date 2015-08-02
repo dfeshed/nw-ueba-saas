@@ -44,8 +44,6 @@ public class SupportingInformationServiceTest {
     @Mock
     private FeatureBucketsMongoStore featureBucketsStore;
 
-    private BucketConfigurationService bucketConfigurationService;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
