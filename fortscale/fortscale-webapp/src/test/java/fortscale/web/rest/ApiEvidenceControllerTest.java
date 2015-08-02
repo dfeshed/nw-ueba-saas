@@ -3,23 +3,23 @@ package fortscale.web.rest;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.exceptions.InvalidValueException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.util.NestedServletException;
 
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,6 +32,10 @@ public class ApiEvidenceControllerTest {
 
 	@Mock
 	private EvidencesRepository repository;
+
+	@Mock
+	private DataQueryHelper dataQueryHelper;
+
 
 	@InjectMocks
 	private ApiEvidenceController controller;
@@ -72,11 +76,15 @@ public class ApiEvidenceControllerTest {
 
 		TestEvidence evidence = new TestEvidence();
 		evidence.setId("123");
-		evidence.setDataEntityId("vpn");
+		List<String> dataEntitiesIds = new ArrayList<>();
+		dataEntitiesIds.add("vpn");
+		evidence.setDataEntitiesIds(dataEntitiesIds);
 		evidence.setTop3eventsJsonStr(SOME_EVENT_VALUE);
 		evidence.setStartDate(System.currentTimeMillis());
 		evidence.setEndDate(System.currentTimeMillis());
 		when(repository.findById(EVIDENCE_ID)).thenReturn(evidence);
+		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt())).
+				thenReturn(new DataQueryDTO());
 		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
