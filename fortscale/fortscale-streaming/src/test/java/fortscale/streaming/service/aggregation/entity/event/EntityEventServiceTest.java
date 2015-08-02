@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -36,15 +37,15 @@ public class EntityEventServiceTest {
 			JSONObject context) {
 
 		JSONObject message = new JSONObject();
-		message.put("aggregated_feature_type", aggrFeatureType);
-		message.put("bucket_conf_name", bucketConfName);
-		message.put("aggregated_feature_name", aggrFeatureName);
-		message.put("aggregated_feature_value", aggrFeatureValue);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE, aggrFeatureType);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME, bucketConfName);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME, aggrFeatureName);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE, aggrFeatureValue);
 		message.put("score", score);
-		message.put("date_time_unix", dateTime);
-		message.put("start_time_unix", startTime);
-		message.put("end_time_unix", endTime);
-		message.put("context", context);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_DATE_TIME_UNIX, dateTime);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX, startTime);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX, endTime);
+		message.put(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT, context);
 		return message;
 	}
 
