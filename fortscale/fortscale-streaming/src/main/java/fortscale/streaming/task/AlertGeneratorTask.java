@@ -107,6 +107,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 		// define package for Esper event type, each new event type should be part of this package
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
+		esperConfig.addPlugInSingleRowFunction("hourStartTimestamp","fortscale.streaming.alert","hourStartTimestamp");
+		esperConfig.addPlugInSingleRowFunction("dayStartTimestamp","fortscale.streaming.alert","dayStartTimestamp");
+		esperConfig.addPlugInSingleRowFunction("hourEndTimestamp","fortscale.streaming.alert","hourEndTimestamp");
 
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
