@@ -44,13 +44,13 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
         String bucketConfigName = getBucketConfigurationName(entityType, dataSource);
 
-        logger.debug("Bucket configuration name = " + bucketConfigName);
+        logger.debug("Bucket configuration name = {}", bucketConfigName);
 
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
         if (bucketConfig != null) {
             // TODO add toString method to FeatureBucketConf
-            logger.info("Using bucket configuration {} with strategy " + bucketConfig.getName(), bucketConfig.getStrategyName());
+            logger.info("Using bucket configuration {} with strategy {}", bucketConfig.getName(), bucketConfig.getStrategyName());
         }
         else {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
@@ -117,7 +117,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
                 supportingInformationHistogram.add((GenericHistogram) featureValue);
             } else {
                 // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id " + featureName, featureBucket.getBucketId());
+                logger.warn("Cannot find histogram data for feature {} in bucket id {}", featureName, featureBucket.getBucketId());
             }
         }
 
