@@ -7,6 +7,7 @@ import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EntityTags;
 import fortscale.domain.core.EntityType;
+import fortscale.domain.core.SessionTimeUpdate;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.subscribers.AlertSubscriber;
 import fortscale.streaming.service.SpringService;
@@ -24,8 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.isConfigContainKey;
+import static fortscale.streaming.ConfigUtils.*;
 
 /**
  * Created by danal on 16/06/2015.
@@ -52,15 +52,46 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	 */
 	protected AlertsService alertsService;
 
+
+	@Override protected void wrappedInit(Config config, TaskContext context) {
+		alertsService = SpringService.getInstance().resolve(AlertsService.class);
+
+		// creating the esper configuration
+		Configuration esperConfig = new Configuration();
+
+		// define package for Esper event type, each new event type should be part of this package
+		esperConfig.addEventTypeAutoName("fortscale.domain.core");
+		esperConfig.addPlugInSingleRowFunction("hourStartTimestamp","fortscale.streaming.alert","hourStartTimestamp");
+		esperConfig.addPlugInSingleRowFunction("dayStartTimestamp","fortscale.streaming.alert","dayStartTimestamp");
+		esperConfig.addPlugInSingleRowFunction("hourEndTimestamp","fortscale.streaming.alert","hourEndTimestamp");
+
+		// creating the Esper service
+		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
+		createEsperConfiguration(config);
+		createInputTopicMapping(config,context);
+		updateEsperFromCache();
+	}
+
+
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		if (inputTopicMapping.containsKey(inputTopic)) {
 			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
-			//send input data to Esper and save in cache if necessary
 			if (info != null) {
+				//create dynamic statements if necessary
+				if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null) {
+					List<String> dynamicStatements = inputTopicMapping.get(inputTopic).getDynamicStatements();
+					for(String dynamicStatement : dynamicStatements){
+						createStatement(rulesConfiguration.get(dynamicStatement));
+					}
+				}
+
+				//send input data to Esper
 				epService.getEPRuntime().sendEvent(info);
+
+				//save input data in cache if necessary
 				if (inputTopicMapping.get(inputTopic).getKeyValueStore() != null) {
 					KeyValueStore keyValueStore = inputTopicMapping.get(inputTopic).getKeyValueStore();
 					keyValueStore.put(info.toString(), info);
@@ -71,6 +102,19 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			logger.warn("Can't handle events arriving from topic " + inputTopic + ", Doesn't have TopicConfiguration");
 		}
 	}
+
+
+	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	}
+
+
+	@Override protected void wrappedClose() throws Exception {
+		for (EPStatement esperEventStatement : epsStatements) {
+			esperEventStatement.destroy();
+		}
+	}
+
+
 
 	/*
 	 *
@@ -95,30 +139,6 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		return info;
 	}
 
-
-	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-	}
-
-	@Override protected void wrappedInit(Config config, TaskContext context) {
-		alertsService = SpringService.getInstance().resolve(AlertsService.class);
-
-		// creating the esper configuration
-		Configuration esperConfig = new Configuration();
-
-		// define package for Esper event type, each new event type should be part of this package
-		esperConfig.addEventTypeAutoName("fortscale.domain.core");
-		esperConfig.addPlugInSingleRowFunction("hourStartTimestamp","fortscale.streaming.alert","hourStartTimestamp");
-		esperConfig.addPlugInSingleRowFunction("dayStartTimestamp","fortscale.streaming.alert","dayStartTimestamp");
-		esperConfig.addPlugInSingleRowFunction("hourEndTimestamp","fortscale.streaming.alert","hourEndTimestamp");
-
-		// creating the Esper service
-		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
-		createEsperConfiguration(config);
-		createInputTopicMapping(config,context);
-		updateEsperFromCache();
-	}
-
-
 	private void createEsperConfiguration(Config config){
 		//subscribe instances of Esper EPL statements
 		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");
@@ -130,7 +150,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			String subscriberBeanName = getConfigString(config, String.format("fortscale.esper.rule.subscriberBean.%s", rule));
 			boolean autoCreate = config.getBoolean(String.format("fortscale.esper.rule.auto-create.%s", rule));
 			RuleConfig ruleConfig = new RuleConfig(ruleName, statement, autoCreate, subscriberBeanName);
-			rulesConfiguration.put(ruleName, ruleConfig);
+			rulesConfiguration.put(rule, ruleConfig);
 			if (autoCreate) {
 				createStatement(ruleConfig);
 			}
@@ -145,6 +165,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			Class clazz = null;
 			Method method = null;
 			KeyValueStore keyValueStore = null;
+			List<String> dynamicStatements = null;
 			if (isConfigContainKey(config, String.format("fortscale.input.info.class.%s", inputInfo))) {
 
 				String className = getConfigString(config, String.format("fortscale.input.info.class.%s", inputInfo));
@@ -168,7 +189,10 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				String cacheName = getConfigString(config, String.format("fortscale.input.info.cache-name.%s", inputInfo));
 				keyValueStore = (KeyValueStore) context.getStore(cacheName);
 			}
-			inputTopicMapping.put(inputTopic, new TopicConfiguration(clazz, method, keyValueStore ));
+			if (isConfigContainKey(config, String.format("fortscale.input.info.dynamic-statements.%s", inputInfo))) {
+				dynamicStatements = getConfigStringList(config, String.format("fortscale.input.info.dynamic-statements.%s", inputInfo));
+			}
+			inputTopicMapping.put(inputTopic, new TopicConfiguration(clazz, method, keyValueStore, dynamicStatements));
 		}
 	}
 
@@ -190,12 +214,6 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		}
 	}
 
-	@Override protected void wrappedClose() throws Exception {
-		for (EPStatement esperEventStatement : epsStatements) {
-			esperEventStatement.destroy();
-		}
-	}
-
 	/**
 	 * create esper statement according to given rule configuration and set a subscriber to that statement
 	 */
@@ -213,10 +231,18 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		epsStatements.add(esperEventStatement);
 	}
 
+
 	public EntityTags createEntityTags(String userName,String tagMessageString) throws Exception{
 		List<String> tags = mapper.readValue(tagMessageString, List.class);
 		return new EntityTags(EntityType.User, userName, tags);
 	}
+
+	public SessionTimeUpdate createSessionTimeUpdate(String key, String sessionTimeUpdate) throws Exception{
+		return (SessionTimeUpdate) mapper.readValue(sessionTimeUpdate, SessionTimeUpdate.class);
+	}
+
+
+
 
 	// inner class for holding input topic configurations
 	protected static class TopicConfiguration {
@@ -227,10 +253,13 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 		private KeyValueStore keyValueStore;
 
-		public TopicConfiguration(Class clazz, Method method, KeyValueStore keyValueStore) {
+		private List<String> dynamicStatements;
+
+		public TopicConfiguration(Class clazz, Method method, KeyValueStore keyValueStore, List<String> dynamicStatements) {
 			this.clazz = clazz;
 			this.method = method;
 			this.keyValueStore = keyValueStore;
+			this.dynamicStatements = dynamicStatements;
 		}
 
 		public Class getClazz() {
@@ -256,8 +285,15 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		public void setKeyValueStore(KeyValueStore keyValueStore) {
 			this.keyValueStore = keyValueStore;
 		}
-	}
 
+		public List<String> getDynamicStatements() {
+			return dynamicStatements;
+		}
+
+		public void setDynamicStatements(List<String> dynamicStatements) {
+			this.dynamicStatements = dynamicStatements;
+		}
+	}
 
 	// inner class for holding rule configuration
 	protected static class RuleConfig {
