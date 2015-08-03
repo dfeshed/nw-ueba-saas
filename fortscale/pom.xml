@@ -66,7 +66,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
 		<junitparams.version>1.0.2</junitparams.version>
-		<mockito.version>1.10.19</mockito.version>
+		<mockito.version>1.9.0</mockito.version>
 		<springokito.version>1.0.9</springokito.version>
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.2</slf4j.version>
