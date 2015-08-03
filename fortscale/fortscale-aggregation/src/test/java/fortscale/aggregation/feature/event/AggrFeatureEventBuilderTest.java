@@ -34,6 +34,9 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -156,19 +159,19 @@ public class AggrFeatureEventBuilderTest {
         Long startTime = startTime1 + (startTimeDayNumber-1)*day;
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
-        Assert.assertEquals("F", event.get("aggregated_feature_type"));
-        Assert.assertEquals("bc1", event.get("bucket_conf_name"));
+        Assert.assertEquals("F", event.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
+        Assert.assertEquals("bc1", event.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
         String date_time = format.format(new Date(startTime * 1000));
-        Assert.assertEquals(date_time, event.get("start_time"));
+        Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME));
         date_time = format.format(new Date(endTime * 1000));
-        Assert.assertEquals(date_time, event.get("end_time"));
-        Assert.assertEquals("my_number_of_distinct_values", event.get("aggregated_feature_name"));
-        Assert.assertEquals(numberOfDistinctValues, event.get("aggregated_feature_value"));
-        Assert.assertEquals("john", ((HashMap<?, ?>) event.get("context")).get("username"));
-        Assert.assertEquals("m1", ((HashMap<?, ?>) event.get("context")).get("machine"));
-        Assert.assertEquals(startTime, event.get("start_time_unix"));
-        Assert.assertEquals(endTime, event.get("end_time_unix"));
-        Assert.assertEquals("ssh", ((JSONArray) event.get("data_sources")).get(0));
+        Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
+        Assert.assertEquals("my_number_of_distinct_values", event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
+        Assert.assertEquals(numberOfDistinctValues, event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
+        Assert.assertEquals("john", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("username"));
+        Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("machine"));
+        Assert.assertEquals(startTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX));
+        Assert.assertEquals(endTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX));
+        Assert.assertEquals("ssh", ((JSONArray)event.get(AggrFeatureEventBuilder.EVENT_FIELD_DATA_SOURCES)).get(0));
 
     }
 

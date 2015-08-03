@@ -1,0 +1,57 @@
+{
+  "EntityEvents": {
+    "GlobalParams": {
+      "secondsToWaitBeforeFiring": 300,
+      "fireEventsEverySeconds": 300
+    },
+
+    "EntityEventDefinitions": [
+      {
+        "name": "user_daily",
+        "contextFields": ["normalized_username"],
+        "aggregatedFeatureEventNamesMap": {
+          "aggregatedFeatureEventNames": [
+            "user_kerberos_daily.distinct_number_of_src_machines_kerberos",
+            "user_kerberos_daily.distinct_number_of_dst_machines_kerberos",
+            "user_ssh_daily.distinct_number_of_src_machines_ssh",
+            "user_ssh_daily.distinct_number_of_dst_machines_ssh",
+            "user_kerberos_daily.new_src_machine_kerberos",
+            "user_kerberos_daily.new_dst_machine_kerberos",
+            "user_ssh_daily.new_src_machine_ssh",
+            "user_ssh_daily.new_dst_machine_ssh",
+            "user_kerberos_daily.distinct_number_of_dst_machines_with_high_score_kerberos"
+          ]
+        },
+        "entityEventFunction": {
+          "clusters": {
+            "distinct_machines_kerberos": [
+              "user_kerberos_daily.distinct_number_of_src_machines_kerberos",
+              "user_kerberos_daily.distinct_number_of_dst_machines_kerberos"
+            ],
+            "distinct_machines_ssh": [
+              "user_ssh_daily.distinct_number_of_src_machines_ssh",
+              "user_ssh_daily.distinct_number_of_dst_machines_ssh"
+            ],
+            "new_machines_kerberos": [
+              "user_kerberos_daily.new_src_machine_kerberos",
+              "user_kerberos_daily.new_dst_machine_kerberos"
+            ],
+            "new_machines_ssh": [
+              "user_ssh_daily.new_src_machine_ssh",
+              "user_ssh_daily.new_dst_machine_ssh"
+            ]
+          },
+          "alphas": {
+            "distinct_machines_kerberos": 1.0,
+            "distinct_machines_ssh": 1.0,
+            "new_machines_kerberos": 1.0,
+            "new_machines_ssh": 1.0
+          },
+          "betas": {
+            "user_kerberos_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0
+          }
+        }
+      }
+    ]
+  }
+}

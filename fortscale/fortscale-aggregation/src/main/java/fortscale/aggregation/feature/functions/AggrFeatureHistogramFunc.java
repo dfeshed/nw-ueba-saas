@@ -54,7 +54,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
                 Feature feature = features.get(featureName);
                 if (feature != null) {
                     Object featureValue = feature.getValue();
-                    if(featureValue==null || (featureValue instanceof String && StringUtils.isEmpty((String)featureValue))) {
+                    if(featureValue==null || (featureValue instanceof String && StringUtils.isBlank((String)featureValue))) {
                         featureValue = "N/A";
                     }
                 	histogram.add(featureValue, 1.0);
