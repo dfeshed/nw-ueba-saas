@@ -15,7 +15,6 @@ import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class AMTWithHistoricalParsingTest {
-	private static ClassPathXmlApplicationContext testContextManager;
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String parsConfFile =  "resources/conf-files/processAMTParsingHistoricalEvents.conf";
@@ -23,16 +22,17 @@ public class AMTWithHistoricalParsingTest {
 
 
 
+	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass(){
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
 
 	}
 
 	@AfterClass
 	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
+//		testContextManager.close();
+//		testContextManager = null;
 	}
 
 

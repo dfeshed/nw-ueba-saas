@@ -19,7 +19,6 @@ import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class AMTWithOngoingParsingTest {
-	private static ClassPathXmlApplicationContext testContextManager;
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String parsConfFile ="resources/conf-files/processAMTParsingOngoingEvents.conf";
@@ -27,18 +26,12 @@ public class AMTWithOngoingParsingTest {
 
 
 
+	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass(){
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
 
 	}
-
-	@AfterClass
-	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
-	}
-
 
 	@Before
 	public void setUp() throws Exception {

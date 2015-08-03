@@ -7,8 +7,10 @@ import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -39,6 +41,12 @@ public class DhcpDhcpdTest {
 		date = TestUtils.constuctDate(Nov_19_23_59_56);
 		Nov_19_23_59_56_L = TestUtils.getUnixDate(date);
 	}
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
 	@Before
 	public void setUp() throws Exception {

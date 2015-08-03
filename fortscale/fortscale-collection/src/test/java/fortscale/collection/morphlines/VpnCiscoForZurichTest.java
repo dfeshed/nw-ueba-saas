@@ -31,11 +31,6 @@ public class VpnCiscoForZurichTest {
 		vpnSessionRepository.deleteAll();
 	}
 
-	@AfterClass
-	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
-	}
 
 	@Before
 	public void setUp() throws Exception {

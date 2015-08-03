@@ -32,8 +32,8 @@ public class VpnCiscoASANoEventCodesTest {
 
 	@AfterClass
 	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
+//		testContextManager.close();
+//		testContextManager = null;
 	}
 
 

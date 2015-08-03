@@ -21,20 +21,11 @@ public class SecEventsSplunk4768Test {
 	private String conf4768File = "resources/conf-files/processSecEvt4768.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
-
-    private static ClassPathXmlApplicationContext testContextManager;
-
-    @BeforeClass
+    @SuppressWarnings("resource")
+	@BeforeClass
     public static void setUpClass() {
-        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
     }
-
-    @AfterClass
-    public static void finalizeTestClass(){
-        testContextManager.close();
-        testContextManager = null;
-    }
-
 
 
     @Before
