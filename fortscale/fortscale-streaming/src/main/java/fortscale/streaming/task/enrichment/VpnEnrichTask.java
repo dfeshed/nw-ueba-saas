@@ -7,6 +7,7 @@ import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -20,9 +21,11 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.utils.ConversionUtils.convertToBoolean;
 
 /**
  * Created by rans on 01/02/15.
@@ -156,6 +159,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
 
+
         message = vpnEnrichService.processVpnEvent(message);
 
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
@@ -170,6 +174,19 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         } catch (Exception exception) {
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", vpnEnrichService.getInputTopic(), vpnEnrichService.getOutputTopic()), exception);
         }
+
+		List<JSONObject> evidenceList = vpnEnrichService.getGeoHoppingEvidence(message);
+		for (JSONObject evidence: evidenceList) {
+			try {
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+						"fortscale-notification-event-score"), evidence.get("index"),
+						evidence.toJSONString(JSONStyle.NO_COMPRESS));
+				collector.send(output);
+			} catch (Exception exception) {
+				throw new KafkaPublisherException("failed to send evidence", exception);
+			}
+		}
+
     }
 
     @Override

@@ -116,19 +116,25 @@ public class VpnEnrichService {
         return event;
     }
 
+    private VpnSession getVPNSession(JSONObject event, VpnSessionUpdateConfig vpnSessionUpdateConfig) {
+        String countryIsoCodeFieldName = vpnSessionUpdateConfig.getCountryIsoCodeFieldName();
+        String longtitudeFieldName = vpnSessionUpdateConfig.getLongtitudeFieldName();
+        String latitudeFieldName = vpnSessionUpdateConfig.getLatitudeFieldName();
+        String sessionIdFieldName = vpnSessionUpdateConfig.getSessionIdFieldName();
+        return recordToVpnSessionConverter.convert(event, countryIsoCodeFieldName, longtitudeFieldName,
+                latitudeFieldName, sessionIdFieldName);
+    }
+
     protected JSONObject processSessionUpdate(JSONObject event) {
+
         VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 
         if(vpnService == null){
             logger.warn("vpnService is null while processing command {}. probably the spring configuration context was not loaded", VpnEnrichService.class);
             return event;
         }
-        String countryIsoCodeFieldName = vpnSessionUpdateConfig.getCountryIsoCodeFieldName();
-        String longtitudeFieldName = vpnSessionUpdateConfig.getLongtitudeFieldName();
-        String latitudeFieldName = vpnSessionUpdateConfig.getLatitudeFieldName();
-        String sessionIdFieldName = vpnSessionUpdateConfig.getSessionIdFieldName();
 
-        VpnSession vpnSession = recordToVpnSessionConverter.convert(event, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
+        VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
 
         // check if failed event
         if(vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null){
@@ -162,11 +168,6 @@ public class VpnEnrichService {
             }
         }
 
-        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
-        if(isRunGeoHopping != null && isRunGeoHopping){
-            processGeoHopping(vpnSessionUpdateConfig, vpnSession);
-        }
-
         if(vpnSession.getCreatedAt() != null) {
             vpnService.createOpenVpnSession(vpnSession);
         } else{
@@ -174,6 +175,16 @@ public class VpnEnrichService {
         }
 
         return event;
+    }
+
+    public List<JSONObject> getGeoHoppingEvidence(JSONObject event) {
+        VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
+        VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
+        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
+        if(isRunGeoHopping != null && isRunGeoHopping){
+            return processGeoHopping(vpnSessionUpdateConfig, vpnSession);
+        }
+        return null;
     }
 
     private void cleanSourceIpInfoFromEvent(JSONObject event){
@@ -216,7 +227,7 @@ public class VpnEnrichService {
         }
     }
 
-    private void processGeoHopping(VpnSessionUpdateConfig vpnSessionUpdateConfig, VpnSession curVpnSession){
+    private List<JSONObject> processGeoHopping(VpnSessionUpdateConfig vpnSessionUpdateConfig, VpnSession curVpnSession){
         if(curVpnSession.getClosedAt() == null){
             List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
             if(curVpnSession.getGeoHopping()){
@@ -231,11 +242,14 @@ public class VpnEnrichService {
                 }
 
                 //create notifications for the vpn sessions
-                vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+                return vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
             }
 
 
         }
+
+        return null;
+
     }
 
     public String getUsernameFieldName() {

@@ -1,6 +1,5 @@
 package fortscale.services.notifications;
 
-import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
@@ -8,15 +7,13 @@ import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-
 import java.beans.PropertyDescriptor;
 import java.util.*;
 
@@ -46,39 +43,24 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 	
 	private List<String> vpnSessionFields;
 	
-	public void createNotifications(List<VpnSession> vpnSessions){
-		List<Notification> notifications = new ArrayList<>();
+	public List<JSONObject> createNotifications(List<VpnSession> vpnSessions){
+		List<JSONObject> evidenceList = new ArrayList();
 		for(VpnSession vpnSession: vpnSessions){
 			User user = userRepository.findByUsername(vpnSession.getNormalizedUserName());
-			Notification notification = new Notification();
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
-			notification.setTs(TimestampUtils.convertToSeconds(ts));
-			notification.setIndex(buildIndex(vpnSession));
-			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
-			notification.setName(vpnSession.getNormalizedUserName());
-			notification.setCause(VPN_GEO_HOPPING_CAUSE);
-			notification.setUuid(UUID.randomUUID().toString());
-			if(user != null){
-				notification.setDisplayName(user.getDisplayName());
-				notification.setFsId(user.getId());
-			} else{
-				notification.setDisplayName(vpnSession.getNormalizedUserName());
-				notification.setFsId(vpnSession.getNormalizedUserName());
-			}
-			
-			notification.setAttributes(getVpnSessionAttributes(vpnSession));
-			
-			logger.info("adding geo hopping notification with the index {}", notification.getIndex());
-			notifications.add(notification);
+			String index = buildIndex(vpnSession);
+			JSONObject evidence = new JSONObject();
+			evidence.put("notification_score", 50);
+			evidence.put("date_time_unix", ts);
+			evidence.put("notification_type", VPN_GEO_HOPPING_CAUSE);
+			evidence.put("notification_value", "country");
+			evidence.put("notification_entity", "vpn");
+			evidence.put("normalized_username", user.getUsername());
+			evidence.put("index", index);
+			logger.info("adding geo hopping notification with the index {}", index);
+			evidenceList.add(evidence);
 		}
-		
-		try{
-			notificationsRepository.save(notifications);
-		} catch (DuplicateKeyException ex){
-			logger.info("got geo hopping notification duplication exception", ex);
-		} catch (Exception e) {
-			logger.info("got the following exception while trying to save new notifications to DB.", e);
-		}
+		return evidenceList;
 	}
 	
 	private String buildIndex(VpnSession vpnSession){
