@@ -53,7 +53,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
 	}
-	
+
 	@Override
 	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 

@@ -1,26 +1,35 @@
 
 package fortscale.collection.jobs.ad;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.quartz.DisallowConcurrentExecution;
-import fortscale.collection.jobs.FortscaleJob;
-import fortscale.utils.logging.Logger;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.*;
-import javax.naming.ldap.*;
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
+
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.Control;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.PagedResultsControl;
+import javax.naming.ldap.PagedResultsResponseControl;
+import javax.xml.bind.DatatypeConverter;
+
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import fortscale.collection.jobs.FortscaleJob;
+import fortscale.utils.logging.Logger;
 
 /**
  * Created by Amir Keren on 17/05/2015.
@@ -125,7 +134,7 @@ public class AdFetchJob extends FortscaleJob {
 				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
 				String password = adConnection.getDomainPassword();
 				password = fortscale.utils.EncryptionUtils.decrypt(password);
-				Hashtable environment = new Hashtable();
+				Hashtable<String, String> environment = new Hashtable<String, String>();
 				environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 				environment.put(Context.PROVIDER_URL, dcAddress);
 				environment.put(Context.SECURITY_PRINCIPAL, username);
@@ -156,7 +165,7 @@ public class AdFetchJob extends FortscaleJob {
 				searchControls.setCountLimit(resultLimit);
 			}
 			do {
-				NamingEnumeration answer = context.search(baseSearch, _filter, searchControls);
+				NamingEnumeration<SearchResult> answer = context.search(baseSearch, _filter, searchControls);
 				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
 					SearchResult result = (SearchResult)answer.next();
 					Attributes attributes = result.getAttributes();
@@ -178,10 +187,10 @@ public class AdFetchJob extends FortscaleJob {
 	//auxiliary method that handles the current response from the server
 	private void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
 		if (attributes != null) {
-            for (NamingEnumeration index = attributes.getAll(); index.hasMoreElements();) {
+            for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements();) {
                 Attribute atr = (Attribute)index.next();
                 String key = atr.getID();
-                Enumeration values = atr.getAll();
+                NamingEnumeration<?> values = atr.getAll();
 				if (key.equals("member")) {
                     boolean first = true;
                     while (values.hasMoreElements()) {

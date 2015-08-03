@@ -68,7 +68,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	 * In the future, such epochtime will be kept for each data source separately,
 	 * then the list of data sources will be needed.
 	 *
-	 * @param dataSources list of all the data sources that need to reach the awaited epochtime.
+	 * @param dataSources list of all the data sources that need to reach the awaited epochtime. Notice: currently it is not used.
 	 * @param epochtime   the awaited epochtime that needs to be reached.
 	 * @param listener    the listener that will be notified.
 	 * @return the ID of the new registration.
@@ -79,7 +79,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		Assert.isTrue(epochtime >= 0);
 		Assert.notNull(listener);
 
-		Registration registration = new Registration(listener, dataSources, epochtime, nextRegistrationId);
+		Registration registration = new Registration(listener, epochtime, nextRegistrationId);
 		pending.add(registration);
 		idToRegistrationMap.put(nextRegistrationId, registration);
 		nextRegistrationId++;
@@ -132,8 +132,6 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	private static final class Registration {
 		// The listener that needs to be notified
 		private DataSourcesSyncTimerListener listener;
-		// The data sources that need to be tracked
-		private List<String> dataSources;
 		// The epochtime that needs to be reached
 		private long epochtime;
 		// The system time in which the listener should be notified
@@ -141,9 +139,8 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		// This registration's ID
 		private long id;
 
-		public Registration(DataSourcesSyncTimerListener listener, List<String> dataSources, long epochtime, long id) {
+		public Registration(DataSourcesSyncTimerListener listener, long epochtime, long id) {
 			this.listener = listener;
-			this.dataSources = dataSources;
 			this.epochtime = epochtime;
 			this.id = id;
 
@@ -153,10 +150,6 @@ public class DataSourcesSyncTimer implements InitializingBean {
 
 		public DataSourcesSyncTimerListener getListener() {
 			return listener;
-		}
-
-		public List<String> getDataSources() {
-			return dataSources;
 		}
 
 		public long getEpochtime() {

@@ -1,16 +1,16 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimerListener;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
-import fortscale.utils.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+
+import fortscale.aggregation.DataSourcesSyncTimerListener;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.utils.logging.Logger;
 
 /**
  * AggrFeatureEventData maintains a list of bucketIDs and other information that is used by the associated

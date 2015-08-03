@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
+
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -8,7 +9,9 @@ import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -23,6 +26,8 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
+	
+	private Counter processedMessageCount;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
@@ -39,6 +44,8 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 		
 		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context));
+		
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 	}
 	
 	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
@@ -48,6 +55,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		processedMessageCount.inc();
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		// Get Event
