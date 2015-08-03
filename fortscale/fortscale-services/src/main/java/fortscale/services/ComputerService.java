@@ -1,10 +1,7 @@
 package fortscale.services;
 
 import fortscale.domain.ad.AdComputer;
-import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
-
-import java.io.IOException;
 
 public interface ComputerService extends CachingService{
 

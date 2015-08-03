@@ -1,16 +1,14 @@
 package fortscale.collection.tagging.service;
 
-import fortscale.domain.ad.AdGroup;
-import fortscale.services.UserService;
-import fortscale.services.cache.CacheHandler;
-import org.apache.hadoop.classification.InterfaceAudience;
-import org.springframework.beans.factory.InitializingBean;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.List;
-import java.util.Map;
+import fortscale.domain.ad.AdGroup;
+import fortscale.services.UserService;
+import fortscale.services.cache.CacheHandler;
 
 /**
  * Created by tomerd on 27/05/2015.

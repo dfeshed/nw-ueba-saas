@@ -1,32 +1,44 @@
 package fortscale.collection.morphlines.commands;
 
-import com.typesafe.config.*;
-import com.typesafe.config.impl.*;
-import fortscale.collection.morphlines.RecordSinkCommand;
-import fortscale.collection.tagging.service.impl.UserTaggingServiceImpl;
-import org.apache.commons.collections.map.HashedMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigMergeable;
+import com.typesafe.config.ConfigObject;
+import com.typesafe.config.ConfigOrigin;
+import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.ConfigValue;
+import com.typesafe.config.ConfigValueType;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.collection.morphlines.RecordSinkCommand;
 
 public class AddYearToDetermineMorphCmdTest {
 
 	private RecordSinkCommand sink = new RecordSinkCommand();
 	private Config config;
-	private UserTaggingServiceImpl service;
 
 	@Before
 	public void setUp() throws Exception {	
@@ -39,7 +51,6 @@ public class AddYearToDetermineMorphCmdTest {
 	private static Answer<ConfigObject> getRoot() {
 		return new Answer<ConfigObject>() {
 			public ConfigObject answer(InvocationOnMock invocation) {
-				Map map = new HashedMap();
 				return new ConfigObject(){
 
 					@Override
@@ -307,6 +318,7 @@ public class AddYearToDetermineMorphCmdTest {
 
 		// execute the command
 		boolean result = command.doProcess(record);
+		@SuppressWarnings("unused")
 		Record output = sink.popRecord();
 
 		assertFalse("Date should not be null", result);
@@ -326,7 +338,9 @@ public class AddYearToDetermineMorphCmdTest {
 
 		// execute the command
 		boolean result = command.doProcess(record);
+		@SuppressWarnings("unused")
 		Record output = sink.popRecord();
+		@SuppressWarnings("unused")
 		String expectedValue = getYear(originalDate, dateFormat, timezone) + " " + originalDate;
 
 		assertFalse("Date should not be empty", result);

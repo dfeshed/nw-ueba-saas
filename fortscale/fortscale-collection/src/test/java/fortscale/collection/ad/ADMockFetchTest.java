@@ -1,17 +1,18 @@
 package fortscale.collection.ad;
 
-import org.junit.Before;
-import org.junit.Test;
-import com.google.common.io.Resources;
-import fortscale.collection.jobs.ad.AdConnections;
-import fortscale.collection.jobs.ad.AdFetchJob;
-import java.io.BufferedWriter;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
+import java.io.BufferedWriter;
+import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import fortscale.collection.jobs.ad.AdConnections;
+import fortscale.collection.jobs.ad.AdFetchJob;
 
 /**
  * Created by Amir Keren on 17/05/2015.

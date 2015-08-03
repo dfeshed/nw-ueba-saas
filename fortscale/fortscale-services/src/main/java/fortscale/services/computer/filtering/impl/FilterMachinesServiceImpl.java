@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.services.computer.filtering.impl;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,9 @@ import com.google.common.cache.LoadingCache;
 
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
-import fortscale.services.FilterMachinesService;
+import fortscale.services.computer.filtering.FilterMachinesService;
+import fortscale.services.impl.ParsingUsersMachinesFiltering;
+import fortscale.services.impl.UsersMachinesFilterEnum;
 
 @Service("filterMachinesService")
 public class FilterMachinesServiceImpl implements FilterMachinesService,

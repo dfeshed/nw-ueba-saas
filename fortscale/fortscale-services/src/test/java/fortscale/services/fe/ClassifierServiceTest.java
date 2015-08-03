@@ -1,17 +1,11 @@
 package fortscale.services.fe;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.math.IntRange;
-import org.apache.commons.lang.math.Range;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,14 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.AccessDAO;
@@ -139,41 +126,6 @@ public class ClassifierServiceTest{
 		Mockito.when(userRepository.countNumOfUsersAboveThreshold(classifierId, startThreshold)).thenReturn(startCount);
 		double percent =  Math.round(100 * (startCount - endCount) / ((double) total) );
 		expectedScoreDistributions.put(startThreshold.getName(), new ScoreDistribution(startThreshold.getName(), (startCount - endCount), (int)percent, startThreshold.getValue(), endThreshold.getValue()));
-	}
-	
-	private TestUser createUser(String id) {
-		TestUser retUser = new TestUser(id + "-dn");
-		retUser.setId(id);
-		return retUser;
-	}
-	
-	private TestUser createUser(String id, double score, double avgScore, double prevScore, double prevAvgScore) {
-		TestUser user = createUser(id);
-		user.putClassifierScore(createClassifierScore(Classifier.auth.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
-		return user;
-	}
-	
-	
-	
-	private ClassifierScore createClassifierScore(String classifierId, double score, double avgScore, List<ScoreInfo> prevScores) {
-		ClassifierScore classifierScore = new ClassifierScore();
-		classifierScore.setScore(score);
-		classifierScore.setAvgScore(avgScore);
-		classifierScore.setTimestamp(new Date());
-		classifierScore.setPrevScores(prevScores);
-		classifierScore.setClassifierId(classifierId);
-		return classifierScore;
-	}
-	
-	private List<ScoreInfo> createPrevScoreInfoList(double score, double avgScore){
-		List<ScoreInfo> prevScores = new ArrayList<>();
-		ScoreInfo prevScoreInfo = new ScoreInfo();
-		prevScoreInfo.setScore(score);
-		prevScoreInfo.setAvgScore(avgScore);
-		prevScoreInfo.setTimestamp(new Date());
-		prevScores.add(prevScoreInfo);
-		
-		return prevScores;
 	}
 	
 	

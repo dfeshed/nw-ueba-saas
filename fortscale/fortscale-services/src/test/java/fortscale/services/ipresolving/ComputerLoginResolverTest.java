@@ -28,6 +28,7 @@ public class ComputerLoginResolverTest {
 	@Mock
 	private CacheHandler<String,ComputerLoginEvent> cache;
 
+	@SuppressWarnings("rawtypes")
 	@Mock
 	private CacheHandler<String,Range> ipBlackListCache;
 
@@ -91,7 +92,7 @@ public class ComputerLoginResolverTest {
 	@Test
 	public void getComputerLoginEvent_should_update_blacklist_with_ip() {
 		// act
-		ComputerLoginEvent actual = computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 150);
+		computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 150);
 
 		// assert
 		verify(computerLoginResolver, times(1)).addToBlackList("192.168.1.1",now+150, now+150);

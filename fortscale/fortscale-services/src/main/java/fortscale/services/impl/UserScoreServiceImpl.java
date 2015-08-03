@@ -26,7 +26,6 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserScoreService;
-import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -46,8 +45,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 	@Autowired
 	private ClassifierService classifierService;
 			
-	@Autowired
-	private ConfigurationService configurationService; 
 	
 	
 	@Value("${vpn.status.success.value.regex:SUCCESS}")

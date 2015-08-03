@@ -1,21 +1,19 @@
 package fortscale.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
-import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by amirk on 09/06/2015.
  */
 public class SamAccountNameService implements CachingService {
-
-	private static Logger logger = Logger.getLogger(SamAccountNameService.class);
 
 	@Autowired
 	private CacheHandler<String, List<String>> sAMAccountNameToUsernameCache;
@@ -29,7 +27,7 @@ public class SamAccountNameService implements CachingService {
 
 	public List<String> getUsersBysAMAccountName(String sAMAccountName) {
 
-		List<String> result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 
 		sAMAccountName = sAMAccountName.toLowerCase();
 

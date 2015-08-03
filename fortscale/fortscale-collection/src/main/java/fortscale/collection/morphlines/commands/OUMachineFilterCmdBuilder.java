@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.typesafe.config.Config;
 
-import fortscale.services.FilterMachinesService;
+import fortscale.services.computer.filtering.FilterMachinesService;
 
 public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
