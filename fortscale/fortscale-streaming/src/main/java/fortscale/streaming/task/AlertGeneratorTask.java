@@ -226,6 +226,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 	public SessionTimeUpdate createSessionTimeUpdate(String inputTopic, String key, String messageString) throws Exception{
 		SessionTimeUpdate sessionTimeUpdate = (SessionTimeUpdate) mapper.readValue(messageString, SessionTimeUpdate.class);
+		if (sessionTimeUpdate.getEndTimestamp() == null){
+			sessionTimeUpdate.setEndTimestamp(Long.MAX_VALUE);
+		}
 		if (sessionTimeUpdate.getSessionUpdateType() == SessionUpdateType.New) {
 			//create dynamic statements if necessary
 			if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null) {
