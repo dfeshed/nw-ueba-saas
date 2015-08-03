@@ -1,10 +1,9 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 
-import fortscale.services.dataqueries.querydto.FieldFunction;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class MySqlFunctionCountTest extends MySqlFunctionTest {
 

@@ -11,8 +11,8 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,6 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;

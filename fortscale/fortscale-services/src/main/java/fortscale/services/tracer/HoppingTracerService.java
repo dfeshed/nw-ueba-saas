@@ -9,10 +9,8 @@ import java.util.TreeSet;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
@@ -26,12 +24,6 @@ import fortscale.utils.logging.Logger;
 public class HoppingTracerService implements InitializingBean {
 
 	private static final Logger logger = Logger.getLogger(HoppingTracerService.class);
-
-	@Autowired
-	private JdbcOperations impalaJdbcTemplate;
-	
-	@Autowired
-	private ServersListConfiguration serversListConfiguration;
 	
 	@Autowired
 	private LDAPConnectionsSource ldapSource;

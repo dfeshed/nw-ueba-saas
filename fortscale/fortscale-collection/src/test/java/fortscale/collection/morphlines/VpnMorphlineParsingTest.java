@@ -1,8 +1,18 @@
 package fortscale.collection.morphlines;
 
-import fortscale.utils.junit.SpringAware;
-import fortscale.utils.impala.ImpalaParser;
-import org.junit.*;
+import static junitparams.JUnitParamsRunner.$;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
@@ -14,12 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
-
-import static junitparams.JUnitParamsRunner.$;
+import fortscale.utils.junit.SpringAware;
 
 @RunWith(Parameterized.class)
-@SuppressWarnings("InstanceMethodNamingConvention")
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:META-INF/spring/morphline-test-context.xml")
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -33,11 +40,11 @@ public class VpnMorphlineParsingTest {
 	public TestName testName = new TestName();
 
 	String testCase;
-	static Map expectedFieldsMap = new HashMap<String, Boolean>();
+	static Map<String, Boolean> expectedFieldsMap = new HashMap<String, Boolean>();
 	String confFile;
 	Object[] lines;
 	Object[] outputs;
-	public VpnMorphlineParsingTest(String testCase, Map expectedFieldsMap, String confFile, Object[] lines, Object[] outputs){
+	public VpnMorphlineParsingTest(String testCase, Map<String, Boolean> expectedFieldsMap, String confFile, Object[] lines, Object[] outputs){
 		this.testCase = testCase;
 		VpnMorphlineParsingTest.expectedFieldsMap = expectedFieldsMap;
 		this.confFile = confFile;

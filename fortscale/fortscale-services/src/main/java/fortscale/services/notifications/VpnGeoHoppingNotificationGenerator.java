@@ -1,15 +1,12 @@
 package fortscale.services.notifications;
 
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationResource;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.NotificationResourcesRepository;
-import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.utils.TimestampUtils;
-import fortscale.utils.logging.Logger;
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,8 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
-import java.beans.PropertyDescriptor;
-import java.util.*;
+import fortscale.domain.core.Notification;
+import fortscale.domain.core.NotificationResource;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.NotificationResourcesRepository;
+import fortscale.domain.core.dao.NotificationsRepository;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.VpnSession;
+import fortscale.utils.TimestampUtils;
+import fortscale.utils.logging.Logger;
 
 
 @Component("vpnGeoHoppingNotificationGenerator")
@@ -40,9 +44,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 	
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private VpnEvents vpnEvents;
 	
 	private List<String> vpnSessionFields;
 	

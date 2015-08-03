@@ -1,5 +1,13 @@
 package fortscale.collection.jobs.scoring;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
@@ -10,20 +18,10 @@ import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 
-	private static Logger logger = LoggerFactory.getLogger(ImpalaWriterFactoryImpl.class);
 	@Autowired
 	protected ImpalaClient impalaClient;
 

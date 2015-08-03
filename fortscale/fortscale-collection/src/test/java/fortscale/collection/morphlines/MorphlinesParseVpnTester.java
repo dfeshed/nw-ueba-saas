@@ -1,17 +1,16 @@
 package fortscale.collection.morphlines;
 
-import com.google.common.collect.ListMultimap;
-import org.kitesdk.morphline.api.Record;
-import org.kitesdk.morphline.base.Fields;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.base.Fields;
+
+import com.google.common.collect.ListMultimap;
 
 /**
  * Created by rans on 11/01/15.

@@ -1,12 +1,12 @@
 package fortscale.services.dataqueries;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.utils.TreeNode;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +15,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringValueResolver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.Assert.assertEquals;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.utils.TreeNode;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-services-context-dataEntity-test.xml"})
@@ -205,7 +207,6 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
 
     @Test
     public void getEntityPartitions() throws Exception {
-		String val = stringValueResolver.resolveStringValue("${impala.score.ldapauth.table.partition.type}");
         PartitionStrategy partition = dataEntitiesConfig.getEntityPartitionStrategy("kerberos_logins");
         assertEquals("partition.entity_field" , "yearmonthday",partition.getImpalaPartitionFieldName());
     }

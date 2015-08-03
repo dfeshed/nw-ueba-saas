@@ -2,14 +2,14 @@ package fortscale.services.cache;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import fortscale.utils.kafka.KafkaEventsWriter;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import fortscale.utils.kafka.KafkaEventsWriter;
 
 /**
  * Cache implementation wrapper that sends all updates to a kafka topic

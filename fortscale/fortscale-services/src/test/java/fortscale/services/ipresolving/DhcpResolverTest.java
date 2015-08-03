@@ -25,6 +25,7 @@ public class DhcpResolverTest {
 	@Mock
 	private CacheHandler<String,DhcpEvent> cache;
 
+	@SuppressWarnings("rawtypes")
 	@Mock
 	private CacheHandler<String,Range> ipBlackListCache;
 

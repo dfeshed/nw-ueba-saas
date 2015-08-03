@@ -2,19 +2,16 @@ package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
-
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
 public class DhcpDhcpdTest {

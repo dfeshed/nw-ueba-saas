@@ -4,9 +4,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import fortscale.utils.impala.ImpalaParser;

@@ -1,7 +1,6 @@
 package fortscale.collection.jobs;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.kitesdk.morphline.api.Record;
 

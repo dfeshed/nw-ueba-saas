@@ -70,14 +70,14 @@ public class VpnF5Test {
 
 	@BeforeClass
 	public static void setUpClass(){
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context.xml");
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
 		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
 		vpnSessionRepository.deleteAll();
 	}
 
 	private static void prepareDates() {
 
-		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 
 		Date date = TestUtils.constuctDate(Jan_2_19_08_35);
 		Jan_2_19_08_35_OUT = TestUtils.getOutputDate(date);

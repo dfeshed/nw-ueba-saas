@@ -1,7 +1,6 @@
 package fortscale.domain.ad.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

@@ -28,6 +28,7 @@ public class ComputerLoginResolverTest {
 	@Mock
 	private CacheHandler<String,ComputerLoginEvent> cache;
 
+	@SuppressWarnings("rawtypes")
 	@Mock
 	private CacheHandler<String,Range> ipBlackListCache;
 
