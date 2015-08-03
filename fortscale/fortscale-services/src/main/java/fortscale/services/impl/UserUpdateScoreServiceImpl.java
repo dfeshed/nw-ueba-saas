@@ -21,7 +21,6 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.UserUpdateScoreService;
@@ -45,9 +44,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	@Autowired 
 	private UserScoreService userScoreService;
 	
-	@Autowired
-	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-		
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
 	

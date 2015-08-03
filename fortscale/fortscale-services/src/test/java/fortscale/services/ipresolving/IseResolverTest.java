@@ -21,8 +21,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.dao.IseEventRepository;
 import fortscale.domain.events.dao.IseEventRepository;
 import fortscale.services.cache.CacheHandler;
 
@@ -128,7 +126,7 @@ public class IseResolverTest {
 	@Test
 	public void getLatestIseEventBeforeTimestamp_should_update_blacklist_with_ip() {
 		// act
-		IseEvent actual = iseResolver.getLatestIseEventBeforeTimestamp("192.168.1.1", now+150);
+		iseResolver.getLatestIseEventBeforeTimestamp("192.168.1.1", now+150);
 
 		// assert
 		verify(iseResolver, times(1)).addToBlackList("192.168.1.1",0,now+150);
