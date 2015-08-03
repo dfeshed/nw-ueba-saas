@@ -51,7 +51,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 		// get the timestamp from the message
 		String bucketConfName = convertToString(message.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
 		//TODO: get the field name for featureName also from AggrFeatureEventBuilder
-		String featureName = convertToString(message.get("name"));
+		String featureName = convertToString(message.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
 		String fullPathFeatureName = String.format("%s.%s", bucketConfName, featureName);
 		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureName);
 		if(eventsPrevalenceModelStreamTaskManager != null){
