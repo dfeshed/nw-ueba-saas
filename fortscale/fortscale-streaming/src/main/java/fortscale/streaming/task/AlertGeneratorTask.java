@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EntityTags;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.SessionTimeUpdate;
-import fortscale.services.AlertsService;
-import fortscale.streaming.alert.subscribers.AlertSubscriber;
+import fortscale.domain.core.SessionUpdateType;
+import fortscale.streaming.alert.subscribers.AbstractSubscriber;
 import fortscale.streaming.service.SpringService;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
@@ -47,14 +47,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	 * JSON serializer
 	 */
 	protected ObjectMapper mapper = new ObjectMapper();
-	/**
-	 * Alerts service (for Mongo export)
-	 */
-	protected AlertsService alertsService;
 
 
 	@Override protected void wrappedInit(Config config, TaskContext context) {
-		alertsService = SpringService.getInstance().resolve(AlertsService.class);
 
 		// creating the esper configuration
 		Configuration esperConfig = new Configuration();
@@ -80,14 +75,6 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		if (inputTopicMapping.containsKey(inputTopic)) {
 			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
 			if (info != null) {
-				//create dynamic statements if necessary
-				if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null) {
-					List<String> dynamicStatements = inputTopicMapping.get(inputTopic).getDynamicStatements();
-					for(String dynamicStatement : dynamicStatements){
-						createStatement(rulesConfiguration.get(dynamicStatement));
-					}
-				}
-
 				//send input data to Esper
 				epService.getEPRuntime().sendEvent(info);
 
@@ -131,7 +118,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			if (inputTopicMapping.get(inputTopic).getClazz() != null) {
 				info = mapper.readValue(messageText, inputTopicMapping.get(inputTopic).getClazz());
 			} else if (inputTopicMapping.get(inputTopic).getMethod() != null) {
-				info = inputTopicMapping.get(inputTopic).getMethod().invoke(this, (String) envelope.getKey(), messageText);
+				info = inputTopicMapping.get(inputTopic).getMethod().invoke(this, inputTopic, (String) envelope.getKey(), messageText);
 			}
 		} catch (Exception ex) {
 			logger.error("error parsing: " + messageText + " from topic " + inputTopic, ex);
@@ -219,26 +206,37 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	 */
 	private void createStatement(RuleConfig ruleConfig) {
 		//Create the Esper alert statement object
-		EPStatement esperEventStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
+		EPStatement esperStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
 		//Generate Subscriber from spring
 		if (!ruleConfig.getSubscriberBeanName().equals("none")) {
-			AlertSubscriber alertSubscriber = (AlertSubscriber) SpringService.getInstance().resolve(ruleConfig.getSubscriberBeanName());
+			AbstractSubscriber alertSubscriber = (AbstractSubscriber) SpringService.getInstance().resolve(ruleConfig.getSubscriberBeanName());
 			//inits the subscriber with the alert Mongo service and the rule name
-			alertSubscriber.init(alertsService);
+			alertSubscriber.setEsperStatement(esperStatement);
 			//subscribe Alert creation class to Esper EPL statement
-			esperEventStatement.setSubscriber(alertSubscriber);
+			esperStatement.setSubscriber(alertSubscriber);
 		}
-		epsStatements.add(esperEventStatement);
+		epsStatements.add(esperStatement);
 	}
 
 
-	public EntityTags createEntityTags(String userName,String tagMessageString) throws Exception{
+	public EntityTags createEntityTags(String inputTopic, String userName,String tagMessageString) throws Exception{
 		List<String> tags = mapper.readValue(tagMessageString, List.class);
 		return new EntityTags(EntityType.User, userName, tags);
 	}
 
-	public SessionTimeUpdate createSessionTimeUpdate(String key, String sessionTimeUpdate) throws Exception{
-		return (SessionTimeUpdate) mapper.readValue(sessionTimeUpdate, SessionTimeUpdate.class);
+	public SessionTimeUpdate createSessionTimeUpdate(String inputTopic, String key, String messageString) throws Exception{
+		SessionTimeUpdate sessionTimeUpdate = (SessionTimeUpdate) mapper.readValue(messageString, SessionTimeUpdate.class);
+		if (sessionTimeUpdate.getSessionUpdateType() == SessionUpdateType.New) {
+			//create dynamic statements if necessary
+			if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null) {
+				List<String> dynamicStatements = inputTopicMapping.get(inputTopic).getDynamicStatements();
+				for (String dynamicStatement : dynamicStatements) {
+					dynamicStatement = dynamicStatement.replace("##sessionId##",sessionTimeUpdate.getSessionId());
+					createStatement(rulesConfiguration.get(dynamicStatement));
+				}
+			}
+		}
+		return sessionTimeUpdate;
 	}
 
 

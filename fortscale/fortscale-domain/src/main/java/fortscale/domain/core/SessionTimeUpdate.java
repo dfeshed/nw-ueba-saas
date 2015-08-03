@@ -7,6 +7,8 @@ public class SessionTimeUpdate {
 
 	String sessionId;
 
+	SessionUpdateType sessionUpdateType;
+
 	Long startTimestamp;
 
 	Long endTimestamp;
@@ -15,9 +17,10 @@ public class SessionTimeUpdate {
 
 	String entityName;
 
-	public SessionTimeUpdate(String sessionId, Long startTimestamp, Long endTimestamp, EntityType entityType,
-			String entityName) {
+	public SessionTimeUpdate(String sessionId, SessionUpdateType sessionUpdateType, Long startTimestamp,
+			Long endTimestamp, EntityType entityType, String entityName) {
 		this.sessionId = sessionId;
+		this.sessionUpdateType = sessionUpdateType;
 		this.startTimestamp = startTimestamp;
 		this.endTimestamp = endTimestamp;
 		this.entityType = entityType;
@@ -30,6 +33,14 @@ public class SessionTimeUpdate {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public SessionUpdateType getSessionUpdateType() {
+		return sessionUpdateType;
+	}
+
+	public void setSessionUpdateType(SessionUpdateType sessionUpdateType) {
+		this.sessionUpdateType = sessionUpdateType;
 	}
 
 	public Long getStartTimestamp() {

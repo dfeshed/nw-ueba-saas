@@ -23,6 +23,10 @@
 
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
-    <bean id="basicSubscriber" class="fortscale.streaming.alert.subscribers.BasicAlertSubscriber" scope="singleton" />
+    <bean id="alertCreationSubscriber" class="fortscale.streaming.alert.subscribers.AlertCreationSubscriber" scope="singleton" />
+
+    <bean id="destroyStatementSubscriber" class="fortscale.streaming.alert.subscribers.DestroyStatementSubscriber" scope="prototype" />
+
+    <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
 </beans>
