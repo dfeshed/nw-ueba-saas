@@ -38,9 +38,9 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private FeatureBucketsStore featureBucketsStore;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextName, String dataEntity, String feature, Long aggregationEventEndTime) {
+    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime) {
         logger.info("Going to fetch Evidence Supporting Information. Context type = {} # Context name = {} # Data entity = {} " +
-                "# Feature = {} # Evidence time = {} . Time period = {} days..", contextType, contextName, dataEntity, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
+                "# Feature = {} # Evidence time = {} . Time period = {} days..", contextType, contextValue, dataEntity, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
 
         String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 
@@ -58,7 +58,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
         Long supportingInformationStartTime = calculateSupportingInformationStartTime(aggregationEventEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextName, feature, supportingInformationStartTime, aggregationEventEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, feature, supportingInformationStartTime, aggregationEventEndTime);
 
         logger.info("Found {} relevant feature buckets", featureBuckets.size());
 

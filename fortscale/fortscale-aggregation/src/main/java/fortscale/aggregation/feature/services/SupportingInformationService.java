@@ -13,12 +13,12 @@ public interface SupportingInformationService {
     /**
      *
      * @param contextType the context type (user, source machine, dest machine etc.)
-     * @param contextName the context name (e.g. mike@cnn.com)
+     * @param contextValue the context value (e.g. mike@cnn.com)
      * @param dataEntity the data source (ssh, kerberos, etc.)
      * @param feature the related feature
      * @param aggregationEventEndTime the evidence time in milliseconds
      *
      * @return supporting information representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextName, String dataEntity, String feature, Long aggregationEventEndTime);
+    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime);
 }
