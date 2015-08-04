@@ -182,6 +182,7 @@ public class VpnEnrichService {
         return event;
     }
 
+    
     private void createEvidence(List<JSONObject> evidenceList) {
         if (evidenceList != null && collector != null) {
             for (JSONObject evidence : evidenceList) {
