@@ -1,14 +1,13 @@
 
 package fortscale.streaming.service.usernameNormalization;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import fortscale.services.impl.UsernameNormalizer;
-import fortscale.services.users.SSHUsersWhitelistService;
-import net.minidev.json.JSONObject;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-import static fortscale.utils.ConversionUtils.convertToString;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import fortscale.services.impl.UsernameNormalizer;
+import fortscale.services.users.SSHUsersWhitelistService;
 
 /**
 * Date: 24/01/2015.

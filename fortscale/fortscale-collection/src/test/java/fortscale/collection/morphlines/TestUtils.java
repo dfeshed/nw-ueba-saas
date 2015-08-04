@@ -27,7 +27,8 @@ public class TestUtils {
         sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         sdf.setTimeZone(tz);
     }
-    static Date constuctDate(String inDate){
+    @SuppressWarnings("deprecation")
+	static Date constuctDate(String inDate){
         try {
             Date parsedDate = sdf.parse(year + " " + inDate);
             Date currentDate = calendar.getTime();

@@ -93,7 +93,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
                     if (prev_utc_date_time < delta)
                     {
                         //remove the prev event from cache
-                        Record tmpEvent = cache.fetch(key);
+                        cache.fetch(key);
                         // continue processing in the command chain
                         return super.doProcess(inputRecord);
 

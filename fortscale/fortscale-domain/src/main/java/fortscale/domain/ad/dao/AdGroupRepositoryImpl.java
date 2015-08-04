@@ -2,6 +2,8 @@ package fortscale.domain.ad.dao;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -9,9 +11,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.ad.AdGroup;
-
-import java.util.List;
-import java.util.Map;
 
 public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdGroupRepositoryCustom {
 	@Autowired

@@ -1,7 +1,15 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.*;
-import fortscale.domain.core.dao.rest.Alerts;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,15 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.EntityType;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 
 public class AlertsRepositoryImplTest {
 

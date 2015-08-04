@@ -1,28 +1,26 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.rest.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 
 /**
  * Created by rans on 21/06/15.
  */
 public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
-    private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -105,7 +103,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @return
      */
     private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName, String severityArrayFilter, String statusArrayFilter, Pageable pageable) {
-        List<Alert> result;
         Criteria severityCriteria = new Criteria();
         Criteria statusCriteria = new Criteria();
         Query query = new Query().with( pageRequest.getSort());

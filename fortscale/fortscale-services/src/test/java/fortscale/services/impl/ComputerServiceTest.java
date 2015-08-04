@@ -243,7 +243,7 @@ public class ComputerServiceTest {
 	}
 
 	private void arrangeClassificationClassifyValues(List<Computer> computerList){
-		final Answer answer0 = new Answer<Boolean>() {
+		final Answer<Boolean> answer0 = new Answer<Boolean>() {
 			@Override public Boolean answer(InvocationOnMock invocation) throws Throwable {
 				Object[] arguments = invocation.getArguments();
 
@@ -256,7 +256,7 @@ public class ComputerServiceTest {
 				return true;
 			}
 		};
-		final Answer answer1 = new Answer<Boolean>() {
+		final Answer<Boolean> answer1 = new Answer<Boolean>() {
 			@Override public Boolean answer(InvocationOnMock invocation) throws Throwable {
 				Object[] arguments = invocation.getArguments();
 
@@ -269,7 +269,7 @@ public class ComputerServiceTest {
 				return false;
 			}
 		};
-		final Answer answer2 = new Answer<Boolean>() {
+		final Answer<Boolean> answer2 = new Answer<Boolean>() {
 			@Override public Boolean answer(InvocationOnMock invocation) throws Throwable {
 				Object[] arguments = invocation.getArguments();
 

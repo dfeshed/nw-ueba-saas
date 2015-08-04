@@ -1,0 +1,36 @@
+{
+  "BucketStrategies": {
+    "Strategies": [
+      {
+        "name": "fixed_duration_hourly",
+        "type": "fixed_duration",
+        "params": {
+          "durationInSeconds": 3600
+        }
+      },
+      {
+        "name": "fixed_duration_daily",
+        "type": "fixed_duration",
+        "params": {
+          "durationInSeconds": 86400
+        }
+      },
+      {
+        "name": "user_inactivity_hourly",
+        "type": "user_inactivity",
+        "params": {
+          "dataSources": ["kerberos_logins"],
+          "inactivityDurationInMinutes": 60,
+          "endTimeDeltaInMinutes": 5
+        }
+      },
+      {
+        "name": "vpn_session",
+        "type": "vpn_session",
+        "params": {
+          "maxSessionDuration": 14400
+        }
+      }
+    ]
+  }
+}

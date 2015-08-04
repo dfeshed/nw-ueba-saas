@@ -1,15 +1,11 @@
 package fortscale.services.impl;
 
-import fortscale.services.fe.Classifier;
-import org.springframework.beans.factory.annotation.Value;
-import fortscale.domain.core.User;
+import java.util.List;
+
 import fortscale.services.ComputerService;
-import net.minidev.json.JSONObject;
+import fortscale.services.fe.Classifier;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
-import java.util.List;
-import static fortscale.utils.ConversionUtils.convertToString;
 
 public class SSHUsernameNormalizer extends UsernameNormalizer {
 

@@ -43,6 +43,9 @@ public class AggrFeatureEventService {
         Assert.notNull(featureBucketsService);
 
         for(AggregatedFeatureEventConf eventConf : aggrFeatureEventConfs) {
+            if (eventConf.getBucketConf() == null) {
+                throw new RuntimeException("Could not find bucket configuration with name " + eventConf.getBucketConfName() + " for aggregation event config " + eventConf.getName());
+            }
             FeatureBucketStrategy strategy = featureBucketStrategyService.getFeatureBucketStrategiesFactory().getFeatureBucketStrategy(eventConf.getBucketConf().getStrategyName());
             AggrFeatureEventBuilder eventBuilder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
             addAggrFeatureEventBuilder(eventConf.getBucketConf().getName(), eventBuilder);

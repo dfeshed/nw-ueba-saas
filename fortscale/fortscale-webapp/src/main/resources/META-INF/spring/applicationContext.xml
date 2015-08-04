@@ -25,6 +25,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-aggr-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-security-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-webapp-context.xml"/>
     <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
