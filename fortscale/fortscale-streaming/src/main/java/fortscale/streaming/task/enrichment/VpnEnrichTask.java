@@ -174,14 +174,16 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         }
 
 		List<JSONObject> evidenceList = vpnEnrichService.getGeoHoppingEvidence(message);
-		for (JSONObject evidence: evidenceList) {
-			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-						"fortscale-notification-event-score"), evidence.get("index"),
-						evidence.toJSONString(JSONStyle.NO_COMPRESS));
-				collector.send(output);
-			} catch (Exception exception) {
-				throw new KafkaPublisherException("failed to send evidence", exception);
+		if (evidenceList != null) {
+			for (JSONObject evidence : evidenceList) {
+				try {
+					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+							"fortscale-notification-event-score"), evidence.get("index"),
+							evidence.toJSONString(JSONStyle.NO_COMPRESS));
+					collector.send(output);
+				} catch (Exception exception) {
+					throw new KafkaPublisherException("failed to send evidence", exception);
+				}
 			}
 		}
 
