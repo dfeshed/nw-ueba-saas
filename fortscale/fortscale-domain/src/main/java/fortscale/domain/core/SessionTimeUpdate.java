@@ -17,6 +17,9 @@ public class SessionTimeUpdate {
 
 	String entityName;
 
+	public SessionTimeUpdate() {
+	}
+
 	public SessionTimeUpdate(String sessionId, SessionUpdateType sessionUpdateType, Long startTimestamp,
 			Long endTimestamp, EntityType entityType, String entityName) {
 		this.sessionId = sessionId;

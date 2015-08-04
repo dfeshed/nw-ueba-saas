@@ -23,9 +23,21 @@
 
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
+
+
+    <!--Event converters -->
+    <bean id="entityTagsWrapper" class="fortscale.streaming.alert.event.wrappers.EntityTagsWrapper" scope="singleton" />
+
+    <bean id="sessionTimeUpdateWrapper" class="fortscale.streaming.alert.event.wrappers.SessionTimeUpdateWrapper" scope="singleton" />
+
+
+
+    <!-- statement subscribers -->
     <bean id="alertCreationSubscriber" class="fortscale.streaming.alert.subscribers.AlertCreationSubscriber" scope="singleton" />
 
-    <bean id="destroyStatementSubscriber" class="fortscale.streaming.alert.subscribers.DestroyStatementSubscriber" scope="prototype" />
+    <bean id="destroyVariableCreateStatementSubscriber" class="fortscale.streaming.alert.subscribers.DestroyVariableCreateStatementSubscriber" scope="prototype" />
+
+    <bean id="destroyVariableUpdateStatementSubscriber" class="fortscale.streaming.alert.subscribers.DestroyVariableUpdateStatementSubscriber" scope="prototype" />
 
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 

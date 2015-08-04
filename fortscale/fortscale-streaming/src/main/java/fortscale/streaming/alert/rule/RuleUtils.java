@@ -1,4 +1,4 @@
-package fortscale.streaming.alert;
+package fortscale.streaming.alert.rule;
 
 /**
  * Created by danal on 02/08/2015.
