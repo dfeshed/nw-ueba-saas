@@ -15,7 +15,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
 	
 	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
-
 	public static final String NOTIFICATION_ENTITY = "vpn";
 	public static final String NOTIFICATION_VALUE = "country";
 
