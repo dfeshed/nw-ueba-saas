@@ -39,6 +39,7 @@ public class Evidence extends AbstractDocument{
 
 	// Entity information
 	public static final String entityTypeField = "entityType";
+
 	public static final String entityNameField = "entityName";
 
 	// Time frame information
@@ -74,6 +75,9 @@ public class Evidence extends AbstractDocument{
 	@Field(entityTypeField)
 	private EntityType entityType;
 
+	//used for mapping between the entityType and the field name in the event
+	private String entityTypeFieldName;
+
 	@Field(entityNameField)
 	private String entityName;
 
@@ -90,6 +94,9 @@ public class Evidence extends AbstractDocument{
 
 	@Field(anomalyTypeField)
 	private String anomalyType;
+
+	//used for mapping between the anomalyType and the field name in the event
+	private String anomalyTypeFieldName;
 
 	@Field(nameField)
 	private String name;
@@ -112,7 +119,7 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
-	// keeping the events as map - not kept in MongoDB
+	// keeping the events as map - not kept in MongoDB - using for alert (if need to query other event properties as part of the rule)
 	@Transient
 	private Map<String,Object>[] top3events;
 
@@ -124,9 +131,10 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyType,
+	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyType, String anomalyTypeFieldName,
 			String name, String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
 		this.entityType = entityType;
+		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
 		this.evidenceType = evidenceType;
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
@@ -137,6 +145,7 @@ public class Evidence extends AbstractDocument{
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.anomalyType = anomalyType;
+		this.anomalyTypeFieldName = anomalyTypeFieldName;
 		this.name = name;
 		this.anomalyValue = anomalyValue;
 		this.dataEntitiesIds = dataEntitiesIds;
@@ -191,6 +200,10 @@ public class Evidence extends AbstractDocument{
 		return entityType;
 	}
 
+	public String getEntityTypeFieldName() {
+		return entityTypeFieldName;
+	}
+
 	public String getEntityName() {
 		return entityName;
 	}
@@ -217,6 +230,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getAnomalyType() {
 		return anomalyType;
+	}
+
+	public String getAnomalyTypeFieldName() {
+		return anomalyTypeFieldName;
 	}
 
 	public String getName() {
