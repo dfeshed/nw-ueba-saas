@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SupportingInformationService {
     /**
      *
-     * @param entityType the entity type (user, machine etc.)
-     * @param entityName the entity name (e.g. mike@cnn.com)
-     * @param dataSource the data source (ssh, kerberos, etc.)
+     * @param contextType the context type (user, source machine, dest machine etc.)
+     * @param contextValue the context value (e.g. mike@cnn.com)
+     * @param dataEntity the data source (ssh, kerberos, etc.)
      * @param feature the related feature
      * @param aggregationEventEndTime the evidence time in milliseconds
      *
      * @return supporting information representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long aggregationEventEndTime);
+    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime);
 }

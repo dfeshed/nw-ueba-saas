@@ -53,7 +53,7 @@ public class SupportingInformationServiceTest {
     public void testNoFeatureBucketsFound() {
         String entityType = "normalized_username";
         String entityName = "dan@gmail.com";
-        String dataSource = "kerberos";
+        String dataSource = "kerberos_logins";
         String feature = "dst_machine_histogram";
         Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
 
@@ -67,7 +67,7 @@ public class SupportingInformationServiceTest {
     public void testUnknownFeature() {
         String entityType = "normalized_username";
         String entityName = "dan@gmail.com";
-        String dataSource = "kerberos";
+        String dataSource = "kerberos_logins";
         String feature = "zzz";
         Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
 
@@ -80,7 +80,7 @@ public class SupportingInformationServiceTest {
     public void testUnknownEntityType() {
         String entityType = "xxx";
         String entityName = "dan@gmail.com";
-        String dataSource = "kerberos";
+        String dataSource = "kerberos_logins";
         String feature = "dst_machine_histogram";
         Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
 
