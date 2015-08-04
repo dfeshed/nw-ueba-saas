@@ -93,6 +93,10 @@ public class GenericHistogram implements Serializable {
         }
     }
 
+    public Map<Object, Double> getHistogramMap() {
+        return histogram;
+    }
+
     @Override
     synchronized public String toString() {
         StringBuffer sb = new StringBuffer("{ ");

@@ -16,7 +16,7 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-          }
+        }
       },
       {
         "name": "distinct_number_of_dst_machines_kerberos",
@@ -28,23 +28,6 @@
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "dst_machine_histogram"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
-          "includeValues": false
-        }
-      },
-      {
-        "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
-        "type": "P",
-        "bucketConfName": "normalized_username_kerberos_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "dst_machine_with_high_score_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -103,7 +86,7 @@
         }
       },
       {
-        "name": "number_of_kerberos_events",
+        "name": "number_of_successful_kerberos_events",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_daily",
         "numberOfBuckets": 1,
@@ -111,7 +94,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "number_of_susccessful_events"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -135,7 +118,7 @@
         }
       },
       {
-        "name": "number_of_ssh_events",
+        "name": "number_of_successful_ssh_events",
         "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
@@ -143,7 +126,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "number_of_susccessful_events"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -175,7 +158,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "number_of_events"
+            "number_of_successful_events"
           ]
         },
         "aggregatedFeatureEventFunction": {
