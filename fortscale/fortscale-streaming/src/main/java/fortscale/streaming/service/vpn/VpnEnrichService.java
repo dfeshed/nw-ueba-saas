@@ -178,9 +178,9 @@ public class VpnEnrichService {
 
     public List<JSONObject> getGeoHoppingEvidence(JSONObject event) {
         VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
-        VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
         Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
         if(isRunGeoHopping != null && isRunGeoHopping){
+            VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
             return processGeoHopping(vpnSessionUpdateConfig, vpnSession);
         }
         return null;

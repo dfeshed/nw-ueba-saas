@@ -36,7 +36,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	public List<JSONObject> createNotifications(List<VpnSession> vpnSessions){
 		List<JSONObject> evidenceList = new ArrayList();
-		for(VpnSession vpnSession: vpnSessions){
+		for (VpnSession vpnSession: vpnSessions) {
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() :
 					vpnSession.getCreatedAtEpoch();
 			String index = buildIndex(vpnSession);

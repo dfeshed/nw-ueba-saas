@@ -158,6 +158,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
 
+		List<JSONObject> evidenceList = vpnEnrichService.getGeoHoppingEvidence(message);
         message = vpnEnrichService.processVpnEvent(message);
 
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
@@ -173,7 +174,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", vpnEnrichService.getInputTopic(), vpnEnrichService.getOutputTopic()), exception);
         }
 
-		List<JSONObject> evidenceList = vpnEnrichService.getGeoHoppingEvidence(message);
 		if (evidenceList != null) {
 			for (JSONObject evidence : evidenceList) {
 				try {
