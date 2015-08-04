@@ -5,10 +5,15 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +21,6 @@ import java.util.Map;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by amira on 15/07/2015.
- */
 public class AggrFeatureEventDataTest {
     @Mock
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -28,6 +30,45 @@ public class AggrFeatureEventDataTest {
 
     @Mock
     private AggrEventTopologyService aggrEventTopologyService;
+
+    FeatureBucketStrategy strategy;
+
+    long startTime1 = 1420070400L; //01 Jan 2015 00:00:00 GMT
+    long endTime1 = 1420156799L; //01 Jan 2015 23:59:59 GMT
+    long startTime2 = 1420156800L; //02 Jan 2015 00:00:00 GMT
+    long endTime2 = 1420243199L; //02 Jan 2015 23:59:59 GMT
+    long startTime3 = 1420243200L; //03 Jan 2015 00:00:00 GMT
+    long endTime3 = 1420329599L; // 03 Jan 2015 23:59:59 GMT
+    long startTime4 = 1420329600L;
+    long endTime4 = 1420415999L;
+    long startTime5 = 1420416000L;
+    long endTime5 = 1420502399L;
+    long startTime6 = 1420502400L;
+    long endTime6 = 1420588799L;
+    long startTime7 = 1420588800L;
+    long endTime7 = 1420675199L;
+    long startTime8 = 1420675200L;
+    long endTime8 = 1420761599L;
+    long startTime9 = 1420761600L;
+    long endTime9 = 1420847999L;
+    long startTime10 = 1420848000L;
+    long endTime10 = 1420934399L;
+
+    String bucketID1 = "bucketID1";
+    String bucketID2 = "bucketID2";
+    String bucketID3 = "bucketID3";
+    String bucketID4 = "bucketID4";
+    String bucketID5 = "bucketID5";
+    String bucketID6 = "bucketID6";
+    String bucketID7 = "bucketID7";
+    String bucketID8 = "bucketID8";
+    String bucketID9 = "bucketID9";
+    String bucketID10 = "bucketID10";
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test(expected = Exception.class)
     public void testNewEventData_nullBuilder() {
@@ -44,13 +85,13 @@ public class AggrFeatureEventDataTest {
     }
 
     @Test
-    public void testAddBucketID() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
+    public void testAddBucketID() throws Exception{
+        long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
+        long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
+        long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
+        long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
-        AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
+        AggrFeatureEventBuilder builder =  createBuilder(3, 1);
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
 
         String bucketID1 = "bucketID1";
@@ -59,20 +100,20 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID1, startTime1, endTime1);
         eventData.addBucketID(bucketID2, startTime2, endTime2);
 
-        List<AggrFeatureEventData.BucketData> bucketIDs = eventData.getBucketIDs();
+        List<AggrFeatureEventData.BucketTick> bucketIDs = eventData.getBucketTicks();
 
         Assert.assertEquals(2, bucketIDs.size());
-        AggrFeatureEventData.BucketData bucketData = bucketIDs.get(0);
-        Assert.assertEquals(null, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID1, bucketData.getBucketID());
-        Assert.assertEquals(startTime1, bucketData.getStartTime());
-        Assert.assertEquals(endTime1, bucketData.getEndTime());
+        AggrFeatureEventData.BucketTick bucketTick = bucketIDs.get(0);
+        Assert.assertEquals(null, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID1, bucketTick.getBucketId());
+        Assert.assertEquals(startTime1, bucketTick.getStartTime());
+        Assert.assertEquals(endTime1, bucketTick.getEndTime());
 
-        bucketData = bucketIDs.get(1);
-        Assert.assertEquals(null, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID2, bucketData.getBucketID());
-        Assert.assertEquals(startTime2, bucketData.getStartTime());
-        Assert.assertEquals(endTime2, bucketData.getEndTime());
+        bucketTick = bucketIDs.get(1);
+        Assert.assertEquals(null, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID2, bucketTick.getBucketId());
+        Assert.assertEquals(startTime2, bucketTick.getStartTime());
+        Assert.assertEquals(endTime2, bucketTick.getEndTime());
     }
 
     @Test
@@ -90,20 +131,20 @@ public class AggrFeatureEventDataTest {
 
         eventData.addBucketID(bucketID2, startTime2, endTime2);
         eventData.addBucketID(bucketID1, startTime1, endTime1);
-        Assert.assertEquals(bucketID1, eventData.getBucketIDs().get(0).getBucketID());
-        Assert.assertEquals(bucketID2, eventData.getBucketIDs().get(1).getBucketID());
+        Assert.assertEquals(bucketID1, eventData.getBucketTicks().get(0).getBucketId());
+        Assert.assertEquals(bucketID2, eventData.getBucketTicks().get(1).getBucketId());
     }
 
     @Test
-    public void testAddBucketID_existingStrategy() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
+    public void testAddBucketID_existingStrategy() throws Exception{
+        long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
+        long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
+        long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
+        long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         context.put("username", "john");
         context.put("machine", "m1");
-        AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
+        AggrFeatureEventBuilder builder = createBuilder(3, 1);
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
 
         String startegyName = "dailyStrategy";
@@ -122,33 +163,33 @@ public class AggrFeatureEventDataTest {
         // bucketID2 should be second
         eventData.addBucketID(bucketID2, startTime2, endTime2);
 
-        List<AggrFeatureEventData.BucketData> bucketIDs = eventData.getBucketIDs();
+        List<AggrFeatureEventData.BucketTick> bucketIDs = eventData.getBucketTicks();
 
         Assert.assertEquals(2, bucketIDs.size());
-        AggrFeatureEventData.BucketData bucketData = bucketIDs.get(0);
-        Assert.assertEquals(strategyData, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID1, bucketData.getBucketID());
-        Assert.assertEquals(startTime1, bucketData.getStartTime());
-        Assert.assertEquals(endTime1, bucketData.getEndTime());
+        AggrFeatureEventData.BucketTick bucketTick = bucketIDs.get(0);
+        Assert.assertEquals(strategyData, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID1, bucketTick.getBucketId());
+        Assert.assertEquals(startTime1, bucketTick.getStartTime());
+        Assert.assertEquals(endTime1, bucketTick.getEndTime());
 
-        bucketData = bucketIDs.get(1);
-        Assert.assertEquals(null, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID2, bucketData.getBucketID());
-        Assert.assertEquals(startTime2, bucketData.getStartTime());
-        Assert.assertEquals(endTime2, bucketData.getEndTime());
+        bucketTick = bucketIDs.get(1);
+        Assert.assertEquals(null, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID2, bucketTick.getBucketId());
+        Assert.assertEquals(startTime2, bucketTick.getStartTime());
+        Assert.assertEquals(endTime2, bucketTick.getEndTime());
     }
 
 
 
     @Test
-    public void testSetEndTime() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
-        Long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
+    public void testSetEndTime() throws Exception{
+        long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
+        long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
+        long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
+        long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
+        long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
-        AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
+        AggrFeatureEventBuilder builder = createBuilder(3, 1);
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
 
         String bucketID1 = "bucketID1";
@@ -158,29 +199,29 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID2, startTime2, endTime2);
         eventData.setEndTime(bucketID2, endTime3);
 
-        List<AggrFeatureEventData.BucketData> bucketIDs = eventData.getBucketIDs();
+        List<AggrFeatureEventData.BucketTick> bucketIDs = eventData.getBucketTicks();
 
         Assert.assertEquals(2, bucketIDs.size());
-        AggrFeatureEventData.BucketData bucketData = bucketIDs.get(0);
-        Assert.assertEquals(null, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID1, bucketData.getBucketID());
-        Assert.assertEquals(startTime1, bucketData.getStartTime());
-        Assert.assertEquals(endTime1, bucketData.getEndTime());
+        AggrFeatureEventData.BucketTick bucketTick = bucketIDs.get(0);
+        Assert.assertEquals(null, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID1, bucketTick.getBucketId());
+        Assert.assertEquals(startTime1, bucketTick.getStartTime());
+        Assert.assertEquals(endTime1, bucketTick.getEndTime());
 
-        bucketData = bucketIDs.get(1);
-        Assert.assertEquals(null, bucketData.getStrategyData());
-        Assert.assertEquals(bucketID2, bucketData.getBucketID());
-        Assert.assertEquals(startTime2, bucketData.getStartTime());
-        Assert.assertEquals(endTime3, bucketData.getEndTime());
+        bucketTick = bucketIDs.get(1);
+        Assert.assertEquals(null, bucketTick.getStrategyData());
+        Assert.assertEquals(bucketID2, bucketTick.getBucketId());
+        Assert.assertEquals(startTime2, bucketTick.getStartTime());
+        Assert.assertEquals(endTime3, bucketTick.getEndTime());
     }
 
     @Test(expected = Exception.class)
     public void testSetEndTime_notToLatestBucketID() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
-        Long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
+        long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
+        long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
+        long startTime2 = 1437004800L; //Thu, 16 Jul 2015 00:00:00 GMT
+        long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
+        long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
@@ -195,9 +236,9 @@ public class AggrFeatureEventDataTest {
 
     @Test(expected = Exception.class)
     public void testSetEndTime_BucketIdNotExist() {
-        Long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
-        Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
-        Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
+        long startTime1 = 1436918400L; //Wed, 15 Jul 2015 00:00:00 GMT
+        long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
+        long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);// 
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
@@ -209,72 +250,10 @@ public class AggrFeatureEventDataTest {
         eventData.setEndTime(bucketID2, endTime2);
     }
 
-    private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) {
-        // Creating AggregatedFeatureEventConf
-        Map<String, List<String>> paramters2featuresListMap = new HashMap<>();
-        List<String> aggrFeatureNames = new ArrayList<>();
-        aggrFeatureNames.add("letters");
-        paramters2featuresListMap.put("groupBy", aggrFeatureNames);
-        JSONObject funcJSONObj = new JSONObject();
-        funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
-        funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "aggregated_feature_event_type_F", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
-        FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
-        List<String> dataSources = new ArrayList<>();
-        dataSources.add("ssh");
-        when(bucketConf.getDataSources()).thenReturn(dataSources);
-        eventConf.setBucketConf(bucketConf);
-
-
-        FeatureBucketStrategy strategy = mock(FeatureBucketStrategy.class);
-
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
-
-        // Create AggrFeatureEventBuilder
-        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, aggrFeatureEventService, featureBucketsService);
-
-
-        builder.setAggrEventTopologyService(aggrEventTopologyService);
-        builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
-        builder.setFeatureBucketsService(featureBucketsService);
-
-        return builder;
-    }
 
     @Test
-    public void testMatchBucketLeap1() {
-        Long startTime1 = 1L;
-        Long endTime1 = 2L;
-        Long startTime2 = 3L;
-        Long endTime2 = 4L;
-        Long startTime3 = 5L;
-        Long endTime3 = 6L;
-        Long startTime4 = 7L;
-        Long endTime4 = 8L;
-        Long startTime5 = 9L;
-        Long endTime5 = 10L;
-        Long startTime6 = 11L;
-        Long endTime6 = 12L;
-        Long startTime7 = 13L;
-        Long endTime7 = 14L;
-        Long startTime8 = 15L;
-        Long endTime8 = 16L;
-        Long startTime9 = 17L;
-        Long endTime9 = 18L;
-        Long startTime10 = 19L;
-        Long endTime10 = 20L;
-
-        String bucketID1 = "bucketID1";
-        String bucketID2 = "bucketID2";
-        String bucketID3 = "bucketID3";
-        String bucketID4 = "bucketID4";
-        String bucketID5 = "bucketID5";
-        String bucketID6 = "bucketID6";
-        String bucketID7 = "bucketID7";
-        String bucketID8 = "bucketID8";
-        String bucketID9 = "bucketID9";
-        String bucketID10 = "bucketID10";
+    public void testMatchBucketLeap1() throws Exception{
 
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  createBuilder(3, 1);
@@ -292,51 +271,20 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID10, startTime10, endTime10);
 
         for(int i=0; i<10; i++){
-            Assert.assertTrue(eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+            Assert.assertTrue(eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
         }
 
         for(int j=0; j<10; j++) {
-            eventData.setLastSentEventBucketData(eventData.getBucketIDs().get(j));
+            eventData.setLastSentEventBucketTick(eventData.getBucketTicks().get(j));
             for(int i=0; i<10; i++){
-                Assert.assertTrue(eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+                Assert.assertTrue(eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
             }
         }
 
     }
 
     @Test
-    public void testMatchBucketLeap2() {
-        Long startTime1 = 1L;
-        Long endTime1 = 2L;
-        Long startTime2 = 3L;
-        Long endTime2 = 4L;
-        Long startTime3 = 5L;
-        Long endTime3 = 6L;
-        Long startTime4 = 7L;
-        Long endTime4 = 8L;
-        Long startTime5 = 9L;
-        Long endTime5 = 10L;
-        Long startTime6 = 11L;
-        Long endTime6 = 12L;
-        Long startTime7 = 13L;
-        Long endTime7 = 14L;
-        Long startTime8 = 15L;
-        Long endTime8 = 16L;
-        Long startTime9 = 17L;
-        Long endTime9 = 18L;
-        Long startTime10 = 19L;
-        Long endTime10 = 20L;
-
-        String bucketID1 = "bucketID1";
-        String bucketID2 = "bucketID2";
-        String bucketID3 = "bucketID3";
-        String bucketID4 = "bucketID4";
-        String bucketID5 = "bucketID5";
-        String bucketID6 = "bucketID6";
-        String bucketID7 = "bucketID7";
-        String bucketID8 = "bucketID8";
-        String bucketID9 = "bucketID9";
-        String bucketID10 = "bucketID10";
+    public void testMatchBucketLeap2() throws Exception{
 
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  createBuilder(3, 2);
@@ -354,51 +302,20 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID10, startTime10, endTime10);
 
         for(int i=0; i<10; i++){
-            Assert.assertEquals((i % 2 == 1), eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+            Assert.assertEquals((i % 2 == 1), eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
         }
 
         for(int j=0; j<10; j++) {
-            eventData.setLastSentEventBucketData(eventData.getBucketIDs().get(j));
+            eventData.setLastSentEventBucketTick(eventData.getBucketTicks().get(j));
             for(int i=0; i<10; i++){
-                Assert.assertEquals((i % 2 == j % 2), eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+                Assert.assertEquals((i % 2 == j % 2), eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
             }
         }
 
     }
 
     @Test
-    public void testMatchBucketLeap3() {
-        Long startTime1 = 1L;
-        Long endTime1 = 2L;
-        Long startTime2 = 3L;
-        Long endTime2 = 4L;
-        Long startTime3 = 5L;
-        Long endTime3 = 6L;
-        Long startTime4 = 7L;
-        Long endTime4 = 8L;
-        Long startTime5 = 9L;
-        Long endTime5 = 10L;
-        Long startTime6 = 11L;
-        Long endTime6 = 12L;
-        Long startTime7 = 13L;
-        Long endTime7 = 14L;
-        Long startTime8 = 15L;
-        Long endTime8 = 16L;
-        Long startTime9 = 17L;
-        Long endTime9 = 18L;
-        Long startTime10 = 19L;
-        Long endTime10 = 20L;
-
-        String bucketID1 = "bucketID1";
-        String bucketID2 = "bucketID2";
-        String bucketID3 = "bucketID3";
-        String bucketID4 = "bucketID4";
-        String bucketID5 = "bucketID5";
-        String bucketID6 = "bucketID6";
-        String bucketID7 = "bucketID7";
-        String bucketID8 = "bucketID8";
-        String bucketID9 = "bucketID9";
-        String bucketID10 = "bucketID10";
+    public void testMatchBucketLeap3() throws Exception {
 
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  createBuilder(3, 3);
@@ -416,51 +333,19 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID10, startTime10, endTime10);
 
         for(int i=0; i<10; i++){
-            Assert.assertEquals((i % 3 == 2), eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+            Assert.assertEquals((i % 3 == 2), eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
         }
 
         for(int j=0; j<10; j++) {
-            eventData.setLastSentEventBucketData(eventData.getBucketIDs().get(j));
+            eventData.setLastSentEventBucketTick(eventData.getBucketTicks().get(j));
             for(int i=0; i<10; i++){
-                Assert.assertEquals((i % 3 == j % 3), eventData.doesItMatchBucketLeap(eventData.getBucketIDs().get(i)));
+                Assert.assertEquals((i % 3 == j % 3), eventData.doesItMatchBucketLeap(eventData.getBucketTicks().get(i)));
             }
         }
     }
 
      @Test
-    public void testCleanOldBuckets1() {
-        Long startTime1 = 1L;
-        Long endTime1 = 2L;
-        Long startTime2 = 3L;
-        Long endTime2 = 4L;
-        Long startTime3 = 5L;
-        Long endTime3 = 6L;
-        Long startTime4 = 7L;
-        Long endTime4 = 8L;
-        Long startTime5 = 9L;
-        Long endTime5 = 10L;
-        Long startTime6 = 11L;
-        Long endTime6 = 12L;
-        Long startTime7 = 13L;
-        Long endTime7 = 14L;
-        Long startTime8 = 15L;
-        Long endTime8 = 16L;
-        Long startTime9 = 17L;
-        Long endTime9 = 18L;
-        Long startTime10 = 19L;
-        Long endTime10 = 20L;
-
-        String bucketID1 = "bucketID1";
-        String bucketID2 = "bucketID2";
-        String bucketID3 = "bucketID3";
-        String bucketID4 = "bucketID4";
-        String bucketID5 = "bucketID5";
-        String bucketID6 = "bucketID6";
-        String bucketID7 = "bucketID7";
-        String bucketID8 = "bucketID8";
-        String bucketID9 = "bucketID9";
-        String bucketID10 = "bucketID10";
-
+    public void testCleanOldBuckets1() throws Exception{
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  createBuilder(3, 2);
         AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, "strategyId");
@@ -477,63 +362,32 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID10, startTime10, endTime10);
 
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(9).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(9).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(5).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(5).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(3).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(3).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(1).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(1).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(4, eventData.getBucketIDs().size());
+        Assert.assertEquals(4, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(1).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(1).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(3, eventData.getBucketIDs().size());
+        Assert.assertEquals(4, eventData.getBucketTicks().size());
 
     }
 
     @Test
-    public void testCleanOldBuckets2() {
-        Long startTime1 = 1L;
-        Long endTime1 = 2L;
-        Long startTime2 = 3L;
-        Long endTime2 = 4L;
-        Long startTime3 = 5L;
-        Long endTime3 = 6L;
-        Long startTime4 = 7L;
-        Long endTime4 = 8L;
-        Long startTime5 = 9L;
-        Long endTime5 = 10L;
-        Long startTime6 = 11L;
-        Long endTime6 = 12L;
-        Long startTime7 = 13L;
-        Long endTime7 = 14L;
-        Long startTime8 = 15L;
-        Long endTime8 = 16L;
-        Long startTime9 = 17L;
-        Long endTime9 = 18L;
-        Long startTime10 = 19L;
-        Long endTime10 = 20L;
-
-        String bucketID1 = "bucketID1";
-        String bucketID2 = "bucketID2";
-        String bucketID3 = "bucketID3";
-        String bucketID4 = "bucketID4";
-        String bucketID5 = "bucketID5";
-        String bucketID6 = "bucketID6";
-        String bucketID7 = "bucketID7";
-        String bucketID8 = "bucketID8";
-        String bucketID9 = "bucketID9";
-        String bucketID10 = "bucketID10";
+    public void testCleanOldBuckets2() throws Exception{
 
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  createBuilder(3, 3);
@@ -551,21 +405,63 @@ public class AggrFeatureEventDataTest {
         eventData.addBucketID(bucketID10, startTime10, endTime10);
 
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(8).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(8).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(5).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(5).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(10, eventData.getBucketIDs().size());
+        Assert.assertEquals(10, eventData.getBucketTicks().size());
 
-        eventData.getBucketIDs().get(2).setWasSentAsLeadingBucket(true);
+        eventData.getBucketTicks().get(2).setProcessedAsLeadingBucket(true);
         eventData.clearOldBucketData();
-        Assert.assertEquals(3, eventData.getBucketIDs().size());
+        Assert.assertEquals(4, eventData.getBucketTicks().size());
 
     }
 
+    private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) throws Exception{
+        // Creating AggregatedFeatureEventConf
+        Map<String, List<String>> paramters2featuresListMap = new HashMap<>();
+        List<String> aggrFeatureNames = new ArrayList<>();
+        aggrFeatureNames.add("letters");
+        paramters2featuresListMap.put("groupBy", aggrFeatureNames);
+        JSONObject funcJSONObj = new JSONObject();
+        funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
+        funcJSONObj.put("includeValues", true);
+
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
+        FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
+        List<String> dataSources = new ArrayList<>();
+        dataSources.add("ssh");
+        when(bucketConf.getDataSources()).thenReturn(dataSources);
+        eventConf.setBucketConf(bucketConf);
+
+
+        strategy = createFixedDurationStrategy();
+        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
+
+        // Create AggrFeatureEventBuilder
+        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
+
+
+        builder.setAggrEventTopologyService(aggrEventTopologyService);
+        builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
+        builder.setFeatureBucketsService(featureBucketsService);
+
+        return builder;
+    }
+
+    private FeatureBucketStrategy createFixedDurationStrategy() throws Exception{
+        JSONObject strategyJson = new JSONObject();
+        strategyJson.put("name", "fixed_time_daily");
+        strategyJson.put("type", "fixed_time");
+        JSONObject params = new JSONObject();
+        params.put("durationInSeconds", 60*60*24);
+        strategyJson.put("params", params);
+
+        return new FixedDurationFeatureBucketStrategyFactory().createFeatureBucketStrategy(new StrategyJson(strategyJson));
+    }
 
 }

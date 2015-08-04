@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +13,7 @@ import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.ConversionUtils;
-import sun.security.x509.IPAddressName;
+import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -121,7 +119,10 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		if (openUserSessions.containsKey(username)) {
 			for (String sourceIp:openUserSessions.get(username)) {
 				String strategyContextId = getStrategyContextId(username, sourceIp);
-				strategyDataList.add(featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec));
+				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
+				if(featureBucketStrategyData != null && featureBucketStrategyData.getEndTime()>epochtimeInSec){
+					strategyDataList.add(featureBucketStrategyData);
+				}
 			}
 		}
 

@@ -32,6 +32,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private List<String> dataSources;
 	private long inactivityDurationInMinutes;
 	private long endTimeDeltaInMinutes;
+	private String stratetgyContextIdPrefix;
 	private Map<String, List<NextBucketEndTimeListenerData>> username2listenersListMap = new HashMap<>();
 
 	public UserInactivityFeatureBucketStrategy(String strategyName, List<String> dataSources, long inactivityDurationInMinutes, long endTimeDeltaInMinutes) {
@@ -46,6 +47,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		this.dataSources = dataSources;
 		this.inactivityDurationInMinutes = inactivityDurationInMinutes;
 		this.endTimeDeltaInMinutes = endTimeDeltaInMinutes;
+		this.stratetgyContextIdPrefix = buildContextIdPrefix();
 	}
 
 	public void setFeatureBucketStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
@@ -119,55 +121,64 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		return strategyDataList;
 	}
 
-	private String getStrategyContextId(String username) {
+	private String buildContextIdPrefix() {
 		List<String> strategyContextIdParts = new ArrayList<>();
 
 		strategyContextIdParts.add(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE);
 		strategyContextIdParts.addAll(dataSources);
 		strategyContextIdParts.add(Long.toString(inactivityDurationInMinutes));
+
+		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
+	}
+
+
+	private String getStrategyContextId(String username) {
+		List<String> strategyContextIdParts = new ArrayList<>();
+
+		strategyContextIdParts.add(stratetgyContextIdPrefix);
 		strategyContextIdParts.add(username);
 
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
 	}
 
 	private String getUserNameFromStrategyId(String strategyId) throws IllegalArgumentException{
-		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return strategyIdParts[4];
+		return	getStrategyParts(strategyId)[0];
 	}
 
-	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
+	/**
+	 *
+	 * @param strategyId the strategy ID to parse
+	 * @return an array that contains:
+	 *     String[0] - user name
+	 *     String[1] - start time
+	 *     String[2] - strategyContextId
+	 * @throws IllegalArgumentException
+	 */
+	private String[] getStrategyParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
-		String[] strings = new String[5];
-
-		// Strategy Type
-		strings[0] = strategyId.substring(0,AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE.length());
-
-		// Data Source
-		String dataSourcesStr = StringUtils.join(dataSources, STRATEGY_CONTEXT_ID_SEPARATOR);
-		int startIndex = AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE.length()+1;
-		int endIndex = startIndex+dataSourcesStr.length();
-		strings[1] = strategyId.substring(startIndex, endIndex);
-
-		// Duration
-		startIndex = endIndex+1;
-		endIndex = startIndex + Long.toString(inactivityDurationInMinutes).length();
-		strings[2] = strategyId.substring(startIndex, endIndex);
-
-		// User
-		int lastIndexOfSeperator = strategyId.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR + 1);
-		strings[3] = strategyId.substring(endIndex+1, lastIndexOfSeperator);
-
-		// Start Time
-		strings[4] = strategyId.substring(lastIndexOfSeperator+1);
-
-		long duration = 0;
-
+		String[] strings = new String[3];
 		try {
-			duration = Long.parseLong(strings[2]);
-			Long.parseLong(strings[4]); // Validating that the forth element is long (startTime), getting exception if not.
+
+			String prefix = strategyId.substring(0, stratetgyContextIdPrefix.length());
+
+			// User
+			int lastIndexOfSeperator = strategyId.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR);
+			strings[0] = strategyId.substring(stratetgyContextIdPrefix.length()+1, lastIndexOfSeperator);
+
+			// Start Time
+			strings[1] = strategyId.substring(lastIndexOfSeperator+1);
+
+			// Strategy Context ID
+			strings[2] = new StringBuilder(prefix).append(STRATEGY_CONTEXT_ID_SEPARATOR).append(strings[0]).toString();
+
 		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId), e);
+		}
+
+		if(!strings[2].equals(getStrategyContextId(strings[0]))) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
+
 		return strings;
 	}
 
@@ -178,8 +189,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	 */
 	@Override
 	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException{
-		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 4);
+		return getStrategyParts(strategyId)[2];
 	}
 
 	private long getInactivityDurationInSeconds() {
