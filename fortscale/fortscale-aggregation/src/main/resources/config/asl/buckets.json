@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "user_kerberos_daily",
+      "name": "user_kerberos_logins_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
