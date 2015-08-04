@@ -38,7 +38,7 @@
       {
         "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
         "type": "P",
-        "bucketConfName": "user_kerberos_daily",
+        "bucketConfName": "normalized_username_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
