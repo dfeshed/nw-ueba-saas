@@ -38,11 +38,11 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private FeatureBucketsStore featureBucketsStore;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String entityType, String entityName, String dataSource, String feature, Long aggregationEventEndTime) {
-        logger.info("Going to fetch Evidence Supporting Information. Entity type = {} # Entity name = {} # Data source = {} " +
-                "# Feature = {} # Evidence time = {} . Time period = {} days..", entityType, entityName, dataSource, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
+    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime) {
+        logger.info("Going to fetch Evidence Supporting Information. Context type = {} # Context name = {} # Data entity = {} " +
+                "# Feature = {} # Evidence time = {} . Time period = {} days..", contextType, contextValue, dataEntity, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
 
-        String bucketConfigName = getBucketConfigurationName(entityType, dataSource);
+        String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 
         logger.debug("Bucket configuration name = {}", bucketConfigName);
 
@@ -58,7 +58,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
         Long supportingInformationStartTime = calculateSupportingInformationStartTime(aggregationEventEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, entityType, entityName, feature, supportingInformationStartTime, aggregationEventEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, feature, supportingInformationStartTime, aggregationEventEndTime);
 
         logger.info("Found {} relevant feature buckets", featureBuckets.size());
 
@@ -124,7 +124,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
         return supportingInformationHistogram;
     }
 
-    private String getBucketConfigurationName(String entityType, String dataSource) {
-        return entityType + "_" + dataSource + "_daily";
+    private String getBucketConfigurationName(String contextTypeStr, String dataEntity) {
+        return contextTypeStr + "_" + dataEntity + "_daily";
     }
 }
