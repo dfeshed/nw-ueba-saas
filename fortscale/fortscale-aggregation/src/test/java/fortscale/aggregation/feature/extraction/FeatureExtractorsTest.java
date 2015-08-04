@@ -27,7 +27,7 @@ public class FeatureExtractorsTest {
 
 	private static final String EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST =               "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org1\",\"featureAdjustor\":{\"type\":\"chain_feature_adjustor\",\"featureAdjustorList\":[{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"_\",\"replacement\":\".\"},{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"prefix\",\"replacement\":\"\"},{\"type\":\"number_divider_feature_adjustor\",\"additionToDenominator\":4.5,\"denominatorFieldName\":\"duration\"},{\"type\":\"inv_val_feature_adjustor\",\"denominator\":0.1}]}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org2\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":20}}]}";
 	private static final String HOST_AND_SOURCE_IP_FEATURE_EXTRACTOR_JSON_TO_TEST = "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"host\",\"featureAdjustor\":{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"[0-9]+\",\"replacement\":\"\"}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"source_ip\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":24}}]}";
-	private static final String PLAIN_FEATURE_EXTRACTOR_JSON_TO_TEST =				"{\n" + "        \"featureExtractorType\": \"event_feature_extractor\",\n" + "        \"fieldName\": \"timestampepoch\",\n" + "        \"featureAdjustor\": {\n" + "          \"type\": \"hour_of_day_feature_adjustor\"\n" + "        }\n" + "      }";
+	private static final String PLAIN_FEATURE_EXTRACTOR_JSON_TO_TEST =				"{\n" + "        \"featureExtractorType\": \"event_feature_extractor\",\n" + "        \"fieldName\": \"event_time_utc\",\n" + "        \"featureAdjustor\": {\n" + "          \"type\": \"hour_of_day_feature_adjustor\"\n" + "        }\n" + "      }";
 	public static final String FEATURE_NAME = "feature1";
 	
 	@Value("${impala.table.fields.data.source}")
@@ -149,11 +149,11 @@ public class FeatureExtractorsTest {
 		FeatureExtractor featureExtractor = mapper.readValue(json, FeatureExtractor.class);
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("timestampepoch", "1438502400000");
+		jsonObject.put("event_time_utc", "1437210353");
 
 		int ret = (int)featureExtractor.extract(new Event(jsonObject, null, null));
 
-		Assert.assertEquals(11, ret);
+		Assert.assertEquals(12, ret);
 	}
 
 	@Test

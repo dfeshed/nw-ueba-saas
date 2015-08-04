@@ -20,7 +20,7 @@ public class HourOfDayFeatureAdjustor implements FeatureAdjustor {
 	@Override public Object adjust(Object value, Event event) throws InvalidQueryException {
 		long timestamp = convertToLong(value);
 		Calendar calenderHelper = Calendar.getInstance();
-		calenderHelper.setTimeInMillis(timestamp);
+		calenderHelper.setTimeInMillis(timestamp*1000);
 
 		return calenderHelper.get(Calendar.HOUR_OF_DAY);
 	}

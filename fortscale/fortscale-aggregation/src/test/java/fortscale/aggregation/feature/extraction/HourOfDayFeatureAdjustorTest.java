@@ -41,11 +41,11 @@ public class HourOfDayFeatureAdjustorTest {
 	public void testClass() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor();
 
-		//  8/2/2015, 11:00:00
-		long timestamp = 1438502400000l;
+		//  7/18/2015, 12:05:53
+		long timestamp = 1437210353;
 
 		int adjustedTimestamp = (int)featureAdjustor.adjust(timestamp, null);
 
-		Assert.assertEquals(11, adjustedTimestamp);
+		Assert.assertEquals(12, adjustedTimestamp);
 	}
 }
