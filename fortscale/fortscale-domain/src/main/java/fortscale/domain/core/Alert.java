@@ -60,8 +60,10 @@ public class Alert extends AbstractDocument implements Serializable {
 	private List<Evidence> evidences;
 	@Field(scoreField)
 	private Integer score;
+	@Indexed(unique=false)
 	@Field(severityField)
 	private Severity severity;
+	@Indexed(unique=false)
 	@Field(statusField)
 	private AlertStatus status;
 	@Field(commentField)

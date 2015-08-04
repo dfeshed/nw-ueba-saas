@@ -50,7 +50,7 @@ public class Evidence extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
-	public static final String dataEntityIdField = "dataEntityId";
+	public static final String dataEntityIdField = "dataEntitiesIds";
 	public static final String evidenceTypeField = "evidenceType";
 
 	// The 3 top events

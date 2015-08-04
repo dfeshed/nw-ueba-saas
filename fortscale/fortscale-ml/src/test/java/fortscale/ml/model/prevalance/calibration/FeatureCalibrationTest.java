@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -26,7 +25,7 @@ public class FeatureCalibrationTest {
 		calibration.init(featureValueToCountMap);
 		for (String featureValue : featureValueToCountMap.keySet()) {
 			double score = calibration.score(featureValue);
-			Assert.assertEquals(0.0, score);
+			Assert.assertEquals(0.0, score, 0.0);
 			
 		}
 	}
@@ -40,7 +39,7 @@ public class FeatureCalibrationTest {
 		}
 		calibration.init(featureValueToCountMap);
 		double score = calibration.score("notExist");
-		Assert.assertEquals(100.0, score);
+		Assert.assertEquals(100.0, score, 0.0);
 	}
 	
 	@Test

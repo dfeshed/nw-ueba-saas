@@ -1,15 +1,17 @@
 package fortscale.services.cache;
 
-import com.google.common.cache.Cache;
-import fortscale.utils.kafka.KafkaEventsWriter;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.cache.Cache;
 
 public class MemoryBasedCacheTest {
 

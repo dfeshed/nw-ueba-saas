@@ -132,22 +132,43 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 	private String getUserNameFromStrategyId(String strategyId) throws IllegalArgumentException{
 		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return strategyIdParts[3];
+		return strategyIdParts[4];
 	}
 
 	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
-		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
-		if(strings.length !=5 || !strings[0].equals(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
-			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
-		}
+		String[] strings = new String[5];
+
+		// Strategy Type
+		strings[0] = strategyId.substring(0,AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE.length());
+
+		// Data Source
+		String dataSourcesStr = StringUtils.join(dataSources, STRATEGY_CONTEXT_ID_SEPARATOR);
+		int startIndex = AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE.length()+1;
+		int endIndex = startIndex+dataSourcesStr.length();
+		strings[1] = strategyId.substring(startIndex, endIndex);
+
+		// Duration
+		startIndex = endIndex+1;
+		endIndex = startIndex + Long.toString(inactivityDurationInMinutes).length();
+		strings[2] = strategyId.substring(startIndex, endIndex);
+
+		// User
+		int lastIndexOfSeperator = strategyId.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR + 1);
+		strings[3] = strategyId.substring(endIndex+1, lastIndexOfSeperator);
+
+		// Start Time
+		strings[4] = strategyId.substring(lastIndexOfSeperator+1);
+
+		long duration = 0;
+
 		try {
-			Long inactivityDurationInMinutes = Long.parseLong(strings[2]); // Validating that the third element is long, getting exception if not.
-			Long.parseLong(strings[4]); // Validating that the fifth element is long (stratTime), getting exception if not.
-			return strings;
+			duration = Long.parseLong(strings[2]);
+			Long.parseLong(strings[4]); // Validating that the forth element is long (startTime), getting exception if not.
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
+		return strings;
 	}
 
 	/**
@@ -158,7 +179,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	@Override
 	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException{
 		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 3);
+		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 4);
 	}
 
 	private long getInactivityDurationInSeconds() {

@@ -1,18 +1,17 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.IpToHostname;
-import fortscale.services.ComputerService;
-import fortscale.utils.TimestampUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.routines.InetAddressValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.InetAddressValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import fortscale.domain.events.IpToHostname;
+import fortscale.services.ComputerService;
+import fortscale.utils.TimestampUtils;
 
 /**
  * IP resolving service that aggregate results from all available providers to determine the
@@ -26,7 +25,6 @@ public class IpToHostnameResolver {
 	// Default message to be return when there is no resolve
 	public static final String RESOLVING_DEFAULT_MESSAGE = null;
 
-	private static Logger logger = LoggerFactory.getLogger(IpToHostnameResolver.class);
 
 	@Autowired private ComputerLoginResolver computerLoginResolver;
 	@Autowired private DhcpResolver dhcpResolver;

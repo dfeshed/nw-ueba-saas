@@ -1,13 +1,13 @@
 package fortscale.streaming.feature.extractor;
 
+import static fortscale.utils.ConversionUtils.convertToDouble;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import net.minidev.json.JSONObject;
-import org.springframework.util.Assert;
 
-import static fortscale.utils.ConversionUtils.convertToDouble;
+import net.minidev.json.JSONObject;
 
 @JsonTypeName(InverseValueFeatureAdjustor.INVERSE_VALUE_FEATURE_ADJUSTOR_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)

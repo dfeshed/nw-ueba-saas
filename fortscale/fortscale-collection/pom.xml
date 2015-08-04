@@ -82,7 +82,6 @@
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
-		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 
 	<dependencies>
@@ -291,7 +290,6 @@
 		<dependency>
     		<groupId>jdk.tools</groupId>
     		<artifactId>jdk.tools</artifactId>
-    		<version>${java-lang-config.version}</version>
     		<scope>system</scope>
     		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
 		</dependency>

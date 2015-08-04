@@ -1,11 +1,9 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class MySqlFunctionDateDiffTest extends MySqlFunctionTest {
 

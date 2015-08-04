@@ -1,10 +1,10 @@
 package fortscale.utils.kafka.partitions;
 
-import static  org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.security.NoSuchAlgorithmException;
 
 public class StringHashPartitionerTest  {
 

@@ -4,8 +4,10 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +21,14 @@ public class SecEventsSA4768RouterTest {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/securityAnalytics/readSecEvtRouter_securityAnalytics.conf";
 
+	
+	
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+    }
 	
 	@Before
 	public void setUp() throws Exception {

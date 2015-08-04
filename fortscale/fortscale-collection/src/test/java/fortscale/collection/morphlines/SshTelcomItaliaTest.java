@@ -9,8 +9,10 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 
@@ -25,6 +27,15 @@ public class SshTelcomItaliaTest {
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
 
 
+	
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
+	
+	
 	@Before
 	public void setUp() throws Exception {
 

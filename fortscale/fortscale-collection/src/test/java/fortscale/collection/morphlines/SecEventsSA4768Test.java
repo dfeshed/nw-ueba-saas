@@ -6,8 +6,10 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +52,12 @@ public class SecEventsSA4768Test {
 		Mar_17_15_49_28_OUT2 = TestUtils.getOutputDate(date, "yyyy-MM-dd HH:mm:ss");
 		Mar_17_15_49_28_LONG = TestUtils.getUnixDate(date);
 	}
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
 	@Before
 	public void setUp() throws Exception {

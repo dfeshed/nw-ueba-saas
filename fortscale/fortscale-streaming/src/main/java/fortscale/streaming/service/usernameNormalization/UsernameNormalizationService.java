@@ -1,17 +1,14 @@
 package fortscale.streaming.service.usernameNormalization;
 
-import fortscale.services.UserService;
-import fortscale.services.impl.UsernameNormalizer;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+
+import fortscale.services.impl.UsernameNormalizer;
 
 /**
  * Service for normalization of usernames
  * Date: 24/01/2015.
  */
 public class UsernameNormalizationService {
-
-	private UserService userService;
 
 	@Value("${normalizedUser.fail.filter:false}")
 	protected boolean dropOnFail;

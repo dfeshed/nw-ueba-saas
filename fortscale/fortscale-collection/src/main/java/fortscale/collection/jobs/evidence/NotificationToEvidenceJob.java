@@ -1,5 +1,17 @@
 package fortscale.collection.jobs.evidence;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
@@ -12,13 +24,6 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-
-import java.util.*;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -71,7 +76,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, SORT_FIELD));
 		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
 		logger.debug("Getting notifications after time {}", lastFetchTime);
-		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
 		//get all notifications that occurred after the last runtime of the job
 		List<Notification> notifications = notificationsRepository.findByTsGreaterThanExcludeComments(lastFetchTime,
 				sort);
@@ -80,21 +84,28 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		} else {
 			logger.debug("No new notifications found");
 		}
-		for (Notification notification: notifications) {
-			if (notificationsToIgnore.contains(notification.getCause())) {
-				continue;
+		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
+		try{
+			for (Notification notification: notifications) {
+				if (notificationsToIgnore.contains(notification.getCause())) {
+					continue;
+				}
+				//convert each notification to evidence and send it to the appropriate Kafka topic
+				JSONObject evidence = new JSONObject();
+				evidence.put(notificationScoreField, score);
+				evidence.put(notificationTimestampField, notification.getTs());
+				evidence.put(notificationTypeField, notification.getCause());
+				evidence.put(notificationValueField, getAnomalyField(notification));
+				evidence.put(notificationEntityField, getEntity(notification));
+				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
+				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
+				logger.debug("Writing to topic evidence - {}", messageToWrite);
+				streamWriter.send(notification.getIndex(), messageToWrite);
 			}
-			//convert each notification to evidence and send it to the appropriate Kafka topic
-			JSONObject evidence = new JSONObject();
-			evidence.put(notificationScoreField, score);
-			evidence.put(notificationTimestampField, notification.getTs());
-			evidence.put(notificationTypeField, notification.getCause());
-			evidence.put(notificationValueField, getAnomalyField(notification));
-			evidence.put(notificationEntityField, getEntity(notification));
-			evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
-			String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
-			logger.debug("Writing to topic evidence - {}", messageToWrite);
-			streamWriter.send(notification.getIndex(), messageToWrite);
+		} finally{
+			if(streamWriter != null){
+				streamWriter.close();
+			}
 		}
 		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", dateStr);
 		fetchConfiguration.setLastFetchTime(dateStr);
@@ -113,7 +124,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private List<String> getEntity(Notification notification) {
-		List<String> result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 		if (notification.getCause().toLowerCase().contains("amt")) {
 			result.add("amt");
 		}
@@ -167,14 +178,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private Map<String, List<String>> createAnomalyMap(String notificationAnomalyString) {
-		Map<String, List<String>> result = new HashMap();
+		Map<String, List<String>> result = new HashMap<String, List<String>>();
 		//notificationAnomalyString is of format - notification1:[value1|value2...],notification2:[value1|value2...],...
 		for (String pair: notificationAnomalyString.split(",")) {
 			String notification = pair.split(":")[0];
 			String valuesString = pair.split(":")[1];
 			//get list of values inside []
 			valuesString = valuesString.substring(1, valuesString.length() - 1);
-			List<String> tempList = new ArrayList();
+			List<String> tempList = new ArrayList<String>();
 			for (String value: valuesString.split("\\|")) {
 				tempList.add(value);
 			}

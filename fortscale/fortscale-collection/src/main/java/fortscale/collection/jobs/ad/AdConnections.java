@@ -1,15 +1,14 @@
 package fortscale.collection.jobs.ad;
 
-import fortscale.utils.logging.Logger;
+import java.io.File;
+import java.util.List;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import fortscale.utils.logging.Logger;
 
 /**
  * Created by Amir Keren on 17/05/2015.

@@ -1,22 +1,20 @@
 package fortscale.collection.morphlines.commands;
 
-import com.typesafe.config.Config;
-
-import fortscale.services.notifications.AmtLoginAsMailNotificationGenerator;
-import fortscale.services.notifications.AmtResetPwdNotificationGenerator;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Collection;
-import java.util.Collections;
+import com.typesafe.config.Config;
+
+import fortscale.services.notifications.AmtLoginAsMailNotificationGenerator;
+import fortscale.services.notifications.AmtResetPwdNotificationGenerator;
 
 /**
  * Created by idanp on 9/18/2014.
@@ -24,10 +22,6 @@ import java.util.Collections;
  */
 //@Configurable
 public class SendNotificationCmdBuilder implements CommandBuilder {
-
-
-	private static Logger logger = LoggerFactory.getLogger(SendNotificationCmdBuilder.class);
-
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("SendNotification");

@@ -2,8 +2,7 @@ package fortscale.ml.model.prevalance.calibration;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -26,7 +25,7 @@ public class DailyTimeModelScoringTest {
 		}
 		
 		double score = timeModel.score(epochSeconds);
-		Assert.assertEquals(0.0, score);
+		Assert.assertEquals(0.0, score, 0.0);
 	}
 	
 	@Test
@@ -41,7 +40,7 @@ public class DailyTimeModelScoringTest {
 		epochSeconds = new Integer(6600);
 		timeModel.add(epochSeconds, 0);
 		double score = timeModel.calculateScore(epochSeconds);
-		Assert.assertEquals(44.0, score);
+		Assert.assertEquals(44.0, score, 0.0);
 	}
 	
 	@Test
@@ -56,7 +55,7 @@ public class DailyTimeModelScoringTest {
 		epochSeconds = null;
 		timeModel.add(epochSeconds, 0);
 		double score = timeModel.calculateScore(epochSeconds);
-		Assert.assertEquals(0.0, score);
+		Assert.assertEquals(0.0, score, 0.0);
 	}
 	
 	@Test
