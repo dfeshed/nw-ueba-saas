@@ -44,7 +44,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 			evidence.put(notificationTimestampField, ts);
 			evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
 			evidence.put(notificationValueField, NOTIFICATION_VALUE);
-			evidence.put(notificationEntityField, NOTIFICATION_ENTITY);
+			List<String> entities = new ArrayList();
+			entities.add(NOTIFICATION_ENTITY);
+			evidence.put(notificationEntityField, entities);
 			evidence.put(normalizedUsernameField, vpnSession.getNormalizedUserName());
 			evidence.put("index", index);
 			logger.info("adding geo hopping notification with the index {}", index);
