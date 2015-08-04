@@ -45,9 +45,10 @@ public class AggrFeatureEventBuilder {
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
-    
+    private static final String STRATEGY_CONTEXT_ID = "strategyContextId";
+
     private static final SimpleDateFormat format = getSimpleDateFormat();
-    
+
     private static SimpleDateFormat getSimpleDateFormat(){
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
