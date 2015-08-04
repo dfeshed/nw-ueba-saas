@@ -39,10 +39,11 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
         }
     }
 
-    private void loadEventTopologyFromFile(String fileName) throws IllegalArgumentException {
+    @SuppressWarnings("unchecked")
+	private void loadEventTopologyFromFile(String fileName) throws IllegalArgumentException {
         try {
             JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(fileName));
-            eventType2kafkaQueueNameMap = (Map)jsonObj.get(EVENT_TOPOLOGY_JSON_NODE_NAME);
+            eventType2kafkaQueueNameMap = (Map<String, String>)jsonObj.get(EVENT_TOPOLOGY_JSON_NODE_NAME);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to read json conf file %s", fileName);
             logger.error(errorMsg, e);

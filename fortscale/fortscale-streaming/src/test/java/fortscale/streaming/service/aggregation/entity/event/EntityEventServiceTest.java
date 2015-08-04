@@ -1,6 +1,5 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -12,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,32 +22,11 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-context-test.xml"})
-public class EntityEventServiceTest {
+public class EntityEventServiceTest extends EntityEventTestBase{
 	private static final double DELTA = 0.00001;
-
-	protected static JSONObject createMessage(
-			String aggrFeatureType,
-			String bucketConfName,
-			String aggrFeatureName,
-			double aggrFeatureValue,
-			double score,
-			long dateTime,
-			long startTime,
-			long endTime,
-			JSONObject context) {
-
-		JSONObject message = new JSONObject();
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE, aggrFeatureType);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME, bucketConfName);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME, aggrFeatureName);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE, aggrFeatureValue);
-		message.put("score", score);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_DATE_TIME_UNIX, dateTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX, startTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX, endTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT, context);
-		return message;
-	}
+	
+	@Value("${streaming.entity_event.field.entity_event_type}")
+    private String entityEventTypeFieldName;
 
 	@Test
 	public void entity_event_service_should_process_messages_correctly_and_fire_events_on_time() throws Exception {
@@ -109,7 +88,7 @@ public class EntityEventServiceTest {
 		for (OutgoingMessageEnvelope envelope : envelopes) {
 			String entityEventString = (String)envelope.getMessage();
 			JSONObject entityEventJson = (JSONObject)JSONValue.parseWithException(entityEventString);
-			String entityEventType = ConversionUtils.convertToString(entityEventJson.get("entity_event_type"));
+			String entityEventType = ConversionUtils.convertToString(entityEventJson.get(entityEventTypeFieldName));
 			Double entityEventValue = ConversionUtils.convertToDouble(entityEventJson.get("entity_event_value"));
 			if (StringUtils.endsWith(entityEventType, "conf2")) {
 				Assert.assertEquals(61.355, entityEventValue, DELTA);

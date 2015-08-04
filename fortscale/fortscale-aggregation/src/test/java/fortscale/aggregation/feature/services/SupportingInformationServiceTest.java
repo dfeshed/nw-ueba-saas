@@ -1,10 +1,13 @@
 package fortscale.aggregation.feature.services;
 
 
-import fortscale.aggregation.feature.bucket.*;
-import fortscale.domain.core.SupportingInformationData;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.utils.TimestampUtils;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,19 +15,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
+import fortscale.domain.core.SupportingInformationData;
+import fortscale.utils.TimestampUtils;
 
 /**
  * Test class for Supporting Information service

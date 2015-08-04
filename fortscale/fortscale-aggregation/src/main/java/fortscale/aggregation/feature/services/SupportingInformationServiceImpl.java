@@ -1,5 +1,15 @@
 package fortscale.aggregation.feature.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -8,13 +18,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Service implementation to provide Supporting Information data

@@ -8,17 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.stereotype.Component;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 /**
  * Loads BucketConfs from JSON file.

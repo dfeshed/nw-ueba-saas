@@ -5,20 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
 import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
+@Configurable(preConstruction = true)
 public class AggrFeatureEventWrapper {
 	private static final String BLANK_STRING = "";
 
 	private static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
 	private static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
 	private static final String SCORE_FIELD = "score";
+	
+	@Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfNameFieldName;
+	@Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
 
 	private JSONObject aggrFeatureEvent;
 	private Map<String, String> context;
@@ -46,11 +53,11 @@ public class AggrFeatureEventWrapper {
 	}
 
 	public String getBucketConfName() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(bucketConfNameFieldName));
 	}
 
 	public String getAggregatedFeatureName() {
-		return ConversionUtils.convertToString(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
+		return ConversionUtils.convertToString(aggrFeatureEvent.get(aggrFeatureNameFieldName));
 	}
 
 	public Double getAggregatedFeatureValue() {

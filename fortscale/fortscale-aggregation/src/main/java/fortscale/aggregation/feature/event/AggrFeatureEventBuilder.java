@@ -31,7 +31,6 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
-    public static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
     public static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
     protected static final String EVENT_FIELD_DATE_TIME = "date_time";
     public static final String EVENT_FIELD_CONTEXT = "context";
@@ -40,11 +39,18 @@ public class AggrFeatureEventBuilder {
     protected static final String EVENT_FIELD_START_TIME = "start_time";
     public static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
     protected static final String EVENT_FIELD_END_TIME = "end_time";
-    public static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
-    private static final String STRATEGY_CONTEXT_ID = "strategyContextId";
+    
+    @Value("${streaming.event.field.type}")
+    private String eventTypeFieldName;
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String eventTypeFieldValue;
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
 
     private static final SimpleDateFormat format = getSimpleDateFormat();
 
@@ -300,15 +306,17 @@ public class AggrFeatureEventBuilder {
         additionalInfoMap = featureValue.getAdditionalInformationMap();
 
         JSONObject event = new JSONObject();
+        //static data for all aggregated feature events
+        event.put(eventTypeFieldName, eventTypeFieldValue);
 
         // Feature Data
         event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
-        event.put(EVENT_FIELD_AGGREGATED_FEATURE_NAME, conf.getName());
+        event.put(aggrFeatureNameFieldName, conf.getName());
         event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
         if(additionalInfoMap!=null) {
             event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
         }
-        event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
+        event.put(bucketConfNameFieldName, conf.getBucketConfName());
 
         // Context
         event.put(EVENT_FIELD_CONTEXT, context);
@@ -359,13 +367,6 @@ public class AggrFeatureEventBuilder {
             this.strategyContextId = strategyContextId;
         }
 
-        public Map<String, String> getBucketContext() {
-            return bucketContext;
-        }
-
-        public String getStrategyContextId() {
-            return strategyContextId;
-        }
 
         @Override
         public boolean equals(Object o) {
