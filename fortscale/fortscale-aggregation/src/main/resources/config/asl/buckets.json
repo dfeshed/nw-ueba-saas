@@ -70,7 +70,7 @@
       ]
     },
     {
-      "name": "source_machine_kerberos_daily",
+      "name": "source_machine_kerberos_logins_daily",
       "contextFieldNames": [
         "source_machine"
       ],
