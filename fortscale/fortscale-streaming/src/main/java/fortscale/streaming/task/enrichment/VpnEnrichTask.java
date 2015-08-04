@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToBoolean;
 
 /**
  * Created by rans on 01/02/15.
@@ -158,7 +157,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
 		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
-
 
         message = vpnEnrichService.processVpnEvent(message);
 

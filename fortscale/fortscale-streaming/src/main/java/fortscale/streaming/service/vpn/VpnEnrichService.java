@@ -126,7 +126,6 @@ public class VpnEnrichService {
     }
 
     protected JSONObject processSessionUpdate(JSONObject event) {
-
         VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 
         if(vpnService == null){
