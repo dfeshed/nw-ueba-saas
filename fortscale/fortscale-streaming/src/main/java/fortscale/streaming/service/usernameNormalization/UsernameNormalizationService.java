@@ -1,5 +1,7 @@
 package fortscale.streaming.service.usernameNormalization;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import fortscale.services.impl.UsernameNormalizer;
 
 /**
@@ -8,6 +10,7 @@ import fortscale.services.impl.UsernameNormalizer;
  */
 public class UsernameNormalizationService {
 
+	@Value("${normalizedUser.fail.filter:false}")
 	protected boolean dropOnFail;
 
 	protected UsernameNormalizer usernameNormalizer;
