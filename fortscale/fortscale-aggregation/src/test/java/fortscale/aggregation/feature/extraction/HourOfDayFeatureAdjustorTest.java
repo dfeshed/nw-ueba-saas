@@ -2,27 +2,24 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 public class HourOfDayFeatureAdjustorTest {
-	private static final String JSON_TO_TEST = "{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":20}";
-	private static final int SUBNET_MASK_VALUE_FOR_JSON_TEST = 20;
+	private static final String JSON_TO_TEST = "{\"type\":\"hour_of_day_feature_adjustor\"}";
 
-	private FeatureAdjustor buildFeatureAdjustor(int subnetMask){
-		return new IPv4FeatureAdjustor(subnetMask);
+	private FeatureAdjustor buildFeatureAdjustor(){
+		return new HourOfDayFeatureAdjustor();
 	}
 
 	@Test
 	public void serialize_to_json() throws JsonProcessingException{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(SUBNET_MASK_VALUE_FOR_JSON_TEST);
+		FeatureAdjustor featureAdjustor = buildFeatureAdjustor();
 
 		ObjectMapper mapper = new ObjectMapper();
 
 		String json = mapper.writeValueAsString(featureAdjustor);
 
-		//{"type":"ipv4_feature_adjustor","subnetMask":20}
 		Assert.assertNotNull(json);
 
 		Assert.assertEquals(JSON_TO_TEST, json);
@@ -35,58 +32,20 @@ public class HourOfDayFeatureAdjustorTest {
 		ObjectMapper mapper = new ObjectMapper();
 		FeatureAdjustor featureAdjustorActual = mapper.readValue(json, FeatureAdjustor.class);
 
-		FeatureAdjustor featureAdjustorExpected = buildFeatureAdjustor(SUBNET_MASK_VALUE_FOR_JSON_TEST);
+		FeatureAdjustor featureAdjustorExpected = buildFeatureAdjustor();
 
 		Assert.assertEquals(featureAdjustorExpected, featureAdjustorActual);
 	}
 
 	@Test
-	public void testClass20SubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(20);
+	public void testClass() throws Exception{
+		FeatureAdjustor featureAdjustor = buildFeatureAdjustor();
 
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.70", null);
+		//  8/2/2015, 11:00:00
+		long timestamp = 1438502400000l;
 
-		Assert.assertEquals("82.165.192.0", adjustedVal);
-	}
+		int adjustedTimestamp = (int)featureAdjustor.adjust(timestamp, null);
 
-	@Test
-	public void testZeroSubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(0);
-
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.70", null);
-
-		Assert.assertEquals("0.0.0.0", adjustedVal);
-	}
-
-	@Test
-	public void test31SubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(31);
-
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
-
-		Assert.assertEquals("82.165.195.170", adjustedVal);
-	}
-
-	@Test
-	public void test24SubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(24);
-
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
-
-		Assert.assertEquals("82.165.195.0", adjustedVal);
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testNegativeSubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(-5);
-
-		featureAdjustor.adjust("82.165.195.171", null);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testAbove31SubnetMask() throws Exception{
-		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(32);
-
-		featureAdjustor.adjust("82.165.195.171", null);
+		Assert.assertEquals(11, adjustedTimestamp);
 	}
 }
