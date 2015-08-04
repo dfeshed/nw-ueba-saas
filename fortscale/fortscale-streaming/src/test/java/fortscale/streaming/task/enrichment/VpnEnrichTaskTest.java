@@ -74,7 +74,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         Map map = new HashMap();
         map.put("username", "myUser");
 
-        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class), null)).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
 
@@ -84,7 +84,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
         // validate the services were read
-        verify(vpnEnrichService).processVpnEvent(any(JSONObject.class));
+        verify(vpnEnrichService).processVpnEvent(any(JSONObject.class), null);
         verify(vpnEnrichService).getPartitionKey(any(JSONObject.class));
         verify(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
@@ -109,7 +109,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 		topicToServiceMap.put(INPUT_TOPIC,vpnEnrichService);
 		VpnEnrichTask.setTopicToServiceMap(topicToServiceMap);
 
-        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class), null)).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
