@@ -17,7 +17,7 @@ public class StrategyJson {
 		Assert.notNull(jsonObject);
 		this.jsonObject = jsonObject;
 		if(getName()==null || getType()==null || getParams()==null){
-			throw new JsonMappingException(String.format("json object %s doesn't contain all fields %s", jsonObject.toJSONString()));
+			throw new JsonMappingException(String.format("json object doesn't contain all fields: %s", jsonObject.toJSONString()));
 		}
 	}
 	
