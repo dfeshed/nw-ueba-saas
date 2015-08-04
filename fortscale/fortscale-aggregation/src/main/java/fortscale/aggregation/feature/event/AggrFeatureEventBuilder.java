@@ -11,6 +11,8 @@ import java.util.TimeZone;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -120,8 +122,6 @@ public class AggrFeatureEventBuilder {
         Assert.isTrue(endTime > startTime && startTime > 946684800); //01 Jan 2000 00:00:00 GMT
 
         String startegyContextId = bucketStrategy.getStrategyContextIdFromStrategyId(strategyId);
-        Assert.notNull(startegyContextId);
-        Assert.isTrue(StringUtils.isNotEmpty(startegyContextId));
 
         EventContextData eventContextData = new EventContextData(context, startegyContextId);
         AggrFeatureEventData eventData = bucketAndStrategyContexts2eventDataMap.get(eventContextData);
@@ -373,17 +373,17 @@ public class AggrFeatureEventBuilder {
 
             EventContextData that = (EventContextData) o;
 
-            if (bucketContext != null ? !bucketContext.equals(that.bucketContext) : that.bucketContext != null)
-                return false;
-            return !(strategyContextId != null ? !strategyContextId.equals(that.strategyContextId) : that.strategyContextId != null);
-
+            return new EqualsBuilder()
+                    .append(bucketContext, that.bucketContext)
+                    .append(strategyContextId, that.strategyContextId)
+                    .isEquals();
         }
 
         @Override
         public int hashCode() {
-            int result = bucketContext != null ? bucketContext.hashCode() : 0;
-            result = 31 * result + (strategyContextId != null ? strategyContextId.hashCode() : 0);
-            return result;
+            return new HashCodeBuilder(449, 43).
+                    append(bucketContext).
+                    toHashCode();
         }
     }
 }

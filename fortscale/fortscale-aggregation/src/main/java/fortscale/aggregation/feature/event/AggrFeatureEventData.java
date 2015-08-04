@@ -128,7 +128,7 @@ class AggrFeatureEventData implements NextBucketEndTimeListener {
                 BucketTick bd = bucketTicks.get(i);
 
                 if( ( bd.getStartTime()==startTime && bd.getEndTime()!=endTime )
-                        || ( bd.getEndTime()==startTime && bd.getStartTime()==endTime ) ) {
+                        || ( bd.getEndTime()!=startTime && bd.getStartTime()==endTime ) ) {
 
                     String errorMessage = String.format("New bucket start or end time matches existing bucketTick time, but the other start/end do not match. New bucket values: bucketId: %s, startTime: %d, endTime: %d. Existing bucket data values:  bucketId: %s, startTime: %d, endTime: %d",
                             bucketID, startTime, endTime, bd.getBucketId(), bd.getStartTime(), bd.getEndTime());
@@ -180,7 +180,9 @@ class AggrFeatureEventData implements NextBucketEndTimeListener {
                 }
 
                 if (featureBucketStrategyData.getStartTime() < bucketTick.getStartTime()) {
-                    previousBucketTick = createAndInsertBucketTick(null, featureBucketStrategyData.getStartTime(), featureBucketStrategyData.getEndTime(), featureBucketStrategyData);
+                    previousBucketTick = new BucketTick(null, featureBucketStrategyData.getStartTime(), featureBucketStrategyData.getEndTime(), featureBucketStrategyData, this);
+                    bucketTicks.add(position, previousBucketTick);
+                    position++;
                 } else if(featureBucketStrategyData.getStartTime() == bucketTick.getStartTime()) {
                     notAllMissingBucketTicksAdded = false;
                 } else {
