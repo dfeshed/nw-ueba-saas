@@ -7,15 +7,17 @@ import fortscale.geoip.IGeoIPInfo;
 import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.system.SystemStream;
+import org.apache.samza.task.MessageCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.ConversionUtils.*;
 
@@ -31,6 +33,8 @@ public class VpnEnrichService {
     public static Logger logger = LoggerFactory.getLogger(VpnEnrichService.class);
 
     private VpnEnrichConfig config;
+
+    private MessageCollector collector;
 
     @Autowired
     private GeoIPService multiProviderGeoIpService;
@@ -167,6 +171,24 @@ public class VpnEnrichService {
             }
         }
 
+        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
+        if(isRunGeoHopping != null && isRunGeoHopping){
+            List<JSONObject> evidenceList = processGeoHopping(vpnSessionUpdateConfig, vpnSession);
+            if (evidenceList != null && collector != null) {
+                for (JSONObject evidence : evidenceList) {
+                    try {
+                        OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+                                "fortscale-notification-event-score"), evidence.get("index"),
+                                evidence.toJSONString(JSONStyle.NO_COMPRESS));
+                        collector.send(output);
+                    } catch (Exception e) {
+                        logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
+                    }
+                }
+            }
+
+        }
+
         if(vpnSession.getCreatedAt() != null) {
             vpnService.createOpenVpnSession(vpnSession);
         } else{
@@ -174,16 +196,6 @@ public class VpnEnrichService {
         }
 
         return event;
-    }
-
-    public List<JSONObject> getGeoHoppingEvidence(JSONObject event) {
-        VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
-        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
-        if(isRunGeoHopping != null && isRunGeoHopping){
-            VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
-            return processGeoHopping(vpnSessionUpdateConfig, vpnSession);
-        }
-        return null;
     }
 
     private void cleanSourceIpInfoFromEvent(JSONObject event){
@@ -272,4 +284,7 @@ public class VpnEnrichService {
     }
 
 
+    public void setCollector(MessageCollector collector) {
+        this.collector = collector;
+    }
 }

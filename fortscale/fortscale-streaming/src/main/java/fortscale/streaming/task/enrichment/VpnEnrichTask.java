@@ -158,7 +158,8 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
 
-		List<JSONObject> evidenceList = vpnEnrichService.getGeoHoppingEvidence(message);
+		vpnEnrichService.setCollector(collector);
+
         message = vpnEnrichService.processVpnEvent(message);
 
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
@@ -173,19 +174,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         } catch (Exception exception) {
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", vpnEnrichService.getInputTopic(), vpnEnrichService.getOutputTopic()), exception);
         }
-
-		if (evidenceList != null) {
-			for (JSONObject evidence : evidenceList) {
-				try {
-					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-							"fortscale-notification-event-score"), evidence.get("index"),
-							evidence.toJSONString(JSONStyle.NO_COMPRESS));
-					collector.send(output);
-				} catch (Exception exception) {
-					throw new KafkaPublisherException("failed to send evidence", exception);
-				}
-			}
-		}
 
     }
 
