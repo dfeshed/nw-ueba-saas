@@ -50,7 +50,7 @@ public class GenericHistogram implements Serializable {
             return;
         }
 
-        Double oldCount = histogram.get(val);
+        Double oldCount = histogram.get(val.toString());
         Double newValCount = oldCount!=null ? count + oldCount : count;
 
         histogram.put(val, newValCount);
