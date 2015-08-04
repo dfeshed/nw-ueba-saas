@@ -36,8 +36,6 @@ public class VpnEnrichService {
 
     private VpnEnrichConfig config;
 
-    private MessageCollector collector;
-
     @Autowired
     private GeoIPService multiProviderGeoIpService;
     @Autowired
@@ -63,7 +61,7 @@ public class VpnEnrichService {
 
     }
 
-    public JSONObject processVpnEvent(JSONObject event) {
+    public JSONObject processVpnEvent(JSONObject event, MessageCollector collector) {
         checkNotNull(event);
 
 		if (config.getVpnGeolocationConfig() != null)
@@ -71,7 +69,7 @@ public class VpnEnrichService {
 		if (config.getVpnDataBucketsConfig() != null)
         	event = processDataBuckets(event);
 		if (config.getVpnSessionUpdateConfig() != null)
-        	event = processSessionUpdate(event);
+        	event = processSessionUpdate(event, collector);
 
         return event;
     }
@@ -122,7 +120,7 @@ public class VpnEnrichService {
         return event;
     }
 
-    protected JSONObject processSessionUpdate(JSONObject event) {
+    protected JSONObject processSessionUpdate(JSONObject event, MessageCollector collector) {
         VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 
         if(vpnService == null){
@@ -170,7 +168,7 @@ public class VpnEnrichService {
 
         Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
         if(isRunGeoHopping != null && isRunGeoHopping){
-            createEvidence(processGeoHopping(vpnSessionUpdateConfig, vpnSession));
+            sendEvidence(processGeoHopping(vpnSessionUpdateConfig, vpnSession), collector);
         }
 
         if(vpnSession.getCreatedAt() != null) {
@@ -183,7 +181,7 @@ public class VpnEnrichService {
     }
 
     
-    private void createEvidence(List<JSONObject> evidenceList) {
+    private void sendEvidence(List<JSONObject> evidenceList, MessageCollector collector) {
         if (evidenceList != null && collector != null) {
             for (JSONObject evidence : evidenceList) {
                 try {
@@ -284,7 +282,4 @@ public class VpnEnrichService {
     }
 
 
-    public void setCollector(MessageCollector collector) {
-        this.collector = collector;
-    }
 }

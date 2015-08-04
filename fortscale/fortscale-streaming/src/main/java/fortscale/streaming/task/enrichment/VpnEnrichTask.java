@@ -156,9 +156,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
 
-		vpnEnrichService.setCollector(collector);
-
-        message = vpnEnrichService.processVpnEvent(message);
+        message = vpnEnrichService.processVpnEvent(message, collector);
 
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
 
