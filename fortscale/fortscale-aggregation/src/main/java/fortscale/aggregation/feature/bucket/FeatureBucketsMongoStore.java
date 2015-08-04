@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-
 import fortscale.utils.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,9 @@ import org.springframework.data.mongodb.core.index.Index.Duplicates;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
+
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore, InitializingBean{
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
@@ -22,7 +21,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
+	
 	private Set<String> collectionNames;
 
 	
@@ -74,7 +73,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
 		String collectionName = getCollectionName(featureBucketConf);
-
 		if (isCollectionExist(collectionName)) {
 			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 			
