@@ -1,9 +1,12 @@
 package fortscale.web.rest;
 
+
+import fortscale.aggregation.feature.services.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.Histogram;
 import fortscale.domain.core.HistogramPair;
+import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.TimestampUtils;
@@ -12,10 +15,14 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST API for Evidences querying
@@ -33,7 +40,16 @@ public class ApiEvidenceController extends DataQueryController {
 	private EvidencesRepository evidencesDao;
 
 	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
+
+	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
+	private String normalizedUsernameField;
+
+	@Autowired
+	private SupportingInformationService supportingInformationService;
+
 	DataQueryHelper dataQueryHelper;
+
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
 	 * @param id The ID of the requested evidence
@@ -121,53 +137,59 @@ public class ApiEvidenceController extends DataQueryController {
 		return new Date();
 	}
 
-
-
 	/**
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entity_name=edward@snow.com&data_entity_id=kerberos&feature=dst_machine&start_time=1437480000
+	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
 	 *
-	 * @param id the evidence id
-	 * @param entity_type the entity type (user, machine etc.)
-	 * @param entity_name the entity name (e.g. mike@cnn.com)
-	 * @param data_entity_id the data source (ssh, kerberos, etc.), or combination of some
+	 * @param evidenceId the evidence evidenceId
+	 * @param entityType the entity type (user, machine etc.)
+	 * @param entityName the entity name (e.g. mike@cnn.com)
+	 * @param dataEntityId the data source (ssh, kerberos, etc.), or combination of some
 	 * @param feature the related feature
-	 * @param end_time the evidence start time in seconds
+	 * @param endTime the evidence end time in seconds
 	 *
 	 * @return list of histogramPair
+	 *
 	 */
 	@RequestMapping(value="/{id}/histogram",method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable String id,
-																@RequestParam String entity_type,
-																@RequestParam String entity_name,
-																@RequestParam String data_entity_id,
-																@RequestParam String feature,
-																@RequestParam long end_time){
-		DataBean<List<HistogramPair>> toReturn = new DataBean<>();
+	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
+															   @RequestParam(value = "entity_type") String entityType,
+															   @RequestParam(value = "entity_name") String entityName,
+															   @RequestParam(value = "data_entity_id") String dataEntityId,
+															   @RequestParam(value = "feature") String feature,
+															   @RequestParam(value = "end_time") Long endTime){
+		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
 
-		List<HistogramPair> histogram = new ArrayList<>();
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, TimestampUtils.convertToMilliSeconds(endTime));
 
-		//stub histogram - just for now -- instead of the function call
-		Histogram stub = new Histogram();
-		String key1 = "comp1";
-		Number count = 6;
-		Map<String,Number> myMap = new HashMap<>();
-		myMap.put(key1,count);
-		stub.setMap(myMap);
+		Map<Object, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
-		//convert histogram to ui format
-		for (Map.Entry<String,Number> entry: stub.getMap().entrySet()){
-			histogram.add(new HistogramPair(entry.getKey(),entry.getValue()));
+		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram);
+
+		histogramBean.setData(listOfHistogramPairs);
+
+		return histogramBean;
+	}
+
+	private List<HistogramPair> createListOfHistogramPairs(Map<Object, Double> supportingInformationHistogram) {
+
+		List<HistogramPair> histogramPairs = new ArrayList<>();
+
+		for (Map.Entry<Object, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
+			String key = (String) supportingInformationHistogramEntry.getKey();
+			Double value = supportingInformationHistogramEntry.getValue();
+
+			HistogramPair histogramPair = new HistogramPair(key, value);
+
+			histogramPairs.add(histogramPair);
 		}
 
-		//set data of the web bean
-		toReturn.setData(histogram);
-
-		return  toReturn;
+		return histogramPairs;
 	}
+
 
 }
