@@ -1,14 +1,13 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.User;
+import java.util.List;
+
+import org.springframework.beans.factory.InitializingBean;
+
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
-import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.InitializingBean;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
 

@@ -19,7 +19,6 @@ public class MySqlFunctionToDate extends MySqlFieldFunction {
 
 
         StringBuilder sb = new StringBuilder();
-        String entityId = field.getEntity();
 
         if (field.getId() == null)
             throw new InvalidQueryException("The " + sqlFunctionName + " field function requires a field ID.");

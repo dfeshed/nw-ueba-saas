@@ -1,27 +1,26 @@
 package fortscale.services.event.impl;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.events.dao.VpnSessionRepository;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ContextConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.events.dao.VpnSessionRepository;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 /**
  * Created by rans on 14/04/15.
@@ -101,7 +100,7 @@ public class VpnServiceImpleTest {
 
         VpnSession vpnOpenSession = createSession(openEvent);
         VpnSession vpnCloseSession = createSession(closeEvent);
-        List<VpnSession> vpnSessions = new ArrayList();
+        List<VpnSession> vpnSessions = new ArrayList<VpnSession>();
         vpnSessions.add(vpnOpenSession);
 
         when(vpnSessionRepository.findByUsernameAndSourceIp(anyString(), anyString(),any(PageRequest.class))).thenReturn(vpnSessions);
@@ -120,7 +119,7 @@ public class VpnServiceImpleTest {
 
         VpnSession vpnOpenSession = createSession(openEvent);
         VpnSession vpnCloseSession = createSession(closeEvent);
-        List<VpnSession> vpnSessions = new ArrayList();
+        List<VpnSession> vpnSessions = new ArrayList<VpnSession>();
         vpnSessions.add(vpnOpenSession);
 
         when(vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(anyString(), anyLong(), anyLong(), any(PageRequest.class))).thenReturn(vpnSessions);
@@ -141,7 +140,7 @@ public class VpnServiceImpleTest {
         VpnSession vpnOpenSession = createSession(openEvent);
         VpnSession vpnOpenSession2 = createSession(openEvent2);
         VpnSession vpnCloseSession = createSession(closeEvent);
-        List<VpnSession> vpnSessions = new ArrayList();
+        List<VpnSession> vpnSessions = new ArrayList<VpnSession>();
         vpnSessions.add(vpnOpenSession);
         vpnSessions.add(vpnOpenSession2);
 

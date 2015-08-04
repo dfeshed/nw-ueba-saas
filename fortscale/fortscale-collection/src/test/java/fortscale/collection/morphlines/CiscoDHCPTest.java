@@ -9,8 +9,10 @@ import junitparams.Parameters;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.domain.events.DhcpEvent;
 
@@ -21,6 +23,13 @@ public class CiscoDHCPTest {
 	private String confFile = "resources/conf-files/parseCiscoDHCP.conf";
 	private String[] dhcpOutputFields = new String[] {DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME,DhcpEvent.ACTION_FIELD_NAME,DhcpEvent.IP_ADDRESS_FIELD_NAME
 			,DhcpEvent.HOSTNAME_FIELD_NAME,DhcpEvent.MAC_ADDRESS_FIELD_NAME,DhcpEvent.EXPIRATION_FIELD_NAME};
+	
+
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 	
 	@Before
 	public void setUp() throws Exception {

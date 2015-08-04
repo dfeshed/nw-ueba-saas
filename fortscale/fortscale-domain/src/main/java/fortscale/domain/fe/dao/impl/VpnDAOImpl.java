@@ -1,7 +1,6 @@
 package fortscale.domain.fe.dao.impl;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -10,13 +9,9 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.impala.ImpalaParser;
 
 @Component("vpnDAO")
 public class VpnDAOImpl extends AccessDAO implements InitializingBean{	
-	@Autowired
-	private ImpalaParser impalaParser;
-	
 	@Value("${impala.score.vpn.table.name}")
 	private String tableName;
 	

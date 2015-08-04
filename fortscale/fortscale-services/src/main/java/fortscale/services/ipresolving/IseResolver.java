@@ -1,16 +1,8 @@
 package fortscale.services.ipresolving;
 
-/**
- * Created by tomerd on 12/05/2015.
- */
+import java.util.List;
 
-import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.IseEventsEnum;
-import fortscale.domain.events.dao.IseEventRepository;
-import fortscale.services.cache.CacheHandler;
-import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang3.Range;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
-import java.util.List;
+/**
+ * Created by tomerd on 12/05/2015.
+ */
+
+import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.dao.IseEventRepository;
+import fortscale.services.cache.CacheHandler;
+import fortscale.utils.TimestampUtils;
 
 public class IseResolver extends GeneralIpResolver<IseEvent> {
 

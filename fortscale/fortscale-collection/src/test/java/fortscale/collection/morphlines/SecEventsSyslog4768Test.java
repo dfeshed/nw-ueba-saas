@@ -22,17 +22,17 @@ public class SecEventsSyslog4768Test {
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 
-	private static ClassPathXmlApplicationContext testContextManager;
 
+	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass() {
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
 	}
 
 	@AfterClass
 	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
+//		testContextManager.close();
+//		testContextManager = null;
 	}
 
 

@@ -249,6 +249,7 @@ public class UserServiceTest {
 		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void updateUserWithADInfo_should_not_skip_update_when_member_of_differs() throws Exception{
 

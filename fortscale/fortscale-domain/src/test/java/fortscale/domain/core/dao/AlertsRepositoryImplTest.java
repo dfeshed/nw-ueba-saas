@@ -1,7 +1,15 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.*;
-import fortscale.domain.core.dao.rest.Alerts;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,15 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.EntityType;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 
 public class AlertsRepositoryImplTest {
 
@@ -55,7 +61,7 @@ public class AlertsRepositoryImplTest {
 		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
-		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium");
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium", "Read,Rejected");
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}
@@ -72,8 +78,10 @@ public class AlertsRepositoryImplTest {
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a");
 
 		List<Evidence> evidences = new ArrayList<>();
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		List<String> dataEntitiiesIds = new ArrayList<>();
+		dataEntitiiesIds.add("dataSource");
+		Evidence evidence0 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);

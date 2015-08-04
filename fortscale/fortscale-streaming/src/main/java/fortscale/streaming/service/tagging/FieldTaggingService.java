@@ -1,19 +1,20 @@
 package fortscale.streaming.service.tagging;
 
-import fortscale.services.cache.CacheHandler;
-import net.minidev.json.JSONObject;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToString;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fortscale.services.cache.CacheHandler;
+import net.minidev.json.JSONObject;
 
 /**
  * Created by idanp on 3/29/2015.
@@ -23,7 +24,6 @@ public class FieldTaggingService {
 
 
 	private CacheHandler<String,String> listOfValuToTag;
-	private String filePath;
 	private String tagFieldName;
 	private String taggingBaesdFieldName;
 
@@ -43,7 +43,6 @@ public class FieldTaggingService {
 
 		// initialize private properties
 		this.listOfValuToTag = listOfValuToTag;
-		this.filePath = filePath;
 		this.tagFieldName = tagFieldName;
 		this.taggingBaesdFieldName = taggingBaesdFieldName;
 		this.outPutTopic = outPutTopic;

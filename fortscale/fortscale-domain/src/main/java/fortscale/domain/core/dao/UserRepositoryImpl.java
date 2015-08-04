@@ -244,7 +244,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		} catch (Exception ex) {
 			//exception can happen in the case where users have special characters such as '*' in their samaccountname
 			logger.warn("Failed to search for samaccountname value - " + val.toString() + ", due to special character");
-			result = new ArrayList();
+			result = new ArrayList<User>();
 		}
 		return result;
 	}

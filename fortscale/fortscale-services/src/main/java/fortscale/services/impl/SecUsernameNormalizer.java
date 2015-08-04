@@ -1,8 +1,8 @@
 package fortscale.services.impl;
 
-import fortscale.utils.ConfigurationUtils;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+
+import fortscale.utils.ConfigurationUtils;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 

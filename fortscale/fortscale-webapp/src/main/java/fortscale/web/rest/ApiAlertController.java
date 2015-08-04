@@ -50,7 +50,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "sort_direction") String sortDirection,
 										  @RequestParam(required=false, value = "size")  Integer size,
 										  @RequestParam(required=false, value = "page") Integer fromPage,
-										  @RequestParam(required=false, value = "severity") String severity) {
+										  @RequestParam(required=false, value = "severity") String severity,
+										  @RequestParam(required=false, value = "status") String status) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -77,14 +78,14 @@ public class ApiAlertController extends BaseController {
 		Alerts alerts;
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
-		if (severity == null){
+		if (severity == null && status == null){
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status);
 		}
 
 		DataBean<List<Alert>> entities = new DataBean<>();

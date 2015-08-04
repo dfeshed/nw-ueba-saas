@@ -1,7 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
-import com.typesafe.config.Config;
-import fortscale.collection.morphlines.RecordExtensions;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -9,10 +10,9 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import com.typesafe.config.Config;
+
+import fortscale.collection.morphlines.RecordExtensions;
 
 @Deprecated
 @Configurable(preConstruction=true)

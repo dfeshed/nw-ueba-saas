@@ -103,7 +103,7 @@
         }
       },
       {
-        "name": "number_of_successful_kerberos_events",
+        "name": "number_of_kerberos_events",
         "type": "F",
         "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
@@ -111,7 +111,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_susccessful_events"
+            "number_of_events"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -135,7 +135,7 @@
         }
       },
       {
-        "name": "number_of_successful_ssh_events",
+        "name": "number_of_ssh_events",
         "type": "F",
         "bucketConfName": "user_ssh_daily",
         "numberOfBuckets": 1,
@@ -143,7 +143,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_susccessful_events"
+            "number_of_events"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -175,7 +175,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "number_of_successful_events"
+            "number_of_events"
           ]
         },
         "aggregatedFeatureEventFunction": {

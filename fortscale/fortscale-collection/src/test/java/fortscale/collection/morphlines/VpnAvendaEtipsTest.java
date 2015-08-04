@@ -5,8 +5,10 @@ import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 
@@ -19,6 +21,13 @@ public class VpnAvendaEtipsTest {
 	private String confFile = "resources/conf-files/readVPN_avendaEtips.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 
+	
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 	
 	@Before
 	public void setUp() throws Exception {

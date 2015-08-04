@@ -9,8 +9,6 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.EventsPrevalenceModelStreamTaskService;
-import fortscale.streaming.service.EventsScoreStreamTaskService;
 
 
 /**

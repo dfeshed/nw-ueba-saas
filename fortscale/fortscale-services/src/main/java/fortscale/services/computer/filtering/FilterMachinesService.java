@@ -1,4 +1,4 @@
-package fortscale.services;
+package fortscale.services.computer.filtering;
 
 public interface FilterMachinesService {
 	boolean toFilter(String computerName);

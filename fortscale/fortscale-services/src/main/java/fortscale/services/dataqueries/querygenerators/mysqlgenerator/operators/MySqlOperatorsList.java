@@ -1,11 +1,8 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators;
 
-import fortscale.services.dataqueries.querydto.LogicalOperator;
-import fortscale.services.dataqueries.querydto.QueryOperator;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import fortscale.services.dataqueries.querydto.LogicalOperator;
 
 /**
  * Created by rans on 19/04/15.
