@@ -4,7 +4,7 @@
       {
         "name": "distinct_number_of_src_machines_kerberos",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -16,12 +16,12 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-          }
+        }
       },
       {
         "name": "distinct_number_of_dst_machines_kerberos",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -38,7 +38,7 @@
       {
         "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
         "type": "P",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -105,7 +105,7 @@
       {
         "name": "number_of_kerberos_events",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -121,7 +121,7 @@
       {
         "name": "number_of_failed_kerberos_events",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -186,7 +186,7 @@
       {
         "name": "new_src_machine_kerberos",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -203,7 +203,7 @@
       {
         "name": "new_dst_machine_kerberos",
         "type": "F",
-        "bucketConfName": "normalized_username_kerberos_daily",
+        "bucketConfName": "user_kerberos_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
