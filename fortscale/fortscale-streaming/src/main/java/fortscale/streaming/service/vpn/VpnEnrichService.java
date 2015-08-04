@@ -16,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.ConversionUtils.*;
 
@@ -120,15 +122,6 @@ public class VpnEnrichService {
         return event;
     }
 
-    private VpnSession getVPNSession(JSONObject event, VpnSessionUpdateConfig vpnSessionUpdateConfig) {
-        String countryIsoCodeFieldName = vpnSessionUpdateConfig.getCountryIsoCodeFieldName();
-        String longtitudeFieldName = vpnSessionUpdateConfig.getLongtitudeFieldName();
-        String latitudeFieldName = vpnSessionUpdateConfig.getLatitudeFieldName();
-        String sessionIdFieldName = vpnSessionUpdateConfig.getSessionIdFieldName();
-        return recordToVpnSessionConverter.convert(event, countryIsoCodeFieldName, longtitudeFieldName,
-                latitudeFieldName, sessionIdFieldName);
-    }
-
     protected JSONObject processSessionUpdate(JSONObject event) {
         VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 
@@ -136,8 +129,12 @@ public class VpnEnrichService {
             logger.warn("vpnService is null while processing command {}. probably the spring configuration context was not loaded", VpnEnrichService.class);
             return event;
         }
+        String countryIsoCodeFieldName = vpnSessionUpdateConfig.getCountryIsoCodeFieldName();
+        String longtitudeFieldName = vpnSessionUpdateConfig.getLongtitudeFieldName();
+        String latitudeFieldName = vpnSessionUpdateConfig.getLatitudeFieldName();
+        String sessionIdFieldName = vpnSessionUpdateConfig.getSessionIdFieldName();
 
-        VpnSession vpnSession = getVPNSession(event, vpnSessionUpdateConfig);
+        VpnSession vpnSession = recordToVpnSessionConverter.convert(event, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
 
         // check if failed event
         if(vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null){
@@ -173,20 +170,7 @@ public class VpnEnrichService {
 
         Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
         if(isRunGeoHopping != null && isRunGeoHopping){
-            List<JSONObject> evidenceList = processGeoHopping(vpnSessionUpdateConfig, vpnSession);
-            if (evidenceList != null && collector != null) {
-                for (JSONObject evidence : evidenceList) {
-                    try {
-                        OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-                                "fortscale-notification-event-score"), evidence.get("index"),
-                                evidence.toJSONString(JSONStyle.NO_COMPRESS));
-                        collector.send(output);
-                    } catch (Exception e) {
-                        logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
-                    }
-                }
-            }
-
+            createEvidence(processGeoHopping(vpnSessionUpdateConfig, vpnSession));
         }
 
         if(vpnSession.getCreatedAt() != null) {
@@ -196,6 +180,21 @@ public class VpnEnrichService {
         }
 
         return event;
+    }
+
+    private void createEvidence(List<JSONObject> evidenceList) {
+        if (evidenceList != null && collector != null) {
+            for (JSONObject evidence : evidenceList) {
+                try {
+                    OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+                            "fortscale-notification-event-score"), evidence.get("index"),
+                            evidence.toJSONString(JSONStyle.NO_COMPRESS));
+                    collector.send(output);
+                } catch (Exception e) {
+                    logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
+                }
+            }
+        }
     }
 
     private void cleanSourceIpInfoFromEvent(JSONObject event){
