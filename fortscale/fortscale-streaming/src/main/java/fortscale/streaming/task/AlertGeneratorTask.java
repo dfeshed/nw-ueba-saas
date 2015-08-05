@@ -71,7 +71,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
 			if (info != null) {
 
-				createDynamicStatements(inputTopic,info);
+				createDynamicStatements(inputTopic, info);
 				//send input data to Esper
 				epService.getEPRuntime().sendEvent(info);
 
@@ -94,7 +94,12 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 	@Override protected void wrappedClose() throws Exception {
 		for (EPStatement esperEventStatement : epsStatements) {
-			esperEventStatement.destroy();
+			try {
+				esperEventStatement.destroy();
+			}
+			catch (Exception e){
+				logger.error("",e);
+			}
 		}
 	}
 
