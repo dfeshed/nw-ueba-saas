@@ -25,7 +25,7 @@
 
 
 
-    <!--Event converters -->
+    <!--Event wrapper -->
     <bean id="entityTagsWrapper" class="fortscale.streaming.alert.event.wrappers.EntityTagsWrapper" scope="singleton" />
 
     <bean id="sessionTimeUpdateWrapper" class="fortscale.streaming.alert.event.wrappers.SessionTimeUpdateWrapper" scope="singleton" />
