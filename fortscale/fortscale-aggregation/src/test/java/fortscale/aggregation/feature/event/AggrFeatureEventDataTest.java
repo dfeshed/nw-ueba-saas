@@ -440,7 +440,6 @@ public class AggrFeatureEventDataTest {
 
 
         strategy = createFixedDurationStrategy();
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
 
         // Create AggrFeatureEventBuilder
         AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);

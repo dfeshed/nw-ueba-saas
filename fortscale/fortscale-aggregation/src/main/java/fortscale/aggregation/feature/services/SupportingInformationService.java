@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.services;
 
 import fortscale.domain.core.SupportingInformationData;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Service to provide Supporting Information data

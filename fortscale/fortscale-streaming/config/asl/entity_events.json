@@ -7,7 +7,7 @@
 
     "EntityEventDefinitions": [
       {
-        "name": "user_daily",
+        "name": "normalized_username_daily",
         "contextFields": ["normalized_username"],
         "aggregatedFeatureEventNamesMap": {
           "aggregatedFeatureEventNames": [

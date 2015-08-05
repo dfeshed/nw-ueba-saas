@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -50,6 +51,13 @@ public class AggrFeatureEventBuilderTest {
 
     @Mock
     private AggrEventTopologyService aggrEventTopologyService;
+    
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
+    
+    
 
     private DataSourcesSyncTimerListener dataSourcesSyncTimerListener;
     private JSONObject event;
@@ -83,7 +91,6 @@ public class AggrFeatureEventBuilderTest {
 
 
         strategy = createFixedDurationStrategy();
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
 
         // Create AggrFeatureEventBuilder
         AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
@@ -160,12 +167,12 @@ public class AggrFeatureEventBuilderTest {
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
         Assert.assertEquals("F", event.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
-        Assert.assertEquals("bc1", event.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
+        Assert.assertEquals("bc1", event.get(bucketConfNameFieldName));
         String date_time = format.format(new Date(startTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME));
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
-        Assert.assertEquals("my_number_of_distinct_values", event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
+        Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureNameFieldName));
         Assert.assertEquals(numberOfDistinctValues, event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("machine"));
