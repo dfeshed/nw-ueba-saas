@@ -127,6 +127,24 @@ public class VpnSessionFeatureBucketStrategyTest {
 		Assert.assertEquals(0, actual.size());
 	}
 
+	@Test
+	public void get_contextId_form_strategyId() throws Exception {
+		String username = "user1";
+		String sourceIp1 = "1.1.1.1";
+		long epochtime = 1435737600;
+		JSONObject success_event1 = createDataSourceEvent(username, sourceIp1, epochtime, "SUCCESS");
+
+		String strategyContextId1 = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp1);
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
+
+		strategy.update(success_event1);
+		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, success_event1, epochtime + 1);
+		String strategyId = actual.get(0).getStrategyId();
+		String actualContextId = strategy.getStrategyContextIdFromStrategyId(strategyId);
+		Assert.assertEquals(strategyContextId1, actualContextId);
+	}
+
 	/*
 	 * Create and return a JSON object containing the
 	 * default parameters defined at the beginning of the class.

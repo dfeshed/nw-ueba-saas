@@ -1,18 +1,21 @@
 package fortscale.collection.morphlines;
 
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.properties.PropertiesResolver;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static junitparams.JUnitParamsRunner.$;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junitparams.JUnitParamsRunner.$;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSyslog4769Test {
@@ -22,6 +25,12 @@ public class SecEventsSyslog4769Test {
 	private String conf4769File = "resources/conf-files/processSecEvt4769_syslog.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
 	@Before
 	public void setUp() throws Exception {

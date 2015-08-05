@@ -1,14 +1,15 @@
 package fortscale.ml.model.prevalance.field;
 
-import fortscale.ml.model.prevalance.FieldModel;
-import junit.framework.Assert;
-import org.junit.Test;
+import static fortscale.ml.model.prevalance.field.PopulationQuantilesModelBuilderTest.initBuilder;
+import static fortscale.ml.model.prevalance.field.PopulationQuantilesModelBuilderTest.mockPrevalanceModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static fortscale.ml.model.prevalance.field.PopulationQuantilesModelBuilderTest.initBuilder;
-import static fortscale.ml.model.prevalance.field.PopulationQuantilesModelBuilderTest.mockPrevalanceModel;
+import org.junit.Assert;
+import org.junit.Test;
+
+import fortscale.ml.model.prevalance.FieldModel;
 
 public class MediansQuantilesModelBuilderTest {
 	@Test
@@ -40,12 +41,12 @@ public class MediansQuantilesModelBuilderTest {
 		FieldModel fieldModel = builder.buildModel();
 
 		// Assert
-		Assert.assertEquals(0.01, fieldModel.calculateScore(7.0));
-		Assert.assertEquals(0.17, fieldModel.calculateScore(8.0));
-		Assert.assertEquals(0.34, fieldModel.calculateScore(22.0));
-		Assert.assertEquals(0.50, fieldModel.calculateScore(23.0));
-		Assert.assertEquals(0.67, fieldModel.calculateScore(34.0));
-		Assert.assertEquals(0.84, fieldModel.calculateScore(35.0));
-		Assert.assertEquals(1.00, fieldModel.calculateScore(36.0));
+		Assert.assertEquals(0.01, fieldModel.calculateScore(7.0), 0.0);
+		Assert.assertEquals(0.17, fieldModel.calculateScore(8.0), 0.0);
+		Assert.assertEquals(0.34, fieldModel.calculateScore(22.0), 0.0);
+		Assert.assertEquals(0.50, fieldModel.calculateScore(23.0), 0.0);
+		Assert.assertEquals(0.67, fieldModel.calculateScore(34.0), 0.0);
+		Assert.assertEquals(0.84, fieldModel.calculateScore(35.0), 0.0);
+		Assert.assertEquals(1.00, fieldModel.calculateScore(36.0), 0.0);
 	}
 }

@@ -1,14 +1,15 @@
 package fortscale.streaming.task;
 
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
@@ -18,29 +19,61 @@ import org.apache.samza.task.TaskCoordinator;
 
 import com.google.common.collect.Iterables;
 
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
+import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
-//	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
+	private static final Logger logger = Logger.getLogger(AggrFeatureEventsPrevalenceModelStreamTask.class);
 	
+	private static final String EVENT_TYPE_FIELD_NAME_PROPERTY = "${streaming.event.field.type}";
+	
+	private FortscaleStringValueResolver fortscaleStringValueResolver;
+	
+	private Map<String, List<String>> eventTypeToFeatureFullPath = new HashMap<>();
 	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
+	private String eventTypeFieldName;
+	
+	private Counter processedMessageCount;
+	private Counter skippedMessageCount;
 	
 	
 	
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
-		// Get configuration properties
-		Config fieldsSubset = config.subset("fortscale.");
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {	
+		fortscaleStringValueResolver = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		eventTypeFieldName = fortscaleStringValueResolver.resolveStringValue(EVENT_TYPE_FIELD_NAME_PROPERTY);
+		
+		// Get configuration properties for each event type
+		Config fieldsSubset = config.subset("fortscale.event.type.");
+		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".feature.full.path"))) {
+			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".feature.full.path"));
+			List<String> featureFullPath = resolveStringValues(fieldsSubset, fieldConfigKey);
+			eventTypeToFeatureFullPath.put(eventType, featureFullPath);
+		}
+		
+		// Get configuration properties for each feature
+		fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".fortscale.scorers"))) {
 			String featureName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".fortscale.scorers"));
 			Config featureEventConfig = fieldsSubset.subset(String.format("%s.", featureName));
 			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(featureEventConfig, context);
 			featureToEventsPrevalenceModelStreamTaskManagerMap.put(featureName, eventsPrevalenceModelStreamTaskManager);
 		}
+		
+		// create counter metric for processed messages
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-processed-count");
+		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-skip-count");
 
+	}
+	
+	private List<String> resolveStringValues(Config config, String string) {
+		return fortscaleStringValueResolver.resolveStringValues(getConfigStringList(config, string));
 	}
 		
 	/** Process incoming events and update the user models stats */
@@ -48,14 +81,24 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		
-		// get the timestamp from the message
-		String bucketConfName = convertToString(message.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
-		//TODO: get the field name for featureName also from AggrFeatureEventBuilder
-		String featureName = convertToString(message.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
-		String fullPathFeatureName = String.format("%s.%s", bucketConfName, featureName);
-		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureName);
-		if(eventsPrevalenceModelStreamTaskManager != null){
-			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+		String eventTypeFieldValue = convertToString(message.get(eventTypeFieldName));
+		if(StringUtils.isNotBlank(eventTypeFieldValue)){
+			StringBuilder fullPathFeatureNameBuilder = new StringBuilder();
+			fullPathFeatureNameBuilder.append(eventTypeFieldValue);
+			for(String fieldName: eventTypeToFeatureFullPath.get(eventTypeFieldValue)){
+				fullPathFeatureNameBuilder.append(".").append(message.get(fieldName));
+			}
+			
+			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureNameBuilder.toString());
+			if(eventsPrevalenceModelStreamTaskManager != null){
+				eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+				processedMessageCount.inc();
+			} else{
+				skippedMessageCount.inc();
+			}
+		} else{
+			logger.error("got an event with no {} field. event: {}", eventTypeFieldName, messageText);
+			skippedMessageCount.inc();
 		}
 	}
 

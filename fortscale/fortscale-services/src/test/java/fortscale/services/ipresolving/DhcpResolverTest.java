@@ -25,6 +25,7 @@ public class DhcpResolverTest {
 	@Mock
 	private CacheHandler<String,DhcpEvent> cache;
 
+	@SuppressWarnings("rawtypes")
 	@Mock
 	private CacheHandler<String,Range> ipBlackListCache;
 
@@ -116,7 +117,7 @@ public class DhcpResolverTest {
 	@Test
 	public void getLatestDhcpEventBeforeTimestamp_should_update_blacklist_with_ip() {
 		// act
-		DhcpEvent actual = dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", now+150);
+		dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", now+150);
 
 		// assert
 		verify(dhcpResolver, times(1)).addToBlackList("192.168.1.1",0,now+150);

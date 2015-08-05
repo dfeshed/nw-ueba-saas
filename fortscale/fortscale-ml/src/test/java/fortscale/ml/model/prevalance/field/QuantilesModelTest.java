@@ -1,6 +1,6 @@
 package fortscale.ml.model.prevalance.field;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class QuantilesModelTest {
@@ -17,7 +17,7 @@ public class QuantilesModelTest {
 			double score = quantilesModel.calculateScore(i);
 
 			// Assert
-			Assert.assertEquals(i / 100.0, score);
+			Assert.assertEquals(i / 100.0, score, 0.0);
 		}
 	}
 
@@ -32,17 +32,17 @@ public class QuantilesModelTest {
 		// Act
 		double score = quantilesModel.calculateScore(21.0);
 		// Assert
-		Assert.assertEquals(0.01, score);
+		Assert.assertEquals(0.01, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(42.0);
 		// Assert
-		Assert.assertEquals(0.51, score); // median index
+		Assert.assertEquals(0.51, score, 0.0); // median index
 
 		// Act
 		score = quantilesModel.calculateScore(84.0);
 		// Assert
-		Assert.assertEquals(1.00, score);
+		Assert.assertEquals(1.00, score, 0.0);
 	}
 
 	@Test
@@ -65,36 +65,36 @@ public class QuantilesModelTest {
 		// Act
 		double score = quantilesModel.calculateScore(125.0);
 		// Assert
-		Assert.assertEquals(0.13, score);
+		Assert.assertEquals(0.13, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(400.0);
 		// Assert
-		Assert.assertEquals(0.32, score);
+		Assert.assertEquals(0.32, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(555.0);
 		// Assert
-		Assert.assertEquals(0.46, score); // median index
+		Assert.assertEquals(0.46, score, 0.0); // median index
 
 		// Act
 		score = quantilesModel.calculateScore(600.0);
 		// Assert
-		Assert.assertEquals(0.61, score);
+		Assert.assertEquals(0.61, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(925.0);
 		// Assert
-		Assert.assertEquals(0.93, score);
+		Assert.assertEquals(0.93, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(1000.0);
 		// Assert
-		Assert.assertEquals(1.00, score);
+		Assert.assertEquals(1.00, score, 0.0);
 
 		// Act
 		score = quantilesModel.calculateScore(1111.0);
 		// Assert
-		Assert.assertEquals(1.00, score);
+		Assert.assertEquals(1.00, score, 0.0);
 	}
 }

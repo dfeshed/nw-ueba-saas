@@ -1,9 +1,5 @@
 package fortscale.services.dataqueries.querydto;
 
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlMultipleQueryGenerator;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**

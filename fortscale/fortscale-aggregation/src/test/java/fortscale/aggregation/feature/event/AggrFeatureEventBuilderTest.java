@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import fortscale.aggregation.feature.bucket.strategy.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -24,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,10 +40,6 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
-/**
- * Created by amira on 15/07/2015.
- */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
 public class AggrFeatureEventBuilderTest {
@@ -53,6 +51,13 @@ public class AggrFeatureEventBuilderTest {
 
     @Mock
     private AggrEventTopologyService aggrEventTopologyService;
+    
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
+    
+    
 
     private DataSourcesSyncTimerListener dataSourcesSyncTimerListener;
     private JSONObject event;
@@ -60,14 +65,14 @@ public class AggrFeatureEventBuilderTest {
     private Long endTime1 = 1437004799L; //Wed, 15 Jul 2015 23:59:59 GMT
     private Long day = 86400L;
     private Long registartionID = 1000L;
-
+    FeatureBucketStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
 
-    private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) {
+    private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) throws Exception{
         // Creating AggregatedFeatureEventConf
         Map<String, List<String>> paramters2featuresListMap = new HashMap<>();
         List<String> aggrFeatureNames = new ArrayList<>();
@@ -85,12 +90,10 @@ public class AggrFeatureEventBuilderTest {
         eventConf.setBucketConf(bucketConf);
 
 
-        FeatureBucketStrategy strategy = mock(FeatureBucketStrategy.class);
-
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
+        strategy = createFixedDurationStrategy();
 
         // Create AggrFeatureEventBuilder
-        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, aggrFeatureEventService, featureBucketsService);
+        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
 
 
         builder.setAggrEventTopologyService(aggrEventTopologyService);
@@ -100,13 +103,24 @@ public class AggrFeatureEventBuilderTest {
         return builder;
     }
 
+    private FeatureBucketStrategy createFixedDurationStrategy() throws Exception{
+        JSONObject strategyJson = new JSONObject();
+        strategyJson.put("name", "fixed_time_daily");
+        strategyJson.put("type", "fixed_time");
+        JSONObject params = new JSONObject();
+        params.put("durationInSeconds", 60*60*24);
+        strategyJson.put("params", params);
+
+        return new FixedDurationFeatureBucketStrategyFactory().createFeatureBucketStrategy(new StrategyJson(strategyJson));
+    }
+
     private FeatureBucket createFeatureBucket(int bucketNumber) {
         GenericHistogram histogram1 = new GenericHistogram();
 
         histogram1.add("a", 1.0);
         histogram1.add("b", 2.0);
         histogram1.add("c", 3.0);
-        histogram1.add(new String("defghijklmnopqrstuvwxyz").substring(bucketNumber-1,bucketNumber), 4.0);
+        histogram1.add("defghijklmnopqrstuvwxyz".substring(bucketNumber-1,bucketNumber), 4.0);
 
         Map<String, Feature> aggregatedFeatures = new HashMap<>();
         Feature feature = new Feature("letters", histogram1);
@@ -153,12 +167,12 @@ public class AggrFeatureEventBuilderTest {
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
         Assert.assertEquals("F", event.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
-        Assert.assertEquals("bc1", event.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
+        Assert.assertEquals("bc1", event.get(bucketConfNameFieldName));
         String date_time = format.format(new Date(startTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME));
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
-        Assert.assertEquals("my_number_of_distinct_values", event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
+        Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureNameFieldName));
         Assert.assertEquals(numberOfDistinctValues, event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("machine"));
@@ -169,7 +183,7 @@ public class AggrFeatureEventBuilderTest {
     }
 
     @Test
-    public void testUpdateAggrFeatureEvent() {
+    public void testUpdateAggrFeatureEvent() throws Exception{
         AggrFeatureEventBuilder builder = createBuilder(1, 1);
         FeatureBucket bucket1 = createFeatureBucket(1);
 
@@ -198,7 +212,7 @@ public class AggrFeatureEventBuilderTest {
 
     @SuppressWarnings("unchecked")
 	@Test
-    public void testUpdateAggrFeatureEvent_3buckets() {
+    public void testUpdateAggrFeatureEvent_3buckets() throws Exception {
         AggrFeatureEventBuilder builder = createBuilder(3, 1);
         FeatureBucket bucket1 = createFeatureBucket(1);
         FeatureBucket bucket2 = createFeatureBucket(2);
@@ -239,29 +253,67 @@ public class AggrFeatureEventBuilderTest {
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 1, 3, 6L);
 
-        builder.updateAggrFeatureEventData(bucket4.getBucketId(), bucket3.getStrategyId(), bucket4.getContextFieldNameToValueMap(), bucket4.getStartTime(), bucket4.getEndTime());
+        builder.updateAggrFeatureEventData(bucket4.getBucketId(), bucket4.getStrategyId(), bucket4.getContextFieldNameToValueMap(), bucket4.getStartTime(), bucket4.getEndTime());
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 2, 4, 6L);
 
-        AggrFeatureEventData.BucketData bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
-        NextBucketEndTimeListener nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+        AggrFeatureEventData.BucketTick bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
+        NextBucketEndTimeListener nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
 
         nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 4 * day, endTime1 + 4 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 3, 5, 5L);
 
-        bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
-        nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+        bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
+        nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
 
         nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 5 * day, endTime1 + 5 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 4, 6, 4L);
 
-        bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
-        nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+        bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
+        nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
         nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 6 * day, endTime1 + 6 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 5, 7, 0L);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testUpdateAggrFeatureEvent_empty_bucket_ticks() throws Exception {
+        AggrFeatureEventBuilder builder = createBuilder(3, 1);
+        FeatureBucket bucket1 = createFeatureBucket(1);
+        FeatureBucket bucket4 = createFeatureBucket(4);
+
+        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(any(List.class), any(Long.class), any(DataSourcesSyncTimerListener.class))).then(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                dataSourcesSyncTimerListener = (DataSourcesSyncTimerListener) args[2];
+                return registartionID++;
+            }
+        });
+
+        when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket1.getBucketId()))).thenReturn(bucket1);
+        when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket4.getBucketId()))).thenReturn(bucket4);
+        when(aggrEventTopologyService.sendEvent(any(JSONObject.class))).then(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                event = (JSONObject) args[0];
+                return true;
+            }
+        });
+
+        event = null;
+
+        builder.updateAggrFeatureEventData(bucket1.getBucketId(), bucket1.getStrategyId(), bucket1.getContextFieldNameToValueMap(), bucket1.getStartTime(), bucket1.getEndTime());
+        dataSourcesSyncTimerListener.dataSourcesReachedTime();
+        Assert.assertNull(event);
+
+
+        builder.updateAggrFeatureEventData(bucket4.getBucketId(), bucket4.getStrategyId(), bucket4.getContextFieldNameToValueMap(), bucket4.getStartTime(), bucket4.getEndTime());
+        dataSourcesSyncTimerListener.dataSourcesReachedTime();
+        assertEvent(event, 2, 4, 4L);
 
     }
 

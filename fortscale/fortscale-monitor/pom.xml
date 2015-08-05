@@ -80,7 +80,6 @@
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
-			<version>${junitparams.version}</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -1,9 +1,5 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
-
-import java.util.List;
-
 /**
  * Configuration for VPN geolocation. This should be constructed from the streaming task configuration and passed to the VpnEnrichService.
  */

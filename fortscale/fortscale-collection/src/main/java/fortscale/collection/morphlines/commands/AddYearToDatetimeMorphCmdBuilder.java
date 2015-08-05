@@ -49,6 +49,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 			validateArguments();
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 			//Adding year from the system current date to the date_time.

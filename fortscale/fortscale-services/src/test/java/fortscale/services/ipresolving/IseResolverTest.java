@@ -1,10 +1,17 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.dao.IseEventRepository;
-import fortscale.domain.events.dao.IseEventRepository;
-import fortscale.services.cache.CacheHandler;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
 import org.apache.commons.lang3.Range;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +20,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.dao.IseEventRepository;
+import fortscale.services.cache.CacheHandler;
 
 public class IseResolverTest {
 
@@ -27,6 +32,7 @@ public class IseResolverTest {
 	@Mock
 	private CacheHandler<String,IseEvent> cache;
 
+	@SuppressWarnings("rawtypes")
 	@Mock
 	private CacheHandler<String,Range> ipBlackListCache;
 
@@ -120,7 +126,7 @@ public class IseResolverTest {
 	@Test
 	public void getLatestIseEventBeforeTimestamp_should_update_blacklist_with_ip() {
 		// act
-		IseEvent actual = iseResolver.getLatestIseEventBeforeTimestamp("192.168.1.1", now+150);
+		iseResolver.getLatestIseEventBeforeTimestamp("192.168.1.1", now+150);
 
 		// assert
 		verify(iseResolver, times(1)).addToBlackList("192.168.1.1",0,now+150);

@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "user_kerberos_daily",
+      "name": "normalized_username_kerberos_logins_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -47,7 +47,7 @@
     },
 
     {
-      "name": "user_ssh_daily",
+      "name": "normalized_username_ssh_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -85,7 +85,7 @@
     },
 
     {
-      "name": "user_vpn_events_daily",
+      "name": "normalized_username_vpn_events_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -105,6 +105,8 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
         }
+      ]
+    }
       ]
     }
   ]

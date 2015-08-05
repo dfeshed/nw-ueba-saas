@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -74,8 +74,8 @@ public class AlertsRepositoryImplTest {
 		List<Evidence> evidences = new ArrayList<>();
 		List<String> dataEntitiiesIds = new ArrayList<>();
 		dataEntitiiesIds.add("dataSource");
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);

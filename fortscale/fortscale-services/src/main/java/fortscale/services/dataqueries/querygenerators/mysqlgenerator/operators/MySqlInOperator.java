@@ -1,7 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators;
 
 import fortscale.services.dataentity.QueryValueType;
-import fortscale.services.dataqueries.querydto.ConditionField;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlValueGenerator;
 
 /**

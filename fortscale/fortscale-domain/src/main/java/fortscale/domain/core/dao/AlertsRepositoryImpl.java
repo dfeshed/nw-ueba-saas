@@ -1,30 +1,32 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.rest.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 
 /**
  * Created by rans on 21/06/15.
  */
 public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
-    private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
 
     /**
      * returns all alerts in the collection in a json object represented by @Alerts
@@ -160,6 +162,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
                     Criteria endDateCriteria = where(startDateFieldName).lte(endDate);
                     query.addCriteria(new Criteria().andOperator(startDateCriteria, endDateCriteria));
                 } catch (NumberFormatException ex){
+
                     logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
                 }
             }

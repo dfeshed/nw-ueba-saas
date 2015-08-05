@@ -1,21 +1,19 @@
 package fortscale.streaming.service.tagging.computer;
 
-import fortscale.domain.core.ComputerUsageType;
-import fortscale.services.CachingService;
-import fortscale.services.ComputerService;
-import fortscale.services.computer.SensitiveMachineService;
-import fortscale.streaming.service.ipresolving.EventResolvingConfig;
-import net.minidev.json.JSONObject;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToString;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToString;
+import fortscale.domain.core.ComputerUsageType;
+import fortscale.services.ComputerService;
+import fortscale.services.computer.SensitiveMachineService;
+import net.minidev.json.JSONObject;
 
 /**
  * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer

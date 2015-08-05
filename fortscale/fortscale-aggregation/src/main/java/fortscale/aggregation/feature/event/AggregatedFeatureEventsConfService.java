@@ -1,27 +1,34 @@
 package fortscale.aggregation.feature.event;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-
-public class AggregatedFeatureEventsConfService implements InitializingBean {
+public class AggregatedFeatureEventsConfService implements InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
 	private static final String AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME = "AggregatedFeatureEvents";
 	private static final String ARRAY_OF_EVENTS_JSON_FIELD_NAME = "Events";
 
 	@Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
 	private String aggregatedFeatureEventConfJsonFilePath;
+	
+	private ApplicationContext applicationContext;
 
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
@@ -47,7 +54,11 @@ public class AggregatedFeatureEventsConfService implements InitializingBean {
 		String errorMsg;
 
 		try {
-			JSONObject jsonObject = (JSONObject)JSONValue.parseWithException(new FileReader(aggregatedFeatureEventConfJsonFilePath));
+			JSONObject jsonObject;
+
+			Resource bucketsJsonResource = applicationContext.getResource(aggregatedFeatureEventConfJsonFilePath);
+			jsonObject = (JSONObject) JSONValue.parseWithException(bucketsJsonResource.getInputStream());
+
 			aggregatedFeatureEvents = (JSONObject)jsonObject.get(AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME);
 		} catch (Exception e) {
 			errorMsg = String.format("Failed to parse JSON file %s", aggregatedFeatureEventConfJsonFilePath);
@@ -88,5 +99,10 @@ public class AggregatedFeatureEventsConfService implements InitializingBean {
 			FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(bucketConfName);
 			conf.setBucketConf(featureBucketConf);
 		}
+	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }
