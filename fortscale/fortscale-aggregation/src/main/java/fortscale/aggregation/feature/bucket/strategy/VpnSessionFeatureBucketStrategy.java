@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +13,7 @@ import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -120,7 +119,10 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		if (openUserSessions.containsKey(username)) {
 			for (String sourceIp:openUserSessions.get(username)) {
 				String strategyContextId = getStrategyContextId(username, sourceIp);
-				strategyDataList.add(featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec));
+				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
+				if(featureBucketStrategyData != null && featureBucketStrategyData.getEndTime()>epochtimeInSec){
+					strategyDataList.add(featureBucketStrategyData);
+				}
 			}
 		}
 
@@ -206,8 +208,15 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
-		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
-		if(strings.length !=4 || !strings[0].equals(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
+		String[] strings = new String[4];
+		strings[0] = strategyId.substring(0,VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE.length());
+		int lastIndexOfSeperator = strategyId.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR);
+		strings[3] = strategyId.substring(lastIndexOfSeperator+1); // startTime
+		String userNameAndIpAddress = strategyId.substring(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE.length()+1, lastIndexOfSeperator);
+		lastIndexOfSeperator = userNameAndIpAddress.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR);
+		strings[1] = userNameAndIpAddress.substring(0,lastIndexOfSeperator);
+		strings[2] = userNameAndIpAddress.substring(lastIndexOfSeperator+1);
+		if(!strings[0].equals(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
 		try {
@@ -231,7 +240,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	@Override
 	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException {
 		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 2);
+		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 3);
 	}
 
 	private void AddOpenUserSessions(String username, String sourceIP) {

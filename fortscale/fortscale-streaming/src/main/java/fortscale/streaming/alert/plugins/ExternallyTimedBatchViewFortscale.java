@@ -35,7 +35,7 @@ public class ExternallyTimedBatchViewFortscale extends ViewSupport implements Da
 	private final EventBean[] eventsPerStream = new EventBean[1];
 	protected EventBean[] lastBatch;
 	private Long oldestTimestamp;
-	protected final Set<EventBean> window = new LinkedHashSet();
+	protected final Set<EventBean> window = new LinkedHashSet<EventBean>();
 	protected Long referenceTimestamp;
 	protected ViewUpdatedCollection viewUpdatedCollection;
 	protected AgentInstanceViewFactoryChainContext agentInstanceViewFactoryContext;

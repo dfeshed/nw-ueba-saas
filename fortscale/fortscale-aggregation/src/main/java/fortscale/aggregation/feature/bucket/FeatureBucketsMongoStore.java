@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-
+import fortscale.utils.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
@@ -12,10 +12,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore, InitializingBean{
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
@@ -49,9 +47,32 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	}
 
 	@Override
-	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
+	public List<FeatureBucket> getFeatureBuckets(FeatureBucketConf featureBucketConf, String entityType, String entityName, String feature, Long startTime, Long endTime) {
 		String collectionName = getCollectionName(featureBucketConf);
 
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+			Criteria contextCriteria = createContextCriteria(entityType, entityName);
+
+			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
+
+			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		}
+		else {
+			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
+		}
+	}
+
+	private Criteria createContextCriteria(String entityType, String entityName) {
+		Map<String, String> contextMap = new HashMap<>();
+		contextMap.put(entityType, entityName);
+		return Criteria.where(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD).in(contextMap); // TODO check for multiple context
+	}
+
+	@Override
+	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
+		String collectionName = getCollectionName(featureBucketConf);
 		if (isCollectionExist(collectionName)) {
 			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 			
@@ -75,12 +96,12 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 		return collectionNames.contains(collectionName);
 	}
 	
-	private String getCollectionName(FeatureBucketConf featureBucketConf){
+	private String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());			
+		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
 	}
 }

@@ -1,16 +1,17 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
-import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import fortscale.services.dataqueries.querydto.DataQueryCombineMethod;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.MultipleDataQueryDTO;
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
+
+import fortscale.services.dataqueries.querydto.DataQueryCombineMethod;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.MultipleDataQueryDTO;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 /**
  * Created by Yossi on 23/12/2014.

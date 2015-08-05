@@ -1,14 +1,12 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.EventScoreDAO;
-import fortscale.services.CachingService;
-import fortscale.services.cache.CacheHandler;
-import fortscale.services.fe.Classifier;
-import fortscale.utils.logging.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
+import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.EventScoreDAO;
+import fortscale.services.CachingService;
+import fortscale.services.cache.CacheHandler;
+import fortscale.services.fe.Classifier;
 
 public class UsernameService implements InitializingBean, CachingService{
-	private static Logger logger = Logger.getLogger(UsernameService.class);
 
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 @JsonTypeName(HourOfDayFeatureAdjustor.HOUR_OF_DAY_FEATURE_ADJUSTOR)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -19,10 +20,9 @@ public class HourOfDayFeatureAdjustor implements FeatureAdjustor {
 
 	@Override public Object adjust(Object value, Event event) throws InvalidQueryException {
 		long timestamp = convertToLong(value);
-		Calendar calenderHelper = Calendar.getInstance();
-		calenderHelper.setTimeInMillis(timestamp*1000);
-
-		return calenderHelper.get(Calendar.HOUR_OF_DAY);
+		Calendar calenderHelper = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		calenderHelper.setTimeInMillis(timestamp * 1000);
+		return new Integer(calenderHelper.get(Calendar.HOUR_OF_DAY));
 	}
 
 	@Override

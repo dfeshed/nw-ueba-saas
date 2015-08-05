@@ -5,9 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import fortscale.utils.impala.ImpalaDateTime;

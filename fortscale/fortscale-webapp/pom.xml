@@ -95,6 +95,11 @@
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-aggregation</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -157,7 +162,6 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectjweaver.version}</version>
 		</dependency>
 		
 

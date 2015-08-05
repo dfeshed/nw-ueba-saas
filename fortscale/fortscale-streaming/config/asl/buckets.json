@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "user_kerberos_daily",
+      "name": "normalized_username_kerberos_logins_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -111,6 +111,26 @@
           "name": "number_of_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+        }
+      ]
+    },
+    {
+
+      "name": "source_machine_kerberos_logins_daily",
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     }

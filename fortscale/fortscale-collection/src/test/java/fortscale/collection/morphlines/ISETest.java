@@ -1,14 +1,18 @@
 package fortscale.collection.morphlines;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import static junitparams.JUnitParamsRunner.$;
 
 import java.util.Arrays;
 
-import static junitparams.JUnitParamsRunner.$;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
 public class ISETest {
@@ -17,7 +21,6 @@ public class ISETest {
     private String confFile = "resources/conf-files/parseISE.conf";
     private String[] iseOutputFields = new String[]{"eventCode", "timestampepoch", "hostname", "ipaddress", "macAddress","adHostName"};
 
-    private static ClassPathXmlApplicationContext testContextManager;
 
 
     // Add this notes only for debug usage
@@ -35,6 +38,11 @@ public class ISETest {
 	}
 	*/
 
+    @SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
     @Before
     public void setUp() throws Exception {

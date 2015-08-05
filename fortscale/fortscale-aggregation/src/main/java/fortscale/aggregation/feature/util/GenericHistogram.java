@@ -50,7 +50,7 @@ public class GenericHistogram implements Serializable {
             return;
         }
 
-        Double oldCount = histogram.get(val.toString());
+        Double oldCount = histogram.get(val);
         Double newValCount = oldCount!=null ? count + oldCount : count;
 
         histogram.put(val, newValCount);
@@ -91,6 +91,10 @@ public class GenericHistogram implements Serializable {
         } else {
             return Math.sqrt(sum / (getN() - 1));
         }
+    }
+
+    public Map<Object, Double> getHistogramMap() {
+        return histogram;
     }
 
     @Override

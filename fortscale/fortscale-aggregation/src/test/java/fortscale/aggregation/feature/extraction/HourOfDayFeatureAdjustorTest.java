@@ -46,6 +46,6 @@ public class HourOfDayFeatureAdjustorTest {
 
 		int adjustedTimestamp = (int)featureAdjustor.adjust(timestamp, null);
 
-		Assert.assertEquals(12, adjustedTimestamp);
+		Assert.assertEquals(9, adjustedTimestamp);
 	}
 }

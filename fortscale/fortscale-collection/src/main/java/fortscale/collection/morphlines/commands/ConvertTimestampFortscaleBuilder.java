@@ -79,7 +79,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       validateArguments();
     }
         
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected boolean doProcess(Record record) {
     	String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
         TimeZone inputTimeZone = getTimeZone(tzInput == null ? DEFAULT_TIME_ZONE : tzInput);
@@ -106,18 +107,16 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
         
       ParsePosition pos = new ParsePosition(0);
-      ListIterator iter = record.get(fieldName).listIterator();
+      @SuppressWarnings("rawtypes")
+	ListIterator iter = record.get(fieldName).listIterator();
       while (iter.hasNext()) {
         String timestamp = iter.next().toString();
         boolean foundMatchingFormat = false;
         for (SimpleDateFormat inputFormat : inputFormats) {
           DateTime date = null;
-          boolean isUnixTime;
           if (inputFormat == UNIX_TIME_IN_MILLIS || inputFormat == UNIX_TIME_IN_SECONDS) {
-            isUnixTime = true;
             date = parseUnixTime(timestamp, DateTimeZone.forTimeZone(inputTimeZone));
           } else {
-            isUnixTime = false;
             pos.setIndex(0);
             Date parsed = inputFormat.parse(timestamp, pos);
             if (parsed!=null)

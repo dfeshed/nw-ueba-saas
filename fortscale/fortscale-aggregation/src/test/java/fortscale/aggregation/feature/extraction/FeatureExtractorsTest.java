@@ -41,13 +41,11 @@ public class FeatureExtractorsTest {
 		PatternReplacementFeatureAdjustor patternReplacementFeatureAdjustor2 = new PatternReplacementFeatureAdjustor("prefix", "");
 		NumberDividerFeatureAdjustor numberDividerFeatureAdjustor = new NumberDividerFeatureAdjustor(ADDITION_TO_DENOMINATOR, DENOMINATOR_FIELD_NAME);
 		InverseValueFeatureAdjustor inverseValueFeatureAdjustor = new InverseValueFeatureAdjustor(0.1);
-		HourOfDayFeatureAdjustor hourOfDayFeatureAdjustor = new HourOfDayFeatureAdjustor();
 		List<FeatureAdjustor> featureAdjustorList = new ArrayList<>();
 		featureAdjustorList.add(patternReplacementFeatureAdjustor1);
 		featureAdjustorList.add(patternReplacementFeatureAdjustor2);
 		featureAdjustorList.add(numberDividerFeatureAdjustor);
 		featureAdjustorList.add(inverseValueFeatureAdjustor);
-		//featureAdjustorList.add(hourOfDayFeatureAdjustor);
 		ChainFeatureAdjustor chainFeatureAdjustor = new ChainFeatureAdjustor(featureAdjustorList);
 
 		EventFeatureExtractor fe1 = new EventFeatureExtractor(ORIGINAL_FIELD_NAME1, chainFeatureAdjustor);
@@ -153,7 +151,7 @@ public class FeatureExtractorsTest {
 
 		int ret = (int)featureExtractor.extract(new Event(jsonObject, null, null));
 
-		Assert.assertEquals(12, ret);
+		Assert.assertEquals(9, ret);
 	}
 
 	@Test
