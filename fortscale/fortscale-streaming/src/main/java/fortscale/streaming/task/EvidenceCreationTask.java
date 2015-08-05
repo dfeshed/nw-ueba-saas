@@ -180,7 +180,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				}
 
 				// Create evidence from event
-				Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), scoreField, dataEntitiesIds, score, anomalyValue, anomalyType);
+				Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), scoreField, dataEntitiesIds, score, anomalyValue, anomalyType, dataSourceConfiguration.scoreFieldValues.get(index));
 
 				// Save evidence to MongoDB
 				try {

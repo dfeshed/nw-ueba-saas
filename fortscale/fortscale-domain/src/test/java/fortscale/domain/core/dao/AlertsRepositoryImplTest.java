@@ -1,15 +1,7 @@
 package fortscale.domain.core.dao;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.domain.core.*;
+import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,13 +11,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceType;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.rest.Alerts;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AlertsRepositoryImplTest {
 
@@ -80,8 +74,8 @@ public class AlertsRepositoryImplTest {
 		List<Evidence> evidences = new ArrayList<>();
 		List<String> dataEntitiiesIds = new ArrayList<>();
 		dataEntitiiesIds.add("dataSource");
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);

@@ -1,6 +1,5 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
-import static fortscale.streaming.service.aggregation.entity.event.EntityEventServiceTest.createMessage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
-public class EntityEventBuilderTest {
+public class EntityEventBuilderTest extends EntityEventTestBase{
 	private static final String DEFAULT_ENTITY_EVENT_NAME = "testEntityEvent";
 	private static final String USERNAME_CONTEXT_FIELD = "normalized_username";
 	private static final String SRC_MACHINE_CONTEXT_FIELD = "normalized_src_machine";

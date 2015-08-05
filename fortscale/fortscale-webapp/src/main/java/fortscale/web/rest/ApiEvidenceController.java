@@ -49,6 +49,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@Autowired
 	private SupportingInformationService supportingInformationService;
 
+	@Autowired
 	DataQueryHelper dataQueryHelper;
 
 	/**

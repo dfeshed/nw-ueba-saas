@@ -24,6 +24,13 @@
   		</includes>
   	</fileSet>
     <fileSet>
+      <outputDirectory>config/Esper</outputDirectory>
+      <directory>${basedir}/config/Esper</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <outputDirectory>config/topology</outputDirectory>
       <directory>${basedir}/config/topology</directory>
       <includes>
