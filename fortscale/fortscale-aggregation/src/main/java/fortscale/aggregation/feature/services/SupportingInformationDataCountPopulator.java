@@ -1,7 +1,9 @@
 package fortscale.aggregation.feature.services;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.HistogramKey;
 import fortscale.domain.core.HistogramSingleKey;
@@ -16,11 +18,16 @@ import java.util.Map;
  * @author gils
  * Date: 05/08/2015
  */
-public class SupportingInformationBasicPopulator implements SupportingInformationPopulator {
+public class SupportingInformationDataCountPopulator extends SupportingInformationDataBasePopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationBasicPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
 
-    public SupportingInformationData createSupportingInformationData(List<FeatureBucket> featureBuckets, String featureName, String anomalyValue, String aggregationFunction) {
+    public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName, BucketConfigurationService bucketConfigurationService, FeatureBucketsStore featureBucketsStore) {
+        super(contextType, dataEntity, featureName, bucketConfigurationService, featureBucketsStore);
+    }
+
+    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
+        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
         Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
 
@@ -51,8 +58,6 @@ public class SupportingInformationBasicPopulator implements SupportingInformatio
             }
         }
 
-        HistogramSingleKey anomalyValue1 = new HistogramSingleKey(anomalyValue);
-
-        return new SupportingInformationData(histogramKeyObjectMap, anomalyValue1);
+        return new SupportingInformationData(histogramKeyObjectMap, new HistogramSingleKey(anomalyValue));
     }
 }

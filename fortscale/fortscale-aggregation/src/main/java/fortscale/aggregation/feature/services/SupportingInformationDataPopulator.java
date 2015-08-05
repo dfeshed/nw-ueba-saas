@@ -11,6 +11,6 @@ import java.util.Map;
  * @author gils
  * Date: 05/08/2015
  */
-public interface SupportingInformationPopulator {
-    SupportingInformationData createSupportingInformationData(List<FeatureBucket> featureBuckets, String featureName, String anomalyValue, String aggregationFunction);
+public interface SupportingInformationDataPopulator {
+    SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue);
 }
