@@ -174,26 +174,6 @@ public class ApiEvidenceController extends DataQueryController {
 
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, anomalyValue, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
 
-		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
-
 		return histogramBean;
 	}
-
-	private List<HistogramPair> createListOfHistogramPairs(Map<Object, Double> supportingInformationHistogram) {
-
-		List<HistogramPair> histogramPairs = new ArrayList<>();
-
-		for (Map.Entry<Object, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
-			String key = (String) supportingInformationHistogramEntry.getKey();
-			Double value = supportingInformationHistogramEntry.getValue();
-
-			HistogramPair histogramPair = new HistogramPair(key, value);
-
-			histogramPairs.add(histogramPair);
-		}
-
-		return histogramPairs;
-	}
-
-
 }
