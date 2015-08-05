@@ -6,11 +6,14 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.domain.core.HistogramKey;
+import fortscale.domain.core.HistogramDualKey;
+import fortscale.domain.core.HistogramSingleKey;
 import fortscale.domain.core.SupportingInformationData;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,11 +29,6 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
 
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
-
-    @Value("${evidence.supporting.information.time.period.in.days:90}")
-    private int timePeriodInDays;
-
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
 
@@ -38,93 +36,35 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private FeatureBucketsStore featureBucketsStore;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime) {
-        logger.info("Going to fetch Evidence Supporting Information. Context type = {} # Context name = {} # Data entity = {} " +
-                "# Feature = {} # Evidence time = {} . Time period = {} days..", contextType, contextValue, dataEntity, feature, getFormattedTime(aggregationEventEndTime), timePeriodInDays);
+    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String featureName,
+                                                                          String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
+        logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
+                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntity, featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
-        String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
-
-        logger.debug("Bucket configuration name = {}", bucketConfigName);
+        String bucketConfigName = findBucketConfigurationName(contextType, dataEntity);
 
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
         if (bucketConfig != null) {
-            // TODO add toString method to FeatureBucketConf
             logger.info("Using bucket configuration {} with strategy {}", bucketConfig.getName(), bucketConfig.getStrategyName());
         }
         else {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
         }
 
-        Long supportingInformationStartTime = calculateSupportingInformationStartTime(aggregationEventEndTime, timePeriodInDays);
+        Long supportingInformationStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, feature, supportingInformationStartTime, aggregationEventEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, featureName, supportingInformationStartTime, evidenceEndTime);
 
-        logger.info("Found {} relevant feature buckets", featureBuckets.size());
+        logger.info("Found {} relevant featureName buckets", featureBuckets.size());
 
-        SupportingInformationData supportingInformationData = populateSupportingInformationData(featureBuckets, feature);
+        SupportingInformationPopulator supportingInformationPopulator = SupportingInformationPopulatorFactory.createSupportingInformationPopulator(aggregationFunction);
 
-        return supportingInformationData;
+        return supportingInformationPopulator.createSupportingInformationData(featureBuckets, featureName, anomalyValue, aggregationFunction);
     }
 
-    private String getFormattedTime(Long evidenceTime) {
-        Calendar calInstance = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calInstance.setTimeInMillis(evidenceTime);
-
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        return formatter.format(calInstance.getTime());
-    }
-
-    private Long calculateSupportingInformationStartTime(Long evidenceTime, int timePeriodInDays) {
-        Calendar calEvidenceTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calEvidenceTime.setTimeInMillis(evidenceTime);
-
-        calEvidenceTime.add(Calendar.DAY_OF_MONTH, -1 * timePeriodInDays);
-
-        return calEvidenceTime.getTimeInMillis();
-    }
-
-    private SupportingInformationData populateSupportingInformationData(List<FeatureBucket> featureBuckets, String featureName) {
-        SupportingInformationData supportingInformationData = new SupportingInformationData();
-
-        if (!featureBuckets.isEmpty()) {
-            logger.info("Creating supporting information data");
-
-            GenericHistogram supportingInformationHistogram = createSupportingInformationHistogram(featureBuckets, featureName);
-
-            Map<Object, Double> histogramMap = supportingInformationHistogram.getHistogramMap();
-
-            supportingInformationData.setHistogram(histogramMap);
-        }
-
-        return supportingInformationData;
-
-    }
-
-    private GenericHistogram createSupportingInformationHistogram(List<FeatureBucket> featureBuckets, String featureName) {
-        GenericHistogram supportingInformationHistogram = new GenericHistogram();
-
-        for (FeatureBucket featureBucket : featureBuckets) {
-            Feature feature = featureBucket.getAggregatedFeatures().get(featureName);
-
-            if (feature == null) {
-                continue;
-            }
-
-            Object featureValue = feature.getValue();
-
-            if (featureValue instanceof GenericHistogram) {
-                supportingInformationHistogram.add((GenericHistogram) featureValue);
-            } else {
-                // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", featureName, featureBucket.getBucketId());
-            }
-        }
-
-        return supportingInformationHistogram;
-    }
-
-    private String getBucketConfigurationName(String contextTypeStr, String dataEntity) {
-        return contextTypeStr + "_" + dataEntity + "_daily";
+    private String findBucketConfigurationName(String contextType, String dataEntity) {
+        // TODO need to generify
+        return contextType + "_" + dataEntity + "_daily";
     }
 }

@@ -3,6 +3,7 @@ package fortscale.web.rest;
 
 import fortscale.aggregation.feature.services.SupportingInformationService;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.HistogramKey;
 import fortscale.domain.core.HistogramPair;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
@@ -164,13 +165,15 @@ public class ApiEvidenceController extends DataQueryController {
 															   @RequestParam(value = "end_time") Long endTime){
 		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, TimestampUtils.convertToMilliSeconds(endTime));
+		String anomalyType = "Time";
+		String anomalyValue = "13:00";
+		String aggregationFunc = "Count";
+        //String aggregationFunc = "hourlyCountGroupByDayOfWeek";
+		int timePeriodInDays = 90;
 
-		Map<Object, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, anomalyValue, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
 
-		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram);
-
-		histogramBean.setData(listOfHistogramPairs);
+		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		return histogramBean;
 	}

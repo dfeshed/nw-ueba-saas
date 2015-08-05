@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.services;
 
 import fortscale.domain.core.SupportingInformationData;
-import org.springframework.web.bind.annotation.RequestParam;
+import fortscale.utils.TimestampUtils;
 
 /**
  * Service to provide Supporting Information data
@@ -14,11 +14,16 @@ public interface SupportingInformationService {
      *
      * @param contextType the context type (user, source machine, dest machine etc.)
      * @param contextValue the context value (e.g. mike@cnn.com)
-     * @param dataEntity the data source (ssh, kerberos, etc.)
-     * @param feature the related feature
-     * @param aggregationEventEndTime the evidence time in milliseconds
+     * @param dataEntity the data entity (ssh, kerberos, etc.)
+     * @param featureName the related feature name
+     * @param anomalyType evidence end time in milliseconds
+     * @param anomalyValue evidence end time in milliseconds
+     * @param evidenceEndTime evidence end time in milliseconds
+     * @param timePeriodInDays evidence end time in milliseconds
+     * @param aggregationFunction the aggregation function
      *
-     * @return supporting information representation
+     * @return supporting information data representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String feature, Long aggregationEventEndTime);
+    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String featureName,
+                                                                   String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
 }

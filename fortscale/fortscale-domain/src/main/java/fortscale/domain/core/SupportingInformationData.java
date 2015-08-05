@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +12,20 @@ import java.util.Map;
  */
 public class SupportingInformationData {
 
-    private Map<Object, Double> histogram = new HashMap<>();
+    private Map<HistogramKey, Double> histogram = new HashMap<>();
 
-    public Map<Object, Double> getHistogram() {
-        return histogram;
+    private HistogramKey anomalyValue;
+
+    public SupportingInformationData(Map<HistogramKey, Double> histogram, HistogramKey anomalyValue) {
+        this.histogram = histogram;
+        this.anomalyValue = anomalyValue;
     }
 
-    public void setHistogram(Map<Object, Double> historgam) {
-        this.histogram = historgam;
+    public Map<HistogramKey, Double> getHistogram() {
+        return Collections.unmodifiableMap(histogram);
+    }
+
+    public HistogramKey getAnomalyValue() {
+        return anomalyValue;
     }
 }
