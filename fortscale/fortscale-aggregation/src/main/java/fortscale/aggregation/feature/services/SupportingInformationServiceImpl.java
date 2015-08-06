@@ -6,6 +6,7 @@ import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation to provide Supporting Information data
@@ -13,15 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author gils
  * Date: 29/07/2015
  */
+@Service
 public class SupportingInformationServiceImpl implements SupportingInformationService {
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
 
     @Autowired
-    private BucketConfigurationService bucketConfigurationService;
-
-    @Autowired
-    private FeatureBucketsStore featureBucketsStore;
+    private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
     public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String featureName,
@@ -29,7 +28,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
         logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
                 "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntity, featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
-        SupportingInformationDataPopulator supportingInformationPopulator = SupportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntity, featureName, aggregationFunction, bucketConfigurationService, featureBucketsStore);
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntity, featureName, aggregationFunction);
 
         SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
 

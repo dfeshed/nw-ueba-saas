@@ -1,17 +1,16 @@
 package fortscale.aggregation.feature.services;
 
 import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.HistogramDualKey;
-import fortscale.domain.core.HistogramKey;
-import fortscale.domain.core.HistogramSingleKey;
+import fortscale.domain.histogram.HistogramDualKey;
+import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +20,16 @@ import java.util.Map;
  * @author gils
  * Date: 05/08/2015
  */
+@Component
+@Scope("prototype")
 public class SupportingInformationHeatMapDataPopulator extends SupportingInformationDataBasePopulator {
 
+    private static final int HOUR_UPPER_BOUND = 23;
+    private static final int HOUR_LOWER_BOUND = 0;
     private static Logger logger = Logger.getLogger(SupportingInformationHeatMapDataPopulator.class);
 
-    public SupportingInformationHeatMapDataPopulator(String contextType, String dataEntity, String featureName, BucketConfigurationService bucketConfigurationService, FeatureBucketsStore featureBucketsStore) {
-        super(contextType, dataEntity, featureName, bucketConfigurationService, featureBucketsStore);
+    public SupportingInformationHeatMapDataPopulator(String contextType, String dataEntity, String featureName) {
+        super(contextType, dataEntity, featureName);
     }
 
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
@@ -55,6 +58,11 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
 
                 for (Map.Entry<Object, Double> histogramEntry : histogramMap.entrySet()) {
                     Integer hour = (Integer) histogramEntry.getKey();
+
+                    if (isHourValueOutOfRange(hour)) {
+                        throw new IllegalStateException("Hour value is out of range - " + hour);
+                    }
+
                     Double currValue = histogramEntry.getValue();
 
                     HistogramKey histogramKey = new HistogramDualKey(dayOfWeek.toString(), hour.toString());
@@ -72,5 +80,9 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
 
         // TODO adjust to dual key
         return new SupportingInformationData(histogramKeyObjectMap, new HistogramDualKey(anomalyValue, anomalyValue));
+    }
+
+    private boolean isHourValueOutOfRange(Integer hour) {
+        return hour > HOUR_UPPER_BOUND || hour < HOUR_LOWER_BOUND;
     }
 }

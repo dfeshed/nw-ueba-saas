@@ -1,14 +1,15 @@
 package fortscale.aggregation.feature.services;
 
 import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.HistogramKey;
-import fortscale.domain.core.HistogramSingleKey;
+import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +19,14 @@ import java.util.Map;
  * @author gils
  * Date: 05/08/2015
  */
+@Component
+@Scope("prototype")
 public class SupportingInformationDataCountPopulator extends SupportingInformationDataBasePopulator {
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
 
-    public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName, BucketConfigurationService bucketConfigurationService, FeatureBucketsStore featureBucketsStore) {
-        super(contextType, dataEntity, featureName, bucketConfigurationService, featureBucketsStore);
+    public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName) {
+        super(contextType, dataEntity, featureName);
     }
 
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {

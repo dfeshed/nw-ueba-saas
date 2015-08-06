@@ -13,4 +13,7 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.SupportingInformationPopulatorFactory"/>
+	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.SupportingInformationDataCountPopulator" scope="prototype"/>
+	<bean id="supportingInformationHeatMapDataPopulator" class="fortscale.aggregation.feature.services.SupportingInformationHeatMapDataPopulator" scope="prototype"/>
 </beans>

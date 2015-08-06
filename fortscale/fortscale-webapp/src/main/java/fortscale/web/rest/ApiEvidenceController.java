@@ -3,8 +3,7 @@ package fortscale.web.rest;
 
 import fortscale.aggregation.feature.services.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.HistogramKey;
-import fortscale.domain.core.HistogramPair;
+import fortscale.domain.histogram.HistogramPair;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.dataentity.DataEntitiesConfig;
@@ -167,7 +166,7 @@ public class ApiEvidenceController extends DataQueryController {
 		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
 
 		String anomalyType = "Time";
-		String anomalyValue = "13:00";
+		String anomalyValue = "SRV_100";
 		String aggregationFunc = "Count";
         //String aggregationFunc = "hourlyCountGroupByDayOfWeek";
 		int timePeriodInDays = 90;
