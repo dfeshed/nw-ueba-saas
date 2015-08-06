@@ -86,7 +86,8 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				}
 				// Case 3: Strategy exists and the incoming event status is closed
 				else if (status.equalsIgnoreCase(closedValueName)) {
-					featureBucketStrategyData.setEndTime(epochtime);
+					//since the end time is part of the session we add one second.
+					featureBucketStrategyData.setEndTime(epochtime+1);
 					RemoveClosedUserSessions(username, sourceIP);
 					isFeatureBucketStrategyDataUpdated = true;
 				}
