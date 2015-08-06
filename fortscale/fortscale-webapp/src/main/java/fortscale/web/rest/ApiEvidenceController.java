@@ -171,7 +171,7 @@ public class ApiEvidenceController extends DataQueryController {
         //String aggregationFunc = "hourlyCountGroupByDayOfWeek";
 		int timePeriodInDays = 90;
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, anomalyValue, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
 
 		return histogramBean;
 	}
