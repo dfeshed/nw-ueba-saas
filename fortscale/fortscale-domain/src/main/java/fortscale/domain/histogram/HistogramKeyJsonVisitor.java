@@ -12,6 +12,7 @@ public class HistogramKeyJsonVisitor implements HistogramKeyVisitor {
 
     @Override
     public String visit(HistogramDualKey histogramDualKey) {
+
         return null;
     }
 }
