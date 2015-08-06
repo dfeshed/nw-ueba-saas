@@ -104,10 +104,16 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
             calendar.setTime(roundedDate);
 
-            Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            Integer hour = calendar.get(Calendar.HOUR);
+            Integer dayOfWeekOrdinalVal = calendar.get(Calendar.DAY_OF_WEEK);
+            Integer hourVal = calendar.get(Calendar.HOUR);
 
-            return new HistogramDualKey(dayOfWeek.toString(), hour.toString());
+            String dayOfWeek = getDayOfWeek(dayOfWeekOrdinalVal);
+
+            if (dayOfWeek == null) {
+                logger.error("Illegal day of week value: {}", dayOfWeekOrdinalVal);
+            }
+
+            return new HistogramDualKey(dayOfWeek, hourVal.toString());
 
         } catch (ParseException e) {
             logger.error("Cannot parse date string {} to format {}", anomalyValue, DATE_FORMAT);
@@ -116,7 +122,37 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
         }
     }
 
+    private String getDayOfWeek(int ordinalDayOfWeek) {
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            if (ordinalDayOfWeek == dayOfWeek.getDayValue()) {
+                return dayOfWeek.name();
+            }
+        }
+
+        return null;
+    }
+
     private boolean isHourValueOutOfRange(Integer hour) {
         return hour > HOUR_UPPER_BOUND || hour < HOUR_LOWER_BOUND;
+    }
+
+    private enum DayOfWeek {
+        SUNDAY(1),
+        MONDAY(2),
+        TUESDAY(3),
+        WEDNESDAY(4),
+        THURSDAY(5),
+        FRIDAY(6),
+        SATURDAY(7);
+
+        private int dayValue; // enum ordinal starts from 0 so we need to normalized the index to start from 1..
+
+        DayOfWeek(int dayValue) {
+            this.dayValue = dayValue;
+        }
+
+        public int getDayValue() {
+            return dayValue;
+        }
     }
 }
