@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by amira on 21/06/2015.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/aggr-feature-service-context-test.xml" })
 public class AggrFeatureFuncServiceTest {
@@ -83,11 +80,11 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22, 2.0);
+        histogram.add("22", 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add(22L, 3.5);
 
         histogram.add(2L, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
@@ -96,13 +93,13 @@ public class AggrFeatureFuncServiceTest {
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add("2.0", 30.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
 
-        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 22));
         featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("not relevant", new Feature("not relevant", 22));
 
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -141,9 +138,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)10.0, histValue.get(2) );
+        Assert.assertEquals((Double)10.0, histValue.get(22) );
         Assert.assertEquals((Double)20.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get("2.0") );
 
         Double avg = 20d;
         Double one = Math.pow((10-avg),2);
@@ -298,11 +295,11 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22, 2.0);
+        histogram.add(22, 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add(22, 3.5);
 
         histogram.add(2L, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
@@ -311,13 +308,13 @@ public class AggrFeatureFuncServiceTest {
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add("2.0", 30.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
 
-        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 22));
         featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("not relevant", new Feature("not relevant", 22));
 
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -357,9 +354,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)10.0, histValue.get(2) );
+        Assert.assertEquals((Double)10.0, histValue.get(22) );
         Assert.assertEquals((Double)20.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get("2.0") );
 
         Double avg = 20d;
         Double one = Math.pow((10-avg),2);
@@ -409,7 +406,7 @@ public class AggrFeatureFuncServiceTest {
         String aggrFeatureName2 = "MyAggrFeature2";
 
         featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
-        featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
+        featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2.0));
         featureMap.put("not relevant", new Feature("not relevant", 2));
 
 
@@ -448,7 +445,7 @@ public class AggrFeatureFuncServiceTest {
 
         Assert.assertEquals(2L, histValue.getN());
         Assert.assertEquals((Double)1.0, histValue.get(2) );
-        Assert.assertEquals((Double)1.0, histValue.get(2L) );
+        Assert.assertEquals((Double)1.0, histValue.get(2.0) );
 
         Double avg = 1d;
         Double one = Math.pow((1-avg),2);
@@ -492,26 +489,26 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22, 2.0);
+        histogram.add(22, 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add(22, 3.5);
 
-        histogram.add(2L, 0.5);
+        histogram.add(2, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
-        histogram.add(2L, 2.0);
-        histogram.add(2L, 3.0);
+        histogram.add(2, 2.0);
+        histogram.add("2", 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add(2.0, 30.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
 
-        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 22));
         featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("not relevant", new Feature("not relevant", 22));
 
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -557,9 +554,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)9.0, histValue.get(2) );
+        Assert.assertEquals((Double)9.0, histValue.get(22) );
         Assert.assertEquals((Double)19.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get(2.0) );
 
         Double avg2 = (9+19+30)/3d;
         Double one = Math.pow((9-avg2),2);
@@ -594,20 +591,21 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22L, 2.0);
+        histogram.add("22", 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add(22, 3.5);
 
-        histogram.add(2L, 0.5);
+        histogram.add(2, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
-        histogram.add(2L, 2.0);
+        histogram.add("2", 2.0);
         histogram.add(2L, 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add("2.0", 20.0);
+        histogram.add(2.0, 10.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -659,9 +657,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)9.0, histValue.get(2) );
+        Assert.assertEquals((Double)9.0, histValue.get(22) );
         Assert.assertEquals((Double)19.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get(2.0) );
 
         Double avg2 = (9+19+30)/3d;
         Double one = Math.pow((9-avg2),2);
@@ -706,24 +704,24 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22L, 2.0);
+        histogram.add("22", 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add(22, 3.5);
 
-        histogram.add(2L, 0.5);
+        histogram.add(2, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
-        histogram.add(2L, 2.0);
+        histogram.add("2", 2.0);
         histogram.add(2L, 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add("2.0", 30.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
 
-        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 22));
         featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
         featureMap.put("not relevant", new Feature("not relevant", 2));
 
@@ -769,9 +767,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)9.0, histValue.get(2) );
+        Assert.assertEquals((Double)9.0, histValue.get(22) );
         Assert.assertEquals((Double)19.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get("2.0") );
 
         Double avg2 = (9+19+30)/3d;
         Double one = Math.pow((9-avg2),2);
@@ -808,9 +806,9 @@ public class AggrFeatureFuncServiceTest {
 
         String aggrFeatureName2 = "MyAggrFeature2";
 
-        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 22));
         featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("not relevant", new Feature("not relevant", 22));
 
 
         //Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -849,7 +847,7 @@ public class AggrFeatureFuncServiceTest {
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
         Assert.assertEquals(2L, histValue.getN());
-        Assert.assertEquals((Double)1.0, histValue.get(2) );
+        Assert.assertEquals((Double)1.0, histValue.get(22) );
         Assert.assertEquals((Double)1.0, histValue.get(2L) );
 
         avg = 1d;
@@ -885,20 +883,20 @@ public class AggrFeatureFuncServiceTest {
         // GenericHistogram
         /////////////////////////////////////////////////////
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
+        histogram.add(22, 0.5);
+        histogram.add(22, 2.0);
+        histogram.add(22L, 3.0);
         //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add("22", 3.5);
 
-        histogram.add(2L, 0.5);
+        histogram.add(2, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
-        histogram.add(2L, 2.0);
+        histogram.add("2", 2.0);
         histogram.add(2L, 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add(2.0, 30.0);
 
         String aggrFeatureName2 = "MyAggrFeature2";
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
@@ -948,9 +946,9 @@ public class AggrFeatureFuncServiceTest {
 
         GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
 
-        Assert.assertEquals((Double)9.0, histValue.get(2) );
+        Assert.assertEquals((Double)9.0, histValue.get("22") );
         Assert.assertEquals((Double)19.0, histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, histValue.get("2") );
+        Assert.assertEquals((Double)30.0, histValue.get("2.0") );
 
         Double avg2 = (9+19+30)/3d;
         Double one = Math.pow((9-avg2),2);
