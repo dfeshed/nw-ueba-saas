@@ -9,12 +9,13 @@ import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Supporting information populator class for heatmap-based aggregations
@@ -27,10 +28,13 @@ import java.util.Map;
 @Scope("prototype")
 public class SupportingInformationHeatMapDataPopulator extends SupportingInformationDataBasePopulator {
 
+    private static Logger logger = Logger.getLogger(SupportingInformationHeatMapDataPopulator.class);
+
     private static final int HOUR_LOWER_BOUND = 0;
     private static final int HOUR_UPPER_BOUND = 23;
 
-    private static Logger logger = Logger.getLogger(SupportingInformationHeatMapDataPopulator.class);
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String UTC_TIMEZONE = "UTC";
 
     public SupportingInformationHeatMapDataPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -91,7 +95,25 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
     @Override
     HistogramKey createHistogramKey(String anomalyValue) {
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
-        return new HistogramDualKey(anomalyValue, anomalyValue);
+        // first convert to date, than ciel the hour to get the right histogram entry
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        try {
+            Date date = dateFormat.parse(anomalyValue);
+            Date roundedDate = DateUtils.ceiling(date, Calendar.HOUR);
+
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
+            calendar.setTime(roundedDate);
+
+            Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            Integer hour = calendar.get(Calendar.HOUR);
+
+            return new HistogramDualKey(dayOfWeek.toString(), hour.toString());
+
+        } catch (ParseException e) {
+            logger.error("Cannot parse date string {} to format {}", anomalyValue, DATE_FORMAT);
+
+            return null;
+        }
     }
 
     private boolean isHourValueOutOfRange(Integer hour) {
