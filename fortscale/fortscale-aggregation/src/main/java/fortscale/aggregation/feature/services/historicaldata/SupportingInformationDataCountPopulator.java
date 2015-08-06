@@ -1,13 +1,12 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

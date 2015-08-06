@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;

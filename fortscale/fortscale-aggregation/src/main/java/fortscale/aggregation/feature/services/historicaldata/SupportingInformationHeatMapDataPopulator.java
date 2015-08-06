@@ -1,11 +1,11 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;

@@ -1,7 +1,5 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
