@@ -70,7 +70,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -92,7 +92,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString());
 	}
 
@@ -114,7 +114,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -130,7 +130,7 @@ public class ApiAlertsControllerTest {
 				"        \"evidences\": null,\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
-				"        \"status\": \"Accepted\",\n" +
+				"        \"status\": \"Open\",\n" +
 				"        \"comment\": \"a\"\n" +
 				"    }";
 
@@ -159,7 +159,7 @@ public class ApiAlertsControllerTest {
 				"        \"evidences\": null,\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
-				"        \"status\": \"Accepted\",\n" +
+				"        \"status\": \"Open\",\n" +
 				"        \"comment\": \"a\"\n" +
 				"    }";
 		doThrow(new RuntimeException()).when(alertsDao).add(any(Alert.class));
