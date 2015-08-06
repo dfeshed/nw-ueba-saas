@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.histogram;
 
 import java.util.Map;
 
