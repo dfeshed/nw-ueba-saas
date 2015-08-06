@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Supporting information populator class for count-based aggregations
+ *
  * @author gils
  * Date: 05/08/2015
  */
+
 @Component
 @Scope("prototype")
 public class SupportingInformationDataCountPopulator extends SupportingInformationDataBasePopulator {
@@ -28,6 +31,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
         super(contextType, dataEntity, featureName);
     }
 
+    @Override
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
@@ -37,6 +41,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
             Feature feature = featureBucket.getAggregatedFeatures().get(featureName);
 
             if (feature == null) {
+                logger.warn("Could not find feature with name {} in bucket with ID {}", featureName, featureBucket.getBucketId());
                 continue;
             }
 
@@ -48,7 +53,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
                 for (Map.Entry<Object, Double> histogramEntry : histogramMap.entrySet()) {
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = new HistogramSingleKey((String) histogramEntry.getKey());
+                    HistogramKey histogramKey = createHistogramKey((String) histogramEntry.getKey());
 
                     Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null ? histogramKeyObjectMap.get(histogramKey) : 0);
 
@@ -60,6 +65,13 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
             }
         }
 
-        return new SupportingInformationData(histogramKeyObjectMap, new HistogramSingleKey(anomalyValue));
+        HistogramKey anomalyHistogramKey = createHistogramKey(anomalyValue);
+
+        return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
+    }
+
+    @Override
+    HistogramKey createHistogramKey(String anomalyValue) {
+        return new HistogramSingleKey(anomalyValue);
     }
 }
