@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-
 import fortscale.aggregation.feature.services.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.HistogramPair;
@@ -9,6 +8,7 @@ import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,11 +46,31 @@ public class ApiEvidenceController extends DataQueryController {
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
 
+	@Value("${fortscale.evidence.name.text}")
+	private String evidenceNameText;
+
 	@Autowired
 	private SupportingInformationService supportingInformationService;
 
 	@Autowired
 	DataQueryHelper dataQueryHelper;
+
+	@Value("${fortscale.evidence.type.map}")
+	private String evidenceTypeProperty;
+
+	private Map evidenceTypeMap;
+
+	@PostConstruct
+	public void initEvidenceMap(){
+		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
+	}
+
+	private void updateEvidenceFields(Evidence evidence) {
+		String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+		evidence.setAnomalyType(anomalyType);
+		String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+		evidence.setName(evidenceName);
+	}
 
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
@@ -60,7 +81,9 @@ public class ApiEvidenceController extends DataQueryController {
 	@LogException
 	public DataBean<Evidence> getEvidence(@PathVariable String id) {
 		DataBean<Evidence> ret = new DataBean<>();
-		ret.setData(evidencesDao.findById(id));
+		Evidence evidence = evidencesDao.findById(id);
+		updateEvidenceFields(evidence);
+		ret.setData(evidence);
 		return ret;
 	}
 

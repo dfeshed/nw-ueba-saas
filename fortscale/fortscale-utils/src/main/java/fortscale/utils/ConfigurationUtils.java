@@ -1,6 +1,9 @@
 package fortscale.utils;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.Map;
 
 /**
  * Helper class to assist in properties configuration file 
@@ -24,6 +27,19 @@ public final class ConfigurationUtils {
 		}
 		
 		return matcherArray;
+	}
+
+	public static Map getStringMap(String propertyValue){
+		Map propertyMap = new HashedMap();
+		if (StringUtils.isEmpty(propertyValue))
+			return propertyMap;
+
+		String[] propertySplit = propertyValue.split(MATCHER_ARRAY_SPLIT_STRING);
+		for(int i = 0; i < propertySplit.length; i++) {
+			String lineSplit[] = propertySplit[i].split(MATCHER_SPLIT_STRING);
+			propertyMap.put(lineSplit[0],lineSplit[1]);
+		}
+		return propertyMap;
 	}
 	
 }
