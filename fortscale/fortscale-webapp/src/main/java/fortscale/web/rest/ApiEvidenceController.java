@@ -5,7 +5,9 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramPair;
+import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
@@ -239,7 +241,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		//create new list with others, and the remaining columns.
 		List<HistogramPair> newListWithOthers = new ArrayList<>();
-		newListWithOthers.add(new HistogramPair("Others", othersValue));
+		newListWithOthers.add(new HistogramPair( new HistogramSingleKey("Others"), othersValue));
 
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));
