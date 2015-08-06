@@ -17,21 +17,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Supporting information populator class for heatmap-based aggregations
+ *
  * @author gils
  * Date: 05/08/2015
  */
+
 @Component
 @Scope("prototype")
 public class SupportingInformationHeatMapDataPopulator extends SupportingInformationDataBasePopulator {
 
-    private static final int HOUR_UPPER_BOUND = 23;
     private static final int HOUR_LOWER_BOUND = 0;
+    private static final int HOUR_UPPER_BOUND = 23;
+
     private static Logger logger = Logger.getLogger(SupportingInformationHeatMapDataPopulator.class);
 
     public SupportingInformationHeatMapDataPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 
+    @Override
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
@@ -78,8 +83,15 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
             }
         }
 
-        // TODO adjust to dual key
-        return new SupportingInformationData(histogramKeyObjectMap, new HistogramDualKey(anomalyValue, anomalyValue));
+        HistogramKey anomalyHistogramKey = createHistogramKey(anomalyValue);
+
+        return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
+    }
+
+    @Override
+    HistogramKey createHistogramKey(String anomalyValue) {
+        // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
+        return new HistogramDualKey(anomalyValue, anomalyValue);
     }
 
     private boolean isHourValueOutOfRange(Integer hour) {

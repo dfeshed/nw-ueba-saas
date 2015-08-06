@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Service implementation to provide Supporting Information data
+ * Service implementation to provide Supporting Information data based on historical data
  *
  * @author gils
  * Date: 29/07/2015
