@@ -95,7 +95,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
             GenericHistogram supportingInformationHistogram = createSupportingInformationHistogram(featureBuckets, featureName);
 
-            Map<Object, Double> histogramMap = supportingInformationHistogram.getHistogramMap();
+            Map<String, Double> histogramMap = supportingInformationHistogram.getHistogramMap();
 
             supportingInformationData.setHistogram(histogramMap);
         }

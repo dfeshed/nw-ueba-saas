@@ -13,9 +13,6 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
-/**
- * Created by orend on 23/07/2015.
- */
 @JsonTypeName(AggrFeatureEventNumberOfNewOccurencesFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistogramFunc {
@@ -40,8 +37,8 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 		Feature previousFeaturesAggr = super.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(0, multipleBucketsAggrFeaturesMapList.size()-1));
 		Feature lastFeaturesAggr = super.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(multipleBucketsAggrFeaturesMapList.size()-1, multipleBucketsAggrFeaturesMapList.size()));
 
-		Set<Object> previousFeaturesSet;
-		Set<Object> currentFeaturesSet;
+		Set<String> previousFeaturesSet;
+		Set<String> currentFeaturesSet;
 		if(lastFeaturesAggr==null || lastFeaturesAggr.getValue()==null) {
 			return null;
 		}
@@ -53,7 +50,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 		}
 		currentFeaturesSet = ((GenericHistogram)lastFeaturesAggr.getValue()).getObjects();
 
-		Set<Object> newOccurencesSet = substractSets(currentFeaturesSet, previousFeaturesSet);
+		Set<String> newOccurencesSet = substractSets(currentFeaturesSet, previousFeaturesSet);
 		AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(newOccurencesSet.size());
 		if (includeValues) {
 			aggrFeatureValue.putAdditionalInformation(NEW_OCCURENCES_VALUES, newOccurencesSet);
@@ -67,9 +64,9 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 	public boolean getIncludeValues() { return this.includeValues; }
 	public void setIncludeValues(boolean includeValues) { this.includeValues = includeValues; }
 
-	private Set<Object> substractSets(Set<Object> setA, Set<Object> setB) {
-		Set<Object> ret = new HashSet<>();
-		for(Object a: setA){
+	private Set<String> substractSets(Set<String> setA, Set<String> setB) {
+		Set<String> ret = new HashSet<>();
+		for(String a: setA){
 			if(!setB.contains(a)){
 				ret.add(a);
 			}

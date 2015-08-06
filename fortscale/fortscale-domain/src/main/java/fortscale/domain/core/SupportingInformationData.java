@@ -11,13 +11,13 @@ import java.util.Map;
  */
 public class SupportingInformationData {
 
-    private Map<Object, Double> histogram = new HashMap<>();
+    private Map<String, Double> histogram = new HashMap<>();
 
-    public Map<Object, Double> getHistogram() {
+    public Map<String, Double> getHistogram() {
         return histogram;
     }
 
-    public void setHistogram(Map<Object, Double> historgam) {
+    public void setHistogram(Map<String, Double> historgam) {
         this.histogram = historgam;
     }
 }
