@@ -88,34 +88,7 @@ public class AggrFeatureEventBuilder {
         bucktID2eventDataMap = new HashMap<>();
     }
 
-    /*
-        * Should be used only by Unit Tests.
-         */
-    void setFeatureBucketsService(FeatureBucketsService featureBucketsService) {
-        this.featureBucketsService = featureBucketsService;
-    }
-
-    /*
-    * Should be used only by Unit Tests.
-     */
-    void setAggrFeatureFuncService(IAggrFeatureEventFunctionsService aggrFeatureFuncService) {
-        this.aggrFeatureFuncService = aggrFeatureFuncService;
-    }
-
-    /*
-    * Should be used only by Unit Tests.
-     */
-    void setAggrEventTopologyService(AggrEventTopologyService aggrEventTopologyService) {
-        this.aggrEventTopologyService = aggrEventTopologyService;
-    }
-
-    /*
-    * Should be used only by Unit Tests.
-     */
-    public void setDataSourcesSyncTimer(DataSourcesSyncTimer dataSourcesSyncTimer) {
-        this.dataSourcesSyncTimer = dataSourcesSyncTimer;
-    }
-
+    
     /**
      * Updates the eventData related to the given context, or creates a new evenData if not exists.
      */
