@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.services;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.TimestampUtils;
 
+import java.util.List;
+
 /**
  * Service to provide Supporting Information data
  *
@@ -14,7 +16,7 @@ public interface SupportingInformationService {
      *
      * @param contextType the context type (user, source machine, dest machine etc.)
      * @param contextValue the context value (e.g. mike@cnn.com)
-     * @param dataEntity the data entity (ssh, kerberos, etc.)
+     * @param dataEntities the data entity (ssh, kerberos, etc.)
      * @param featureName the related feature name
      * @param anomalyType evidence end time in milliseconds
      * @param anomalyValue evidence end time in milliseconds
@@ -24,6 +26,6 @@ public interface SupportingInformationService {
      *
      * @return supporting information data representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String featureName,
+    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
                                                                    String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
 }

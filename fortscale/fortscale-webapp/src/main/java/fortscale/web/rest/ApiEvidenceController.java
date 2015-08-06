@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * REST API for Evidences querying
@@ -45,6 +42,9 @@ public class ApiEvidenceController extends DataQueryController {
 
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
+
+	@Value("${evidence.supporting.information.time.period.in.days:90}")
+	private int defaultTimePeriodInDays;
 
 	@Autowired
 	private SupportingInformationService supportingInformationService;
@@ -146,11 +146,10 @@ public class ApiEvidenceController extends DataQueryController {
 	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
 	 *
 	 * @param evidenceId the evidence evidenceId
-	 * @param entityType the entity type (user, machine etc.)
-	 * @param entityName the entity name (e.g. mike@cnn.com)
-	 * @param dataEntityId the data source (ssh, kerberos, etc.), or combination of some
+	 * @param contextType the entity type (user, machine etc.)
+	 * @param contextValue the entity name (e.g. mike@cnn.com)
 	 * @param feature the related feature
-	 * @param endTime the evidence end time in seconds
+	 * @param timePeriodInDays the evidence end time in seconds
 	 *
 	 * @return list of histogramPair
 	 *
@@ -159,21 +158,123 @@ public class ApiEvidenceController extends DataQueryController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
-															   @RequestParam(value = "entity_type") String entityType,
-															   @RequestParam(value = "entity_name") String entityName,
-															   @RequestParam(value = "data_entity_id") String dataEntityId,
-															   @RequestParam(value = "feature") String feature,
-															   @RequestParam(value = "end_time") Long endTime){
+			@RequestParam(value = "context_type") String contextType,
+			@RequestParam(value = "context_value") String contextValue,
+			@RequestParam(value = "feature") String feature,
+			@RequestParam(value = "function") String aggFunction,
+			@RequestParam(required=false,value = "num_columns") Integer numColumns,
+			@RequestParam(required=false,value = "sort_direction") String sortDirection,
+			@RequestParam(required=false,value = "time_range") Integer timePeriodInDays){
 		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
 
-		String anomalyType = "Time";
-		String anomalyValue = "13:00";
-		String aggregationFunc = "Count";
-        //String aggregationFunc = "hourlyCountGroupByDayOfWeek";
-		int timePeriodInDays = 90;
+		//get the evidence from mongo according to ID
+		Evidence evidence = evidencesDao.findById(evidenceId);
+		if (evidence == null || evidence.getId() == null){
+			throw new InvalidValueException("Can't get evidence ofr id: " + evidenceId);
+		}
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, anomalyValue, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
+		if(timePeriodInDays == null){
+			timePeriodInDays = defaultTimePeriodInDays;
+		}
+		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
+		String anomalyValue = evidence.getAnomalyValue();
+		String anomalyType = evidence.getAnomalyType();
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
+				feature,anomalyType ,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
+		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
+
+		HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
+
+
+		//add the anomaly to the relevant fields
+
+		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
+
+		//
+		if(aggFunction.equalsIgnoreCase("count")) {
+			Collections.sort(listOfHistogramPairs); // the default sort is ascending
+
+			// re -arrange list according to num columns
+			if(listOfHistogramPairs.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
+				//do nothing, no need to create 'others'
+			}
+
+			else {
+				//create new list divided into others, columns and anomaly
+				listOfHistogramPairs = createListWithOthers(listOfHistogramPairs, numColumns);
+			}
+
+			if (sortDirection != null && sortDirection.equals("DESC")) {
+				Collections.reverse(listOfHistogramPairs);
+			}
+		}
+
+		histogramBean.setData(listOfHistogramPairs);
 		return histogramBean;
+	}
+
+	/**
+	 * gets list of histogramPairs, and return a new list divided into 'others' column and the rest of columns.
+	 * @param oldList sorted list of HistogramPair
+	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
+	 * @return list divided into 'others' column and the rest of columns.
+	 */
+	private  List<HistogramPair> createListWithOthers(List<HistogramPair> oldList, int numColumns){
+
+		HistogramPair anomalyPair = new HistogramPair();
+		for(HistogramPair pair: oldList){
+			if(pair.isAnomaly()){
+				anomalyPair = oldList.remove(oldList.indexOf(pair));
+				break;
+			}
+		}
+
+		//get the last numColumns object, and sum their values into one. name this object 'other'
+		double othersValue = 0;
+		int i;
+		for (i=0 ; i < numColumns; i++) {
+			HistogramPair pair=  oldList.get(i);
+			othersValue += pair.getValue();
+		}
+
+		//create new list with others, and the remaining columns.
+		List<HistogramPair> newListWithOthers = new ArrayList<>();
+		newListWithOthers.add(new HistogramPair("Others", othersValue));
+
+		for(;i < oldList.size();i++){
+			newListWithOthers.add(oldList.get(i));
+		}
+		//insert the anomalyPair into the new list
+		oldList.add(anomalyPair);
+
+		return newListWithOthers;
+	}
+
+	/**
+	 * method that helps to serialize aggregated information into our API standarts.
+	 * gets a map of histogramKey,value and return a list of HistogramPairs.
+	 * this function also marks the anomaly pair - essential for further data manipulation.
+	 *
+	 * @param supportingInformationHistogram
+	 * @param anomaly
+	 * @return list of HistogramPairs, with (0 or more) anomaly mark
+	 */
+	private List<HistogramPair> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
+
+		List<HistogramPair> histogramPairs = new ArrayList<>();
+
+		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
+			HistogramKey key = supportingInformationHistogramEntry.getKey();
+			Double value = supportingInformationHistogramEntry.getValue();
+
+			HistogramPair histogramPair = new HistogramPair(key, value);
+
+			if (key.equals(anomaly)){
+				histogramPair.setIsAnomaly(true);
+			}
+			histogramPairs.add(histogramPair);
+		}
+		return histogramPairs;
 	}
 }

@@ -7,6 +7,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Service implementation to provide Supporting Information data
  *
@@ -24,12 +26,12 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private FeatureBucketsStore featureBucketsStore;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, String dataEntity, String featureName,
+    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
                                                                           String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
         logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
-                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntity, featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
-        SupportingInformationDataPopulator supportingInformationPopulator = SupportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntity, featureName, aggregationFunction, bucketConfigurationService, featureBucketsStore);
+        SupportingInformationDataPopulator supportingInformationPopulator = SupportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction, bucketConfigurationService, featureBucketsStore);
 
         SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
 
