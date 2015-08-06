@@ -1,7 +1,6 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.core.SupportingInformationData;
-import fortscale.utils.TimestampUtils;
 
 import java.util.List;
 

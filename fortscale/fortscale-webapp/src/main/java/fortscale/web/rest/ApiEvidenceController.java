@@ -1,12 +1,11 @@
 package fortscale.web.rest;
 
 
-import fortscale.aggregation.feature.services.SupportingInformationService;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.HistogramKey;
-import fortscale.domain.core.HistogramPair;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.domain.histogram.HistogramPair;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;

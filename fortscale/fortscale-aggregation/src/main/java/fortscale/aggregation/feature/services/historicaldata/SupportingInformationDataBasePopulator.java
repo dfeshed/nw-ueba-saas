@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -20,15 +21,16 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
     protected String contextType;
     protected String dataEntity;
     protected String featureName;
+
+    @Autowired
     protected BucketConfigurationService bucketConfigurationService;
+    @Autowired
     protected FeatureBucketsStore featureBucketsStore;
 
-    public SupportingInformationDataBasePopulator(String contextType, String dataEntity, String featureName, BucketConfigurationService bucketConfigurationService, FeatureBucketsStore featureBucketsStore) {
+    public SupportingInformationDataBasePopulator(String contextType, String dataEntity, String featureName) {
         this.contextType = contextType;
         this.dataEntity = dataEntity;
         this.featureName = featureName;
-        this.bucketConfigurationService = bucketConfigurationService;
-        this.featureBucketsStore = featureBucketsStore;
     }
 
     protected List<FeatureBucket> fetchRelevantFeatureBuckets(String contextValue, long evidenceEndTime, int timePeriodInDays) {

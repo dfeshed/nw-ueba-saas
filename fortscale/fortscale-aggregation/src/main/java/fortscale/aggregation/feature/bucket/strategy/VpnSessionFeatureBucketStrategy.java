@@ -92,14 +92,13 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				}
 				// Case 4: Nothing to do if exists, still active and event is not a closed event
 
-				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-
 
 				if(isFeatureBucketStrategyDataCreated) {
 					notifyListeners(username, sourceIP, featureBucketStrategyData);
 				}
 
 				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
+					featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
 					return featureBucketStrategyData;
 				} else {
 					return null;

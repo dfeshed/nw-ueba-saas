@@ -1,8 +1,4 @@
-package fortscale.domain.core;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+package fortscale.domain.histogram;
 
 /**
  * @author gils
@@ -10,8 +6,8 @@ import java.util.Map;
  */
 public class HistogramDualKey implements HistogramKey {
 
-    String key1;
-    String key2;
+    private String key1;
+    private String key2;
 
     public HistogramDualKey(String key1, String key2) {
         this.key1 = key1;
@@ -24,6 +20,10 @@ public class HistogramDualKey implements HistogramKey {
 
     public String getKey2() {
         return key2;
+    }
+
+    public String serialize(HistogramKeyVisitor histogramKeyVisitor) {
+        return histogramKeyVisitor.visit(this);
     }
 
     @Override

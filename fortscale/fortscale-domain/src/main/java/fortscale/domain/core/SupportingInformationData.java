@@ -1,7 +1,8 @@
 package fortscale.domain.core;
 
+import fortscale.domain.histogram.HistogramKey;
+
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Map;
  */
 public class SupportingInformationData {
 
-    private Map<HistogramKey, Double> histogram = new HashMap<>();
+    private Map<HistogramKey, Double> histogram;
 
     private HistogramKey anomalyValue;
 

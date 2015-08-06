@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -8,7 +7,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +48,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "size")  Integer size,
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
-										  @RequestParam(required=false, value = "status") String status) {
+										  @RequestParam(required=false, value = "status") String status,
+										  @RequestParam(required=false, value = "date_range") String dateRange) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -78,14 +76,15 @@ public class ApiAlertController extends BaseController {
 		Alerts alerts;
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
-		if (severity == null && status == null){
+		//if no filter, call findAll()
+		if (severity == null && status == null && dateRange == null){
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, dateRange);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, dateRange);
 		}
 
 		DataBean<List<Alert>> entities = new DataBean<>();

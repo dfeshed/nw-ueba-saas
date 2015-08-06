@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.histogram;
 
 /**
  * @author gils
@@ -6,7 +6,7 @@ package fortscale.domain.core;
  */
 public class HistogramSingleKey implements HistogramKey {
 
-    String key;
+    private String key;
 
     public HistogramSingleKey(String key) {
         this.key = key;
@@ -14,6 +14,10 @@ public class HistogramSingleKey implements HistogramKey {
 
     public String getKey() {
         return key;
+    }
+
+    public String serialize(HistogramKeyVisitor histogramKeyVisitor) {
+        return histogramKeyVisitor.visit(this);
     }
 
     @Override
