@@ -152,7 +152,6 @@ public class ApiEvidenceController extends DataQueryController {
 
 	/**
 	 * A URL for checking the controller
-	 * @return
 	 */
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
@@ -190,7 +189,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, TimestampUtils.convertToMilliSeconds(endTime));
 
-		Map<Object, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
+		Map<String, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram);
 
@@ -199,12 +198,12 @@ public class ApiEvidenceController extends DataQueryController {
 		return histogramBean;
 	}
 
-	private List<HistogramPair> createListOfHistogramPairs(Map<Object, Double> supportingInformationHistogram) {
+	private List<HistogramPair> createListOfHistogramPairs(Map<String, Double> supportingInformationHistogram) {
 
 		List<HistogramPair> histogramPairs = new ArrayList<>();
 
-		for (Map.Entry<Object, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
-			String key = (String) supportingInformationHistogramEntry.getKey();
+		for (Map.Entry<String, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
+			String key = supportingInformationHistogramEntry.getKey();
 			Double value = supportingInformationHistogramEntry.getValue();
 
 			HistogramPair histogramPair = new HistogramPair(key, value);
