@@ -13,10 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import junitparams.JUnitParamsRunner;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -35,9 +38,6 @@ import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketS
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import junitparams.JUnitParamsRunner;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 
 @RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventBuilderTest {    
