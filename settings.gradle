@@ -1,6 +1,7 @@
 include 'client:sa'
 include 'server:common'
 include 'server:investigation'
+include 'server:threats'
 
 def projects = rootProject.children + project(':client').children + project(':server').children
 projects.each { project ->

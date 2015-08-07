@@ -1,4 +1,4 @@
-package com.rsa.asoc.sa.ui.investigation.config;
+package com.rsa.asoc.sa.ui.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.asoc.sa.ui.security.RestAuthenticationHandler;
