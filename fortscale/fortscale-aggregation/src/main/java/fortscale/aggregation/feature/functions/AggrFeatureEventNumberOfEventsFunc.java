@@ -16,12 +16,12 @@ import java.util.Map;
  */
 @JsonTypeName(AggrFeatureEventNumberOfEventsFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureEventNumberOfEventsFunc implements AggrFeatureFunction, AggrFeatureEventFunction {
+public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
 	public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_events_func";
 	public final static String AGGREGATED_FEATURE_NAME_TO_SUM = "aggregated_feature_name_to_sum";
 
 	/**
-	 * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
+	 * Updates the aggrFeatures by running the associated {@link IAggrFeatureFunction} that is configured for each
 	 * AggrFeature in the given  {@link AggregatedFeatureConf} and using the features as input to those functions.
 	 * Creates new map entry <String, Feature> for any AggrFeatureConf for which there is no entry in the aggrFeatures
 	 * map.
@@ -53,7 +53,7 @@ public class AggrFeatureEventNumberOfEventsFunc implements AggrFeatureFunction, 
 	}
 
 	/**
-	 * Create new feature by running the associated {@link AggrFeatureEventFunction} that is configured in the given
+	 * Create new feature by running the associated {@link IAggrFeatureEventFunction} that is configured in the given
 	 * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
 	 *
 	 * @param aggrFeatureEventConf the specification of the feature to be created

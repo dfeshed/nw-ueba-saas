@@ -17,11 +17,11 @@ import java.util.Map;
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
-    private Map<JSONObject, AggrFeatureFunction> aggrFunctions = new HashMap<>();
-    private Map<JSONObject, AggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
+    private Map<JSONObject, IAggrFeatureFunction> aggrFunctions = new HashMap<>();
+    private Map<JSONObject, IAggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
 
     /**
-     * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
+     * Updates the aggrFeatures by running the associated {@link IAggrFeatureFunction} that is configured for each
      * AggrFeature in the given  {@link AggregatedFeatureConf} and using the features as input to those functions.
      * Creates new map entry <String, Feature> for any AggrFeatureConf for which there is no entry in the aggrFeatures
      * map.
@@ -55,7 +55,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
                     aggrFeatures.put(aggrFeatureName, aggrFeature);
                 }
 
-                AggrFeatureFunction func = getAggrFeatureFunction(aggregatedFeatureConf);
+                IAggrFeatureFunction func = getAggrFeatureFunction(aggregatedFeatureConf);
                 func.updateAggrFeature(aggregatedFeatureConf, features, aggrFeature);
             }
         }
@@ -63,7 +63,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
     }
 
     /**
-     * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
+     * Create new feature by running the associated {@link IAggrFeatureFunction} that is configured in the given
      * {@link AggregatedFeatureConf} and using the aggregated features as input to those functions.
      *
      * @param aggrFeatureEventConf                    the specification of the feature to be created
@@ -78,7 +78,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         } else if(aggrFeatureEventConf==null) {
             logger.warn("calculateAggrFeature(): aggrFeatureEventConf is null");
         } else {
-            AggrFeatureEventFunction func = getAggrFeatureEventFunction(aggrFeatureEventConf);
+            IAggrFeatureEventFunction func = getAggrFeatureEventFunction(aggrFeatureEventConf);
             if (func != null) {
                 res = func.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
             }
@@ -86,13 +86,13 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         return res;
     }
 
-    private AggrFeatureEventFunction getAggrFeatureEventFunction(AggregatedFeatureEventConf aggrFeatureEventConf) {
+    private IAggrFeatureEventFunction getAggrFeatureEventFunction(AggregatedFeatureEventConf aggrFeatureEventConf) {
         JSONObject funcAsJsonObject = aggrFeatureEventConf.getAggregatedFeatureEventFunction();
         String funcAsJsonString = funcAsJsonObject.toJSONString();
-        AggrFeatureEventFunction func = aggrFeatureEventFunctions.get(funcAsJsonObject);
+        IAggrFeatureEventFunction func = aggrFeatureEventFunctions.get(funcAsJsonObject);
         if (func == null) {
             try {
-                func = (new ObjectMapper()).readValue(funcAsJsonString, AggrFeatureEventFunction.class);
+                func = (new ObjectMapper()).readValue(funcAsJsonString, IAggrFeatureEventFunction.class);
                 aggrFeatureEventFunctions.put(funcAsJsonObject, func);
             } catch (Exception e) {
                 logger.error(String.format("Failed to deserialize function JSON %s", funcAsJsonString), e);
@@ -101,9 +101,9 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         return func;
     }
 
-    private AggrFeatureFunction getAggrFeatureFunction(AggregatedFeatureConf aggregatedFeatureConf) {
+    private IAggrFeatureFunction getAggrFeatureFunction(AggregatedFeatureConf aggregatedFeatureConf) {
 
-        AggrFeatureFunction func = aggrFunctions.get(aggregatedFeatureConf.getAggrFeatureFuncJson());
+        IAggrFeatureFunction func = aggrFunctions.get(aggregatedFeatureConf.getAggrFeatureFuncJson());
 
         if(func==null) {
             func = createAggrFeatureFunction(aggregatedFeatureConf);
@@ -111,13 +111,13 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         return func;
     }
 
-    private AggrFeatureFunction createAggrFeatureFunction(AggregatedFeatureConf aggregatedFeatureConf) {
+    private IAggrFeatureFunction createAggrFeatureFunction(AggregatedFeatureConf aggregatedFeatureConf) {
         JSONObject aggrFeatureFuncJson = aggregatedFeatureConf.getAggrFeatureFuncJson();
         String aggrFeatureFuncString = aggrFeatureFuncJson.toJSONString();
-        AggrFeatureFunction func = null;
+        IAggrFeatureFunction func = null;
 
         try {
-            func = (new ObjectMapper()).readValue(aggrFeatureFuncString, AggrFeatureFunction.class);
+            func = (new ObjectMapper()).readValue(aggrFeatureFuncString, IAggrFeatureFunction.class);
             aggrFunctions.put(aggrFeatureFuncJson, func);
         } catch (Exception e) {
             logger.error(String.format("Failed to deserialize function JSON %s", aggrFeatureFuncString), e);

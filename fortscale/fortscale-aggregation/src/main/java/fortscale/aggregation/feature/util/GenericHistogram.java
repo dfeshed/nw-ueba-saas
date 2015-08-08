@@ -30,8 +30,12 @@ public class GenericHistogram implements Serializable {
     public long getN() {
         return histogram.size();
     }
+    
+    public double getTotalCount() {
+		return totalCount;
+	}
 
-    public Double get(Object key) {
+	public Double get(Object key) {
         return histogram.get(key.toString());
     }
     public Double get(String key) {
