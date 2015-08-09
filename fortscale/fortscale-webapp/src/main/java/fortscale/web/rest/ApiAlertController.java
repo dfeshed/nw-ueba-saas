@@ -125,7 +125,7 @@ public class ApiAlertController extends BaseController {
 				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 					String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
 					evidence.setAnomalyType(anomalyType);
-					String evidenceName = String.format("evidenceNameText", evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
 					evidence.setName(evidenceName);
 				}
 			}
