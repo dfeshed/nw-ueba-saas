@@ -27,7 +27,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
 
-    private static final String FEATURE_HISTOGRAM_SUFFIX = "_histogram";
+    private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
     public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -76,7 +76,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
 
     @Override
     String getNormalizedFeatureName(String featureName) {
-        return featureName + FEATURE_HISTOGRAM_SUFFIX;
+        return String.format("%s_%s", featureName, FEATURE_HISTOGRAM_SUFFIX);
     }
 
     @Override

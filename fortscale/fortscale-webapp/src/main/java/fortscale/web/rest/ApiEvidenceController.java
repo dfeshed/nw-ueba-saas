@@ -166,7 +166,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/{evidenceId}/histogram?entity_type=normalized_username&entity_name=user11f@somebigcompany.com&data_entity_id=kerberos_logins&feature=dst_machine_histogram&end_time=1437483600
+	 * ../../api/evidences/{evidenceId}/histogram?entity_type=normalized_username&entity_name=user11f@somebigcompany.com&data_entity_id=kerberos_logins&feature=dst_machine&end_time=1437483600
 	 *
 	 * @param evidenceId the evidence evidenceId
 	 * @param entityType the entity type (user, machine etc.)

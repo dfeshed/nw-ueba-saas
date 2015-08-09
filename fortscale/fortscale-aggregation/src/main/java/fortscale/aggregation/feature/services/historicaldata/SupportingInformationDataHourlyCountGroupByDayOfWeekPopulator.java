@@ -30,9 +30,6 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator.class);
 
-    private static final int HOUR_LOWER_BOUND = 0;
-    private static final int HOUR_UPPER_BOUND = 23;
-
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String UTC_TIMEZONE = "UTC";
 
@@ -62,7 +59,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
             long bucketStartTime = featureBucket.getStartTime();
 
-            Integer dayOfWeek = TimeUtils.getDayOfWeek(TimestampUtils.convertToMilliSeconds(bucketStartTime));
+            Integer dayOfWeek = TimeUtils.getOrdinalDayOfWeek(TimestampUtils.convertToMilliSeconds(bucketStartTime));
 
             if (featureValue instanceof GenericHistogram) {
                 Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
@@ -70,7 +67,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     Integer hour = Integer.parseInt(histogramEntry.getKey());
 
-                    if (isHourValueOutOfRange(hour)) {
+                    if (TimeUtils.isOrdinalHourValid(hour)) {
                         throw new IllegalStateException("Hour value is out of range - " + hour);
                     }
 
@@ -96,7 +93,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
     @Override
     String getNormalizedFeatureName(String featureName) {
-        return featureName + "_time"; // TODO need to change
+        return String.format("%s_%s", featureName, "TIME"); // TODO need to change
     }
 
     @Override
@@ -114,7 +111,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
             Integer dayOfWeekOrdinalVal = calendar.get(Calendar.DAY_OF_WEEK);
             Integer hourVal = calendar.get(Calendar.HOUR);
 
-            String dayOfWeek = getDayOfWeek(dayOfWeekOrdinalVal);
+            String dayOfWeek = TimeUtils.getDayOfWeek(dayOfWeekOrdinalVal);
 
             if (dayOfWeek == null) {
                 logger.error("Illegal day of week value: {}", dayOfWeekOrdinalVal);
@@ -126,40 +123,6 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
             logger.error("Cannot parse date string {} to format {}", anomalyValue, DATE_FORMAT);
 
             return null;
-        }
-    }
-
-    private String getDayOfWeek(int ordinalDayOfWeek) {
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            if (ordinalDayOfWeek == dayOfWeek.getDayValue()) {
-                return dayOfWeek.name();
-            }
-        }
-
-        return null;
-    }
-
-    private boolean isHourValueOutOfRange(Integer hour) {
-        return hour > HOUR_UPPER_BOUND || hour < HOUR_LOWER_BOUND;
-    }
-
-    private enum DayOfWeek {
-        SUNDAY(1),
-        MONDAY(2),
-        TUESDAY(3),
-        WEDNESDAY(4),
-        THURSDAY(5),
-        FRIDAY(6),
-        SATURDAY(7);
-
-        private int dayValue; // enum ordinal starts from 0 so we need to normalized the index to start from 1..
-
-        DayOfWeek(int dayValue) {
-            this.dayValue = dayValue;
-        }
-
-        public int getDayValue() {
-            return dayValue;
         }
     }
 }

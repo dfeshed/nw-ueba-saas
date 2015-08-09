@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class SupportingInformationDataBasePopulator implements SupportingInformationDataPopulator{
 
-    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "_daily";
+    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataBasePopulator.class);
 
@@ -61,7 +61,7 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return contextType + "_" + dataEntity + BUCKET_CONF_DAILY_STRATEGY_SUFFIX;
+        return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
 
     abstract String getNormalizedFeatureName(String featureName);
