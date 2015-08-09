@@ -26,8 +26,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String normalizedUsernameField;
 	@Value("${collection.evidence.notification.entity.field}")
 	private String notificationEntityField;
-	@Value("${collection.evidence.notification.timestamp.field}")
-	private String notificationTimestampField;
+	@Value("${collection.evidence.notification.starttimestamp.field}")
+	private String notificationStartTimestampField;
+	@Value("${collection.evidence.notification.endtimestamp.field}")
+	private String notificationEndTimestampField;
 	@Value("${collection.evidence.notification.type.field}")
 	private String notificationTypeField;
 	@Value("${collection.evidence.notification.score}")
@@ -36,12 +38,16 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	public List<JSONObject> createNotifications(List<VpnSession> vpnSessions){
 		List<JSONObject> evidenceList = new ArrayList();
 		for (VpnSession vpnSession: vpnSessions) {
-			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() :
-					vpnSession.getCreatedAtEpoch();
+			//long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() :
+					//vpnSession.getCreatedAtEpoch();
+			long startTimestamp = vpnSession.getCreatedAtEpoch();
+			long endTimestamp = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() :
+				vpnSession.getCreatedAtEpoch();
 			String index = buildIndex(vpnSession);
 			JSONObject evidence = new JSONObject();
 			evidence.put(notificationScoreField, score);
-			evidence.put(notificationTimestampField, ts);
+			evidence.put(notificationStartTimestampField, startTimestamp);
+			evidence.put(notificationEndTimestampField, endTimestamp);
 			evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
 			evidence.put(notificationValueField, NOTIFICATION_VALUE);
 			List<String> entities = new ArrayList();
