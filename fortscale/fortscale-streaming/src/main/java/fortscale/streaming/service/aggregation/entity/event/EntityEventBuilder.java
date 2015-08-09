@@ -9,6 +9,7 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import java.util.*;
 
@@ -16,6 +17,13 @@ import java.util.*;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
+	
+	@Value("${streaming.event.field.type}")
+    private String eventTypeFieldName;
+    @Value("${streaming.event.field.type.entity_event}")
+    private String eventTypeFieldValue;
+    @Value("${streaming.entity_event.field.entity_event_type}")
+    private String entityEventTypeFieldName;
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
@@ -112,7 +120,8 @@ public class EntityEventBuilder {
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
 
 		JSONObject entityEvent = new JSONObject();
-		entityEvent.put("entity_event_type", String.format("entity_event.%s", entityEventData.getEntityEventName()));
+		entityEvent.put(eventTypeFieldName, eventTypeFieldValue);
+		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
 		entityEvent.put("entity_event_value", entityEventValue);
 		entityEvent.put("date_time_unix", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());

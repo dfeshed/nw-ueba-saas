@@ -6,13 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by amira on 17/06/2015.
- */
 public class GenericHistogram implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Map<Object, Double> histogram = new HashMap<>();
+    private Map<String, Double> histogram = new HashMap<>();
     private double totalCount = 0;
     private Object maxObject = null;
 
@@ -33,11 +30,19 @@ public class GenericHistogram implements Serializable {
     public long getN() {
         return histogram.size();
     }
+    
+    public double getTotalCount() {
+		return totalCount;
+	}
 
-    public Double get(Object key) {
+	public Double get(Object key) {
+        return histogram.get(key.toString());
+    }
+    public Double get(String key) {
         return histogram.get(key);
     }
-    public Set<Object> getObjects() {
+
+    public Set<String> getObjects() {
         return histogram.keySet();
     }
 
@@ -45,7 +50,8 @@ public class GenericHistogram implements Serializable {
     public Object getMaxCountObject() { return maxObject;}
     public Double getMaxCountFromTotalCount() { return getMaxCount()/ totalCount;}
 
-    synchronized public void add(Object val, Double count) {
+    public void add(Object val, Double count) { add(val.toString(), count); }
+    public void add(String val, Double count) {
         if(val == null || count == null){
             return;
         }
@@ -71,14 +77,14 @@ public class GenericHistogram implements Serializable {
     }
 
     public GenericHistogram add(GenericHistogram histogram) {
-        for (Object obj : histogram.getObjects()) {
-            Double count = histogram.get(obj);
-            add(obj, count);
+        for (String key : histogram.getObjects()) {
+            Double count = histogram.get(key);
+            add(key, count);
         }
         return this;
     }
 
-    synchronized private Double calculateHistogramStd(boolean populationStandardDeviation){
+    private Double calculateHistogramStd(boolean populationStandardDeviation){
         Double sum = 0.0;
         Double avg = getAvg();
         Iterator<Double> iter = histogram.values().iterator();
@@ -93,24 +99,24 @@ public class GenericHistogram implements Serializable {
         }
     }
 
-    public Map<Object, Double> getHistogramMap() {
+    public Map<String, Double> getHistogramMap() {
         return histogram;
     }
 
     @Override
-    synchronized public String toString() {
-        StringBuffer sb = new StringBuffer("{ ");
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{ ");
         sb.append("totalCount: ").append(totalCount).append(", ");
         sb.append(", histogram: {");
 
-        Iterator<Map.Entry<Object, Double>> iter = histogram.entrySet().iterator();
+        Iterator<Map.Entry<String, Double>> iter = histogram.entrySet().iterator();
 
         if(iter.hasNext()) {
-            Map.Entry<Object, Double> entry = iter.next();
+            Map.Entry<String, Double> entry = iter.next();
             sb.append(entry.getKey()).append(": ").append(entry.getValue());
         }
         while(iter.hasNext()) {
-            Map.Entry<Object, Double> entry = iter.next();
+            Map.Entry<String, Double> entry = iter.next();
             sb.append(", ").append(entry.getKey()).append(": ").append(entry.getValue());
         }
         sb.append("}}");

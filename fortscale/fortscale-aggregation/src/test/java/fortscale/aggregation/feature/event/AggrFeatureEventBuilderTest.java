@@ -13,20 +13,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import fortscale.aggregation.feature.bucket.strategy.*;
+import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.DataSourcesSyncTimerListener;
@@ -36,20 +34,25 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
-public class AggrFeatureEventBuilderTest {
-    @Mock
+@RunWith(JUnitParamsRunner.class)
+public class AggrFeatureEventBuilderTest {    
+	
+	
+	private static ClassPathXmlApplicationContext testContextManager;
+	
+    
+    
+    
     private DataSourcesSyncTimer dataSourcesSyncTimer;
-
-    @Mock
     private FeatureBucketsService featureBucketsService;
-
-    @Mock
     private AggrEventTopologyService aggrEventTopologyService;
+    private AggrFeatureEventBuilderTestHelper aggrFeatureEventBuilderTestHelper;
+    
 
     private DataSourcesSyncTimerListener dataSourcesSyncTimerListener;
     private JSONObject event;
@@ -58,11 +61,23 @@ public class AggrFeatureEventBuilderTest {
     private Long day = 86400L;
     private Long registartionID = 1000L;
     FeatureBucketStrategy strategy;
+    
+    
+    
+	@BeforeClass
+	public static void setUpClass(){
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/aggr-feature-event-builder-context.xml");
+	}
+	
+	
+	@Before
+	public void setUp() throws Exception {
+		dataSourcesSyncTimer = testContextManager.getBean(DataSourcesSyncTimer.class);
+		featureBucketsService = testContextManager.getBean(FeatureBucketsService.class);
+		aggrEventTopologyService = testContextManager.getBean(AggrEventTopologyService.class);
+		aggrFeatureEventBuilderTestHelper = testContextManager.getBean(AggrFeatureEventBuilderTestHelper.class);
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) throws Exception{
         // Creating AggregatedFeatureEventConf
@@ -83,15 +98,11 @@ public class AggrFeatureEventBuilderTest {
 
 
         strategy = createFixedDurationStrategy();
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
 
         // Create AggrFeatureEventBuilder
         AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
 
 
-        builder.setAggrEventTopologyService(aggrEventTopologyService);
-        builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
-        builder.setFeatureBucketsService(featureBucketsService);
 
         return builder;
     }
@@ -160,12 +171,12 @@ public class AggrFeatureEventBuilderTest {
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
         Assert.assertEquals("F", event.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
-        Assert.assertEquals("bc1", event.get(AggrFeatureEventBuilder.EVENT_FIELD_BUCKET_CONF_NAME));
+        Assert.assertEquals("bc1", event.get(aggrFeatureEventBuilderTestHelper.getBucketConfNameFieldName()));
         String date_time = format.format(new Date(startTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME));
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
-        Assert.assertEquals("my_number_of_distinct_values", event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_NAME));
+        Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldName()));
         Assert.assertEquals(numberOfDistinctValues, event.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("machine"));

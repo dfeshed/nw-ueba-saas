@@ -1,37 +1,32 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
 import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
+import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+@RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventDataTest {
-    @Mock
-    private DataSourcesSyncTimer dataSourcesSyncTimer;
-
-    @Mock
-    private FeatureBucketsService featureBucketsService;
-
-    @Mock
-    private AggrEventTopologyService aggrEventTopologyService;
-
-    FeatureBucketStrategy strategy;
+	
+	
 
     long startTime1 = 1420070400L; //01 Jan 2015 00:00:00 GMT
     long endTime1 = 1420156799L; //01 Jan 2015 23:59:59 GMT
@@ -64,11 +59,16 @@ public class AggrFeatureEventDataTest {
     String bucketID8 = "bucketID8";
     String bucketID9 = "bucketID9";
     String bucketID10 = "bucketID10";
+    
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
+    FeatureBucketStrategy strategy;
+    
+	@SuppressWarnings("resource")
+	@BeforeClass
+	public static void setUpClass(){
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/aggr-feature-event-builder-context.xml");
+	}
+
 
     @Test(expected = Exception.class)
     public void testNewEventData_nullBuilder() {
@@ -440,15 +440,9 @@ public class AggrFeatureEventDataTest {
 
 
         strategy = createFixedDurationStrategy();
-        AggrFeatureEventService aggrFeatureEventService = mock(AggrFeatureEventService.class);
 
         // Create AggrFeatureEventBuilder
-        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
-
-
-        builder.setAggrEventTopologyService(aggrEventTopologyService);
-        builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
-        builder.setFeatureBucketsService(featureBucketsService);
+        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, mock(FeatureBucketsService.class));
 
         return builder;
     }

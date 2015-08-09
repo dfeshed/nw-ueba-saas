@@ -54,7 +54,7 @@
     },
 
     {
-      "name": "user_ssh_daily",
+      "name": "normalized_username_ssh_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -92,7 +92,7 @@
     },
 
     {
-      "name": "user_vpn_events_daily",
+      "name": "normalized_username_vpn_events_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -113,24 +113,7 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
         }
       ]
-    },
-    {
-      "name": "source_machine_kerberos_logins_daily",
-      "contextFieldNames": [
-        "source_machine"
-      ],
-      "dataSources": [
-        "kerberos_logins"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": ["normalized_username"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
+    }
       ]
     }
   ]

@@ -55,7 +55,7 @@ public class AlertsRepositoryImplTest {
 		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
-		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium", "Read,Rejected");
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium", "Read,Rejected", "1234567890123,1234567899912");
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}
@@ -74,8 +74,8 @@ public class AlertsRepositoryImplTest {
 		List<Evidence> evidences = new ArrayList<>();
 		List<String> dataEntitiiesIds = new ArrayList<>();
 		dataEntitiiesIds.add("dataSource");
-		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "type", "anomalyTypeField", "name0","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);

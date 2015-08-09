@@ -5,9 +5,8 @@ import static fortscale.utils.ConversionUtils.convertToDouble;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
-import fortscale.streaming.model.UserEventTypePair;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -19,18 +18,17 @@ import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.model.UserEventTypePair;
 import fortscale.streaming.model.UserTopEvents;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.utils.TimestampUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 public class UserScoreStreamTask  extends AbstractStreamTask  implements InitableTask, ClosableTask{
 

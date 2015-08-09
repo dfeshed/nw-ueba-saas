@@ -18,7 +18,7 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 
 @JsonTypeName(AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatureEventFunction {
+public class AggrFeatureHistogramFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_func";
     final static String GROUP_BY_FIELD_NAME = "groupBy";
 
@@ -57,7 +57,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
                     if(featureValue==null || (featureValue instanceof String && StringUtils.isBlank((String)featureValue))) {
                         featureValue = "N/A";
                     }
-                	histogram.add(featureValue, 1.0);
+                	histogram.add(featureValue.toString(), 1.0);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
     }
 
     /**
-     * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
+     * Create new feature by running the associated {@link IAggrFeatureFunction} that is configured in the given
      * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
      *
      * @param aggrFeatureEventConf               the specification of the feature to be created
@@ -79,8 +79,12 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
             return null;
         }
 
-        GenericHistogram histogram = new GenericHistogram();
-        Feature resFeature = new Feature(aggrFeatureEventConf.getName(), histogram);
+        GenericHistogram histogram = calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        return new Feature(aggrFeatureEventConf.getName(), histogram);
+    }
+    
+    public static GenericHistogram calculateHistogramFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+    	GenericHistogram histogram = new GenericHistogram();
 
         List<String> aggregatedFeatureNamesList = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
         Assert.notNull(aggregatedFeatureNamesList);
@@ -97,7 +101,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
                 }
             }
         }
-
-        return resFeature;
+        
+        return histogram;
     }
 }

@@ -24,7 +24,7 @@ import java.util.UUID;
 		// index for getting all evidences for specific user
 	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
 		// index for making sure our evidence is unique
-	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeField +"': 1}", unique = true)
+	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1}", unique = true)
 })
 public class Evidence extends AbstractDocument{
 
@@ -47,9 +47,8 @@ public class Evidence extends AbstractDocument{
 	public static final String endDateField = "endDate";
 	public static final String retentionDateField = "retentionDate";
 
+	public static final String anomalyTypeFieldNameField = "anomalyTypeFieldName";
 	// attributes
-	public static final String nameField = "name";
-	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataEntityIdField = "dataEntitiesIds";
 	public static final String evidenceTypeField = "evidenceType";
@@ -92,13 +91,13 @@ public class Evidence extends AbstractDocument{
 	@Field(retentionDateField)
 	private Date retentionDate;
 
-	@Field(anomalyTypeField)
+	@Transient
 	private String anomalyType;
 
 	//used for mapping between the anomalyType and the field name in the event
 	private String anomalyTypeFieldName;
 
-	@Field(nameField)
+	@Transient
 	private String name;
 
 	@Field(anomalyValueField)
@@ -131,8 +130,8 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyType, String anomalyTypeFieldName,
-			String name, String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
+			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
@@ -144,9 +143,7 @@ public class Evidence extends AbstractDocument{
 		}
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.anomalyType = anomalyType;
 		this.anomalyTypeFieldName = anomalyTypeFieldName;
-		this.name = name;
 		this.anomalyValue = anomalyValue;
 		this.dataEntitiesIds = dataEntitiesIds;
 		this.score = score;
@@ -194,6 +191,15 @@ public class Evidence extends AbstractDocument{
 	public void setDataEntitiesIds(List<String> dataEntitiesIds) {
 		this.dataEntitiesIds = dataEntitiesIds;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAnomalyType(String anomalyType) {
+		this.anomalyType = anomalyType;
+	}
+
 	// Getters
 
 	public EntityType getEntityType() {
@@ -274,6 +280,16 @@ public class Evidence extends AbstractDocument{
 
 	public Map<String, Object>[] getTop3events() {
 		return top3events;
+	}
+
+	@Override public String toString() {
+		return "Evidence{" +
+				"entityType=" + entityType +
+				", entityName='" + entityName + '\'' +
+				", startDate=" + startDate +
+				", endDate=" + endDate +
+				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
+				'}';
 	}
 }
 

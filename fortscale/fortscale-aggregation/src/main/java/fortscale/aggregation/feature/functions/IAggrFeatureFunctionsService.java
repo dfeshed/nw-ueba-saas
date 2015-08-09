@@ -14,7 +14,7 @@ import net.minidev.json.JSONObject;
  */
 public interface IAggrFeatureFunctionsService {
     /**
-     * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
+     * Updates the aggrFeatures by running the associated {@link IAggrFeatureFunction} that is configured for each
      * AggrFeature in the given  {@link AggregatedFeatureConf} and using the features as input to those functions.
      * Creates new map entry <String, Feature> for any AggrFeatureConf for which there is no entry in the aggrFeatures
      * map.

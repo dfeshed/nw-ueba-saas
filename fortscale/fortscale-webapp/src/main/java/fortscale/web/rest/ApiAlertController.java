@@ -1,26 +1,28 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -34,6 +36,20 @@ public class ApiAlertController extends BaseController {
 
 	@Autowired
 	private AlertsRepository alertsDao;
+
+
+	@Value("${fortscale.evidence.type.map}")
+	private String evidenceTypeProperty;
+
+	@Value("${fortscale.evidence.name.text}")
+	private String evidenceNameText;
+
+	private Map evidenceTypeMap;
+
+	@PostConstruct
+	public void initEvidenceMap(){
+		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
+	}
 
 
 	/**
@@ -51,7 +67,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "size")  Integer size,
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
-										  @RequestParam(required=false, value = "status") String status) {
+										  @RequestParam(required=false, value = "status") String status,
+										  @RequestParam(required=false, value = "date_range") String dateRange) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -78,14 +95,19 @@ public class ApiAlertController extends BaseController {
 		Alerts alerts;
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
-		if (severity == null && status == null){
+		//if no filter, call findAll()
+		if (severity == null && status == null && dateRange == null){
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, dateRange);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, dateRange);
+		}
+
+		for (Alert alert : alerts.getAlerts()) {
+			updateEvidenceFields(alert);
 		}
 
 		DataBean<List<Alert>> entities = new DataBean<>();
@@ -97,6 +119,18 @@ public class ApiAlertController extends BaseController {
 	}
 
 
+	private void updateEvidenceFields(Alert alert){
+		if(alert != null && alert.getEvidences() != null) {
+			for (Evidence evidence : alert.getEvidences()) {
+				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
+					String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+					evidence.setAnomalyType(anomalyType);
+					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+					evidence.setName(evidenceName);
+				}
+			}
+		}
+	}
 
 
 	/**
@@ -148,6 +182,7 @@ public class ApiAlertController extends BaseController {
 	public DataBean<Alert> getAlertsById(@PathVariable String id)
 	{
 		Alert alert = alertsDao.getAlertById(id);
+		updateEvidenceFields(alert);
 		DataBean<Alert> toReturn = new DataBean<Alert>();
 		toReturn.setData(alert);
 
