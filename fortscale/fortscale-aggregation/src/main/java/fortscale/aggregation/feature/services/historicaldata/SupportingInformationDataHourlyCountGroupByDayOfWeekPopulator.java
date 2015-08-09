@@ -49,10 +49,12 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
         for (FeatureBucket featureBucket : featureBuckets) {
 
-            Feature feature = featureBucket.getAggregatedFeatures().get(featureName);
+            String normalizedFeatureName = getNormalizedFeatureName(featureName);
+
+            Feature feature = featureBucket.getAggregatedFeatures().get(normalizedFeatureName);
 
             if (feature == null) {
-                logger.warn("Cannot find feature {} in feature bucket with ID {}", featureName, featureBucket.getBucketId());
+                logger.warn("Cannot find feature {} in feature bucket with ID {}", normalizedFeatureName, featureBucket.getBucketId());
                 continue;
             }
 
@@ -83,7 +85,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
             } else {
                 // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", featureName, featureBucket.getBucketId());
+                logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
 
