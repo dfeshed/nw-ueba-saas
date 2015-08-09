@@ -49,7 +49,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Double score = (Double) insertStreamOutput.get("score");
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Unread, "");
+                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
 
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);
