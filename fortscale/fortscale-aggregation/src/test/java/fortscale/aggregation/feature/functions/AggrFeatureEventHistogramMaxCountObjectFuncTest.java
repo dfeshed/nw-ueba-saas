@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 			list.add(String.format("feature%d", i));
 		}
 		Map<String, List<String>> map = new HashMap<>();
-		map.put(AggrFeatureEventHistogramMaxCountObjectFunc.GROUP_BY_FIELD_NAME, list);
+		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
 		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
 	}
 
@@ -63,11 +64,17 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
-		Assert.assertEquals(createExpected(maxHistogramKey), actual1.getValue());
+		Assert.assertEquals(createExpected(maxHistogramKey, histogram1, histogram2), actual1.getValue());
 	}
 	
-	private AggrFeatureValue createExpected(String maxHistogramKey){
-		return new AggrFeatureValue(maxHistogramKey);
+	private AggrFeatureValue createExpected(String maxHistogramKey, GenericHistogram ...genericHistograms){
+		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey);
+		GenericHistogram sumGenericHistogram = new GenericHistogram();
+		for(GenericHistogram hist: genericHistograms){
+			sumGenericHistogram.add(hist);
+		}
+		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		return ret;
 	}
 
 	@Test
