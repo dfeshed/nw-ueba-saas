@@ -1,10 +1,10 @@
 package fortscale.web.rest;
 
-import fortscale.aggregation.feature.services.SupportingInformationService;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.HistogramPair;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.domain.histogram.HistogramPair;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
@@ -166,7 +166,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
+	 * ../../api/evidences/{evidenceId}/histogram?entity_type=normalized_username&entity_name=user11f@somebigcompany.com&data_entity_id=kerberos_logins&feature=dst_machine_histogram&end_time=1437483600
 	 *
 	 * @param evidenceId the evidence evidenceId
 	 * @param entityType the entity type (user, machine etc.)
@@ -187,34 +187,18 @@ public class ApiEvidenceController extends DataQueryController {
 															   @RequestParam(value = "data_entity_id") String dataEntityId,
 															   @RequestParam(value = "feature") String feature,
 															   @RequestParam(value = "end_time") Long endTime){
+
 		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, TimestampUtils.convertToMilliSeconds(endTime));
+		String anomalyType = "Time";
+		String anomalyValue = "SRV_100";
+		String aggregationFunc = "Count";
+		//String aggregationFunc = "hourlyCountGroupByDayOfWeek";
+		int timePeriodInDays = 90;
 
-		Map<String, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
-
-		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram);
-
-		histogramBean.setData(listOfHistogramPairs);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
 
 		return histogramBean;
 	}
-
-	private List<HistogramPair> createListOfHistogramPairs(Map<String, Double> supportingInformationHistogram) {
-
-		List<HistogramPair> histogramPairs = new ArrayList<>();
-
-		for (Map.Entry<String, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
-			String key = supportingInformationHistogramEntry.getKey();
-			Double value = supportingInformationHistogramEntry.getValue();
-
-			HistogramPair histogramPair = new HistogramPair(key, value);
-
-			histogramPairs.add(histogramPair);
-		}
-
-		return histogramPairs;
-	}
-
 
 }

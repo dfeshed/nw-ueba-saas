@@ -63,10 +63,10 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
             Integer dayOfWeek = TimeUtils.getDayOfWeek(TimestampUtils.convertToMilliSeconds(bucketStartTime));
 
             if (featureValue instanceof GenericHistogram) {
-                Map<Object, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
+                Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
 
-                for (Map.Entry<Object, Double> histogramEntry : histogramMap.entrySet()) {
-                    Integer hour = (Integer) histogramEntry.getKey();
+                for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
+                    Integer hour = Integer.parseInt(histogramEntry.getKey());
 
                     if (isHourValueOutOfRange(hour)) {
                         throw new IllegalStateException("Hour value is out of range - " + hour);

@@ -48,12 +48,12 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
             Object featureValue = feature.getValue();
 
             if (featureValue instanceof GenericHistogram) {
-                Map<Object, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
+                Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
 
-                for (Map.Entry<Object, Double> histogramEntry : histogramMap.entrySet()) {
+                for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = createHistogramKey((String) histogramEntry.getKey());
+                    HistogramKey histogramKey = createHistogramKey(histogramEntry.getKey());
 
                     Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null ? histogramKeyObjectMap.get(histogramKey) : 0);
 
