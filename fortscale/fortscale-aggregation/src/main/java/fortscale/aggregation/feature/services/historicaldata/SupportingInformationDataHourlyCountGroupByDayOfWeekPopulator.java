@@ -93,6 +93,11 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
     }
 
     @Override
+    String getNormalizedFeatureName(String featureName) {
+        return featureName + "_time"; // TODO need to change
+    }
+
+    @Override
     HistogramKey createAnomalyHistogramKey(String anomalyValue) {
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
         // first convert to date, than ciel the hour to get the right histogram entry
