@@ -23,10 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * REST API for Evidences querying
@@ -51,9 +48,6 @@ public class ApiEvidenceController extends DataQueryController {
 
 	@Value("${fortscale.evidence.name.text}")
 	private String evidenceNameText;
-
-	@Value("${evidence.supporting.information.time.period.in.days:90}")
-	private int defaultTimePeriodInDays;
 
 	@Autowired
 	private SupportingInformationService supportingInformationService;
@@ -194,7 +188,7 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(value = "function") String aggFunction,
 			@RequestParam(required=false,value = "num_columns") Integer numColumns,
 			@RequestParam(required=false,value = "sort_direction") String sortDirection,
-			@RequestParam(required=false,value = "time_range") Integer timePeriodInDays){
+			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays){
 		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
@@ -203,9 +197,6 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		if(timePeriodInDays == null){
-			timePeriodInDays = defaultTimePeriodInDays;
-		}
 		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		String anomalyValue = evidence.getAnomalyValue();
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
@@ -228,12 +219,10 @@ public class ApiEvidenceController extends DataQueryController {
 			if(listOfHistogramEntries.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
 				//do nothing, no need to create 'others'
 			}
-
 			else {
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
-
 			if (sortDirection != null && sortDirection.equals("DESC")) {
 				Collections.reverse(listOfHistogramEntries);
 			}
@@ -245,7 +234,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 	/**
 	 * gets list of histogramPairs, and return a new list divided into 'others' column and the rest of columns.
-	 * @param oldList sorted list of HistogramPair
+	 * @param oldList sorted list of HistogramEntry, in ascending order
 	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
 	 * @return list divided into 'others' column and the rest of columns.
 	 */
@@ -262,7 +251,8 @@ public class ApiEvidenceController extends DataQueryController {
 		//get the last numColumns object, and sum their values into one. name this object 'other'
 		double othersValue = 0;
 		int i;
-		for (i=0 ; i < numColumns; i++) {
+		assert(oldList.size() >= numColumns);
+		for (i=0 ; i < oldList.size()- numColumns; i++) {
 			HistogramEntry pair=  oldList.get(i);
 			othersValue += pair.getValue();
 		}
@@ -275,7 +265,7 @@ public class ApiEvidenceController extends DataQueryController {
 			newListWithOthers.add(oldList.get(i));
 		}
 		//insert the anomalyPair into the new list
-		oldList.add(anomalyPair);
+		newListWithOthers.add(anomalyPair);
 
 		return newListWithOthers;
 	}
