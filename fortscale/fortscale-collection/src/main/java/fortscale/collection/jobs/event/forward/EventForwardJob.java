@@ -163,7 +163,6 @@ public class EventForwardJob extends FortscaleJob {
 						totalNumberOfMessages += messages.size();
 					}
 					if (finishSuccessfully) {
-						int offset = getConfigurationOffset(forwardSingleConfiguration);
 						logger.info("Forward finished successfully - forward {} events", totalNumberOfMessages);
 						updateConfiguration(forwardSingleConfiguration);
 

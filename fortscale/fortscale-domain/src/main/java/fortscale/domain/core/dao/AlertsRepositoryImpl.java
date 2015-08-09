@@ -1,13 +1,23 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.dao.rest.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.List;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 
 /**
  * Created by rans on 21/06/15.
@@ -15,6 +25,8 @@ import java.util.List;
 public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
 
     /**
      * returns all alerts in the collection in a json object represented by @Alerts
@@ -63,4 +75,105 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 
+    @Override
+    public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter, String dateRangeFilter) {
+
+       //build the query
+        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, severityArrayFilter, statusArrayFilter, dateRangeFilter, pageRequest);
+        List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
+        Alerts alerts = new Alerts();
+        alerts.setAlerts(alertsList);
+        return alerts;
+    }
+
+
+    @Override
+    public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter, String dateRangeFilter) {
+
+        //build the query
+        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, severityArrayFilter, statusArrayFilter, dateRangeFilter, pageRequest);
+        return mongoTemplate.count(query, Alert.class);
+    }
+
+
+    /**
+     * Build a query to be used by mongo API
+     * @param pageRequest
+     * @param severityFieldName name of the field to access severity property
+     * @param statusFieldName name of the field to access status property
+     * @param severityArrayFilter comma separated list of severity attributes to include
+     * @param statusArrayFilter comma separated list of status attributes to include
+     * @param pageable
+     * @return
+     */
+    private Query buildQuery(PageRequest pageRequest,
+                             String severityFieldName,
+                             String statusFieldName,
+                             String startDateFieldName,
+                             String severityArrayFilter,
+                             String statusArrayFilter,
+                             String dateRangeFilter,
+                             Pageable pageable) {
+        List<Alert> result;
+        Criteria severityCriteria = new Criteria();
+        Criteria statusCriteria = new Criteria();
+        Query query = new Query().with( pageRequest.getSort());
+        //build severity filter
+        if (severityArrayFilter != null) {
+            String[] severityFilterVals = severityArrayFilter.split(",");
+            List<String> severityList = new ArrayList<>();
+            for (String val : severityFilterVals) {
+                Severity severity = Severity.getByStringCaseInsensitive(val);
+                if (severity != null) {
+                    severityList.add(severity.name());
+                }
+            }
+            //If filter includes all severity entries, ignore the filter as it is the same as without filter
+            if (severityList.size() != Severity.values().length) {
+                severityCriteria = where(severityFieldName).in(severityList);
+                query.addCriteria(severityCriteria);
+            }
+        }
+        //build status filter
+        if (statusArrayFilter != null) {
+            String[] statusFilterVals = statusArrayFilter.split(",");
+            List<String> statusList = new ArrayList<>();
+            for (String val : statusFilterVals) {
+                AlertStatus status = AlertStatus.getByStringCaseInsensitive(val);
+                if (status != null) {
+                    statusList.add(status.name());
+                }
+            }
+            //If filter includes all status entries, ignore the filter as it is the same as without filter
+            if (statusList.size() != AlertStatus.values().length) {
+                statusCriteria = where(statusFieldName).in(statusList);
+                query.addCriteria(statusCriteria);
+            }
+        }
+
+        //build dateRange filter
+        if (dateRangeFilter != null) {
+            String[] dateRangeFilterVals = dateRangeFilter.split(",");
+            if (dateRangeFilterVals.length == 2) {
+                try {
+                    Long startDate = Long.parseLong(dateRangeFilterVals[0]);
+                    Long endDate = Long.parseLong(dateRangeFilterVals[1]);
+                    Criteria startDateCriteria = where(startDateFieldName).gte(startDate);
+                    Criteria endDateCriteria = where(startDateFieldName).lte(endDate);
+                    query.addCriteria(new Criteria().andOperator(startDateCriteria, endDateCriteria));
+                } catch (NumberFormatException ex){
+
+                    logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
+                }
+            }
+        }
+        int pageSize = pageRequest.getPageSize();
+        int pageNum = pageRequest.getPageNumber();
+        query.limit(pageSize);
+        query.skip(pageNum * pageSize);
+        if (pageable != null) {
+            query.with(pageable);
+        }
+        return query;
+    }
 }

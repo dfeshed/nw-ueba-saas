@@ -1,11 +1,9 @@
 package fortscale.services;
 
-import fortscale.domain.core.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.NavigableMap;
+
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.Severity;
 
 /**
  * Service that handles Alerts and stores them in MongoDB

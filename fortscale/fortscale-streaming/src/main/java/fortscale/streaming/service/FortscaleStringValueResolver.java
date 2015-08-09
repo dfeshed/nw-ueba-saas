@@ -1,5 +1,8 @@
 package fortscale.streaming.service;
 
+import static fortscale.streaming.ConfigUtils.getConfigString;
+
+import org.apache.samza.config.Config;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -23,6 +26,10 @@ public class FortscaleStringValueResolver implements EmbeddedValueResolverAware 
     public String resolveStringValue(String str) {
         return stringValueResolver.resolveStringValue(str);
     }
+    
+    public String resolveStringValue(Config config, String string) {
+		return resolveStringValue(getConfigString(config, string));
+	}
 
     public List<String> resolveStringValues(List<String> list) {
         List<String> resolvedList = new ArrayList<String>(list.size());

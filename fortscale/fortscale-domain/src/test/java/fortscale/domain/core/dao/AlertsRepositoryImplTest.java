@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -39,11 +39,23 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testFindAll() throws IOException{
 		List<Alert> alertsList = new ArrayList<>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		Alerts alerts = subject.findAll(new PageRequest(1,0));
+		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
+		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
+	}
+
+	@Test
+	public void testFindAlertsByFilter() throws IOException{
+		List<Alert> alertsList = new ArrayList<>();
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+
+		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 0), "HIGH,medium", "Read,Rejected", "1234567890123,1234567899912");
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}
@@ -57,11 +69,13 @@ public class AlertsRepositoryImplTest {
 
 	@Test
 	public void testGetAlertById() {
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a");
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a");
 
 		List<Evidence> evidences = new ArrayList<>();
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		List<String> dataEntitiiesIds = new ArrayList<>();
+		dataEntitiiesIds.add("dataSource");
+		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiiesIds,99, Severity.Critical);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);

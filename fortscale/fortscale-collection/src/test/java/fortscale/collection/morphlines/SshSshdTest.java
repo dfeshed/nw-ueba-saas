@@ -8,8 +8,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -43,6 +45,12 @@ public class SshSshdTest {
 		date = TestUtils.constuctDate(Nov_19_14_58_32_WAN);
 		Nov_19_14_58_32_OUT_WAN = TestUtils.getOutputDate(date);
 	}
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
 	@Before
 	public void setUp() throws Exception {

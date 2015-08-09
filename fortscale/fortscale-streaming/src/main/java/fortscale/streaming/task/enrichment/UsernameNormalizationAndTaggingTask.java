@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -149,7 +150,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		if (topicToServiceMap.containsKey(inputTopic)) {
-			String key = (String) envelope.getKey();
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {

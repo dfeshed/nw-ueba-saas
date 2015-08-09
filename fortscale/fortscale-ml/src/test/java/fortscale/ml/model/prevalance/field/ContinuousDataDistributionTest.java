@@ -327,24 +327,32 @@ public class ContinuousDataDistributionTest {
 
 	private void runScenarioAndTestScores(String filePath) throws Exception {
 		File file = new File(filePath);
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line;
+		BufferedReader reader = null;
+		try{
+			reader = new BufferedReader(new FileReader(file));
+			String line;
+	
+			Map<Long, Double> valueToScoreMap = new HashMap<>();
+			ContinuousDataDistribution distribution = create(100, 1.0);
+	
+			while ((line = reader.readLine()) != null) {
+				String valueAndScore[] = line.split(",");
+				Long value = Long.valueOf(valueAndScore[0]);
+				Double score = Double.valueOf(valueAndScore[1]);
+				valueToScoreMap.put(value, score);
+				distribution.add(value.doubleValue(), 0);
+			}
+		
 
-		Map<Long, Double> valueToScoreMap = new HashMap<>();
-		ContinuousDataDistribution distribution = create(100, 1.0);
-
-		while ((line = reader.readLine()) != null) {
-			String valueAndScore[] = line.split(",");
-			Long value = Long.valueOf(valueAndScore[0]);
-			Double score = Double.valueOf(valueAndScore[1]);
-			valueToScoreMap.put(value, score);
-			distribution.add(value.doubleValue(), 0);
-		}
-
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
-		for (Long value : valueToScoreMap.keySet()) {
-			double score = calculateScore(distribution, value.doubleValue(), calibrationForContModel);
-			Assert.assertEquals(valueToScoreMap.get(value), score, 0.5);
+			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+			for (Long value : valueToScoreMap.keySet()) {
+				double score = calculateScore(distribution, value.doubleValue(), calibrationForContModel);
+				Assert.assertEquals(valueToScoreMap.get(value), score, 0.5);
+			}
+		} finally{
+			if(reader != null){
+				reader.close();
+			}
 		}
 	}
 }

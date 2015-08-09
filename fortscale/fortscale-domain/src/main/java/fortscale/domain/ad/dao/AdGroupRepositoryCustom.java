@@ -1,9 +1,8 @@
 package fortscale.domain.ad.dao;
 
-import fortscale.domain.ad.AdGroup;
-
 import java.util.List;
-import java.util.Map;
+
+import fortscale.domain.ad.AdGroup;
 
 public interface AdGroupRepositoryCustom {
 	public Long getLatestTimeStampepoch();

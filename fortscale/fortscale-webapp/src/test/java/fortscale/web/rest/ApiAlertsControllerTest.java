@@ -56,8 +56,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -70,16 +70,38 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
+	}
+
+	@Test
+	public void list_alerts_by_severity_filter() throws Exception {
+		// set up alerts repository mocked behavior
+		List<Alert> alertsList = new ArrayList<Alert>();
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		Alerts alerts = new Alerts();
+		alerts.setAlerts(alertsList);
+
+		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString())).thenReturn(alerts);
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(get("/api/alerts?severity=high,MEDIUM&sort_field=startTime&sort_direction=DESC&page=1&size=20").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andReturn();
+
+		//validate
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString());
 	}
 
 	@Test
 	public void list_all_alerts_without_request_params() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 90, Severity.Critical, AlertStatus.Open, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -92,7 +114,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -108,7 +130,7 @@ public class ApiAlertsControllerTest {
 				"        \"evidences\": null,\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
-				"        \"status\": \"Accepted\",\n" +
+				"        \"status\": \"Open\",\n" +
 				"        \"comment\": \"a\"\n" +
 				"    }";
 
@@ -137,7 +159,7 @@ public class ApiAlertsControllerTest {
 				"        \"evidences\": null,\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
-				"        \"status\": \"Accepted\",\n" +
+				"        \"status\": \"Open\",\n" +
 				"        \"comment\": \"a\"\n" +
 				"    }";
 		doThrow(new RuntimeException()).when(alertsDao).add(any(Alert.class));

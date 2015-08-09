@@ -2,19 +2,18 @@ package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
-
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
 public class DhcpDhcpdTest {
@@ -47,6 +46,12 @@ public class DhcpDhcpdTest {
 		date = TestUtils.constuctDate(Nov_19_23_59_54_WAN);
 		Nov_19_23_59_54_L_WAN = TestUtils.getUnixDate(date);
 	}
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+    }
 
 	@Before
 	public void setUp() throws Exception {

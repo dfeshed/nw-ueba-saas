@@ -18,7 +18,6 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-import oracle.jrockit.jfr.jdkevents.throwabletransform.ConstructorWriter;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;

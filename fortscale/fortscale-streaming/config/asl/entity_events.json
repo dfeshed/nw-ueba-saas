@@ -1,0 +1,57 @@
+{
+  "EntityEvents": {
+    "GlobalParams": {
+      "secondsToWaitBeforeFiring": 300,
+      "fireEventsEverySeconds": 300
+    },
+
+    "EntityEventDefinitions": [
+      {
+        "name": "normalized_username_daily",
+        "contextFields": ["normalized_username"],
+        "aggregatedFeatureEventNamesMap": {
+          "aggregatedFeatureEventNames": [
+            "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_kerberos",
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_kerberos",
+            "normalized_username_ssh_daily.distinct_number_of_src_machines_ssh",
+            "normalized_username_ssh_daily.distinct_number_of_dst_machines_ssh",
+            "normalized_username_kerberos_logins_daily.new_src_machine_kerberos",
+            "normalized_username_kerberos_logins_daily.new_dst_machine_kerberos",
+            "normalized_username_ssh_daily.new_src_machine_ssh",
+            "normalized_username_ssh_daily.new_dst_machine_ssh",
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos"
+          ]
+        },
+        "entityEventFunction": {
+          "clusters": {
+            "distinct_machines_kerberos": [
+              "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_kerberos",
+              "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_kerberos"
+            ],
+            "distinct_machines_ssh": [
+              "normalized_username_ssh_daily.distinct_number_of_src_machines_ssh",
+              "normalized_username_ssh_daily.distinct_number_of_dst_machines_ssh"
+            ],
+            "new_machines_kerberos": [
+              "normalized_username_kerberos_logins_daily.new_src_machine_kerberos",
+              "normalized_username_kerberos_logins_daily.new_dst_machine_kerberos"
+            ],
+            "new_machines_ssh": [
+              "normalized_username_ssh_daily.new_src_machine_ssh",
+              "normalized_username_ssh_daily.new_dst_machine_ssh"
+            ]
+          },
+          "alphas": {
+            "distinct_machines_kerberos": 1.0,
+            "distinct_machines_ssh": 1.0,
+            "new_machines_kerberos": 1.0,
+            "new_machines_ssh": 1.0
+          },
+          "betas": {
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0
+          }
+        }
+      }
+    ]
+  }
+}

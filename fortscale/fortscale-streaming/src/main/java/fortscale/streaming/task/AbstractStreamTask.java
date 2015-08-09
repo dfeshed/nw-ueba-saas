@@ -63,7 +63,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedProcess(envelope, collector, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
-			logger.error("got an exception while processing steam message", exception);
+			logger.error("got an exception while processing stream message", exception);
 			processExceptionHandler.handleException(exception);
 		}		
 	}
@@ -74,7 +74,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
-			logger.error("got an exception while processing steam message", exception);
+			logger.error("got an exception while processing stream message", exception);
 			windowExceptionHandler.handleException(exception);
 		}
     }

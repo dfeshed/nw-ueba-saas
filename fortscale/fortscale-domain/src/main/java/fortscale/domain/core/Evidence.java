@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ import java.util.UUID;
 		// index for getting all evidences for specific user
 	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
 		// index for making sure our evidence is unique
-	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeField +"': 1}", unique = true)
+	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1}", unique = true)
 })
 public class Evidence extends AbstractDocument{
 
@@ -38,6 +39,7 @@ public class Evidence extends AbstractDocument{
 
 	// Entity information
 	public static final String entityTypeField = "entityType";
+
 	public static final String entityNameField = "entityName";
 
 	// Time frame information
@@ -45,11 +47,10 @@ public class Evidence extends AbstractDocument{
 	public static final String endDateField = "endDate";
 	public static final String retentionDateField = "retentionDate";
 
+	public static final String anomalyTypeFieldNameField = "anomalyTypeFieldName";
 	// attributes
-	public static final String nameField = "name";
-	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
-	public static final String dataSourceField = "dataSource";
+	public static final String dataEntityIdField = "dataEntitiesIds";
 	public static final String evidenceTypeField = "evidenceType";
 
 	// The 3 top events
@@ -73,6 +74,9 @@ public class Evidence extends AbstractDocument{
 	@Field(entityTypeField)
 	private EntityType entityType;
 
+	//used for mapping between the entityType and the field name in the event
+	private String entityTypeFieldName;
+
 	@Field(entityNameField)
 	private String entityName;
 
@@ -87,17 +91,20 @@ public class Evidence extends AbstractDocument{
 	@Field(retentionDateField)
 	private Date retentionDate;
 
-	@Field(anomalyTypeField)
+	@Transient
 	private String anomalyType;
 
-	@Field(nameField)
+	//used for mapping between the anomalyType and the field name in the event
+	private String anomalyTypeFieldName;
+
+	@Transient
 	private String name;
 
 	@Field(anomalyValueField)
 	private String anomalyValue;
 
-	@Field(dataSourceField)
-	private String dataSource;
+	@Field(dataEntityIdField)
+	private List<String> dataEntitiesIds;
 
 	@Field(evidenceTypeField)
 	private EvidenceType evidenceType;
@@ -111,7 +118,7 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
-	// keeping the events as map - not kept in MongoDB
+	// keeping the events as map - not kept in MongoDB - using for alert (if need to query other event properties as part of the rule)
 	@Transient
 	private Map<String,Object>[] top3events;
 
@@ -123,16 +130,22 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
+			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
 		this.entityType = entityType;
+		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
+		this.evidenceType = evidenceType;
+		if (evidenceType == EvidenceType.AnomalySingleEvent) {
+			this.numOfEvents = 1;
+		} else {
+			this.numOfEvents = -1;
+		}
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.anomalyType = anomalyType;
-		this.name = name;
+		this.anomalyTypeFieldName = anomalyTypeFieldName;
 		this.anomalyValue = anomalyValue;
-		this.dataSource = dataSource;
+		this.dataEntitiesIds = dataEntitiesIds;
 		this.score = score;
 		this.severity = severity;
 
@@ -175,10 +188,26 @@ public class Evidence extends AbstractDocument{
 		this.top3events = top3events;
 	}
 
+	public void setDataEntitiesIds(List<String> dataEntitiesIds) {
+		this.dataEntitiesIds = dataEntitiesIds;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAnomalyType(String anomalyType) {
+		this.anomalyType = anomalyType;
+	}
+
 	// Getters
 
 	public EntityType getEntityType() {
 		return entityType;
+	}
+
+	public String getEntityTypeFieldName() {
+		return entityTypeFieldName;
 	}
 
 	public String getEntityName() {
@@ -189,8 +218,16 @@ public class Evidence extends AbstractDocument{
 		return startDate;
 	}
 
+	public void setStartDate(Long startDate) {
+		this.startDate = startDate;
+	}
+
 	public Long getEndDate() {
 		return endDate;
+	}
+
+	public void setEndDate(Long endDate) {
+		this.endDate = endDate;
 	}
 
 	public Date getRetentionDate() {
@@ -199,6 +236,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getAnomalyType() {
 		return anomalyType;
+	}
+
+	public String getAnomalyTypeFieldName() {
+		return anomalyTypeFieldName;
 	}
 
 	public String getName() {
@@ -213,8 +254,8 @@ public class Evidence extends AbstractDocument{
 		return severity;
 	}
 
-	public String getDataSource() {
-		return dataSource;
+	public List<String> getDataEntitiesIds() {
+		return dataEntitiesIds;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
@@ -239,6 +280,16 @@ public class Evidence extends AbstractDocument{
 
 	public Map<String, Object>[] getTop3events() {
 		return top3events;
+	}
+
+	@Override public String toString() {
+		return "Evidence{" +
+				"entityType=" + entityType +
+				", entityName='" + entityName + '\'' +
+				", startDate=" + startDate +
+				", endDate=" + endDate +
+				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
+				'}';
 	}
 }
 

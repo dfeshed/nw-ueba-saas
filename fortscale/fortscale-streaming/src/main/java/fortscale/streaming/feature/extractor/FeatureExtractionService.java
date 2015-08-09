@@ -53,7 +53,25 @@ public class FeatureExtractionService implements IFeatureExtractionService{
 		if(featureExtractor != null){
 			return featureExtractor.extract(eventMessage);
 		} else{
-			return eventMessage.get(featureName);
+			return extractValueFromJson(featureName, eventMessage);
 		}
+	}
+	
+	private Object extractValueFromJson(String featureName, JSONObject message){
+		String featurePathElems[] = featureName.split("\\.");
+		JSONObject jsonObject = message;
+		try{
+			for(int i = 0; i<featurePathElems.length-1; i++){
+				jsonObject = (JSONObject) jsonObject.get(featurePathElems[i]);
+			}
+		} catch(Exception e){
+			return null;
+		}
+		
+		if(jsonObject == null){
+			return null;
+		}
+		
+		return jsonObject.get(featurePathElems[featurePathElems.length-1]);
 	}
 }

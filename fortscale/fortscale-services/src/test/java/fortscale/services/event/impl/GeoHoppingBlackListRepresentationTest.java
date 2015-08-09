@@ -1,14 +1,16 @@
 package fortscale.services.event.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import parquet.org.codehaus.jackson.map.type.TypeFactory;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class GeoHoppingBlackListRepresentationTest {
