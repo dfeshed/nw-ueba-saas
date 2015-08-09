@@ -66,10 +66,12 @@ public class ApiEvidenceController extends DataQueryController {
 	}
 
 	private void updateEvidenceFields(Evidence evidence) {
-		String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
-		evidence.setAnomalyType(anomalyType);
-		String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
-		evidence.setName(evidenceName);
+		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
+			String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+			evidence.setAnomalyType(anomalyType);
+			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+			evidence.setName(evidenceName);
+		}
 	}
 
 	/**

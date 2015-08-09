@@ -31,8 +31,8 @@ public class AggrFeatureValue {
 		return value;
 	}
 
-	public void setValue(Object key) {
-		this.value = key;
+	public void setValue(Object value) {
+		this.value = value;
 	}
 
 	public Map<String, Object> getAdditionalInformationMap() {
