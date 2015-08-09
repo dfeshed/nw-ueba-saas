@@ -1,6 +1,10 @@
 package fortscale.domain.histogram;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
+ * a histogram key with two keys. usage example: heat-map
  * @author gils
  * Date: 05/08/2015
  */
@@ -22,8 +26,17 @@ public class HistogramDualKey implements HistogramKey {
         return key2;
     }
 
-    public String serialize(HistogramKeyVisitor histogramKeyVisitor) {
-        return histogramKeyVisitor.visit(this);
+    /**
+     * generates key representation to json serialization - in this case a list of two keys
+     * @return
+     */
+    @Override
+    public List<String> generateKey(){
+
+       List<String> genKey = new ArrayList<>();
+        genKey.add(key1);
+        genKey.add(key2);
+        return genKey;
     }
 
     @Override

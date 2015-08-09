@@ -6,7 +6,8 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramKey;
-import fortscale.domain.histogram.HistogramPair;
+import fortscale.domain.histogram.HistogramEntry;
+//import fortscale.domain.histogram.HistogramEntryFactory;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
@@ -144,7 +145,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
+	 * ../../api/evidences/{evidenceId}/historical-data?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
 	 *
 	 * @param evidenceId the evidence evidenceId
 	 * @param contextType the entity type (user, machine etc.)
@@ -155,10 +156,10 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @return list of histogramPair
 	 *
 	 */
-	@RequestMapping(value="/{id}/histogram",method = RequestMethod.GET)
+	@RequestMapping(value="/{id}/historical-data",method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
+	public DataBean<List<HistogramEntry>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
 			@RequestParam(value = "context_type") String contextType,
 			@RequestParam(value = "context_value") String contextValue,
 			@RequestParam(value = "feature") String feature,
@@ -166,12 +167,12 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(required=false,value = "num_columns") Integer numColumns,
 			@RequestParam(required=false,value = "sort_direction") String sortDirection,
 			@RequestParam(required=false,value = "time_range") Integer timePeriodInDays){
-		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
+		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
 		Evidence evidence = evidencesDao.findById(evidenceId);
 		if (evidence == null || evidence.getId() == null){
-			throw new InvalidValueException("Can't get evidence ofr id: " + evidenceId);
+			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
 		if(timePeriodInDays == null){
@@ -179,39 +180,38 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		String anomalyValue = evidence.getAnomalyValue();
-		String anomalyType = evidence.getAnomalyType();
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-				feature,anomalyType ,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
+				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
-		HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
-
-
 		//add the anomaly to the relevant fields
+		HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
 
-		List<HistogramPair> listOfHistogramPairs = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
+		if(numColumns == null){
+			numColumns = listOfHistogramEntries.size();
+		}
 
-		//
 		if(aggFunction.equalsIgnoreCase("count")) {
-			Collections.sort(listOfHistogramPairs); // the default sort is ascending
+			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns
-			if(listOfHistogramPairs.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
+			if(listOfHistogramEntries.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
 				//do nothing, no need to create 'others'
 			}
 
 			else {
 				//create new list divided into others, columns and anomaly
-				listOfHistogramPairs = createListWithOthers(listOfHistogramPairs, numColumns);
+				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
 
 			if (sortDirection != null && sortDirection.equals("DESC")) {
-				Collections.reverse(listOfHistogramPairs);
+				Collections.reverse(listOfHistogramEntries);
 			}
 		}
 
-		histogramBean.setData(listOfHistogramPairs);
+		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
 	}
 
@@ -221,10 +221,10 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
 	 * @return list divided into 'others' column and the rest of columns.
 	 */
-	private  List<HistogramPair> createListWithOthers(List<HistogramPair> oldList, int numColumns){
+	private  List<HistogramEntry> createListWithOthers(List<HistogramEntry> oldList, int numColumns){
 
-		HistogramPair anomalyPair = new HistogramPair();
-		for(HistogramPair pair: oldList){
+		HistogramEntry anomalyPair = new HistogramEntry();
+		for(HistogramEntry pair: oldList){
 			if(pair.isAnomaly()){
 				anomalyPair = oldList.remove(oldList.indexOf(pair));
 				break;
@@ -235,13 +235,13 @@ public class ApiEvidenceController extends DataQueryController {
 		double othersValue = 0;
 		int i;
 		for (i=0 ; i < numColumns; i++) {
-			HistogramPair pair=  oldList.get(i);
+			HistogramEntry pair=  oldList.get(i);
 			othersValue += pair.getValue();
 		}
 
 		//create new list with others, and the remaining columns.
-		List<HistogramPair> newListWithOthers = new ArrayList<>();
-		newListWithOthers.add(new HistogramPair( new HistogramSingleKey("Others"), othersValue));
+		List<HistogramEntry> newListWithOthers = new ArrayList<>();
+		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey("Others").generateKey(), othersValue));
 
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));
@@ -261,21 +261,21 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param anomaly
 	 * @return list of HistogramPairs, with (0 or more) anomaly mark
 	 */
-	private List<HistogramPair> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
+	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
 
-		List<HistogramPair> histogramPairs = new ArrayList<>();
+		List<HistogramEntry> histogramEntries = new ArrayList<>();
 
 		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
 			HistogramKey key = supportingInformationHistogramEntry.getKey();
 			Double value = supportingInformationHistogramEntry.getValue();
 
-			HistogramPair histogramPair = new HistogramPair(key, value);
+			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
 
 			if (key.equals(anomaly)){
-				histogramPair.setIsAnomaly(true);
+				histogramEntry.setIsAnomaly(true);
 			}
-			histogramPairs.add(histogramPair);
+			histogramEntries.add(histogramEntry);
 		}
-		return histogramPairs;
+		return histogramEntries;
 	}
 }

@@ -1,5 +1,6 @@
 package fortscale.domain.histogram;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,4 +10,5 @@ import java.util.Map;
  * Date: 04/08/2015
  */
 public interface HistogramKey {
+	public List<String> generateKey();
 }

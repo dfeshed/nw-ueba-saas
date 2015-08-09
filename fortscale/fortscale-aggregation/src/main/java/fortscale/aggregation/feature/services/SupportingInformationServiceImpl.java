@@ -2,10 +2,14 @@ package fortscale.aggregation.feature.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationDataPopulator;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,23 +19,22 @@ import java.util.List;
  * @author gils
  * Date: 29/07/2015
  */
+@Service
 public class SupportingInformationServiceImpl implements SupportingInformationService {
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
 
     @Autowired
-    private BucketConfigurationService bucketConfigurationService;
+    private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
-    @Autowired
-    private FeatureBucketsStore featureBucketsStore;
 
     @Override
     public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                          String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
+                                                                           String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
         logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
                 "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
-        SupportingInformationDataPopulator supportingInformationPopulator = SupportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction, bucketConfigurationService, featureBucketsStore);
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction);
 
         SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
 

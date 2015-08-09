@@ -26,5 +26,5 @@ public interface SupportingInformationService {
      * @return supporting information data representation
      */
     SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                   String anomalyType, String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
+            String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
 }

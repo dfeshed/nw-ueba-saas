@@ -1,6 +1,7 @@
 package fortscale.domain.histogram;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * represent histogram pair in front-end format: have a bean with the following structure:
@@ -10,25 +11,21 @@ import java.io.Serializable;
  * }
  * Created by galiar on 21/07/2015.
  */
-public class HistogramPair implements Serializable, Comparable<HistogramPair>{
+public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 
-	private HistogramKey key;
+
+
+	private List<String> keys;
 	private Double value;
-	private boolean is_anomaly;
+	private boolean anomaly;
 
-	public HistogramPair(){}
 
-	public HistogramPair(HistogramKey key, Double count){
-		this.key = key;
+	public HistogramEntry(){}
+
+	public HistogramEntry(List<String> keys, Double count){
+
 		this.value = count;
-	}
-
-	public HistogramKey getKey() {
-		return key;
-	}
-
-	public void setKey(HistogramKey key) {
-		this.key = key;
+		this.keys = keys;
 	}
 
 	public Double getValue() {
@@ -40,11 +37,19 @@ public class HistogramPair implements Serializable, Comparable<HistogramPair>{
 	}
 
 	public void setIsAnomaly(boolean isAnomaly){
-		is_anomaly = isAnomaly;
+		anomaly = isAnomaly;
 	}
 
 	public boolean isAnomaly(){
-		return is_anomaly;
+		return anomaly;
+	}
+
+	public List<String> getKeys() {
+		return keys;
+	}
+
+	public void setKeys(List<String> keys) {
+		this.keys = keys;
 	}
 
 	/**
@@ -54,13 +59,13 @@ public class HistogramPair implements Serializable, Comparable<HistogramPair>{
 	 * @return
 	 */
 	@Override
-	public int compareTo(HistogramPair other){
+	public int compareTo(HistogramEntry other){
 		return value.compareTo(other.value);
 
 	}
 
-	public boolean equals(HistogramPair other){
-		return (key.equals(other.key) && value.equals(other.value));
+	public boolean equals(HistogramEntry other){
+		return ( value.equals(other.value));
 
 	}
 }
