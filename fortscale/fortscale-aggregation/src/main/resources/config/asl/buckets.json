@@ -118,7 +118,7 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "countries_histogram",
+          "name": "country_histogram",
           "featureNamesMap": {
             "groupBy": ["country"]
           },
