@@ -17,10 +17,10 @@ import java.util.TimeZone;
 public class HourOfDayFeatureAdjustor implements FeatureAdjustor {
 	protected static final String HOUR_OF_DAY_FEATURE_ADJUSTOR = "hour_of_day_feature_adjustor";
 	private static final int HOUR_OF_DAY_FEATURE_ADJUSTOR_TYPE_HASH_CODE = HOUR_OF_DAY_FEATURE_ADJUSTOR.hashCode();
+	private static Calendar calenderHelper = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
 	@Override public Object adjust(Object value, Event event) throws InvalidQueryException {
 		long timestamp = convertToLong(value);
-		Calendar calenderHelper = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		calenderHelper.setTimeInMillis(timestamp * 1000);
 		return new Integer(calenderHelper.get(Calendar.HOUR_OF_DAY));
 	}

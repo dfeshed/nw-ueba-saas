@@ -42,6 +42,13 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
