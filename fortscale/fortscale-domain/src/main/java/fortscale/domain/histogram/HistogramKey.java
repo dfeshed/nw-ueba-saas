@@ -1,5 +1,7 @@
 package fortscale.domain.histogram;
 
+import java.util.List;
+
 /**
  * Interface for histogram keys
  *
@@ -7,5 +9,6 @@ package fortscale.domain.histogram;
  * Date: 04/08/2015
  */
 public interface HistogramKey {
-    String serialize(HistogramKeyVisitor histogramKeyVisitor);
+	public List<String> generateKey();
+	
 }
