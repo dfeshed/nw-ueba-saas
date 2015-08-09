@@ -1,6 +1,8 @@
 package fortscale.domain.histogram;
 
 /**
+ * Histogram dual key representation
+ *
  * @author gils
  * Date: 05/08/2015
  */

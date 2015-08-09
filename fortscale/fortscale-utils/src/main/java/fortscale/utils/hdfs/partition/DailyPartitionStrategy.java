@@ -6,9 +6,9 @@ import org.joda.time.DateTimeZone;
 import java.util.LinkedList;
 import java.util.List;
 
-import static fortscale.utils.TimestampUtils.normalizeTimestamp;
 import static fortscale.utils.hdfs.partition.PartitionsUtils.getPartitionPartFromPath;
 import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
+import static fortscale.utils.time.TimestampUtils.normalizeTimestamp;
 
 /**
  * Created by idanp on 8/18/2014.

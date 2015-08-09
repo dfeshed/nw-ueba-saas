@@ -2,7 +2,7 @@ package fortscale.streaming.service.vpn;
 
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

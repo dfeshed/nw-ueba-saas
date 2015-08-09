@@ -13,5 +13,5 @@
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
 	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationDataCountPopulator" scope="prototype"/>
-	<bean id="supportingInformationHeatMapDataPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationHeatMapDataPopulator" scope="prototype"/>
+	<bean id="supportingInformationDataHourlyCountGroupByDayOfWeekPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator" scope="prototype"/>
 </beans>

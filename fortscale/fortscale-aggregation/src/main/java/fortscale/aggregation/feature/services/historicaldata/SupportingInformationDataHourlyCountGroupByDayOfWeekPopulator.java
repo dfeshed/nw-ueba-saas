@@ -6,9 +6,9 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Supporting information populator class for heatmap-based aggregations
+ * Supporting information populator class for aggregation based on hour and day of week
  *
  * @author gils
  * Date: 05/08/2015
@@ -26,9 +26,9 @@ import java.util.*;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationHeatMapDataPopulator extends SupportingInformationDataBasePopulator {
+public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationDataBasePopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationHeatMapDataPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator.class);
 
     private static final int HOUR_LOWER_BOUND = 0;
     private static final int HOUR_UPPER_BOUND = 23;
@@ -36,7 +36,7 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String UTC_TIMEZONE = "UTC";
 
-    public SupportingInformationHeatMapDataPopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 
@@ -87,13 +87,13 @@ public class SupportingInformationHeatMapDataPopulator extends SupportingInforma
             }
         }
 
-        HistogramKey anomalyHistogramKey = createHistogramKey(anomalyValue);
+        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
 
         return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
     }
 
     @Override
-    HistogramKey createHistogramKey(String anomalyValue) {
+    HistogramKey createAnomalyHistogramKey(String anomalyValue) {
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
         // first convert to date, than ciel the hour to get the right histogram entry
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

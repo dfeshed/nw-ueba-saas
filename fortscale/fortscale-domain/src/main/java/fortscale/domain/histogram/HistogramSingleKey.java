@@ -1,8 +1,10 @@
 package fortscale.domain.histogram;
 
 /**
+ * Histogram single key representation
+ *
  * @author gils
- *         Date: 05/08/2015
+ * Date: 05/08/2015
  */
 public class HistogramSingleKey implements HistogramKey {
 

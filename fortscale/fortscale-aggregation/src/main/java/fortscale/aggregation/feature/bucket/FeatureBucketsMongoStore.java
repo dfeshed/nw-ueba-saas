@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;

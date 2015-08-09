@@ -53,7 +53,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = createHistogramKey(histogramEntry.getKey());
+                    HistogramKey histogramKey = createAnomalyHistogramKey(histogramEntry.getKey());
 
                     Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null ? histogramKeyObjectMap.get(histogramKey) : 0);
 
@@ -65,13 +65,13 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
             }
         }
 
-        HistogramKey anomalyHistogramKey = createHistogramKey(anomalyValue);
+        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
 
         return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
     }
 
     @Override
-    HistogramKey createHistogramKey(String anomalyValue) {
+    HistogramKey createAnomalyHistogramKey(String anomalyValue) {
         return new HistogramSingleKey(anomalyValue);
     }
 }
