@@ -8,10 +8,9 @@ import java.util.List;
  * Date: 6/22/2015.
  */
 public enum AlertStatus {
-	Unread("UNREAD"),
-	Read("READ"),
+	Open ("OPEN"),
+	Approved ("APPROVED"),
 	Rejected("REJECTED"),
-	Accepted("ACCEPTED"),
 	Closed("CLOSED");
 
 	private String upperCaseValue;
