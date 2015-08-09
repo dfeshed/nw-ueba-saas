@@ -1,6 +1,5 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import java.io.FileReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,15 +9,19 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fortscale.utils.logging.Logger;
 
-public class FeatureBucketStrategiesFactory implements InitializingBean{
+public class FeatureBucketStrategiesFactory implements InitializingBean, ApplicationContextAware{
 	private static final Logger logger = Logger.getLogger(FeatureBucketStrategiesFactory.class);
 	
 	
@@ -28,9 +31,9 @@ public class FeatureBucketStrategiesFactory implements InitializingBean{
 	
 	
 	@Value("${fortscale.aggregation.feature.bucket.strategy.conf.json.file.name}")
-	private String confJsonFileName;
+	private String confJsonPath;
 	
-	
+	private ApplicationContext applicationContext;
 	
 	
 
@@ -42,7 +45,7 @@ public class FeatureBucketStrategiesFactory implements InitializingBean{
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		setConfJsonFromFile(confJsonFileName);
+		setConfJsonFromFile(confJsonPath);
 	}
 	
 	public void registerFeatureBucketStrategyFactory(String strategyType, FeatureBucketStrategyFactory featureBucketStrategyFactory){
@@ -72,12 +75,13 @@ public class FeatureBucketStrategiesFactory implements InitializingBean{
 		createAllStrategies();
 	}
 	
-	protected void setConfJsonFromFile(String fileName) throws IllegalArgumentException {
+	protected void setConfJsonFromFile(String confJsonPath) throws IllegalArgumentException {
 		try {
-			JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(fileName));
+			Resource confJsonResource = applicationContext.getResource(confJsonPath);
+			JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(confJsonResource.getInputStream());
 			initAslConfJson(jsonObj);
 		} catch (Exception e) {
-			String errorMsg = String.format("Failed to read json conf file %s", fileName);
+			String errorMsg = String.format("Failed to read json conf file %s", confJsonPath);
 			logger.error(errorMsg, e);
 			throw new IllegalArgumentException(errorMsg, e);
 		}
@@ -125,6 +129,9 @@ public class FeatureBucketStrategiesFactory implements InitializingBean{
 	
 	
 
-
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 	
 }

@@ -5,6 +5,8 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,8 @@ import fortscale.domain.core.dao.rest.Alerts;
 public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
 
     /**
      * returns all alerts in the collection in a json object represented by @Alerts
@@ -72,10 +76,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 
     @Override
-    public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter) {
+    public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter, String dateRangeFilter) {
 
        //build the query
-        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, severityArrayFilter, statusArrayFilter, pageRequest);
+        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, severityArrayFilter, statusArrayFilter, dateRangeFilter, pageRequest);
         List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
         Alerts alerts = new Alerts();
         alerts.setAlerts(alertsList);
@@ -84,10 +88,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 
     @Override
-    public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter) {
+    public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter, String dateRangeFilter) {
 
         //build the query
-        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, severityArrayFilter, statusArrayFilter, pageRequest);
+        Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, severityArrayFilter, statusArrayFilter, dateRangeFilter, pageRequest);
         return mongoTemplate.count(query, Alert.class);
     }
 
@@ -102,7 +106,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param pageable
      * @return
      */
-    private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName, String severityArrayFilter, String statusArrayFilter, Pageable pageable) {
+    private Query buildQuery(PageRequest pageRequest,
+                             String severityFieldName,
+                             String statusFieldName,
+                             String startDateFieldName,
+                             String severityArrayFilter,
+                             String statusArrayFilter,
+                             String dateRangeFilter,
+                             Pageable pageable) {
+        List<Alert> result;
         Criteria severityCriteria = new Criteria();
         Criteria statusCriteria = new Criteria();
         Query query = new Query().with( pageRequest.getSort());
@@ -139,7 +151,22 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
             }
         }
 
-//        Query query = new Query(severityCriteria).with( pageRequest.getSort());
+        //build dateRange filter
+        if (dateRangeFilter != null) {
+            String[] dateRangeFilterVals = dateRangeFilter.split(",");
+            if (dateRangeFilterVals.length == 2) {
+                try {
+                    Long startDate = Long.parseLong(dateRangeFilterVals[0]);
+                    Long endDate = Long.parseLong(dateRangeFilterVals[1]);
+                    Criteria startDateCriteria = where(startDateFieldName).gte(startDate);
+                    Criteria endDateCriteria = where(startDateFieldName).lte(endDate);
+                    query.addCriteria(new Criteria().andOperator(startDateCriteria, endDateCriteria));
+                } catch (NumberFormatException ex){
+
+                    logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
+                }
+            }
+        }
         int pageSize = pageRequest.getPageSize();
         int pageNum = pageRequest.getPageNumber();
         query.limit(pageSize);

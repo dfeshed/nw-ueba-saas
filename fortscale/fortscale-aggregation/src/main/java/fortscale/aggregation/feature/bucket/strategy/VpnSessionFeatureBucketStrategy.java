@@ -86,13 +86,12 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				}
 				// Case 3: Strategy exists and the incoming event status is closed
 				else if (status.equalsIgnoreCase(closedValueName)) {
-					featureBucketStrategyData.setEndTime(epochtime);
+					//since the end time is part of the session we add one second.
+					featureBucketStrategyData.setEndTime(epochtime+1);
 					RemoveClosedUserSessions(username, sourceIP);
 					isFeatureBucketStrategyDataUpdated = true;
 				}
 				// Case 4: Nothing to do if exists, still active and event is not a closed event
-
-				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
 
 
 				if(isFeatureBucketStrategyDataCreated) {
@@ -100,6 +99,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				}
 
 				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
+					featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
 					return featureBucketStrategyData;
 				} else {
 					return null;

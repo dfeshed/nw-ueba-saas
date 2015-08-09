@@ -2,6 +2,7 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -12,18 +13,18 @@ import java.util.Map;
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
  */
-public class BasicAlertSubscriber implements AlertSubscriber {
+public class AlertCreationSubscriber extends AbstractSubscriber {
 
     /**
      * Logger
      */
-    private static Logger logger = LoggerFactory.getLogger(BasicAlertSubscriber.class);
+    private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
 
+    /**
+     * Alerts service (for Mongo export)
+     */
+    @Autowired
     protected AlertsService alertsService;
-
-    @Override public void init(AlertsService alertsService) {
-        this.alertsService = alertsService;
-    }
 
     /**
      * Listener method called when Esper has detected a pattern match.
@@ -48,7 +49,7 @@ public class BasicAlertSubscriber implements AlertSubscriber {
                     Double score = (Double) insertStreamOutput.get("score");
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Unread, "");
+                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
 
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);

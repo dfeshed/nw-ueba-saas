@@ -47,7 +47,7 @@
     },
 
     {
-      "name": "user_ssh_daily",
+      "name": "normalized_username_ssh_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -85,7 +85,7 @@
     },
 
     {
-      "name": "user_vpn_events_daily",
+      "name": "normalized_username_vpn_events_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -108,19 +108,19 @@
       ]
     },
     {
-      "name": "source_machine_kerberos_logins_daily",
+      "name": "normalized_username_vpn_daily",
       "contextFieldNames": [
-        "source_machine"
+        "normalized_username"
       ],
       "dataSources": [
-        "kerberos_logins"
+        "vpn"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "normalized_username_histogram",
+          "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }

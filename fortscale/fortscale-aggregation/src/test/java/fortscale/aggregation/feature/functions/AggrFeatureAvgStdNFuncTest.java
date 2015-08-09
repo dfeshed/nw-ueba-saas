@@ -62,7 +62,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -100,7 +100,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -121,7 +121,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("feature1", new Feature("feature1", 0.5));
 
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, null);
 
@@ -151,7 +151,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
 
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(null, featureMap, aggrFeature);
 
@@ -174,7 +174,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", "wrong value type");
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
     }
@@ -197,7 +197,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", null);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -229,7 +229,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, null, aggrFeature);
 
@@ -274,7 +274,7 @@ public class AggrFeatureAvgStdNFuncTest {
         listOfFeatureMaps.add(bucket2FeatureMap);
         listOfFeatureMaps.add(bucket3FeatureMap);
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 
         Assert.assertNotNull(actual);
@@ -318,7 +318,7 @@ public class AggrFeatureAvgStdNFuncTest {
         listOfFeatureMaps.add(bucket1FeatureMap);
         listOfFeatureMaps.add(bucket2FeatureMap);
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 
         Assert.assertNotNull(actual);
@@ -349,7 +349,7 @@ public class AggrFeatureAvgStdNFuncTest {
         listOfFeatureMaps.add(bucket1FeatureMap);
         listOfFeatureMaps.add(bucket2FeatureMap);
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
     }
 
@@ -371,7 +371,7 @@ public class AggrFeatureAvgStdNFuncTest {
         listOfFeatureMaps.add(bucket1FeatureMap);
         listOfFeatureMaps.add(bucket2FeatureMap);
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
     }
 
@@ -387,7 +387,7 @@ public class AggrFeatureAvgStdNFuncTest {
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucketFeatureMap);
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         Assert.assertNull(function.calculateAggrFeature(null, listOfFeatureMaps));
     }
 
@@ -395,7 +395,7 @@ public class AggrFeatureAvgStdNFuncTest {
     public void testCalculateAggrFeatureWithNullAggregatedFeaturesMapList() {
         String aggregatedFeatureEventName = "testWithNullAggregatedFeaturesMapList";
 
-        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
         Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 3), null));
     }
 }

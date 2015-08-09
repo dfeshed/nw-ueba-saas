@@ -60,7 +60,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		assertEqualData(expected, actual);
 
 		actual = strategy.update(closeEvent);
-		expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + 1);
+		expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + 2);
 		assertEqualData(expected, actual);
 	}
 
@@ -131,15 +131,10 @@ public class VpnSessionFeatureBucketStrategyTest {
 	public void get_contextId_form_strategyId() throws Exception {
 		String username = "user1";
 		String sourceIp1 = "1.1.1.1";
-		String sourceIp2 = "2.2.2.2";
 		long epochtime = 1435737600;
 		JSONObject success_event1 = createDataSourceEvent(username, sourceIp1, epochtime, "SUCCESS");
-		JSONObject success_event2 = createDataSourceEvent(username, sourceIp2, epochtime, "SUCCESS");
-		JSONObject close_event1 = createDataSourceEvent(username, sourceIp1, epochtime + (MAX_SESSION_DURATION / 2), "CLOSED");
-		JSONObject close_event2 = createDataSourceEvent(username, sourceIp2, epochtime + (MAX_SESSION_DURATION / 2), "CLOSED");
 
 		String strategyContextId1 = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp1);
-		String strategyContextId2 = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp2);
 		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
