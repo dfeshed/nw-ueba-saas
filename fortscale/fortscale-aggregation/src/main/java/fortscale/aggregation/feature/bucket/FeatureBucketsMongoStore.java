@@ -47,7 +47,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	}
 
 	@Override
-	public List<FeatureBucket> getFeatureBuckets(FeatureBucketConf featureBucketConf, String entityType, String entityName, String feature, Long startTime, Long endTime) {
+	public List<FeatureBucket> getFeatureBuckets(FeatureBucketConf featureBucketConf, String entityType, String entityName, Long startTime, Long endTime) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {

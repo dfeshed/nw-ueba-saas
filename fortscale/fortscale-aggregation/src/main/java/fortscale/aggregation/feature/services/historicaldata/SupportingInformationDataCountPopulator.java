@@ -27,6 +27,8 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
 
+    private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
+
     public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
@@ -38,10 +40,12 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
         Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
-            Feature feature = featureBucket.getAggregatedFeatures().get(featureName);
+            String normalizedFeatureName = getNormalizedFeatureName(featureName);
+
+            Feature feature = featureBucket.getAggregatedFeatures().get(normalizedFeatureName);
 
             if (feature == null) {
-                logger.warn("Could not find feature with name {} in bucket with ID {}", featureName, featureBucket.getBucketId());
+                logger.warn("Could not find feature with name {} in bucket with ID {}", normalizedFeatureName, featureBucket.getBucketId());
                 continue;
             }
 
@@ -61,13 +65,18 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
                 }
             } else {
                 // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", featureName, featureBucket.getBucketId());
+                logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
 
         HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
 
         return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
+    }
+
+    @Override
+    String getNormalizedFeatureName(String featureName) {
+        return String.format("%s_%s", featureName, FEATURE_HISTOGRAM_SUFFIX);
     }
 
     @Override

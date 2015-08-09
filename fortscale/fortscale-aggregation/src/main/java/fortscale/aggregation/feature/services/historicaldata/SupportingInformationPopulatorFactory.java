@@ -14,6 +14,8 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     private static final String COUNT_AGGREGATION_FUNC = "Count";
     private static final String HOURLY_COUNT_BY_GROUP_BY_DAY_OF_WEEK_AGGREGATION_FUNC = "hourlyCountGroupByDayOfWeek";
+
+    // TODO use a static map in the bean
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationDataCountPopulator";
     private static final String SUPPORTING_INFORMATION_HEAT_MAP_DATA_POPULATOR_BEAN = "supportingInformationHeatMapDataPopulator";
 

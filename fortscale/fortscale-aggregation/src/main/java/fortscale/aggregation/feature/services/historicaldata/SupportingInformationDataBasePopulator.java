@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class SupportingInformationDataBasePopulator implements SupportingInformationDataPopulator{
 
-    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "_daily";
+    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataBasePopulator.class);
 
@@ -40,7 +40,7 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
     }
 
     protected List<FeatureBucket> fetchRelevantFeatureBuckets(String contextValue, long evidenceEndTime, int timePeriodInDays) {
-        String bucketConfigName = findBucketConfigurationName(contextType, dataEntity);
+        String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
@@ -53,16 +53,18 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
 
         Long supportingInformationStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, featureName, supportingInformationStartTime, evidenceEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, supportingInformationStartTime, evidenceEndTime);
 
         logger.info("Found {} relevant featureName buckets", featureBuckets.size());
 
         return featureBuckets;
     }
 
-    protected String findBucketConfigurationName(String contextType, String dataEntity) {
-        return contextType + "_" + dataEntity + BUCKET_CONF_DAILY_STRATEGY_SUFFIX;
+    protected String getBucketConfigurationName(String contextType, String dataEntity) {
+        return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
+
+    abstract String getNormalizedFeatureName(String featureName);
 
     abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
 }

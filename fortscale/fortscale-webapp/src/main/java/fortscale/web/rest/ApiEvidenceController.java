@@ -6,7 +6,6 @@ import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramEntry;
-//import fortscale.domain.histogram.HistogramEntryFactory;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
@@ -154,7 +153,6 @@ public class ApiEvidenceController extends DataQueryController {
 
 	/**
 	 * A URL for checking the controller
-	 * @return
 	 */
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
