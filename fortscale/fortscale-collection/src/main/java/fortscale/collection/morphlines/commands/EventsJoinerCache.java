@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
-import static fortscale.utils.TimestampUtils.convertToSeconds;
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 /**
  * Cache for stored record that are used during processing of

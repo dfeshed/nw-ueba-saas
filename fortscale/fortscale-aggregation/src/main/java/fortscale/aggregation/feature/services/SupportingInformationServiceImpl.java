@@ -1,10 +1,5 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationDataPopulator;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -26,7 +21,6 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
     @Autowired
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
-
 
     @Override
     public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,

@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,8 +60,20 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
 		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
-		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		Assert.assertEquals(6L, (long) aggrFeatureValue.getValue());
+		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
+		AggrFeatureValue expectedAggrFeatureValue = createExpected(6L, histogram1, histogram2);
+		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
+		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformationMap(), actualAggrFeatureValue.getAdditionalInformationMap());
+	}
+	
+	private AggrFeatureValue createExpected(Long numberOfDistinctValues, GenericHistogram ...genericHistograms){
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues);
+		GenericHistogram sumGenericHistogram = new GenericHistogram();
+		for(GenericHistogram hist: genericHistograms){
+			sumGenericHistogram.add(hist);
+		}
+		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		return ret;
 	}
 
 	@Test

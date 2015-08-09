@@ -2,7 +2,7 @@ package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;

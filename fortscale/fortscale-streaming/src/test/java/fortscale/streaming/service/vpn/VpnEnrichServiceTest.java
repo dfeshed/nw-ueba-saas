@@ -128,7 +128,7 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
         event.put("status", "CLOSED");
 
         //run test:
-        event = vpnEnrichService.processVpnEvent(event);
+        event = vpnEnrichService.processVpnEvent(event, null);
 
         //Validations
         verify(geoIPServiceMock).getGeoIPInfo(IP);

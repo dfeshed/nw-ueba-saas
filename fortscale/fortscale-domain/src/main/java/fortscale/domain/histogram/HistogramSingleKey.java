@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * a histogram key with one key. usage example: histogram
  * @author gils
- *         Date: 05/08/2015
+ * Date: 05/08/2015
  */
 public class HistogramSingleKey implements HistogramKey {
 

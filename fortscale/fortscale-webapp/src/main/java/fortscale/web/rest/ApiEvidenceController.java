@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
@@ -12,9 +11,10 @@ import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST API for Evidences querying
@@ -45,6 +49,9 @@ public class ApiEvidenceController extends DataQueryController {
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
 
+	@Value("${fortscale.evidence.name.text}")
+	private String evidenceNameText;
+
 	@Value("${evidence.supporting.information.time.period.in.days:90}")
 	private int defaultTimePeriodInDays;
 
@@ -53,6 +60,25 @@ public class ApiEvidenceController extends DataQueryController {
 
 	@Autowired
 	DataQueryHelper dataQueryHelper;
+
+	@Value("${fortscale.evidence.type.map}")
+	private String evidenceTypeProperty;
+
+	private Map evidenceTypeMap;
+
+	@PostConstruct
+	public void initEvidenceMap(){
+		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
+	}
+
+	private void updateEvidenceFields(Evidence evidence) {
+		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
+			String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+			evidence.setAnomalyType(anomalyType);
+			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+			evidence.setName(evidenceName);
+		}
+	}
 
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
@@ -63,7 +89,9 @@ public class ApiEvidenceController extends DataQueryController {
 	@LogException
 	public DataBean<Evidence> getEvidence(@PathVariable String id) {
 		DataBean<Evidence> ret = new DataBean<>();
-		ret.setData(evidencesDao.findById(id));
+		Evidence evidence = evidencesDao.findById(id);
+		updateEvidenceFields(evidence);
+		ret.setData(evidence);
 		return ret;
 	}
 
@@ -278,4 +306,5 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 		return histogramEntries;
 	}
+
 }

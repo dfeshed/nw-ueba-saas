@@ -129,7 +129,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
 
 
         //run test:
-        event = vpnEnrichService.processSessionUpdate(event);
+        event = vpnEnrichService.processSessionUpdate(event, null);
 
         //Validations
 //        verify(geoIPServiceMock).getGeoIPInfo(IP);

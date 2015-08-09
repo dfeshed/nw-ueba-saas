@@ -17,7 +17,6 @@ public interface SupportingInformationService {
      * @param contextValue the context value (e.g. mike@cnn.com)
      * @param dataEntities the data entity (ssh, kerberos, etc.)
      * @param featureName the related feature name
-     * @param anomalyType evidence end time in milliseconds
      * @param anomalyValue evidence end time in milliseconds
      * @param evidenceEndTime evidence end time in milliseconds
      * @param timePeriodInDays evidence end time in milliseconds

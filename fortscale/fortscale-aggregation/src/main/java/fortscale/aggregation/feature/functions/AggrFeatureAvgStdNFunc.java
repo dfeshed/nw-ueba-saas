@@ -13,7 +13,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 @JsonTypeName(AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureEventFunction {
+public class AggrFeatureAvgStdNFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_av_std_n_func";
     final static String COUNT_BY_FIELD_NAME = "countBy";
 
@@ -57,7 +57,7 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
     }
 
     /**
-     * Create new feature by running the associated {@link AggrFeatureEventFunction} that is configured in the given
+     * Create new feature by running the associated {@link IAggrFeatureEventFunction} that is configured in the given
      * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
      *
      * @param aggrFeatureEventConf               the specification of the feature to be created

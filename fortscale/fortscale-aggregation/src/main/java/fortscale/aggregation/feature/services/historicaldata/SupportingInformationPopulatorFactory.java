@@ -14,19 +14,21 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     private static final String COUNT_AGGREGATION_FUNC = "Count";
     private static final String HOURLY_COUNT_BY_GROUP_BY_DAY_OF_WEEK_AGGREGATION_FUNC = "hourlyCountGroupByDayOfWeek";
+    private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationDataCountPopulator";
+    private static final String SUPPORTING_INFORMATION_HEAT_MAP_DATA_POPULATOR_BEAN = "supportingInformationHeatMapDataPopulator";
 
     private ApplicationContext applicationContext;
 
     public SupportingInformationDataPopulator createSupportingInformationPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (COUNT_AGGREGATION_FUNC.equalsIgnoreCase(aggregationFunction.toLowerCase())) {
-            SupportingInformationDataCountPopulator supportingInformationDataCountPopulator = (SupportingInformationDataCountPopulator) applicationContext.getBean("supportingInformationDataCountPopulator", contextType, dataEntity, featureName);
+            SupportingInformationDataCountPopulator supportingInformationDataCountPopulator = (SupportingInformationDataCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
             return supportingInformationDataCountPopulator;
         }
         else if (HOURLY_COUNT_BY_GROUP_BY_DAY_OF_WEEK_AGGREGATION_FUNC.equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationHeatMapDataPopulator supportingInformationHeatMapDataPopulator = (SupportingInformationHeatMapDataPopulator) applicationContext.getBean("supportingInformationHeatMapDataPopulator", contextType, dataEntity, featureName);
+            SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_HEAT_MAP_DATA_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
-            return supportingInformationHeatMapDataPopulator;
+            return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");

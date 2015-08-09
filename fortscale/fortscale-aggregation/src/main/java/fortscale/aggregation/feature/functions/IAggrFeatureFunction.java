@@ -18,7 +18,7 @@ import java.util.Map;
 		@JsonSubTypes.Type(value = AggrFeatureMaxIntegerFunc.class, name = AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 
-public interface AggrFeatureFunction {
+public interface IAggrFeatureFunction {
 
     /**
      * Updates the value within aggrFeature by applying the implemented function on aggrFeature value.

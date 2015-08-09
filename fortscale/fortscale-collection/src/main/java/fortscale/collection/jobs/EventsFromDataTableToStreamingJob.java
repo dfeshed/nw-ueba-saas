@@ -1,17 +1,18 @@
 package fortscale.collection.jobs;
 
-import static fortscale.utils.impala.ImpalaCriteria.equalsTo;
-import static fortscale.utils.impala.ImpalaCriteria.gte;
-import static fortscale.utils.impala.ImpalaCriteria.lt;
-import static fortscale.utils.impala.ImpalaCriteria.lte;
-
-import java.io.File;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import fortscale.services.impl.RegexMatcher;
+import fortscale.utils.ConfigurationUtils;
+import fortscale.utils.ConversionUtils;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeConstants;
@@ -27,19 +28,14 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import fortscale.services.impl.RegexMatcher;
-import fortscale.utils.ConfigurationUtils;
-import fortscale.utils.ConversionUtils;
-import fortscale.utils.TimestampUtils;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.impala.ImpalaPageRequest;
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
+import java.io.File;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.utils.impala.ImpalaCriteria.*;
 
 
 @DisallowConcurrentExecution

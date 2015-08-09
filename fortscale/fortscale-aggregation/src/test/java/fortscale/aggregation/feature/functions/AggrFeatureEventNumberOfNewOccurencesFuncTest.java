@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		histogram2.add("first", 1.0);
 		histogram2.add("second", 2.0);
 		String newOccurenceValue = "newOccurence";
-		histogram2.add(newOccurenceValue, 3.0);
+		histogram2.add(newOccurenceValue, 4.0);
 		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
 		bucket2FeatureMap.put("feature1", new Feature("feature1", histogram2));
 		bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
@@ -60,13 +61,31 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
 		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
-		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		Assert.assertEquals(1, aggrFeatureValue.getValue());
-		Assert.assertTrue(aggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES) instanceof Set);
-		@SuppressWarnings("unchecked")
-		Set<Feature> newOccurencesSet = (Set<Feature>)(aggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES));
-		Assert.assertEquals(1, newOccurencesSet.size());
-		Assert.assertTrue(newOccurencesSet.contains(newOccurenceValue));
+		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
+		AggrFeatureValue expectedAggrFeatureValue = createExpected(1, newOccurenceValue, histogram2);
+		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
+		Assert.assertTrue(actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES) instanceof Set);
+		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).size(), 
+				((Set<?>)actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).size());
+		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).toArray()[0], 
+				((Set<?>)actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).toArray()[0]);
+		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES), 
+				actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES));
+		Assert.assertEquals(expectedAggrFeatureValue,actualAggrFeatureValue);
+	}
+	
+	private AggrFeatureValue createExpected(int numberOfNewOccurences, String newOccurenceValue, GenericHistogram ...genericHistograms){
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfNewOccurences);
+		GenericHistogram sumGenericHistogram = new GenericHistogram();
+		for(GenericHistogram hist: genericHistograms){
+			sumGenericHistogram.add(hist);
+		}
+		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		
+		Set<String> newOccurencesSet = new HashSet<>();
+		newOccurencesSet.add(newOccurenceValue);
+		ret.putAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES, newOccurencesSet);
+		return ret;
 	}
 
 	@Test

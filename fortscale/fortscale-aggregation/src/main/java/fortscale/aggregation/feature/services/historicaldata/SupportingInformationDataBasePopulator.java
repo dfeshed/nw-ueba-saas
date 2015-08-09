@@ -64,5 +64,5 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
         return contextType + "_" + dataEntity + BUCKET_CONF_DAILY_STRATEGY_SUFFIX;
     }
 
-    abstract HistogramKey createHistogramKey(String anomalyValue);
+    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
 }

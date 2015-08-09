@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

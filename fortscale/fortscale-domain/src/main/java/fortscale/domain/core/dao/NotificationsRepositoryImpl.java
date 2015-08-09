@@ -3,7 +3,7 @@ package fortscale.domain.core.dao;
 import com.google.common.base.Optional;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

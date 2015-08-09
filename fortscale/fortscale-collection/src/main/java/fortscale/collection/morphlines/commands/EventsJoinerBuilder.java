@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
-import static fortscale.utils.TimestampUtils.convertToSeconds;
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 
 /**

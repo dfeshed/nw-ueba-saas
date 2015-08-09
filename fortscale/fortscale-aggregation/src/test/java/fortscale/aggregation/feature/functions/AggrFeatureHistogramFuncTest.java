@@ -64,7 +64,7 @@ public class AggrFeatureHistogramFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -73,49 +73,42 @@ public class AggrFeatureHistogramFuncTest {
 
         GenericHistogram histValue = (GenericHistogram)value;
 
-        Assert.assertEquals((Double)10.0, (Double)histValue.get(2) );
-        Assert.assertEquals((Double)20.0, (Double)histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, (Double)histValue.get("2") );
+        Assert.assertEquals((Double)60.0, histValue.get(2) );
+        Assert.assertEquals((Double)60.0, histValue.get(2L) );
+        Assert.assertEquals((Double)60.0, histValue.get("2") );
 
-        Double avg = 20d;
-        Double one = Math.pow((10-avg),2);
-        Double two = Math.pow((20-avg),2);
-        Double three = Math.pow((30-avg),2);
-        Double sum = one+two+three;
-        Double std = Math.sqrt((sum)/3);
-        Assert.assertEquals((Double) std, (Double) histValue.getPopulationStandardDeviation());
+        Assert.assertEquals((Double) 0.0, (Double) histValue.getPopulationStandardDeviation());
 
     }
 
     @Test
     public void testUpdateWithDifferentFeatureValueTypes() {
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
-        //histogram.add(2, 1.0); // will be added from features
-        histogram.add(2, 3.5);
+        histogram.add("A", 0.5);
+        histogram.add("A", 2.0);
+        histogram.add("A", 3.0);
+        histogram.add("A", 3.5);
 
         histogram.add(2L, 0.5);
         //histogram.add(2L, 1.0); // will be added from features
         histogram.add(2L, 2.0);
         histogram.add(2L, 3.0);
-        histogram.add(2L, 3.5);
-        histogram.add(2L, 10.0);
+        histogram.add(2, 3.5);
+        histogram.add("2", 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add(2.0, 30.0);
 
         Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", 2));
+        featureMap1.put("feature1", new Feature("feature1", "A"));
 
         Map<String, Feature> featureMap2 = new HashMap<>();
         featureMap2.put("feature1", new Feature("feature1", 2L));
-        featureMap2.put("not relevant", new Feature("not relevant", 2));
+        featureMap2.put("not relevant", new Feature("not relevant", 2.0));
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap2, aggrFeature);
@@ -125,9 +118,9 @@ public class AggrFeatureHistogramFuncTest {
 
         GenericHistogram histValue = (GenericHistogram)value;
 
-        Assert.assertEquals((Double)10.0, (Double)histValue.get(2) );
-        Assert.assertEquals((Double)20.0, (Double)histValue.get(2L) );
-        Assert.assertEquals((Double)30.0, (Double)histValue.get("2") );
+        Assert.assertEquals((Double)10.0, histValue.get("A") );
+        Assert.assertEquals((Double)20.0, histValue.get(2L) );
+        Assert.assertEquals((Double)30.0, histValue.get(2.0) );
 
         Double avg = 20d;
         Double one = Math.pow((10-avg),2);
@@ -135,7 +128,7 @@ public class AggrFeatureHistogramFuncTest {
         Double three = Math.pow((30-avg),2);
         Double sum = one+two+three;
         Double std = Math.sqrt((sum)/3);
-        Assert.assertEquals((Double) std, (Double) histValue.getPopulationStandardDeviation());
+        Assert.assertEquals( std, (Double) histValue.getPopulationStandardDeviation());
     }
 
     @Test
@@ -158,44 +151,44 @@ public class AggrFeatureHistogramFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", null);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
         GenericHistogram histValue = (GenericHistogram)value;
 
-        Assert.assertEquals((Double)4.0, (Double)histValue.get(s1) );
-        Assert.assertEquals((Double)5.0, (Double)histValue.get(s2) );
-        Assert.assertEquals((Double)3.0, (Double)histValue.get(s3) );
+        Assert.assertEquals((Double)4.0, histValue.get(s1) );
+        Assert.assertEquals((Double)5.0, histValue.get(s2) );
+        Assert.assertEquals((Double)3.0, histValue.get(s3) );
 
         Double avg = 4.0;
-        Assert.assertEquals((Double)avg, (Double)histValue.getAvg());
+        Assert.assertEquals(avg, (Double)histValue.getAvg());
 
         Double one = Math.pow((4.0-avg),2);
         Double two = Math.pow((5.0-avg),2);
         Double three = Math.pow((3.0-avg),2);
         Double sum = one+two+three;
         Double std = Math.sqrt((sum)/3);
-        Assert.assertEquals((Double) std, (Double) histValue.getPopulationStandardDeviation());
+        Assert.assertEquals( std, (Double) histValue.getPopulationStandardDeviation());
     }
 
     @Test
     public void testUpdateWithNullAggrFeatureConf() {
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
-        histogram.add(2, 1.0);
-        histogram.add(2, 3.5);
+        histogram.add(22, 0.5);
+        histogram.add(22, 2.0);
+        histogram.add(22, 3.0);
+        histogram.add("22", 1.0);
+        histogram.add(22L, 3.5);
 
-        histogram.add(2L, 0.5);
+        histogram.add(2, 0.5);
         histogram.add(2L, 1.0);
-        histogram.add(2L, 2.0);
+        histogram.add("2", 2.0);
         histogram.add(2L, 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add(2.0, 30.0);
 
         Map<String, Feature> featureMap1 = new HashMap<>();
         featureMap1.put("feature1", new Feature("feature1", 2));
@@ -204,7 +197,7 @@ public class AggrFeatureHistogramFuncTest {
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = null;
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
 
@@ -213,9 +206,9 @@ public class AggrFeatureHistogramFuncTest {
         // Validating that the histogram value was not changed
         GenericHistogram aggrValue = (GenericHistogram)aggrFeature.getValue();
         Assert.assertEquals(histogram, aggrValue);
-        Assert.assertEquals((Double)10.0, (Double)aggrValue.get(2) );
-        Assert.assertEquals((Double)20.0, (Double)aggrValue.get(2L) );
-        Assert.assertEquals((Double)30.0, (Double)aggrValue.get("2") );
+        Assert.assertEquals((Double)10.0, aggrValue.get(22) );
+        Assert.assertEquals((Double)20.0, aggrValue.get(2) );
+        Assert.assertEquals((Double)30.0, aggrValue.get(2.0) );
 
         Double avg = 20d;
         Double one = Math.pow((10-avg),2);
@@ -223,7 +216,7 @@ public class AggrFeatureHistogramFuncTest {
         Double three = Math.pow((30-avg),2);
         Double sum = one+two+three;
         Double std = Math.sqrt((sum)/3);
-        Assert.assertEquals((Double) std, (Double) aggrValue.getPopulationStandardDeviation());
+        Assert.assertEquals( std, (Double) aggrValue.getPopulationStandardDeviation());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -233,7 +226,7 @@ public class AggrFeatureHistogramFuncTest {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         String str = "I'm a string, not histogram";
         Feature aggrFeature = new Feature("MyAggrFeature", str);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
         func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
     }
 
@@ -242,7 +235,7 @@ public class AggrFeatureHistogramFuncTest {
         Map<String, Feature> featureMap1 = new HashMap<>();
         featureMap1.put("feature1", new Feature("feature1", 2));
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, null);
 
@@ -252,25 +245,25 @@ public class AggrFeatureHistogramFuncTest {
     @Test
     public void testUpdateWithNullFeatures() {
         GenericHistogram histogram = new GenericHistogram();
-        histogram.add(2, 0.5);
-        histogram.add(2, 2.0);
-        histogram.add(2, 3.0);
-        histogram.add(2, 1.0);
-        histogram.add(2, 3.5);
+        histogram.add("A", 0.5);
+        histogram.add("A", 2.0);
+        histogram.add("A", 3.0);
+        histogram.add("A", 1.0);
+        histogram.add("A", 3.5);
 
-        histogram.add(2L, 0.5);
-        histogram.add(2L, 1.0);
+        histogram.add(2, 0.5);
+        histogram.add(2, 1.0);
         histogram.add(2L, 2.0);
         histogram.add(2L, 3.0);
         histogram.add(2L, 3.5);
         histogram.add(2L, 10.0);
 
-        histogram.add("2", 30.0);
+        histogram.add(2.0, 30.0);
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, null, aggrFeature);
 
@@ -278,9 +271,9 @@ public class AggrFeatureHistogramFuncTest {
         // Validating that the histogram value was not changed
         GenericHistogram aggrValue = (GenericHistogram)value;
         Assert.assertEquals(histogram, aggrValue);
-        Assert.assertEquals((Double)10.0, aggrValue.get(2) );
+        Assert.assertEquals((Double)10.0, aggrValue.get("A") );
         Assert.assertEquals((Double)20.0, aggrValue.get(2L) );
-        Assert.assertEquals((Double)30.0, aggrValue.get("2") );
+        Assert.assertEquals((Double)30.0, aggrValue.get(2.0) );
 
         Double avg = 20d;
         Double one = Math.pow((10-avg),2);
@@ -321,7 +314,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map2);
         listOfMaps.add(map3);
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
 
         Assert.assertNotNull(actual);
@@ -329,17 +322,17 @@ public class AggrFeatureHistogramFuncTest {
         Assert.assertEquals(GenericHistogram.class, actual.getValue().getClass());
 
         GenericHistogram actualValue = (GenericHistogram)actual.getValue();
-        Assert.assertEquals(6, actualValue.getN());
-        Assert.assertEquals(30.33333, actualValue.getAvg(), DELTA);
-        Assert.assertEquals(38.68161, actualValue.getStandardDeviation(), DELTA);
-        Assert.assertEquals(35.31131, actualValue.getPopulationStandardDeviation(), DELTA);
-        Assert.assertEquals(100.0, actualValue.getMaxCount(), 0);
+        Assert.assertEquals(4, actualValue.getN());
+        Assert.assertEquals(45.5, actualValue.getAvg(), DELTA);
+        Assert.assertEquals(83.10836, actualValue.getStandardDeviation(), DELTA);
+        Assert.assertEquals(71.97395, actualValue.getPopulationStandardDeviation(), DELTA);
+        Assert.assertEquals(170.0, actualValue.getMaxCount(), 0);
         Assert.assertEquals("7", actualValue.getMaxCountObject());
-        Assert.assertEquals(100.0 / 182.0, actualValue.getMaxCountFromTotalCount(), DELTA);
+        Assert.assertEquals(170.0 / 182.0, actualValue.getMaxCountFromTotalCount(), DELTA);
 
-        Assert.assertEquals(50.0, actualValue.get(7), 0);
-        Assert.assertEquals(20.0, actualValue.get(7L), 0);
-        Assert.assertEquals(100.0, actualValue.get("7"), 0);
+        Assert.assertEquals(170.0, actualValue.get(7), 0);
+        Assert.assertEquals(170.0, actualValue.get(7L), 0);
+        Assert.assertEquals(170.0, actualValue.get("7"), 0);
         Assert.assertEquals(10.0, actualValue.get(11), 0);
         Assert.assertEquals(1.0, actualValue.get(13), 0);
         Assert.assertEquals(1.0, actualValue.get(17), 0);
@@ -376,7 +369,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map1);
         listOfMaps.add(map2);
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
 
         Assert.assertNotNull(actual);
@@ -417,7 +410,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map1);
         listOfMaps.add(map2);
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
     }
 
@@ -439,7 +432,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map1);
         listOfMaps.add(map2);
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
     }
 
@@ -455,7 +448,7 @@ public class AggrFeatureHistogramFuncTest {
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map);
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         Assert.assertNull(function.calculateAggrFeature(null, listOfMaps));
     }
 
@@ -463,7 +456,7 @@ public class AggrFeatureHistogramFuncTest {
     public void testCalculateAggrFeatureWithNullAggregatedFeaturesMapList() {
         String confName = "testCalculateAggrFeatureWithNullAggregatedFeaturesMapList";
 
-        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
         Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 3), null));
     }
 
@@ -472,7 +465,7 @@ public class AggrFeatureHistogramFuncTest {
         GenericHistogram histogram = new GenericHistogram();
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
         Map<String, Feature> features = new HashMap<>();
 
         features.put("feature1", new Feature("feature1", ""));
@@ -480,12 +473,12 @@ public class AggrFeatureHistogramFuncTest {
 
         // Validating that the histogram value was not changed
         GenericHistogram aggrValue = (GenericHistogram)value;
-        Assert.assertEquals((Double)1.0, (Double)aggrValue.get("N/A"));
+        Assert.assertEquals((Double)1.0, aggrValue.get("N/A"));
 
 
         features.put("feature1", new Feature("feature1", null));
         value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
-        Assert.assertEquals((Double)2.0, (Double)aggrValue.get("N/A"));
+        Assert.assertEquals((Double) 2.0,  aggrValue.get("N/A"));
 
     }
 }
