@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.utils.ConversionUtils;
 
 /**
  * Created by orend on 26/07/2015.
@@ -16,7 +17,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 @JsonTypeName(AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureMaxIntegerFunc implements AggrFeatureFunction, AggrFeatureEventFunction {
+public class AggrFeatureMaxIntegerFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
 	public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_max_value_func";
 	private static final String UPDATE_AGGR_COMPARED_VALUE_FIELD_NAME = "comparedValue";
 	private static final String UPDATE_AGGR_VALUE_FIELD_NAME = "value";
@@ -37,14 +38,14 @@ public class AggrFeatureMaxIntegerFunc implements AggrFeatureFunction, AggrFeatu
 		Feature featureForComparison = features.get(featureNames.get(0));
 		Integer comparedValue = (Integer)featureForComparison.getValue();
 		if (aggrFeatureMaxValue == null || comparedValue > aggrFeatureMaxValue.getComparedValue()) {
-			aggrFeatureMaxValue = createAggrFeatureMaxValue(aggregatedFeatureConf, features, comparedValue);
+			aggrFeatureMaxValue = createAggrFeatureMaxValue(aggrFeatureMaxValue, aggregatedFeatureConf, features, comparedValue);
 			aggrFeature.setValue(aggrFeatureMaxValue);
 		}
 
 		return aggrFeatureMaxValue;
 	}
 	
-	private AggrFeatureMaxValue createAggrFeatureMaxValue(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Integer comparedValue){
+	private AggrFeatureMaxValue createAggrFeatureMaxValue(AggrFeatureMaxValue prevAggrFeatureMaxValue, AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Integer comparedValue){
 		List<String> featureNames = aggregatedFeatureConf.getFeatureNamesMap().get(UPDATE_AGGR_VALUE_FIELD_NAME);
 		Feature keyFeature = features.get(featureNames.get(0));
 		AggrFeatureMaxValue ret = new AggrFeatureMaxValue(keyFeature.getValue(), comparedValue);
@@ -52,8 +53,26 @@ public class AggrFeatureMaxIntegerFunc implements AggrFeatureFunction, AggrFeatu
 		for (String featureName : featureNames) {
 			ret.putAdditionalInformation(featureName, features.get(featureName));
 		}
+		if(prevAggrFeatureMaxValue != null){
+			Integer total = incrementTotalNumberOfEvents(prevAggrFeatureMaxValue, 1);
+			setTotalNumberOfEvents(ret, total);
+		}
 		
 		return ret;
+	}
+	
+	private int incrementTotalNumberOfEvents(AggrFeatureMaxValue aggrFeatureMaxValue, int inc){
+		int ret = inc;
+		Integer total = ConversionUtils.convertToInteger(aggrFeatureMaxValue.getAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS));
+		if(total != null){
+			ret = total + inc;
+		}
+
+		return ret;
+	}
+	
+	private void setTotalNumberOfEvents(AggrFeatureMaxValue aggrFeatureMaxValue, Integer total){
+		aggrFeatureMaxValue.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, total);
 	}
 
 	@Override
@@ -64,14 +83,22 @@ public class AggrFeatureMaxIntegerFunc implements AggrFeatureFunction, AggrFeatu
 
 		String aggregatedFeatureName = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(CALC_AGGR_MAX_VALUE_FEATURE_FIELD_NAME).get(0);
 		AggrFeatureMaxValue retAggrFeatureMaxValue = null;
+		Integer total = 0;
 		for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
 			Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
 			if (aggrFeature != null) {
 				AggrFeatureMaxValue tmp = (AggrFeatureMaxValue) aggrFeature.getValue();
-				if(retAggrFeatureMaxValue == null || retAggrFeatureMaxValue.getComparedValue() < tmp.getComparedValue()) {
-					retAggrFeatureMaxValue = tmp;
+				if(tmp!=null){
+					if(retAggrFeatureMaxValue == null || retAggrFeatureMaxValue.getComparedValue() < tmp.getComparedValue()) {
+						retAggrFeatureMaxValue = tmp;
+					}
+					total = incrementTotalNumberOfEvents(tmp, total);
 				}
 			}
+		}
+		
+		if(total > 0){
+			setTotalNumberOfEvents(retAggrFeatureMaxValue, total);
 		}
 		
 		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), retAggrFeatureMaxValue);
