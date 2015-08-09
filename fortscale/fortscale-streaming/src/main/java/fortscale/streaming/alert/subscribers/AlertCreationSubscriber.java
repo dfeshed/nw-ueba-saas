@@ -47,7 +47,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
                     if (insertStreamOutput.containsKey("tags")) {
                         String[] tagList = (String[]) insertStreamOutput.get("tags");
-                        //TODO - do something with the tag list?
+                        //TODO - create new tag evidence, add supporting information
                     }
                     String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
                     Double score = (Double) insertStreamOutput.get("score");
