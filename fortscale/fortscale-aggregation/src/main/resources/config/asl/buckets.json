@@ -42,6 +42,13 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
@@ -121,6 +128,80 @@
           "name": "country_histogram",
           "featureNamesMap": {
             "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "source_machine_kerberos_logins_daily",
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    }, {
+      "name": "destination_machine_kerberos_logins_daily",
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "source_machine_ssh_daily",
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    }, {
+      "name": "destination_machine_ssh_daily",
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
