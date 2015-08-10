@@ -17,7 +17,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     // TODO use a static map in the bean
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationDataCountPopulator";
-    private static final String SUPPORTING_INFORMATION_HEAT_MAP_DATA_POPULATOR_BEAN = "supportingInformationHeatMapDataPopulator";
+    private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationDataHourlyCountGroupByDayOfWeekPopulator";
 
     private ApplicationContext applicationContext;
 
@@ -28,7 +28,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
             return supportingInformationDataCountPopulator;
         }
         else if (HOURLY_COUNT_BY_GROUP_BY_DAY_OF_WEEK_AGGREGATION_FUNC.equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_HEAT_MAP_DATA_POPULATOR_BEAN, contextType, dataEntity, featureName);
+            SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
             return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
         }
