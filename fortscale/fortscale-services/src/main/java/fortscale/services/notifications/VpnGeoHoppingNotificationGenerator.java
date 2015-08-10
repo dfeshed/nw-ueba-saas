@@ -82,6 +82,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 			if (session.getClosedAtEpoch()!= null && session.getClosedAtEpoch() > endTime) {
 				endTime = session.getClosedAtEpoch();
 			}
+			else if (session.getCreatedAtEpoch()!= null && session.getCreatedAtEpoch() > endTime) {
+				endTime = session.getCreatedAtEpoch();
+			}
+
 		}
 
 		// If we found timeframe, add it to list
