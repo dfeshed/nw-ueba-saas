@@ -1,4 +1,4 @@
-package com.rsa.asoc.sa.ui.investigation.config;
+package com.rsa.asoc.sa.ui.threat.config;
 
 import com.rsa.asoc.sa.ui.common.BuildInformation;
 import com.rsa.asoc.sa.ui.common.config.SecurityConfig;

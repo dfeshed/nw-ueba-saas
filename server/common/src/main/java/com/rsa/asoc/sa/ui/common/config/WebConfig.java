@@ -1,11 +1,10 @@
-package com.rsa.asoc.sa.ui.investigation.config;
+package com.rsa.asoc.sa.ui.common.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * Customize Spring MVCs static resource mappings to include the resources packaged from the client jar.
+ * Base configuration and customization for Spring MVC.
  *
  * @author athielke
  */
