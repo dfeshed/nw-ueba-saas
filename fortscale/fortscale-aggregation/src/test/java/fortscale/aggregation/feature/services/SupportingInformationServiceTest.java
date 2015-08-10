@@ -48,7 +48,7 @@ public class SupportingInformationServiceTest {
 //        Long evidenceTime = 1438084610l; // Tue, 28 Jul 2015 11:56:48 GMT
 //        int timePeriodInDays = 90;
 //
-//        //when(featureBucketsStore.getFeatureBuckets(any(FeatureBucketConf.class), anyString(), anyString(), anyString(), anyLong(), anyLong())).thenReturn(new ArrayList<FeatureBucket>());
+//        //when(featureBucketsStore.getFeatureBucketsByContextAndTimeRange(any(FeatureBucketConf.class), anyString(), anyString(), anyString(), anyLong(), anyLong())).thenReturn(new ArrayList<FeatureBucket>());
 //
 //        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, dataEntity, featureName, anomalyType, anomalyValue, TimestampUtils.convertToMilliSeconds(evidenceTime), timePeriodInDays, aggregationFunc);
 //

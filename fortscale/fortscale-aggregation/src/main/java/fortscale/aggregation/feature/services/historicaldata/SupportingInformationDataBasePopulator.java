@@ -53,7 +53,7 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
 
         Long supportingInformationStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBuckets(bucketConfig, contextType, contextValue, supportingInformationStartTime, evidenceEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, contextType, contextValue, supportingInformationStartTime, evidenceEndTime, true);
 
         logger.info("Found {} relevant featureName buckets", featureBuckets.size());
 
