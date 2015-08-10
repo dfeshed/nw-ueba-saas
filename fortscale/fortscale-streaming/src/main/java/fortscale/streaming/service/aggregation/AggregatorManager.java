@@ -3,8 +3,6 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -27,8 +25,9 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
-import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
+import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -52,7 +51,7 @@ public class AggregatorManager {
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
-	private AggrKafkaEventTopologyService aggrEventTopologyService;
+	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
@@ -69,6 +68,7 @@ public class AggregatorManager {
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
+		aggrEventTopologyService.setAggregatorManager(this);
 
 		processEvent(event);
 	}
