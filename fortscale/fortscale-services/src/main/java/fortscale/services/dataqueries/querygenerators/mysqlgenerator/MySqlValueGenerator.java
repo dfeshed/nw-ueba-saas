@@ -1,7 +1,7 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.QueryValueType;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 

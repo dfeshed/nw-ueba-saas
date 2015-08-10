@@ -11,21 +11,21 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "src_machine_histogram",
+          "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "dst_machine_histogram",
+          "name": "destination_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "dst_machine_with_high_score_histogram",
+          "name": "destination_machine_with_high_score_histogram",
           "featureNamesMap": {
             "groupBy": ["destination_machine"]
           },
@@ -64,14 +64,14 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "src_machine_histogram",
+          "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "dst_machine_histogram",
+          "name": "destination_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["destination_machine"]
           },

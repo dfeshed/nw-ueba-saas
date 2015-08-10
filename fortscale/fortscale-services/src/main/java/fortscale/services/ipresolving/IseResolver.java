@@ -1,7 +1,9 @@
 package fortscale.services.ipresolving;
 
-import java.util.List;
-
+import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.dao.IseEventRepository;
+import fortscale.services.cache.CacheHandler;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +14,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
+import java.util.List;
+
 /**
  * Created by tomerd on 12/05/2015.
  */
-
-import fortscale.domain.events.IseEvent;
-import fortscale.domain.events.dao.IseEventRepository;
-import fortscale.services.cache.CacheHandler;
-import fortscale.utils.TimestampUtils;
 
 public class IseResolver extends GeneralIpResolver<IseEvent> {
 

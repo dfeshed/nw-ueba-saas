@@ -10,7 +10,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -27,7 +27,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -44,7 +44,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_with_high_score_histogram"
+            "destination_machine_with_high_score_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -61,7 +61,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -78,7 +78,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -192,7 +192,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -209,7 +209,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -226,7 +226,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -243,7 +243,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {

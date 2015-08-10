@@ -1,17 +1,16 @@
 package fortscale.services.ipresolving;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.regex.Pattern;
-
+import fortscale.domain.events.IpToHostname;
+import fortscale.services.ComputerService;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.domain.events.IpToHostname;
-import fortscale.services.ComputerService;
-import fortscale.utils.TimestampUtils;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.regex.Pattern;
 
 /**
  * IP resolving service that aggregate results from all available providers to determine the

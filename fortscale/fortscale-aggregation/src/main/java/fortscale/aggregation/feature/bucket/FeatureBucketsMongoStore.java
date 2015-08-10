@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
@@ -47,13 +47,22 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	}
 
 	@Override
-	public List<FeatureBucket> getFeatureBuckets(FeatureBucketConf featureBucketConf, String entityType, String entityName, String feature, Long startTime, Long endTime) {
+	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long startTime, Long endTime, boolean includePartialOverlappingEndBucket) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-			Criteria contextCriteria = createContextCriteria(entityType, entityName);
+
+			Criteria bucketEndTimeCriteria;
+
+			if (includePartialOverlappingEndBucket) {
+				bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(startTime));
+			}
+			else {
+				bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+			}
+
+			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 
 			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
 
@@ -64,9 +73,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 		}
 	}
 
-	private Criteria createContextCriteria(String entityType, String entityName) {
-		Map<String, String> contextMap = new HashMap<>();
-		contextMap.put(entityType, entityName);
+	private Criteria createContextCriteria(String contextType, String contextName) {
+		Map<String, String> contextMap = new HashMap<>(1);
+		contextMap.put(contextType, contextName);
 		return Criteria.where(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD).in(contextMap); // TODO check for multiple context
 	}
 

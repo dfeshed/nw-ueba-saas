@@ -1,16 +1,15 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import net.minidev.json.JSONObject;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.utils.ConversionUtils;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public abstract class FeatureBucketStrategyService {

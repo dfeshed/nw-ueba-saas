@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.ComputerUsageType;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 
 /**
  * Created by idanp on 7/7/2014.

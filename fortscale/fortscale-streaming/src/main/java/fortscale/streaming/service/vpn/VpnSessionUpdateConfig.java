@@ -1,6 +1,6 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 
 /**
  * Created by rans on 03/02/15.

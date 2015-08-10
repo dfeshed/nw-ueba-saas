@@ -68,7 +68,7 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
 										  @RequestParam(required=false, value = "status") String status,
-										  @RequestParam(required=false, value = "date_range") String dateRange) {
+										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -96,14 +96,14 @@ public class ApiAlertController extends BaseController {
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
-		if (severity == null && status == null && dateRange == null){
+		if (severity == null && status == null && alertStartRange == null){
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, dateRange);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, dateRange);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
