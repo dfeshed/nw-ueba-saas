@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -125,8 +126,8 @@ public class FeatureBucket {
 	@Override
 	public String toString() {
 		return "FeatureBucket{" +
-				"startTime=" + TimeUtils.getFormattedTime(startTime * 1000) +
-				", endTime=" + TimeUtils.getFormattedTime(endTime * 1000) +
+				"startTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)) +
+				", endTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)) +
 				", id='" + id + '\'' +
 				'}';
 	}
