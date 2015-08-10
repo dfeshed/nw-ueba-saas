@@ -4,7 +4,9 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
-import fortscale.domain.histogram.HistogramPair;
+import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.histogram.HistogramEntry;
+import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
@@ -20,10 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * REST API for Evidences querying
@@ -166,39 +165,134 @@ public class ApiEvidenceController extends DataQueryController {
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/{evidenceId}/histogram?entity_type=normalized_username&entity_name=user11f@somebigcompany.com&data_entity_id=kerberos_logins&feature=dst_machine&end_time=1437483600
+	 * ../../api/evidences/{evidenceId}/historical-data?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
 	 *
 	 * @param evidenceId the evidence evidenceId
-	 * @param entityType the entity type (user, machine etc.)
-	 * @param entityName the entity name (e.g. mike@cnn.com)
-	 * @param dataEntityId the data source (ssh, kerberos, etc.), or combination of some
+	 * @param contextType the entity type (user, machine etc.)
+	 * @param contextValue the entity name (e.g. mike@cnn.com)
 	 * @param feature the related feature
-	 * @param endTime the evidence end time in seconds
+	 * @param timePeriodInDays the evidence end time in seconds
 	 *
 	 * @return list of histogramPair
 	 *
 	 */
-	@RequestMapping(value="/{id}/histogram",method = RequestMethod.GET)
+	@RequestMapping(value="/{id}/historical-data",method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
-															   @RequestParam(value = "entity_type") String entityType,
-															   @RequestParam(value = "entity_name") String entityName,
-															   @RequestParam(value = "data_entity_id") String dataEntityId,
-															   @RequestParam(value = "feature") String feature,
-															   @RequestParam(value = "end_time") Long endTime){
+	public DataBean<List<HistogramEntry>> getEvidenceHistogram( @PathVariable(value = "id") String evidenceId,
+			@RequestParam(value = "context_type") String contextType,
+			@RequestParam(value = "context_value") String contextValue,
+			@RequestParam(value = "feature") String feature,
+			@RequestParam(value = "function") String aggFunction,
+			@RequestParam(required=false,value = "num_columns") Integer numColumns,
+			@RequestParam(required=false,value = "sort_direction") String sortDirection,
+			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays){
+		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
-		DataBean<List<HistogramPair>> histogramBean = new DataBean<>();
+		//get the evidence from mongo according to ID
+		Evidence evidence = evidencesDao.findById(evidenceId);
+		if (evidence == null || evidence.getId() == null){
+			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
+		}
 
-		String anomalyType = "Time";
-		String anomalyValue = "SRV_100";
-		String aggregationFunc = "Count";
-		//String aggregationFunc = "hourlyCountGroupByDayOfWeek";
-		int timePeriodInDays = 90;
+		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
+		String anomalyValue = evidence.getAnomalyValue();
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
+				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(entityType, entityName, dataEntityId, feature, anomalyType, TimestampUtils.convertToMilliSeconds(endTime), timePeriodInDays, aggregationFunc);
+		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
+		//add the anomaly to the relevant fields
+		HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
+
+		if(numColumns == null){
+			numColumns = listOfHistogramEntries.size();
+		}
+
+		if(aggFunction.equalsIgnoreCase("count")) {
+			Collections.sort(listOfHistogramEntries); // the default sort is ascending
+
+			// re -arrange list according to num columns
+			if(listOfHistogramEntries.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
+				//do nothing, no need to create 'others'
+			}
+			else {
+				//create new list divided into others, columns and anomaly
+				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
+			}
+			if (sortDirection != null && sortDirection.equals("DESC")) {
+				Collections.reverse(listOfHistogramEntries);
+			}
+		}
+
+		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	/**
+	 * gets list of histogramPairs, and return a new list divided into 'others' column and the rest of columns.
+	 * @param oldList sorted list of HistogramEntry, in ascending order
+	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
+	 * @return list divided into 'others' column and the rest of columns.
+	 */
+	private  List<HistogramEntry> createListWithOthers(List<HistogramEntry> oldList, int numColumns){
+
+		HistogramEntry anomalyPair = new HistogramEntry();
+		for(HistogramEntry pair: oldList){
+			if(pair.isAnomaly()){
+				anomalyPair = oldList.remove(oldList.indexOf(pair));
+				break;
+			}
+		}
+
+		//get the last numColumns object, and sum their values into one. name this object 'other'
+		double othersValue = 0;
+		int i;
+		assert(oldList.size() >= numColumns);
+		for (i=0 ; i < oldList.size()- numColumns; i++) {
+			HistogramEntry pair=  oldList.get(i);
+			othersValue += pair.getValue();
+		}
+
+		//create new list with others, and the remaining columns.
+		List<HistogramEntry> newListWithOthers = new ArrayList<>();
+		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey("Others").generateKey(), othersValue));
+
+		for(;i < oldList.size();i++){
+			newListWithOthers.add(oldList.get(i));
+		}
+		//insert the anomalyPair into the new list
+		newListWithOthers.add(anomalyPair);
+
+		return newListWithOthers;
+	}
+
+	/**
+	 * method that helps to serialize aggregated information into our API standarts.
+	 * gets a map of histogramKey,value and return a list of HistogramPairs.
+	 * this function also marks the anomaly pair - essential for further data manipulation.
+	 *
+	 * @param supportingInformationHistogram
+	 * @param anomaly
+	 * @return list of HistogramPairs, with (0 or more) anomaly mark
+	 */
+	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
+
+		List<HistogramEntry> histogramEntries = new ArrayList<>();
+
+		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
+			HistogramKey key = supportingInformationHistogramEntry.getKey();
+			Double value = supportingInformationHistogramEntry.getValue();
+
+			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
+
+			if (key.equals(anomaly)){
+				histogramEntry.setIsAnomaly(true);
+			}
+			histogramEntries.add(histogramEntry);
+		}
+		return histogramEntries;
 	}
 
 }

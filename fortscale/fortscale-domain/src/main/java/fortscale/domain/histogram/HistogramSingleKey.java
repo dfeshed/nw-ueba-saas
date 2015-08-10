@@ -1,8 +1,10 @@
 package fortscale.domain.histogram;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Histogram single key representation
- *
+ * a histogram key with one key. usage example: histogram
  * @author gils
  * Date: 05/08/2015
  */
@@ -18,9 +20,18 @@ public class HistogramSingleKey implements HistogramKey {
         return key;
     }
 
-    public String serialize(HistogramKeyVisitor histogramKeyVisitor) {
-        return histogramKeyVisitor.visit(this);
+    /**
+     * generates key representation to json serialization - in this case a list of one key.
+     * @return
+     */
+    @Override
+    public List<String> generateKey(){
+
+        List<String> genKey = new ArrayList<>();
+        genKey.add(key);
+        return genKey;
     }
+
 
     @Override
     public boolean equals(Object o) {
