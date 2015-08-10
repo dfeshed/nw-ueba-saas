@@ -76,10 +76,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 		// Find the minimum start time and maximum end time
 		for(VpnSession session : vpnSessions) {
-			if (session.getCreatedAtEpoch() < startTime) {
+			if (session.getCreatedAtEpoch() != null && session.getCreatedAtEpoch() < startTime) {
 				startTime = session.getCreatedAtEpoch();
 			}
-			if (session.getClosedAtEpoch() > endTime) {
+			if (session.getClosedAtEpoch()!= null && session.getClosedAtEpoch() > endTime) {
 				endTime = session.getClosedAtEpoch();
 			}
 		}
@@ -89,7 +89,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 			sessionsTimeframe.add(startTime);
 			sessionsTimeframe.add(endTime);
 		}
-		
+
 		return sessionsTimeframe;
 	}
 
