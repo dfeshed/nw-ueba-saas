@@ -36,6 +36,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String score;
 
 	public JSONObject createNotifications(List<VpnSession> vpnSessions){
+		if (vpnSessions.size() < 2) {
+			return null;
+		}
+
 		List<Long> sessionsTimeframe = getSessionsTimeframe(vpnSessions);
 
 		if (sessionsTimeframe == null || sessionsTimeframe.size() != 2){
