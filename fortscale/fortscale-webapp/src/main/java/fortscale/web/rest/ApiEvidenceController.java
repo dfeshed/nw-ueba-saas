@@ -4,8 +4,8 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
-import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramEntry;
+import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
@@ -213,14 +213,12 @@ public class ApiEvidenceController extends DataQueryController {
 		if(aggFunction.equalsIgnoreCase("count")) {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
-			// re -arrange list according to num columns
-			if(listOfHistogramEntries.size() < numColumns + 2 ){ // num columns + 1 others +1 anomaly
-				//do nothing, no need to create 'others'
-			}
-			else {
+			// re -arrange list according to num columns, if necessary
+			if(listOfHistogramEntries.size() >= numColumns + 2 ){ // num columns + 1 others +1 anomaly.
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
+
 			if (sortDirection != null && sortDirection.equals("DESC")) {
 				Collections.reverse(listOfHistogramEntries);
 			}
@@ -231,7 +229,7 @@ public class ApiEvidenceController extends DataQueryController {
 	}
 
 	/**
-	 * gets list of histogramPairs, and return a new list divided into 'others' column and the rest of columns.
+	 * gets list of histogramEntries, and return a new list divided into 'others' column and the rest of columns.
 	 * @param oldList sorted list of HistogramEntry, in ascending order
 	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
 	 * @return list divided into 'others' column and the rest of columns.
