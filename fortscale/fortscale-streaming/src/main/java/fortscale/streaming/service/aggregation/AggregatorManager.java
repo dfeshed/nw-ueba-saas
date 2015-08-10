@@ -70,6 +70,10 @@ public class AggregatorManager {
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
 
+		processEvent(event);
+	}
+	
+	public void processEvent(JSONObject event) throws Exception {
 		dataSourcesSyncTimer.process(event);
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDataList = featureBucketStrategyService.updateStrategies(event);
 		List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(event);

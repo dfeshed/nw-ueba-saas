@@ -8,6 +8,8 @@ public class AggrFeatureEventBuilderTestHelper {
     private String bucketConfNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
     
     
     
@@ -18,6 +20,8 @@ public class AggrFeatureEventBuilderTestHelper {
 	public String getAggrFeatureNameFieldName() {
 		return aggrFeatureNameFieldName;
 	}
-    
+	public String getAggrFeatureNameFieldValue() {
+		return aggrFeatureValueFieldName;
+	}
     
 }

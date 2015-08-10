@@ -26,6 +26,8 @@ public class AggrFeatureEventWrapper {
     private String bucketConfNameFieldName;
 	@Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
+	@Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
 
 	private JSONObject aggrFeatureEvent;
 	private Map<String, String> context;
@@ -61,7 +63,7 @@ public class AggrFeatureEventWrapper {
 	}
 
 	public Double getAggregatedFeatureValue() {
-		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE));
+		return ConversionUtils.convertToDouble(aggrFeatureEvent.get(aggrFeatureValueFieldName));
 	}
 
 	public Double getScore() {

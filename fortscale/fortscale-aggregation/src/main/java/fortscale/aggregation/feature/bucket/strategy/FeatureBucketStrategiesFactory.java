@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +16,9 @@ import org.springframework.util.Assert;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 public class FeatureBucketStrategiesFactory implements InitializingBean, ApplicationContextAware{
 	private static final Logger logger = Logger.getLogger(FeatureBucketStrategiesFactory.class);

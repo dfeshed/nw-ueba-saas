@@ -34,7 +34,12 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	String featuresConfJsonFileName;
 	
 	@Value("${impala.table.fields.data.source}")
-	private String eventTypeFieldName;
+	private String dataSourceFieldName;
+	
+	@Value("${streaming.event.field.type}")
+    private String eventTypeFieldName;
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String aggrEventType;
 	
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
@@ -100,8 +105,8 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	public Feature extract(String featureName, JSONObject eventMessage) {
 		Feature ret = null;
 
-		String eventType = eventMessage.getAsString(eventTypeFieldName);
-		Event event = new Event(eventMessage, dataEntitiesConfig, eventType);
+		String eventType = eventMessage.getAsString(dataSourceFieldName);
+		RawEvent event = new RawEvent(eventMessage, dataEntitiesConfig, eventType);
 
 		try{
 			ret = extract(featureName, event);
@@ -110,6 +115,16 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 		}
 		
 		return ret;
+	}
+	
+	public Event createEvent(JSONObject eventMessage){
+		String eventType = (String) eventMessage.get(eventTypeFieldName);
+		if(aggrEventType.equals(eventType)){
+			return new AggrEvent(eventMessage);
+		} else{
+			String dataSource = eventMessage.getAsString(dataSourceFieldName);
+			return new RawEvent(eventMessage, dataEntitiesConfig, dataSource);
+		}
 	}
 	
 	private Feature extract(String featureName, Event event) throws Exception {
@@ -132,9 +147,9 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 			return null;
 		}
 		
-		String eventType = message.getAsString(eventTypeFieldName);
+		String eventType = message.getAsString(dataSourceFieldName);
 		Map<String, Feature> features = new HashMap<>();
-		Event event = new Event(message, dataEntitiesConfig, eventType);
+		RawEvent event = new RawEvent(message, dataEntitiesConfig, eventType);
 		for (String featureName : featureNames) {
 			Feature feature;
 			try {

@@ -63,26 +63,22 @@ public class BucketConfigurationService implements InitializingBean, Application
         for (Object obj : BucketConfsJson) {
             JSONObject jsonObj = (JSONObject)obj;
             String bucketConfJson = jsonObj.toJSONString();
+            FeatureBucketConf bucketConf = null;
             try {
-
-                FeatureBucketConf bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);
-                bucketConfs.put(bucketConf.getName(), bucketConf);
-
-                List<String> dataSources = bucketConf.getDataSources();
-                for (String s : dataSources) {
-                    List<FeatureBucketConf> listOfBucketConfs = dataSourceToListOfBucketConfs.get(s);
-                    if (listOfBucketConfs == null) {
-                        listOfBucketConfs = new ArrayList<>();
-                        dataSourceToListOfBucketConfs.put(s, listOfBucketConfs);
-                    }
-                    listOfBucketConfs.add(bucketConf);
-                }
+                bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);
             } catch (Exception e) {
                 String errorMsg = String.format("Failed to deserialize json %s", bucketConfJson);
                 logger.error(errorMsg, e);
                 throw new IllegalArgumentException(errorMsg, e);
             }
 
+            try{
+            	addNewBucketConf(bucketConf);
+            } catch (Exception e) {
+                String errorMsg = String.format("Failed to add new bucket conf. json: %s", bucketConfJson);
+                logger.error(errorMsg, e);
+                throw new IllegalArgumentException(errorMsg, e);
+            }
         }
 
     }
@@ -107,6 +103,35 @@ public class BucketConfigurationService implements InitializingBean, Application
     public FeatureBucketConf getBucketConf(String bucketConfName) {
         return bucketConfs.get(bucketConfName);
     }
+    
+    public boolean isBucketConfExist(String bucketConfName){
+    	return bucketConfs.containsKey(bucketConfName);
+    }
+    
+    public void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException{
+    	FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
+    	if(existingBucketConf != null){
+    		throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
+    	}
+    	bucketConfs.put(bucketConf.getName(), bucketConf);
+
+        List<String> dataSources = bucketConf.getDataSources();
+        for (String s : dataSources) {
+            List<FeatureBucketConf> listOfBucketConfs = dataSourceToListOfBucketConfs.get(s);
+            if (listOfBucketConfs == null) {
+                listOfBucketConfs = new ArrayList<>();
+                dataSourceToListOfBucketConfs.put(s, listOfBucketConfs);
+            }
+            listOfBucketConfs.add(bucketConf);
+        }
+    }
+    
+    public void addNewAggregatedFeatureConfToBucketConf(String bucketConfName, AggregatedFeatureConf aggregatedFeatureConf){
+    	FeatureBucketConf featureBucketConf = getBucketConf(bucketConfName);
+    	featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
+    }
+    
+    
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
