@@ -42,6 +42,8 @@ public class Evidence extends AbstractDocument{
 
 	public static final String entityNameField = "entityName";
 
+	public static final String entityTypeFieldNameField = "entityTypeFieldName";
+
 	// Time frame information
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";

@@ -2,13 +2,13 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
+import fortscale.services.impl.EvidencesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -25,6 +25,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     @Autowired
     protected AlertsService alertsService;
+
+    /**
+     * Evidence service (for Mongo export)
+     */
+    @Autowired
+    protected EvidencesService evidencesService;
 
     /**
      * Listener method called when Esper has detected a pattern match.
@@ -45,14 +51,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Long startDate = (Long) insertStreamOutput.get("startDate");
                     Long endDate = (Long) insertStreamOutput.get("endDate");
                     EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
-                    if (insertStreamOutput.containsKey("tags")) {
-                        String[] tagList = (String[]) insertStreamOutput.get("tags");
-                        //TODO - create new tag evidence, add supporting information
-                    }
                     String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
                     Double score = (Double) insertStreamOutput.get("score");
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+                    //if this is a statement containing tags
+                    if (insertStreamOutput.containsKey("tags")) {
+                        createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
+                    }
                     Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
 
                     //Save alert to mongoDB
@@ -64,4 +70,33 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
             }
         }
     }
+
+    /**
+     * Helper method to create tag evidence.
+     * Creates a tag evidence based on the alert to create, saves it to Mongo and adds a reference to it for the alert
+     */
+    private void createTagEvidence(Map insertStreamOutput, List<Evidence> evidences, Long startDate, Long endDate,
+                                   EntityType entityType, String entityName) {
+        String[] tags = (String[])insertStreamOutput.get("tags");
+        String tag = (String)insertStreamOutput.get("tag");
+        if (Arrays.asList(tags).contains(tag)) {
+            String entityTypeFieldName = (String) insertStreamOutput.
+                    get(Evidence.entityTypeFieldNameField);
+            List<String> dataEntitiesIds = new ArrayList();
+            dataEntitiesIds.add("active_directory");
+            Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
+                    entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
+                    dataEntitiesIds, 50d, tag, "tag");
+            //TODO - set supporting information here
+            // Save evidence to MongoDB
+            try {
+                evidencesService.saveEvidenceInRepository(evidence);
+            } catch (DuplicateKeyException e) {
+                //TODO - what to do here?
+                logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
+            }
+            evidences.add(new Evidence(evidence.getId()));
+        }
+    }
+
 }
