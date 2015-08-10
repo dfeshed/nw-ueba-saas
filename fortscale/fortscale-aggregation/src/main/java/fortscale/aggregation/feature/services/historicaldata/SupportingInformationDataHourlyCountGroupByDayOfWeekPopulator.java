@@ -30,6 +30,8 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
     private static Logger logger = Logger.getLogger(SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator.class);
 
+    private static final String HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME = "hourly_histogram_of_events";
+
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String UTC_TIMEZONE = "UTC";
 
@@ -93,7 +95,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
     @Override
     String getNormalizedFeatureName(String featureName) {
-        return String.format("%s_%s", featureName, "TIME"); // TODO need to change
+        return String.format("%s_%s", featureName, HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME);
     }
 
     @Override
