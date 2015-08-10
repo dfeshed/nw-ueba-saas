@@ -31,6 +31,9 @@ public class SshSshdTest {
 	final static String Nov_19_14_58_32 = "Nov 19 14:58:32";
 	static String Nov_19_14_58_32_OUT;
 
+	final static String Nov_19_14_58_32_WAN = "Nov 19 12:58:32";
+	static String Nov_19_14_58_32_OUT_WAN;
+
 	static {
 		prepareDates();
 	}
@@ -39,6 +42,8 @@ public class SshSshdTest {
 		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 		Date date = TestUtils.constuctDate(Nov_19_14_58_32);
 		Nov_19_14_58_32_OUT = TestUtils.getOutputDate(date);
+		date = TestUtils.constuctDate(Nov_19_14_58_32_WAN);
+		Nov_19_14_58_32_OUT_WAN = TestUtils.getOutputDate(date);
 	}
 	
 	@SuppressWarnings("resource")
@@ -91,6 +96,11 @@ public class SshSshdTest {
         		"Successful Password Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
 						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
+				),
+				$ (
+						"Successful Password Authentication - with WAN enrichment",
+						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2 Flume enrichment timezone Asia/Jerusalem",
+						Nov_19_14_58_32_OUT_WAN + "," + "1416394712,192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
 				),
         		$ (
         		"Successful Public Key Authentication",

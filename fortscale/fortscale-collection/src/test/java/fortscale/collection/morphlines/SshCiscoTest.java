@@ -64,6 +64,15 @@ public class SshCiscoTest {
                         "2014-09-09 15:00:00,1410274800,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
 
 
+
+                ),
+                $(
+                        "test from contain ::1 - With WAN enrichment. Should take the timezone from the event",
+                        "2014-09-09T17:00:00+02:00 dev-gever sshd[2552]: Accepted publickey for root from ::1 port 47952 ssh2 Flume enrichment timezone Asia/Jerusalem",
+                        "2014-09-09 15:00:00,1410274800,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
+
+
+
                 ),
                 $(
                         "test from contain 127.0.0.1  ",
