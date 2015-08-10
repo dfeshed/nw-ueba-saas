@@ -1,7 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.kitesdk.morphline.api.*;

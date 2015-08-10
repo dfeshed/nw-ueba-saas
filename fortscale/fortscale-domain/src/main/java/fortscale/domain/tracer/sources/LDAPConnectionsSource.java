@@ -1,31 +1,24 @@
 package fortscale.domain.tracer.sources;
 
-import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
-import static fortscale.utils.TimestampUtils.convertToSeconds;
-import static fortscale.utils.impala.ImpalaCriteria.equalsTo;
-import static fortscale.utils.impala.ImpalaCriteria.gte;
-import static fortscale.utils.impala.ImpalaCriteria.in;
-import static fortscale.utils.impala.ImpalaCriteria.lower;
-import static fortscale.utils.impala.ImpalaCriteria.lte;
-import static fortscale.utils.impala.ImpalaCriteria.neq;
-import static fortscale.utils.impala.ImpalaCriteria.notIn;
-import static fortscale.utils.impala.ImpalaCriteriaString.statement;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
-
 import fortscale.domain.fe.dao.impl.LoginDAOImpl;
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
 import fortscale.utils.impala.ImpalaQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+
+import static fortscale.utils.impala.ImpalaCriteria.*;
+import static fortscale.utils.impala.ImpalaCriteriaString.statement;
+import static fortscale.utils.time.TimestampUtils.convertToMilliSeconds;
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 @Component
 public class LDAPConnectionsSource extends ConnectionsSource {

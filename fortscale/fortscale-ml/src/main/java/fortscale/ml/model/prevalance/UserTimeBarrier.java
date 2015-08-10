@@ -1,21 +1,18 @@
 package fortscale.ml.model.prevalance;
 
-import static fortscale.utils.ConversionUtils.convertToString;
-import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
-
-import java.util.List;
-
-import net.minidev.json.JSONObject;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
+import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import fortscale.utils.TimestampUtils;
+import java.util.List;
+
+import static fortscale.utils.ConversionUtils.convertToString;
+import static fortscale.utils.time.TimestampUtils.convertToMilliSeconds;
 
 /**
  * Task state the hold a runtime barrier and event discriminator encountered for each user

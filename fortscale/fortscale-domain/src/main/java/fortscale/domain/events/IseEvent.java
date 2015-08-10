@@ -1,7 +1,7 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

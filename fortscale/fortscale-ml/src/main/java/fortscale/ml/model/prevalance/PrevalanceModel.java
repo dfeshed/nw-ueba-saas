@@ -1,19 +1,17 @@
 package fortscale.ml.model.prevalance;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.ml.feature.extractor.IFeatureExtractionService;
+import net.minidev.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
-import fortscale.ml.feature.extractor.IFeatureExtractionService;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.time.TimestampUtils.convertToMilliSeconds;
 
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)

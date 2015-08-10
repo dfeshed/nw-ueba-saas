@@ -1,8 +1,8 @@
 package fortscale.utils.hdfs;
 
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

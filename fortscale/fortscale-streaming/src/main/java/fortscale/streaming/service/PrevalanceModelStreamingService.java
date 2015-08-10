@@ -1,22 +1,20 @@
 package fortscale.streaming.service;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import fortscale.utils.TimestampUtils;
+import com.google.common.base.Throwables;
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
+import fortscale.ml.service.impl.ModelServiceImpl;
+import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.google.common.base.Throwables;
+import java.util.HashMap;
+import java.util.Map;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
-import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
-import fortscale.ml.service.impl.ModelServiceImpl;
-import fortscale.streaming.exceptions.LevelDbException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /** 
  * Service class to maintain model lifecycle and persistence within samza tasks

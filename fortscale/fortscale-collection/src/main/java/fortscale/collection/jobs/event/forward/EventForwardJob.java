@@ -13,7 +13,7 @@ import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.event.forward.ForwardConfiguration;
 import fortscale.services.event.forward.ForwardConfigurationRepository;
 import fortscale.services.event.forward.ForwardSingleConfiguration;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
