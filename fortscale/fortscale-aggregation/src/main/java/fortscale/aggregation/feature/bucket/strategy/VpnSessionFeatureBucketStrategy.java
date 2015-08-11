@@ -76,7 +76,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
-				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
+				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() <= epochtime) {
 					RemoveClosedUserSessions(username, sourceIP);
 					if (status.equalsIgnoreCase(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
