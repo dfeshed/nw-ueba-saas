@@ -64,9 +64,34 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 
 	}
 
-	public boolean equals(HistogramEntry other){
-		return ( value.equals(other.value));
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
+		HistogramEntry that = (HistogramEntry) o;
+
+		if (anomaly != that.anomaly) return false;
+		if (keys != null ? !keys.equals(that.keys) : that.keys != null) return false;
+		return !(value != null ? !value.equals(that.value) : that.value != null);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = keys != null ? keys.hashCode() : 0;
+		result = 31 * result + (value != null ? value.hashCode() : 0);
+		result = 31 * result + (anomaly ? 1 : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "HistogramEntry{" +
+				"keys=" + keys +
+				", value=" + value +
+				", anomaly=" + anomaly +
+				'}';
 	}
 }
 

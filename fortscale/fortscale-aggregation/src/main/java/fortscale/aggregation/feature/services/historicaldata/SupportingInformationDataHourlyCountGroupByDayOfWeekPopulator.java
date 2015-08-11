@@ -33,7 +33,6 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
     private static final String HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME = "hourly_histogram_of_events";
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static final String UTC_TIMEZONE = "UTC";
 
     public SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -75,9 +74,9 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = new HistogramDualKey(dayOfWeek.toString(), hour.toString());
+                    HistogramKey histogramKey = new HistogramDualKey(TimeUtils.getDayOfWeek(dayOfWeek), hour.toString());
 
-                    Double currHistogramValue = histogramKeyObjectMap.get(histogramKey);
+                    Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null) ?  histogramKeyObjectMap.get(histogramKey) : 0;
 
                     histogramKeyObjectMap.put(histogramKey, currHistogramValue + currValue);
                 }
@@ -95,7 +94,7 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
 
     @Override
     String getNormalizedFeatureName(String featureName) {
-        return String.format("%s_%s", featureName, HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME);
+        return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
     }
 
     @Override
@@ -105,9 +104,9 @@ public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator exten
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         try {
             Date date = dateFormat.parse(anomalyValue);
-            Date roundedDate = DateUtils.ceiling(date, Calendar.HOUR);
+            Date roundedDate = DateUtils.round(date, Calendar.HOUR);
 
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
+            Calendar calendar = Calendar.getInstance();
             calendar.setTime(roundedDate);
 
             Integer dayOfWeekOrdinalVal = calendar.get(Calendar.DAY_OF_WEEK);
