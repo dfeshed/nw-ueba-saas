@@ -1,19 +1,20 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import net.minidev.json.JSONObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fortscale.aggregation.JsonObjectWrapperEvent;
+import net.minidev.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
@@ -99,18 +100,17 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject openEvent1 = createDataSourceEvent(username, sourceIp, epochtime, openStatus);
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
 		JSONObject openEvent2 = createDataSourceEvent(username, sourceIp, epochtime + 2, openStatus);
-		String strategyContextId = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp);
 
-		FeatureBucketStrategyData openStrategyData = strategy.update(openEvent1); // Creating the session
+		FeatureBucketStrategyData openStrategyData = strategy.update(new JsonObjectWrapperEvent(openEvent1)); // Creating the session
 		Assert.assertEquals(epochtime, openStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 14400, openStrategyData.getEndTime());
 
-		FeatureBucketStrategyData closedStrategyData = strategy.update(closeEvent); // Closing the session
+		FeatureBucketStrategyData closedStrategyData = strategy.update(new JsonObjectWrapperEvent(closeEvent)); // Closing the session
 		Assert.assertEquals(openStrategyData, closedStrategyData);
 		Assert.assertEquals(epochtime, closedStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 2, closedStrategyData.getEndTime());
 
-		FeatureBucketStrategyData newOpenedStrategyData = strategy.update(openEvent2); // Openning another session
+		FeatureBucketStrategyData newOpenedStrategyData = strategy.update(new JsonObjectWrapperEvent(openEvent2)); // Openning another session
 		Assert.assertEquals(epochtime + 2, newOpenedStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 14400 + 2, newOpenedStrategyData.getEndTime());
 	}

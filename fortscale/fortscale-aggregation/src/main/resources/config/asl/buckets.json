@@ -87,6 +87,13 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
@@ -118,6 +125,13 @@
           "name": "number_of_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
