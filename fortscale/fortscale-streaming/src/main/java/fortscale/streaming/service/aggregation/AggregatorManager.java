@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
@@ -21,6 +22,10 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.extraction.AggrEvent;
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.aggregation.feature.extraction.RawEvent;
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
@@ -52,6 +57,17 @@ public class AggregatorManager {
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
 	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
+	
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
+	
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
+	
+	@Value("${streaming.event.field.type}")
+    private String eventTypeFieldName;
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String aggrEventType;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
@@ -73,7 +89,8 @@ public class AggregatorManager {
 		processEvent(event);
 	}
 	
-	public void processEvent(JSONObject event) throws Exception {
+	public void processEvent(JSONObject jsonObject) throws Exception {
+		Event event = createEvent(jsonObject);
 		dataSourcesSyncTimer.process(event);
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDataList = featureBucketStrategyService.updateStrategies(event);
 		List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(event);
@@ -86,6 +103,16 @@ public class AggregatorManager {
 			if(newFeatureBuckets.size()>0) {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
+		}
+	}
+	
+	private Event createEvent(JSONObject eventMessage){
+		String eventType = (String) eventMessage.get(eventTypeFieldName);
+		if(aggrEventType.equals(eventType)){
+			return new AggrEvent(eventMessage);
+		} else{
+			String dataSource = eventMessage.getAsString(dataSourceFieldName);
+			return new RawEvent(eventMessage, dataEntitiesConfig, dataSource);
 		}
 	}
 

@@ -1,15 +1,17 @@
 package fortscale.aggregation.feature.functions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
 
 /**
  * Created by amira on 17/06/2015.
@@ -33,7 +35,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
     @Override
-    public Map<String, Feature> updateAggrFeatures(JSONObject event, 
+    public Map<String, Feature> updateAggrFeatures(Event event, 
                                                    List<AggregatedFeatureConf> aggrFeatureConfs,
                                                    Map<String, Feature> aggrFeatures,
                                                    Map<String, Feature> features) {

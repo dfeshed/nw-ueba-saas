@@ -65,7 +65,7 @@ public class DataSourcesSyncTimerTest {
 
 		// Process event with epochtime later than epochtime1
 		message.put(epochtimeFieldName, epochtime1 + 600); // add 10 minutes
-		timer.process(message);
+		timer.process(new JsonObjectWrapperEvent(message));
 
 		// listener1 shouldn't be notified yet
 		systemTime += cycleLengthInSeconds * 1000;
@@ -87,7 +87,7 @@ public class DataSourcesSyncTimerTest {
 
 		// Process event with epochtime later than epochtime3 (but earlier than updated epochtime2)
 		message.put(epochtimeFieldName, epochtime3 + 1800); // add 30 minutes
-		timer.process(message);
+		timer.process(new JsonObjectWrapperEvent(message));
 
 		// listener3 shouldn't be notified yet
 		systemTime += cycleLengthInSeconds * 1000;
@@ -105,7 +105,7 @@ public class DataSourcesSyncTimerTest {
 
 		// Process event with epochtime later than updated epochtime2
 		message.put(epochtimeFieldName, epochtime2 + 1200); // add 20 minutes
-		timer.process(message);
+		timer.process(new JsonObjectWrapperEvent(message));
 
 		// listener2 shouldn't be notified yet
 		systemTime += cycleLengthInSeconds * 1000;

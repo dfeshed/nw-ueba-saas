@@ -17,11 +17,17 @@ public class AggrEvent implements Event{
 		this.jsonObject = jsonObject;
 	}
 	
-	public Object get(String key) throws Exception{
+	@Override
+	public Object get(String key){
 		if(aggrFeatureNameFieldName.equals(key)){
 			return jsonObject.get(aggrFeatureValueFieldName);
 		} else{
 			return null;
 		}
+	}
+
+	@Override
+	public JSONObject getJSONObject() {
+		return jsonObject;
 	}
 }

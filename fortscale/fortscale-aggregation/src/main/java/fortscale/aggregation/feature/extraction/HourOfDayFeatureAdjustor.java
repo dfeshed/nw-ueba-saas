@@ -2,15 +2,14 @@ package fortscale.aggregation.feature.extraction;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
 
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import java.util.Calendar;
-import java.util.TimeZone;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 @JsonTypeName(HourOfDayFeatureAdjustor.HOUR_OF_DAY_FEATURE_ADJUSTOR)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
