@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -84,7 +85,7 @@ public class BucketConfigurationService implements InitializingBean, Application
     }
 
 
-    public List<FeatureBucketConf> getRelatedBucketConfs(JSONObject event) {
+    public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
 
         if(event==null) return null;
 

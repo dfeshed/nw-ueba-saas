@@ -32,6 +32,9 @@ import java.util.*;
 @RequestMapping("/api/evidences")
 public class ApiEvidenceController extends DataQueryController {
 
+	private static final String DESC = "DESC";
+	private static final String ASC = "ASC";
+
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
 	 * Mongo repository for fetching evidences
@@ -185,7 +188,7 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(value = "feature") String feature,
 			@RequestParam(value = "function") String aggFunction,
 			@RequestParam(required=false,value = "num_columns") Integer numColumns,
-			@RequestParam(required=false,value = "sort_direction") String sortDirection,
+			@RequestParam(required=false,defaultValue = DESC,value = "sort_direction") String sortDirection,
 			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays){
 		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
@@ -219,7 +222,7 @@ public class ApiEvidenceController extends DataQueryController {
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
 
-			if (sortDirection != null && sortDirection.equals("DESC")) {
+			if (sortDirection.equals(DESC)) {
 				Collections.reverse(listOfHistogramEntries);
 			}
 		}
