@@ -185,7 +185,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "number_of_events"
+            "country_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
