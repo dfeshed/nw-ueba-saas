@@ -13,7 +13,7 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.global"/>
+    <context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.services.historicaldata"/>
     
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="classpath:SupportingInformationServiceTest.properties"/>

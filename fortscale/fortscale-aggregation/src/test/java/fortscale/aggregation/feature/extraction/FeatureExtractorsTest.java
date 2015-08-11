@@ -1,11 +1,11 @@
 package fortscale.aggregation.feature.extraction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fortscale.aggregation.feature.Feature;
-import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.aggregation.feature.Feature;
+import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/feature-extractors-context-test.xml" })
@@ -149,7 +154,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("event_time_utc", "1437210353");
 
-		int ret = (int)featureExtractor.extract(new Event(jsonObject, null, null));
+		int ret = (int)featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
 		Assert.assertEquals(9, ret);
 	}

@@ -93,7 +93,7 @@
       {
         "name": "number_of_failed_vpn_events",
         "type": "F",
-        "bucketConfName": "normalized_username_vpn_events_daily",
+        "bucketConfName": "normalized_username_vpn_daily",
         "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
@@ -178,7 +178,7 @@
       {
         "name": "new_countries_for_user",
         "type": "F",
-        "bucketConfName": "normalized_username_vpn_events_daily",
+        "bucketConfName": "normalized_username_vpn_daily",
         "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
