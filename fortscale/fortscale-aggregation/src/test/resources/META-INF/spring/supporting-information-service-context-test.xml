@@ -6,14 +6,14 @@
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-aggr-context-test.xml" />
 
+	<bean id="featureBucketsStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="supportingInformationService" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationServiceImpl"/>
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.global"/>
+    <context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.services.historicaldata"/>
     
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="classpath:SupportingInformationServiceTest.properties"/>

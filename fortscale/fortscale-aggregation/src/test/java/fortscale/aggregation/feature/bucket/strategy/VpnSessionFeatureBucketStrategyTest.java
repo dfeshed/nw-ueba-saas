@@ -60,7 +60,9 @@ public class VpnSessionFeatureBucketStrategyTest {
 		assertEqualData(expected, actual);
 
 		actual = strategy.update(closeEvent);
-		expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + 2);
+		long expectedStartTime = epochtime;
+		long expectedEndTime = epochtime + 2;
+		expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, expectedStartTime, expectedEndTime);
 		assertEqualData(expected, actual);
 	}
 
