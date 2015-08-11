@@ -3,11 +3,11 @@ package fortscale.streaming.alert.subscribers;
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
 import fortscale.services.impl.EvidencesService;
+import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
 import java.util.*;
 
 /**
@@ -25,12 +25,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     @Autowired
     protected AlertsService alertsService;
-
-    /**
-     * Evidence service (for Mongo export)
-     */
-    @Autowired
-    protected EvidencesService evidencesService;
 
     /**
      * Listener method called when Esper has detected a pattern match.
@@ -84,6 +78,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
             dataEntitiesIds.add("active_directory");
+            EvidencesService evidencesService;evidencesService = SpringService.getInstance().
+                    resolve(EvidencesService.class);
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
                     dataEntitiesIds, 50d, tag, "tag");
