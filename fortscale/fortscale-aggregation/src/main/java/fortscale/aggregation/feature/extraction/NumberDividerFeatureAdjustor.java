@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-
 @JsonTypeName(NumberDividerFeatureAdjustor.NUMBER_DIVIDER_FEATURE_ADJUSTOR)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
@@ -26,7 +24,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) throws InvalidQueryException {
+	public Object adjust(Object value, Event event) throws Exception {
 		Double originalValue = convertToDouble(value);
 		Double denominator = convertToDouble(event.get(denominatorFieldName));
 

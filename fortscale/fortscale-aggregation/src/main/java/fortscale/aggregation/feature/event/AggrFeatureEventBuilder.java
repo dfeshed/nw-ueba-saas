@@ -39,9 +39,16 @@ public class AggrFeatureEventBuilder {
     protected static final String EVENT_FIELD_START_TIME = "start_time";
     public static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
     protected static final String EVENT_FIELD_END_TIME = "end_time";
-    public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
+    
+    private static final SimpleDateFormat format = getSimpleDateFormat();
+
+    private static SimpleDateFormat getSimpleDateFormat(){
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        return format;
+    }
     
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
@@ -51,22 +58,16 @@ public class AggrFeatureEventBuilder {
     private String bucketConfNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
-
-    private static final SimpleDateFormat format = getSimpleDateFormat();
-
-    private static SimpleDateFormat getSimpleDateFormat(){
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        return format;
-    }
-
-    private AggregatedFeatureEventConf conf;
-    private FeatureBucketStrategy bucketStrategy;
-    private Map<EventContextData, AggrFeatureEventData> bucketAndStrategyContexts2eventDataMap;
-    private Map<String, AggrFeatureEventData> bucktID2eventDataMap;
+    @Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
+    @Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
+    
 
     @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;
+    
+    
 
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -76,8 +77,16 @@ public class AggrFeatureEventBuilder {
 
     @Autowired
     AggrEventTopologyService aggrEventTopologyService;
+    
+    @Autowired
+    private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
 
     private FeatureBucketsService featureBucketsService;
+    
+    private AggregatedFeatureEventConf conf;
+    private FeatureBucketStrategy bucketStrategy;
+    private Map<EventContextData, AggrFeatureEventData> bucketAndStrategyContexts2eventDataMap;
+    private Map<String, AggrFeatureEventData> bucktID2eventDataMap;
 
 
     AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, FeatureBucketsService featureBucketsService) {
@@ -283,9 +292,10 @@ public class AggrFeatureEventBuilder {
         event.put(eventTypeFieldName, eventTypeFieldValue);
 
         // Feature Data
+        event.put(dataSourceFieldName, aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf));
         event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
         event.put(aggrFeatureNameFieldName, conf.getName());
-        event.put(EVENT_FIELD_AGGREGATED_FEATURE_VALUE, value);
+        event.put(aggrFeatureValueFieldName, value);
         if(additionalInfoMap!=null) {
             event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
         }

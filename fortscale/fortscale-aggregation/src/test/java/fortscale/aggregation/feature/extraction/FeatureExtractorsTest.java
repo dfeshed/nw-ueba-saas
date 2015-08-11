@@ -1,11 +1,11 @@
 package fortscale.aggregation.feature.extraction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fortscale.aggregation.feature.Feature;
-import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.aggregation.feature.Feature;
+import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/feature-extractors-context-test.xml" })
@@ -92,7 +97,7 @@ public class FeatureExtractorsTest {
 		jsonObject.put(DENOMINATOR_FIELD_NAME, 4.5);
 		jsonObject.put(ORIGINAL_FIELD_NAME1, "prefix0_9");
 
-		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(new Event(jsonObject, null, null)));
+		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(new RawEvent(jsonObject, null, null)));
 
 		Assert.assertEquals(5D, ret,0.0);
 	}
@@ -103,7 +108,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ORIGINAL_FIELD_NAME2, "82.165.195.70");
 
-		String ret = (String) featureExtractor.extract(new Event(jsonObject, null, null));
+		String ret = (String) featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
 		Assert.assertEquals("82.165.192.0", ret);
 	}
@@ -118,7 +123,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("host", "m123ofXXXendingwith334");
 
-		String ret = (String) featureExtractor.extract(new Event(jsonObject, null, null));
+		String ret = (String) featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
 		Assert.assertEquals("mofXXXendingwith", ret);
 	}
@@ -133,7 +138,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("source_ip", "82.165.195.70");
 
-		String ret = (String)featureExtractor.extract(new Event(jsonObject, null, null));
+		String ret = (String)featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
 		Assert.assertEquals("82.165.195.0", ret);
 
@@ -149,7 +154,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("event_time_utc", "1437210353");
 
-		int ret = (int)featureExtractor.extract(new Event(jsonObject, null, null));
+		int ret = (int)featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
 		Assert.assertEquals(9, ret);
 	}

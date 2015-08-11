@@ -11,6 +11,8 @@ public class EntityEventTestBase {
     private String bucketConfNameFieldName;
 	@Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
+	@Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
 	
 
 	protected JSONObject createMessage(
@@ -28,7 +30,7 @@ public class EntityEventTestBase {
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE, aggrFeatureType);
 		message.put(bucketConfNameFieldName, bucketConfName);
 		message.put(aggrFeatureNameFieldName, aggrFeatureName);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_AGGREGATED_FEATURE_VALUE, aggrFeatureValue);
+		message.put(aggrFeatureValueFieldName, aggrFeatureValue);
 		message.put("score", score);
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_DATE_TIME_UNIX, dateTime);
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX, startTime);
