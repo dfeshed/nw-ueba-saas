@@ -9,9 +9,13 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,11 +25,13 @@ import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.utils.logging.Logger;
 
 @Service
-public class FeatureExtractService implements IFeatureExtractService, InitializingBean {
+public class FeatureExtractService implements IFeatureExtractService, InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(FeatureExtractService.class);
 
 	private static final String JSON_CONF_FEATURE_CONFS_NODE_NAME = "FeatureConfs";
 	private static final String JSON_CONF_EXTRACTOR_NODE_NAME = "extractor";
+
+	private ApplicationContext applicationContext;
 
 	private Map<String, FeatureExtractor> featureExtractorMap = new HashMap<>();
 	private JSONObject featuresConfJson;
@@ -44,22 +50,24 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
 
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		if(StringUtils.isNotBlank(featuresConfJsonFileName)){
-			setFeaturesConfJsonFromFile(featuresConfJsonFileName);
+			setFeaturesConfJsonFromFile();
 			for(String featureName: featuresConfJson.keySet()){
 				createFeatureExtractor(featureName);
 			}
 		}
 	}
 
-	private void setFeaturesConfJsonFromFile(String fileName) throws IllegalArgumentException {
+	private void setFeaturesConfJsonFromFile() throws IllegalArgumentException {
 		try {
-			JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(new FileReader(fileName));
+			Resource featuresConfJsonResource = applicationContext.getResource(featuresConfJsonFileName);
+			JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(featuresConfJsonResource.getInputStream());
 			featuresConfJson = (JSONObject) jsonObj.get(JSON_CONF_FEATURE_CONFS_NODE_NAME);
 		} catch (Exception e) {
-			String errorMsg = String.format("Failed to read json conf file %s", fileName);
+			String errorMsg = String.format("Failed to parse JSON file %s", featuresConfJsonFileName);
 			logger.error(errorMsg, e);
 			throw new IllegalArgumentException(errorMsg, e);
 		}
@@ -161,5 +169,9 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 			}
 		}
 		return features;
+	}
+
+	@Override public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }

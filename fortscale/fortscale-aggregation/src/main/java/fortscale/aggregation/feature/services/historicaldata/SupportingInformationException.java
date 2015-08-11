@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.services;
+package fortscale.aggregation.feature.services.historicaldata;
 
 /**
  * Created by gils on 28/07/2015.

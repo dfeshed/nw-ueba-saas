@@ -2,7 +2,7 @@ package fortscale.collection.morphlines;
 
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.kitesdk.morphline.api.Record;
