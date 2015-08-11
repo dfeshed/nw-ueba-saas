@@ -155,7 +155,7 @@ public class ApiEvidenceControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true},{\"keys\":[\"USA\"],\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Israel\"],\"value\":10.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Israel\"],\"value\":10.0,\"anomaly\":false},{\"keys\":[\"USA\"],\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 	/**
