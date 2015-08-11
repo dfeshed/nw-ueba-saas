@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import fortscale.aggregation.JsonObjectWrapperEvent;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
 public class UserInactivityFeatureBucketStrategyTest {
@@ -33,7 +35,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		JSONObject event = createDefaultDataSourceEvent(username, epochtime);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(null);
-		FeatureBucketStrategyData actual = strategy.update(event);
+		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
 			strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS);
@@ -44,7 +46,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		event = createDefaultDataSourceEvent(username, epochtime);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
-		actual = strategy.update(event);
+		actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		Assert.assertNull(actual);
 	}
@@ -61,7 +63,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		long startEpochtime = 1435737600;
 		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime);
 
-		FeatureBucketStrategyData actual = strategy.update(event);
+		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event));
 		String strategyId = actual.getStrategyId();
 		String actualContextId = strategy.getStrategyContextIdFromStrategyId(strategyId);
 		Assert.assertEquals(strategyContextId, actualContextId);
@@ -81,7 +83,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime)).thenReturn(null);
-		FeatureBucketStrategyData actual = strategy.update(event);
+		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
 			strategyContextId, DEFAULT_STRATEGY_NAME, startEpochtime, startEpochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS);
@@ -92,7 +94,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		event = createDefaultDataSourceEvent(username, epochtime);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
-		actual = strategy.update(event);
+		actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		expected = new FeatureBucketStrategyData(
 			strategyContextId, DEFAULT_STRATEGY_NAME, startEpochtime, epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS);
@@ -112,7 +114,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime1);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime1)).thenReturn(null);
-		FeatureBucketStrategyData actual = strategy.update(event);
+		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
 			strategyContextId, DEFAULT_STRATEGY_NAME, startEpochtime1, startEpochtime1 + DEFAULT_END_TIME_DELTA_IN_SECONDS);
@@ -123,7 +125,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		event = createDefaultDataSourceEvent(username, startEpochtime2);
 
 //		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime2)).thenReturn(actual);
-		actual = strategy.update(event);
+		actual = strategy.update(new JsonObjectWrapperEvent(event));
 
 		expected = new FeatureBucketStrategyData(
 			strategyContextId, DEFAULT_STRATEGY_NAME, startEpochtime2, startEpochtime2 + DEFAULT_END_TIME_DELTA_IN_SECONDS);

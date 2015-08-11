@@ -124,7 +124,7 @@
     {
       "name": "source_machine_kerberos_logins_daily",
       "contextFieldNames": [
-        "normalized_src_machine"
+        "source_machine"
       ],
       "dataSources": [
         "kerberos_logins"
@@ -142,7 +142,7 @@
     }, {
       "name": "destination_machine_kerberos_logins_daily",
       "contextFieldNames": [
-        "normalized_dst_machine"
+        "destination_machine"
       ],
       "dataSources": [
         "kerberos_logins"
@@ -161,7 +161,7 @@
     {
       "name": "source_machine_ssh_daily",
       "contextFieldNames": [
-        "normalized_src_machine"
+        "source_machine"
       ],
       "dataSources": [
         "ssh"
@@ -179,7 +179,7 @@
     }, {
       "name": "destination_machine_ssh_daily",
       "contextFieldNames": [
-        "normalized_dst_machine"
+        "destination_machine"
       ],
       "dataSources": [
         "ssh"

@@ -1,12 +1,13 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
 import java.util.List;
+
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import net.minidev.json.JSONObject;
+import fortscale.aggregation.feature.extraction.Event;
 
 public interface FeatureBucketStrategy {
-	public FeatureBucketStrategyData update(JSONObject event);
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec);
+	public FeatureBucketStrategyData update(Event event);
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, Event event, long epochtimeInSec);
 
 
 	/**

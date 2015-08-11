@@ -1,21 +1,22 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import fortscale.aggregation.filter.JsonFilter;
-import net.minidev.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.springframework.util.Assert;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.aggregation.filter.JsonFilter;
+import net.minidev.json.JSONObject;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class AggregatedFeatureConf implements Serializable {
@@ -76,8 +77,8 @@ public class AggregatedFeatureConf implements Serializable {
 		this.filter = filter;
 	}
 
-	public boolean passedFilter(JSONObject jsonObject){
-    	return filter == null ? true : filter.passedFilter(jsonObject);
+	public boolean passedFilter(Event event){
+    	return filter == null ? true : filter.passedFilter(event.getJSONObject());
     }
 	
 	public boolean equals(Object obj) {
