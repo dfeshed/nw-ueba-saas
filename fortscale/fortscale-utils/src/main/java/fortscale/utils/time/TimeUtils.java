@@ -3,7 +3,6 @@ package fortscale.utils.time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 /**
  * Time utility functions
@@ -13,22 +12,21 @@ import java.util.TimeZone;
  */
 public class TimeUtils {
 
-    private static final String UTC_TIMEZONE = "UTC";
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
+    private static final String DEFAULT_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     private static final int HOUR_LOWER_BOUND = 0;
     private static final int HOUR_UPPER_BOUND = 23;
 
     public static String getFormattedTime(Long timeInMillis) {
-        Calendar calInstance = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
+        Calendar calInstance = Calendar.getInstance();
         calInstance.setTimeInMillis(timeInMillis);
 
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        DateFormat formatter = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
         return formatter.format(calInstance.getTime());
     }
 
     public static Long calculateStartingTime(Long endTimeInMillis, int timePeriodInDays) {
-        Calendar calEvidenceTime = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
+        Calendar calEvidenceTime = Calendar.getInstance();
         calEvidenceTime.setTimeInMillis(endTimeInMillis);
 
         calEvidenceTime.add(Calendar.DAY_OF_MONTH, -1 * timePeriodInDays);
@@ -37,7 +35,7 @@ public class TimeUtils {
     }
 
     public static int getOrdinalDayOfWeek(long timeInMillis) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIMEZONE));
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeInMillis);
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
