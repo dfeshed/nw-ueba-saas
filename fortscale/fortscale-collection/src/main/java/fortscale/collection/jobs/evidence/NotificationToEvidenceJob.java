@@ -115,7 +115,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				JSONObject evidence = new JSONObject();
 				evidence.put(notificationScoreField, score);
 				evidence.put(notificationStartTimestampField, notification.getTs());
-				// TODO: change it to take the endtime
 				evidence.put(notificationEndTimestampField, notification.getTs());
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
@@ -139,7 +138,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String getAnomalyField(Notification notification) {
 		List<String> values = notificationAnomalyMap.get(notification.getCause());
 		//TODO - allow for taking more than one of the values as anomaly fields
-		if (values != null && values.size() > 0 && notification.getAttributes().containsKey(values.get(0))) {
+		if (values != null && values.size() > 0 && notification.getAttributes() != null && notification.getAttributes().containsKey(values.get(0))) {
 			return notification.getAttributes().get(values.get(0));
 		}
 		//default value
