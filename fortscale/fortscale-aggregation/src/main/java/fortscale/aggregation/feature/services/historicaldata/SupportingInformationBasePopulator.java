@@ -4,12 +4,14 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Basic implementation for supporting information populator class
@@ -17,11 +19,11 @@ import java.util.List;
  * @author gils
  * Date: 05/08/2015
  */
-public abstract class SupportingInformationDataBasePopulator implements SupportingInformationDataPopulator{
+public abstract class SupportingInformationBasePopulator implements SupportingInformationDataPopulator{
 
     static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDataBasePopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationBasePopulator.class);
 
     protected String contextType;
     protected String dataEntity;
@@ -33,12 +35,43 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
 
-    public SupportingInformationDataBasePopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationBasePopulator(String contextType, String dataEntity, String featureName) {
         this.contextType = contextType;
         this.dataEntity = dataEntity;
         this.featureName = featureName;
     }
 
+    /*
+     * Basic flow of the populator:
+     * 1. Fetch relevant buckets
+     * 2. Create the histogram
+     * 3. Create the anomaly histogram key
+     * 4. Validate data consistency (histogram + anomaly)
+     */
+    @Override
+    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
+
+        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
+
+        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+
+        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
+
+        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
+
+        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
+    }
+
+    /**
+     * Abstract method to the histogram creation functionality
+     */
+    abstract Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
+
+    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
+
+    /*
+     * Fetch the relevant feature buckets based on the context value and time values.
+     */
     protected List<FeatureBucket> fetchRelevantFeatureBuckets(String contextValue, long evidenceEndTime, int timePeriodInDays) {
         String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 
@@ -60,11 +93,15 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
         return featureBuckets;
     }
 
+    protected void validateHistogramDataConsistency(Map<HistogramKey, Double> histogramMap, HistogramKey anomalyHistogramKey) {
+        if (!histogramMap.containsKey(anomalyHistogramKey)) {
+            throw new IllegalStateException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalyHistogramKey + " # Histogram map = " + histogramMap);
+        }
+    }
+
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
 
     abstract String getNormalizedFeatureName(String featureName);
-
-    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
 }

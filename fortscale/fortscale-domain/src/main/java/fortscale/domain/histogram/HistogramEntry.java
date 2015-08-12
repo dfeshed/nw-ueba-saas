@@ -60,8 +60,8 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 	 */
 	@Override
 	public int compareTo(HistogramEntry other){
+		// sort by value, i.e. the natural order of histogram entries
 		return value.compareTo(other.value);
-
 	}
 
 	@Override
