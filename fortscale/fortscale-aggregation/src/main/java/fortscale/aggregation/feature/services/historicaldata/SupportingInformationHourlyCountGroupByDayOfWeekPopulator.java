@@ -43,6 +43,17 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
+        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+
+        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
+
+        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
+
+        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
+    }
+
+    @Override
+    protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
         Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
@@ -86,10 +97,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
                 logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
-
-        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
-
-        return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
+        return histogramKeyObjectMap;
     }
 
     @Override

@@ -10,6 +10,7 @@ import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Basic implementation for supporting information populator class
@@ -39,6 +40,10 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         this.featureName = featureName;
     }
 
+    abstract Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
+
+    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
+
     protected List<FeatureBucket> fetchRelevantFeatureBuckets(String contextValue, long evidenceEndTime, int timePeriodInDays) {
         String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 
@@ -60,11 +65,15 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         return featureBuckets;
     }
 
+    protected void validateHistogramDataConsistency(Map<HistogramKey, Double> histogramMap, HistogramKey anomalyHistogramKey) {
+        if (!histogramMap.containsKey(anomalyHistogramKey)) {
+            throw new IllegalStateException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalyHistogramKey + " # Histogram map = " + histogramMap);
+        }
+    }
+
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
 
     abstract String getNormalizedFeatureName(String featureName);
-
-    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
 }
