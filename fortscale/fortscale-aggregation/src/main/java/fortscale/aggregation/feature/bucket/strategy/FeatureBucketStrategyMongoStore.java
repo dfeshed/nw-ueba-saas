@@ -19,7 +19,7 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyContextId, long latestStartTime) {
-		Query query = new Query(where(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD).is(strategyContextId).and(FeatureBucketStrategyData.START_TIME_FIELD).lte(latestStartTime));
+		Query query = new Query(where(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD).is(strategyContextId).and(FeatureBucketStrategyData.START_TIME_FIELD).lte(latestStartTime));
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
 		query.with(pageable);
 		return mongoTemplate.findOne(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
@@ -34,8 +34,8 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	public void afterPropertiesSet() throws Exception {
 		if (!mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			mongoTemplate.createCollection(COLLECTION_NAME);
-			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD,Direction.DESC));
-			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD,Direction.DESC).on(FeatureBucketStrategyData.START_TIME_FIELD,Direction.DESC));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC).on(FeatureBucketStrategyData.START_TIME_FIELD,Direction.DESC));
 		}
 	}
 }

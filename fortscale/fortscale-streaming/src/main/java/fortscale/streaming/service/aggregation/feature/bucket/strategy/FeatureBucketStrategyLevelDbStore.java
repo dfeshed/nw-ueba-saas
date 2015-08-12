@@ -36,7 +36,7 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
-		String strategyContextId = featureBucketStrategyData.getStrategyContextId();
+		String strategyContextId = featureBucketStrategyData.getStrategyEventContextId();
 		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyContextId);
 
 		if (strategyDataList == null) {

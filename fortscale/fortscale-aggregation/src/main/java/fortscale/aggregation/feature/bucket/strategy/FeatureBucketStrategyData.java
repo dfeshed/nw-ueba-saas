@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class FeatureBucketStrategyData {
-	public static final String STRATEGY_CONTEXT_ID_FIELD = "strategyContextId";
+	public static final String STRATEGY_EVENT_CONTEXT_ID_FIELD = "strategyEventContextId";
 	public static final String STRATEGY_NAME_FIELD = "strategyName";
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
@@ -17,8 +17,8 @@ public class FeatureBucketStrategyData {
 	@Id
 	private String id;
 
-	@Field(STRATEGY_CONTEXT_ID_FIELD)
-	private String strategyContextId;
+	@Field(STRATEGY_EVENT_CONTEXT_ID_FIELD)
+	private String strategyEventContextId;
 	@Field(STRATEGY_NAME_FIELD)
 	private String strategyName;
 	@Field(START_TIME_FIELD)
@@ -27,15 +27,15 @@ public class FeatureBucketStrategyData {
 	private long endTime;
 
 	@JsonCreator
-	public FeatureBucketStrategyData(@JsonProperty("strategyContextId") String strategyContextId, @JsonProperty("strategyName") String strategyName, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime) {
-		this.strategyContextId = strategyContextId;
+	public FeatureBucketStrategyData(@JsonProperty("strategyEventContextId") String strategyEventContextId, @JsonProperty("strategyName") String strategyName, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime) {
+		this.strategyEventContextId = strategyEventContextId;
 		this.strategyName = strategyName;
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}
 
-	public String getStrategyContextId() {
-		return strategyContextId;
+	public String getStrategyEventContextId() {
+		return strategyEventContextId;
 	}
 
 	public String getStrategyName() {
@@ -55,6 +55,6 @@ public class FeatureBucketStrategyData {
 	}
 
 	public String getStrategyId() {
-		return String.format("%s_%d", strategyContextId, startTime);
+		return String.format("%s_%d", strategyEventContextId, startTime);
 	}
 }

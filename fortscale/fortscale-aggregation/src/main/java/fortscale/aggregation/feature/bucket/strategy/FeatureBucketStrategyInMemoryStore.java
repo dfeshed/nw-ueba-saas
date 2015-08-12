@@ -27,7 +27,7 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
-		String strategyContextId = featureBucketStrategyData.getStrategyContextId();
+		String strategyContextId = featureBucketStrategyData.getStrategyEventContextId();
 		List<FeatureBucketStrategyData> strategyDataList = startegyContextIdToData.get(strategyContextId);
 
 		if (strategyDataList == null) {
