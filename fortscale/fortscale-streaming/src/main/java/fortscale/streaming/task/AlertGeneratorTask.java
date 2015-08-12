@@ -4,6 +4,7 @@ import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.epl.variable.VariableExistsException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
@@ -207,7 +208,16 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	private void createStatement(RuleConfig ruleConfig, StatementDecorator statementDecorator, Object... decoratorParams) {
 		//Create the Esper alert statement object
 		ruleConfig = statementDecorator.prepareStatement(ruleConfig,decoratorParams);
-		EPStatement epStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
+		EPStatement epStatement;
+		try {
+			epStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
+		} catch (Exception ex) {
+			//ignore variable already exists statement error
+			if (ex instanceof VariableExistsException) {
+				return;
+			}
+			throw ex;
+		}
 		//Generate Subscriber from spring
 		if (!ruleConfig.getSubscriberBeanName().equals("none")) {
 			AbstractSubscriber alertSubscriber = (AbstractSubscriber) SpringService.getInstance().resolve(ruleConfig.getSubscriberBeanName());
