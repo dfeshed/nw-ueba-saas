@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.functions;
 
+import fortscale.aggregation.JsonObjectWrapperEvent;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
@@ -227,7 +228,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new JsonObjectWrapperEvent(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -333,7 +334,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new JsonObjectWrapperEvent(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 

@@ -24,6 +24,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
+	private String outputBucketStrategy = null;
 
 	public AggregatedFeatureEventConf(
 			@JsonProperty("name") String name,
@@ -116,5 +117,9 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public JSONObject getAggregatedFeatureEventFunction() {
 		return aggregatedFeatureEventFunction;
+	}
+
+	public String getOutputBucketStrategy() {
+		return outputBucketStrategy;
 	}
 }

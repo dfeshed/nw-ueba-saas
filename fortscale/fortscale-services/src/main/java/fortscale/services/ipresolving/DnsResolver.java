@@ -1,7 +1,7 @@
 package fortscale.services.ipresolving;
 
 import fortscale.services.cache.CacheHandler;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

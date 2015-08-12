@@ -3,8 +3,6 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -12,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
@@ -23,12 +22,17 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.extraction.AggrEvent;
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.aggregation.feature.extraction.RawEvent;
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
-import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
+import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -52,7 +56,18 @@ public class AggregatorManager {
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
-	private AggrKafkaEventTopologyService aggrEventTopologyService;
+	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
+	
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
+	
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
+	
+	@Value("${streaming.event.field.type}")
+    private String eventTypeFieldName;
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String aggrEventType;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
@@ -69,7 +84,13 @@ public class AggregatorManager {
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
+		aggrEventTopologyService.setAggregatorManager(this);
 
+		processEvent(event);
+	}
+	
+	public void processEvent(JSONObject jsonObject) throws Exception {
+		Event event = createEvent(jsonObject);
 		dataSourcesSyncTimer.process(event);
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDataList = featureBucketStrategyService.updateStrategies(event);
 		List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(event);
@@ -82,6 +103,16 @@ public class AggregatorManager {
 			if(newFeatureBuckets.size()>0) {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
+		}
+	}
+	
+	private Event createEvent(JSONObject eventMessage){
+		String eventType = (String) eventMessage.get(eventTypeFieldName);
+		if(aggrEventType.equals(eventType)){
+			return new AggrEvent(eventMessage);
+		} else{
+			String dataSource = eventMessage.getAsString(dataSourceFieldName);
+			return new RawEvent(eventMessage, dataEntitiesConfig, dataSource);
 		}
 	}
 

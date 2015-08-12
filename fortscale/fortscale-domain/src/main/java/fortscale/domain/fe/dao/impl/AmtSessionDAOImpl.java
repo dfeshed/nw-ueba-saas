@@ -2,10 +2,10 @@ package fortscale.domain.fe.dao.impl;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.AccessDAO;
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

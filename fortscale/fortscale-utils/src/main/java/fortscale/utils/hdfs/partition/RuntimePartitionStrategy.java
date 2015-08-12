@@ -1,11 +1,11 @@
 package fortscale.utils.hdfs.partition;
 
-import static fortscale.utils.TimestampUtils.convertToSeconds;
-import static fortscale.utils.hdfs.partition.PartitionsUtils.getPartitionPartFromPath;
-import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import static fortscale.utils.hdfs.partition.PartitionsUtils.getPartitionPartFromPath;
+import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 public class RuntimePartitionStrategy implements PartitionStrategy {
 	private static final String RUNTIME_PARTITION_FIELD_NAME="runtime";

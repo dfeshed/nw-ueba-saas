@@ -1,14 +1,12 @@
 package fortscale.ml.model.prevalance.field;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.samza.config.Config;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
 import fortscale.ml.model.prevalance.FieldModel;
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.samza.config.Config;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class DailyTimeModel extends TimeModel implements FieldModel{

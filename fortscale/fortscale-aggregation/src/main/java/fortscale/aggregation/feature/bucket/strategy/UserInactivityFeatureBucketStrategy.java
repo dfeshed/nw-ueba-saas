@@ -6,14 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.ConversionUtils;
 
 @Configurable(preConstruction = true)
@@ -56,7 +55,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	}
 
 	@Override
-	public FeatureBucketStrategyData update(JSONObject event) {
+	public FeatureBucketStrategyData update(Event event) {
 		// Get the event's data source
 		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 
@@ -101,7 +100,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	}
 
 	@Override
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec) {
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, Event event, long epochtimeInSec) {
 		String username = (String)event.get(usernameFieldName);
 		return getFeatureBucketStrategyData(featureBucketConf, username, epochtimeInSec);
 	}

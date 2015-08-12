@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -59,7 +59,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	}
 
 	@Override
-	public FeatureBucketStrategyData update(JSONObject event) {
+	public FeatureBucketStrategyData update(Event event) {
 		// Get the event's data source
 		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 		if (StringUtils.isNotBlank(dataSource) && containsCaseInsensitive(dataSource, vpnDataSources)) {
@@ -76,7 +76,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
-				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
+				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() <= epochtime) {
 					RemoveClosedUserSessions(username, sourceIP);
 					if (status.equalsIgnoreCase(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
@@ -111,7 +111,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	}
 
 	@Override
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec) {
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, Event event, long epochtimeInSec) {
 		Assert.notNull(event);
 		List<FeatureBucketStrategyData> strategyDataList = new ArrayList<>();
 		String username = ConversionUtils.convertToString(event.get(usernameFieldName));

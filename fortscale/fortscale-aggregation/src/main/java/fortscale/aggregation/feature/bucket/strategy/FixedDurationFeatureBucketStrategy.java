@@ -2,9 +2,11 @@ package fortscale.aggregation.feature.bucket.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minidev.json.JSONObject;
+
 import org.springframework.util.Assert;
+
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.extraction.Event;
 
 public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy {
 	private long durationInSeconds;
@@ -18,7 +20,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 	}
 
 	@Override
-	public FeatureBucketStrategyData update(JSONObject event) {
+	public FeatureBucketStrategyData update(Event event) {
 		return null;
 	}
 
@@ -31,7 +33,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 	}
 
 	@Override
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec){
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, Event event, long epochtimeInSec){
 		return getFeatureBucketStrategyData(epochtimeInSec);
 	}
 

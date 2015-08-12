@@ -2,11 +2,18 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.utils.logging.Logger;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +21,7 @@ import java.util.Set;
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class FeatureBucketConf implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(FeatureBucketConf.class);
 
 	private String name;
 	private List<String> dataSources;
@@ -48,11 +56,9 @@ public class FeatureBucketConf implements Serializable {
 		this.dataSources = dataSources;
 		this.contextFieldNames = contextFieldNames;
 		this.strategyName = strategyName;
-		this.aggrFeatureConfs = aggrFeatureConfs;
 		this.allFeatureNames = new HashSet<>();
-		for (AggregatedFeatureConf conf : aggrFeatureConfs) {
-			allFeatureNames.addAll(conf.getAllFeatureNames());
-		}
+		this.aggrFeatureConfs = new ArrayList<>();
+		addAllAggregatedFeatureConfs(aggrFeatureConfs);
 	}
 
 	public String getName() {
@@ -77,5 +83,28 @@ public class FeatureBucketConf implements Serializable {
 
 	public Set<String> getAllFeatureNames() {
 		return allFeatureNames;
+	}
+	
+	public void addAllAggregatedFeatureConfs(List<AggregatedFeatureConf> aggrFeatureConfs){
+		for (AggregatedFeatureConf conf : aggrFeatureConfs) {
+			addAggregatedFeatureConf(conf);
+		}
+	}
+	
+	public void addAggregatedFeatureConf(AggregatedFeatureConf aggrFeatureConf){
+		this.aggrFeatureConfs.add(aggrFeatureConf);
+		allFeatureNames.addAll(aggrFeatureConf.getAllFeatureNames());
+	}
+	
+	@Override
+	public String toString(){
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			logger.warn("failed to serialize to json", e);
+			return super.toString();
+		}
 	}
 }

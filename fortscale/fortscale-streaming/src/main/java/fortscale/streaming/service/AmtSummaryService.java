@@ -2,7 +2,7 @@ package fortscale.streaming.service;
 
 import fortscale.services.notifications.AmtActionToSensitiveAccountNotificationGenerator;
 import fortscale.streaming.model.AmtSession;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.lang3.StringUtils;

@@ -5,12 +5,13 @@
         "name": "distinct_number_of_src_machines_kerberos",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -22,12 +23,13 @@
         "name": "distinct_number_of_dst_machines_kerberos",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -44,7 +46,7 @@
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_with_high_score_histogram"
+            "destination_machine_with_high_score_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -56,12 +58,13 @@
         "name": "distinct_number_of_src_machines_ssh",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -73,12 +76,13 @@
         "name": "distinct_number_of_dst_machines_ssh",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -89,7 +93,8 @@
       {
         "name": "number_of_failed_vpn_events",
         "type": "F",
-        "bucketConfName": "normalized_username_vpn_events_daily",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -106,6 +111,7 @@
         "name": "number_of_kerberos_events",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -122,6 +128,7 @@
         "name": "number_of_failed_kerberos_events",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -138,6 +145,7 @@
         "name": "number_of_ssh_events",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -154,6 +162,7 @@
         "name": "number_of_failed_events",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
@@ -169,13 +178,14 @@
       {
         "name": "new_countries_for_user",
         "type": "F",
-        "bucketConfName": "normalized_username_vpn_events_daily",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "number_of_events"
+            "country_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -187,12 +197,13 @@
         "name": "new_src_machine_kerberos",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -204,12 +215,13 @@
         "name": "new_dst_machine_kerberos",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -221,12 +233,13 @@
         "name": "new_src_machine_ssh",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "src_machine_histogram"
+            "source_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -238,12 +251,13 @@
         "name": "new_dst_machine_ssh",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 30,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "groupBy": [
-            "dst_machine_histogram"
+            "destination_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {

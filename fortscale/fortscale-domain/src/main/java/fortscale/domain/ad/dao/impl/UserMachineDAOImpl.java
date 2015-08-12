@@ -1,12 +1,10 @@
 package fortscale.domain.ad.dao.impl;
 
-import static fortscale.utils.impala.ImpalaCriteria.*;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
+import fortscale.domain.ad.UserMachine;
+import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.schema.LoginEvents;
+import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +13,12 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
-import fortscale.domain.ad.UserMachine;
-import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.schema.LoginEvents;
-import fortscale.utils.TimestampUtils;
-import fortscale.utils.impala.ImpalaQuery;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
+import static fortscale.utils.impala.ImpalaCriteria.*;
 
 public class UserMachineDAOImpl implements UserMachineDAO, RowMapper<UserMachine> {
 	

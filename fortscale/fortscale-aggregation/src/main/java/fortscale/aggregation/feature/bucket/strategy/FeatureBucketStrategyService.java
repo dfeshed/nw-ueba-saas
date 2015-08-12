@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import net.minidev.json.JSONObject;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.ConversionUtils;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.time.TimestampUtils;
 
 
 public abstract class FeatureBucketStrategyService {
@@ -18,10 +18,10 @@ public abstract class FeatureBucketStrategyService {
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 
-	public List<FeatureBucketStrategyData> updateStrategies(JSONObject message) {
+	public List<FeatureBucketStrategyData> updateStrategies(Event event) {
 		List<FeatureBucketStrategyData> ret = new ArrayList<>();
 		for(FeatureBucketStrategy strategy: getAllStrategies()){
-			FeatureBucketStrategyData updatedStrategyData = strategy.update(message);
+			FeatureBucketStrategyData updatedStrategyData = strategy.update(event);
 			if(updatedStrategyData != null){
 				ret.add(updatedStrategyData);
 			}
@@ -30,7 +30,7 @@ public abstract class FeatureBucketStrategyService {
 		return ret;
 	}
 	
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(JSONObject event, FeatureBucketConf featureBucketConf){
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(Event event, FeatureBucketConf featureBucketConf){
 		FeatureBucketStrategy strategy = getFeatureBucketStrategy(featureBucketConf.getStrategyName());
 		Long epochtimeInSec = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
 		if(epochtimeInSec!=null){

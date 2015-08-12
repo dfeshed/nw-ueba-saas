@@ -1,13 +1,14 @@
 package fortscale.utils.hdfs.partition;
 
-import static fortscale.utils.hdfs.partition.PartitionsUtils.*;
-import static fortscale.utils.TimestampUtils.*;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import static fortscale.utils.hdfs.partition.PartitionsUtils.getPartitionPartFromPath;
+import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
+import static fortscale.utils.time.TimestampUtils.normalizeTimestamp;
 
 /**
  * Monthly partition strategy creates partitions for each calendar month.

@@ -1,14 +1,13 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.json.JodaDateSerializer;
+import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import fortscale.domain.core.AbstractDocument;
-import fortscale.utils.TimestampUtils;
 
 public class IpToHostname extends AbstractDocument{
 

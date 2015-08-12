@@ -20,7 +20,7 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureHistogramFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_func";
-    final static String GROUP_BY_FIELD_NAME = "groupBy";
+    public final static String GROUP_BY_FIELD_NAME = "groupBy";
 
     /**
      * Updates the histogram within aggrFeature.
