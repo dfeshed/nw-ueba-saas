@@ -35,6 +35,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
+	private static final String OTHERS_COLUMN = "Others";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -199,7 +200,7 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		String anomalyValue = extractAnomalyValue(feature, evidence);
+		String anomalyValue = extractAnomalyValue(evidence, feature);
 
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
 				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
@@ -233,7 +234,7 @@ public class ApiEvidenceController extends DataQueryController {
 		return histogramBean;
 	}
 
-	private String extractAnomalyValue(String feature, Evidence evidence) {
+	private String extractAnomalyValue(Evidence evidence, String feature) {
 
 		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
 
@@ -276,7 +277,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		//create new list with others, and the remaining columns.
 		List<HistogramEntry> newListWithOthers = new ArrayList<>();
-		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey("Others").generateKey(), othersValue));
+		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey(OTHERS_COLUMN).generateKey(), othersValue));
 
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));
