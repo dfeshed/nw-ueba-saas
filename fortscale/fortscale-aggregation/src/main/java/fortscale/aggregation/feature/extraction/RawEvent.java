@@ -22,7 +22,7 @@ public class RawEvent implements Event{
 			try {
 				return jsonObject.get(dataEntitiesConfig.getFieldColumn(eventType, key));
 			} catch (InvalidQueryException e) {
-				throw new RuntimeException("got an exception while trying to get value from the event", e);
+				return jsonObject.get(key);
 			}
 		} else{
 			return jsonObject.get(key);
