@@ -9,11 +9,22 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureValue {
+	protected final static String AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS = "total";
+	
 	private Object value;
 	private Map<String, Object> additionalInformationMap;
 	
-	public AggrFeatureValue(Object value){
+	public AggrFeatureValue(Object value, Long total){
 		this.value = value;
+		setTotal(total);
+	}
+	
+	public void setTotal(Long total){
+		putAdditionalInformation(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, total);
+	}
+	
+	public Long getTotal(){
+		return (Long) additionalInformationMap.get(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS);
 	}
 	
 	public void putAdditionalInformation (String key, Object value){

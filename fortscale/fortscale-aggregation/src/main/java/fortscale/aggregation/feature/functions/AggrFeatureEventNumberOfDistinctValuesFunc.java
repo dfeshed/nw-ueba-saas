@@ -34,7 +34,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AbstractAggrFeat
 
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram) {
-		return new AggrFeatureValue(histogram.getN());
+		return new AggrFeatureValue(histogram.getN(), (long)histogram.getTotalCount());
 	}
 	
 	@Override

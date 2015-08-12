@@ -24,7 +24,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFunc extends AbstractAggrFea
 
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram) {
-		return new AggrFeatureValue(histogram.getMaxCountObject());
+		return new AggrFeatureValue(histogram.getMaxCountObject(), (long)histogram.getTotalCount());
 	}
 
 

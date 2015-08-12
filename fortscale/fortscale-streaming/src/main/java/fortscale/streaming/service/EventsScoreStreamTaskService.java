@@ -20,7 +20,10 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -48,6 +51,11 @@ public class EventsScoreStreamTaskService {
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
 	
+	@Value("${streaming.event.field.type}")
+	private String eventTypeFieldName;
+	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
@@ -109,6 +117,7 @@ public class EventsScoreStreamTaskService {
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				saveEvent(message);
 			} catch(Exception exception){
 				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
 			}
@@ -116,5 +125,15 @@ public class EventsScoreStreamTaskService {
 		
 		processedMessageCount.inc();
 		lastTimestampCount.set(timestamp);
+	}
+	
+	private void saveEvent(JSONObject event){
+		String eventTypeValue = (String) event.get(eventTypeFieldName);
+		if(StringUtils.isBlank(eventTypeValue)){
+			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
+		}
+		String collectionName = String.format("scored_%s", eventTypeValue);
+		
+		mongoTemplate.save(event, collectionName);
 	}
 }
