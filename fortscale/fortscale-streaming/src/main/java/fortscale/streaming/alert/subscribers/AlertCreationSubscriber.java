@@ -50,7 +50,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
                     //if this is a statement containing tags
-                    if (insertStreamOutput.containsKey("tags")) {
+                    if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
                         createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
                     }
                     Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
