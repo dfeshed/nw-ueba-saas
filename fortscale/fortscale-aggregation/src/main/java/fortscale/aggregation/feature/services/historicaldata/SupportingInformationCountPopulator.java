@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.services.historicaldata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.utils.logging.Logger;
@@ -31,19 +30,6 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
 
     public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
-    }
-
-    @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
-        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
-
-        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
-
-        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
-
-        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
-
-        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
     }
 
     @Override

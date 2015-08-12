@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -40,10 +41,37 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         this.featureName = featureName;
     }
 
+    /*
+     * Basic flow of the populator:
+     * 1. Fetch relevant buckets
+     * 2. Create the histogram
+     * 3. Create the anomaly histogram key
+     * 4. Validate data consistency (histogram + anomaly)
+     */
+    @Override
+    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
+
+        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
+
+        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+
+        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
+
+        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
+
+        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
+    }
+
+    /**
+     * Abstract method to the histogram creation functionality
+     */
     abstract Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
 
     abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
 
+    /*
+     * Fetch the relevant feature buckets based on the context value and time values.
+     */
     protected List<FeatureBucket> fetchRelevantFeatureBuckets(String contextValue, long evidenceEndTime, int timePeriodInDays) {
         String bucketConfigName = getBucketConfigurationName(contextType, dataEntity);
 

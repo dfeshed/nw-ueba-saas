@@ -6,6 +6,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 /**
+ * Factory class to create supporting information populators.
+ * The creation of populator is based mostly on the aggregation function but can also take into consideration
+ * the context type (i.e. user, source machine etc.), feature and data entity (ssh, kerberos etc.) to allow
+ * different populators with different characteristics
+ *
+ *
  * @author gils
  * Date: 05/08/2015
  */

@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.services.historicaldata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;
@@ -38,20 +37,11 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         super(contextType, dataEntity, featureName);
     }
 
-    @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
-
-        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
-
-        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
-
-        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
-
-        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
-
-        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
-    }
-
+    /**
+     * Creating histogram data of {day of week + hour} based on hourly distribution of events on daily basis.
+     * Day value is extracted from the bucket itself and the events distribution in the feature values of the bucket.
+     * Assuming hour range is positive integer in the range [0..23].
+     */
     @Override
     protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
         Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
@@ -105,6 +95,10 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
     }
 
+    /*
+     * Converting the anomaly value which is in concrete date format to an histogram key
+     * consist of the day of week (Sunday, Monday etc.) AND the cieled hour (0, 1, .. 23)
+     */
     @Override
     HistogramKey createAnomalyHistogramKey(String anomalyValue) {
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
