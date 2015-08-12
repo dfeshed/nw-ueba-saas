@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
@@ -34,6 +35,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
+	private static final String OTHERS_COLUMN = "Others";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -199,11 +201,12 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		String anomalyValue = evidence.getAnomalyValue();
+		String anomalyValue = extractAnomalyValue(evidence, feature);
+
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
 				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
+		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		//add the anomaly to the relevant fields
@@ -214,7 +217,7 @@ public class ApiEvidenceController extends DataQueryController {
 			numColumns = listOfHistogramEntries.size();
 		}
 
-		if(aggFunction.equalsIgnoreCase("count")) {
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
@@ -230,6 +233,22 @@ public class ApiEvidenceController extends DataQueryController {
 
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private String extractAnomalyValue(Evidence evidence, String feature) {
+
+		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
+
+		if (contextAndFeatureMatch) { // in this case we want the inverse chart
+			return evidence.getEntityName();
+		}
+		else {
+			return evidence.getAnomalyValue();
+		}
+	}
+
+	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
+		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
@@ -259,7 +278,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		//create new list with others, and the remaining columns.
 		List<HistogramEntry> newListWithOthers = new ArrayList<>();
-		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey("Others").generateKey(), othersValue));
+		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey(OTHERS_COLUMN).generateKey(), othersValue));
 
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));
