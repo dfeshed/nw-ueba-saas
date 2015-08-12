@@ -17,11 +17,11 @@ import java.util.List;
  * @author gils
  * Date: 05/08/2015
  */
-public abstract class SupportingInformationDataBasePopulator implements SupportingInformationDataPopulator{
+public abstract class SupportingInformationBasePopulator implements SupportingInformationDataPopulator{
 
     static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDataBasePopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationBasePopulator.class);
 
     protected String contextType;
     protected String dataEntity;
@@ -33,7 +33,7 @@ public abstract class SupportingInformationDataBasePopulator implements Supporti
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
 
-    public SupportingInformationDataBasePopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationBasePopulator(String contextType, String dataEntity, String featureName) {
         this.contextType = contextType;
         this.dataEntity = dataEntity;
         this.featureName = featureName;

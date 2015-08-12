@@ -26,15 +26,15 @@ import java.util.*;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationDataBasePopulator {
+public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationBasePopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationHourlyCountGroupByDayOfWeekPopulator.class);
 
     private static final String HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME = "hourly_histogram_of_events";
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    public SupportingInformationDataHourlyCountGroupByDayOfWeekPopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationHourlyCountGroupByDayOfWeekPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 

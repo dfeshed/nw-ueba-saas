@@ -23,13 +23,13 @@ import java.util.Map;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationDataCountPopulator extends SupportingInformationDataBasePopulator {
+public class SupportingInformationCountPopulator extends SupportingInformationBasePopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
-    public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName) {
+    public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 

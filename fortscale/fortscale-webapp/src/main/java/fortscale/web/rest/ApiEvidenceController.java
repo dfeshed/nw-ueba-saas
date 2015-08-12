@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
@@ -198,11 +199,12 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		String anomalyValue = evidence.getAnomalyValue();
+		String anomalyValue = extractAnomalyValue(feature, evidence);
+
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
 				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
+		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		//add the anomaly to the relevant fields
@@ -213,7 +215,7 @@ public class ApiEvidenceController extends DataQueryController {
 			numColumns = listOfHistogramEntries.size();
 		}
 
-		if(aggFunction.equalsIgnoreCase("count")) {
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
@@ -229,6 +231,22 @@ public class ApiEvidenceController extends DataQueryController {
 
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private String extractAnomalyValue(String feature, Evidence evidence) {
+
+		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
+
+		if (contextAndFeatureMatch) { // in this case we want the inverse chart
+			return evidence.getEntityName();
+		}
+		else {
+			return evidence.getAnomalyValue();
+		}
+	}
+
+	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
+		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
