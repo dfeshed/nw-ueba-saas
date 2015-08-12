@@ -230,11 +230,7 @@ import static fortscale.utils.ConversionUtils.*;
 				List<VpnSession> notificationList = new ArrayList<>();
 				notificationList.add(curVpnSession);
 				for (VpnSession vpnSession : vpnSessions) {
-					if (!vpnSession.getGeoHopping()) {
-						vpnSession.setGeoHopping(true);
-						vpnService.saveVpnSession(vpnSession);
-						notificationList.add(vpnSession);
-					}
+					notificationList.add(vpnSession);
 				}
 
 				//create notifications for the vpn sessions
