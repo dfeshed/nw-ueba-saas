@@ -7,7 +7,6 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 public abstract class AbstractAggrFeatureEvent implements IAggrFeatureEventFunction {
-	protected final static String AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS = "total";
 	
     @Override
     public Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {

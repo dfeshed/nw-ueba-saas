@@ -84,7 +84,7 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 			}
 		}
 
-		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(eventsCounter));
+		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(eventsCounter, eventsCounter.longValue()));
 		return resFeature;
 	}
 }

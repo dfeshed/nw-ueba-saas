@@ -68,12 +68,12 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 	}
 	
 	private AggrFeatureValue createExpected(String maxHistogramKey, GenericHistogram ...genericHistograms){
-		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey);
+		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey,0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();
 		for(GenericHistogram hist: genericHistograms){
 			sumGenericHistogram.add(hist);
 		}
-		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		ret.setTotal((long)sumGenericHistogram.getTotalCount());
 		return ret;
 	}
 

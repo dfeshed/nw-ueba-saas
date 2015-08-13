@@ -3,22 +3,34 @@ package fortscale.streaming.scorer;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import junitparams.JUnitParamsRunner;
 
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.task.TaskContext;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.streaming.TaskTestUtil;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.service.EventsScoreStreamTaskService;
 
+@RunWith(JUnitParamsRunner.class)
 public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
+	
 	
 	private TaskContext context;
 	private MetricsRegistry metricsRegistry;
 	private Counter counter;
+	
+	@SuppressWarnings("resource")
+	@BeforeClass
+	public static void setUpClass(){
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/EventsScoreStreamTaskServiceTest-context.xml");
+	}
 	
 	@Before
 	public void setUp(){
