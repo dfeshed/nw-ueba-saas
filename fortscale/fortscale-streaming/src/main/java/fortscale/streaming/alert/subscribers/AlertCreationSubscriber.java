@@ -71,9 +71,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     private void createTagEvidence(Map insertStreamOutput, List<Evidence> evidences, Long startDate, Long endDate,
                                    EntityType entityType, String entityName) {
-        String[] tags = (String[])insertStreamOutput.get("tags");
+        List<String> tags = (List<String>)insertStreamOutput.get("tags");
         String tag = (String)insertStreamOutput.get("tag");
-        if (Arrays.asList(tags).contains(tag)) {
+        if (tags.contains(tag)) {
             String entityTypeFieldName = (String) insertStreamOutput.
                     get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
