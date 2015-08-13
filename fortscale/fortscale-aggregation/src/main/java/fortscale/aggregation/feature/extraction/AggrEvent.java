@@ -22,8 +22,26 @@ public class AggrEvent implements Event{
 		if(aggrFeatureNameFieldName.equals(key)){
 			return jsonObject.get(aggrFeatureValueFieldName);
 		} else{
-			return jsonObject.get(key);
+			return extractValueFromJson(key);
 		}
+	}
+	
+	private Object extractValueFromJson(String key){
+		String featurePathElems[] = key.split("\\.");
+		JSONObject jsonObjectTmp = jsonObject;
+		try{
+			for(int i = 0; i<featurePathElems.length-1; i++){
+				jsonObjectTmp = (JSONObject) jsonObjectTmp.get(featurePathElems[i]);
+			}
+		} catch(Exception e){
+			return null;
+		}
+		
+		if(jsonObjectTmp == null){
+			return null;
+		}
+		
+		return jsonObjectTmp.get(featurePathElems[featurePathElems.length-1]);
 	}
 
 	@Override

@@ -126,7 +126,10 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		} else{
 			List<String> dataSources = new ArrayList<>();
 			dataSources.add(aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf));
-			List<String> contextFieldNames = conf.getBucketConf().getContextFieldNames();
+			List<String> contextFieldNames = new ArrayList<>();
+			for(String contextName: conf.getBucketConf().getContextFieldNames()){
+				contextFieldNames.add(aggregatedFeatureEventsConfUtilService.buildAggregatedFeatureContextFieldName(contextName));
+			}
 			String strategyName = outputBucketStrategy;
 			List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
 			aggrFeatureConfs.add(aggregatedFeatureConf);
