@@ -22,7 +22,7 @@ public class AggrEvent implements Event{
 		if(aggrFeatureNameFieldName.equals(key)){
 			return jsonObject.get(aggrFeatureValueFieldName);
 		} else{
-			return null;
+			return jsonObject.get(key);
 		}
 	}
 

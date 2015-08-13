@@ -31,8 +31,8 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
-    public static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
-    protected static final String EVENT_FIELD_DATE_TIME = "date_time";
+    public static final String EVENT_FIELD_CREATION_EPOCHTIME = "creation_epochtime";
+    protected static final String EVENT_FIELD_CREATION_DATE_TIME = "creation_date_time";
     public static final String EVENT_FIELD_CONTEXT = "context";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     public static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
@@ -67,6 +67,8 @@ public class AggrFeatureEventBuilder {
     @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;
     
+    @Value("${impala.table.fields.epochtime}")
+	private String epochtimeFieldName;
     
 
     @Autowired
@@ -305,11 +307,11 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_CONTEXT, context);
 
         // Event time
-        Long date_time_unix = System.currentTimeMillis() / 1000;
-        event.put(EVENT_FIELD_DATE_TIME_UNIX, date_time_unix);
+        Long creation_epochtime = System.currentTimeMillis() / 1000;
+        event.put(EVENT_FIELD_CREATION_EPOCHTIME, creation_epochtime);
 
-        String date_time = format.format(new Date(date_time_unix * 1000));
-        event.put(EVENT_FIELD_DATE_TIME, date_time);
+        String date_time = format.format(new Date(creation_epochtime * 1000));
+        event.put(EVENT_FIELD_CREATION_DATE_TIME, date_time);
 
         // Start Time
         event.put(EVENT_FIELD_START_TIME_UNIX, startTimeSec);
@@ -320,6 +322,9 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
         String end_time = format.format(new Date(endTimeSec * 1000));
         event.put(EVENT_FIELD_END_TIME, end_time);
+        
+        // time of the event to be compared against other events from different types (raw events, entity event...)
+        event.put(epochtimeFieldName, endTimeSec);
 
         // Data Sources
         JSONArray dataSourcesJsonArray = new JSONArray();
