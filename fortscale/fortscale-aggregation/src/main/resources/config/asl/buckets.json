@@ -44,6 +44,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
+          "name": "high_score_date_time_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_has_events_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score>=50)]"}
+        },
+        {
           "name": "hourly_histogram_of_events",
           "featureNamesMap": {
             "groupBy": ["hour"]
@@ -52,7 +58,6 @@
         }
       ]
     },
-
     {
       "name": "normalized_username_ssh_daily",
       "contextFieldNames": [
@@ -89,6 +94,12 @@
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
+          "name": "high_score_date_time_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_has_events_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score>=50)]"}
+        },
+        {
           "name": "hourly_histogram_of_events",
           "featureNamesMap": {
             "groupBy": ["hour"]
@@ -97,7 +108,6 @@
         }
       ]
     },
-
     {
       "name": "normalized_username_vpn_daily",
       "contextFieldNames": [
@@ -153,7 +163,8 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
-    }, {
+    },
+    {
       "name": "destination_machine_kerberos_logins_daily",
       "contextFieldNames": [
         "destination_machine"
@@ -190,7 +201,8 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
-    }, {
+    },
+    {
       "name": "destination_machine_ssh_daily",
       "contextFieldNames": [
         "destination_machine"
