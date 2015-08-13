@@ -246,6 +246,25 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
+    },
+    {
+      "name": "country_vpn_daily",
+      "contextFieldNames": [
+        "country"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
     }
   ]
 }
