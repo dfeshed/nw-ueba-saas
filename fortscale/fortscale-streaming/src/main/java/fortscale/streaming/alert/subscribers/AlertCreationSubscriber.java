@@ -27,6 +27,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     protected AlertsService alertsService;
 
     /**
+     * Evidence service (for Mongo export)
+     */
+    @Autowired
+    protected EvidencesService evidencesService;
+
+    /**
      * Listener method called when Esper has detected a pattern match.
      * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
      */
@@ -78,8 +84,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
             dataEntitiesIds.add("active_directory");
-            EvidencesService evidencesService;evidencesService = SpringService.getInstance().
-                    resolve(EvidencesService.class);
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
                     dataEntitiesIds, 50d, tag, "tag");
