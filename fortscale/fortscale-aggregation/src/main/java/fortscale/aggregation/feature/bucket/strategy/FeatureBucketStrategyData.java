@@ -2,8 +2,15 @@ package fortscale.aggregation.feature.bucket.strategy;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
+import fortscale.domain.core.User;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,6 +20,7 @@ public class FeatureBucketStrategyData {
 	public static final String STRATEGY_NAME_FIELD = "strategyName";
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
+	public static final String CONTEXT_MAP_FIELD = "contextMap";
 
 	@Id
 	private String id;
@@ -25,6 +33,8 @@ public class FeatureBucketStrategyData {
 	private long startTime;
 	@Field(END_TIME_FIELD)
 	private long endTime;
+	
+	Map<String, String> contextMap = new HashMap<>();
 
 	@JsonCreator
 	public FeatureBucketStrategyData(@JsonProperty("strategyEventContextId") String strategyEventContextId, @JsonProperty("strategyName") String strategyName, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime) {
@@ -56,5 +66,23 @@ public class FeatureBucketStrategyData {
 
 	public String getStrategyId() {
 		return String.format("%s_%d", strategyEventContextId, startTime);
+	}
+
+	public Map<String, String> getContextMap() {
+		return contextMap;
+	}
+
+	public void setContextMap(Map<String, String> contextMap) {
+		this.contextMap = contextMap;
+	}
+	
+	public void putContext(String key, String val){
+		contextMap.put(key, val);
+	}
+	
+	
+	
+	public static String getContextNameField(String contextName) {
+		return String.format("%s.%s", FeatureBucketStrategyData.CONTEXT_MAP_FIELD, contextName);
 	}
 }

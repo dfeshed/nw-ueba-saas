@@ -18,6 +18,8 @@ import fortscale.utils.ConversionUtils;
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private static final String STRATEGY_CONTEXT_ID_SEPARATOR = "_";
+	public static final String USERNAME_CONTEXT_FIELD_NAME = "username";
+	public static final String SOURCE_IP_CONTEXT_FIELD_NAME = "source_ip";
 
 	@Value("${impala.table.fields.normalized.username}")
 	private String usernameFieldName;
@@ -72,7 +74,9 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				String strategyEventContextId = getStrategyEventContextId(username);
 				boolean isFeatureBucketStrategyDataCreated = false;
 				boolean isFeatureBucketStrategyDataUpdated = false;
-				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, epochtime);
+				Map<String, String> contextMap = new HashMap<>();
+				contextMap.put(SOURCE_IP_CONTEXT_FIELD_NAME, sourceIP);
+				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, epochtime, contextMap);
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one

@@ -7,6 +7,7 @@ import org.apache.samza.storage.kv.KeyValueStore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyStore {
 	private static final String STORE_NAME = "strategy_store";
@@ -19,8 +20,8 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 	}
 
 	@Override
-	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyContextId, long latestStartTime) {
-		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyContextId);
+	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
+		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyEventContextId);
 		if(strategyDataList == null){
 			return null;
 		}
@@ -61,4 +62,22 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 		// Write back to store the updated list
 		strategyStore.put(strategyContextId, strategyDataList);
 	}
+
+	@Override
+	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime, Map<String, String> contextMap) {
+		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyEventContextId);
+		if(strategyDataList == null){
+			return null;
+		}
+		// Assume that the list is in ascending order over the start time
+		for (int i = strategyDataList.size() - 1; i >= 0; i--) {
+			FeatureBucketStrategyData featureBucketStrategyData = strategyDataList.get(i);
+			if (featureBucketStrategyData.getStartTime() <= latestStartTime  && featureBucketStrategyData.getContextMap().equals(contextMap)) {
+				return featureBucketStrategyData;
+			}
+		}
+		return null;
+	}
+	
+	
 }
