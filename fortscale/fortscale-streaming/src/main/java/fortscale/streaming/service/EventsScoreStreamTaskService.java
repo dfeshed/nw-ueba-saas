@@ -117,7 +117,7 @@ public class EventsScoreStreamTaskService {
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
-				saveEvent(message);
+//				saveEvent(message);
 			} catch(Exception exception){
 				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
 			}
@@ -127,13 +127,13 @@ public class EventsScoreStreamTaskService {
 		lastTimestampCount.set(timestamp);
 	}
 	
-	private void saveEvent(JSONObject event){
-		String eventTypeValue = (String) event.get(eventTypeFieldName);
-		if(StringUtils.isBlank(eventTypeValue)){
-			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
-		}
-		String collectionName = String.format("scored_%s", eventTypeValue);
-		
-		mongoTemplate.save(event, collectionName);
-	}
+//	private void saveEvent(JSONObject event){
+//		String eventTypeValue = (String) event.get(eventTypeFieldName);
+//		if(StringUtils.isBlank(eventTypeValue)){
+//			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
+//		}
+//		String collectionName = String.format("scored_%s", eventTypeValue);
+//		
+//		mongoTemplate.save(event, collectionName);
+//	}
 }
