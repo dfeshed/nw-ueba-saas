@@ -80,13 +80,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
         List<String> tags = (List<String>)insertStreamOutput.get("tags");
         String tag = (String)insertStreamOutput.get("tag");
         if (tags.contains(tag)) {
-            String entityTypeFieldName = (String) insertStreamOutput.
-                    get(Evidence.entityTypeFieldNameField);
+            String entityTypeFieldName = (String)insertStreamOutput.get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
             dataEntitiesIds.add("active_directory");
-            Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
-                    entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
-                    dataEntitiesIds, 50d, tag, "tag");
+            Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName, entityName,
+                    EvidenceType.Tag, new Date(startDate), new Date(endDate), dataEntitiesIds, 50d, tag, "tag");
             //TODO - set supporting information here
             // Save evidence to MongoDB
             try {

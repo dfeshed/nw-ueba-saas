@@ -204,13 +204,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	private void createStatement(RuleConfig ruleConfig, StatementDecorator statementDecorator, Object... decoratorParams) {
 		//Create the Esper alert statement object
 		ruleConfig = statementDecorator.prepareStatement(ruleConfig,decoratorParams);
-		EPStatement epStatement;
-		try {
-			epStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
-		} catch (EPStatementException ex) {
-			//ignore variable already exists statement error
-			return;
-		}
+		EPStatement epStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
 		//Generate Subscriber from spring
 		if (!ruleConfig.getSubscriberBeanName().equals("none")) {
 			AbstractSubscriber alertSubscriber = (AbstractSubscriber) SpringService.getInstance().resolve(ruleConfig.getSubscriberBeanName());
