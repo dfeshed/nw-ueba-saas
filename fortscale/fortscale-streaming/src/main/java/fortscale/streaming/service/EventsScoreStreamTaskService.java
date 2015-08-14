@@ -8,9 +8,6 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -25,6 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import fortscale.ml.service.ModelService;
@@ -36,6 +34,8 @@ import fortscale.streaming.scorer.FeatureScore;
 import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 @Configurable(preConstruction=true)
 public class EventsScoreStreamTaskService {
@@ -136,6 +136,6 @@ public class EventsScoreStreamTaskService {
 		}
 		String collectionName = String.format("scored_%s", eventTypeValue);
 		
-		mongoTemplate.save(JSON.parse(event.toJSONString()), collectionName);
+		mongoTemplate.getCollection(collectionName).insert((DBObject)JSON.parse(event.toJSONString()));
 	}
 }

@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.extraction;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -28,10 +30,10 @@ public class AggrEvent implements Event{
 	
 	private Object extractValueFromJson(String key){
 		String featurePathElems[] = key.split("\\.");
-		JSONObject jsonObjectTmp = jsonObject;
+		Map<?, ?> jsonObjectTmp = jsonObject;
 		try{
 			for(int i = 0; i<featurePathElems.length-1; i++){
-				jsonObjectTmp = (JSONObject) jsonObjectTmp.get(featurePathElems[i]);
+				jsonObjectTmp = (Map<?, ?>) jsonObjectTmp.get(featurePathElems[i]);
 			}
 		} catch(Exception e){
 			return null;
