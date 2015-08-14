@@ -13,6 +13,8 @@ public class EntityEventTestBase {
     private String aggrFeatureNameFieldName;
 	@Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
+	@Value("${streaming.aggr_event.field.context}")
+	private String contextFieldName;
 	
 
 	protected JSONObject createMessage(
@@ -35,7 +37,7 @@ public class EntityEventTestBase {
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_CREATION_EPOCHTIME, dateTime);
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX, startTime);
 		message.put(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX, endTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT, context);
+		message.put(contextFieldName, context);
 		return message;
 	}
 }

@@ -33,7 +33,6 @@ public class AggrFeatureEventBuilder {
 
     public static final String EVENT_FIELD_CREATION_EPOCHTIME = "creation_epochtime";
     protected static final String EVENT_FIELD_CREATION_DATE_TIME = "creation_date_time";
-    public static final String EVENT_FIELD_CONTEXT = "context";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     public static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
     protected static final String EVENT_FIELD_START_TIME = "start_time";
@@ -62,6 +61,8 @@ public class AggrFeatureEventBuilder {
     private String aggrFeatureValueFieldName;
     @Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
+    @Value("${streaming.aggr_event.field.context}")
+	private String contextFieldName;
     
 
     @Value("${fetch.data.cycle.in.seconds}")
@@ -304,7 +305,7 @@ public class AggrFeatureEventBuilder {
         event.put(bucketConfNameFieldName, conf.getBucketConfName());
 
         // Context
-        event.put(EVENT_FIELD_CONTEXT, context);
+        event.put(contextFieldName, context);
 
         // Event time
         Long creation_epochtime = System.currentTimeMillis() / 1000;

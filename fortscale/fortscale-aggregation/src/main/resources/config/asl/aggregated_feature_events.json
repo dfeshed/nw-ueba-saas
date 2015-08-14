@@ -38,6 +38,23 @@
         }
       },
       {
+        "name": "distinct_number_of_src_machines_with_high_score_kerberos",
+        "type": "P",
+        "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
         "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
@@ -83,6 +100,40 @@
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_with_high_score_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
+        "name": "distinct_number_of_dst_machines_with_high_score_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "destination_machine_with_high_score_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {

@@ -25,6 +25,14 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "source_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.eventscore > 50)]"}
+        },
+        {
           "name": "destination_machine_with_high_score_histogram",
           "featureNamesMap": {
             "groupBy": ["destination_machine"]
@@ -81,6 +89,22 @@
             "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "source_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.eventscore > 50)]"}
+        },
+        {
+          "name": "destination_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["destination_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.eventscore > 50)]"}
         },
         {
           "name": "number_of_events",
@@ -145,6 +169,7 @@
         }
       ]
     },
+
     {
       "name": "source_machine_kerberos_logins_daily",
       "contextFieldNames": [
@@ -183,6 +208,7 @@
         }
       ]
     },
+
     {
       "name": "source_machine_ssh_daily",
       "contextFieldNames": [
@@ -244,6 +270,25 @@
       "name": "destination_machine_vpn_daily",
       "contextFieldNames": [
         "destination_machine"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "country_vpn_daily",
+      "contextFieldNames": [
+        "country"
       ],
       "dataSources": [
         "vpn"

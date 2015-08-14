@@ -178,8 +178,8 @@ public class AggrFeatureEventBuilderTest {
         Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
         Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldName()));
         Assert.assertEquals(numberOfDistinctValues, event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldValue()));
-        Assert.assertEquals("john", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("username"));
-        Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT)).get("machine"));
+        Assert.assertEquals("john", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("username"));
+        Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("machine"));
         Assert.assertEquals(startTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX));
         Assert.assertEquals(endTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX));
         Assert.assertEquals("ssh", ((JSONArray)event.get(AggrFeatureEventBuilder.EVENT_FIELD_DATA_SOURCES)).get(0));
