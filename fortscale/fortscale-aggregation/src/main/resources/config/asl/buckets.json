@@ -54,7 +54,7 @@
         {
           "name": "high_score_date_time_events",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_has_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.date_time_score>=50)]"}
         },
         {
@@ -120,7 +120,7 @@
         {
           "name": "high_score_date_time_events",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_has_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.date_time_score>=50)]"}
         },
         {
