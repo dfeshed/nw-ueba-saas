@@ -30,6 +30,9 @@ app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
     }
     if (_mirageIsEnabled()){
         app.import(app.bowerDirectory + "/mock-socket/dist/mock-socket.js");
+
+        //Load the JSON file with incidents
+        app.import("vendor/incidents.json")
     }
 })();
 
