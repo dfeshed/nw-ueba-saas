@@ -83,10 +83,11 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 		for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
 			Feature numberOfevents = aggrFeatures.get(aggrFeatureName);
 			if (numberOfevents != null) {
-				if (numberOfevents.getValue() instanceof Long) {
-					eventsCounter += ConversionUtils.convertToLong(numberOfevents.getValue());
+				Long val = ConversionUtils.convertToLong(numberOfevents.getValue());
+				if (val != null) {
+					eventsCounter += val;
 				} else {
-					throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s", aggrFeatureName, Integer.class.getSimpleName()));
+					throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s", aggrFeatureName, Long.class.getSimpleName()));
 				}
 			}
 		}
