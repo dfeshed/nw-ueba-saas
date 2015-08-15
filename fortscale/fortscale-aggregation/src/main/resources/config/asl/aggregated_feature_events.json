@@ -315,8 +315,39 @@
           "type": "aggr_feature_number_of_new_occurences_func",
           "includeValues": true
         }
+      },
+      {
+        "name": "has_high_score_date_time_events_kerberos",
+        "type": "P",
+        "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "has_high_score_date_time_events_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
       }
-
     ]
   }
 }

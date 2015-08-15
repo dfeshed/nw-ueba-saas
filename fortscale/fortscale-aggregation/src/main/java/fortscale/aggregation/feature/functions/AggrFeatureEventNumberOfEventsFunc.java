@@ -38,7 +38,7 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 			return null;
 		}
 		if (aggrFeature == null) {
-			aggrFeature = new Feature(aggregatedFeatureConf.getName(), 1);
+			aggrFeature = new Feature(aggregatedFeatureConf.getName(), 1L);
 			return aggrFeature;
 		}
 
@@ -47,7 +47,7 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 			value = 0;
 			aggrFeature.setValue(value);
 		}
-		aggrFeature.setValue(ConversionUtils.convertToInteger(aggrFeature.getValue())+1);
+		aggrFeature.setValue(ConversionUtils.convertToLong(aggrFeature.getValue())+1);
 
 		return aggrFeature.getValue();
 	}
@@ -66,7 +66,14 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 			return null;
 		}
 
-		Integer eventsCounter = 0;
+		long eventsCounter = calculateNumberOfEventsFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+
+		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(eventsCounter, eventsCounter));
+		return resFeature;
+	}
+	
+	public static long calculateNumberOfEventsFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList){
+		long eventsCounter = 0;
 
 		List<String> aggregatedFeatureNamesList = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(AGGREGATED_FEATURE_NAME_TO_SUM);
 		if (aggregatedFeatureNamesList.size() != 1) {
@@ -76,15 +83,14 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 		for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
 			Feature numberOfevents = aggrFeatures.get(aggrFeatureName);
 			if (numberOfevents != null) {
-				if (numberOfevents.getValue() instanceof Integer) {
-					eventsCounter += (Integer) numberOfevents.getValue();
+				if (numberOfevents.getValue() instanceof Long) {
+					eventsCounter += ConversionUtils.convertToLong(numberOfevents.getValue());
 				} else {
 					throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s", aggrFeatureName, Integer.class.getSimpleName()));
 				}
 			}
 		}
-
-		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(eventsCounter, eventsCounter.longValue()));
-		return resFeature;
+		
+		return eventsCounter;
 	}
 }
