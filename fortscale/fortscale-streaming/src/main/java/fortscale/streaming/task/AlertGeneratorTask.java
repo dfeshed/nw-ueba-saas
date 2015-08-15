@@ -1,6 +1,9 @@
 package fortscale.streaming.task;
 
-import com.espertech.esper.client.*;
+import com.espertech.esper.client.Configuration;
+import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPServiceProviderManager;
+import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
