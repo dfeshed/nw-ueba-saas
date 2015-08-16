@@ -36,6 +36,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
+	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -201,17 +202,34 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		String anomalyValue = extractAnomalyValue(evidence, feature);
+		boolean isEvidenceSupportAnomalyValue = isEvidenceSupportAnomalyValue(evidence);
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
+		SupportingInformationData evidenceSupportingInformationData;
+
+		if (isEvidenceSupportAnomalyValue) {
+			String anomalyValue = extractAnomalyValue(evidence, feature);
+
+			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
+					feature, anomalyValue, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
+		}
+		else {
+			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
+					feature, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
+		}
 
 		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
-		//add the anomaly to the relevant fields
-		HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
-		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
+		List<HistogramEntry> listOfHistogramEntries;
+
+		if (isEvidenceSupportAnomalyValue) {
+			//add the anomaly to the relevant fields
+			HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
+			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
+		}
+		else {
+			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram);
+		}
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -221,7 +239,7 @@ public class ApiEvidenceController extends DataQueryController {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
-			if(listOfHistogramEntries.size() >= numColumns + 2 ){ // num columns + 1 others +1 anomaly.
+			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isEvidenceSupportAnomalyValue)){
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
@@ -233,6 +251,16 @@ public class ApiEvidenceController extends DataQueryController {
 
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
+		// num columns + 1 others +1 anomaly
+		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
+	}
+
+	private boolean isEvidenceSupportAnomalyValue(Evidence evidence) {
+		// TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
+		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
 	}
 
 	private String extractAnomalyValue(Evidence evidence, String feature) {
@@ -308,12 +336,24 @@ public class ApiEvidenceController extends DataQueryController {
 
 			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
 
-			if (key.equals(anomaly)){
+			if (anomaly != null && key.equals(anomaly)){
 				histogramEntry.setIsAnomaly(true);
 			}
 			histogramEntries.add(histogramEntry);
 		}
 		return histogramEntries;
+	}
+
+	/**
+	 * method that helps to serialize aggregated information into our API standarts.
+	 * gets a map of histogramKey,value and return a list of HistogramPairs.
+	 * this function also marks the anomaly pair - essential for further data manipulation.
+	 *
+	 * @param supportingInformationHistogram
+	 * @return list of HistogramPairs, with (0 or more) anomaly mark
+	 */
+	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram) {
+		return createListOfHistogramPairs(supportingInformationHistogram, null);
 	}
 
 }

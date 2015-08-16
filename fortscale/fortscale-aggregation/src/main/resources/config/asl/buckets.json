@@ -196,7 +196,7 @@
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
           "filter": {"jsonPath": "[?(@.counrty_score > 50)]"}
-        },
+        }
       ]
     },
 
