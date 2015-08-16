@@ -32,8 +32,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AbstractAggrFeatu
 		Set<String> currentFeaturesSet = lastGenericHistogram.getObjects();
 
 		Set<String> newOccurencesSet = substractSets(currentFeaturesSet, previousFeaturesSet);
-		AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(newOccurencesSet.size());
-		aggrFeatureValue.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, lastGenericHistogram.getTotalCount());
+		AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(newOccurencesSet.size(), (long)lastGenericHistogram.getTotalCount());
 		if (includeValues) {
 			aggrFeatureValue.putAdditionalInformation(NEW_OCCURENCES_VALUES, newOccurencesSet);
 		}

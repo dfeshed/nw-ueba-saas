@@ -67,12 +67,12 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 	}
 	
 	private AggrFeatureValue createExpected(Long numberOfDistinctValues, GenericHistogram ...genericHistograms){
-		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues);
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues,0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();
 		for(GenericHistogram hist: genericHistograms){
 			sumGenericHistogram.add(hist);
 		}
-		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		ret.setTotal((long)sumGenericHistogram.getTotalCount());
 		return ret;
 	}
 

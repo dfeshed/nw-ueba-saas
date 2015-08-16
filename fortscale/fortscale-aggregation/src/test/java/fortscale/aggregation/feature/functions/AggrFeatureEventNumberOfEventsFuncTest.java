@@ -44,7 +44,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 	public void testUpdateAggrFeature() {
 		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName", 1);
-		int actual1 = (int)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10));
+		long actual1 = (long)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10));
 		Assert.assertEquals(11, (int) actual1);
 	}
 
@@ -58,7 +58,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		AggregatedFeatureConf conf1 = createAggregatedFeatureConf(aggregatedFeatureName, 1);
 		Feature actual2 = (Feature)function.updateAggrFeature(conf1, new HashMap<String, Feature >(), null);
 		Assert.assertEquals(aggregatedFeatureName, actual2.getName());
-		int valueResult = (int)actual2.getValue();
+		long valueResult = (long)actual2.getValue();
 		Assert.assertEquals(1, valueResult);
 	}
 
@@ -76,11 +76,11 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 
 
 		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("feature1", new Feature(featureNameToCount, 1));
-		bucket1FeatureMap.put("feature2", new Feature("feature2", 8));
+		bucket1FeatureMap.put("feature1", new Feature("feature1", 1L));
+		bucket1FeatureMap.put("feature2", new Feature("feature2", 8L));
 
 		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-		bucket2FeatureMap.put("feature1", new Feature(featureNameToCount, 12));
+		bucket2FeatureMap.put("feature1", new Feature("feature1", 12));
 		bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
@@ -92,7 +92,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
 		Assert.assertEquals(featureNameToCount, actual1.getName());
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		Assert.assertEquals(13, aggrFeatureValue.getValue());
+		Assert.assertEquals(13L, aggrFeatureValue.getValue());
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		Assert.assertEquals(0, aggrFeatureValue.getValue());
+		Assert.assertEquals(0L, aggrFeatureValue.getValue());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

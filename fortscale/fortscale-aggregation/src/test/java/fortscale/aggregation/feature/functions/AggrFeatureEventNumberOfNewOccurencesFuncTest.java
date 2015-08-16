@@ -75,12 +75,12 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 	}
 	
 	private AggrFeatureValue createExpected(int numberOfNewOccurences, String newOccurenceValue, GenericHistogram ...genericHistograms){
-		AggrFeatureValue ret = new AggrFeatureValue(numberOfNewOccurences);
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfNewOccurences, 0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();
 		for(GenericHistogram hist: genericHistograms){
 			sumGenericHistogram.add(hist);
 		}
-		ret.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, sumGenericHistogram.getTotalCount());
+		ret.setTotal((long) sumGenericHistogram.getTotalCount());
 		
 		Set<String> newOccurencesSet = new HashSet<>();
 		newOccurencesSet.add(newOccurenceValue);

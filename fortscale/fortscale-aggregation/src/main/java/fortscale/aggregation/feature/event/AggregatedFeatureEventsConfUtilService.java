@@ -24,6 +24,9 @@ public class AggregatedFeatureEventsConfUtilService {
 	@Value("${streaming.event.field.type.aggr_event}")
     private String eventTypeFieldValue;
 	
+	@Value("${streaming.aggr_event.field.context}")
+	private String contextFieldName;
+	
 	public String buildOutputBucketConfName(AggregatedFeatureEventConf conf){
 		return String.format("%s_%s", conf.getBucketConfName(), conf.getName());
 	}
@@ -38,6 +41,10 @@ public class AggregatedFeatureEventsConfUtilService {
 	
 	public String buildOutputAggregatedFeatureConfGroupByFieldName(AggregatedFeatureEventConf conf){
 		return String.format("%s.%s", conf.getBucketConfName(), conf.getName());
+	}
+	
+	public String buildAggregatedFeatureContextFieldName(String contextName){
+		return String.format("%s.%s", contextFieldName, contextName);
 	}
 	
 	public AggregatedFeatureConf createOutputAggregatedFeatureConf(AggregatedFeatureEventConf conf) throws ParseException, JsonProcessingException{

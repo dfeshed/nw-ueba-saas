@@ -28,6 +28,8 @@ public class AggrFeatureEventWrapper {
     private String aggrFeatureNameFieldName;
 	@Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
+	@Value("${streaming.aggr_event.field.context}")
+	private String contextFieldName;
 
 	private JSONObject aggrFeatureEvent;
 	private Map<String, String> context;
@@ -106,7 +108,7 @@ public class AggrFeatureEventWrapper {
 		this.context = new HashMap<>();
 
 		try {
-			context = (JSONObject)aggrFeatureEvent.get(AggrFeatureEventBuilder.EVENT_FIELD_CONTEXT);
+			context = (JSONObject)aggrFeatureEvent.get(contextFieldName);
 			Assert.notNull(context);
 		} catch (Exception e) {
 			return;

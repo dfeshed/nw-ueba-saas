@@ -10,6 +10,8 @@ public class AggrFeatureEventBuilderTestHelper {
     private String aggrFeatureNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
+    @Value("${streaming.aggr_event.field.context}")
+	private String contextFieldName;
     
     
     
@@ -24,4 +26,7 @@ public class AggrFeatureEventBuilderTestHelper {
 		return aggrFeatureValueFieldName;
 	}
     
+	public String getAggrFeatureContextFieldName(){
+		return contextFieldName;
+	}
 }

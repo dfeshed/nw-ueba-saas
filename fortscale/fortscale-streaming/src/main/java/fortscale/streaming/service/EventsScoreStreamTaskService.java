@@ -8,9 +8,6 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -20,7 +17,13 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -31,6 +34,8 @@ import fortscale.streaming.scorer.FeatureScore;
 import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 @Configurable(preConstruction=true)
 public class EventsScoreStreamTaskService {
@@ -48,6 +53,11 @@ public class EventsScoreStreamTaskService {
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
 	
+	@Value("${streaming.event.field.type}")
+	private String eventTypeFieldName;
+	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
@@ -109,6 +119,7 @@ public class EventsScoreStreamTaskService {
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				saveEvent(message);
 			} catch(Exception exception){
 				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
 			}
@@ -116,5 +127,15 @@ public class EventsScoreStreamTaskService {
 		
 		processedMessageCount.inc();
 		lastTimestampCount.set(timestamp);
+	}
+	
+	private void saveEvent(JSONObject event){
+		String eventTypeValue = (String) event.get(eventTypeFieldName);
+		if(StringUtils.isBlank(eventTypeValue)){
+			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
+		}
+		String collectionName = String.format("scored_%s", eventTypeValue);
+		
+		mongoTemplate.getCollection(collectionName).insert((DBObject)JSON.parse(event.toJSONString()));
 	}
 }

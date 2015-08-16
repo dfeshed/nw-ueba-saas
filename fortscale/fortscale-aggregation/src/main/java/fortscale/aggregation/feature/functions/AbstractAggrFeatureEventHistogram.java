@@ -20,7 +20,5 @@ public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeat
     
     protected abstract AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram);
     
-    protected void fillAggrFeatureValueWithAdditionalInfo(AggrFeatureValue aggrFeatureValue, GenericHistogram histogram){
-    	aggrFeatureValue.putAdditionalInformation(AbstractAggrFeatureEvent.AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, histogram.getTotalCount());
-    }
+    protected void fillAggrFeatureValueWithAdditionalInfo(AggrFeatureValue aggrFeatureValue, GenericHistogram histogram){}
 }
