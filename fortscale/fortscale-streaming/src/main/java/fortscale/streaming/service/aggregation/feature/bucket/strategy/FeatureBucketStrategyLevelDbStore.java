@@ -78,6 +78,21 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 		}
 		return null;
 	}
+
+	@Override
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyDataContainsEventTime(String strategyEventContextId,	long eventTime) {
+		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyEventContextId);
+		if(strategyDataList == null){
+			return null;
+		}
+		List<FeatureBucketStrategyData> ret = new ArrayList<>();
+		for (FeatureBucketStrategyData featureBucketStrategyData: strategyDataList) {
+			if (featureBucketStrategyData.getStartTime() <= eventTime && featureBucketStrategyData.getEndTime() > eventTime) {
+				ret.add(featureBucketStrategyData);
+			}
+		}
+		return ret;
+	}
 	
 	
 }

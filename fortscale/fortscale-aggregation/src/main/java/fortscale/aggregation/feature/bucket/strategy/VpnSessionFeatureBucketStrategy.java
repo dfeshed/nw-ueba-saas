@@ -42,7 +42,6 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private FeatureBucketStrategyStore featureBucketStrategyStore;
 	private String strategyName;
 	private long maxSessionDuration;
-	private HashMap<String, List<String>> openUserSessions; //username and source ip with open sessions
 	private Map<UserNameAndSourceIp, List<NextBucketEndTimeListenerData>> usernameAndSourceIp2listenersListMap = new HashMap<>();
 
 	public VpnSessionFeatureBucketStrategy(String strategyName, long maxSessionDuration) {
@@ -53,7 +52,6 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		this.featureBucketStrategyStore = null;
 		this.strategyName = strategyName;
 		this.maxSessionDuration = maxSessionDuration;
-		this.openUserSessions = new HashMap<String, List<String>>();
 	}
 
 	public void setFeatureBucketStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
@@ -83,7 +81,6 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() <= epochtime) {
-					RemoveClosedUserSessions(username, sourceIP);
 					if (status.equalsIgnoreCase(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyEventContextId, strategyName, epochtime, epochtime + maxSessionDuration, contextMap);
 						isFeatureBucketStrategyDataCreated = true;
@@ -117,20 +114,10 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	@Override
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, Event event, long epochtimeInSec) {
 		Assert.notNull(event);
-		List<FeatureBucketStrategyData> strategyDataList = new ArrayList<>();
 		String username = ConversionUtils.convertToString(event.get(usernameFieldName));
 
-		if (openUserSessions.containsKey(username)) {
-			for (String sourceIp:openUserSessions.get(username)) {
-				String strategyEventContextId = getStrategyEventContextId(username);
-				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, epochtimeInSec);
-				if(featureBucketStrategyData != null && featureBucketStrategyData.getEndTime()>epochtimeInSec){
-					strategyDataList.add(featureBucketStrategyData);
-				}
-			}
-		}
-
-		return strategyDataList;
+		String strategyEventContextId = getStrategyEventContextId(username);
+		return featureBucketStrategyStore.getFeatureBucketStrategyDataContainsEventTime(strategyEventContextId, epochtimeInSec);
 	}
 
 	/**
@@ -142,20 +129,13 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	 */
 	@Override
 	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds) throws IllegalArgumentException{
-
 		UserNameAndSourceIp userNameAndSourceIp = getUserNameAndSourceIpFromStrategyId(strategyId);
-		FeatureBucketStrategyData strategyData = null;
 
-		if (openUserSessions.containsKey(userNameAndSourceIp.username)) {
-			for (String sourceIp:openUserSessions.get(userNameAndSourceIp.username)) {
-				if(sourceIp.equals(userNameAndSourceIp.sourceIp)) {
-					String strategyEventContextId = getStrategyEventContextId(userNameAndSourceIp.username);
-					strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, startAfterEpochtimeInSeconds + 1);
-				}
-			}
-		}
-
-		return strategyData;
+		String strategyEventContextId = getStrategyEventContextId(userNameAndSourceIp.username);
+		Map<String, String> contextMap = new HashMap<>();
+		contextMap.put(SOURCE_IP_CONTEXT_FIELD_NAME, userNameAndSourceIp.sourceIp);
+		contextMap.put(USERNAME_CONTEXT_FIELD_NAME, userNameAndSourceIp.username);
+		return featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, startAfterEpochtimeInSeconds + 1, contextMap);
 	}
 
 	/**
@@ -211,19 +191,16 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 	private String[] getStrategyIdParts(String strategyId) throws IllegalArgumentException{
 		Assert.notNull(strategyId);
-		String[] strings = new String[4];
+		String[] strings = new String[3];
 		strings[0] = strategyId.substring(0,VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE.length());
 		int lastIndexOfSeperator = strategyId.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR);
-		strings[3] = strategyId.substring(lastIndexOfSeperator+1); // startTime
-		String userNameAndIpAddress = strategyId.substring(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE.length()+1, lastIndexOfSeperator);
-		lastIndexOfSeperator = userNameAndIpAddress.lastIndexOf(STRATEGY_CONTEXT_ID_SEPARATOR);
-		strings[1] = userNameAndIpAddress.substring(0,lastIndexOfSeperator);
-		strings[2] = userNameAndIpAddress.substring(lastIndexOfSeperator+1);
+		strings[2] = strategyId.substring(lastIndexOfSeperator+1); // startTime
+		strings[1] = strategyId.substring(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE.length()+1, lastIndexOfSeperator);
 		if(!strings[0].equals(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
 		try {
-			Long.parseLong(strings[3]); // Validating that the forth element is long (startTime), getting exception if not.
+			Long.parseLong(strings[2]); // Validating that the forth element is long (startTime), getting exception if not.
 			return strings;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
@@ -243,26 +220,10 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	@Override
 	public String getStrategyContextIdFromStrategyId(String strategyId) throws IllegalArgumentException {
 		String[] strategyIdParts = getStrategyIdParts(strategyId);
-		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 3);
+		return StringUtils.join(strategyIdParts, STRATEGY_CONTEXT_ID_SEPARATOR, 0, 2);
 	}
 
-	private void AddOpenUserSessions(String username, String sourceIP) {
-		if (!openUserSessions.containsKey(username)) {
-			openUserSessions.put(username, new ArrayList<String>());
-		}
-			openUserSessions.get(username).add(sourceIP);
-		}
-
-	private void RemoveClosedUserSessions(String username, String sourceIP) {
-		if (openUserSessions.containsKey(username)) {
-			List<String> userSources = openUserSessions.get(username);
-			userSources.remove(sourceIP);
-			if (userSources.size() == 0) {
-				openUserSessions.remove(username);
-			}
-		}
-	}
-
+	
 	private boolean containsCaseInsensitive(String str, String[] arr){
 		for (String arr_string : arr){
 			if (arr_string.equalsIgnoreCase(str)){

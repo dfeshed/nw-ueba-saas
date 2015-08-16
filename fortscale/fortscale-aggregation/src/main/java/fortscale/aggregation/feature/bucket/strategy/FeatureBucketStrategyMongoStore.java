@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.bucket.strategy;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -57,5 +59,13 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
 		query.with(pageable);
 		return mongoTemplate.findOne(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
+	}
+
+	@Override
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyDataContainsEventTime(String strategyEventContextId,	long eventTime) {
+		Query query = new Query(where(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD).is(strategyEventContextId).and(FeatureBucketStrategyData.START_TIME_FIELD).lte(eventTime).and(FeatureBucketStrategyData.END_TIME_FIELD).gt(eventTime));
+		Sort sort = new Sort(Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
+		query.with(sort);
+		return mongoTemplate.find(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
 	}
 }

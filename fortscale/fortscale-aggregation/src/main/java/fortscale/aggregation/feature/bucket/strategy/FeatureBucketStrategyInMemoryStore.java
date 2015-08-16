@@ -36,10 +36,12 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 		int i;
 		for (i = strategyDataList.size() - 1; i >= 0; i--) {
-			if (featureBucketStrategyData.getStartTime() > strategyDataList.get(i).getStartTime()) {
+			FeatureBucketStrategyData iter = strategyDataList.get(i);
+			if (featureBucketStrategyData.getStartTime() > iter.getStartTime()) {
 				strategyDataList.add(i + 1, featureBucketStrategyData);
 				break;
-			} else if (featureBucketStrategyData.getStartTime() == strategyDataList.get(i).getStartTime()) {
+			} else if (featureBucketStrategyData.getStartTime() == iter.getStartTime() && 
+					featureBucketStrategyData.getContextMap().equals(iter.getContextMap())) {
 				strategyDataList.set(i, featureBucketStrategyData);
 				break;
 			}
@@ -67,6 +69,22 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyDataContainsEventTime(String strategyEventContextId,	long eventTime) {
+		List<FeatureBucketStrategyData> strategyDataList = startegyEventContextIdToData.get(strategyEventContextId);
+		if(strategyDataList == null){
+			return null;
+		}
+		
+		List<FeatureBucketStrategyData> ret = new ArrayList<>();
+		for (FeatureBucketStrategyData featureBucketStrategyData: strategyDataList) {
+			if (featureBucketStrategyData.getStartTime() <= eventTime && featureBucketStrategyData.getEndTime() > eventTime) {
+				ret.add(featureBucketStrategyData);
+			}
+		}
+		return ret;
 	}
 
 }
