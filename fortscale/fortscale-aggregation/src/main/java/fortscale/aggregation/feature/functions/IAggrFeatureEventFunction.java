@@ -19,6 +19,7 @@ import java.util.Map;
     @JsonSubTypes.Type(value = AggrFeatureEventNumberOfDistinctValuesFunc.class, name = AggrFeatureEventNumberOfDistinctValuesFunc.AGGR_FEATURE_FUNCTION_TYPE),
     @JsonSubTypes.Type(value = AggrFeatureEventNumberOfEventsFunc.class, name = AggrFeatureEventNumberOfEventsFunc.AGGR_FEATURE_FUNCTION_TYPE),
     @JsonSubTypes.Type(value = AggrFeatureEventNumberOfNewOccurencesFunc.class, name = AggrFeatureEventNumberOfNewOccurencesFunc.AGGR_FEATURE_FUNCTION_TYPE),
+    @JsonSubTypes.Type(value = AggrFeatureEventHasEventsFunc.class, name = AggrFeatureEventHasEventsFunc.AGGR_FEATURE_FUNCTION_TYPE),
     @JsonSubTypes.Type(value = AggrFeatureMaxIntegerFunc.class, name = AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 
