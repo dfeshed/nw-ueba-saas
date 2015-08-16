@@ -115,6 +115,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
+            String totalFieldPath = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
 				dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
@@ -125,9 +126,13 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			if (isConfigContainKey(config, String.format("fortscale.events.defaultFields.%s", dataSource))) {
 				defaultFields = getConfigStringList(config, String.format("fortscale.events.addDefaultFields.%s", dataSource));
 			}
+
+            if (isConfigContainKey(config, String.format("fortscale.events.total.field.path.%s", dataSource))) {
+                totalFieldPath = getConfigString(config, String.format("fortscale.events.total.field.path.%s", dataSource));
+            }
 			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(
 					evidenceType,scoreThreshold,dataEntitiesIds,dataEntitiesIdsField,startTimestampField,endTimestampField,entityType,entityNameField,
-					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField , defaultFields));
+					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField , defaultFields,totalFieldPath));
 
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
@@ -152,6 +157,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			return;
 		}
 
+        //Get the total events amount if exist
+        Integer totalAmiountOfEvents = null;
+        totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath));
+
+
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
 		List<String> dataEntitiesIds = null;
 		//if datEntitiesIds exists (static for the topic)
@@ -166,17 +176,17 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
 				DataEntityField dataEntityField = dataEntity.getField(anomalyField);
 				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), dataEntityField.getScoreField());
-				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField);
+				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmiountOfEvents);
 			}
 		} else {
 			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField));
-			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField);
+			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmiountOfEvents);
 		}
 	}
 
 
 
-	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField) throws Exception{
+	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
 
 		// check score
 		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField));
@@ -201,7 +211,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 			// Create evidence from event
-			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField);
+			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents);
+
 
 			// Save evidence to MongoDB
 			try {
@@ -306,7 +317,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected static class DataSourceConfiguration {
 
 		protected DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
-				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField , List<String> defaultFields) {
+				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField , List<String> defaultFields,String totalFieldPath) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -321,6 +332,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.anomalyValueField = anomalyValueField;
 			this.anomalyTypeField = anomalyTypeField;
 			this.defaultFields = defaultFields;
+            this.totalFieldPath = totalFieldPath;
 
 		}
 
@@ -339,5 +351,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public String anomalyValueField;
 		public String anomalyTypeField;
 		public List<String> defaultFields;
+        public String totalFieldPath;
 	}
 }
