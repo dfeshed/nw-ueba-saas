@@ -1,18 +1,15 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
-import fortscale.domain.core.User;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class FeatureBucketStrategyData {
@@ -33,8 +30,8 @@ public class FeatureBucketStrategyData {
 	private long startTime;
 	@Field(END_TIME_FIELD)
 	private long endTime;
-	
-	Map<String, String> contextMap = new HashMap<>();
+	@Field(CONTEXT_MAP_FIELD)
+	private Map<String, String> contextMap = new HashMap<>();
 
 	@JsonCreator
 	public FeatureBucketStrategyData(@JsonProperty("strategyEventContextId") String strategyEventContextId, @JsonProperty("strategyName") String strategyName, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime) {
@@ -42,6 +39,14 @@ public class FeatureBucketStrategyData {
 		this.strategyName = strategyName;
 		this.startTime = startTime;
 		this.endTime = endTime;
+	}
+	
+	public FeatureBucketStrategyData(String strategyEventContextId, String strategyName, long startTime, long endTime, Map<String, String> contextMap) {
+		this.strategyEventContextId = strategyEventContextId;
+		this.strategyName = strategyName;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.contextMap = contextMap;
 	}
 
 	public String getStrategyEventContextId() {

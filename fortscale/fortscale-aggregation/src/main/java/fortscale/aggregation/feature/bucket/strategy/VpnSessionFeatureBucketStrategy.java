@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +77,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				boolean isFeatureBucketStrategyDataUpdated = false;
 				Map<String, String> contextMap = new HashMap<>();
 				contextMap.put(SOURCE_IP_CONTEXT_FIELD_NAME, sourceIP);
+				contextMap.put(USERNAME_CONTEXT_FIELD_NAME, username);
 				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyEventContextId, epochtime, contextMap);
 
 				// Case 1: Strategy doesn't exist - create a new one
@@ -83,8 +85,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() <= epochtime) {
 					RemoveClosedUserSessions(username, sourceIP);
 					if (status.equalsIgnoreCase(successValueName)) {
-						featureBucketStrategyData = new FeatureBucketStrategyData(strategyEventContextId, strategyName, epochtime, epochtime + maxSessionDuration);
-						AddOpenUserSessions(username, sourceIP);
+						featureBucketStrategyData = new FeatureBucketStrategyData(strategyEventContextId, strategyName, epochtime, epochtime + maxSessionDuration, contextMap);
 						isFeatureBucketStrategyDataCreated = true;
 					}
 				}
@@ -92,7 +93,6 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				else if (status.equalsIgnoreCase(closedValueName)) {
 					//since the end time is part of the session we add one second.
 					featureBucketStrategyData.setEndTime(epochtime+1);
-					RemoveClosedUserSessions(username, sourceIP);
 					isFeatureBucketStrategyDataUpdated = true;
 				}
 				// Case 4: Nothing to do if exists, still active and event is not a closed event
@@ -292,22 +292,25 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		}
 
 		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+		public boolean equals(Object obj) {
+			if (obj == null) {
+				return false;
+			}
+			if (obj == this) {
+				return true;
+			}
+			if (obj.getClass() != getClass()) {
+				return false;
+			}
 
-			UserNameAndSourceIp that = (UserNameAndSourceIp) o;
-
-			if (username != null ? !username.equals(that.username) : that.username != null) return false;
-			return !(sourceIp != null ? !sourceIp.equals(that.sourceIp) : that.sourceIp != null);
-
+			UserNameAndSourceIp that = (UserNameAndSourceIp) obj;
+			
+			return new EqualsBuilder().append(this.username, that.username).append(this.sourceIp, that.sourceIp).isEquals();
 		}
 
 		@Override
 		public int hashCode() {
-			int result = username != null ? username.hashCode() : 0;
-			result = 31 * result + (sourceIp != null ? sourceIp.hashCode() : 0);
-			return result;
+			return username.hashCode();
 		}
 	}
 }
