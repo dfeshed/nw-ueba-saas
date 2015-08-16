@@ -1,3 +1,21 @@
+buildscript {
+    ext {
+        rpmSummary = "RSA Security Analytics"
+        rpmVendor = "RSA, The Security Division of EMC"
+        rpmLicense = "Copyright (c) RSA, The Security Division of EMC"
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.netflix.nebula:gradle-ospackage-plugin:2.2.6"
+    }
+}
+
 allprojects {
     buildscript {
         repositories {
@@ -6,10 +24,16 @@ allprojects {
             jcenter()
         }
     }
-    group 'com.rsa.asoc.sa.ui'
-    version '10.6.0.0-SNAPSHOT'
+    group "com.rsa.asoc.sa.ui"
+    version "10.6.0.0-SNAPSHOT"
+
+    apply plugin: "os-package-base"
+
+    ext {
+        rpmVersion = project.version.split("-")[0]
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = "2.4"
 }

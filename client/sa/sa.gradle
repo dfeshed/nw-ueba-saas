@@ -1,4 +1,12 @@
 buildscript {
+    ext {
+        nginxLocation = "/etc/nginx"
+        nginxConfLocation = project.nginxLocation + "/conf.d"
+        nginxHtmlLocation = "/usr/share/nginx/html"
+
+        rpmName = rootProject.name + "-client"
+        htmlRootLocation = "/opt/rsa/" + rootProject.name + "/html"
+    }
     dependencies {
         classpath "com.moowork.gradle:gradle-node-plugin:0.10"
     }
@@ -72,5 +80,44 @@ task build(type: Zip, dependsOn: ["emberProductionBuild"]) {
 
     from("dist/production") {
         include "**/*"
+    }
+}
+
+task nginxConf(type: Copy) {
+    from(fileTree("rpm/nginx"))
+    into "build/rpm/nginx"
+    expand project.properties
+}
+
+task rpmScripts(type: Copy) {
+    from(fileTree("rpm/scripts"))
+    into "build/rpm/scripts"
+    expand project.properties
+}
+
+task rpm(type:Rpm, dependsOn: ["nginxConf", "rpmScripts"]) {
+    packageName project.rpmName
+    version project.rpmVersion
+    release "el6"
+    arch "noarch"
+    os "LINUX"
+    prefix "/"
+    summary project.rpmSummary
+    vendor project.rpmVendor
+    license project.rpmLicense
+    packageDescription "This RPM contains RSA Security Analytics User Interface."
+    user "root"
+
+    requires("nginx")
+
+    postInstall file("build/rpm/scripts/postInstall.sh")
+
+    from(fileTree("build/rpm/nginx")) {
+        fileType CONFIG
+        into project.nginxLocation
+    }
+
+    from(fileTree("dist/production")) {
+        into project.htmlRootLocation
     }
 }
