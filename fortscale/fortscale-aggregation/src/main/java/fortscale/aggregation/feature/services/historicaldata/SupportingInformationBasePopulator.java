@@ -62,6 +62,19 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         return new SupportingInformationData(histogramMap, anomalyHistogramKey);
     }
 
+    /*
+     * Fetch relevant buckets and create the histogram (no anomaly histogram key creation)
+     */
+    @Override
+    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays) {
+
+        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
+
+        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+
+        return new SupportingInformationData(histogramMap);
+    }
+
     /**
      * Abstract method to the histogram creation functionality
      */

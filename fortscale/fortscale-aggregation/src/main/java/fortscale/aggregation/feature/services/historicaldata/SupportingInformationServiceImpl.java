@@ -31,12 +31,26 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
         SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction);
 
+        SupportingInformationData supportingInformationData;
+
         long startTime = System.nanoTime();
-        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
+        if (anomalyValue != null) {
+            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
+        }
+        else {
+            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays);
+        }
+
         long elapsedTime = System.nanoTime() - startTime;
 
         logger.info("Calculated Supporting Information Data in {} milliseconds. Returned data : {}", TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS), supportingInformationData.toString());
 
         return supportingInformationData;
+    }
+
+    @Override
+    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
+                                                                          long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
+        return getEvidenceSupportingInformationData(contextType, contextValue, dataEntities, featureName, null, evidenceEndTime, timePeriodInDays, aggregationFunction);
     }
 }

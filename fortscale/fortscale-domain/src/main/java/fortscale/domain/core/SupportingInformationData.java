@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Representation of the Supporting Information data
+ * Representation of Supporting Information data.
+ * Data must contain the histogram mapping (key-value) and optionally the anomaly value
  *
  * @author gils
  * Date: 29/07/2015
@@ -21,6 +22,10 @@ public class SupportingInformationData {
     public SupportingInformationData(Map<HistogramKey, Double> histogram, HistogramKey anomalyValue) {
         this.histogram = histogram;
         this.anomalyValue = anomalyValue;
+    }
+
+    public SupportingInformationData(Map<HistogramKey, Double> histogram) {
+        this.histogram = histogram;
     }
 
     public Map<HistogramKey, Double> getHistogram() {
