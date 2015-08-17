@@ -106,10 +106,10 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         try {
             Date date = dateFormat.parse(anomalyValue);
-            Date roundedDate = DateUtils.round(date, Calendar.HOUR);
+            Date truncatedDate = DateUtils.truncate(date, Calendar.HOUR);
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(roundedDate);
+            calendar.setTime(truncatedDate);
 
             Integer dayOfWeekOrdinalVal = calendar.get(Calendar.DAY_OF_WEEK);
             Integer hourVal = calendar.get(Calendar.HOUR);
