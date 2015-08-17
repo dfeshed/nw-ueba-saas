@@ -151,6 +151,13 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
           "name": "country_histogram",
           "featureNamesMap": {
             "groupBy": ["country"]
