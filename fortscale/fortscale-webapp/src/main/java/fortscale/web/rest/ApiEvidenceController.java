@@ -36,7 +36,6 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
-	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -202,27 +201,17 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		boolean isEvidenceSupportAnomalyValue = isEvidenceSupportAnomalyValue(evidence);
-
-		SupportingInformationData evidenceSupportingInformationData;
-
-		if (isEvidenceSupportAnomalyValue) {
-			String anomalyValue = extractAnomalyValue(evidence, feature);
-
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, anomalyValue, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-		else {
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature,
+				TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
 
 		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		List<HistogramEntry> listOfHistogramEntries;
 
-		if (isEvidenceSupportAnomalyValue) {
+		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
+
+		if (isSupportingInformationAnomalyValueExists) {
 			//add the anomaly to the relevant fields
 			HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
 			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
@@ -239,7 +228,7 @@ public class ApiEvidenceController extends DataQueryController {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
-			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isEvidenceSupportAnomalyValue)){
+			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
@@ -256,27 +245,6 @@ public class ApiEvidenceController extends DataQueryController {
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly
 		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
-	}
-
-	private boolean isEvidenceSupportAnomalyValue(Evidence evidence) {
-		// TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
-	}
-
-	private String extractAnomalyValue(Evidence evidence, String feature) {
-
-		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
-
-		if (contextAndFeatureMatch) { // in this case we want the inverse chart
-			return evidence.getEntityName();
-		}
-		else {
-			return evidence.getAnomalyValue();
-		}
-	}
-
-	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
-		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**

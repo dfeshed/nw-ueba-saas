@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
+import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 
 /**
@@ -13,23 +14,13 @@ public interface SupportingInformationDataPopulator {
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
      *
+     * @param evidence the evidence
      * @param contextValue the context value
      * @param evidenceEndTime evidence creation time
      * @param timePeriodInDays time period in days
-     * @param anomalyValue anomaly value
+     * @param shouldExtractAnomalyValue boolean flag to indicate if anomaly value extraction is required
      *
-     * @return Supporting information data with anomaly value indication
+     * @return Supporting information data with/without anomaly value indication
      */
-    SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue);
-
-    /**
-     * Populates the supporting information data based on the context value, evidence time (with no anomaly value indication)
-     *
-     * @param contextValue the context value
-     * @param evidenceEndTime evidence creation time
-     * @param timePeriodInDays time period in days
-     *
-     * @return Supporting information data (no anomaly value indication)
-     */
-    SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays);
+    SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue);
 }

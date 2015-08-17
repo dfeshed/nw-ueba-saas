@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;
@@ -49,30 +50,27 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
      * 4. Validate data consistency (histogram + anomaly)
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue) {
+
+        // MOCK
+        featureName = "distinct_number_of_src_machines_kerberos";
+        contextValue = "login4624usr1@somebigcompany.com";
+        // END MOCK
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
         Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
 
-        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
+        if (shouldExtractAnomalyValue) {
+            HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(evidence, featureName);
 
-        validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
+            validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
 
-        return new SupportingInformationData(histogramMap, anomalyHistogramKey);
-    }
-
-    /*
-     * Fetch relevant buckets and create the histogram (no anomaly histogram key creation)
-     */
-    @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays) {
-
-        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
-
-        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
-
-        return new SupportingInformationData(histogramMap);
+            return new SupportingInformationData(histogramMap, anomalyHistogramKey);
+        }
+        else {
+            return new SupportingInformationData(histogramMap);
+        }
     }
 
     /**
@@ -80,7 +78,7 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
      */
     abstract Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
 
-    abstract HistogramKey createAnomalyHistogramKey(String anomalyValue);
+    abstract HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName);
 
     /*
      * Fetch the relevant feature buckets based on the context value and time values.
@@ -99,11 +97,27 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
 
         Long supportingInformationStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, contextType, contextValue, supportingInformationStartTime, evidenceEndTime, true);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, supportingInformationStartTime, evidenceEndTime, true);
 
         logger.info("Found {} relevant featureName buckets", featureBuckets.size());
 
         return featureBuckets;
+    }
+
+    protected String extractAnomalyValue(Evidence evidence, String featureName) {
+
+        boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, featureName);
+
+        if (contextAndFeatureMatch) { // in this case we want the inverse chart
+            return evidence.getEntityName();
+        }
+        else {
+            return evidence.getAnomalyValue();
+        }
+    }
+
+    private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
+        return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
     }
 
     protected void validateHistogramDataConsistency(Map<HistogramKey, Double> histogramMap, HistogramKey anomalyHistogramKey) {
@@ -115,6 +129,8 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
+
+    abstract String getNormalizedContextType(String contextType);
 
     abstract String getNormalizedFeatureName(String featureName);
 }

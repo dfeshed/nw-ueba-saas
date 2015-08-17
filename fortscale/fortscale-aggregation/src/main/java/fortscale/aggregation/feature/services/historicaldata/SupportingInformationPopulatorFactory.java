@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
+import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,22 +22,32 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     // TODO use a static map in the bean
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
+    private static final String SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR = "supportingInformationAggrEventPopulator";
 
     private ApplicationContext applicationContext;
 
-    public SupportingInformationDataPopulator createSupportingInformationPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
-        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
-            SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
+    public SupportingInformationDataPopulator createSupportingInformationPopulator(EvidenceType evidenceType, String contextType, String dataEntity, String featureName, String aggregationFunction) {
+        if (EvidenceType.AnomalySingleEvent == evidenceType) {
+            if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
+                SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
-            return supportingInformationDataCountPopulator;
+                return supportingInformationDataCountPopulator;
+            } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
+                SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
+
+                return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
+            }
+            else {
+                throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
+            }
         }
-        else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
+        else if (EvidenceType.AnomalyAggregatedEvent == evidenceType) {
+            SupportingInformationAggrEventPopulator supportingInformationAggrEventPopulator = (SupportingInformationAggrEventPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR, contextType, dataEntity, featureName);
 
-            return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
+            return supportingInformationAggrEventPopulator;
         }
         else {
-            throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
+            throw new UnsupportedOperationException("Evidence type " + evidenceType + " is not supported ");
         }
     }
 

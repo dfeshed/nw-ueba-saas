@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -20,26 +22,31 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
 
+    private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
+
     @Autowired
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                           String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
-        logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
-                "# Feature name = {} # Anomaly value = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntities.get(0), featureName, anomalyValue, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName,
+                                                                           long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
+        EvidenceType evidenceType = evidence.getEvidenceType();
+        List<String> dataEntities = evidence.getDataEntitiesIds();
 
-        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction);
+        // MOCK
+        evidenceType = EvidenceType.AnomalyAggregatedEvent;
+        // END MOCK
 
-        SupportingInformationData supportingInformationData;
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
+
+        boolean isAnomalyIndicationRequired = isAnomalyIndicationRequired(evidence);
+
+        logger.info("Going to calculate Evidence Supporting Information. Evidence Type = {} # Context type = {} # Context value = {} # Data entity = {} " +
+                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
         long startTime = System.nanoTime();
-        if (anomalyValue != null) {
-            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
-        }
-        else {
-            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays);
-        }
+
+        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays, isAnomalyIndicationRequired);
 
         long elapsedTime = System.nanoTime() - startTime;
 
@@ -48,9 +55,8 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
         return supportingInformationData;
     }
 
-    @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                          long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
-        return getEvidenceSupportingInformationData(contextType, contextValue, dataEntities, featureName, null, evidenceEndTime, timePeriodInDays, aggregationFunction);
+    private boolean isAnomalyIndicationRequired(Evidence evidence) {
+        // TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
+        return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 }

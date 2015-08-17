@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.services.historicaldata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;
@@ -91,19 +92,17 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
     }
 
     @Override
-    String getNormalizedFeatureName(String featureName) {
-        return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
-    }
-
     /*
      * Converting the anomaly value which is in concrete date format to an histogram key
      * consist of the day of week (Sunday, Monday etc.) AND the cieled hour (0, 1, .. 23)
      */
-    @Override
-    HistogramKey createAnomalyHistogramKey(String anomalyValue) {
+    HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
+        String anomalyValue = extractAnomalyValue(evidence, featureName);
+
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
         // first convert to date, than ciel the hour to get the right histogram entry
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
         try {
             Date date = dateFormat.parse(anomalyValue);
             Date truncatedDate = DateUtils.truncate(date, Calendar.HOUR);
@@ -127,5 +126,15 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
             return null;
         }
+    }
+
+    @Override
+    protected String getNormalizedContextType(String contextType) {
+        return contextType;
+    }
+
+    @Override
+    String getNormalizedFeatureName(String featureName) {
+        return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
     }
 }
