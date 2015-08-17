@@ -11,6 +11,8 @@ import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.task.evidence.post.process.EvidencePostProcess;
+import fortscale.streaming.task.evidence.pre.process.EvidencePreProcess;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -92,6 +94,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			String scoreField = null;
 			String  anomalyValueField = null;
 			String anomalyTypeField = null;
+			String preProcessClassField = null;
+			String postProcessClassField = null;
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyFields.%s", dataSource))) {
 				anomalyFields = getConfigStringList(config, String.format("fortscale.events.anomalyFields.%s", dataSource));
 			}
@@ -106,6 +110,14 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource))) {
 				anomalyTypeField = getConfigString(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource));
+			}
+
+			if (isConfigContainKey(config, String.format("fortscale.events.preprocess.class.%s", dataSource))) {
+				preProcessClassField = getConfigString(config, String.format("fortscale.events.preprocess.class.%s", dataSource));
+			}
+
+			if (isConfigContainKey(config, String.format("fortscale.events.postprocess.class.%s", dataSource))) {
+				postProcessClassField = getConfigString(config, String.format("fortscale.events.postprocess.class.%s", dataSource));
 			}
 			EntityType entityType = EntityType.valueOf(getConfigString(config, String.format("fortscale.events.entityType.%s", dataSource)));
 			String entityNameField = getConfigString(config, String.format("fortscale.events.entityName.field.%s", dataSource));
@@ -127,7 +139,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			}
 			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(
 					evidenceType,scoreThreshold,dataEntitiesIds,dataEntitiesIdsField,startTimestampField,endTimestampField,entityType,entityNameField,
-					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField , defaultFields));
+					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField,
+					preProcessClassField, postProcessClassField, defaultFields));
 
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
@@ -186,8 +199,17 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		// check score
 		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField));
 		if (score >= dataSourceConfiguration.scoreThreshold) {
-
 			// create evidence
+
+			// Pre process
+			if (dataSourceConfiguration.preProcessClassField != null && !dataSourceConfiguration.preProcessClassField.isEmpty()) {
+
+				String className = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.preProcessClassField));
+				EvidencePreProcess preProcess = (EvidencePreProcess)
+						Class.forName(className).newInstance();
+
+				preProcess.run(message, dataSourceConfiguration);
+			}
 
 			// get the start timestamp from the event
 			Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField));
@@ -203,7 +225,15 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
 
+			// Post process
+			if (dataSourceConfiguration.postProcessClassField != null && !dataSourceConfiguration.postProcessClassField.isEmpty()) {
 
+				String className = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.postProcessClassField));
+				EvidencePostProcess postProcess = (EvidencePostProcess)
+						Class.forName(className).newInstance();
+
+				postProcess.run(message, dataSourceConfiguration);
+			}
 
 			// Create evidence from event
 			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField);
@@ -308,10 +338,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	/**
 	 * Private class for saving data-source specific configuration in-memory
 	 */
-	protected static class DataSourceConfiguration {
+	public static class DataSourceConfiguration {
 
-		protected DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
-				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField , List<String> defaultFields) {
+		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
+				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField,
+				 String preProcessClassField, String postProcessClassField,	List<String> defaultFields) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -325,6 +356,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.scoreField = scoreField;
 			this.anomalyValueField = anomalyValueField;
 			this.anomalyTypeField = anomalyTypeField;
+			this.preProcessClassField = preProcessClassField;
+			this.postProcessClassField = postProcessClassField;
 			this.defaultFields = defaultFields;
 
 		}
@@ -343,6 +376,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public String scoreField;
 		public String anomalyValueField;
 		public String anomalyTypeField;
+		public String preProcessClassField;
+		public String postProcessClassField;
 		public List<String> defaultFields;
 	}
 }
