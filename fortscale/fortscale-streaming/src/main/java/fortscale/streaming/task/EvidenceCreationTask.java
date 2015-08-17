@@ -159,7 +159,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
         //Get the total events amount if exist
         Integer totalAmiountOfEvents = null;
-        totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
+
+		if(dataSourceConfiguration.totalFieldPath != null)
+        	totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
 
 
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
