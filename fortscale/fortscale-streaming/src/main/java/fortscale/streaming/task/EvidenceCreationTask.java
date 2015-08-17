@@ -159,7 +159,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
         //Get the total events amount if exist
         Integer totalAmiountOfEvents = null;
-        totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath));
+        totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
 
 
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
@@ -169,7 +169,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			dataEntitiesIds = dataSourceConfiguration.dataEntitiesIds;
 			// if datEntitiesIds doesn't exists and instead we have dataEntitiesIdsField, need to get the dataEntitiesIds from that field in the message
 		} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
-			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField);
+			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
 		if (dataSourceConfiguration.anomalyFields != null) {
@@ -179,7 +179,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmiountOfEvents);
 			}
 		} else {
-			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField));
+			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
 			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmiountOfEvents);
 		}
 	}
@@ -189,21 +189,21 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
 
 		// check score
-		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField));
+		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField,true));
 		if (score >= dataSourceConfiguration.scoreThreshold) {
 
 			// create evidence
 
 			// get the start timestamp from the event
-			Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField));
+			Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField,true));
 			Long startTimestamp = TimestampUtils.convertToMilliSeconds(startTimestampSeconds);
 
 			// get the end timestamp from the event
-			Long endTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField));
+			Long endTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField,true));
 			Long endTimestamp = TimestampUtils.convertToMilliSeconds(endTimestampSeconds);
 
 			// get the username from the event
-			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField));
+			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField,true));
 
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
@@ -267,19 +267,22 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * @return The value of the field
 	 * @throws StreamMessageNotContainFieldException in case the field doesn't exist in the JSON
 	 */
-	private Object validateFieldExistsAndGetValue(JSONObject message, String field) throws Exception {
+	private Object validateFieldExistsAndGetValue(JSONObject message, String field, boolean throwException) throws Exception {
 		String[] fieldHierarchy = field.split("\\.");
 		Object value = message;
 		for(String fieldPart : fieldHierarchy){
 			value = ((JSONObject) value).get(fieldPart);
 
 		}
-		if (value == null) {
+		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 			throw new StreamMessageNotContainFieldException(mapper.writeValueAsString(message), field);
 		}
 		return value;
 	}
+
+
+
 
 	/**
 	 * Get the partition key to use for outgoing message envelope for the given event
