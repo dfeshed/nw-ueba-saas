@@ -213,7 +213,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                             latestLoggerWriteTime = currentTimeMillis;
                         }
                         try {
-                            Thread.sleep(TimestampUtils.convertToMilliSeconds(throttlingSleepField));
+                            Thread.sleep(throttlingSleepField*1000);
                         } catch (InterruptedException e) {
                         }
                     }
@@ -223,7 +223,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 
                 if (sleepField != null) {
                     try {
-                        Thread.sleep(TimestampUtils.convertToMilliSeconds(sleepField));
+                        Thread.sleep(sleepField*1000);
                     } catch (InterruptedException e) {
                     }
                 }

@@ -133,7 +133,7 @@ public class AggrFeatureEventBuilder {
             AggrFeatureEventData eventData = bucktID2eventDataMap.get(bucketID);
             if(eventData!=null) {
                 AggrFeatureEventData.BucketTick bucketTick = eventData.setEndTime(bucketID, endTime);
-                long newRegistrationID = dataSourcesSyncTimer.updateNotificationRegistration(bucketTick.getSyncTimerRegistrationID(), endTime);
+                long newRegistrationID = dataSourcesSyncTimer.updateNotificationRegistration(bucketTick.getSyncTimerRegistrationID(), endTime+fetchDataCycleInSeconds);
                 bucketTick.setSyncTimerRegistrationID(newRegistrationID);
             }
         }
