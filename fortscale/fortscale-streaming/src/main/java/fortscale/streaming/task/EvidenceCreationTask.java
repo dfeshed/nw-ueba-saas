@@ -169,12 +169,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField);
 			}
 		} else {
-			String anomalyField;
-			if (message.containsKey(dataSourceConfiguration.anomalyTypeField)) {
-				anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField));
-			} else {
-				anomalyField = dataSourceConfiguration.anomalyTypeField;
-			}
+			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField));
 			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField);
 		}
 	}
