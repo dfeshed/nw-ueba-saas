@@ -181,7 +181,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 	 * data are equal to those in the actual feature bucket strategy data.
 	 */
 	private void assertEqualData(FeatureBucketStrategyData expected, FeatureBucketStrategyData actual) {
-		Assert.assertEquals(expected.getStrategyContextId(), actual.getStrategyContextId());
+		Assert.assertEquals(expected.getStrategyEventContextId(), actual.getStrategyEventContextId());
 		Assert.assertEquals(expected.getStrategyName(), actual.getStrategyName());
 		Assert.assertEquals(expected.getStartTime(), actual.getStartTime());
 		Assert.assertEquals(expected.getEndTime(), actual.getEndTime());
