@@ -23,7 +23,7 @@ public interface EvidencesService {
 	 * @return	New evidence
 	 */
 	public Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Date startDate, Date endDate,
-			List<String> dataEntitiesIds, Double score, String anomalyValue, String anomalyTypeFieldName );
+			List<String> dataEntitiesIds, Double score, String anomalyValue, String anomalyTypeFieldName,Integer totalAmountOfEvents );
 
 	/**
 	 * Create new evidence in Mongo

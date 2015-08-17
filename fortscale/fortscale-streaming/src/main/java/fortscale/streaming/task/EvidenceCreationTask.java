@@ -115,6 +115,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
+            String totalFieldPath = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
 				dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
@@ -125,9 +126,13 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			if (isConfigContainKey(config, String.format("fortscale.events.defaultFields.%s", dataSource))) {
 				defaultFields = getConfigStringList(config, String.format("fortscale.events.addDefaultFields.%s", dataSource));
 			}
+
+            if (isConfigContainKey(config, String.format("fortscale.events.total.field.path.%s", dataSource))) {
+                totalFieldPath = getConfigString(config, String.format("fortscale.events.total.field.path.%s", dataSource));
+            }
 			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(
 					evidenceType,scoreThreshold,dataEntitiesIds,dataEntitiesIdsField,startTimestampField,endTimestampField,entityType,entityNameField,
-					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField , defaultFields));
+					partitionField,anomalyFields, scoreField, anomalyValueField,anomalyTypeField , defaultFields,totalFieldPath));
 
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
@@ -152,6 +157,13 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			return;
 		}
 
+        //Get the total events amount if exist
+        Integer totalAmiountOfEvents = null;
+
+		if(dataSourceConfiguration.totalFieldPath != null)
+        	totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
+
+
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
 		List<String> dataEntitiesIds = null;
 		//if datEntitiesIds exists (static for the topic)
@@ -159,41 +171,41 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			dataEntitiesIds = dataSourceConfiguration.dataEntitiesIds;
 			// if datEntitiesIds doesn't exists and instead we have dataEntitiesIdsField, need to get the dataEntitiesIds from that field in the message
 		} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
-			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField);
+			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
 				DataEntityField dataEntityField = dataEntity.getField(anomalyField);
 				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), dataEntityField.getScoreField());
-				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField);
+				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmiountOfEvents);
 			}
 		} else {
-			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField));
-			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField);
+			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
+			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmiountOfEvents);
 		}
 	}
 
 
 
-	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField) throws Exception{
+	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
 
 		// check score
-		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField));
+		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField,true));
 		if (score >= dataSourceConfiguration.scoreThreshold) {
 
 			// create evidence
 
 			// get the start timestamp from the event
-			Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField));
+			Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField,true));
 			Long startTimestamp = TimestampUtils.convertToMilliSeconds(startTimestampSeconds);
 
 			// get the end timestamp from the event
-			Long endTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField));
+			Long endTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField,true));
 			Long endTimestamp = TimestampUtils.convertToMilliSeconds(endTimestampSeconds);
 
 			// get the username from the event
-			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField));
+			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField,true));
 
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
@@ -201,7 +213,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 			// Create evidence from event
-			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField);
+			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents);
+
 
 			// Save evidence to MongoDB
 			try {
@@ -256,19 +269,22 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * @return The value of the field
 	 * @throws StreamMessageNotContainFieldException in case the field doesn't exist in the JSON
 	 */
-	private Object validateFieldExistsAndGetValue(JSONObject message, String field) throws Exception {
+	private Object validateFieldExistsAndGetValue(JSONObject message, String field, boolean throwException) throws Exception {
 		String[] fieldHierarchy = field.split("\\.");
 		Object value = message;
 		for(String fieldPart : fieldHierarchy){
 			value = ((JSONObject) value).get(fieldPart);
 
 		}
-		if (value == null) {
+		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 			throw new StreamMessageNotContainFieldException(mapper.writeValueAsString(message), field);
 		}
 		return value;
 	}
+
+
+
 
 	/**
 	 * Get the partition key to use for outgoing message envelope for the given event
@@ -306,7 +322,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	protected static class DataSourceConfiguration {
 
 		protected DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
-				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField , List<String> defaultFields) {
+				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField , List<String> defaultFields,String totalFieldPath) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -321,6 +337,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.anomalyValueField = anomalyValueField;
 			this.anomalyTypeField = anomalyTypeField;
 			this.defaultFields = defaultFields;
+            this.totalFieldPath = totalFieldPath;
 
 		}
 
@@ -339,5 +356,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public String anomalyValueField;
 		public String anomalyTypeField;
 		public List<String> defaultFields;
+        public String totalFieldPath;
 	}
 }
