@@ -30,4 +30,12 @@ public class SupportingInformationData {
     public HistogramKey getAnomalyValue() {
         return anomalyValue;
     }
+
+    @Override
+    public String toString() {
+        return "SupportingInformationData{" +
+                "histogram=" + histogram +
+                ", anomalyValue=" + anomalyValue +
+                '}';
+    }
 }

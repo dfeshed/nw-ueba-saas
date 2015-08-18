@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.SupportingInformationData;
@@ -31,6 +32,10 @@ import java.util.*;
 @Controller
 @RequestMapping("/api/evidences")
 public class ApiEvidenceController extends DataQueryController {
+
+	private static final String DESC = "DESC";
+	private static final String ASC = "ASC";
+	private static final String OTHERS_COLUMN = "Others";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -66,6 +71,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
+			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
 			String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
 			evidence.setAnomalyType(anomalyType);
 			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
@@ -185,7 +191,7 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(value = "feature") String feature,
 			@RequestParam(value = "function") String aggFunction,
 			@RequestParam(required=false,value = "num_columns") Integer numColumns,
-			@RequestParam(required=false,value = "sort_direction") String sortDirection,
+			@RequestParam(required=false,defaultValue = DESC,value = "sort_direction") String sortDirection,
 			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays){
 		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
@@ -195,11 +201,12 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		String anomalyValue = evidence.getAnomalyValue();
+		String anomalyValue = extractAnomalyValue(evidence, feature);
+
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
 				feature,anomalyValue,TimestampUtils.convertToMilliSeconds(evidence.getEndDate()),timePeriodInDays,aggFunction);
 
+		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
 		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
 
 		//add the anomaly to the relevant fields
@@ -210,7 +217,7 @@ public class ApiEvidenceController extends DataQueryController {
 			numColumns = listOfHistogramEntries.size();
 		}
 
-		if(aggFunction.equalsIgnoreCase("count")) {
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
@@ -219,13 +226,29 @@ public class ApiEvidenceController extends DataQueryController {
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
 
-			if (sortDirection != null && sortDirection.equals("DESC")) {
+			if (sortDirection.equals(DESC)) {
 				Collections.reverse(listOfHistogramEntries);
 			}
 		}
 
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private String extractAnomalyValue(Evidence evidence, String feature) {
+
+		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
+
+		if (contextAndFeatureMatch) { // in this case we want the inverse chart
+			return evidence.getEntityName();
+		}
+		else {
+			return evidence.getAnomalyValue();
+		}
+	}
+
+	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
+		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
@@ -255,7 +278,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		//create new list with others, and the remaining columns.
 		List<HistogramEntry> newListWithOthers = new ArrayList<>();
-		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey("Others").generateKey(), othersValue));
+		newListWithOthers.add(new HistogramEntry( new HistogramSingleKey(OTHERS_COLUMN).generateKey(), othersValue));
 
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));

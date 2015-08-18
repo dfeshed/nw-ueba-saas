@@ -26,35 +26,84 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String normalizedUsernameField;
 	@Value("${collection.evidence.notification.entity.field}")
 	private String notificationEntityField;
-	@Value("${collection.evidence.notification.timestamp.field}")
-	private String notificationTimestampField;
+	@Value("${collection.evidence.notification.starttimestamp.field}")
+	private String notificationStartTimestampField;
+	@Value("${collection.evidence.notification.endtimestamp.field}")
+	private String notificationEndTimestampField;
 	@Value("${collection.evidence.notification.type.field}")
 	private String notificationTypeField;
+	@Value("${collection.evidence.notification.numofevents.field}")
+	private String notificationNumOfEventsField;
 	@Value("${collection.evidence.notification.score}")
 	private String score;
 
-	public List<JSONObject> createNotifications(List<VpnSession> vpnSessions){
-		List<JSONObject> evidenceList = new ArrayList();
-		for (VpnSession vpnSession: vpnSessions) {
-			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() :
-					vpnSession.getCreatedAtEpoch();
-			String index = buildIndex(vpnSession);
-			JSONObject evidence = new JSONObject();
-			evidence.put(notificationScoreField, score);
-			evidence.put(notificationTimestampField, ts);
-			evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
-			evidence.put(notificationValueField, NOTIFICATION_VALUE);
-			List<String> entities = new ArrayList();
-			entities.add(NOTIFICATION_ENTITY);
-			evidence.put(notificationEntityField, entities);
-			evidence.put(normalizedUsernameField, vpnSession.getNormalizedUserName());
-			evidence.put("index", index);
-			logger.info("adding geo hopping notification with the index {}", index);
-			evidenceList.add(evidence);
+	public JSONObject createNotifications(List<VpnSession> vpnSessions){
+		if (vpnSessions.size() < 2) {
+			return null;
 		}
-		return evidenceList;
+
+		List<Long> sessionsTimeframe = getSessionsTimeframe(vpnSessions);
+
+		if (sessionsTimeframe == null || sessionsTimeframe.size() != 2){
+			logger.debug("Can't find time frame for vpn session");
+			return null;
+		}
+
+		long startTimestamp = sessionsTimeframe.get(0);
+		long endTimestamp = sessionsTimeframe.get(1);
+		String index = buildIndex(vpnSessions.get(0));
+		JSONObject evidence = new JSONObject();
+		evidence.put(notificationScoreField, score);
+		evidence.put(notificationStartTimestampField, startTimestamp);
+		evidence.put(notificationEndTimestampField, endTimestamp);
+		evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
+		evidence.put(notificationValueField, NOTIFICATION_VALUE);
+		evidence.put(notificationNumOfEventsField, vpnSessions.size());
+		List<String> entities = new ArrayList();
+		entities.add(NOTIFICATION_ENTITY);
+		evidence.put(notificationEntityField, entities);
+		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
+		evidence.put("index", index);
+		logger.info("adding geo hopping notification with the index {}", index);
+
+		return evidence;
 	}
-	
+
+	/**
+	 * Get the session timeframe
+	 * @param vpnSessions
+	 * @return
+	 */
+	private List<Long> getSessionsTimeframe(List<VpnSession> vpnSessions) {
+
+		// list to hold the start and end time
+		List<Long> sessionsTimeframe = new ArrayList<Long>();
+		long startTime = Long.MAX_VALUE;
+		long endTime = 0;
+
+		// Find the minimum start time and maximum end time
+		for(VpnSession session : vpnSessions) {
+			if (session.getCreatedAtEpoch() != null && session.getCreatedAtEpoch() < startTime) {
+				startTime = session.getCreatedAtEpoch();
+			}
+			if (session.getClosedAtEpoch()!= null && session.getClosedAtEpoch() > endTime) {
+				endTime = session.getClosedAtEpoch();
+			}
+			else if (session.getCreatedAtEpoch()!= null && session.getCreatedAtEpoch() > endTime) {
+				endTime = session.getCreatedAtEpoch();
+			}
+
+		}
+
+		// If we found timeframe, add it to list
+		if (startTime != Long.MAX_VALUE && endTime != 0) {
+			sessionsTimeframe.add(startTime);
+			sessionsTimeframe.add(endTime);
+		}
+
+		return sessionsTimeframe;
+	}
+
 	private String buildIndex(VpnSession vpnSession){
 		StringBuilder builder = new StringBuilder();
 		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").

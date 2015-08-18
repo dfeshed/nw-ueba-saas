@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.services.historicaldata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.utils.logging.Logger;
@@ -23,20 +22,18 @@ import java.util.Map;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationDataCountPopulator extends SupportingInformationDataBasePopulator {
+public class SupportingInformationCountPopulator extends SupportingInformationBasePopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDataCountPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
-    public SupportingInformationDataCountPopulator(String contextType,  String dataEntity, String featureName) {
+    public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 
     @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
-        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
-
+    protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
         Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
@@ -68,10 +65,7 @@ public class SupportingInformationDataCountPopulator extends SupportingInformati
                 logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
-
-        HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(anomalyValue);
-
-        return new SupportingInformationData(histogramKeyObjectMap, anomalyHistogramKey);
+        return histogramKeyObjectMap;
     }
 
     @Override

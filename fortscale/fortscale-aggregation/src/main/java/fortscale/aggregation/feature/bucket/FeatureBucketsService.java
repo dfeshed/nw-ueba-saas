@@ -1,15 +1,20 @@
 package fortscale.aggregation.feature.bucket;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.extraction.FeatureExtractService;
-import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
-import java.util.*;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.aggregation.feature.extraction.FeatureExtractService;
+import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
+import fortscale.utils.logging.Logger;
 
 public abstract class FeatureBucketsService {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
@@ -37,7 +42,7 @@ public abstract class FeatureBucketsService {
 		return ret;
 	}
 
-	public List<FeatureBucket> updateFeatureBucketsWithNewEvent(JSONObject event, List<FeatureBucketConf> featureBucketConfs) {
+	public List<FeatureBucket> updateFeatureBucketsWithNewEvent(Event event, List<FeatureBucketConf> featureBucketConfs) {
 		List<FeatureBucket> newFeatureBuckets = new ArrayList<>();
 		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
 			List<FeatureBucketStrategyData> featureBucketStrategyDataList = getFeatureBucketStrategyService().getFeatureBucketStrategyData(event, featureBucketConf);
@@ -66,7 +71,7 @@ public abstract class FeatureBucketsService {
 		return newFeatureBuckets;
 	}
 
-	private String getBucketId(JSONObject event, FeatureBucketConf featureBucketConf, String strategyId) {
+	private String getBucketId(Event event, FeatureBucketConf featureBucketConf, String strategyId) {
 		List<String> sorted = new ArrayList<>(featureBucketConf.getContextFieldNames());
 		Collections.sort(sorted);
 		StringBuilder builder = new StringBuilder();
@@ -88,7 +93,7 @@ public abstract class FeatureBucketsService {
 		return builder.toString();
 	}
 
-	private void updateFeatureBucket(JSONObject event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
+	private void updateFeatureBucket(Event event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
 		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
 		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(event, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
 		featureBucket.setAggregatedFeatures(aggrFeaturesMap);
@@ -99,7 +104,7 @@ public abstract class FeatureBucketsService {
 		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
 	}
 
-	private FeatureBucket createNewFeatureBucket(JSONObject event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData) {
+	private FeatureBucket createNewFeatureBucket(Event event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData) {
 		String bucketId = getBucketId(event, featureBucketConf, strategyData.getStrategyId());
 		if (bucketId == null) {
 			return null;

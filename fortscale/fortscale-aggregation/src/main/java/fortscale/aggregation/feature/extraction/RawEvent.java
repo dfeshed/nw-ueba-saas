@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.extraction;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import net.minidev.json.JSONObject;
 
 public class RawEvent implements Event{
@@ -15,11 +16,21 @@ public class RawEvent implements Event{
 		this.eventType = eventType;
 	}
 	
-	public Object get(String key) throws Exception{
+	@Override
+	public Object get(String key){
 		if(eventType != null){
-			return jsonObject.get(dataEntitiesConfig.getFieldColumn(eventType, key));
+			try {
+				return jsonObject.get(dataEntitiesConfig.getFieldColumn(eventType, key));
+			} catch (InvalidQueryException e) {
+				return jsonObject.get(key);
+			}
 		} else{
 			return jsonObject.get(key);
 		}
+	}
+
+	@Override
+	public JSONObject getJSONObject() {
+		return jsonObject;
 	}
 }

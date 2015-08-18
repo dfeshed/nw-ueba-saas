@@ -25,12 +25,28 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "source_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_src_machine_score > 50)]"}
+        },
+        {
           "name": "destination_machine_with_high_score_histogram",
           "featureNamesMap": {
             "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.eventscore > 50)]"}
+          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score > 50)]"}
+        },
+        {
+          "name": "failure_code_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["failure_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.failure_codescore > 50)]"}
         },
         {
           "name": "number_of_events",
@@ -44,6 +60,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
+          "name": "high_score_date_time_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score > 50)]"}
+        },
+        {
           "name": "hourly_histogram_of_events",
           "featureNamesMap": {
             "groupBy": ["hour"]
@@ -52,7 +74,6 @@
         }
       ]
     },
-
     {
       "name": "normalized_username_ssh_daily",
       "contextFieldNames": [
@@ -78,6 +99,22 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "source_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_src_machine_score > 50)]"}
+        },
+        {
+          "name": "destination_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["destination_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score > 50)]"}
+        },
+        {
           "name": "number_of_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
@@ -87,10 +124,22 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+        },
+        {
+          "name": "high_score_date_time_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score > 50)]"}
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
-
     {
       "name": "normalized_username_vpn_daily",
       "contextFieldNames": [
@@ -118,31 +167,43 @@
           "name": "number_of_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
-        }
+        },
+        {
+          "name": "hourly_histogram_of_events",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_date_time_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score > 50)]"}
+        },
+        {
+          "name": "source_machine_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_src_machine_score > 50)]"}
+        },
+        {
+          "name": "country_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.counrty_score > 50)]"}
+        },
       ]
     },
+
     {
       "name": "source_machine_kerberos_logins_daily",
       "contextFieldNames": [
-        "normalized_src_machine"
-      ],
-      "dataSources": [
-        "kerberos_logins"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": ["normalized_username"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    }, {
-      "name": "destination_machine_kerberos_logins_daily",
-      "contextFieldNames": [
-        "normalized_dst_machine"
+        "source_machine"
       ],
       "dataSources": [
         "kerberos_logins"
@@ -159,9 +220,29 @@
       ]
     },
     {
+      "name": "destination_machine_kerberos_logins_daily",
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+
+    {
       "name": "source_machine_ssh_daily",
       "contextFieldNames": [
-        "normalized_src_machine"
+        "source_machine"
       ],
       "dataSources": [
         "ssh"
@@ -176,13 +257,71 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
-    }, {
+    },
+    {
       "name": "destination_machine_ssh_daily",
       "contextFieldNames": [
-        "normalized_dst_machine"
+        "destination_machine"
       ],
       "dataSources": [
         "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "source_machine_vpn_daily",
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "destination_machine_vpn_daily",
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "country_vpn_daily",
+      "contextFieldNames": [
+        "country"
+      ],
+      "dataSources": [
+        "vpn"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [

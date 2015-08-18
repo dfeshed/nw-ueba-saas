@@ -1,17 +1,12 @@
 package fortscale.aggregation.feature.extraction;
 
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,8 +16,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.aggregation.feature.Feature;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 @Service
 public class FeatureExtractService implements IFeatureExtractService, InitializingBean, ApplicationContextAware {
@@ -39,16 +35,9 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json:}")
 	String featuresConfJsonFileName;
 	
-	@Value("${impala.table.fields.data.source}")
-	private String dataSourceFieldName;
 	
-	@Value("${streaming.event.field.type}")
-    private String eventTypeFieldName;
-    @Value("${streaming.event.field.type.aggr_event}")
-    private String aggrEventType;
 	
-	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
+	
 
 
 	@Override
@@ -110,14 +99,11 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	}
 
 	@Override
-	public Feature extract(String featureName, JSONObject eventMessage) {
+	public Feature extract(String featureName, Event event) {
 		Feature ret = null;
 
-		String eventType = eventMessage.getAsString(dataSourceFieldName);
-		RawEvent event = new RawEvent(eventMessage, dataEntitiesConfig, eventType);
-
 		try{
-			ret = extract(featureName, event);
+			ret = extractWithException(featureName, event);
 		} catch (Exception e) {
 			logger.error(String.format("Got exception while trying to extract the feature name %s", featureName),e);
 		}
@@ -125,17 +111,9 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 		return ret;
 	}
 	
-	public Event createEvent(JSONObject eventMessage){
-		String eventType = (String) eventMessage.get(eventTypeFieldName);
-		if(aggrEventType.equals(eventType)){
-			return new AggrEvent(eventMessage);
-		} else{
-			String dataSource = eventMessage.getAsString(dataSourceFieldName);
-			return new RawEvent(eventMessage, dataEntitiesConfig, dataSource);
-		}
-	}
 	
-	private Feature extract(String featureName, Event event) throws Exception {
+	
+	private Feature extractWithException(String featureName, Event event) throws Exception {
 		FeatureExtractor featureExtractor = getFeatureExtractor(featureName);
 
 		Object value;
@@ -150,18 +128,16 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	}
 
 	@Override
-	public Map<String, Feature> extract(Set<String> featureNames, JSONObject message) {
-		if(featureNames == null || message	== null) {
+	public Map<String, Feature> extract(Set<String> featureNames, Event event) {
+		if(featureNames == null || event == null) {
 			return null;
 		}
 		
-		String eventType = message.getAsString(dataSourceFieldName);
 		Map<String, Feature> features = new HashMap<>();
-		RawEvent event = new RawEvent(message, dataEntitiesConfig, eventType);
 		for (String featureName : featureNames) {
 			Feature feature;
 			try {
-				feature = extract(featureName, event);
+				feature = extractWithException(featureName, event);
 				features.put(featureName, feature);
 			} catch (Exception e) {
 				logger.error(String.format("Got exception while trying to extract the feature name %s", featureName),e);

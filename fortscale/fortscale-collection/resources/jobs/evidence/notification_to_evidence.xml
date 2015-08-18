@@ -35,8 +35,12 @@
                     <value>${collection.evidence.notification.value.field}</value>
                 </entry>
                 <entry>
-                    <key>notificationTimestampField</key>
-                    <value>${collection.evidence.notification.timestamp.field}</value>
+                    <key>notificationStartTimestampField</key>
+                    <value>${collection.evidence.notification.starttimestamp.field}</value>
+                </entry>
+                <entry>
+                    <key>notificationEndTimestampField</key>
+                    <value>${collection.evidence.notification.endtimestamp.field}</value>
                 </entry>
                 <entry>
                     <key>normalizedUsernameField</key>
@@ -53,6 +57,10 @@
                 <entry>
                     <key>score</key>
                     <value>${collection.evidence.notification.score}</value>
+                </entry>
+                <entry>
+                    <key>numOfEvents</key>
+                    <value>${collection.evidence.notification.numofevents.field}</value>
                 </entry>
                 <entry>
                     <key>notificationsToIgnore</key>

@@ -48,7 +48,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationValueField;
 	private String normalizedUsernameField;
 	private String notificationEntityField;
-	private String notificationTimestampField;
+	private String notificationStartTimestampField;
+	private String notificationEndTimestampField;
 	private String notificationTypeField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
@@ -61,6 +62,26 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private UserRepository userRepository;
 	@Autowired
 	private SamAccountNameService samAccountNameService;
+
+	@Override
+	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
+		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
+		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
+		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
+		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
+		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
+		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
+		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
+		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationStartTimestampField");
+		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEndTimestampField");
+		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
+		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationAnomalyMap"));
+		logger.debug("Job initialized");
+	}
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -93,7 +114,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				//convert each notification to evidence and send it to the appropriate Kafka topic
 				JSONObject evidence = new JSONObject();
 				evidence.put(notificationScoreField, score);
-				evidence.put(notificationTimestampField, notification.getTs());
+				evidence.put(notificationStartTimestampField, notification.getTs());
+				evidence.put(notificationEndTimestampField, notification.getTs());
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
 				evidence.put(notificationEntityField, getEntity(notification));
@@ -116,7 +138,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String getAnomalyField(Notification notification) {
 		List<String> values = notificationAnomalyMap.get(notification.getCause());
 		//TODO - allow for taking more than one of the values as anomaly fields
-		if (values != null && values.size() > 0 && notification.getAttributes().containsKey(values.get(0))) {
+		if (values != null && values.size() > 0 && notification.getAttributes() != null && notification.getAttributes().containsKey(values.get(0))) {
 			return notification.getAttributes().get(values.get(0));
 		}
 		//default value
@@ -156,25 +178,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			}
 		}
 		return normalizedUsername;
-	}
-
-	@Override
-	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
-		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
-		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
-		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
-		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
-		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
-		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
-		notificationTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTimestampField");
-		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
-		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
-		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
-				"notificationAnomalyMap"));
-		logger.debug("Job initialized");
 	}
 
 	private Map<String, List<String>> createAnomalyMap(String notificationAnomalyString) {

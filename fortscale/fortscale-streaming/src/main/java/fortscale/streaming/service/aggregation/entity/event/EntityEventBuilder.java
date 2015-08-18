@@ -24,6 +24,8 @@ public class EntityEventBuilder {
     private String eventTypeFieldValue;
     @Value("${streaming.entity_event.field.entity_event_type}")
     private String entityEventTypeFieldName;
+    @Value("${impala.table.fields.epochtime}")
+	private String epochtimeFieldName;
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
@@ -123,9 +125,11 @@ public class EntityEventBuilder {
 		entityEvent.put(eventTypeFieldName, eventTypeFieldValue);
 		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
 		entityEvent.put("entity_event_value", entityEventValue);
-		entityEvent.put("date_time_unix", entityEventData.getFiringTimeInSeconds());
+		entityEvent.put("creation_epochtime", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());
+		// time of the event to be compared against other events from different types (raw events, entity event...)
+		entityEvent.put(epochtimeFieldName, entityEventData.getEndTime());
 		entityEvent.put("context", entityEventData.getContext());
 		entityEvent.put("aggregated_feature_events", aggrFeatureEvents);
 

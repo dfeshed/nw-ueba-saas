@@ -19,7 +19,21 @@
             "normalized_username_kerberos_logins_daily.new_dst_machine_kerberos",
             "normalized_username_ssh_daily.new_src_machine_ssh",
             "normalized_username_ssh_daily.new_dst_machine_ssh",
-            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos"
+            "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_with_high_score_kerberos",
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos",
+            "normalized_username_kerberos_logins_daily.number_of_failed_kerberos_events",
+            "normalized_username_vpn_events_daily.number_of_failed_vpn_events",
+            "normalized_username_kerberos_logins_daily.number_of_kerberos_events",
+            "normalized_username_vpn_events_daily.new_countries_for_user",
+            "normalized_username_ssh_daily.number_of_ssh_events",
+            "normalized_username_ssh_daily.number_of_failed_events",
+            "normalized_username_ssh_daily.distinct_number_of_src_machines_with_high_score_ssh",
+            "normalized_username_ssh_daily.distinct_number_of_dst_machines_with_high_score_ssh",
+            "normalized_username_ssh_daily.has_high_score_date_time_events_ssh",
+            "normalized_username_kerberos_logins_daily.has_high_score_date_time_events_kerberos_logins",
+            "normalized_username_kerberos_logins_daily.distinct_number_of_failure_code_with_high_score_kerberos",
+            "normalized_username_vpn_daily.has_high_score_date_time_events_vpn",
+            "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn"
           ]
         },
         "entityEventFunction": {
@@ -39,16 +53,49 @@
             "new_machines_ssh": [
               "normalized_username_ssh_daily.new_src_machine_ssh",
               "normalized_username_ssh_daily.new_dst_machine_ssh"
+            ],
+            "failed_kerberos_events": [
+              "normalized_username_kerberos_logins_daily.number_of_failed_kerberos_events"
+            ],
+            "failed_vpn_events": [
+              "normalized_username_vpn_events_daily.number_of_failed_vpn_events"
+            ],
+            "kerberos_events": [
+              "normalized_username_kerberos_logins_daily.number_of_kerberos_events"
+            ],
+            "new_countries_for_users": [
+              "normalized_username_vpn_events_daily.new_countries_for_user"
+            ],
+            "ssh_events": [
+              "normalized_username_ssh_daily.number_of_ssh_events"
+            ],
+            "failed_ssh_events": [
+              "normalized_username_ssh_daily.number_of_failed_events"
             ]
           },
           "alphas": {
             "distinct_machines_kerberos": 1.0,
             "distinct_machines_ssh": 1.0,
             "new_machines_kerberos": 1.0,
-            "new_machines_ssh": 1.0
+            "new_machines_ssh": 1.0,
+            "failed_kerberos_events": 1.0,
+            "failed_vpn_events": 1.0,
+            "kerberos_events": 1.0,
+            "new_countries_for_users": 1.0,
+            "ssh_events": 1.0,
+            "failed_ssh_events": 1.0
           },
           "betas": {
-            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0
+          	"normalized_username_kerberos_logins_daily.has_high_score_date_time_events_kerberos_logins": 1.0,
+          	"normalized_username_ssh_daily.has_high_score_date_time_events_ssh": 1.0,
+          	"normalized_username_vpn_daily.has_high_score_date_time_events_vpn": 1.0,
+            "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_with_high_score_kerberos": 1.0,
+            "normalized_username_ssh_daily.distinct_number_of_src_machines_with_high_score_ssh":1.0,
+            "normalized_username_vpn_daily.distinct_number_of_src_machines_with_high_score_vpn":1.0,
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0,
+            "normalized_username_ssh_daily.distinct_number_of_dst_machines_with_high_score_ssh":1.0,
+            "normalized_username_kerberos_logins_daily.distinct_number_of_failure_code_with_high_score_kerberos":1.0,
+            "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn":1.0
           }
         }
       }
