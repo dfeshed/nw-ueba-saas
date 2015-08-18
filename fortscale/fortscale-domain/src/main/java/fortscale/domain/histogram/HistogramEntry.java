@@ -2,6 +2,7 @@ package fortscale.domain.histogram;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * represent histogram pair in front-end format: have a bean with the following structure:
@@ -16,6 +17,7 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 
 
 	private List<String> keys;
+	private Map additionalInformation;
 	private Double value;
 	private boolean anomaly;
 
@@ -73,6 +75,8 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 
 		if (anomaly != that.anomaly) return false;
 		if (keys != null ? !keys.equals(that.keys) : that.keys != null) return false;
+		if (additionalInformation != null ? !additionalInformation.equals(that.additionalInformation) :
+				that.additionalInformation != null) return false;
 		return !(value != null ? !value.equals(that.value) : that.value != null);
 
 	}
@@ -81,6 +85,7 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 	public int hashCode() {
 		int result = keys != null ? keys.hashCode() : 0;
 		result = 31 * result + (value != null ? value.hashCode() : 0);
+		result = 31 * result + (additionalInformation != null ? additionalInformation.hashCode() : 0);
 		result = 31 * result + (anomaly ? 1 : 0);
 		return result;
 	}
@@ -91,7 +96,16 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 				"keys=" + keys +
 				", value=" + value +
 				", anomaly=" + anomaly +
+				", additionalInformation=" + additionalInformation +
 				'}';
+	}
+
+	public Map getAdditionalInformation() {
+		return additionalInformation;
+	}
+
+	public void setAdditionalInformation(Map additionalInformation) {
+		this.additionalInformation = additionalInformation;
 	}
 }
 

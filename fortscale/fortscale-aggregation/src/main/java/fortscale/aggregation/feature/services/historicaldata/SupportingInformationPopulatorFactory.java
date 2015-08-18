@@ -26,7 +26,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private ApplicationContext applicationContext;
 
     public SupportingInformationDataPopulator createSupportingInformationPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
-        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
+        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction)) {
             SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
             return supportingInformationDataCountPopulator;
@@ -37,9 +37,10 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
             return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
         }
         else if (SupportingInformationAggrFunc.Query.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationQueryPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_POPULATOR_BEAN, contextType, dataEntity, featureName);
-
-            return supportingInformationQueryPopulator;
+            SupportingInformationQueryPopulator supportingInformationMongoQueryPopulator =
+                    (SupportingInformationQueryPopulator)applicationContext.
+                            getBean(SUPPORTING_INFORMATION_QUERY_POPULATOR_BEAN);
+            return supportingInformationMongoQueryPopulator;
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
