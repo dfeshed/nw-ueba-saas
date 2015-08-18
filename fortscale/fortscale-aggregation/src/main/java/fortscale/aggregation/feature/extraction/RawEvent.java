@@ -1,32 +1,30 @@
 package fortscale.aggregation.feature.extraction;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import net.minidev.json.JSONObject;
 
 public class RawEvent implements Event{
 
 	private JSONObject jsonObject;
-	private DataEntitiesConfig dataEntitiesConfig;
+	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 	private String eventType;
 	
-	public RawEvent(JSONObject jsonObject, DataEntitiesConfig dataEntitiesConfig, String eventType){
+	public RawEvent(JSONObject jsonObject, DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList, String eventType){
 		this.jsonObject = jsonObject;
-		this.dataEntitiesConfig = dataEntitiesConfig;
+		this.dataEntitiesConfigWithBlackList = dataEntitiesConfigWithBlackList;
 		this.eventType = eventType;
 	}
 	
 	@Override
 	public Object get(String key){
+		String fieldColumn = key;
 		if(eventType != null){
-			try {
-				return jsonObject.get(dataEntitiesConfig.getFieldColumn(eventType, key));
-			} catch (InvalidQueryException e) {
-				return jsonObject.get(key);
+			String tmp = dataEntitiesConfigWithBlackList.getFieldColumn(eventType, key);
+			if(tmp != null){
+				fieldColumn = tmp;
 			}
-		} else{
-			return jsonObject.get(key);
 		}
+		
+		return jsonObject.get(fieldColumn);
 	}
 
 	@Override
