@@ -27,7 +27,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private ApplicationContext applicationContext;
 
     public SupportingInformationDataPopulator createSupportingInformationPopulator(EvidenceType evidenceType, String contextType, String dataEntity, String featureName, String aggregationFunction) {
-        if (EvidenceType.AnomalySingleEvent == evidenceType) {
+        if (EvidenceType.AnomalySingleEvent == evidenceType || EvidenceType.Notification == evidenceType) {
             if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
                 SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
 

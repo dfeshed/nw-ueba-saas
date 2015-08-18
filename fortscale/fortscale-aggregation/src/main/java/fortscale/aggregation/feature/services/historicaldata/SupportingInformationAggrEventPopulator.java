@@ -36,6 +36,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
 
     public SupportingInformationAggrEventPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
+
     }
 
     @Override
@@ -62,11 +63,11 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
                 }
 
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
-                    Double currValue = histogramEntry.getValue();
+                    String numOfEvents = histogramEntry.getKey();
 
                     HistogramKey histogramKey = new HistogramSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
 
-                    histogramKeyObjectMap.put(histogramKey, currValue);
+                    histogramKeyObjectMap.put(histogramKey, Double.parseDouble(numOfEvents));
                 }
             } else {
                 // TODO is this considered illegal state? for now don't use the value and continue;
@@ -94,7 +95,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
     @Override
     HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
         // TODO need to check
-        return new HistogramSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
+        return new HistogramSingleKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
     }
 }
 
