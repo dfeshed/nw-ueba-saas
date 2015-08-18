@@ -13,4 +13,5 @@ public interface VpnSessionRepository extends MongoRepository<VpnSession,String>
 	public List<VpnSession> findByUsernameAndCreatedAtEpochGreaterThan(String username, Long createdAtEpoch, Pageable pageable);
 	public VpnSession findBySessionId(String sessionId);
 	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo, PageRequest pageRequest);
+	public List<VpnSession> findByUsernameAndCreatedAtEpochBetweenAndDurationExists(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo, PageRequest pageRequest);
 }

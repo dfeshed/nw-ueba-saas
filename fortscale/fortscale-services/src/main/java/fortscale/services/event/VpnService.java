@@ -3,8 +3,7 @@ package fortscale.services.event;
 import java.util.List;
 
 import fortscale.domain.events.VpnSession;
-
-
+import org.springframework.data.domain.PageRequest;
 
 
 public interface VpnService {
@@ -16,4 +15,5 @@ public interface VpnService {
 	VpnSession findOpenVpnSession(VpnSession closeVpnSession);
 	VpnSession findBySessionId(String sessionId);
 	List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo);
+	List<VpnSession> findByUsernameAndCreatedAtEpochBetweenAndDurationExists(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo);
 }
