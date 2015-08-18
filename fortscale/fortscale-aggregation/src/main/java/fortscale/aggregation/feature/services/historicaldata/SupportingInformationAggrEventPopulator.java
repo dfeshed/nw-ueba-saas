@@ -88,8 +88,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return "normalized_username_kerberos_logins_daily_distinct_number_of_src_machines_kerberos";
-        //return String.format("%s_%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        return String.format("%s_%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
     }
 
     @Override

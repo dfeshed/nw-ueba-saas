@@ -52,12 +52,6 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     @Override
     public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue) {
 
-//        // MOCK
-//        featureName = "distinct_number_of_src_machines_kerberos";
-//        contextValue = "execusr1fs@forest1.fs";
-//        evidenceEndTime = TimestampUtils.convertToMilliSeconds(1438473600);
-//        // END MOCK
-
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
         Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
