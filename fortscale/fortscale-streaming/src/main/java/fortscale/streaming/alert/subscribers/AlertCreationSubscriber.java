@@ -1,6 +1,7 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.service.SpringService;
@@ -25,6 +26,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     @Autowired
     protected AlertsService alertsService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Listener method called when Esper has detected a pattern match.
@@ -78,12 +82,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
             dataEntitiesIds.add("active_directory");
-            EvidencesService evidencesService;evidencesService = SpringService.getInstance().
-                    resolve(EvidencesService.class);
+            EvidencesService evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
+
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
                     dataEntitiesIds, 50d, tag, "tag");
-            //TODO - set supporting information here
+
+            //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
+            EvidenceSupportingInformation evidenceSupportingInformation = createTagEvidenceSupportingInformationData(evidence);
+            evidence.setSupportingInformation(evidenceSupportingInformation);
+
             // Save evidence to MongoDB
             try {
                 evidencesService.saveEvidenceInRepository(evidence);
@@ -94,5 +102,30 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
             evidences.add(new Evidence(evidence.getId()));
         }
     }
+
+    /**
+     * create new tag evidence supporting information.
+     * it includes mostly the user's data from active directory.
+     * @return
+     */
+    public EvidenceSupportingInformation createTagEvidenceSupportingInformationData(Evidence evidence){
+        EvidenceSupportingInformation evidenceSupportingInformation = new EvidenceSupportingInformation();
+
+        User user= userRepository.findByUsername(evidence.getEntityName());
+        if(user == null || user.getUsername() == null){
+            logger.warn("No user {} exist! ");
+            return null;
+        }
+
+        //create userDetails object and return it
+        UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation(user);
+        evidenceSupportingInformation.setUserDetails(userSupprotingInformation);
+
+        return evidenceSupportingInformation;
+
+    }
+
+
+
 
 }

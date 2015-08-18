@@ -3,18 +3,22 @@ package fortscale.web.beans;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserUtils;
+import fortscale.services.UserService;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true, autowire=Autowire.BY_NAME, dependencyCheck=true)
+@Configurable(preConstruction = true, autowire=Autowire.BY_TYPE, dependencyCheck=true)
 public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
 	
@@ -25,12 +29,14 @@ public class UserDetailsBean implements Serializable{
 	private List<User> directReports;
 	private String thumbnailPhoto;
 	private ADParser adUserParser;
-	
+	private UserUtils userUtils;
+
 	public UserDetailsBean(User user, User manager, List<User> directReports){
 		this.user = user;
 		this.manager = manager;
 		this.directReports = directReports;
 		this.adUserParser = new ADParser();
+		this.userUtils = new UserUtils();
 	}
 
 	public Boolean getAdministratorccount() {
@@ -110,8 +116,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getOu(){
-		String dn = user.getAdInfo().getDn();
-		return dn != null ? adUserParser.parseOUFromDN(dn) : null;		
+	return userUtils.getOu(user);
 	}
 	
 	public String getAdUserPrincipalName(){
@@ -241,13 +246,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public Boolean isPasswordExpired() {
-		try{
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return userUtils.isPasswordExpired(user);
 	}
 	
 	public Boolean isTrustedToAuthForDelegation() {
@@ -262,24 +261,12 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isNoPasswordRequiresValue() {
-		try{
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNoPasswordRequiresValue(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return userUtils.isNoPasswordRequiresValue(user);
 	}
 
 	
 	public Boolean isNormalUserAccountValue() {
-		try{
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNormalUserAccountValue(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return userUtils.isNormalUserAccountValue(user);
 	} 
 	
 	
@@ -295,13 +282,7 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isPasswordNeverExpiresValue() {
-		try{
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordNeverExpiresValue(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return userUtils.isPasswordNeverExpiresValue(user);
 	}
 	
 	

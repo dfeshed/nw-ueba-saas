@@ -8,20 +8,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 public class EvidenceSupportingInformation {
 
-	// TODO dummy field - place holder for later
-	public static final String aggregatedData1Field = "aggregatedData1";
+	private UserSupprotingInformation userSupportingInformation;
 
-	@Field(aggregatedData1Field)
-	private String aggregatedData1;
-
-
-	//- Getters & Setters
-
-	public String getAggregatedData1() {
-		return aggregatedData1;
+	public UserSupprotingInformation getUserDetails() {
+		return userSupportingInformation;
 	}
 
-	public void setAggregatedData1(String aggregatedData1) {
-		this.aggregatedData1 = aggregatedData1;
+	public void setUserDetails(UserSupprotingInformation userDetails) {
+		this.userSupportingInformation = userDetails;
 	}
+
+
 }

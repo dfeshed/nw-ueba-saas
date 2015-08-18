@@ -260,6 +260,10 @@ public class Evidence extends AbstractDocument{
 		return dataEntitiesIds;
 	}
 
+	public void setSupportingInformation(EvidenceSupportingInformation supportingInformationData){
+		this.supportingInformation = supportingInformation;
+	}
+
 	public EvidenceSupportingInformation getSupportingInformation() {
 		return supportingInformation;
 	}

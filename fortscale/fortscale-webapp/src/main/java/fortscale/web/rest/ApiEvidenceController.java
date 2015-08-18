@@ -101,7 +101,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		Evidence evidence = evidencesDao.findById(id);
 		if (evidence == null || evidence.getId() == null){
-			throw new InvalidValueException("Can't get evidence ofr id: " + id);
+			throw new InvalidValueException("Can't get evidence of id: " + id);
 		}
 
 		String entityName = evidence.getEntityName();
