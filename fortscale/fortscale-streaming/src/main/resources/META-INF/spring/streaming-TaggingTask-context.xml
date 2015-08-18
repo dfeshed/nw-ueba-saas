@@ -185,6 +185,6 @@
 
     <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="prototype"/>
 
-    <!-- <bean id="vpnSessionPreProcess" class="fortscale.streaming.task.evidence.pre.process.VpnSessionEvidencePreProcess" scope="prototype"/>-->
+    <!--<bean id="vpnSessionPreProcess" class="fortscale.streaming.task.evidence.pre.process.VpnSessionEvidencePreProcess" scope="prototype"/>-->
 
 </beans>
