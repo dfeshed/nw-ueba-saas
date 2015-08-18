@@ -3,6 +3,8 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
+import net.minidev.json.JSONObject;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -23,16 +25,15 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyServic
 import fortscale.aggregation.feature.event.AggrFeatureEventService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.extraction.AggrEvent;
+import fortscale.aggregation.feature.extraction.DataEntitiesConfigWithBlackList;
 import fortscale.aggregation.feature.extraction.Event;
 import fortscale.aggregation.feature.extraction.RawEvent;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -59,7 +60,7 @@ public class AggregatorManager {
 	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
 	
 	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
+	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 	
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
@@ -112,7 +113,7 @@ public class AggregatorManager {
 			return new AggrEvent(eventMessage);
 		} else{
 			String dataSource = eventMessage.getAsString(dataSourceFieldName);
-			return new RawEvent(eventMessage, dataEntitiesConfig, dataSource);
+			return new RawEvent(eventMessage, dataEntitiesConfigWithBlackList, dataSource);
 		}
 	}
 
