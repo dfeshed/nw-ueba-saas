@@ -277,9 +277,11 @@ public class ApiEvidenceController extends DataQueryController {
 	private  List<HistogramEntry> createListWithOthers(List<HistogramEntry> oldList, int numColumns){
 
 		HistogramEntry anomalyPair = new HistogramEntry();
+		boolean hasAnomaly = false;
 		for(HistogramEntry pair: oldList){
 			if(pair.isAnomaly()){
 				anomalyPair = oldList.remove(oldList.indexOf(pair));
+				hasAnomaly = true;
 				break;
 			}
 		}
@@ -300,8 +302,11 @@ public class ApiEvidenceController extends DataQueryController {
 		for(;i < oldList.size();i++){
 			newListWithOthers.add(oldList.get(i));
 		}
-		//insert the anomalyPair into the new list
-		newListWithOthers.add(anomalyPair);
+
+		if (hasAnomaly) {
+			//insert the anomalyPair into the new list
+			newListWithOthers.add(anomalyPair);
+		}
 
 		return newListWithOthers;
 	}
