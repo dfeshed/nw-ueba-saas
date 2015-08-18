@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.aggregation.JsonObjectWrapperEvent;
 import fortscale.aggregation.feature.Feature;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.utils.ConversionUtils;
-import net.minidev.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/feature-extractors-context-test.xml" })
@@ -41,7 +41,7 @@ public class FeatureExtractorsTest {
 	private String eventTypeFieldName;
 	
 	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
+	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 
 	@Autowired
 	private FeatureExtractService featureExtractService;
@@ -220,7 +220,7 @@ public class FeatureExtractorsTest {
 		featureNames.addAll(Arrays.asList("feature3", "normalized_username"));
 
 
-		Map<String, Feature> res = featureExtractService.extract(featureNames, new RawEvent(jsonObject, dataEntitiesConfig,"kerberos_logins" ));
+		Map<String, Feature> res = featureExtractService.extract(featureNames, new RawEvent(jsonObject, dataEntitiesConfigWithBlackList,"kerberos_logins" ));
 
 
 		String value1 = (String)(res.get("feature3")).getValue();
@@ -240,7 +240,7 @@ public class FeatureExtractorsTest {
 		featureNames.addAll(Arrays.asList("feature3"));
 
 		String featureName = "feature3";
-		Feature res = featureExtractService.extract(featureName, new RawEvent(jsonObject, dataEntitiesConfig,"kerberos_logins" ));
+		Feature res = featureExtractService.extract(featureName, new RawEvent(jsonObject, dataEntitiesConfigWithBlackList,"kerberos_logins" ));
 
 		Assert.assertEquals("82.165.195.0", res.getValue());
 	}

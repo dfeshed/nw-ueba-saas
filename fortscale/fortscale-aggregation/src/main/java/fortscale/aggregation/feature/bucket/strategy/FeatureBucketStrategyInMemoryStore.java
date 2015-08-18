@@ -7,11 +7,11 @@ import java.util.Map;
 
 public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategyStore {
 	
-	private Map<String, List<FeatureBucketStrategyData>> startegyContextIdToData = new HashMap<String, List<FeatureBucketStrategyData>>();
+	private Map<String, List<FeatureBucketStrategyData>> startegyEventContextIdToData = new HashMap<String, List<FeatureBucketStrategyData>>();
 
 	@Override
-	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyContextId, long latestStartTime) {
-		List<FeatureBucketStrategyData> strategyDataList = startegyContextIdToData.get(strategyContextId);
+	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
+		List<FeatureBucketStrategyData> strategyDataList = startegyEventContextIdToData.get(strategyEventContextId);
 		if(strategyDataList == null){
 			return null;
 		}
@@ -27,8 +27,8 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
-		String strategyContextId = featureBucketStrategyData.getStrategyContextId();
-		List<FeatureBucketStrategyData> strategyDataList = startegyContextIdToData.get(strategyContextId);
+		String strategyContextId = featureBucketStrategyData.getStrategyEventContextId();
+		List<FeatureBucketStrategyData> strategyDataList = startegyEventContextIdToData.get(strategyContextId);
 
 		if (strategyDataList == null) {
 			strategyDataList = new ArrayList<>();
@@ -36,10 +36,12 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 		int i;
 		for (i = strategyDataList.size() - 1; i >= 0; i--) {
-			if (featureBucketStrategyData.getStartTime() > strategyDataList.get(i).getStartTime()) {
+			FeatureBucketStrategyData iter = strategyDataList.get(i);
+			if (featureBucketStrategyData.getStartTime() > iter.getStartTime()) {
 				strategyDataList.add(i + 1, featureBucketStrategyData);
 				break;
-			} else if (featureBucketStrategyData.getStartTime() == strategyDataList.get(i).getStartTime()) {
+			} else if (featureBucketStrategyData.getStartTime() == iter.getStartTime() && 
+					featureBucketStrategyData.getContextMap().equals(iter.getContextMap())) {
 				strategyDataList.set(i, featureBucketStrategyData);
 				break;
 			}
@@ -50,7 +52,39 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 		}
 
 		// Write back to store the updated list
-		startegyContextIdToData.put(strategyContextId, strategyDataList);
+		startegyEventContextIdToData.put(strategyContextId, strategyDataList);
+	}
+
+	@Override
+	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime,	Map<String, String> contextMap) {
+		List<FeatureBucketStrategyData> strategyDataList = startegyEventContextIdToData.get(strategyEventContextId);
+		if(strategyDataList == null){
+			return null;
+		}
+		// Assume that the list is in ascending order over the start time
+		for (int i = strategyDataList.size() - 1; i >= 0; i--) {
+			FeatureBucketStrategyData featureBucketStrategyData = strategyDataList.get(i);
+			if (featureBucketStrategyData.getStartTime() <= latestStartTime && featureBucketStrategyData.getContextMap().equals(contextMap)) {
+				return featureBucketStrategyData;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyDataContainsEventTime(String strategyEventContextId,	long eventTime) {
+		List<FeatureBucketStrategyData> strategyDataList = startegyEventContextIdToData.get(strategyEventContextId);
+		if(strategyDataList == null){
+			return null;
+		}
+		
+		List<FeatureBucketStrategyData> ret = new ArrayList<>();
+		for (FeatureBucketStrategyData featureBucketStrategyData: strategyDataList) {
+			if (featureBucketStrategyData.getStartTime() <= eventTime && featureBucketStrategyData.getEndTime() > eventTime) {
+				ret.add(featureBucketStrategyData);
+			}
+		}
+		return ret;
 	}
 
 }
