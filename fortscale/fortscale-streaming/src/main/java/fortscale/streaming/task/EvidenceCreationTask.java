@@ -204,8 +204,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Pre process
 			if (dataSourceConfiguration.preProcessClassField != null && !dataSourceConfiguration.preProcessClassField.isEmpty()) {
 
-				String className = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.preProcessClassField));
-				EvidencePreProcess preProcess = (EvidencePreProcess) SpringService.getInstance().resolve(Class.forName(className));
+				EvidencePreProcess preProcess = (EvidencePreProcess) SpringService.getInstance().resolve(Class.forName(dataSourceConfiguration.preProcessClassField));
 
 				preProcess.run(message, dataSourceConfiguration);
 			}
@@ -227,8 +226,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Post process
 			if (dataSourceConfiguration.postProcessClassField != null && !dataSourceConfiguration.postProcessClassField.isEmpty()) {
 
-				String className = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.postProcessClassField));
-				EvidencePostProcess postProcess = (EvidencePostProcess) SpringService.getInstance().resolve(Class.forName(className));
+				EvidencePostProcess postProcess = (EvidencePostProcess) SpringService.getInstance().resolve(Class.forName( dataSourceConfiguration.postProcessClassField));
 
 				postProcess.run(message, dataSourceConfiguration);
 			}
