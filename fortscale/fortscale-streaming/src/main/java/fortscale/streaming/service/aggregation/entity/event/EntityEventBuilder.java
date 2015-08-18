@@ -125,8 +125,8 @@ public class EntityEventBuilder {
 		entityEvent.put(eventTypeFieldName, eventTypeFieldValue);
 		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
 		int tmp = (int) (entityEventValue*1000);
-		double entityEventValue3DigitPercision = tmp/1000d;
-		entityEvent.put("entity_event_value", entityEventValue3DigitPercision);
+		double entityEventValue3DigitPrecision = tmp/1000d;
+		entityEvent.put("entity_event_value", entityEventValue3DigitPrecision);
 		entityEvent.put("creation_epochtime", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());
