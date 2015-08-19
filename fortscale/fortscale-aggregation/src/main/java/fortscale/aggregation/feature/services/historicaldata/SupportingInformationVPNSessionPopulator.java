@@ -34,7 +34,6 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
                                                                      int timePeriodInDays, String anomalyValue) {
         long from = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        contextValue = "fragr1usr3fs@forest1.fs";
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 contextValue, from, evidenceEndTime);
         Map<HistogramKey, Double> histogramMap = new HashMap();
