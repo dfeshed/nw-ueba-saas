@@ -23,6 +23,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
     private static final String SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR = "supportingInformationAggrEventPopulator";
+    
 
     private ApplicationContext applicationContext;
 
@@ -36,6 +37,11 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
                 SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
 
                 return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
+            }
+            else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
+                SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
+
+                return supportingInformationQueryPopulator;
             }
             else {
                 throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");

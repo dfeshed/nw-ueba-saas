@@ -155,7 +155,7 @@ public class ApiEvidenceControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Israel\"],\"value\":10.0,\"anomaly\":false},{\"keys\":[\"USA\"],\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Israel\"],\"additionalInformation\":null,\"value\":10.0,\"anomaly\":false},{\"keys\":[\"USA\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Afghanistan\"],\"additionalInformation\":null,\"value\":1.0,\"anomaly\":true}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class ApiEvidenceControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Israel\"],\"value\":10.0,\"anomaly\":false},{\"keys\":[\"USA\"],\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Israel\"],\"additionalInformation\":null,\"value\":10.0,\"anomaly\":false},{\"keys\":[\"USA\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":false},{\"keys\":[\"Afghanistan\"],\"additionalInformation\":null,\"value\":1.0,\"anomaly\":true}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 	/**
@@ -188,14 +188,14 @@ public class ApiEvidenceControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true},{\"keys\":[\"Others\"],\"value\":17.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Afghanistan\"],\"additionalInformation\":null,\"value\":1.0,\"anomaly\":true},{\"keys\":[\"Others\"],\"additionalInformation\":null,\"value\":17.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 
 		 result =   mockMvc.perform(get("/api/evidences/" + MOCK_EVIDENCE_ID + "/historical-data?context_type=someCT&context_value=someCV&feature=someFeature&function=Count&num_columns=1&sort_direction=DESC").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Afghanistan\"],\"value\":1.0,\"anomaly\":true},{\"keys\":[\"Israel\"],\"value\":10.0,\"anomaly\":false},{\"keys\":[\"Others\"],\"value\":7.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Afghanistan\"],\"additionalInformation\":null,\"value\":1.0,\"anomaly\":true},{\"keys\":[\"Israel\"],\"additionalInformation\":null,\"value\":10.0,\"anomaly\":false},{\"keys\":[\"Others\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class ApiEvidenceControllerTest {
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Tuesday\",\"16:00\"],\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Monday\",\"13:00\"],\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"13:00\"],\"value\":9.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"07:00\"],\"value\":8.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Tuesday\",\"16:00\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Monday\",\"13:00\"],\"additionalInformation\":null,\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"13:00\"],\"additionalInformation\":null,\"value\":9.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"07:00\"],\"additionalInformation\":null,\"value\":8.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 
