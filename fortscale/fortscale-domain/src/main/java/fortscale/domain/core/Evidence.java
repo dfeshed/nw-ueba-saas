@@ -261,7 +261,7 @@ public class Evidence extends AbstractDocument{
 	}
 
 	public void setSupportingInformation(EvidenceSupportingInformation supportingInformationData){
-		this.supportingInformation = supportingInformation;
+		this.supportingInformation = supportingInformationData;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
