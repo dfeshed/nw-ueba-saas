@@ -16,7 +16,7 @@ public class UserUtils {
 
 	private static Logger logger = Logger.getLogger(UserUtils.class);
 
-	private static ADParser adUserParser;
+	private static ADParser adUserParser = new ADParser();
 
 	@Autowired
 	private static UserRepository userRepository;
