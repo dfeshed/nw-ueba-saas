@@ -14,4 +14,5 @@
 	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
 	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationCountPopulator" scope="prototype"/>
 	<bean id="supportingInformationDataHourlyCountGroupByDayOfWeekPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationHourlyCountGroupByDayOfWeekPopulator" scope="prototype"/>
+	<bean id="supportingInformationMongoVPNSessionQueryPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationVPNSessionPopulator" scope="prototype"/>
 </beans>

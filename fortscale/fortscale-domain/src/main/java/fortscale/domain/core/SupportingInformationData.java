@@ -17,6 +17,8 @@ public class SupportingInformationData {
 
     private Map<HistogramKey, Double> histogram = new HashMap<>();
 
+    private Map<HistogramKey, Map> additionalInformation = new HashMap();
+
     private HistogramKey anomalyValue;
 
     public SupportingInformationData(Map<HistogramKey, Double> histogram, HistogramKey anomalyValue) {
@@ -41,6 +43,16 @@ public class SupportingInformationData {
         return "SupportingInformationData{" +
                 "histogram=" + histogram +
                 ", anomalyValue=" + anomalyValue +
+                ", additionalInformation=" + additionalInformation +
                 '}';
     }
+
+    public Map<HistogramKey, Map> getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(Map<HistogramKey, Map> additionalInformation) {
+        this.additionalInformation = additionalInformation;
+    }
+
 }

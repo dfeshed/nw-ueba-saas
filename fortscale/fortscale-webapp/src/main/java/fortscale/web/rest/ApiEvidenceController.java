@@ -218,18 +218,7 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 
 		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
-
-		List<HistogramEntry> listOfHistogramEntries;
-
-		if (isEvidenceSupportAnomalyValue) {
-			//add the anomaly to the relevant fields
-			HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
-		}
-		else {
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram);
-		}
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(evidenceSupportingInformationData, isEvidenceSupportAnomalyValue);
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -327,13 +316,21 @@ public class ApiEvidenceController extends DataQueryController {
 	 * gets a map of histogramKey,value and return a list of HistogramPairs.
 	 * this function also marks the anomaly pair - essential for further data manipulation.
 	 *
-	 * @param supportingInformationHistogram
-	 * @param anomaly
+	 * @param supportingInformationData
+	 * @param isEvidenceSupportAnomalyValue
 	 * @return list of HistogramPairs, with (0 or more) anomaly mark
 	 */
-	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
+	private List<HistogramEntry> createListOfHistogramPairs(SupportingInformationData supportingInformationData,
+															boolean isEvidenceSupportAnomalyValue) {
 
 		List<HistogramEntry> histogramEntries = new ArrayList<>();
+		HistogramKey anomaly = null;
+		Map<HistogramKey, Double> supportingInformationHistogram = supportingInformationData.getHistogram();
+		Map<HistogramKey, Map> additionalInformation = supportingInformationData.getAdditionalInformation();
+
+		if (isEvidenceSupportAnomalyValue) {
+			anomaly = supportingInformationData.getAnomalyValue();
+		}
 
 		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
 			HistogramKey key = supportingInformationHistogramEntry.getKey();
@@ -344,21 +341,14 @@ public class ApiEvidenceController extends DataQueryController {
 			if (anomaly != null && key.equals(anomaly)){
 				histogramEntry.setIsAnomaly(true);
 			}
+
+			if (additionalInformation != null) {
+				histogramEntry.setAdditionalInformation(additionalInformation.get(key));
+			}
+
 			histogramEntries.add(histogramEntry);
 		}
 		return histogramEntries;
-	}
-
-	/**
-	 * method that helps to serialize aggregated information into our API standarts.
-	 * gets a map of histogramKey,value and return a list of HistogramPairs.
-	 * this function also marks the anomaly pair - essential for further data manipulation.
-	 *
-	 * @param supportingInformationHistogram
-	 * @return list of HistogramPairs, with (0 or more) anomaly mark
-	 */
-	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram) {
-		return createListOfHistogramPairs(supportingInformationHistogram, null);
 	}
 
 }
