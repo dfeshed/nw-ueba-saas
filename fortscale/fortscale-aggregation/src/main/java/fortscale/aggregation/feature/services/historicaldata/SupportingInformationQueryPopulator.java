@@ -22,18 +22,24 @@ import java.util.Map;
  */
 public abstract class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
 
-    //this method will vary according to which mongo service will be used to fetch the data from
-    protected abstract HistogramKey populate(String contextValue, long evidenceEndTime, long from,
+    //this method will vary according to which Mongo service will be used to fetch the data from
+    protected abstract HistogramKey populate(String contextValue, long startTime, long endTime,
                                              Map<HistogramKey, Double> histogramMap,
                                              Map<HistogramKey, Map> additionalInformation, String anomalyValue);
 
+    /*
+     * Basic flow of the populator:
+     * 1. Fetch relevant records from Mongo
+     * 2. Create the histogram
+     * 3. Create the anomaly histogram key
+     */
     @Override
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
                                                                      int timePeriodInDays, String anomalyValue) {
-        long from = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+        long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         Map<HistogramKey, Double> histogramMap = new HashMap();
         Map<HistogramKey, Map> additionalInformation = new HashMap();
-        HistogramKey anomaly = populate(contextValue, evidenceEndTime, from, histogramMap, additionalInformation,
+        HistogramKey anomaly = populate(contextValue, startTime, evidenceEndTime, histogramMap, additionalInformation,
                 anomalyValue);
         SupportingInformationData supportingInformationData;
         if (anomaly != null) {
