@@ -2,14 +2,12 @@ package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +17,7 @@ import java.util.Map;
 
 /**
  * @author gils
- *         Date: 16/08/2015
+ * Date: 16/08/2015
  */
 @Component
 @Scope("prototype")
@@ -30,9 +28,6 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
     private static final String CONTEXT_PREFIX = "context";
     private static final String DOT_DELIMITER = "#dot#";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
-
-    @Autowired
-    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     public SupportingInformationAggrEventPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -58,6 +53,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
             if (featureValue instanceof GenericHistogram) {
                 Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
 
+                // until FV-8398 is fixed..
                 if (histogramMap.isEmpty() || histogramMap.size() > 1) {
                     logger.warn("Histogram map contains {} entries, expecting exactly one", histogramMap.size());
                 }
@@ -65,9 +61,17 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     String numOfEvents = histogramEntry.getKey();
 
+                    double value = Double.parseDouble(numOfEvents);
+
+                    // workaround for bug FV-8398
+                    if (value == 0) {
+                        logger.warn("Histogram map contains {} entries, expecting exactly one", histogramMap.size());
+                        continue;
+                    }
+
                     HistogramKey histogramKey = new HistogramSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
 
-                    histogramKeyObjectMap.put(histogramKey, Double.parseDouble(numOfEvents));
+                    histogramKeyObjectMap.put(histogramKey, value);
                 }
             } else {
                 // TODO is this considered illegal state? for now don't use the value and continue;
@@ -83,7 +87,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
     }
 
     @Override
-    String getNormalizedContextType(String contextType) {
+    protected String getNormalizedContextType(String contextType) {
         return CONTEXT_PREFIX + DOT_DELIMITER + contextType;
     }
 
@@ -93,7 +97,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
 
     @Override
     HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
-        // TODO need to check
+        // TODO need to check if this correct
         return new HistogramSingleKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
     }
 }
