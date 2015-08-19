@@ -15,48 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation for Mongo queries populator
+ * Abstract class for Mongo queries populator
  *
  * @author Amir Keren
  * Date: 18/08/2015
  */
-@Component
-@Scope("prototype")
-public class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
-
-    @Autowired
-    private VpnService vpnService;
-
-    @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
-                                                                     int timePeriodInDays, String anomalyValue) {
-        //TODO - generalize this
-        long from = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
-                contextValue, from, evidenceEndTime);
-        Map<HistogramKey, Double> histogramMap = new HashMap();
-        Map<HistogramKey, Map> additionalInformation = new HashMap();
-        HistogramKey anomaly = null;
-        if (anomalyValue != null) {
-            anomaly = new HistogramSingleKey(anomalyValue);
-        }
-        for (VpnSession vpnSession: vpnSessions) {
-            HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
-            histogramMap.put(key, (double)vpnSession.getDataBucket());
-            Map<String, Long> info = new HashMap();
-            info.put("durationSec", (long)vpnSession.getDuration());
-            info.put("totalDownloadBytes", vpnSession.getTotalBytes());
-            additionalInformation.put(key, info);
-        }
-        SupportingInformationData supportingInformationData;
-        if (anomaly != null) {
-            supportingInformationData = new SupportingInformationData(histogramMap, anomaly);
-        } else {
-            supportingInformationData = new SupportingInformationData(histogramMap);
-        }
-        supportingInformationData.setAdditionalInformation(additionalInformation);
-        return supportingInformationData;
-    }
+public abstract class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
 
     @Override
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,

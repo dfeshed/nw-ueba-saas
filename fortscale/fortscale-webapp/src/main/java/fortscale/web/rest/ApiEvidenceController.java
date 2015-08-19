@@ -202,6 +202,8 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
+		aggFunction = "VPNSession";
+
 		boolean isEvidenceSupportAnomalyValue = isEvidenceSupportAnomalyValue(evidence);
 
 		SupportingInformationData evidenceSupportingInformationData;

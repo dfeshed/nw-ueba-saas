@@ -21,7 +21,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     // TODO use a static map in the bean
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
-    private static final String SUPPORTING_INFORMATION_QUERY_POPULATOR_BEAN = "supportingInformationQueryPopulator";
+    private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
 
     private ApplicationContext applicationContext;
 
@@ -36,11 +36,11 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
             return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
         }
-        else if (SupportingInformationAggrFunc.Query.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationQueryPopulator supportingInformationMongoQueryPopulator =
-                    (SupportingInformationQueryPopulator)applicationContext.
-                            getBean(SUPPORTING_INFORMATION_QUERY_POPULATOR_BEAN);
-            return supportingInformationMongoQueryPopulator;
+        else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
+            SupportingInformationVPNSessionPopulator supportingInformationMongoVPNSessionQueryPopulator =
+                    (SupportingInformationVPNSessionPopulator)applicationContext.
+                            getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
+            return supportingInformationMongoVPNSessionQueryPopulator;
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
