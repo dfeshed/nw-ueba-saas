@@ -18,13 +18,6 @@ public class UserUtils {
 
 	private static ADParser adUserParser = new ADParser();
 
-	@Autowired
-	private static UserRepository userRepository;
-
-	public UserUtils(){
-		adUserParser = new ADParser();
-	}
-
 	public static Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
@@ -84,7 +77,7 @@ public class UserUtils {
 		}
 	}
 
-	public static void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap){
+	public static void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap, UserRepository userRepository){
 		if(userRelatedDnsSet.size() > 0){
 			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
 			for(User manager: managers){

@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import fortscale.domain.core.dao.UserRepository;
+
 import java.util.*;
 
 /**
@@ -24,7 +26,7 @@ public class UserSupprotingInformation {
 
 	public UserSupprotingInformation(){};
 
-	public UserSupprotingInformation(User user){
+	public UserSupprotingInformation(User user, UserRepository userRepository){
 
 		username = user.getUsername();
 		title = user.getAdInfo().getPosition();
@@ -34,7 +36,7 @@ public class UserSupprotingInformation {
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
 
 		manager = UserUtils.getUserManager(user,dnToUserMap);
 		directReports = UserUtils.getUserDirectReports(user,dnToUserMap);

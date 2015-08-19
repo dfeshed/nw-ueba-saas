@@ -123,7 +123,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
         }
 
         //create userDetails object and return it
-        UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation(user);
+        UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation(user,userRepository);
         evidenceSupportingInformation.setUserDetails(userSupprotingInformation);
 
         return evidenceSupportingInformation;

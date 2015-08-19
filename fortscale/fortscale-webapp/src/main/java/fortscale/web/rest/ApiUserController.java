@@ -112,7 +112,7 @@ public class ApiUserController extends BaseController{
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 
 		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
 
 		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
@@ -167,7 +167,7 @@ public class ApiUserController extends BaseController{
 		for(User user: users){
 			 UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
 		}
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
 		
 		for(User user: users){
 			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);

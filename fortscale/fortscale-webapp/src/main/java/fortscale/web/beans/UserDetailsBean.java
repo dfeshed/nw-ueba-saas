@@ -5,24 +5,28 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserUtils;
 import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true, autowire=Autowire.BY_TYPE, dependencyCheck=true)
+@Configurable(preConstruction = true, autowire=Autowire.BY_NAME, dependencyCheck=true)
 public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
 	
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private UserService userService;
 
 	private User user;
 	private User manager;
