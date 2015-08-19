@@ -1,9 +1,8 @@
 package fortscale.domain.core;
 
-import org.springframework.data.mongodb.core.mapping.Field;
-
 /**
- * Supporting information for evidence
+ * Supporting information for evidence - saved in the evidence in mongo.
+ * currently being used only by the tag evidence to user supporting information
  * Date: 7/2/2015.
  */
 public class EvidenceSupportingInformation {

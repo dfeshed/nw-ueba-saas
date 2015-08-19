@@ -30,7 +30,7 @@ public class UserSupprotingInformation {
 		title = user.getAdInfo().getPosition();
 		department = user.getAdInfo().getDepartment();
 
-		//preparations for manager and direct reoprts
+		//preparations for manager and direct reports
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);

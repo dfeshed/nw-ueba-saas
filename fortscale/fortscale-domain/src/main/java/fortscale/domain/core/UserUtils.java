@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 /**
+ * static class for utils to get user's details.
  * Created by galiar on 16/08/2015.
  */
 public class UserUtils {
