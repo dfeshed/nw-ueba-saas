@@ -28,17 +28,32 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
     @Autowired
     private VpnService vpnService;
 
-    protected void populate(String contextValue, long evidenceEndTime, long from, Map<HistogramKey, Double> histogramMap, Map<HistogramKey, Map> additionalInformation) {
+    /**
+     *
+     * This method populates the histogram with vpnsession information
+     *
+     * @param contextValue
+     * @param evidenceEndTime
+     * @param from
+     * @param histogramMap
+     * @param additionalInformation
+     * @param anomalyValue
+     * @return HistogramKey representing the anomaly value's key
+     */
+    protected HistogramKey populate(String contextValue, long evidenceEndTime, long from,
+                                    Map<HistogramKey, Double> histogramMap,
+                                    Map<HistogramKey, Map> additionalInformation, String anomalyValue) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 contextValue, from, evidenceEndTime);
         for (VpnSession vpnSession: vpnSessions) {
-            HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
+            HistogramKey key = new HistogramSingleKey(vpnSession.getClosedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
             Map<String, Long> info = new HashMap();
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
         }
+        return new HistogramSingleKey(evidenceEndTime + "");
     }
 
 }
