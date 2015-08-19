@@ -11,8 +11,6 @@ import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.task.evidence.post.process.EvidencePostProcess;
-import fortscale.streaming.task.evidence.pre.process.EvidencePreProcess;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -209,7 +207,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Pre process
 			if (dataSourceConfiguration.preProcessClassField != null && !dataSourceConfiguration.preProcessClassField.isEmpty()) {
 
-				EvidencePreProcess preProcess = (EvidencePreProcess) SpringService.getInstance().resolve(Class.forName(dataSourceConfiguration.preProcessClassField));
+				EvidenceProcessor preProcess = (EvidenceProcessor) SpringService.getInstance().resolve(Class.forName(dataSourceConfiguration.preProcessClassField));
 
 				preProcess.run(message, dataSourceConfiguration);
 			}
@@ -223,7 +221,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			Long endTimestamp = TimestampUtils.convertToMilliSeconds(endTimestampSeconds);
 
 			// get the username from the event
-			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField,true));
+			String entityName = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.entityNameField, true));
 
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
