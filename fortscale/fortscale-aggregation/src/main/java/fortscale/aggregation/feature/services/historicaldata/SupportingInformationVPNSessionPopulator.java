@@ -1,11 +1,9 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.event.VpnService;
-import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,18 +28,9 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
     @Autowired
     private VpnService vpnService;
 
-    @Override
-    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
-                                                                     int timePeriodInDays, String anomalyValue) {
-        long from = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+    protected void populate(String contextValue, long evidenceEndTime, long from, Map<HistogramKey, Double> histogramMap, Map<HistogramKey, Map> additionalInformation) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 contextValue, from, evidenceEndTime);
-        Map<HistogramKey, Double> histogramMap = new HashMap();
-        Map<HistogramKey, Map> additionalInformation = new HashMap();
-        HistogramKey anomaly = null;
-        if (anomalyValue != null) {
-            anomaly = new HistogramSingleKey(anomalyValue);
-        }
         for (VpnSession vpnSession: vpnSessions) {
             HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
@@ -50,14 +39,6 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
         }
-        SupportingInformationData supportingInformationData;
-        if (anomaly != null) {
-            supportingInformationData = new SupportingInformationData(histogramMap, anomaly);
-        } else {
-            supportingInformationData = new SupportingInformationData(histogramMap);
-        }
-        supportingInformationData.setAdditionalInformation(additionalInformation);
-        return supportingInformationData;
     }
 
 }

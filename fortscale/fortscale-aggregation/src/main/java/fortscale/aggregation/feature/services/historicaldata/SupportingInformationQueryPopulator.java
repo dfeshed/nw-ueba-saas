@@ -22,6 +22,29 @@ import java.util.Map;
  */
 public abstract class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
 
+    protected abstract void populate(String contextValue, long evidenceEndTime, long from, Map<HistogramKey, Double> histogramMap, Map<HistogramKey, Map> additionalInformation);
+
+    @Override
+    public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
+                                                                     int timePeriodInDays, String anomalyValue) {
+        long from = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+        Map<HistogramKey, Double> histogramMap = new HashMap();
+        Map<HistogramKey, Map> additionalInformation = new HashMap();
+        HistogramKey anomaly = null;
+        SupportingInformationData supportingInformationData;
+        if (anomalyValue != null) {
+            anomaly = new HistogramSingleKey(anomalyValue);
+        }
+        populate(contextValue, evidenceEndTime, from, histogramMap, additionalInformation);
+        if (anomaly != null) {
+            supportingInformationData = new SupportingInformationData(histogramMap, anomaly);
+        } else {
+            supportingInformationData = new SupportingInformationData(histogramMap);
+        }
+        supportingInformationData.setAdditionalInformation(additionalInformation);
+        return supportingInformationData;
+    }
+
     @Override
     public SupportingInformationData createSupportingInformationData(String contextValue, long evidenceEndTime,
                                                                      int timePeriodInDays) {
