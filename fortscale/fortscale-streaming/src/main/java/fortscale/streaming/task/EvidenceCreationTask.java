@@ -228,14 +228,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
 
-			// Post process
-			if (dataSourceConfiguration.postProcessClassField != null && !dataSourceConfiguration.postProcessClassField.isEmpty()) {
-
-				EvidencePostProcess postProcess = (EvidencePostProcess) SpringService.getInstance().resolve(Class.forName( dataSourceConfiguration.postProcessClassField));
-
-				postProcess.run(message, dataSourceConfiguration);
-			}
-
 			// Create evidence from event
 			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents);
 
