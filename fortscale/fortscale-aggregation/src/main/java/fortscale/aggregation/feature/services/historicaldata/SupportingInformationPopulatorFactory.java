@@ -26,16 +26,19 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private ApplicationContext applicationContext;
 
     public SupportingInformationDataPopulator createSupportingInformationPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
-        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction)) {
+        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
             SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
+
             return supportingInformationDataCountPopulator;
-        } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
+        }
+        else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
             SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
+
             return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
-        } else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationQueryPopulator supportingInformationQueryPopulator =
-                    (SupportingInformationVPNSessionPopulator)applicationContext.
-                            getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
+        }
+        else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
+            SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
+
             return supportingInformationQueryPopulator;
         } else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
