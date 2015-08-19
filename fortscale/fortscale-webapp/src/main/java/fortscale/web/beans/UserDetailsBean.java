@@ -29,14 +29,12 @@ public class UserDetailsBean implements Serializable{
 	private List<User> directReports;
 	private String thumbnailPhoto;
 	private ADParser adUserParser;
-	private UserUtils userUtils;
 
 	public UserDetailsBean(User user, User manager, List<User> directReports){
 		this.user = user;
 		this.manager = manager;
 		this.directReports = directReports;
 		this.adUserParser = new ADParser();
-		this.userUtils = new UserUtils();
 	}
 
 	public Boolean getAdministratorccount() {
@@ -116,7 +114,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getOu(){
-	return userUtils.getOu(user);
+	return UserUtils.getOu(user);
 	}
 	
 	public String getAdUserPrincipalName(){
@@ -246,7 +244,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public Boolean isPasswordExpired() {
-		return userUtils.isPasswordExpired(user);
+		return UserUtils.isPasswordExpired(user);
 	}
 	
 	public Boolean isTrustedToAuthForDelegation() {
@@ -261,12 +259,12 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isNoPasswordRequiresValue() {
-		return userUtils.isNoPasswordRequiresValue(user);
+		return UserUtils.isNoPasswordRequiresValue(user);
 	}
 
 	
 	public Boolean isNormalUserAccountValue() {
-		return userUtils.isNormalUserAccountValue(user);
+		return UserUtils.isNormalUserAccountValue(user);
 	} 
 	
 	
@@ -282,7 +280,7 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isPasswordNeverExpiresValue() {
-		return userUtils.isPasswordNeverExpiresValue(user);
+		return UserUtils.isPasswordNeverExpiresValue(user);
 	}
 	
 	

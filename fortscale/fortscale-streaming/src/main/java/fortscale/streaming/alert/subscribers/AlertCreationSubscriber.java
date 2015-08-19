@@ -72,7 +72,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     ex.printStackTrace();
                 }
             }
-        }
+         }
     }
 
     /**

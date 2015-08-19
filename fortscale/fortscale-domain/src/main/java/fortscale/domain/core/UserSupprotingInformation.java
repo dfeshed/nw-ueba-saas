@@ -22,12 +22,9 @@ public class UserSupprotingInformation {
 
 	List<String> membershipGroups;
 
-	private UserUtils userUtils;
-
 	public UserSupprotingInformation(){};
 
 	public UserSupprotingInformation(User user){
-		this.userUtils = new UserUtils();
 
 		username = user.getUsername();
 		title = user.getAdInfo().getPosition();
@@ -36,17 +33,17 @@ public class UserSupprotingInformation {
 		//preparations for manager and direct reoprts
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
-		userUtils.fillUserRelatedDns(user, userRelatedDnsSet);
-		userUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
+		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 
-		manager = userUtils.getUserManager(user,dnToUserMap);
-		directReports = userUtils.getUserDirectReports(user,dnToUserMap);
+		manager = UserUtils.getUserManager(user,dnToUserMap);
+		directReports = UserUtils.getUserDirectReports(user,dnToUserMap);
 
-		normalUserAccount = userUtils.isNormalUserAccountValue(user);
-		noPasswordRequired = userUtils.isNoPasswordRequiresValue(user);
-		passwordNeverExpire = userUtils.isNoPasswordRequiresValue(user);
+		normalUserAccount = UserUtils.isNormalUserAccountValue(user);
+		noPasswordRequired = UserUtils.isNoPasswordRequiresValue(user);
+		passwordNeverExpire = UserUtils.isNoPasswordRequiresValue(user);
 
-		ou = userUtils.getOu(user);
+		ou = UserUtils.getOu(user);
 
 	}
 
