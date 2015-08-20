@@ -35,18 +35,17 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
      * @param evidenceEndTime end time for the search
      * @param histogramMap the histogram map to populate
      * @param additionalInformation additional information to populate
-     * @param anomalyValue - not used in this implementation
      * @return HistogramKey representing the anomaly value's key
      */
     protected HistogramKey populate(String normalizedUsername, long startTime, long evidenceEndTime,
                                     Map<HistogramKey, Double> histogramMap,
-                                    Map<HistogramKey, Map> additionalInformation, String anomalyValue) {
+                                    Map<HistogramKey, Map> additionalInformation) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 normalizedUsername, startTime, evidenceEndTime);
         for (VpnSession vpnSession: vpnSessions) {
             HistogramKey key = new HistogramSingleKey(vpnSession.getClosedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
-            Map<String, Long> info = new HashMap();
+            Map<String, Long> info = new HashMap<>();
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
