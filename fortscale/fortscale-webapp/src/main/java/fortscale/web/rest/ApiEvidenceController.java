@@ -36,6 +36,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
+	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -228,29 +229,24 @@ public class ApiEvidenceController extends DataQueryController {
 			}
 		}
 
+		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
+			addTimeGranularityInformation(histogramBean, evidenceSupportingInformationData);
+		}
+
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private void addTimeGranularityInformation(DataBean<List<HistogramEntry>> histogramBean, SupportingInformationData evidenceSupportingInformationData) {
+		Map<String, Object> infoMap = new HashMap<>(1);
+		infoMap.put(TIME_GRANULARITY_PROPERTY, evidenceSupportingInformationData.getTimeGranularity().name().toLowerCase());
+
+		histogramBean.setInfo(infoMap);
 	}
 
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly
 		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
-	}
-
-	private String extractAnomalyValue(Evidence evidence, String feature) {
-
-		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
-
-		if (contextAndFeatureMatch) { // in this case we want the inverse chart
-			return evidence.getEntityName();
-		}
-		else {
-			return evidence.getAnomalyValue();
-		}
-	}
-
-	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
-		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
