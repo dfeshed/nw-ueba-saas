@@ -41,9 +41,9 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
     protected HistogramKey populate(String normalizedUsername, long startTime, long evidenceEndTime,
                                     Map<HistogramKey, Double> histogramMap,
                                     Map<HistogramKey, Map> additionalInformation, String anomalyValue) {
-        List<VpnSession> vpnSessions = vpnService.
-                findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExistsOrderByClosedAtEpochDesc(
-                        normalizedUsername, startTime, evidenceEndTime);
+        List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
+                normalizedUsername, startTime, evidenceEndTime);
+        HistogramKey anomaly = null;
         for (VpnSession vpnSession: vpnSessions) {
             HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
@@ -51,10 +51,12 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
+            //if this is the vpnsession that caused the evidence to be created - get its start time as the anomaly key
+            if (anomaly == null && vpnSession.getClosedAtEpoch() == evidenceEndTime) {
+                anomaly = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
+            }
         }
-        //in this case the anomaly key is the creation time of the first vpnsession to be returned (which is of the last
-        //vpnsession to have occurred), and that is the session that created the evidence itself
-        return vpnSessions.size() > 0 ? new HistogramSingleKey(vpnSessions.get(0).getCreatedAtEpoch() + "") : null;
+        return anomaly;
     }
 
 }

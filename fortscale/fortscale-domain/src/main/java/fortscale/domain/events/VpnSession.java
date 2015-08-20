@@ -25,7 +25,6 @@ public class VpnSession extends AbstractDocument{
 	public static final String collectionName =  "VpnSession";
 	
 	public static final String createdAtEpochFieldName = "createdAtEpoch";
-	public static final String closedAtEpochFieldName = "closedAtEpoch";
 	
 	
 	
