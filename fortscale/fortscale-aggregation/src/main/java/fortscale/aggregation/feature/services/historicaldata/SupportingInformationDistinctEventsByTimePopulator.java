@@ -24,11 +24,11 @@ import java.util.Map;
  */
 @Component
 @Scope("prototype")
-public class SupportingInformationAggrEventPopulator extends SupportingInformationBasePopulator {
+public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationBasePopulator {
 
     private static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
     private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
-    private static Logger logger = Logger.getLogger(SupportingInformationAggrEventPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
 
     private static final String CONTEXT_PREFIX = "context";
     private static final String DOT_DELIMITER = "#dot#";
@@ -37,7 +37,7 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-    public SupportingInformationAggrEventPopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationDistinctEventsByTimePopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 

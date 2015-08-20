@@ -22,7 +22,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     // TODO use a static map in the bean
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
-    private static final String SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR = "supportingInformationAggrEventPopulator";
+    private static final String SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR = "supportingInformationDistinctEventsByTimePopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
     
 
@@ -42,9 +42,9 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     private SupportingInformationDataPopulator createAggregatedEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (SupportingInformationAggrFunc.DistinctEventsByTime.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationAggrEventPopulator supportingInformationAggrEventPopulator = (SupportingInformationAggrEventPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR, contextType, dataEntity, featureName);
+            SupportingInformationDistinctEventsByTimePopulator supportingInformationDistinctEventsByTimePopulator = (SupportingInformationDistinctEventsByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR, contextType, dataEntity, featureName);
 
-            return supportingInformationAggrEventPopulator;
+            return supportingInformationDistinctEventsByTimePopulator;
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
