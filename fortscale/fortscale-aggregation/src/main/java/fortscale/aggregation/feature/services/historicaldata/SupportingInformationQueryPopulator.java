@@ -16,7 +16,7 @@ import java.util.Map;
 public abstract class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
 
     //this method will vary according to which Mongo service will be used to fetch the data from
-    protected abstract HistogramKey populate(String contextValue, long startTime, long endTime,
+    protected abstract HistogramKey populate(Evidence evidence, String contextValue, long startTime, long endTime,
                                              Map<HistogramKey, Double> histogramMap,
                                              Map<HistogramKey, Map> additionalInformation);
 
@@ -27,12 +27,14 @@ public abstract class SupportingInformationQueryPopulator implements SupportingI
      * 3. Create the anomaly histogram key
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime,
-                                                                     int timePeriodInDays, boolean shouldExtractAnomalyValue) {
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue,
+                                                                     long evidenceEndTime, int timePeriodInDays,
+                                                                     boolean shouldExtractAnomalyValue) {
         long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        Map<HistogramKey, Double> histogramMap = new HashMap<>();
-        Map<HistogramKey, Map> additionalInformation = new HashMap<>();
-        HistogramKey anomaly = populate(contextValue, startTime, evidenceEndTime, histogramMap, additionalInformation);
+        Map<HistogramKey, Double> histogramMap = new HashMap();
+        Map<HistogramKey, Map> additionalInformation = new HashMap();
+        HistogramKey anomaly = populate(evidence, contextValue, startTime, evidenceEndTime, histogramMap,
+                additionalInformation);
         SupportingInformationData supportingInformationData;
         if (anomaly != null) {
             supportingInformationData = new SupportingInformationData(histogramMap, anomaly);
