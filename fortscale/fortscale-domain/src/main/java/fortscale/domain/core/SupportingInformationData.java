@@ -17,7 +17,7 @@ public class SupportingInformationData {
 
     private Map<HistogramKey, Double> histogram = new HashMap<>();
 
-    private Map<HistogramKey, Map> additionalInformation = new HashMap();
+    private Map<HistogramKey, Map> additionalInformation = new HashMap<>();
 
     private HistogramKey anomalyValue;
 

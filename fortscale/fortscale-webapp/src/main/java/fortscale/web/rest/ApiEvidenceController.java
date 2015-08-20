@@ -204,34 +204,9 @@ public class ApiEvidenceController extends DataQueryController {
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature,
 				TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
 
-		SupportingInformationData evidenceSupportingInformationData;
-
-		if (isEvidenceSupportAnomalyValue) {
-			String anomalyValue = extractAnomalyValue(evidence, feature);
-
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, anomalyValue, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-		else {
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(evidenceSupportingInformationData, isEvidenceSupportAnomalyValue);
-
-		List<HistogramEntry> listOfHistogramEntries;
-
 		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
 
-		if (isSupportingInformationAnomalyValueExists) {
-			//add the anomaly to the relevant fields
-			HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
-		}
-		else {
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram);
-		}
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -258,11 +233,6 @@ public class ApiEvidenceController extends DataQueryController {
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly
 		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
-	}
-
-	private boolean isEvidenceSupportAnomalyValue(Evidence evidence) {
-		// TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
 	}
 
 	private String extractAnomalyValue(Evidence evidence, String feature) {

@@ -33,9 +33,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
         EvidenceType evidenceType = evidence.getEvidenceType();
         List<String> dataEntities = evidence.getDataEntitiesIds();
 
-        SupportingInformationDataPopulator supportingInformationPopulator = null;
-
-        supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
 
         boolean isAnomalyIndicationRequired = isAnomalyIndicationRequired(evidence);
 

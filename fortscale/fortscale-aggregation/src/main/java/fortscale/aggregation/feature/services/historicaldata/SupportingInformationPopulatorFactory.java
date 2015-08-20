@@ -23,6 +23,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
     private static final String SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR = "supportingInformationAggrEventPopulator";
+    private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
     
 
     private ApplicationContext applicationContext;

@@ -37,12 +37,11 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
      * @param from
      * @param histogramMap
      * @param additionalInformation
-     * @param anomalyValue
      * @return HistogramKey representing the anomaly value's key
      */
     protected HistogramKey populate(String contextValue, long evidenceEndTime, long from,
                                     Map<HistogramKey, Double> histogramMap,
-                                    Map<HistogramKey, Map> additionalInformation, String anomalyValue) {
+                                    Map<HistogramKey, Map> additionalInformation) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 contextValue, from, evidenceEndTime);
         for (VpnSession vpnSession: vpnSessions) {
