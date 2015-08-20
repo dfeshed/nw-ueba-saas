@@ -44,14 +44,14 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 normalizedUsername, startTime, evidenceEndTime);
         for (VpnSession vpnSession: vpnSessions) {
-            HistogramKey key = new HistogramSingleKey(vpnSession.getClosedAtEpoch() + "");
+            HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
             Map<String, Long> info = new HashMap();
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
         }
-        return new HistogramSingleKey(evidenceEndTime + "");
+        return vpnSessions.size() > 0 ? new HistogramSingleKey(vpnSessions.get(0).getCreatedAtEpoch() + "") : null;
     }
 
 }
