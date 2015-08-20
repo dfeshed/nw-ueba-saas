@@ -136,4 +136,9 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
     String getNormalizedFeatureName(String featureName) {
         return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
     }
+
+    @Override
+    protected boolean isAnomalyIndicationRequired(Evidence evidence) {
+        return true;
+    }
 }

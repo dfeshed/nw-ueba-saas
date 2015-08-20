@@ -29,6 +29,8 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
 
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
+    private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
+
     public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
@@ -83,5 +85,10 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
         String anomalyValue = extractAnomalyValue(evidence, featureName);
 
         return new HistogramSingleKey(anomalyValue);
+    }
+
+    @Override
+    protected boolean isAnomalyIndicationRequired(Evidence evidence) {
+        return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 }

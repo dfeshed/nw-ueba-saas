@@ -23,13 +23,13 @@ import java.util.Map;
  */
 public abstract class SupportingInformationBasePopulator implements SupportingInformationDataPopulator{
 
-    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
-
     private static Logger logger = Logger.getLogger(SupportingInformationBasePopulator.class);
 
     protected String contextType;
     protected String dataEntity;
     protected String featureName;
+
+    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
     @Autowired
     protected BucketConfigurationService bucketConfigurationService;
@@ -51,13 +51,13 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
      * 4. Validate data consistency (histogram + anomaly)
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue) {
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
         Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
 
-        if (shouldExtractAnomalyValue) {
+        if (isAnomalyIndicationRequired(evidence)) {
             HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(evidence, featureName);
 
             validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
@@ -125,6 +125,8 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
+
+    protected abstract boolean isAnomalyIndicationRequired(Evidence evidence);
 
     abstract String getNormalizedContextType(String contextType);
 

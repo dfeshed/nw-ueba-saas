@@ -22,8 +22,6 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
     private static Logger logger = Logger.getLogger(SupportingInformationServiceImpl.class);
 
-    private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
-
     @Autowired
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
@@ -35,24 +33,17 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
 
         SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
 
-        boolean isAnomalyIndicationRequired = isAnomalyIndicationRequired(evidence);
-
         logger.info("Going to calculate Evidence Supporting Information. Evidence Type = {} # Context type = {} # Context value = {} # Data entity = {} " +
                 "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
 
         long startTime = System.nanoTime();
 
-        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays, isAnomalyIndicationRequired);
+        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
         long elapsedTime = System.nanoTime() - startTime;
 
-        logger.info("Calculated Supporting Information Data in {} milliseconds. Returned data : {}", TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS), supportingInformationData.toString());
+        logger.info("Retrieved Supporting Information Data in {} milliseconds. Returned data : {}", TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS), supportingInformationData.toString());
 
         return supportingInformationData;
-    }
-
-    private boolean isAnomalyIndicationRequired(Evidence evidence) {
-        // TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
-        return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 }

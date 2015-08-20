@@ -46,9 +46,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
      * Use same logic as in the base populator and set the time granularity
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue) {
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
 
-        SupportingInformationData supportingInformationData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays, shouldExtractAnomalyValue);
+        SupportingInformationData supportingInformationData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
         SupportingInformationData.TimeGranularity timeGranularity = determineTimeGranularity();
 
@@ -139,6 +139,11 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
         // TODO need to check if this correct
         return new HistogramSingleKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
+    }
+
+    @Override
+    protected boolean isAnomalyIndicationRequired(Evidence evidence) {
+        return true;
     }
 }
 

@@ -18,9 +18,8 @@ public interface SupportingInformationDataPopulator {
      * @param contextValue the context value
      * @param evidenceEndTime evidence creation time
      * @param timePeriodInDays time period in days
-     * @param shouldExtractAnomalyValue boolean flag to indicate if anomaly value extraction is required
      *
      * @return Supporting information data with/without anomaly value indication
      */
-    SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue);
+    SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays);
 }
