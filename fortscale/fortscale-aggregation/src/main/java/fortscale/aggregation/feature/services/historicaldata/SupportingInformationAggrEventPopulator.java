@@ -31,7 +31,21 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
 
     public SupportingInformationAggrEventPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
+    }
 
+    /*
+     * Use same logic as in the base populator and set the time granularity
+     */
+    @Override
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays, boolean shouldExtractAnomalyValue) {
+
+        SupportingInformationData supportingInformationData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays, shouldExtractAnomalyValue);
+
+        SupportingInformationData.TimeGranularity timeGranularity = determineTimeGranularity();
+
+        supportingInformationData.setTimeGranularity(timeGranularity);
+
+        return supportingInformationData;
     }
 
     @Override
@@ -79,6 +93,11 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
             }
         }
         return histogramKeyObjectMap;
+    }
+
+    protected SupportingInformationData.TimeGranularity determineTimeGranularity() {
+        // TODO implement
+        return SupportingInformationData.TimeGranularity.Daily;
     }
 
     @Override

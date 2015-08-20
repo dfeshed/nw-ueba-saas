@@ -1,9 +1,9 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramEntry;
 import fortscale.domain.histogram.HistogramKey;

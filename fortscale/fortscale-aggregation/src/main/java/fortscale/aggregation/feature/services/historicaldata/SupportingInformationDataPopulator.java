@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 
 /**
  * Interface for supporting information data population. Populator should provide the complete

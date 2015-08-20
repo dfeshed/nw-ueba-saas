@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;

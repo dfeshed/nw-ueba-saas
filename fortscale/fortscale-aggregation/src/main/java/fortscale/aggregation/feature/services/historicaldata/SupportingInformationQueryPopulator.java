@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.time.TimeUtils;
 

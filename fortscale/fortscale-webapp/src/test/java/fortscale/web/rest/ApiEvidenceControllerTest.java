@@ -1,8 +1,8 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
@@ -211,7 +211,7 @@ public class ApiEvidenceControllerTest {
 		heatmap.put(new HistogramDualKey("Monday","13:00"),2.0);
 
 		HistogramKey anomalyTime = new HistogramDualKey("Tuesday","16:00");
-		heatmap.put(anomalyTime,7.0);
+		heatmap.put(anomalyTime, 7.0);
 
 		List<String> dataEntities = new ArrayList<>();
 		dataEntities.add("vpn");

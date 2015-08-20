@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 
 /**
  * Service to provide Supporting Information data
