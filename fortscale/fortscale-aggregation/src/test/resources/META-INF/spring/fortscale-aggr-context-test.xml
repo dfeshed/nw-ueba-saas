@@ -11,8 +11,11 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+
+	<!-- supporting information beans-->
 	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
-	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationCountPopulator" scope="prototype"/>
-	<bean id="supportingInformationDataHourlyCountGroupByDayOfWeekPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationHourlyCountGroupByDayOfWeekPopulator" scope="prototype"/>
-	<bean id="supportingInformationMongoVPNSessionQueryPopulator" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationVPNSessionPopulator" scope="prototype"/>
+	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator" scope="prototype"/>
+	<bean id="supportingInformationDataHourlyCountGroupByDayOfWeekPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationHourlyCountGroupByDayOfWeekPopulator" scope="prototype"/>
+	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype"/>
+	<bean id="supportingInformationMongoVPNSessionQueryPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationVPNSessionPopulator" scope="prototype"/>
 </beans>

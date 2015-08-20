@@ -1,9 +1,9 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramEntry;
 import fortscale.domain.histogram.HistogramKey;
@@ -36,7 +36,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
-	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
+	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 	/**
@@ -204,23 +204,11 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		boolean isEvidenceSupportAnomalyValue = isEvidenceSupportAnomalyValue(evidence);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
 
-		SupportingInformationData evidenceSupportingInformationData;
+		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
 
-		if (isEvidenceSupportAnomalyValue) {
-			String anomalyValue = extractAnomalyValue(evidence, feature);
-
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, anomalyValue, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-		else {
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(evidenceSupportingInformationData, isEvidenceSupportAnomalyValue);
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -230,7 +218,7 @@ public class ApiEvidenceController extends DataQueryController {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
-			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isEvidenceSupportAnomalyValue)){
+			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
@@ -240,34 +228,24 @@ public class ApiEvidenceController extends DataQueryController {
 			}
 		}
 
+		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
+			addTimeGranularityInformation(histogramBean, evidenceSupportingInformationData);
+		}
+
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private void addTimeGranularityInformation(DataBean<List<HistogramEntry>> histogramBean, SupportingInformationData evidenceSupportingInformationData) {
+		Map<String, Object> infoMap = new HashMap<>(1);
+		infoMap.put(TIME_GRANULARITY_PROPERTY, evidenceSupportingInformationData.getTimeGranularity().name().toLowerCase());
+
+		histogramBean.setInfo(infoMap);
 	}
 
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly
 		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
-	}
-
-	private boolean isEvidenceSupportAnomalyValue(Evidence evidence) {
-		// TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
-	}
-
-	private String extractAnomalyValue(Evidence evidence, String feature) {
-
-		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
-
-		if (contextAndFeatureMatch) { // in this case we want the inverse chart
-			return evidence.getEntityName();
-		}
-		else {
-			return evidence.getAnomalyValue();
-		}
-	}
-
-	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
-		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
@@ -322,16 +300,16 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param isEvidenceSupportAnomalyValue
 	 * @return list of HistogramPairs, with (0 or more) anomaly mark
 	 */
-	private List<HistogramEntry> createListOfHistogramPairs(SupportingInformationData supportingInformationData,
-															boolean isEvidenceSupportAnomalyValue) {
+	private List<HistogramEntry> createListOfHistogramEntries(SupportingInformationData supportingInformationData,
+															  boolean isEvidenceSupportAnomalyValue) {
 
 		List<HistogramEntry> histogramEntries = new ArrayList<>();
-		HistogramKey anomaly = null;
+		HistogramKey anomalyValue = null;
 		Map<HistogramKey, Double> supportingInformationHistogram = supportingInformationData.getHistogram();
 		Map<HistogramKey, Map> additionalInformation = supportingInformationData.getAdditionalInformation();
 
 		if (isEvidenceSupportAnomalyValue) {
-			anomaly = supportingInformationData.getAnomalyValue();
+			anomalyValue = supportingInformationData.getAnomalyValue();
 		}
 
 		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
@@ -340,7 +318,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
 
-			if (anomaly != null && key.equals(anomaly)){
+			if (anomalyValue != null && key.equals(anomalyValue)){
 				histogramEntry.setIsAnomaly(true);
 			}
 
