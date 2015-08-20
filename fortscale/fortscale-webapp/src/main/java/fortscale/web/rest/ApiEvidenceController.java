@@ -72,7 +72,9 @@ public class ApiEvidenceController extends DataQueryController {
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
-			String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+			Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
+			String anomalyType = (name!=null ? name.toString(): "ANOMALY NAME IS NOT MAPPED");
+
 			evidence.setAnomalyType(anomalyType);
 			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
 			evidence.setName(evidenceName);
