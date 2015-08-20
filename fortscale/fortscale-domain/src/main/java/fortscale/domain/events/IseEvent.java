@@ -50,7 +50,7 @@ public class IseEvent extends IpToHostname {
         return adHostName;
     }
 
-    public void setAdHostname(boolean adHostName) {
+    public void setAdHostName(Boolean adHostName) {
         this.adHostName = adHostName;
     }
 
