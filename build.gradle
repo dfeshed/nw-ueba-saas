@@ -1,13 +1,10 @@
 buildscript {
-    ext {
-        rpmSummary = "RSA Security Analytics"
-        rpmVendor = "RSA, The Security Division of EMC"
-        rpmLicense = "Copyright (c) RSA, The Security Division of EMC"
-    }
-
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            url "http://repo.springsource.org/milestone/"
+        }
         jcenter()
     }
 
@@ -21,6 +18,9 @@ allprojects {
         repositories {
             mavenLocal()
             mavenCentral()
+            maven {
+                url "http://repo.springsource.org/milestone/"
+            }
             jcenter()
         }
     }
@@ -30,7 +30,33 @@ allprojects {
     apply plugin: "os-package-base"
 
     ext {
-        rpmVersion = project.version.split("-")[0]
+        rpmScriptsDir = "build/rpm/scripts"
+    }
+
+    task rpmScripts(type: Copy) {
+        from(fileTree("rpm/scripts"))
+        into project.rpmScriptsDir
+        expand project.properties
+    }
+
+    afterEvaluate { Project project ->
+        if (project.hasProperty("createRPM") && project.createRPM) {
+
+            task rpm(type:Rpm, dependsOn: ["build", "rpmScripts"]) {
+
+                packageName project.archivesBaseName
+                packageDescription "RSA Security Analytics - RPM"
+                version project.version.split("-")[0]
+                release "el6"
+                arch "noarch"
+                os "LINUX"
+                prefix "/"
+                summary "RSA Security Analytics"
+                vendor "RSA, The Security Division of EMC"
+                license "Copyright (c) RSA, The Security Division of EMC"
+                user "root"
+            }
+        }
     }
 }
 
