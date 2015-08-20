@@ -16,7 +16,7 @@ public class IseEventTest {
         ObjectMapper mapper = new ObjectMapper();
 
         IseEvent event = new IseEvent();
-        event.setAdHostName(true);
+        event.setAdHostname(true);
         event.setExpiration(12333L);
         event.setCreatedAt(new DateTime(1422189771865L));
         event.setIpaddress("1.1.1.1");
