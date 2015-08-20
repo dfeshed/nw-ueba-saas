@@ -204,12 +204,11 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature,
-				TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
 
 		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
 
-		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramPairs(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -301,16 +300,16 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param isEvidenceSupportAnomalyValue
 	 * @return list of HistogramPairs, with (0 or more) anomaly mark
 	 */
-	private List<HistogramEntry> createListOfHistogramPairs(SupportingInformationData supportingInformationData,
-															boolean isEvidenceSupportAnomalyValue) {
+	private List<HistogramEntry> createListOfHistogramEntries(SupportingInformationData supportingInformationData,
+															  boolean isEvidenceSupportAnomalyValue) {
 
 		List<HistogramEntry> histogramEntries = new ArrayList<>();
-		HistogramKey anomaly = null;
+		HistogramKey anomalyValue = null;
 		Map<HistogramKey, Double> supportingInformationHistogram = supportingInformationData.getHistogram();
 		Map<HistogramKey, Map> additionalInformation = supportingInformationData.getAdditionalInformation();
 
 		if (isEvidenceSupportAnomalyValue) {
-			anomaly = supportingInformationData.getAnomalyValue();
+			anomalyValue = supportingInformationData.getAnomalyValue();
 		}
 
 		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
@@ -319,7 +318,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
 
-			if (anomaly != null && key.equals(anomaly)){
+			if (anomalyValue != null && key.equals(anomalyValue)){
 				histogramEntry.setIsAnomaly(true);
 			}
 

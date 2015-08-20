@@ -51,7 +51,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     }
 
     private SupportingInformationDataPopulator createSingleEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
-        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
+        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
         } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);

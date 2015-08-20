@@ -40,6 +40,14 @@ public class SupportingInformationData {
         return anomalyValue;
     }
 
+    public Map<HistogramKey, Map> getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(Map<HistogramKey, Map> additionalInformation) {
+        this.additionalInformation = additionalInformation;
+    }
+
     @Override
     public String toString() {
         return "SupportingInformationData{" +
@@ -48,14 +56,6 @@ public class SupportingInformationData {
                 ", anomalyValue=" + anomalyValue +
                 ", timeGranularity=" + timeGranularity +
                 '}';
-    }
-
-    public Map<HistogramKey, Map> getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public void setAdditionalInformation(Map<HistogramKey, Map> additionalInformation) {
-        this.additionalInformation = additionalInformation;
     }
 
     public TimeGranularity getTimeGranularity() {

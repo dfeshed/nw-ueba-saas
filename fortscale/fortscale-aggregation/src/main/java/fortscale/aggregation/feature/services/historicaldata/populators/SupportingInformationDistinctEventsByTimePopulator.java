@@ -84,17 +84,15 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     String numOfEvents = histogramEntry.getKey();
 
-                    double value = Double.parseDouble(numOfEvents);
-
                     // workaround for bug FV-8398
-                    if (value == 0) {
+                    if (Integer.parseInt(numOfEvents) == 0) {
                         logger.warn("Histogram map contains {} entries, expecting exactly one", histogramMap.size());
                         continue;
                     }
 
                     HistogramKey histogramKey = new HistogramSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
 
-                    histogramKeyObjectMap.put(histogramKey, value);
+                    histogramKeyObjectMap.put(histogramKey, new Double(numOfEvents));
                 }
             } else {
                 logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());

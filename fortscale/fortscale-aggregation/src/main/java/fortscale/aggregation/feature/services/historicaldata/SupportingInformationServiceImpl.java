@@ -5,6 +5,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +27,16 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName,
-                                                                           long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
+    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, int timePeriodInDays, String aggregationFunction) {
         EvidenceType evidenceType = evidence.getEvidenceType();
         List<String> dataEntities = evidence.getDataEntitiesIds();
 
-        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
+        long evidenceEndTime = TimestampUtils.convertToMilliSeconds(evidence.getEndDate());
 
         logger.info("Going to calculate Evidence Supporting Information. Evidence Type = {} # Context type = {} # Context value = {} # Data entity = {} " +
                 "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
 
         long startTime = System.nanoTime();
 
