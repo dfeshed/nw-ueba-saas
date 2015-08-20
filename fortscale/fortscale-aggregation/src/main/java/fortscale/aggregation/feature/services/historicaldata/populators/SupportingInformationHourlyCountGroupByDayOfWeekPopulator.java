@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;

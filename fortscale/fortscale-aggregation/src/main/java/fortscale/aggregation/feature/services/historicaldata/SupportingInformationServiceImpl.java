@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDataPopulator;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.utils.logging.Logger;

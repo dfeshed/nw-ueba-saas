@@ -1,5 +1,6 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.time.TimeUtils;
@@ -31,8 +32,8 @@ public abstract class SupportingInformationQueryPopulator implements SupportingI
                                                                      long evidenceEndTime, int timePeriodInDays,
                                                                      boolean shouldExtractAnomalyValue) {
         long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        Map<HistogramKey, Double> histogramMap = new HashMap();
-        Map<HistogramKey, Map> additionalInformation = new HashMap();
+        Map<HistogramKey, Double> histogramMap = new HashMap<>();
+        Map<HistogramKey, Map> additionalInformation = new HashMap<>();
         HistogramKey anomaly = populate(evidence, contextValue, startTime, evidenceEndTime, histogramMap,
                 additionalInformation);
         SupportingInformationData supportingInformationData;

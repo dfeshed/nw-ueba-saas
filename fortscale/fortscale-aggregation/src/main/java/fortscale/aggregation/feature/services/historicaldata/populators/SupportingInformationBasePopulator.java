@@ -1,9 +1,11 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.utils.logging.Logger;

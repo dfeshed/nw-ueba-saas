@@ -1,5 +1,6 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.domain.core.Evidence;
 
 /**

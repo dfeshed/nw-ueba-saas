@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.domain.core.Evidence;
 import fortscale.domain.events.VpnSession;
@@ -48,7 +48,7 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
         for (VpnSession vpnSession: vpnSessions) {
             HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
-            Map<String, Long> info = new HashMap();
+            Map<String, Long> info = new HashMap<>();
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);

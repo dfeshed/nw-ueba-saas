@@ -44,8 +44,9 @@ public class SupportingInformationData {
     public String toString() {
         return "SupportingInformationData{" +
                 "histogram=" + histogram +
-                ", anomalyValue=" + anomalyValue +
                 ", additionalInformation=" + additionalInformation +
+                ", anomalyValue=" + anomalyValue +
+                ", timeGranularity=" + timeGranularity +
                 '}';
     }
 

@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
+import fortscale.aggregation.feature.services.historicaldata.populators.*;
 import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -42,9 +43,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     private SupportingInformationDataPopulator createAggregatedEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (SupportingInformationAggrFunc.DistinctEventsByTime.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationDistinctEventsByTimePopulator supportingInformationDistinctEventsByTimePopulator = (SupportingInformationDistinctEventsByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR, contextType, dataEntity, featureName);
-
-            return supportingInformationDistinctEventsByTimePopulator;
+            return (SupportingInformationDistinctEventsByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR, contextType, dataEntity, featureName);
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
@@ -53,18 +52,12 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     private SupportingInformationDataPopulator createSingleEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
-            SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
-
-            return supportingInformationDataCountPopulator;
+            return (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
         } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
-
-            return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
+            return (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
         }
         else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
-            SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
-
-            return supportingInformationQueryPopulator;
+            return (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
         }
         else {
             throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
