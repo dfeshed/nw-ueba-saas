@@ -43,15 +43,20 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
                                     Map<HistogramKey, Map> additionalInformation, String anomalyValue) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 normalizedUsername, startTime, evidenceEndTime);
+        HistogramKey anomaly = null;
         for (VpnSession vpnSession: vpnSessions) {
-            HistogramKey key = new HistogramSingleKey(vpnSession.getClosedAtEpoch() + "");
+            HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
             Map<String, Long> info = new HashMap();
             info.put(DURATION, (long)vpnSession.getDuration());
             info.put(DOWNLOADED_BYTES, vpnSession.getTotalBytes());
             additionalInformation.put(key, info);
+            //if this is the vpnsession that caused the evidence to be created - get its start time as the anomaly key
+            if (anomaly == null && vpnSession.getClosedAtEpoch() == evidenceEndTime) {
+                anomaly = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
+            }
         }
-        return new HistogramSingleKey(evidenceEndTime + "");
+        return anomaly;
     }
 
 }
