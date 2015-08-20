@@ -30,31 +30,44 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
 
     public SupportingInformationDataPopulator createSupportingInformationPopulator(EvidenceType evidenceType, String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (EvidenceType.AnomalySingleEvent == evidenceType || EvidenceType.Notification == evidenceType) {
-            if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
-                SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
-
-                return supportingInformationDataCountPopulator;
-            } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
-                SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
-
-                return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
-            }
-            else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
-                SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
-
-                return supportingInformationQueryPopulator;
-            }
-            else {
-                throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
-            }
+            return createSingleEventPopulator(contextType, dataEntity, featureName, aggregationFunction);
         }
         else if (EvidenceType.AnomalyAggregatedEvent == evidenceType) {
+            return createAggregatedEventPopulator(contextType, dataEntity, featureName, aggregationFunction);
+        }
+        else {
+            throw new UnsupportedOperationException("Evidence type " + evidenceType + " is not supported ");
+        }
+    }
+
+    private SupportingInformationDataPopulator createAggregatedEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
+        if (SupportingInformationAggrFunc.DistinctEventsByTime.name().equalsIgnoreCase(aggregationFunction)) {
             SupportingInformationAggrEventPopulator supportingInformationAggrEventPopulator = (SupportingInformationAggrEventPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_AGGR_EVENT_POPULATOR, contextType, dataEntity, featureName);
 
             return supportingInformationAggrEventPopulator;
         }
         else {
-            throw new UnsupportedOperationException("Evidence type " + evidenceType + " is not supported ");
+            throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
+        }
+    }
+
+    private SupportingInformationDataPopulator createSingleEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
+        if (SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggregationFunction.toLowerCase())) {
+            SupportingInformationCountPopulator supportingInformationDataCountPopulator = (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
+
+            return supportingInformationDataCountPopulator;
+        } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
+            SupportingInformationHourlyCountGroupByDayOfWeekPopulator supportingInformationDataHourlyCountGroupByDayOfWeekPopulator = (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
+
+            return supportingInformationDataHourlyCountGroupByDayOfWeekPopulator;
+        }
+        else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
+            SupportingInformationQueryPopulator supportingInformationQueryPopulator = (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
+
+            return supportingInformationQueryPopulator;
+        }
+        else {
+            throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
         }
     }
 

@@ -10,4 +10,5 @@ public enum SupportingInformationAggrFunc {
     Count,
     HourlyCountGroupByDayOfWeek,
     VPNSession,
+    DistinctEventsByTime
 }

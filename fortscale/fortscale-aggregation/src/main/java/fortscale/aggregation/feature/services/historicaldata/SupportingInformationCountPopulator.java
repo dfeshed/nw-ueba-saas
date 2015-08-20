@@ -62,8 +62,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
                     histogramKeyObjectMap.put(histogramKey, currHistogramValue + currValue);
                 }
             } else {
-                // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
+                logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
         return histogramKeyObjectMap;

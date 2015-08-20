@@ -67,8 +67,6 @@ public class SupportingInformationData {
 
     public enum TimeGranularity {
         Hourly,
-        Daily,
-        Weekly,
-        Monthly;
+        Daily
     }
 }

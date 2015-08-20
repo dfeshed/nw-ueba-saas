@@ -2,12 +2,15 @@ package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +26,16 @@ import java.util.Map;
 @Scope("prototype")
 public class SupportingInformationAggrEventPopulator extends SupportingInformationBasePopulator {
 
+    private static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
+    private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
     private static Logger logger = Logger.getLogger(SupportingInformationAggrEventPopulator.class);
 
     private static final String CONTEXT_PREFIX = "context";
     private static final String DOT_DELIMITER = "#dot#";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
+
+    @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     public SupportingInformationAggrEventPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -88,16 +96,28 @@ public class SupportingInformationAggrEventPopulator extends SupportingInformati
                     histogramKeyObjectMap.put(histogramKey, value);
                 }
             } else {
-                // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
+                logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
         return histogramKeyObjectMap;
     }
 
     protected SupportingInformationData.TimeGranularity determineTimeGranularity() {
-        // TODO implement
-        return SupportingInformationData.TimeGranularity.Daily;
+        AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(featureName);
+
+        String strategyName = aggregatedFeatureEventConf.getOutputBucketStrategy();
+
+        // TODO need to use the feature bucket strategy service, currently it's in the streaming project
+        if (FIXED_DURATION_DAILY_STRATEGY.equals(strategyName)) {
+            return SupportingInformationData.TimeGranularity.Daily;
+        }
+        else if (FIXED_DURATION_HOURLY_STRATEGY.equals(strategyName)) {
+            return SupportingInformationData.TimeGranularity.Hourly;
+        }
+
+        logger.warn("Could not find strategy with name {}", strategyName);
+
+        return null;
     }
 
     @Override
