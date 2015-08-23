@@ -61,7 +61,7 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		fieldToModelScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 30d);
 		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 8d);
 
-		runTest("config/ssh-prevalance-stats.properties", 76.43, fieldToModelScoreMap, fieldToScoreMap);
+		runTest("config/ssh-prevalance-stats.properties", 77.45439999999999, fieldToModelScoreMap, fieldToScoreMap);
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		fieldToModelScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 15d);
 		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 4d);
 
-		runTest("config/ssh-prevalance-stats.properties", 83.27d, fieldToModelScoreMap, fieldToScoreMap);
+		runTest("config/ssh-prevalance-stats.properties", 83.6158d, fieldToModelScoreMap, fieldToScoreMap);
 	}
 	
 	private void runTest(String configFilePath, Double eventScore, Map<String, Double> fieldToModelScoreMap, Map<String, Double> fieldToScoreMap) throws Exception{
