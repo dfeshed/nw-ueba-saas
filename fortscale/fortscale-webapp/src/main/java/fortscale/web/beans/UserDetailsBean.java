@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true, autowire=Autowire.BY_NAME, dependencyCheck=true)
 public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
 	

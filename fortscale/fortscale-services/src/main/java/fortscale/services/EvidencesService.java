@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.services;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;

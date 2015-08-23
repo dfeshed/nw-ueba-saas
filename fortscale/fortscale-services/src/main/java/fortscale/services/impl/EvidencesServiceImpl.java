@@ -5,6 +5,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.services.EvidencesService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
