@@ -3,17 +3,13 @@ package fortscale.web.beans;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
-import fortscale.domain.core.UserUtils;
-import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +21,19 @@ public class UserDetailsBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
-	private UserService userService;
-
 	private User user;
 	private User manager;
 	private List<User> directReports;
 	private String thumbnailPhoto;
 	private ADParser adUserParser;
+	private UserServiceFacade userServiceFacade;
 
-	public UserDetailsBean(User user, User manager, List<User> directReports){
+	public UserDetailsBean(User user, User manager, List<User> directReports, UserServiceFacade userServiceFacade){
 		this.user = user;
 		this.manager = manager;
 		this.directReports = directReports;
 		this.adUserParser = new ADParser();
+		this.userServiceFacade = userServiceFacade;
 	}
 
 	public Boolean getAdministratorccount() {
@@ -118,7 +113,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getOu(){
-	return UserUtils.getOu(user);
+	return userServiceFacade.getOu(user);
 	}
 	
 	public String getAdUserPrincipalName(){
@@ -248,7 +243,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public Boolean isPasswordExpired() {
-		return UserUtils.isPasswordExpired(user);
+		return userServiceFacade.isPasswordExpired(user);
 	}
 	
 	public Boolean isTrustedToAuthForDelegation() {
@@ -263,12 +258,12 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isNoPasswordRequiresValue() {
-		return UserUtils.isNoPasswordRequiresValue(user);
+		return userServiceFacade.isNoPasswordRequiresValue(user);
 	}
 
 	
 	public Boolean isNormalUserAccountValue() {
-		return UserUtils.isNormalUserAccountValue(user);
+		return userServiceFacade.isNormalUserAccountValue(user);
 	} 
 	
 	
@@ -284,7 +279,7 @@ public class UserDetailsBean implements Serializable{
 
 	
 	public Boolean isPasswordNeverExpiresValue() {
-		return UserUtils.isPasswordNeverExpiresValue(user);
+		return userServiceFacade.isPasswordNeverExpiresValue(user);
 	}
 	
 	

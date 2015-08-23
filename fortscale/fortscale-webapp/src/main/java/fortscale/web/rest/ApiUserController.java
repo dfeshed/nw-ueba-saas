@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fortscale.domain.core.UserUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
@@ -111,17 +108,17 @@ public class ApiUserController extends BaseController{
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 
-		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
+		userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 
 		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 
 	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail){
-		User manager = UserUtils.getUserManager(user, dnToUserMap);
-		List<User> directReports = UserUtils.getUserDirectReports(user, dnToUserMap);
-		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports);
+		User manager = userServiceFacade.getUserManager(user, dnToUserMap);
+		List<User> directReports = userServiceFacade.getUserDirectReports(user, dnToUserMap);
+		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports,userServiceFacade);
 		if(isWithThumbnail){
 			ret.setThumbnailPhoto(userServiceFacade.getUserThumbnail(user));
 		}
@@ -165,9 +162,9 @@ public class ApiUserController extends BaseController{
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		for(User user: users){
-			 UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
+			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
 		}
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
+		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 		
 		for(User user: users){
 			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);

@@ -1,8 +1,9 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
+import fortscale.services.UserService;
+import fortscale.services.UserSupportingInformationService;
 import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     protected AlertsService alertsService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
+    @Autowired
+    private UserSupportingInformationService userSupportingInformationService;
 
     /**
      * Evidence service (for Mongo export)
@@ -94,8 +98,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     dataEntitiesIds, 50d, tag, "tag");
 
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
-            EvidenceSupportingInformation evidenceSupportingInformation = createTagEvidenceSupportingInformationData(evidence);
-            evidence.setSupportingInformation(evidenceSupportingInformation);
+            EntitySupportingInformation entitySupportingInformation = createTagEvidenceSupportingInformationData(evidence);
+
+            evidence.setSupportingInformation(entitySupportingInformation.getSupportingInformation());
 
             // Save evidence to MongoDB
             try {
@@ -113,20 +118,17 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      * it includes mostly the user's data from active directory.
      * @return
      */
-    public EvidenceSupportingInformation createTagEvidenceSupportingInformationData(Evidence evidence){
-        EvidenceSupportingInformation evidenceSupportingInformation = new EvidenceSupportingInformation();
+    public EntitySupportingInformation createTagEvidenceSupportingInformationData(Evidence evidence){
 
-        User user= userRepository.findByUsername(evidence.getEntityName());
+        User user= userService.findByUsername(evidence.getEntityName());
         if(user == null || user.getUsername() == null){
             logger.warn("No user {} exist! ");
             return null;
         }
 
-        //create userDetails object and return it
-        UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation(user,userRepository);
-        evidenceSupportingInformation.setUserDetails(userSupprotingInformation);
+        EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupprotingInformation(user, userService);
 
-        return evidenceSupportingInformation;
+        return entitySupportingInformation;
 
     }
 
