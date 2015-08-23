@@ -31,8 +31,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
     private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
 
+    private static final String DOT = ".";
     private static final String CONTEXT_PREFIX = "context";
-    private static final String DOT_DELIMITER = "#dot#";
+    private static final String ESCAPED_DOT_DELIMITER = "#dot#";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
     @Autowired
@@ -126,11 +127,16 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
     @Override
     protected String getNormalizedContextType(String contextType) {
-        return CONTEXT_PREFIX + DOT_DELIMITER + contextType;
+        return contextType.replace(DOT, ESCAPED_DOT_DELIMITER); // must escape dot character in mongo fields
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return String.format("%s_%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+    }
+
+    private String removeContextTypePrefix(String contextType) {
+        int lengthToTrim = (CONTEXT_PREFIX + DOT).length(); // e.g. context.normalized_username
+        return contextType.substring(lengthToTrim);
     }
 
     @Override
