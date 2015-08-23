@@ -81,17 +81,18 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     private void createTagEvidence(Map insertStreamOutput, List<Evidence> evidences, Long startDate, Long endDate,
                                    EntityType entityType, String entityName) {
+        final double TAG_EVIDENCE_SCORE = 50;
         List<String> tags = (List<String>)insertStreamOutput.get("tags");
         String tag = (String)insertStreamOutput.get("tag");
         if (tags.contains(tag)) {
             String entityTypeFieldName = (String)insertStreamOutput.get(Evidence.entityTypeFieldNameField);
             List<String> dataEntitiesIds = new ArrayList();
-            dataEntitiesIds.add("active_directory");
+            dataEntitiesIds.add((String)insertStreamOutput.get("dataEntityId"));
             EvidencesService evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
 
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
-                    dataEntitiesIds, 50d, tag, "tag");
+                    dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag");
 
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
             EvidenceSupportingInformation evidenceSupportingInformation = createTagEvidenceSupportingInformationData(evidence);
