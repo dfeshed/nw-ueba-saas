@@ -14,6 +14,9 @@ public class RuleUtils {
 	}
 
 	public static long hourEndTimestamp(long startTimestamp){
-		return startTimestamp+3599999;
+		return startTimestamp+(60*60*1000-1);
+	}
+	public static long dayEndTimestamp(long startTimestamp){
+		return startTimestamp+(60*60*24*1000-1);
 	}
 }
