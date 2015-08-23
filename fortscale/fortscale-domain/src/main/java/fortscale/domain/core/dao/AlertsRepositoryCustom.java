@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 
 public interface AlertsRepositoryCustom {
 
-
 	/**
 	 * Find all alerts according to query that is build on request parameters
 	 * @param request
@@ -40,7 +39,8 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
-	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter, String dateRangeFilter, String entityName);
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									  String dateRangeFilter, String entityName, String entityTags);
 
 	/**
 	 *
@@ -48,6 +48,7 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return count of alert objects that apply to the filter
 	 */
-	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter, String dateRangeFilter, String entityName);
+	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									 String dateRangeFilter, String entityName, String entityTags);
 
-	}
+}
