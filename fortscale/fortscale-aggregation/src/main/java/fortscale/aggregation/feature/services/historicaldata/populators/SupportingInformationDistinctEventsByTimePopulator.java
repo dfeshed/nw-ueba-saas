@@ -127,7 +127,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
     @Override
     protected String getNormalizedContextType(String contextType) {
-        return CONTEXT_PREFIX + ESCAPED_DOT_DELIMITER + contextType;
+        return contextType.replace(DOT, ESCAPED_DOT_DELIMITER); // must escape dot character in mongo fields
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
