@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -127,8 +128,9 @@ public class Evidence extends AbstractDocument{
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
+	@JsonIgnore
 	@Field(supportingInformationField)
-	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
+	private EntitySupportingInformation supportingInformation;
 
 	// C-tor
 
@@ -260,11 +262,11 @@ public class Evidence extends AbstractDocument{
 		return dataEntitiesIds;
 	}
 
-	public void setSupportingInformation(EvidenceSupportingInformation supportingInformationData){
+	public void setSupportingInformation(EntitySupportingInformation supportingInformationData){
 		this.supportingInformation = supportingInformationData;
 	}
 
-	public EvidenceSupportingInformation getSupportingInformation() {
+	public EntitySupportingInformation getSupportingInformation() {
 		return supportingInformation;
 	}
 

@@ -33,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
@@ -41,6 +42,7 @@ import java.util.Map.Entry;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+@Service("UserService")
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
@@ -1090,5 +1092,106 @@ public class UserServiceImpl implements UserService{
 		else {
 			getCache().putFromString(key, value);
 		}
+	}
+
+
+	@Override public Boolean isPasswordExpired(User user) {
+		try{
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
+		} catch (NumberFormatException e) {
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+		}
+
+		return null;
+	}
+	@Override
+	public Boolean isNoPasswordRequiresValue(User user) {
+		try{
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNoPasswordRequiresValue(user.getAdInfo().getUserAccountControl()) : null;
+		} catch (NumberFormatException e) {
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+		}
+
+		return null;
+	}
+	@Override
+	public Boolean isNormalUserAccountValue(User user) {
+		try{
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNormalUserAccountValue(user.getAdInfo().getUserAccountControl()) : null;
+		} catch (NumberFormatException e) {
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+		}
+
+		return null;
+	}
+	@Override
+	public Boolean isPasswordNeverExpiresValue(User user) {
+		try{
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordNeverExpiresValue(user.getAdInfo().getUserAccountControl()) : null;
+		} catch (NumberFormatException e) {
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+		}
+
+		return null;
+	}
+	@Override
+	public String getOu(User user){
+		String dn = user.getAdInfo().getDn();
+		return dn != null ? adUserParser.parseOUFromDN(dn) : null;
+	}
+
+	@Override
+	public void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet){
+		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+			userRelatedDnsSet.add(user.getAdInfo().getManagerDN());
+		}
+
+		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
+		if(adUserDirectReports != null){
+			for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
+				userRelatedDnsSet.add(adUserDirectReport.getDn());
+			}
+		}
+	}
+	@Override
+	public void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap){
+		if(userRelatedDnsSet.size() > 0){
+			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
+			for(User manager: managers){
+				dnToUserMap.put(manager.getAdInfo().getDn(), manager);
+			}
+		}
+	}
+	@Override
+	public User getUserManager(User user, Map<String, User> dnToUserMap){
+		User manager = null;
+		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+			manager = dnToUserMap.get(user.getAdInfo().getManagerDN());
+		}
+		return manager;
+	}
+	@Override
+	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap){
+		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
+		if(adUserDirectReports == null || adUserDirectReports.isEmpty()){
+			return Collections.emptyList();
+		}
+
+		List<User> directReports = new ArrayList<>();
+		for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
+			User directReport = dnToUserMap.get(adUserDirectReport.getDn());
+			if(directReport != null){
+				directReports.add(directReport);
+			} else{
+				logger.warn("the ad user with the dn ({}) does not exist in the collection user.", adUserDirectReport.getDn());
+			}
+
+		}
+		return directReports;
+	}
+
+	@Override
+	public User findByUsername(String username){
+		return userRepository.findByUsername(username);
 	}
 }

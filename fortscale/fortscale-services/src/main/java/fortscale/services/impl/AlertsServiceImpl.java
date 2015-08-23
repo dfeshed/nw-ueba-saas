@@ -15,7 +15,7 @@ import java.util.*;
  *
  * Date: 6/23/2015.
  */
-@Service("AlertsService")
+@Service("alertsService")
 public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 	/**

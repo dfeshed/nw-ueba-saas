@@ -21,7 +21,7 @@ import java.util.TreeMap;
  *
  * Date: 6/23/2015.
  */
-@Service("EvidencesService")
+@Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
 	/**

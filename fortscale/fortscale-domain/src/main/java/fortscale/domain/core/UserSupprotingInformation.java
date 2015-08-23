@@ -1,14 +1,20 @@
 package fortscale.domain.core;
 
-import fortscale.domain.core.dao.UserRepository;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * supporting information for tag evidences - the state of the user in the time of the evidence creation.
  * Created by galiar on 12/08/2015.
  */
-public class UserSupprotingInformation {
+
+@JsonTypeName("userSupprotingInformation")
+public class UserSupprotingInformation extends EntitySupportingInformation implements Serializable {
+
+	public UserSupprotingInformation(){};
 
 	private String username;
 	private String title;
@@ -21,32 +27,95 @@ public class UserSupprotingInformation {
 	private boolean passwordNeverExpire;
 
 	private String ou;
-
 	List<String> membershipGroups;
 
-	public UserSupprotingInformation(){};
+	public String getUsername() {
+		return username;
+	}
 
-	public UserSupprotingInformation(User user, UserRepository userRepository){
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-		username = user.getUsername();
-		title = user.getAdInfo().getPosition();
-		department = user.getAdInfo().getDepartment();
+	public String getTitle() {
+		return title;
+	}
 
-		//preparations for manager and direct reports
-		Set<String> userRelatedDnsSet = new HashSet<>();
-		Map<String, User> dnToUserMap = new HashMap<String, User>();
-		UserUtils.fillUserRelatedDns(user, userRelatedDnsSet);
-		UserUtils.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap,userRepository);
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-		manager = UserUtils.getUserManager(user,dnToUserMap);
-		directReports = UserUtils.getUserDirectReports(user,dnToUserMap);
+	public String getDepartment() {
+		return department;
+	}
 
-		normalUserAccount = UserUtils.isNormalUserAccountValue(user);
-		noPasswordRequired = UserUtils.isNoPasswordRequiresValue(user);
-		passwordNeverExpire = UserUtils.isNoPasswordRequiresValue(user);
+	public void setDepartment(String department) {
+		this.department = department;
+	}
 
-		ou = UserUtils.getOu(user);
+	public User getManager() {
+		return manager;
+	}
+
+	public void setManager(User manager) {
+		this.manager = manager;
+	}
+
+	public List<User> getDirectReports() {
+		return directReports;
+	}
+
+	public void setDirectReports(List<User> directReports) {
+		this.directReports = directReports;
+	}
+
+	public boolean isNormalUserAccount() {
+		return normalUserAccount;
+	}
+
+	public void setNormalUserAccount(boolean normalUserAccount) {
+		this.normalUserAccount = normalUserAccount;
+	}
+
+	public boolean isNoPasswordRequired() {
+		return noPasswordRequired;
+	}
+
+	public void setNoPasswordRequired(boolean noPasswordRequired) {
+		this.noPasswordRequired = noPasswordRequired;
+	}
+
+	public boolean isPasswordNeverExpire() {
+		return passwordNeverExpire;
+	}
+
+	public void setPasswordNeverExpire(boolean passwordNeverExpire) {
+		this.passwordNeverExpire = passwordNeverExpire;
+	}
+
+	public String getOu() {
+		return ou;
+	}
+
+	public void setOu(String ou) {
+		this.ou = ou;
+	}
+
+
+	public List<String> getMembershipGroups() {
+		return membershipGroups;
+	}
+
+	public void setMembershipGroups(List<String> membershipGroups) {
+		this.membershipGroups = membershipGroups;
+	}
+
+	@Override
+	public UserSupprotingInformation getSupportingInformation(){
+		return this;
 
 	}
+
+
 
 }
