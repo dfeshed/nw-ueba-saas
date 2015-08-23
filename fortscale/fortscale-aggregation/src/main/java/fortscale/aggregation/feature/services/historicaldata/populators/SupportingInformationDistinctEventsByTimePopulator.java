@@ -131,10 +131,10 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return String.format("%s_%s_%s_%s", removeContextPrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
     }
 
-    private String removeContextPrefix(String contextType) {
+    private String removeContextTypePrefix(String contextType) {
         int lengthToTrim = (CONTEXT_PREFIX + DOT).length(); // e.g. context.normalized_username
         return contextType.substring(lengthToTrim);
     }
