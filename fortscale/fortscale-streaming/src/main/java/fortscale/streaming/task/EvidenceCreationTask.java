@@ -7,7 +7,7 @@ import fortscale.domain.core.EvidenceType;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.impl.EvidencesService;
+import fortscale.services.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;

@@ -3,13 +3,16 @@ package fortscale.streaming.alert.subscribers;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
-import fortscale.services.impl.EvidencesService;
+import fortscale.services.EvidencesService;
 import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -27,6 +30,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     @Autowired
     protected AlertsService alertsService;
 
+    /**
+     * User repository (for getting user information)
+     */
     @Autowired
     private UserRepository userRepository;
 
@@ -63,8 +69,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
                         createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
                     }
-                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
-
+                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
+                            severity, AlertStatus.Open, "");
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);
                 } catch (RuntimeException ex) {
@@ -89,21 +95,22 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
             List<String> dataEntitiesIds = new ArrayList();
             dataEntitiesIds.add((String)insertStreamOutput.get("dataEntityId"));
             EvidencesService evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
-
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
                     dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag");
-
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
-            EvidenceSupportingInformation evidenceSupportingInformation = createTagEvidenceSupportingInformationData(evidence);
+            EvidenceSupportingInformation evidenceSupportingInformation =
+                    createTagEvidenceSupportingInformationData(evidence);
             evidence.setSupportingInformation(evidenceSupportingInformation);
-
             // Save evidence to MongoDB
             try {
                 evidencesService.saveEvidenceInRepository(evidence);
             } catch (DuplicateKeyException e) {
-                //TODO - what to do here?
-                logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
+                //TODO - should we just ignore this?
+                logger.warn("Got duplication for evidence {}", evidence.toString());
+            } catch (Exception e) {
+                logger.error("Failed to save evidence {} - ", evidence.toString(), e);
+                return;
             }
             evidences.add(new Evidence(evidence.getId()));
         }
@@ -116,22 +123,15 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     public EvidenceSupportingInformation createTagEvidenceSupportingInformationData(Evidence evidence){
         EvidenceSupportingInformation evidenceSupportingInformation = new EvidenceSupportingInformation();
-
         User user= userRepository.findByUsername(evidence.getEntityName());
         if(user == null || user.getUsername() == null){
             logger.warn("No user {} exist! ");
             return null;
         }
-
         //create userDetails object and return it
         UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation(user,userRepository);
         evidenceSupportingInformation.setUserDetails(userSupprotingInformation);
-
         return evidenceSupportingInformation;
-
     }
-
-
-
 
 }

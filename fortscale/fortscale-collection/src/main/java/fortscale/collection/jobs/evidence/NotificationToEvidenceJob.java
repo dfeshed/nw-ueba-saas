@@ -74,8 +74,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
 		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
-		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationStartTimestampField");
-		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEndTimestampField");
+		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationStartTimestampField");
+		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationEndTimestampField");
 		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
@@ -138,7 +140,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String getAnomalyField(Notification notification) {
 		List<String> values = notificationAnomalyMap.get(notification.getCause());
 		//TODO - allow for taking more than one of the values as anomaly fields
-		if (values != null && values.size() > 0 && notification.getAttributes() != null && notification.getAttributes().containsKey(values.get(0))) {
+		if (values != null && values.size() > 0 && notification.getAttributes() != null &&
+				notification.getAttributes().containsKey(values.get(0))) {
 			return notification.getAttributes().get(values.get(0));
 		}
 		//default value
