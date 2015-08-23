@@ -97,5 +97,7 @@ public interface UserService extends CachingService{
 
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
 
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
+
 
 }
