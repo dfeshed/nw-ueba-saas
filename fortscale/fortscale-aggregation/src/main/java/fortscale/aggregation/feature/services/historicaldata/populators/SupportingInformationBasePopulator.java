@@ -55,6 +55,10 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
+        if (featureBuckets.isEmpty()) {
+            throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
+        }
+
         Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
 
         if (isAnomalyIndicationRequired(evidence)) {
