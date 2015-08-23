@@ -1,12 +1,7 @@
 package fortscale.domain.core.dao;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import fortscale.domain.core.*;
-import org.bson.types.ObjectId;
+import fortscale.domain.core.dao.rest.Alerts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-import fortscale.domain.core.dao.rest.Alerts;
+import java.util.ArrayList;
+import java.util.List;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Created by rans on 21/06/15.
@@ -179,7 +175,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			String[] tagsFilterVals = tagsFilter.split(",");
 			List<Evidence> evidences = evidencesRepository.findByEvidenceTypeAndAnomalyValueIn(EvidenceType.Tag,
 					tagsFilterVals);
-			//TODO - check this! might have to create a special object of type - {$ref: ... $id: ...}
 			Criteria evidenceCriteria = where(Alert.evidencesField).in(evidences);
 			query.addCriteria(evidenceCriteria);
 		}
