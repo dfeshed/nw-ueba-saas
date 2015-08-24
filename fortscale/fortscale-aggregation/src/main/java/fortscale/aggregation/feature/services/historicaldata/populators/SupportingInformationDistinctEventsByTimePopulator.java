@@ -27,12 +27,11 @@ import java.util.Map;
 @Scope("prototype")
 public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationBasePopulator {
 
-    private static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
-    private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
     private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
 
+    private static final String DOT = ".";
     private static final String CONTEXT_PREFIX = "context";
-    private static final String DOT_DELIMITER = "#dot#";
+    private static final String ESCAPED_DOT_DELIMITER = "#dot#";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
     @Autowired
@@ -86,7 +85,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
                     // workaround for bug FV-8398
                     if (Integer.parseInt(numOfEvents) == 0) {
-                        logger.warn("Histogram map contains {} entries, expecting exactly one", histogramMap.size());
+                        logger.warn("Ignoring zero value of histogram entry (" + histogramEntry + ")");
                         continue;
                     }
 
@@ -126,11 +125,16 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
     @Override
     protected String getNormalizedContextType(String contextType) {
-        return CONTEXT_PREFIX + DOT_DELIMITER + contextType;
+        return contextType.replace(DOT, ESCAPED_DOT_DELIMITER); // must escape dot character in mongo fields
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return String.format("%s_%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+    }
+
+    private String removeContextTypePrefix(String contextType) {
+        int lengthToTrim = (CONTEXT_PREFIX + DOT).length(); // e.g. context.normalized_username
+        return contextType.substring(lengthToTrim);
     }
 
     @Override

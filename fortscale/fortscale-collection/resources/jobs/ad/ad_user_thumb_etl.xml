@@ -23,6 +23,14 @@
 					<key>adUserThumbnailBufferSize</key>
 					<value>10000</value>
 				</entry>
+                <entry>
+                    <key>filter</key>
+                    <value>(&amp;(objectclass=user)(!(objectclass=computer)))</value>
+                </entry>
+                <entry>
+                    <key>adFields</key>
+                    <value> thumbnailPhoto,objectGUID</value>
+                </entry>
             </job-data-map>
 		</job>
 	

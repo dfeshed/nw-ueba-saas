@@ -1,12 +1,13 @@
 
 package fortscale.collection.jobs.ad;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Hashtable;
+import fortscale.collection.jobs.FortscaleJob;
+import fortscale.utils.logging.Logger;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -15,21 +16,14 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.Control;
-import javax.naming.ldap.InitialLdapContext;
-import javax.naming.ldap.LdapContext;
-import javax.naming.ldap.PagedResultsControl;
-import javax.naming.ldap.PagedResultsResponseControl;
+import javax.naming.ldap.*;
 import javax.xml.bind.DatatypeConverter;
-
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import fortscale.collection.jobs.FortscaleJob;
-import fortscale.utils.logging.Logger;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Hashtable;
 
 /**
  * Created by Amir Keren on 17/05/2015.
@@ -130,7 +124,11 @@ public class AdFetchJob extends FortscaleJob {
 			for (String dcAddress: adConnection.getIpAddresses()) {
 				logger.debug("Trying to connect to domain controller at {}", dcAddress);
 				connected = true;
+
+				//Todo - Need to export port into configuration under adConnections.json
 				dcAddress = "ldap://" + dcAddress + ":389";
+
+
 				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
 				String password = adConnection.getDomainPassword();
 				password = fortscale.utils.EncryptionUtils.decrypt(password);
