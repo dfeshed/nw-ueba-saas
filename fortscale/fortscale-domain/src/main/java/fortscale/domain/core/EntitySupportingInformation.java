@@ -10,8 +10,14 @@ import java.util.Map;
  */
 @JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT,property="type")
 @JsonSubTypes({@JsonSubTypes.Type(value = fortscale.domain.core.UserSupprotingInformation.class,name="userSupprotingInformation")})
-public abstract class EntitySupportingInformation {
+public class EntitySupportingInformation {
 
-	public abstract EntitySupportingInformation getSupportingInformation();
+    public EntitySupportingInformation() {
+    }
+
+    public  EntitySupportingInformation getSupportingInformation(){
+        EntitySupportingInformation dummyVAR = null;
+        return dummyVAR;
+    }
 
 }
