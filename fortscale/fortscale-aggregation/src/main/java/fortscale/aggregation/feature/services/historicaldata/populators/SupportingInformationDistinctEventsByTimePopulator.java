@@ -27,8 +27,6 @@ import java.util.Map;
 @Scope("prototype")
 public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationBasePopulator {
 
-    private static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
-    private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
     private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
 
     private static final String DOT = ".";
@@ -87,7 +85,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
                     // workaround for bug FV-8398
                     if (Integer.parseInt(numOfEvents) == 0) {
-                        logger.warn("Histogram map contains {} entries, expecting exactly one", histogramMap.size());
+                        logger.warn("Ignoring zero value of histogram entry (" + histogramEntry + ")");
                         continue;
                     }
 
