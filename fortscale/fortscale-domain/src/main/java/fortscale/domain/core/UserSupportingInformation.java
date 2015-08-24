@@ -1,7 +1,6 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,10 +10,10 @@ import java.util.*;
  * Created by galiar on 12/08/2015.
  */
 
-@JsonTypeName("userSupprotingInformation")
-public class UserSupprotingInformation extends EntitySupportingInformation implements Serializable {
+@JsonTypeName("userSupportingInformation")
+public class UserSupportingInformation extends EntitySupportingInformation implements Serializable {
 
-	public UserSupprotingInformation(){};
+	public UserSupportingInformation(){};
 
 	private String username;
 	private String title;
@@ -111,7 +110,7 @@ public class UserSupprotingInformation extends EntitySupportingInformation imple
 	}
 
 	@Override
-	public UserSupprotingInformation getSupportingInformation(){
+	public UserSupportingInformation getSupportingInformation(){
 		return this;
 
 	}

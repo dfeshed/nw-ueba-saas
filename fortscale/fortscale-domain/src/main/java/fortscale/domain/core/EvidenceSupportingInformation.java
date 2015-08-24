@@ -7,13 +7,13 @@ package fortscale.domain.core;
  */
 public class EvidenceSupportingInformation {
 
-	private UserSupprotingInformation userSupportingInformation;
+	private UserSupportingInformation userSupportingInformation;
 
-	public UserSupprotingInformation getUserDetails() {
+	public UserSupportingInformation getUserDetails() {
 		return userSupportingInformation;
 	}
 
-	public void setUserDetails(UserSupprotingInformation userDetails) {
+	public void setUserDetails(UserSupportingInformation userDetails) {
 		this.userSupportingInformation = userDetails;
 	}
 

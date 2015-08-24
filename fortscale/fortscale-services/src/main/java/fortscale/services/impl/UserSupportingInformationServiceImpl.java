@@ -1,7 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.User;
-import fortscale.domain.core.UserSupprotingInformation;
+import fortscale.domain.core.UserSupportingInformation;
 import fortscale.services.UserService;
 import fortscale.services.UserSupportingInformationService;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ import java.util.Set;
 @Service("UserSupportingInformationService")
 public class UserSupportingInformationServiceImpl implements UserSupportingInformationService {
 	@Override
-	public UserSupprotingInformation createUserSupprotingInformation(User user, UserService userService ){
+	public UserSupportingInformation createUserSupportingInformation(User user, UserService userService ){
 
-		UserSupprotingInformation userSupprotingInformation = new UserSupprotingInformation();
+		UserSupportingInformation userSupportingInformation = new UserSupportingInformation();
 
-		userSupprotingInformation.setUsername(user.getUsername());
-		userSupprotingInformation.setTitle(user.getAdInfo().getPosition());
-		userSupprotingInformation.setDepartment(user.getAdInfo().getDepartment());
+		userSupportingInformation.setUsername(user.getUsername());
+		userSupportingInformation.setTitle(user.getAdInfo().getPosition());
+		userSupportingInformation.setDepartment(user.getAdInfo().getDepartment());
 
 		//preparations for manager and direct reports
 		Set<String> userRelatedDnsSet = new HashSet<>();
@@ -32,14 +32,14 @@ public class UserSupportingInformationServiceImpl implements UserSupportingInfor
 		userService.fillUserRelatedDns(user, userRelatedDnsSet);
 		userService.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 
-		userSupprotingInformation.setManager(userService.getUserManager(user,dnToUserMap));
-		userSupprotingInformation.setDirectReports(userService.getUserDirectReports(user,dnToUserMap));
-		userSupprotingInformation.setNormalUserAccount(userService.isNormalUserAccountValue(user));
-		userSupprotingInformation.setNoPasswordRequired(userService.isNoPasswordRequiresValue(user));
-		userSupprotingInformation.setPasswordNeverExpire(userService.isPasswordNeverExpiresValue(user));
+		userSupportingInformation.setManager(userService.getUserManager(user,dnToUserMap));
+		userSupportingInformation.setDirectReports(userService.getUserDirectReports(user,dnToUserMap));
+		userSupportingInformation.setNormalUserAccount(userService.isNormalUserAccountValue(user));
+		userSupportingInformation.setNoPasswordRequired(userService.isNoPasswordRequiresValue(user));
+		userSupportingInformation.setPasswordNeverExpire(userService.isPasswordNeverExpiresValue(user));
 
-		userSupprotingInformation.setOu(userService.getOu(user));
+		userSupportingInformation.setOu(userService.getOu(user));
 
-		return userSupprotingInformation;
+		return userSupportingInformation;
 	}
 }

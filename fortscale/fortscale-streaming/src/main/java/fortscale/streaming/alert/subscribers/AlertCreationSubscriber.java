@@ -129,7 +129,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
             return null;
         }
 
-        EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupprotingInformation(user, userService);
+        EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
 
         return entitySupportingInformation;
 
