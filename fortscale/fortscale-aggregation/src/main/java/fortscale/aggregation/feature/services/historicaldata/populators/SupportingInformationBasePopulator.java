@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Basic implementation for supporting information populator class
@@ -28,6 +29,9 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     protected String contextType;
     protected String dataEntity;
     protected String featureName;
+
+    static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
+    static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
 
     static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
@@ -89,19 +93,47 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
         if (bucketConfig != null) {
-            logger.info("Using bucket configuration {} with strategy {}", bucketConfig.getName(), bucketConfig.getStrategyName());
+            logger.info("Using bucket configuration {}", bucketConfig.getName());
         }
         else {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
         }
 
-        Long supportingInformationStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+        String bucketStrategyName = bucketConfig.getStrategyName();
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, supportingInformationStartTime, evidenceEndTime, true);
+        logger.info("Bucket strategy name = {}", bucketStrategyName);
 
-        logger.info("Found {} relevant featureName buckets", featureBuckets.size());
+        long bucketEndTime = calculateBucketEndTime(evidenceEndTime, bucketStrategyName);
+
+        Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, bucketStartTime, bucketEndTime);
+
+        logger.info("Found {} relevant featureName buckets:", featureBuckets.size());
+        logger.info(featureBuckets.toString());
 
         return featureBuckets;
+    }
+
+    /*
+     * Bucket end time should be the evidence end time + 1 timeframe (e.g. 1 day / 1 hour) so the last bucket that the anomaly is within it will be contained in the results.
+     * This logic should exist as long as we don't take the "last bucket" events directly from Impala (bug FV-8306)
+     */
+    private long calculateBucketEndTime(long evidenceEndTime, String strategyName) {
+        long bucketEndTime;
+
+        // TODO need to use the feature bucket strategy service, currently it's in the streaming project
+        if (FIXED_DURATION_DAILY_STRATEGY.equals(strategyName)) {
+            bucketEndTime = evidenceEndTime + TimeUnit.DAYS.toMillis(1);
+        }
+        else if (FIXED_DURATION_HOURLY_STRATEGY.equals(strategyName)) {
+            bucketEndTime = evidenceEndTime + TimeUnit.HOURS.toMillis(1);
+        }
+        else {
+            throw new SupportingInformationException("Could not find bucket strategy with name " + strategyName);
+        }
+
+        return bucketEndTime;
     }
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
@@ -122,7 +154,7 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
 
     protected void validateHistogramDataConsistency(Map<HistogramKey, Double> histogramMap, HistogramKey anomalyHistogramKey) {
         if (!histogramMap.containsKey(anomalyHistogramKey)) {
-            throw new IllegalStateException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalyHistogramKey + " # Histogram map = " + histogramMap);
+            throw new SupportingInformationException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalyHistogramKey + " # Histogram map = " + histogramMap);
         }
     }
 
