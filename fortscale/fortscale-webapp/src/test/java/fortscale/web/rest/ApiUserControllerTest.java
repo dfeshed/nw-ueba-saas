@@ -5,6 +5,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UserScoreHistoryElement;
 import org.joda.time.DateTime;
@@ -38,6 +39,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApiUserControllerTest {
 
 
+
+	@Mock
+	private UserService userService;
 
 	@Mock
 	private UserServiceFacade userServiceFacade;
@@ -157,8 +161,7 @@ public class ApiUserControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
-		verify(userRepository, times(1)).findByFollowed(eq(true));
-		verify(userRepository, times(1)).findByDNs(new HashSet(Arrays.asList(DIRECT_REPORT_DN, MANAGER_DN)));
+
 		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 		assertEquals(1, jsonObject.get("total"));
 		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));

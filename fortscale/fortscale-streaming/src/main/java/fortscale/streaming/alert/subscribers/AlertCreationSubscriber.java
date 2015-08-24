@@ -2,9 +2,9 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.UserSupportingInformationService;
-import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
