@@ -5,18 +5,30 @@ package fortscale.streaming.alert.rule;
  */
 public class RuleUtils {
 
-	public static long hourStartTimestamp(long timestamp){
+	public static Long hourStartTimestamp(Long timestamp){
+		if (timestamp == null){
+			return 0L;
+		}
 		return Math.round(Math.floor(timestamp/3600000))*3600000;
 	}
 
-	public static long dayStartTimestamp(long timestamp){
+	public static Long dayStartTimestamp(Long timestamp){
+		if (timestamp == null){
+			return 0L;
+		}
 		return Math.round(Math.floor(timestamp/86400000))*86400000;
 	}
 
-	public static long hourEndTimestamp(long startTimestamp){
+	public static Long hourEndTimestamp(Long startTimestamp){
+		if (startTimestamp == null){
+			return 0L;
+		}
 		return startTimestamp+(60*60*1000-1);
 	}
-	public static long dayEndTimestamp(long startTimestamp){
+	public static Long dayEndTimestamp(Long startTimestamp){
+		if (startTimestamp == null){
+			return 0L;
+		}
 		return startTimestamp+(60*60*24*1000-1);
 	}
 }
