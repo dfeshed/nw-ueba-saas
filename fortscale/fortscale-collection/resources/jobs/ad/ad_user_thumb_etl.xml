@@ -29,7 +29,7 @@
                 </entry>
                 <entry>
                     <key>adFields</key>
-                    <value> thumbnailPhoto,objectGUID</value>
+                    <value>thumbnailPhoto,objectGUID</value>
                 </entry>
             </job-data-map>
 		</job>
