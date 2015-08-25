@@ -128,9 +128,9 @@ public class Evidence extends AbstractDocument{
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
-	@JsonIgnore
+
 	@Field(supportingInformationField)
-	private EntitySupportingInformation supportingInformation;
+	private EntitySupportingInformation supportingInformation = new EntitySupportingInformation();
 
 	// C-tor
 

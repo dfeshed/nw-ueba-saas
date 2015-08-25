@@ -109,12 +109,4 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 		this.membershipGroups = membershipGroups;
 	}
 
-	@Override
-	public UserSupportingInformation getSupportingInformation(){
-		return this;
-
-	}
-
-
-
 }

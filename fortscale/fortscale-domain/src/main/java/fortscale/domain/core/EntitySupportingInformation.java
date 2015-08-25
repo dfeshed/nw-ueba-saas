@@ -13,9 +13,4 @@ public class EntitySupportingInformation {
     public EntitySupportingInformation() {
     }
 
-    public  EntitySupportingInformation getSupportingInformation(){
-        EntitySupportingInformation dummyVAR = null;
-        return dummyVAR;
-    }
-
 }
