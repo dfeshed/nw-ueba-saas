@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fortscale.aggregation.feature.event.AggrEvent;
 import net.minidev.json.JSONObject;
 
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -81,7 +82,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		String username = "user1";
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, username);
-		AggrFeatureEventWrapper wrapper = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 10, 20, 1000, 800, 900, context));
 
 		builder.updateEntityEventData(wrapper);
@@ -96,9 +97,9 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(String.format("%s_%s", USERNAME_CONTEXT_FIELD, username), entityEventData.getContextId());
 		Assert.assertEquals(800, entityEventData.getStartTime());
 		Assert.assertEquals(900, entityEventData.getEndTime());
-		Set<AggrFeatureEventWrapper> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents.size());
-		for (AggrFeatureEventWrapper actualAggrFeatureEvent : allAggrFeatureEvents)
+		for (AggrEvent actualAggrFeatureEvent : allAggrFeatureEvents)
 			Assert.assertEquals(wrapper, actualAggrFeatureEvent);
 		Assert.assertFalse(entityEventData.isFired());
 	}
@@ -112,11 +113,11 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user2");
-		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper1 = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent1", 10, 20, 1000, 800, 900, context));
 		builder.updateEntityEventData(wrapper1);
 
-		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper2 = new AggrEvent(createMessage(
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent2", 30, 0, 2000, 800, 900, context));
 		builder.updateEntityEventData(wrapper2);
 
@@ -124,7 +125,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
 
-		Set<AggrFeatureEventWrapper> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
 		Assert.assertEquals(2, allAggrFeatureEvents.size());
 	}
 
@@ -137,22 +138,22 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 
 		JSONObject context1 = new JSONObject();
 		context1.put(USERNAME_CONTEXT_FIELD, "user3");
-		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper1 = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 10, 20, 1000, 800, 900, context1));
 		builder.updateEntityEventData(wrapper1);
 
 		JSONObject context2 = new JSONObject();
 		context2.put(USERNAME_CONTEXT_FIELD, "user4");
-		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper2 = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 30, 40, 2000, 800, 900, context2));
 		builder.updateEntityEventData(wrapper2);
 
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
 
-		Set<AggrFeatureEventWrapper> allAggrFeatureEvents1 = allEntityEventData.get(0).getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents1 = allEntityEventData.get(0).getAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents1.size());
-		Set<AggrFeatureEventWrapper> allAggrFeatureEvents2 = allEntityEventData.get(1).getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents2 = allEntityEventData.get(1).getAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents2.size());
 	}
 
@@ -176,7 +177,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user5");
 		context.put(DST_MACHINE_CONTEXT_FIELD, "machine1");
-		AggrFeatureEventWrapper wrapper = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 50, 100, 1000, 250, 750, context));
 		builder.updateEntityEventData(wrapper);
 
@@ -193,7 +194,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user6");
-		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper1 = new AggrEvent(createMessage(
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent1", 50, 0, 1000, 250, 750, context));
 		builder.updateEntityEventData(wrapper1);
 
@@ -203,7 +204,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		entityEventData.setFired(true);
 		entityEventDataStore.storeEntityEventData(entityEventData);
 
-		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper2 = new AggrEvent(createMessage(
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent2", 100, 0, 2000, 250, 750, context));
 		builder.updateEntityEventData(wrapper2);
 
@@ -226,7 +227,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		JSONObject context1 = new JSONObject();
 		context1.put(USERNAME_CONTEXT_FIELD, username);
 		context1.put(SRC_MACHINE_CONTEXT_FIELD, "machine2");
-		AggrFeatureEventWrapper wrapper1 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper1 = new AggrEvent(createMessage(
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 42, 81, 500, 300, 400, context1));
 		builder.updateEntityEventData(wrapper1);
 		long estimatedFiringTimeInSecondsOfEntityEvent1 = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
@@ -235,7 +236,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		JSONObject context2 = new JSONObject();
 		context2.put(USERNAME_CONTEXT_FIELD, username);
 		context2.put(SRC_MACHINE_CONTEXT_FIELD, "machine3");
-		AggrFeatureEventWrapper wrapper2 = new AggrFeatureEventWrapper(createMessage(
+		AggrEvent wrapper2 = new AggrEvent(createMessage(
 				"P", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 64, 0, 500, 300, 400, context2));
 		builder.updateEntityEventData(wrapper2);
 		long estimatedFiringTimeInSecondsOfEntityEvent2 = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;

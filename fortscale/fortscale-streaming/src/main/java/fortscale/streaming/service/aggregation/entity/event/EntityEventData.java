@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import fortscale.aggregation.feature.event.AggrEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -33,7 +34,7 @@ public class EntityEventData {
 	@Field(END_TIME_FIELD)
 	private long endTime;
 	@Field(AGGR_FEATURE_EVENTS_FIELD)
-	private Set<AggrFeatureEventWrapper> aggrFeatureEvents;
+	private Set<AggrEvent> aggrFeatureEvents;
 	@Field(FIRING_TIME_IN_SECONDS_FIELD)
 	private long firingTimeInSeconds;
 	@Field(FIRED_FIELD)
@@ -77,11 +78,11 @@ public class EntityEventData {
 		return endTime;
 	}
 
-	public void addAggrFeatureEvent(AggrFeatureEventWrapper aggrFeatureEvent) {
+	public void addAggrFeatureEvent(AggrEvent aggrFeatureEvent) {
 		aggrFeatureEvents.add(aggrFeatureEvent);
 	}
 
-	public Set<AggrFeatureEventWrapper> getAggrFeatureEvents() {
+	public Set<AggrEvent> getAggrFeatureEvents() {
 		return aggrFeatureEvents;
 	}
 

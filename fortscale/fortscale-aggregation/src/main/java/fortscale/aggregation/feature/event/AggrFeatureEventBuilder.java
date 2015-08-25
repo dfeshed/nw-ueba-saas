@@ -31,46 +31,13 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
-    public static final String EVENT_FIELD_CREATION_EPOCHTIME = "creation_epochtime";
-    protected static final String EVENT_FIELD_CREATION_DATE_TIME = "creation_date_time";
-    public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
-    public static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
-    protected static final String EVENT_FIELD_START_TIME = "start_time";
-    public static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
-    protected static final String EVENT_FIELD_END_TIME = "end_time";
-    public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
-    public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
-    
-    private static final SimpleDateFormat format = getSimpleDateFormat();
-
-    private static SimpleDateFormat getSimpleDateFormat(){
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        return format;
-    }
-    
-    @Value("${streaming.event.field.type}")
-    private String eventTypeFieldName;
-    @Value("${streaming.event.field.type.aggr_event}")
-    private String eventTypeFieldValue;
-    @Value("${streaming.aggr_event.field.bucket_conf_name}")
-    private String bucketConfNameFieldName;
-    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
-    private String aggrFeatureNameFieldName;
-    @Value("${streaming.aggr_event.field.aggregated_feature_value}")
-    private String aggrFeatureValueFieldName;
-    @Value("${impala.table.fields.data.source}")
-	private String dataSourceFieldName;
-    @Value("${streaming.aggr_event.field.context}")
-	private String contextFieldName;
-    
 
     @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;
-    
+
     @Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
-    
+
 
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -290,49 +257,21 @@ public class AggrFeatureEventBuilder {
         }
         additionalInfoMap = featureValue.getAdditionalInformationMap();
 
-        JSONObject event = new JSONObject();
-        //static data for all aggregated feature events
-        event.put(eventTypeFieldName, eventTypeFieldValue);
-
-        // Feature Data
-        event.put(dataSourceFieldName, aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf));
-        event.put(EVENT_FIELD_FEATURE_TYPE, conf.getType());
-        event.put(aggrFeatureNameFieldName, conf.getName());
-        event.put(aggrFeatureValueFieldName, value);
-        if(additionalInfoMap!=null) {
-            event.put(EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(additionalInfoMap));
-        }
-        event.put(bucketConfNameFieldName, conf.getBucketConfName());
-
-        // Context
-        event.put(contextFieldName, context);
-
-        // Event time
-        Long creation_epochtime = System.currentTimeMillis() / 1000;
-        event.put(EVENT_FIELD_CREATION_EPOCHTIME, creation_epochtime);
-
-        String date_time = format.format(new Date(creation_epochtime * 1000));
-        event.put(EVENT_FIELD_CREATION_DATE_TIME, date_time);
-
-        // Start Time
-        event.put(EVENT_FIELD_START_TIME_UNIX, startTimeSec);
-        String start_time = format.format(new Date(startTimeSec * 1000));
-        event.put(EVENT_FIELD_START_TIME, start_time);
-
-        // End Time
-        event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
-        String end_time = format.format(new Date(endTimeSec * 1000));
-        event.put(EVENT_FIELD_END_TIME, end_time);
-        
-        // time of the event to be compared against other events from different types (raw events, entity event...)
-        event.put(epochtimeFieldName, endTimeSec);
-
         // Data Sources
         JSONArray dataSourcesJsonArray = new JSONArray();
         dataSourcesJsonArray.addAll(conf.getBucketConf().getDataSources());
-        event.put(EVENT_FIELD_DATA_SOURCES, dataSourcesJsonArray);
 
-        return event;
+        return AggrEvent.buildEvent(aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf),
+                conf.getType(),
+                conf.getName(),
+                value,
+                additionalInfoMap,
+                conf.getBucketConfName(),
+                context,
+                startTimeSec,
+                endTimeSec,
+                dataSourcesJsonArray
+        );
     }
 
     AggregatedFeatureEventConf getConf() {

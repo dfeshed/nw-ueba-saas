@@ -170,19 +170,19 @@ public class AggrFeatureEventBuilderTest {
         Long startTime = startTime1 + (startTimeDayNumber-1)*day;
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
 
-        Assert.assertEquals("F", event.get(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE));
+        Assert.assertEquals("F", event.get(AggrEvent.EVENT_FIELD_FEATURE_TYPE));
         Assert.assertEquals("bc1", event.get(aggrFeatureEventBuilderTestHelper.getBucketConfNameFieldName()));
         String date_time = format.format(new Date(startTime * 1000));
-        Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME));
+        Assert.assertEquals(date_time, event.get(AggrEvent.EVENT_FIELD_START_TIME));
         date_time = format.format(new Date(endTime * 1000));
-        Assert.assertEquals(date_time, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME));
+        Assert.assertEquals(date_time, event.get(AggrEvent.EVENT_FIELD_END_TIME));
         Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldName()));
         Assert.assertEquals(numberOfDistinctValues, event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldValue()));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("machine"));
-        Assert.assertEquals(startTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX));
-        Assert.assertEquals(endTime, event.get(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX));
-        Assert.assertEquals("ssh", ((JSONArray)event.get(AggrFeatureEventBuilder.EVENT_FIELD_DATA_SOURCES)).get(0));
+        Assert.assertEquals(startTime, event.get(AggrEvent.EVENT_FIELD_START_TIME_UNIX));
+        Assert.assertEquals(endTime, event.get(AggrEvent.EVENT_FIELD_END_TIME_UNIX));
+        Assert.assertEquals("ssh", ((JSONArray)event.get(AggrEvent.EVENT_FIELD_DATA_SOURCES)).get(0));
 
     }
 
