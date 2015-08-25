@@ -373,8 +373,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public long getNumberOfAccountsCreatedBefore(DateTime time){
-		Criteria criteria = Criteria.where(User.whenCreatedField).lt(
-				time);
+		Criteria criteria = Criteria.where(User.whenCreatedField).lt(time);
 		Query query = new Query(criteria);
 		return mongoTemplate.count(query, User.class);
 	}
@@ -475,7 +474,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
  		return (wrapper==null)? null : wrapper.getId();
 	}
-	
+
+	public  Map<String, String> getUsersByPrefix(String prefix, Pageable pageable) {
+		Query query = new Query().with(pageable);
+		// criteria for 'contains'
+		Criteria criteria = where(User.searchFieldName).is("/" + prefix +"/");
+
+		query.fields().include(User.ID_FIELD);
+		query.fields().include(User.usernameField);
+
+		query.addCriteria(criteria);
+
+		Map<String, String> res = new HashMap<>();
+		for(UsernameWrapper username : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)) {
+			res.put(username.id, username.username);
+		}
+
+		return res;
+	}
+
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
 		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
