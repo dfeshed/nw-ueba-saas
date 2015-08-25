@@ -174,7 +174,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			query.addCriteria(entityCriteria);
 		}
 		//build tags filter
-		if (evidences != null && evidences.size() > 0) {
+		if (evidences != null) {
 			Criteria evidenceCriteria = where(Alert.evidencesField).in(evidences);
 			query.addCriteria(evidenceCriteria);
 		}
