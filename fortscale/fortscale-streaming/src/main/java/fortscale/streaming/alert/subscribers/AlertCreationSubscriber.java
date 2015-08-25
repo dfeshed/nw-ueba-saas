@@ -100,7 +100,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
             EntitySupportingInformation entitySupportingInformation = createTagEvidenceSupportingInformationData(evidence);
 
-            evidence.setSupportingInformation(entitySupportingInformation.getSupportingInformation());
+            evidence.setSupportingInformation(entitySupportingInformation);
 
             // Save evidence to MongoDB
             try {
