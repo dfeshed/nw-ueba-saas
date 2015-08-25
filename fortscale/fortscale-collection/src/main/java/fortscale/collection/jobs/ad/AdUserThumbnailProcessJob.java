@@ -38,10 +38,6 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	@Autowired
 	private AdConnections adConnections;
 
-	
-	
-	@Value("${collection.shell.scripts.dir.path}/ldapUserThumbnail.sh")
-	private String ldapUserThumbnail;
     
 	@Value("${users.ou.filter:}")
     private String ouUsersFilter;
@@ -82,8 +78,11 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		startNewStep("Fetch Thumbnail from AD");
 
 		fetchFromAD(filter,adFields,-1);
+        flushAdUserThumbnailBuffer();
 
 		finishStep();
+
+
 	}
 
 
@@ -190,11 +189,11 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 			for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements(); ) {
 				Attribute atr = (Attribute) index.next();
-				String key = atr.getID();
+
 				String value = DatatypeConverter.printBase64Binary((byte[]) atr.get(0));;
 
 
-				line.append(key + ": " + value);
+				line.append(value);
 				line.append("|");
 
 
