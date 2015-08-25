@@ -1,13 +1,18 @@
 package fortscale.streaming.service;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToLong;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.ml.service.ModelService;
+import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
+import fortscale.streaming.scorer.EventMessage;
+import fortscale.streaming.scorer.FeatureScore;
+import fortscale.streaming.scorer.Scorer;
+import fortscale.streaming.scorer.ScorerContext;
+import fortscale.streaming.service.event.EventPersistencyHandler;
+import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -20,28 +25,21 @@ import org.apache.samza.task.TaskCoordinator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import java.util.ArrayList;
+import java.util.List;
 
-import fortscale.ml.service.ModelService;
-import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.feature.extractor.FeatureExtractionService;
-import fortscale.streaming.scorer.EventMessage;
-import fortscale.streaming.scorer.FeatureScore;
-import fortscale.streaming.scorer.Scorer;
-import fortscale.streaming.scorer.ScorerContext;
-import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction=true)
 public class EventsScoreStreamTaskService {
 
 	private static final Logger logger = Logger.getLogger(EventsScoreStreamTaskService.class);
-	
+	private static final String SCORED_EVENTS_COLLECTION_NAME_PREFIX = "scored_";
+
 	private ModelService modelService;
 
 	private String outputTopic;
@@ -52,14 +50,13 @@ public class EventsScoreStreamTaskService {
 	
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
-	
+
 	@Value("${streaming.event.field.type}")
 	private String eventTypeFieldName;
-	
+
 	@Autowired
-	private MongoTemplate mongoTemplate;
-	
-	
+	private EventPersistencyHandlerFactory eventPersitencyHandlerFactory;
+
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
 		this.modelService = modelService;
 		// get task configuration parameters
@@ -134,8 +131,9 @@ public class EventsScoreStreamTaskService {
 		if(StringUtils.isBlank(eventTypeValue)){
 			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
 		}
-		String collectionName = String.format("scored_%s", eventTypeValue);
-		
-		mongoTemplate.getCollection(collectionName).insert((DBObject)JSON.parse(event.toJSONString()));
+
+		EventPersistencyHandler eventPersitencyHandler = eventPersitencyHandlerFactory.getEventPersitencyHandler(event);
+		eventPersitencyHandler.saveEvent(event, SCORED_EVENTS_COLLECTION_NAME_PREFIX);
+
 	}
 }
