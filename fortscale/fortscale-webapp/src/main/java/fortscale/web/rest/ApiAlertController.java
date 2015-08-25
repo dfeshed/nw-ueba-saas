@@ -2,27 +2,26 @@ package fortscale.web.rest;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.services.AlertsService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import fortscale.utils.logging.annotation.LogException;
+import javax.validation.Valid;
+import org.springframework.stereotype.Controller;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -35,7 +34,7 @@ public class ApiAlertController extends BaseController {
 	private static final String TIME_STAMP_START = "ts_start";
 
 	@Autowired
-	private AlertsRepository alertsDao;
+	private AlertsService alertsDao;
 
 
 	@Value("${fortscale.evidence.type.map}")
@@ -104,8 +103,10 @@ public class ApiAlertController extends BaseController {
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName, entityTags);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName, entityTags);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+					entityTags);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+					entityTags);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -128,7 +129,8 @@ public class ApiAlertController extends BaseController {
 					Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
 					String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 					evidence.setAnomalyType(anomalyType);
-					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().
+							toLowerCase(), evidence.getEntityName(), anomalyType);
 					evidence.setName(evidenceName);
 				}
 			}
