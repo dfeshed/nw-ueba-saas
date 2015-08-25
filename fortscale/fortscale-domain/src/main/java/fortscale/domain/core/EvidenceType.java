@@ -17,5 +17,9 @@ public enum EvidenceType {
 	/**
 	 * Evidence based on notification
 	 */
-	Notification
+	Notification,
+	/**
+	 * Evidence based on tags
+	 */
+	Tag
 }

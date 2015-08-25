@@ -11,6 +11,7 @@ import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.impl.EvidencesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,7 +43,7 @@ public class ApiEvidenceControllerTest {
 
 
 	@Mock
-	private EvidencesRepository repository;
+	private EvidencesService repository;
 
 	@Mock
 	private DataQueryHelper dataQueryHelper;

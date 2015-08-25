@@ -2,13 +2,14 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
+import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.domain.PageRequest;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * Services for managing the alerts
@@ -23,6 +24,12 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	 */
 	@Autowired
 	private AlertsRepository alertsRepository;
+
+	/**
+	 * Mongo repository for evidence
+	 */
+	@Autowired
+	private EvidencesService evidencesService;
 
 
 	// Severity thresholds for alerts
@@ -67,4 +74,54 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	public NavigableMap<Integer, Severity> getScoreToSeverity() {
 		return scoreToSeverity;
 	}
+
+	@Override
+	public Alerts findAll(PageRequest pageRequest) {
+		return alertsRepository.findAll(pageRequest);
+	}
+
+	@Override
+	public Long count(PageRequest pageRequest) {
+		return alertsRepository.count(pageRequest);
+	}
+
+	@Override
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									  String dateRangeFilter, String entityName, String entityTags) {
+		List<Evidence> evidenceList = null;
+		if (entityTags != null) {
+			String[] tagsFilter = entityTags.split(",");
+			evidenceList = evidencesService.findByEvidenceTypeAndAnomalyValueIn(EvidenceType.Tag, tagsFilter);
+		}
+		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
+				entityName, evidenceList);
+	}
+
+	@Override
+	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									 String dateRangeFilter, String entityName, String entityTags) {
+		List<Evidence> evidenceList = null;
+		if (entityTags != null) {
+			String[] tagsFilter = entityTags.split(",");
+			evidenceList = evidencesService.findByEvidenceTypeAndAnomalyValueIn(EvidenceType.Tag, tagsFilter);
+		}
+		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
+				entityName, evidenceList);
+	}
+
+	@Override
+	public void add(Alert alert) {
+		alertsRepository.add(alert);
+	}
+
+	@Override
+	public void delete(String id) {
+		alertsRepository.delete(id);
+	}
+
+	@Override
+	public Alert getAlertById(String id) {
+		return alertsRepository.getAlertById(id);
+	}
+
 }

@@ -2,8 +2,8 @@ package fortscale.domain.core.dao;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String> {
 	 * @param id The ID string
 	 * @return Single evidence
 	 */
-	public Evidence findById(String id);
+	Evidence findById(String id);
 
 	/**
 	 * Find all evidences for specific entity according to it's ID
@@ -25,5 +25,14 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String> {
 	 * @param entityType	The entity type
 	 * @return All the matching evidences
 	 */
-	public List<Evidence> findByEntityNameAndEntityType(String entityName, EntityType entityType);
+	List<Evidence> findByEntityNameAndEntityType(String entityName, EntityType entityType);
+
+	/**
+	 * Find all evidences for evidence type that their value matches one of the values in the comma separated string
+	 * @param evidenceType	The evidence type
+	 * @param anomalyValues	The anomaly value
+	 * @return All the matching evidences
+	 */
+	List<Evidence> findByEvidenceTypeAndAnomalyValueIn(EvidenceType evidenceType, String[] anomalyValues);
+
 }

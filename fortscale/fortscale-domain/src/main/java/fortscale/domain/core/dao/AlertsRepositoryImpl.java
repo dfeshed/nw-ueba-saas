@@ -1,10 +1,10 @@
 package fortscale.domain.core.dao;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.rest.Alerts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +14,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.rest.Alerts;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Created by rans on 21/06/15.
  */
 public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
+
 	@Autowired private MongoTemplate mongoTemplate;
 
 	private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
@@ -74,10 +75,12 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName) {
+			String dateRangeFilter, String entityName, List<Evidence> evidences) {
 
 		//build the query
-		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, pageRequest);
+		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
+				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, evidences,
+				pageRequest);
 		List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
@@ -86,10 +89,12 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName) {
+			String dateRangeFilter, String entityName, List<Evidence> evidences) {
 
 		//build the query
-		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, pageRequest);
+		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
+				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, evidences,
+				pageRequest);
 		return mongoTemplate.count(query, Alert.class);
 	}
 
@@ -101,12 +106,13 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param statusFieldName     name of the field to access status property
 	 * @param severityArrayFilter comma separated list of severity attributes to include
 	 * @param statusArrayFilter   comma separated list of status attributes to include
+	 * @param evidences   		  list of evidences to check if alerts contain them
 	 * @param pageable
 	 * @return
 	 */
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 			String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityFilter, Pageable pageable) {
+			String dateRangeFilter, String entityFilter, List<Evidence> evidences, Pageable pageable) {
 		List<Alert> result;
 		Criteria severityCriteria = new Criteria();
 		Criteria statusCriteria = new Criteria();
@@ -167,6 +173,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			Criteria entityCriteria = where(entityFieldName).in(entityNameFilterVals);
 			query.addCriteria(entityCriteria);
 		}
+		//build tags filter
+		if (evidences != null) {
+			Criteria evidenceCriteria = where(Alert.evidencesField).in(evidences);
+			query.addCriteria(evidenceCriteria);
+		}
 		int pageSize = pageRequest.getPageSize();
 		int pageNum = pageRequest.getPageNumber();
 		query.limit(pageSize);
@@ -176,4 +187,5 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		}
 		return query;
 	}
+
 }
