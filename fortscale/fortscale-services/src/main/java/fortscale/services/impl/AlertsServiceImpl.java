@@ -110,6 +110,11 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	}
 
 	@Override
+	public void add(Alert alert) {
+		alertsRepository.add(alert);
+	}
+
+	@Override
 	public void delete(String id) {
 		alertsRepository.delete(id);
 	}

@@ -51,6 +51,12 @@ public interface AlertsService {
 									 String dateRangeFilter, String entityName, String entityTags);
 
 	/**
+	 * Add alert to Alerts repository
+	 * @param alert
+	 */
+	void add(Alert alert);
+
+	/**
 	 * delete specific alert by id
 	 */
 	void delete(String id);
