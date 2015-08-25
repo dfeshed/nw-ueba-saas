@@ -8,5 +8,7 @@ package fortscale.aggregation.feature.services.historicaldata;
  */
 public enum SupportingInformationAggrFunc {
     Count,
-    HourlyCountGroupByDayOfWeek
+    HourlyCountGroupByDayOfWeek,
+    VPNSession,
+    DistinctEventsByTime
 }

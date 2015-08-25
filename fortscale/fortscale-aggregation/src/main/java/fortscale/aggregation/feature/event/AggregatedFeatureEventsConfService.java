@@ -1,19 +1,7 @@
 package fortscale.aggregation.feature.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.bucket.BucketAlreadyExistException;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
@@ -23,6 +11,16 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AggregatedFeatureEventsConfService implements InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -48,6 +46,17 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		loadAggregatedFeatureEventDefinitions();
 		fillBucketConfs();
 		createOutputBuckets();
+	}
+
+	public AggregatedFeatureEventConf getAggregatedFeatureEventConf(String name) {
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
+			if (aggregatedFeatureEventConf.getName().equals(name)) {
+				return aggregatedFeatureEventConf;
+			}
+		}
+
+		// nothing found
+		return null;
 	}
 
 	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList() {

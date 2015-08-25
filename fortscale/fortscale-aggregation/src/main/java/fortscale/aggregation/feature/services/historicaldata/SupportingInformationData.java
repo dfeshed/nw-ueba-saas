@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.domain.histogram.HistogramKey;
 
@@ -17,7 +17,11 @@ public class SupportingInformationData {
 
     private Map<HistogramKey, Double> histogram = new HashMap<>();
 
+    private Map<HistogramKey, Map> additionalInformation = new HashMap<>();
+
     private HistogramKey anomalyValue;
+
+    private TimeGranularity timeGranularity;
 
     public SupportingInformationData(Map<HistogramKey, Double> histogram, HistogramKey anomalyValue) {
         this.histogram = histogram;
@@ -36,11 +40,34 @@ public class SupportingInformationData {
         return anomalyValue;
     }
 
+    public Map<HistogramKey, Map> getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(Map<HistogramKey, Map> additionalInformation) {
+        this.additionalInformation = additionalInformation;
+    }
+
     @Override
     public String toString() {
         return "SupportingInformationData{" +
                 "histogram=" + histogram +
+                ", additionalInformation=" + additionalInformation +
                 ", anomalyValue=" + anomalyValue +
+                ", timeGranularity=" + timeGranularity +
                 '}';
+    }
+
+    public TimeGranularity getTimeGranularity() {
+        return timeGranularity;
+    }
+
+    public void setTimeGranularity(TimeGranularity timeGranularity) {
+        this.timeGranularity = timeGranularity;
+    }
+
+    public enum TimeGranularity {
+        Hourly,
+        Daily
     }
 }

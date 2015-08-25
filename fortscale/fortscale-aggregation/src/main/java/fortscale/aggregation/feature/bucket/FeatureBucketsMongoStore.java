@@ -47,20 +47,13 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	}
 
 	@Override
-	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long startTime, Long endTime, boolean includePartialOverlappingEndBucket) {
+	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Criteria bucketEndTimeCriteria;
-
-			if (includePartialOverlappingEndBucket) {
-				bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(startTime));
-			}
-			else {
-				bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-			}
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
 
 			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 

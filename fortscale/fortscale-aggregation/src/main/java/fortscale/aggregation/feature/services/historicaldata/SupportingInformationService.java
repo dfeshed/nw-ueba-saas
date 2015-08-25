@@ -1,8 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.domain.core.SupportingInformationData;
-
-import java.util.List;
+import fortscale.domain.core.Evidence;
 
 /**
  * Service to provide Supporting Information data
@@ -13,32 +11,14 @@ import java.util.List;
 public interface SupportingInformationService {
     /**
      *
+     * @param evidence the evidence
      * @param contextType the context type (user, source machine, dest machine etc.)
      * @param contextValue the context value (e.g. mike@cnn.com)
-     * @param dataEntities the data entity (ssh, kerberos, etc.)
      * @param featureName the related feature name
-     * @param anomalyValue evidence end time in milliseconds
-     * @param evidenceEndTime evidence end time in milliseconds
      * @param timePeriodInDays evidence end time in milliseconds
      * @param aggregationFunction the aggregation function
      *
      * @return supporting information data representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-            String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
-
-    /**
-     *
-     * @param contextType the context type (user, source machine, dest machine etc.)
-     * @param contextValue the context value (e.g. mike@cnn.com)
-     * @param dataEntities the data entity (ssh, kerberos, etc.)
-     * @param featureName the related feature name
-     * @param evidenceEndTime evidence end time in milliseconds
-     * @param timePeriodInDays evidence end time in milliseconds
-     * @param aggregationFunction the aggregation function
-     *
-     * @return supporting information data representation
-     */
-    SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                   long evidenceEndTime, int timePeriodInDays, String aggregationFunction);
+    SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, int timePeriodInDays, String aggregationFunction);
 }

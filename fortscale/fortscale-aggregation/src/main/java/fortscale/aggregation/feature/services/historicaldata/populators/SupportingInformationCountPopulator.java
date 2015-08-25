@@ -1,8 +1,9 @@
-package fortscale.aggregation.feature.services.historicaldata;
+package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.utils.logging.Logger;
@@ -27,6 +28,8 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
     private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
+
+    private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
 
     public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -54,18 +57,22 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = createAnomalyHistogramKey(histogramEntry.getKey());
+                    HistogramKey histogramKey = new HistogramSingleKey(histogramEntry.getKey());
 
                     Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null ? histogramKeyObjectMap.get(histogramKey) : 0);
 
                     histogramKeyObjectMap.put(histogramKey, currHistogramValue + currValue);
                 }
             } else {
-                // TODO is this considered illegal state? for now don't use the value and continue;
-                logger.warn("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
+                logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
         return histogramKeyObjectMap;
+    }
+
+    @Override
+    protected String getNormalizedContextType(String contextType) {
+        return contextType;
     }
 
     @Override
@@ -74,7 +81,14 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
     }
 
     @Override
-    HistogramKey createAnomalyHistogramKey(String anomalyValue) {
+    HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
+        String anomalyValue = extractAnomalyValue(evidence, featureName);
+
         return new HistogramSingleKey(anomalyValue);
+    }
+
+    @Override
+    protected boolean isAnomalyIndicationRequired(Evidence evidence) {
+        return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 }
