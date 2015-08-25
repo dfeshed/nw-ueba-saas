@@ -53,7 +53,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
 
 			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 
