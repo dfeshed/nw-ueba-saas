@@ -4,6 +4,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
  *
  * Date: 6/23/2015.
  */
-@Service("AlertsService")
+@Service("alertsService")
 public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 	/**

@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -42,6 +43,8 @@ public class Evidence extends AbstractDocument{
 
 	public static final String entityNameField = "entityName";
 
+	public static final String entityTypeFieldNameField = "entityTypeFieldName";
+
 	// Time frame information
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";
@@ -63,7 +66,6 @@ public class Evidence extends AbstractDocument{
 	// severity and score
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
-
 
 
 
@@ -125,8 +127,10 @@ public class Evidence extends AbstractDocument{
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
+
+	@JsonInclude
 	@Field(supportingInformationField)
-	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
+	private EntitySupportingInformation supportingInformation;
 
 	// C-tor
 
@@ -261,7 +265,11 @@ public class Evidence extends AbstractDocument{
 		return dataEntitiesIds;
 	}
 
-	public EvidenceSupportingInformation getSupportingInformation() {
+	public void setSupportingInformation(EntitySupportingInformation supportingInformationData){
+		this.supportingInformation = supportingInformationData;
+	}
+
+	public EntitySupportingInformation getSupportingInformation() {
 		return supportingInformation;
 	}
 

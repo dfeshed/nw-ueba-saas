@@ -1,10 +1,9 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
-import fortscale.services.impl.EvidencesService;
+import fortscale.services.EvidencesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

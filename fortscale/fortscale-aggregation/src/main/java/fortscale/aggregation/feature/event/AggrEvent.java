@@ -114,6 +114,8 @@ public class AggrEvent implements Serializable {
         return format;
     }
 
+    public AggrEvent() {}
+
     public AggrEvent(JSONObject event) {
         Assert.notNull(event);
         this.event = event;

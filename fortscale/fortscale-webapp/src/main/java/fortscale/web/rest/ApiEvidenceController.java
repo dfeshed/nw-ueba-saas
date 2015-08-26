@@ -7,10 +7,10 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.histogram.HistogramEntry;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
+import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.impl.EvidencesService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
@@ -111,7 +111,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		Evidence evidence = evidencesDao.findById(id);
 		if (evidence == null || evidence.getId() == null){
-			throw new InvalidValueException("Can't get evidence ofr id: " + id);
+			throw new InvalidValueException("Can't get evidence of id: " + id);
 		}
 
 		String entityName = evidence.getEntityName();
@@ -208,8 +208,7 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.
-				getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays,
-						aggFunction);
+				getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
 
 		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
 

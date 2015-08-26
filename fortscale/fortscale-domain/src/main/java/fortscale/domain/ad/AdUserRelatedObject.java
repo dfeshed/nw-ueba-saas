@@ -23,7 +23,7 @@ public class AdUserRelatedObject {
 	}
 	
 	@JsonIgnore
-	public AdUserRelatedObject getCopy() {
+	public AdUserRelatedObject returnCopy() {
 		return new AdUserRelatedObject(this.dn, this.name);
 	}
 	

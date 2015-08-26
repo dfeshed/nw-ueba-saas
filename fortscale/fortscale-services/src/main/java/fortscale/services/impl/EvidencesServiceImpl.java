@@ -5,6 +5,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.services.EvidencesService;
 import org.springframework.beans.factory.InitializingBean;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
  *
  * Date: 6/23/2015.
  */
-@Service("EvidencesService")
+@Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
 	/**
