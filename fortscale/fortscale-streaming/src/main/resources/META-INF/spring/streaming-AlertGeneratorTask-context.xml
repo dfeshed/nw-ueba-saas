@@ -23,7 +23,7 @@
 
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
-
+    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
 
     <!--Event wrapper -->
     <bean id="entityTagsWrapper" class="fortscale.streaming.alert.event.wrappers.EntityTagsWrapper" scope="singleton" />

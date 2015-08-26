@@ -3,7 +3,9 @@ package fortscale.services.impl;
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.ComputerService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.computer.EndpointDetectionService;
@@ -243,6 +245,12 @@ public class ComputerServiceImpl implements ComputerService {
 			pageRequest = pageRequest.next();
 			computers = repository.findAll(pageRequest);
 		}
+	}
+
+	@Override
+	public String getComputerId(String hostname) {
+		Computer computer = getComputerFromCache(hostname);
+		return  computer != null ? computer.getId() : null;
 	}
 
 	@Override public CacheHandler getCache() {

@@ -2,6 +2,8 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
+import fortscale.services.ComputerService;
+import fortscale.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
@@ -27,6 +29,18 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     protected AlertsService alertsService;
 
     /**
+     * User service (for resolving id)
+     */
+    @Autowired
+    protected UserService userService;
+
+    /**
+     * Computer service (for resolving id)
+     */
+    @Autowired
+    protected ComputerService computerService;
+
+    /**
      * Listener method called when Esper has detected a pattern match.
      * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
      */
@@ -46,10 +60,21 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Long endDate = (Long) insertStreamOutput.get("endDate");
                     EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
                     String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
+                    String entityId = null;
+                    switch (entityType) {
+                        case User: {
+                            entityId = userService.getUserId(entityName);
+                            break;
+                        } case Machine: {
+                            entityId = computerService.getComputerId(entityName);
+                        }
+                        //TODO - handle the rest of the entity types
+                    }
                     Double score = (Double) insertStreamOutput.get("score");
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "");
+                    Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
+                            severity, AlertStatus.Open, "", entityId);
 
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);

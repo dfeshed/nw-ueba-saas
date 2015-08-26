@@ -4,6 +4,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.PageRequest;
 import java.util.*;
@@ -26,10 +27,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	private AlertsRepository alertsRepository;
 
 	/**
-	 * Mongo repository for evidence
+	 * Mongo repository for users
 	 */
 	@Autowired
-	private EvidencesService evidencesService;
+	private UserService userService;
 
 
 	// Severity thresholds for alerts
@@ -88,25 +89,25 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 									  String dateRangeFilter, String entityName, String entityTags) {
-		List<Evidence> evidenceList = null;
+		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
-			evidenceList = evidencesService.findByEvidenceTypeAndAnomalyValueIn(EvidenceType.Tag, tagsFilter);
+			ids = userService.findIdsByTags(tagsFilter);
 		}
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
-				entityName, evidenceList);
+				entityName, ids);
 	}
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 									 String dateRangeFilter, String entityName, String entityTags) {
-		List<Evidence> evidenceList = null;
+		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
-			evidenceList = evidencesService.findByEvidenceTypeAndAnomalyValueIn(EvidenceType.Tag, tagsFilter);
+			ids = userService.findIdsByTags(tagsFilter);
 		}
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
-				entityName, evidenceList);
+				entityName, ids);
 	}
 
 	@Override
