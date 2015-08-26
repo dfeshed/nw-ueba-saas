@@ -47,7 +47,11 @@ public class UserSupportingInformationServiceImpl implements UserSupportingInfor
 		userService.fillUserRelatedDns(user, userRelatedDnsSet);
 		userService.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 
-		userSupportingInformation.setManager(userService.getUserManager(user,dnToUserMap).getDisplayName());
+
+		User manager = userService.getUserManager(user, dnToUserMap);
+		if(manager != null){
+			userSupportingInformation.setManager(userService.getUserManager(user,dnToUserMap).getDisplayName());
+		}
 		userSupportingInformation.setDirectReports(user.getAdInfo().getDirectReports());
 		userSupportingInformation.setNormalUserAccount(userService.isNormalUserAccountValue(user));
 		userSupportingInformation.setNoPasswordRequired(userService.isNoPasswordRequiresValue(user));
