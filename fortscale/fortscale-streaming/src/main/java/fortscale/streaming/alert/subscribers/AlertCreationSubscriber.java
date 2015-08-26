@@ -96,7 +96,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
-                    dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag");
+                    dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag",0);
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
             EntitySupportingInformation entitySupportingInformation = createTagEvidenceSupportingInformationData(evidence);
 
