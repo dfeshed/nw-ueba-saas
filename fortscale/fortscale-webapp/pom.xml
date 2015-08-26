@@ -62,6 +62,7 @@
 		<velocity.version>1.7</velocity.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
+		<open-csv.version>2.3</open-csv.version>
 		<!-- maven plugins versions -->
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -182,7 +183,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons-lang3.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${open-csv.version}</version>
+		</dependency>
+
+
 		<!--  javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
 		<dependency>
   			<groupId>javax.persistence</groupId>
