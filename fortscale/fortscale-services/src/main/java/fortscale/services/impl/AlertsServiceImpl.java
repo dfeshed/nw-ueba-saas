@@ -4,6 +4,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.PageRequest;
 import java.util.*;
