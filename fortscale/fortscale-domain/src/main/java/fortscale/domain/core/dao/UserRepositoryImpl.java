@@ -478,12 +478,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public  Map<String, String> getUsersByPrefix(String prefix, Pageable pageable) {
 		Query query = new Query().with(pageable);
 		// criteria for 'contains'
-		Criteria criteria = where(User.searchFieldName).is("/" + prefix +"/");
+		Criteria criteria = where(User.searchFieldName).regex(prefix);
+		query.addCriteria(criteria);
 
 		query.fields().include(User.ID_FIELD);
 		query.fields().include(User.usernameField);
 
-		query.addCriteria(criteria);
 
 		Map<String, String> res = new HashMap<>();
 		for(UsernameWrapper username : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)) {

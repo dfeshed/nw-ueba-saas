@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.dao.UserRepositoryCustom;
+import fortscale.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApiEntityControllerTest {
 
 	@Mock
-	private UserRepositoryCustom usersDao;
+	private UserService usersDao;
 
 	@InjectMocks
 	private ApiEntityController subject;
