@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ public class EntityEventBuilder {
 		}
 	}
 
-	public void updateEntityEventData(AggrFeatureEventWrapper aggrFeatureEvent) {
+	public void updateEntityEventData(AggrEvent aggrFeatureEvent) {
 		Assert.notNull(aggrFeatureEvent);
 		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null && !entityEventData.isFired()) {
@@ -69,7 +70,7 @@ public class EntityEventBuilder {
 		}
 	}
 
-	private EntityEventData getEntityEventData(AggrFeatureEventWrapper aggrFeatureEvent) {
+	private EntityEventData getEntityEventData(AggrEvent aggrFeatureEvent) {
 		List<String> contextFields = entityEventConf.getContextFields();
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
 		String contextId = getContextId(context);
@@ -108,9 +109,9 @@ public class EntityEventBuilder {
 	}
 
 	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
-		Map<String, AggrFeatureEventWrapper> aggrFeatureEventsMap = new HashMap<>();
+		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
-		for (AggrFeatureEventWrapper aggrFeatureEvent : entityEventData.getAggrFeatureEvents()) {
+		for (AggrEvent aggrFeatureEvent : entityEventData.getAggrFeatureEvents()) {
 			aggrFeatureEventsMap.put(
 					String.format("%s.%s",
 							aggrFeatureEvent.getBucketConfName(),
@@ -124,7 +125,9 @@ public class EntityEventBuilder {
 		JSONObject entityEvent = new JSONObject();
 		entityEvent.put(eventTypeFieldName, eventTypeFieldValue);
 		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
-		entityEvent.put("entity_event_value", entityEventValue);
+		int tmp = (int) (entityEventValue*1000);
+		double entityEventValue3DigitPrecision = tmp/1000d;
+		entityEvent.put("entity_event_value", entityEventValue3DigitPrecision);
 		entityEvent.put("creation_epochtime", entityEventData.getFiringTimeInSeconds());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());

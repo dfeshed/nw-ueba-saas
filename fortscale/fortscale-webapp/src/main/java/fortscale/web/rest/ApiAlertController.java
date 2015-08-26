@@ -2,27 +2,26 @@ package fortscale.web.rest;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.services.AlertsService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import fortscale.utils.logging.annotation.LogException;
+import javax.validation.Valid;
+import org.springframework.stereotype.Controller;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -35,7 +34,7 @@ public class ApiAlertController extends BaseController {
 	private static final String TIME_STAMP_START = "ts_start";
 
 	@Autowired
-	private AlertsRepository alertsDao;
+	private AlertsService alertsDao;
 
 
 	@Value("${fortscale.evidence.type.map}")
@@ -68,7 +67,9 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
 										  @RequestParam(required=false, value = "status") String status,
-										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange) {
+										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
+										  @RequestParam(required=false, value = "entity_name") String entityName,
+										  @RequestParam(required=false, value = "entity_tags") String entityTags) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -96,14 +97,16 @@ public class ApiAlertController extends BaseController {
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
-		if (severity == null && status == null && alertStartRange == null){
+		if (severity == null && status == null && alertStartRange == null && entityName == null && entityTags == null) {
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+					entityTags);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+					entityTags);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -123,9 +126,11 @@ public class ApiAlertController extends BaseController {
 		if(alert != null && alert.getEvidences() != null) {
 			for (Evidence evidence : alert.getEvidences()) {
 				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
-					String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+					Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
+					String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 					evidence.setAnomalyType(anomalyType);
-					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().
+							toLowerCase(), evidence.getEntityName(), anomalyType);
 					evidence.setName(evidenceName);
 				}
 			}

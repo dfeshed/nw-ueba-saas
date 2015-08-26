@@ -16,4 +16,5 @@ public interface VpnService {
 	VpnSession findOpenVpnSession(VpnSession closeVpnSession);
 	VpnSession findBySessionId(String sessionId);
 	List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo);
+	List<VpnSession> findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo);
 }

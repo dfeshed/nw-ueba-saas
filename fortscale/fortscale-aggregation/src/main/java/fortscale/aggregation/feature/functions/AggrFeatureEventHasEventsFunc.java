@@ -13,7 +13,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
  * Created by orend on 13/08/2015.
  */
 
-@JsonTypeName(AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureEventHasEventsFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventHasEventsFunc extends AbstractAggrFeatureEvent
 {

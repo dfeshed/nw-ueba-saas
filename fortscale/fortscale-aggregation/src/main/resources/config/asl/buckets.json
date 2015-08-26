@@ -99,6 +99,13 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "authentication_method_histogram",
+          "featureNamesMap": {
+            "groupBy": ["auth_method"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
           "name": "source_machine_with_high_score_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
@@ -150,6 +157,13 @@
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
         {
           "name": "country_histogram",
           "featureNamesMap": {

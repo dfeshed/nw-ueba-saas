@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service("userLRTag")
@@ -82,10 +82,19 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 			for (String line : FileUtils.readLines(usersFile)) {
 				boolean removeFlag = line.startsWith(deletionSymbol);
 				String username = (removeFlag)? line.substring(1).toLowerCase() : line.toLowerCase();
+
+				List<String> tagsToAdd = new ArrayList<>();
+				List<String> tagsToRemove = new ArrayList<>();
+
 				if (removeFlag)
-					userRepository.syncTags(username, Collections.<String>emptyList() , Arrays.asList(UserTagEnum.LR.getId()));
+					tagsToRemove.add(getTag().getId());
+
 				else
-					userRepository.syncTags(username, Arrays.asList(UserTagEnum.LR.getId()), Collections.<String>emptyList());
+					tagsToAdd.add(getTag().getId());
+
+
+				//Sync mongo and cache with the user's tags
+				userService.updateUserTagList(tagsToAdd,tagsToRemove,username,getTag().getId());
 			}
 		} else {
 			logger.warn("LR tag user list file not accessible in path {}", filePath);

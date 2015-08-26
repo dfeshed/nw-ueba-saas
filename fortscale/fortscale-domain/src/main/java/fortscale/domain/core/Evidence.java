@@ -135,7 +135,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
-			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity) {
+			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents) {
 		this.entityType = entityType;
 		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
@@ -143,7 +143,10 @@ public class Evidence extends AbstractDocument{
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
 			this.numOfEvents = 1;
 		} else {
-			this.numOfEvents = -1;
+            if (totalAmountOfEvents != null)
+                this.numOfEvents = totalAmountOfEvents;
+            else
+			    this.numOfEvents = -1;
 		}
 		this.startDate = startDate;
 		this.endDate = endDate;

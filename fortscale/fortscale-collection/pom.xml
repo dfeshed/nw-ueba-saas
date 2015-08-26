@@ -510,6 +510,7 @@
 						<configuration>
 							<target>
 								<chmod dir="${basedir}/target/resources/scripts" perm="0755" includes="*.sh"/>
+                                <chmod dir="${basedir}/target/resources/scripts" perm="0755" includes="*.py"/>
 							</target>
 						</configuration>
 						<goals>

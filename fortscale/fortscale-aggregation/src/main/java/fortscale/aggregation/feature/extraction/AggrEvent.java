@@ -14,6 +14,8 @@ public class AggrEvent implements Event{
     private String aggrFeatureNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfFieldName;
 	
 	public AggrEvent(JSONObject jsonObject){
 		this.jsonObject = jsonObject;
@@ -21,11 +23,26 @@ public class AggrEvent implements Event{
 	
 	@Override
 	public Object get(String key){
-		if(aggrFeatureNameFieldName.equals(key)){
+		if(isKeyFeatureName(key)){
 			return jsonObject.get(aggrFeatureValueFieldName);
 		} else{
 			return extractValueFromJson(key);
 		}
+	}
+	
+	private boolean isKeyFeatureName(String key){
+		String featurePathElems[] = key.split("\\.");
+		if(featurePathElems.length != 2){
+			return false;
+		}
+		if(!featurePathElems[0].equals(jsonObject.get(bucketConfFieldName))){
+			return false;
+		}
+		if(!featurePathElems[1].equals(jsonObject.get(aggrFeatureNameFieldName))){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private Object extractValueFromJson(String key){
