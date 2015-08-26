@@ -209,7 +209,7 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.counrty_score > 50)]"}
+          "filter": {"jsonPath": "[?(@.counrtyscore > 50)]"}
         }
       ]
     },

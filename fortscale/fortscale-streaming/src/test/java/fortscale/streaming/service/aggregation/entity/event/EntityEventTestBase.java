@@ -1,9 +1,11 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import fortscale.aggregation.feature.event.AggrEvent;
 import org.springframework.beans.factory.annotation.Value;
-
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilder;
 import net.minidev.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityEventTestBase {
 
@@ -28,16 +30,13 @@ public class EntityEventTestBase {
 			long endTime,
 			JSONObject context) {
 
-		JSONObject message = new JSONObject();
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_FEATURE_TYPE, aggrFeatureType);
-		message.put(bucketConfNameFieldName, bucketConfName);
-		message.put(aggrFeatureNameFieldName, aggrFeatureName);
-		message.put(aggrFeatureValueFieldName, aggrFeatureValue);
-		message.put("score", score);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_CREATION_EPOCHTIME, dateTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_START_TIME_UNIX, startTime);
-		message.put(AggrFeatureEventBuilder.EVENT_FIELD_END_TIME_UNIX, endTime);
-		message.put(contextFieldName, context);
-		return message;
+		Map<String, String> newContext = new HashMap<>();
+		for(String key: context.keySet()) {
+			newContext.put(key, (String)context.get(key));
+		}
+		JSONObject event = AggrEvent.buildEvent(null, aggrFeatureType, aggrFeatureName, aggrFeatureValue, null, bucketConfName, newContext, startTime, endTime, null, dateTime);
+		event.put(AggrEvent.EVENT_FIELD_SCORE, score);
+		return event; 
+
 	}
 }

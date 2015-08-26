@@ -3,10 +3,10 @@ package fortscale.web.rest;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramDualKey;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
+import fortscale.services.EvidencesService;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
@@ -42,7 +42,7 @@ public class ApiEvidenceControllerTest {
 
 
 	@Mock
-	private EvidencesRepository repository;
+	private EvidencesService repository;
 
 	@Mock
 	private DataQueryHelper dataQueryHelper;

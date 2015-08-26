@@ -1,11 +1,13 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
-public interface AlertsRepositoryCustom {
+import java.util.List;
 
+public interface AlertsRepositoryCustom {
 
 	/**
 	 * Find all alerts according to query that is build on request parameters
@@ -40,7 +42,8 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
-	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter, String dateRangeFilter, String entityName);
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									  String dateRangeFilter, String entityName, List<Evidence> evidenceList);
 
 	/**
 	 *
@@ -48,6 +51,7 @@ public interface AlertsRepositoryCustom {
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return count of alert objects that apply to the filter
 	 */
-	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter, String dateRangeFilter, String entityName);
+	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+									 String dateRangeFilter, String entityName, List<Evidence> evidenceList);
 
-	}
+}
