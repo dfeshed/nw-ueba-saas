@@ -44,7 +44,7 @@ import java.util.Map.Entry;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-@Service("UserService")
+@Service("userService")
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
@@ -1068,7 +1068,10 @@ public class UserServiceImpl implements UserService{
 			criterias[i] = where(tags[i]).in(User.tagsField);
 		}
 		query.addCriteria(new Criteria().orOperator(criterias));
-		idsByTag.addAll(mongoTemplate.find(query, String.class));
+		List<User> users = mongoTemplate.find(query, User.class);
+		for (User user: users) {
+			idsByTag.add(user.getId());
+		}
 		return idsByTag;
 	}
 
