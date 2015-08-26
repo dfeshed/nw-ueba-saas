@@ -60,7 +60,7 @@ public class ApiUserAppController {
 		List<User> users = userServiceFacade.findByApplicationUserName(userApplication, usernames);
 		List<UserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
 		for(User user: users) {
-			applicationUserDetailsBeans.add(new UserDetailsBean(user,null, Collections.<User>emptyList()));	
+			applicationUserDetailsBeans.add(new UserDetailsBean(user,null, Collections.<User>emptyList(),userServiceFacade));
 		}
 
 		ret.setData(applicationUserDetailsBeans);

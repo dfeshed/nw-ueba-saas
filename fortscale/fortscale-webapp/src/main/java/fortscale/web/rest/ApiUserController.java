@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
@@ -110,17 +108,17 @@ public class ApiUserController extends BaseController{
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 
-		fillUserRelatedDns(user, userRelatedDnsSet);
-		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 
 		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 
 	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail){
-		User manager = getUserManager(user, dnToUserMap);
-		List<User> directReports = getUserDirectReports(user, dnToUserMap);
-		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports);
+		User manager = userServiceFacade.getUserManager(user, dnToUserMap);
+		List<User> directReports = userServiceFacade.getUserDirectReports(user, dnToUserMap);
+		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports,userServiceFacade);
 		if(isWithThumbnail){
 			ret.setThumbnailPhoto(userServiceFacade.getUserThumbnail(user));
 		}
@@ -142,55 +140,6 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 	
-	private User getUserManager(User user, Map<String, User> dnToUserMap){
-		User manager = null;
-		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
-			manager = dnToUserMap.get(user.getAdInfo().getManagerDN());
-		}
-		return manager;
-	}
-	
-	private List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap){
-		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
-		if(adUserDirectReports == null || adUserDirectReports.isEmpty()){
-			return Collections.emptyList();
-		}
-		
-		List<User> directReports = new ArrayList<>();
-		for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
-			User directReport = dnToUserMap.get(adUserDirectReport.getDn());
-			if(directReport != null){
-				directReports.add(directReport);
-			} else{
-				logger.warn("the ad user with the dn ({}) does not exist in the collection user.", adUserDirectReport.getDn());
-			}
-			
-		}
-		return directReports;
-	}
-	
-	private void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet){
-		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
-			userRelatedDnsSet.add(user.getAdInfo().getManagerDN());
-		}
-		
-		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
-		if(adUserDirectReports != null){
-			for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
-				userRelatedDnsSet.add(adUserDirectReport.getDn());
-			}
-		}
-	}
-	
-	private void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap){
-		if(userRelatedDnsSet.size() > 0){
-			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
-			for(User manager: managers){
-				dnToUserMap.put(manager.getAdInfo().getDn(), manager);
-			}
-		}
-	}
-	
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -209,13 +158,13 @@ public class ApiUserController extends BaseController{
 	
 	private DataBean<List<UserDetailsBean>> userDetails(List<User> users){
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
-		
+
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		for(User user: users){
-			fillUserRelatedDns(user, userRelatedDnsSet);
+			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
 		}
-		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 		
 		for(User user: users){
 			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);

@@ -97,6 +97,25 @@ public interface UserService extends CachingService{
 
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
 
+	public Boolean isPasswordExpired(User user);
+
+	public Boolean isNoPasswordRequiresValue(User user);
+
+	public Boolean isNormalUserAccountValue(User user);
+
+	public Boolean isPasswordNeverExpiresValue(User user);
+
+	public String getOu(User user);
+
+	public void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet);
+
+	public void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap);
+
+	public User getUserManager(User user, Map<String, User> dnToUserMap);
+
+	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
+
+	public User findByUsername(String username);
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
 
 
