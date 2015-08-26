@@ -42,7 +42,7 @@ import java.util.Map.Entry;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-@Service("UserService")
+@Service("userService")
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
