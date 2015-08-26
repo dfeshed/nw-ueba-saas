@@ -1066,21 +1066,42 @@ public class UserServiceImpl implements UserService{
 		else{
 			tagsToRemove.add(userTagEnumId);
 		}
+
+		updateUserTagList(tagsToAdd,tagsToRemove,username,userTagEnumId);
+
+	}
+
+	@Override
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId)
+	{
+
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
+
 		//also update the tags cache with the new updates
 		List<String> tags = userTagsCache.get(username);
 		if (tags == null){
 			tags = new ArrayList<String>();
 		}
-		if (value) {
-			if (!tags.contains(userTagEnumId)) {
-				tags.add(userTagEnumId);
+
+		//Add the new tags to the user
+		if (tagsToAdd != null &&  tagsToAdd.size()>0) {
+			for (String tag : tagsToAdd) {
+				if (!tags.contains(tag)) {
+					tags.add(tag);
+				}
 			}
 		}
-		else {
-			tags.remove(userTagEnumId);
+		//Remove tags
+		if (tagsToRemove != null && tagsToRemove.size()>0)
+		{
+			for (String tag :tagsToRemove ) {
+				if(tags.contains(tag))
+					tags.remove(tag);
+			}
 		}
+		//Update user tag cache
 		userTagsCache.put(username, tags);
+
 	}
 
 	@Override public void handleNewValue(String key, String value) throws Exception {

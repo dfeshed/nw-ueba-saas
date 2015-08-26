@@ -1,29 +1,28 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.SupportingInformationData;
-import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.domain.histogram.HistogramEntry;
 import fortscale.domain.histogram.HistogramKey;
 import fortscale.domain.histogram.HistogramSingleKey;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.impl.EvidencesService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+import fortscale.utils.logging.annotation.LogException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.PostConstruct;
-import java.util.*;
 
 /**
  * REST API for Evidences querying
@@ -36,14 +35,15 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String DESC = "DESC";
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
-	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
+	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
+
 	/**
 	 * Mongo repository for fetching evidences
 	 */
 	@Autowired
-	private EvidencesRepository evidencesDao;
+	private EvidencesService evidencesDao;
 
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
@@ -73,9 +73,12 @@ public class ApiEvidenceController extends DataQueryController {
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
-			String anomalyType = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName()).toString();
+			Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
+			String anomalyType = (name!=null ? name.toString(): "ANOMALY NAME IS NOT MAPPED");
+
 			evidence.setAnomalyType(anomalyType);
-			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(), evidence.getEntityName(), anomalyType);
+			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(),
+					evidence.getEntityName(), anomalyType);
 			evidence.setName(evidenceName);
 		}
 	}
@@ -136,7 +139,8 @@ public class ApiEvidenceController extends DataQueryController {
 			termsMap.add(term);
 			//add condition about time range
 			Long currentTimestamp = System.currentTimeMillis();
-			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate));
+			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate),
+					TimestampUtils.convertToSeconds(endDate));
 			termsMap.add(term);
 
 			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
@@ -152,7 +156,8 @@ public class ApiEvidenceController extends DataQueryController {
 			//sort according to event times for continues forwarding
 			List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
 
-			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList, size);
+			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
+					size);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 		} else
 			return null;
@@ -193,7 +198,7 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(value = "function") String aggFunction,
 			@RequestParam(required=false,value = "num_columns") Integer numColumns,
 			@RequestParam(required=false,defaultValue = DESC,value = "sort_direction") String sortDirection,
-			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays){
+			@RequestParam(required=false,defaultValue = "90",value = "time_range") Integer timePeriodInDays) {
 		DataBean<List<HistogramEntry>> histogramBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
@@ -202,34 +207,14 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		boolean isEvidenceSupportAnomalyValue = isEvidenceSupportAnomalyValue(evidence);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.
+				getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays,
+						aggFunction);
 
-		SupportingInformationData evidenceSupportingInformationData;
+		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
 
-		if (isEvidenceSupportAnomalyValue) {
-			String anomalyValue = extractAnomalyValue(evidence, feature);
-
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, anomalyValue, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-		else {
-			evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(contextType, contextValue, evidence.getDataEntitiesIds(),
-					feature, TimestampUtils.convertToMilliSeconds(evidence.getEndDate()), timePeriodInDays, aggFunction);
-		}
-
-		//create list of histogram pairs divided to columns, anomaly, and Others according to numColumns
-		Map<HistogramKey, Double> supportingInformationHistogram = evidenceSupportingInformationData.getHistogram();
-
-		List<HistogramEntry> listOfHistogramEntries;
-
-		if (isEvidenceSupportAnomalyValue) {
-			//add the anomaly to the relevant fields
-			HistogramKey anomaly = evidenceSupportingInformationData.getAnomalyValue();
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram, anomaly);
-		}
-		else {
-			listOfHistogramEntries = createListOfHistogramPairs(supportingInformationHistogram);
-		}
+		List<HistogramEntry> listOfHistogramEntries = createListOfHistogramEntries(evidenceSupportingInformationData,
+				isSupportingInformationAnomalyValueExists);
 
 		if(numColumns == null){
 			numColumns = listOfHistogramEntries.size();
@@ -239,7 +224,8 @@ public class ApiEvidenceController extends DataQueryController {
 			Collections.sort(listOfHistogramEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
-			if(listOfHistogramEntries.size() >= numColumns + getNumOfAdditionalColumns(isEvidenceSupportAnomalyValue)){
+			if(listOfHistogramEntries.size() >= numColumns +
+					getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
 				//create new list divided into others, columns and anomaly
 				listOfHistogramEntries = createListWithOthers(listOfHistogramEntries, numColumns);
 			}
@@ -249,34 +235,25 @@ public class ApiEvidenceController extends DataQueryController {
 			}
 		}
 
+		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
+			addTimeGranularityInformation(histogramBean, evidenceSupportingInformationData);
+		}
+
 		histogramBean.setData(listOfHistogramEntries);
 		return histogramBean;
+	}
+
+	private void addTimeGranularityInformation(DataBean<List<HistogramEntry>> histogramBean,
+											   SupportingInformationData evidenceSupportingInformationData) {
+		Map<String, Object> infoMap = new HashMap<>(1);
+		infoMap.put(TIME_GRANULARITY_PROPERTY, evidenceSupportingInformationData.getTimeGranularity().name().
+				toLowerCase());
+		histogramBean.setInfo(infoMap);
 	}
 
 	private Integer getNumOfAdditionalColumns(boolean isEvidenceSupportAnomalyValue) {
 		// num columns + 1 others +1 anomaly
 		return (isEvidenceSupportAnomalyValue) ? 2 : 1;
-	}
-
-	private boolean isEvidenceSupportAnomalyValue(Evidence evidence) {
-		// TODO should be defined in enum or static map. currently the only exception is the vpn geo hopping type
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
-	}
-
-	private String extractAnomalyValue(Evidence evidence, String feature) {
-
-		boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, feature);
-
-		if (contextAndFeatureMatch) { // in this case we want the inverse chart
-			return evidence.getEntityName();
-		}
-		else {
-			return evidence.getAnomalyValue();
-		}
-	}
-
-	private boolean isContextAndFeatureMatch(Evidence evidence, String feature) {
-		return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
 	}
 
 	/**
@@ -285,7 +262,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
 	 * @return list divided into 'others' column and the rest of columns.
 	 */
-	private  List<HistogramEntry> createListWithOthers(List<HistogramEntry> oldList, int numColumns){
+	private  List<HistogramEntry> createListWithOthers(List<HistogramEntry> oldList, int numColumns) {
 
 		HistogramEntry anomalyPair = new HistogramEntry();
 		boolean hasAnomaly = false;
@@ -327,38 +304,36 @@ public class ApiEvidenceController extends DataQueryController {
 	 * gets a map of histogramKey,value and return a list of HistogramPairs.
 	 * this function also marks the anomaly pair - essential for further data manipulation.
 	 *
-	 * @param supportingInformationHistogram
-	 * @param anomaly
+	 * @param supportingInformationData
+	 * @param isEvidenceSupportAnomalyValue
 	 * @return list of HistogramPairs, with (0 or more) anomaly mark
 	 */
-	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram, HistogramKey anomaly ) {
+	private List<HistogramEntry> createListOfHistogramEntries(SupportingInformationData supportingInformationData,
+															  boolean isEvidenceSupportAnomalyValue) {
 
 		List<HistogramEntry> histogramEntries = new ArrayList<>();
+		HistogramKey anomalyValue = null;
+		Map<HistogramKey, Double> supportingInformationHistogram = supportingInformationData.getHistogram();
+		Map<HistogramKey, Map> additionalInformation = supportingInformationData.getAdditionalInformation();
 
-		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry : supportingInformationHistogram.entrySet()) {
+		if (isEvidenceSupportAnomalyValue) {
+			anomalyValue = supportingInformationData.getAnomalyValue();
+		}
+
+		for (Map.Entry<HistogramKey, Double> supportingInformationHistogramEntry :
+				supportingInformationHistogram.entrySet()) {
 			HistogramKey key = supportingInformationHistogramEntry.getKey();
 			Double value = supportingInformationHistogramEntry.getValue();
-
 			HistogramEntry histogramEntry = new HistogramEntry(key.generateKey(),value);
-
-			if (anomaly != null && key.equals(anomaly)){
+			if (anomalyValue != null && key.equals(anomalyValue)){
 				histogramEntry.setIsAnomaly(true);
+			}
+			if (additionalInformation != null) {
+				histogramEntry.setAdditionalInformation(additionalInformation.get(key));
 			}
 			histogramEntries.add(histogramEntry);
 		}
 		return histogramEntries;
-	}
-
-	/**
-	 * method that helps to serialize aggregated information into our API standarts.
-	 * gets a map of histogramKey,value and return a list of HistogramPairs.
-	 * this function also marks the anomaly pair - essential for further data manipulation.
-	 *
-	 * @param supportingInformationHistogram
-	 * @return list of HistogramPairs, with (0 or more) anomaly mark
-	 */
-	private List<HistogramEntry> createListOfHistogramPairs(Map<HistogramKey, Double> supportingInformationHistogram) {
-		return createListOfHistogramPairs(supportingInformationHistogram, null);
 	}
 
 }

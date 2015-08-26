@@ -1,8 +1,11 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.domain.core.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDataPopulator;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,33 +27,25 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                           String anomalyValue, long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
-        logger.info("Going to calculate Evidence Supporting Information. Context type = {} # Context value = {} # Data entity = {} " +
-                "# Feature name = {} # Anomaly value = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", contextType, contextValue, dataEntities.get(0), featureName, anomalyValue, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, int timePeriodInDays, String aggregationFunction) {
+        EvidenceType evidenceType = evidence.getEvidenceType();
+        List<String> dataEntities = evidence.getDataEntitiesIds();
 
-        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(contextType, dataEntities.get(0), featureName, aggregationFunction);
+        long evidenceEndTime = TimestampUtils.convertToMilliSeconds(evidence.getEndDate());
 
-        SupportingInformationData supportingInformationData;
+        logger.info("Going to calculate Evidence Supporting Information. Evidence Type = {} # Context type = {} # Context value = {} # Data entity = {} " +
+                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
 
         long startTime = System.nanoTime();
-        if (anomalyValue != null) {
-            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays, anomalyValue);
-        }
-        else {
-            supportingInformationData = supportingInformationPopulator.createSupportingInformationData(contextValue, evidenceEndTime, timePeriodInDays);
-        }
+
+        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
         long elapsedTime = System.nanoTime() - startTime;
 
-        logger.info("Calculated Supporting Information Data in {} milliseconds. Returned data : {}", TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS), supportingInformationData.toString());
+        logger.info("Retrieved Supporting Information Data in {} milliseconds. Returned data : {}", TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS), supportingInformationData.toString());
 
         return supportingInformationData;
-    }
-
-    @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(String contextType, String contextValue, List<String> dataEntities, String featureName,
-                                                                          long evidenceEndTime, int timePeriodInDays, String aggregationFunction) {
-        return getEvidenceSupportingInformationData(contextType, contextValue, dataEntities, featureName, null, evidenceEndTime, timePeriodInDays, aggregationFunction);
     }
 }
