@@ -2,11 +2,13 @@ package fortscale.streaming.feature.extractor;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.util.Assert;
 
 @JsonTypeName(ConditionalPatternReplacementFeatureAdjuster.CONDITIONAL_PATTERN_REPLACEMENT_FEATURE_ADJUSTER_TYPE)
@@ -19,16 +21,10 @@ public class ConditionalPatternReplacementFeatureAdjuster implements FeatureAdju
 	private String preReplacementCondition;
 	private String postReplacementCondition;
 
-	public ConditionalPatternReplacementFeatureAdjuster(
-			@JsonProperty("pattern") String pattern,
-			@JsonProperty("replacement") String replacement,
-			@JsonProperty("preReplacementCondition") String preReplacementCondition,
-			@JsonProperty("postReplacementCondition") String postReplacementCondition) {
-
+	@JsonCreator
+	public ConditionalPatternReplacementFeatureAdjuster(@JsonProperty("pattern") String pattern, @JsonProperty("replacement") String replacement) {
 		setPattern(pattern);
 		setReplacement(replacement);
-		setPreReplacementCondition(preReplacementCondition);
-		setPostReplacementCondition(postReplacementCondition);
 	}
 
 	public void setPattern(String pattern) {
@@ -83,22 +79,16 @@ public class ConditionalPatternReplacementFeatureAdjuster implements FeatureAdju
 		if (o == null || getClass() != o.getClass()) return false;
 
 		ConditionalPatternReplacementFeatureAdjuster that = (ConditionalPatternReplacementFeatureAdjuster)o;
-		if (!pattern.equals(that.pattern)) return false;
-		if (!replacement.equals(that.replacement)) return false;
-		if (preReplacementCondition != null ? !preReplacementCondition.equals(that.preReplacementCondition) : that.preReplacementCondition != null)
-			return false;
-		if (postReplacementCondition != null ? !postReplacementCondition.equals(that.postReplacementCondition) : that.postReplacementCondition != null)
-			return false;
-
-		return true;
+		return new EqualsBuilder()
+				.append(this.pattern, that.pattern)
+				.append(this.replacement, that.replacement)
+				.append(this.preReplacementCondition, that.preReplacementCondition)
+				.append(this.postReplacementCondition, that.postReplacementCondition)
+				.isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		int result = pattern.hashCode();
-		result = 31 * result + replacement.hashCode();
-		result = 31 * result + (preReplacementCondition != null ? preReplacementCondition.hashCode() : 0);
-		result = 31 * result + (postReplacementCondition != null ? postReplacementCondition.hashCode() : 0);
-		return result;
+		return pattern.hashCode();
 	}
 }
