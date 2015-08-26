@@ -1065,7 +1065,7 @@ public class UserServiceImpl implements UserService{
 		query.fields().include(User.ID_FIELD);
 		Criteria[] criterias = new Criteria[tags.length];
 		for (int i = 0; i < tags.length; i++) {
-			criterias[i] = where(tags[i]).in(User.tagsField);
+			criterias[i] = where(User.tagsField).in(tags[i]);
 		}
 		query.addCriteria(new Criteria().orOperator(criterias));
 		List<User> users = mongoTemplate.find(query, User.class);
