@@ -1,9 +1,10 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.domain.ad.AdUserGroup;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * supporting information for tag evidences - the state of the user in the time of the evidence creation.
@@ -11,22 +12,26 @@ import java.util.*;
  */
 
 @JsonTypeName("userSupportingInformation")
-public class UserSupportingInformation extends EntitySupportingInformation implements Serializable {
+public class UserSupportingInformation extends EntitySupportingInformation {
 
 	public UserSupportingInformation(){};
 
+
 	private String username;
+	private String SAMAccountName;
+	private String adUserName;
 	private String title;
 	private String department;
-	private User manager;
-	private List<User> directReports;
+	private String manager;
+	private Set<AdUserDirectReport> directReports = new HashSet<AdUserDirectReport>();
 
 	private boolean normalUserAccount;
 	private boolean noPasswordRequired;
 	private boolean passwordNeverExpire;
 
 	private String ou;
-	List<String> membershipGroups;
+	private Set<AdUserGroup> AdminGroups;
+	private Set<AdUserGroup> NonAdminGroups;
 
 	public String getUsername() {
 		return username;
@@ -34,6 +39,22 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getSAMAccountName() {
+		return SAMAccountName;
+	}
+
+	public void setSAMAccountName(String SAMAccountName) {
+		this.SAMAccountName = SAMAccountName;
+	}
+
+	public String getAdUserName() {
+		return adUserName;
+	}
+
+	public void setAdUserName(String adUserName) {
+		this.adUserName = adUserName;
 	}
 
 	public String getTitle() {
@@ -44,6 +65,14 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 		this.title = title;
 	}
 
+	public String getManager() {
+		return manager;
+	}
+
+	public void setManager(String manager) {
+		this.manager = manager;
+	}
+
 	public String getDepartment() {
 		return department;
 	}
@@ -52,19 +81,11 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 		this.department = department;
 	}
 
-	public User getManager() {
-		return manager;
-	}
-
-	public void setManager(User manager) {
-		this.manager = manager;
-	}
-
-	public List<User> getDirectReports() {
+	public Set<AdUserDirectReport> getDirectReports() {
 		return directReports;
 	}
 
-	public void setDirectReports(List<User> directReports) {
+	public void setDirectReports(Set<AdUserDirectReport> directReports) {
 		this.directReports = directReports;
 	}
 
@@ -92,6 +113,14 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 		this.passwordNeverExpire = passwordNeverExpire;
 	}
 
+	public Set<AdUserGroup> getAdminGroups() {
+		return AdminGroups;
+	}
+
+	public void setAdminGroups(Set<AdUserGroup> adminGroups) {
+		AdminGroups = adminGroups;
+	}
+
 	public String getOu() {
 		return ou;
 	}
@@ -100,13 +129,11 @@ public class UserSupportingInformation extends EntitySupportingInformation imple
 		this.ou = ou;
 	}
 
-
-	public List<String> getMembershipGroups() {
-		return membershipGroups;
+	public Set<AdUserGroup> getNonAdminGroups() {
+		return NonAdminGroups;
 	}
 
-	public void setMembershipGroups(List<String> membershipGroups) {
-		this.membershipGroups = membershipGroups;
+	public void setNonAdminGroups(Set<AdUserGroup> nonAdminGroups) {
+		NonAdminGroups = nonAdminGroups;
 	}
-
 }
