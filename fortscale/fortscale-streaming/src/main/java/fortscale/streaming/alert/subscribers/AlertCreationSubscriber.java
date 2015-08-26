@@ -66,13 +66,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Long endDate = (Long) insertStreamOutput.get("endDate");
                     EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
                     String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
-                    String entityId = null;
+                    String entityId;
                     switch (entityType) {
                         case User: {
                             entityId = userService.getUserId(entityName);
                             break;
                         } case Machine: {
                             entityId = computerService.getComputerId(entityName);
+                            break;
+                        } default: {
+                            entityId = "";
                         }
                         //TODO - handle the rest of the entity types
                     }
