@@ -3,6 +3,7 @@ package fortscale.web.rest;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserRepositoryCustom;
+import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
@@ -31,7 +32,7 @@ public class ApiEntityController extends DataQueryController{
 	 * DB repository for fetching users information
 	 */
 	@Autowired
-	private UserRepositoryCustom usersDao;
+	private UserService usersDao;
 
 	//TODO: Support more entities (computers etc)
 

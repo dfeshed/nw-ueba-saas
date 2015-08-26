@@ -1112,4 +1112,8 @@ public class UserServiceImpl implements UserService{
 			getCache().putFromString(key, value);
 		}
 	}
+
+	@Override public Map<String, String> getUsersByPrefix(String prefix, Pageable pageable){
+		return userRepository.getUsersByPrefix(prefix,pageable);
+	}
 }

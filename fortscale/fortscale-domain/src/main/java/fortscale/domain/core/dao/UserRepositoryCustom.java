@@ -71,6 +71,6 @@ public interface UserRepositoryCustom {
 	 */
 	void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 	public Set<String> getUserTags(String normalizedUsername);
-	Map<String, String> getUsersByPrefix(String prefix, Pageable pageable);
+	public Map<String, String> getUsersByPrefix(String prefix, Pageable pageable);
 }
 

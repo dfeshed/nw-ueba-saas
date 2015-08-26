@@ -99,5 +99,7 @@ public interface UserService extends CachingService{
 
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
 
+	public Map<String, String> getUsersByPrefix(String prefix, Pageable pageable);
+
 
 }
