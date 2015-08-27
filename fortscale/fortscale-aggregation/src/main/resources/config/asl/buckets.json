@@ -173,7 +173,7 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "authentication_method_histogram",
+          "name": "auth_method_histogram",
           "featureNamesMap": {
             "groupBy": ["auth_method"]
           },
@@ -246,7 +246,7 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "authentication_method_histogram",
+          "name": "auth_method_histogram",
           "featureNamesMap": {
             "groupBy": ["auth_method"]
           },
