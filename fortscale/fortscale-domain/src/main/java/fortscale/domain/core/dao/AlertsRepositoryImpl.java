@@ -76,11 +76,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName, Set<String> users) {
+			String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
-				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, users,
+				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, entitiesIds,
 				pageRequest);
 		List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
 		Alerts alerts = new Alerts();
@@ -90,11 +90,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName, Set<String> users) {
+			String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
-				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, users,
+				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, entitiesIds,
 				pageRequest);
 		return mongoTemplate.count(query, Alert.class);
 	}

@@ -42,7 +42,7 @@ public interface AlertsRepositoryCustom {
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, Set<String> users);
+									  String dateRangeFilter, String entityName, Set<String> entitiesIds);
 
 	/**
 	 *
@@ -51,6 +51,6 @@ public interface AlertsRepositoryCustom {
 	 * @return count of alert objects that apply to the filter
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, Set<String> users);
+									 String dateRangeFilter, String entityName, Set<String> entitiesIds);
 
 }
