@@ -475,7 +475,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		return (wrapper==null)? null : wrapper.getId();
 	}
 
-	public  Map<String, String> getUsersByPrefix(String prefix, Pageable pageable) {
+	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		Query query = new Query().with(pageable);
 		// criteria for 'contains'
 		Criteria criteria = where(User.searchFieldName).regex(prefix);
@@ -485,9 +485,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		query.fields().include(User.usernameField);
 
 
-		Map<String, String> res = new HashMap<>();
+		List<Map<String, String>> res = new ArrayList<>();
 		for(UsernameWrapper username : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)) {
-			res.put(username.id, username.username);
+			Map<String, String> entry = new HashMap<String, String>();
+			entry.put(User.usernameField, username.getUsername());
+			entry.put(User.ID_FIELD, username.getId());
+
+			res.add(entry);
 		}
 
 		return res;

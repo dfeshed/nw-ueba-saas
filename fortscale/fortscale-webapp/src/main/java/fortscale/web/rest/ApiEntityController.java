@@ -39,7 +39,7 @@ public class ApiEntityController extends DataQueryController{
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
 	public @ResponseBody
-	DataBean<Map<String, String>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+	DataBean<List<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 											@RequestParam(required=true, value = "entity_name") String entityName,
 											@RequestParam(required=false, value = "page") Integer fromPage,
 											@RequestParam(required=false, value = "size")  Integer size) {
@@ -64,7 +64,7 @@ public class ApiEntityController extends DataQueryController{
 
 		PageRequest pageRequest = new PageRequest(pageForMongo, size);
 
-		DataBean<Map<String, String>> entities = new DataBean<>();
+		DataBean<List<Map<String, String>>> entities = new DataBean<>();
 
 		// Read users
 		entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));

@@ -1115,7 +1115,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-	@Override public Map<String, String> getUsersByPrefix(String prefix, Pageable pageable) {
+	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
 	
