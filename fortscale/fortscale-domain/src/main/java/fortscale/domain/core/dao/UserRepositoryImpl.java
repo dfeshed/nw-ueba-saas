@@ -482,14 +482,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		query.addCriteria(criteria);
 
 		query.fields().include(User.ID_FIELD);
-		query.fields().include(User.usernameField);
+		query.fields().include(User.displayNameField);
 
 
 		List<Map<String, String>> res = new ArrayList<>();
-		for(UsernameWrapper username : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)) {
+		for(DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
 			Map<String, String> entry = new HashMap<String, String>();
-			entry.put(User.usernameField, username.getUsername());
-			entry.put(User.ID_FIELD, username.getId());
+			entry.put(User.usernameField, displayname.getDisplayName());
+			entry.put(User.ID_FIELD, displayname.getId());
 
 			res.add(entry);
 		}
@@ -540,7 +540,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.username = username;
 		}
 	}
-	
+
+	static class DisplayNameWrapper {
+		private String id;
+		private String displayName;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public void setDisplayName(String displayName) {
+			this.displayName = displayName;
+		}
+	}
+
 	static class UserIdWrapper{
 		private String id;
 		
