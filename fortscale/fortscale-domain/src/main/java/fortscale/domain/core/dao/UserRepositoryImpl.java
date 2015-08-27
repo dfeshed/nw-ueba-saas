@@ -476,22 +476,27 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
-		Query query = new Query().with(pageable);
-		// criteria for 'contains'
-		Criteria criteria = where(User.searchFieldName).regex(prefix);
-		query.addCriteria(criteria);
-
-		query.fields().include(User.ID_FIELD);
-		query.fields().include(User.displayNameField);
-
-
 		List<Map<String, String>> res = new ArrayList<>();
-		for(DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
-			Map<String, String> entry = new HashMap<String, String>();
-			entry.put(User.usernameField, displayname.getDisplayName());
-			entry.put(User.ID_FIELD, displayname.getId());
 
-			res.add(entry);
+		try {
+			Query query = new Query().with(pageable);
+			// criteria for 'contains'
+			Criteria criteria = where(User.searchFieldName).regex(prefix);
+			query.addCriteria(criteria);
+
+			query.fields().include(User.ID_FIELD);
+			query.fields().include(User.displayNameField);
+
+			for (DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
+				Map<String, String> entry = new HashMap<String, String>();
+				entry.put(User.usernameField, displayname.getDisplayName());
+				entry.put(User.ID_FIELD, displayname.getId());
+
+				res.add(entry);
+			}
+		}
+		catch (Exception ex){
+			logger.error("Error while reading entites list. Error: " + ex.getMessage());
 		}
 
 		return res;

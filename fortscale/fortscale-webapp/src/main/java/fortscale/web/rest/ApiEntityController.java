@@ -26,7 +26,7 @@ import java.util.Map;
 public class ApiEntityController extends DataQueryController{
 
 	private static Logger logger = Logger.getLogger(ApiEntityController.class);
-	private static final int DEFAULT_PAGE_SIZE = 20;
+	private static final int DEFAULT_PAGE_SIZE = 10;
 
 	/**
 	 * DB repository for fetching users information
