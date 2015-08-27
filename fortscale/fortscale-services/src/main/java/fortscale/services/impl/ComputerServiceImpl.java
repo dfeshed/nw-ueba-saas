@@ -245,6 +245,12 @@ public class ComputerServiceImpl implements ComputerService {
 		}
 	}
 
+	@Override
+	public String getComputerId(String hostname) {
+		Computer computer = getComputerFromCache(hostname);
+		return  computer != null ? computer.getId() : null;
+	}
+
 	@Override public CacheHandler getCache() {
 		return cache;
 	}

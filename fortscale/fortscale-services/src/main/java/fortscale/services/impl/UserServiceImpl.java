@@ -32,6 +32,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
@@ -1056,6 +1058,22 @@ public class UserServiceImpl implements UserService{
 		return namesByTag;
 	}
 
+	@Override
+	public Set<String> findIdsByTags(String[] tags) {
+		Set<String> idsByTag = new HashSet();
+		Query query = new Query();
+		query.fields().include(User.ID_FIELD);
+		Criteria[] criterias = new Criteria[tags.length];
+		for (int i = 0; i < tags.length; i++) {
+			criterias[i] = where(User.tagsField).in(tags[i]);
+		}
+		query.addCriteria(new Criteria().orOperator(criterias));
+		List<User> users = mongoTemplate.find(query, User.class);
+		for (User user: users) {
+			idsByTag.add(user.getId());
+		}
+		return idsByTag;
+	}
 
 	@Override
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value){
@@ -1214,5 +1232,9 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User findByUsername(String username){
 		return userRepository.findByUsername(username);
+	}
+
+	@Override public String getUserId(String username) {
+		return usernameService.getUserId(username, null);
 	}
 }

@@ -44,6 +44,8 @@ public interface UserService extends CachingService{
 
 	public User findByUserId(String userId);
 
+	public String getUserId(String username);
+
 	public User createUser(UserApplication userApplication, String username, String appUsername);
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
@@ -118,5 +120,6 @@ public interface UserService extends CachingService{
 	public User findByUsername(String username);
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
 
+	public Set<String> findIdsByTags(String[] tags);
 
 }

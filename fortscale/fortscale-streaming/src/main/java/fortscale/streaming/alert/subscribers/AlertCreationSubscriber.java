@@ -2,8 +2,9 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
-import fortscale.services.EvidencesService;
+import fortscale.services.ComputerService;
 import fortscale.services.UserService;
+import fortscale.services.EvidencesService;
 import fortscale.services.UserSupportingInformationService;
 import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     private UserSupportingInformationService userSupportingInformationService;
 
     /**
+     * Computer service (for resolving id)
+     */
+    @Autowired
+    protected ComputerService computerService;
+
+    /**
      * Evidence service (for Mongo export)
      */
     @Autowired
@@ -60,6 +67,19 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     Long endDate = (Long) insertStreamOutput.get("endDate");
                     EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
                     String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
+                    String entityId;
+                    switch (entityType) {
+                        case User: {
+                            entityId = userService.getUserId(entityName);
+                            break;
+                        } case Machine: {
+                            entityId = computerService.getComputerId(entityName);
+                            break;
+                        } default: {
+                            entityId = "";
+                        }
+                        //TODO - handle the rest of the entity types
+                    }
                     Double score = (Double) insertStreamOutput.get("score");
                     Integer roundScore = score.intValue();
                     Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
@@ -68,7 +88,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                         createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
                     }
                     Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
-                            severity, AlertStatus.Open, "");
+                            severity, AlertStatus.Open, "", entityId);
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);
                 } catch (RuntimeException ex) {

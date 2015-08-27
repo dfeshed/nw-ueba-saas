@@ -32,6 +32,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String endDateField = "endDate";
 	public static final String entityTypeField = "entityType";
 	public static final String entityNameField = "entityName";
+	public static final String entityIdField = "entityId";
 	public static final String ruleField = "rule";
 	public static final String evidencesField = "evidences";
 	public static final String scoreField = "score";
@@ -54,6 +55,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	private EntityType entityType;
 	@Field(entityNameField)
 	private String entityName;
+	@Field(entityIdField)
+	private String entityId;
 	@Field(evidencesField)
 	//this annotation makes mongo to save only reference to evidences, not the evidences themselves.
 	@DBRef
@@ -72,7 +75,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	public Alert() {}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, String comment) {
+				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, String comment,
+				 String entityId) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -83,6 +87,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severity = severity;
 		this.status = status;
 		this.comment = comment;
+		this.entityId = entityId;
 		this.setId(UUID.randomUUID().toString());
 	}
 
@@ -165,4 +170,13 @@ public class Alert extends AbstractDocument implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getEntityId() {
+		return entityId;
+	}
+
+	public void setEntityId(String entityId) {
+		this.entityId = entityId;
+	}
+
 }
