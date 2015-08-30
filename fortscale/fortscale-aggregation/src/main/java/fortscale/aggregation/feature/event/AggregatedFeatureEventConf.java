@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import net.minidev.json.JSONObject;
@@ -25,7 +26,9 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
 	private String outputBucketStrategy = null;
+	private boolean fireEventsAlsoForEmptyBucketTicks = false;
 
+	@JsonCreator
 	public AggregatedFeatureEventConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("type") String type,
@@ -35,6 +38,22 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("waitAfterBucketCloseSeconds") long waitAfterBucketCloseSeconds,
 			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
+
+		init(name, type, bucketConfName, numberOfBuckets, bucketsLeap, waitAfterBucketCloseSeconds,
+				aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
+
+	}
+
+	private void init(
+			String name,
+			String type,
+			String bucketConfName,
+			int numberOfBuckets,
+			int bucketsLeap,
+			long waitAfterBucketCloseSeconds,
+			Map<String, List<String>> aggregatedFeatureNamesMap,
+			JSONObject aggregatedFeatureEventFunction,
+			boolean fireEventsAlsoForEmptyBucketTicks) {
 
 		Assert.isTrue(StringUtils.isNotBlank(name));
 		Assert.isTrue(StringUtils.isNotBlank(type));
@@ -61,6 +80,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
 		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
 		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
+		this.fireEventsAlsoForEmptyBucketTicks = fireEventsAlsoForEmptyBucketTicks;
+
 	}
 
 	public String getName() {
@@ -121,5 +142,49 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public String getOutputBucketStrategy() {
 		return outputBucketStrategy;
+	}
+
+	public boolean getFireEventsAlsoForEmptyBucketTicks() {
+		return fireEventsAlsoForEmptyBucketTicks;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setBucketConfName(String bucketConfName) {
+		this.bucketConfName = bucketConfName;
+	}
+
+	public void setNumberOfBuckets(int numberOfBuckets) {
+		this.numberOfBuckets = numberOfBuckets;
+	}
+
+	public void setBucketsLeap(int bucketsLeap) {
+		this.bucketsLeap = bucketsLeap;
+	}
+
+	public void setWaitAfterBucketCloseSeconds(long waitAfterBucketCloseSeconds) {
+		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
+	}
+
+	public void setAggregatedFeatureNamesMap(Map<String, List<String>> aggregatedFeatureNamesMap) {
+		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
+	}
+
+	public void setAggregatedFeatureEventFunction(JSONObject aggregatedFeatureEventFunction) {
+		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setOutputBucketStrategy(String outputBucketStrategy) {
+		this.outputBucketStrategy = outputBucketStrategy;
+	}
+
+	public void setFireEventsAlsoForEmptyBucketTicks(boolean fireEventsAlsoForEmptyBucketTicks) {
+		this.fireEventsAlsoForEmptyBucketTicks = fireEventsAlsoForEmptyBucketTicks;
 	}
 }
