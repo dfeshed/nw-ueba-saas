@@ -44,6 +44,8 @@ public interface UserService extends CachingService{
 
 	public User findByUserId(String userId);
 
+	public String getUserId(String username);
+
 	public User createUser(UserApplication userApplication, String username, String appUsername);
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
@@ -120,5 +122,6 @@ public interface UserService extends CachingService{
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
+	public Set<String> findIdsByTags(String[] tags);
 
 }

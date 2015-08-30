@@ -10,7 +10,13 @@ public interface ComputerService extends CachingService{
 	 * @return true in case it is, false otherwise or in case the hostname is not recognized
 	 */
 	boolean isHostnameInAD(String hostname);
-	
+
+	/**
+	 * Gets the computer object's mongo id
+	 * @return id
+	 */
+	String getComputerId(String hostname);
+
 	void updateComputerWithADInfo(AdComputer computer);
 	
 	ComputerUsageType getComputerUsageType(String hostname);
