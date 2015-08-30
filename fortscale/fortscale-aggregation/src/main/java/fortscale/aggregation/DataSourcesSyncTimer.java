@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-
 import java.util.*;
 
 public class DataSourcesSyncTimer implements InitializingBean {
@@ -82,6 +81,10 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		if (pendingQueue == null) {
 			pendingQueue = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new EpochtimeComparator());
 			dataSourceToPendingQueueMap.put(dataSource, pendingQueue);
+
+			if (!dataSourceToLastEventEpochtimeMap.containsKey(dataSource)) {
+				dataSourceToLastEventEpochtimeMap.put(dataSource, 0L);
+			}
 		}
 
 		Registration registration = new Registration(listener, epochtime, nextRegistrationId);
