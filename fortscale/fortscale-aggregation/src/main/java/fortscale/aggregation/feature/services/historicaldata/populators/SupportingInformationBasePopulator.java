@@ -34,6 +34,7 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
 
     static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
+    static final String BUCKET_CONF_HOURLY_STRATEGY_SUFFIX = "hourly";
 
     @Autowired
     protected BucketConfigurationService bucketConfigurationService;

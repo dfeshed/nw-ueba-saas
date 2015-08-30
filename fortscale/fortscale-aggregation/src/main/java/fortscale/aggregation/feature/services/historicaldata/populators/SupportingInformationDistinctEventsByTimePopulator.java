@@ -129,7 +129,12 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     }
 
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
-        return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        if (featureName.endsWith(BUCKET_CONF_HOURLY_STRATEGY_SUFFIX)) {
+            return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_HOURLY_STRATEGY_SUFFIX, featureName);
+        }
+        else { // default case is daily
+            return String.format("%s_%s_%s_%s", removeContextTypePrefix(contextType), dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX, featureName);
+        }
     }
 
     private String removeContextTypePrefix(String contextType) {
