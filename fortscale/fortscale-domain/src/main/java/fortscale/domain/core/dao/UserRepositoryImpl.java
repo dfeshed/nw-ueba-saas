@@ -373,8 +373,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public long getNumberOfAccountsCreatedBefore(DateTime time){
-		Criteria criteria = Criteria.where(User.whenCreatedField).lt(
-				time);
+		Criteria criteria = Criteria.where(User.whenCreatedField).lt(time);
 		Query query = new Query(criteria);
 		return mongoTemplate.count(query, User.class);
 	}
@@ -475,7 +474,34 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
  		return (wrapper==null)? null : wrapper.getId();
 	}
-	
+
+	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+		List<Map<String, String>> res = new ArrayList<>();
+
+		try {
+			Query query = new Query().with(pageable);
+			// criteria for 'contains'
+			Criteria criteria = where(User.searchFieldName).regex(prefix);
+			query.addCriteria(criteria);
+
+			query.fields().include(User.ID_FIELD);
+			query.fields().include(User.displayNameField);
+
+			for (DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
+				Map<String, String> entry = new HashMap<String, String>();
+				entry.put(User.usernameField, displayname.getDisplayName());
+				entry.put(User.ID_FIELD, displayname.getId());
+
+				res.add(entry);
+			}
+		}
+		catch (Exception ex){
+			logger.error("Error while reading entites list. Error: " + ex.getMessage());
+		}
+
+		return res;
+	}
+
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
 		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
@@ -519,7 +545,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.username = username;
 		}
 	}
-	
+
+	static class DisplayNameWrapper {
+		private String id;
+		private String displayName;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public void setDisplayName(String displayName) {
+			this.displayName = displayName;
+		}
+	}
+
 	static class UserIdWrapper{
 		private String id;
 		

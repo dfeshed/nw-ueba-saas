@@ -120,6 +120,8 @@ public interface UserService extends CachingService{
 	public User findByUsername(String username);
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
 
+	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
+
 	public Set<String> findIdsByTags(String[] tags);
 
 }

@@ -1133,7 +1133,10 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-
+	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+		return userRepository.getUsersByPrefix(prefix, pageable);
+	}
+	
 	@Override public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
