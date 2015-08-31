@@ -7,12 +7,12 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
-import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.exceptions.InvalidParameterException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,7 +313,7 @@ public class ApiAlertController extends BaseController {
 			String status = params.getString("status");
 			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
 			if (alertStatus == null) {
-				throw new InvalidValueException("Invalid AlertStatus: " + status);
+				throw new InvalidParameterException("Invalid AlertStatus: " + status);
 			}
 			alert.setStatus(alertStatus);
 			alertUpdated = true;
@@ -322,7 +322,7 @@ public class ApiAlertController extends BaseController {
 			String feedback = params.getString("feedback");
 			AlertFeedback alertFeedback = AlertFeedback.getByStringCaseInsensitive(feedback);
 			if (alertFeedback == null) {
-				throw new InvalidValueException("Invalid AlertFeedback: " + feedback);
+				throw new InvalidParameterException("Invalid AlertFeedback: " + feedback);
 			}
 			alert.setFeedback(alertFeedback);
 			alertUpdated = true;
