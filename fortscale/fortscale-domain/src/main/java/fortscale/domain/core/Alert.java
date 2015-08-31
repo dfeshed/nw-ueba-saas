@@ -72,14 +72,14 @@ public class Alert extends AbstractDocument implements Serializable {
 	private AlertStatus status;
 	@Indexed(unique=false)
 	@Field(feedbackField)
-	private FeedbackStatus feedback;
+	private AlertFeedback feedback;
 	@Field(commentField)
 	private String comment;
 
 	public Alert() {}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, FeedbackStatus feedback,
+				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
 				 String comment, String entityId) {
 		this.name = name;
 		this.startDate = startDate;
@@ -184,11 +184,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.entityId = entityId;
 	}
 
-	public FeedbackStatus getFeedback() {
+	public AlertFeedback getFeedback() {
 		return feedback;
 	}
 
-	public void setFeedback(FeedbackStatus feedback) {
+	public void setFeedback(AlertFeedback feedback) {
 		this.feedback = feedback;
 	}
 }

@@ -2,9 +2,9 @@ package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.FeedbackStatus;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.exceptions.InvalidValueException;
@@ -320,11 +320,11 @@ public class ApiAlertController extends BaseController {
 		}
 		if (params.has("feedback")) {
 			String feedback = params.getString("feedback");
-			FeedbackStatus feedbackStatus = FeedbackStatus.getByStringCaseInsensitive(feedback);
-			if (feedbackStatus == null) {
-				throw new InvalidValueException("Invalid FeedbackStatus: " + feedback);
+			AlertFeedback alertFeedback = AlertFeedback.getByStringCaseInsensitive(feedback);
+			if (alertFeedback == null) {
+				throw new InvalidValueException("Invalid AlertFeedback: " + feedback);
 			}
-			alert.setFeedback(feedbackStatus);
+			alert.setFeedback(alertFeedback);
 			alertUpdated = true;
 		}
 		if (alertUpdated) {
