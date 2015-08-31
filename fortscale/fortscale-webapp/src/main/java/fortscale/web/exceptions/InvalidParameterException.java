@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Created by Amir Keren on 31/08/15.
  */
-@ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="Invalid Parameter")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid Parameter")
 public class InvalidParameterException extends IllegalArgumentException {
 
-    public InvalidParameterException(String s) {
-        super(s);
+    public InvalidParameterException(String message) {
+        super(message);
+
     }
 
 }
