@@ -478,6 +478,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		List<Map<String, String>> res = new ArrayList<>();
 
+		String displayId = "id";
+
 		try {
 			Query query = new Query().with(pageable);
 			// criteria for 'contains'
@@ -490,7 +492,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			for (DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
 				Map<String, String> entry = new HashMap<String, String>();
 				entry.put(User.usernameField, displayname.getDisplayName());
-				entry.put(User.ID_FIELD, displayname.getId());
+				entry.put(displayId, displayname.getId());
 
 				res.add(entry);
 			}
