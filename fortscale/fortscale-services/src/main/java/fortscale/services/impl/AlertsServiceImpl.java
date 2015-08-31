@@ -99,8 +99,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 			ids = userService.findIdsByTags(tagsFilter);
 		}
 
-		for  (String singleId : entityId.split(",")) {
-			ids.add(singleId);
+		if (entityId != null) {
+			for (String singleId : entityId.split(",")) {
+				ids.add(singleId);
+			}
 		}
 
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
@@ -116,8 +118,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 			ids = userService.findIdsByTags(tagsFilter);
 		}
 
-		for  (String singleId : entityId.split(",")) {
-			ids.add(singleId);
+		if (entityId != null) {
+			for (String singleId : entityId.split(",")) {
+				ids.add(singleId);
+			}
 		}
 
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
