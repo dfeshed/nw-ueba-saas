@@ -299,7 +299,7 @@ public class ApiAlertController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@RequestMapping(value="{id}", method = RequestMethod.POST)
 	@LogException
 	@ResponseBody
 	public void updateStatus(@PathVariable String id, @RequestParam(required=false, value = "status") String status,
