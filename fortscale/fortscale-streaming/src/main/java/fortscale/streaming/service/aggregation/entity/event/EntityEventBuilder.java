@@ -117,7 +117,7 @@ public class EntityEventBuilder {
 							aggrFeatureEvent.getBucketConfName(),
 							aggrFeatureEvent.getAggregatedFeatureName()),
 					aggrFeatureEvent);
-			aggrFeatureEvents.add(aggrFeatureEvent.unwrap());
+			aggrFeatureEvents.add(aggrFeatureEvent.getAsJSONObject());
 		}
 
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
