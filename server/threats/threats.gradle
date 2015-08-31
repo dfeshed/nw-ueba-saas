@@ -1,11 +1,36 @@
-apply plugin: 'spring-boot'
+apply plugin: "spring-boot"
 
+springBoot.executable = true
 springBoot.backupSource = false
 startScripts.enabled = false
 distZip.enabled = false
 distTar.enabled = false
 
+ext {
+    createRPM = true
+    rpmName = project.archivesBaseName
+    serviceLocation = "/opt/rsa/${rootProject.name}/service"
+    serviceFile = "${project.archivesBaseName}-${project.version}.jar"
+    serviceName = project.archivesBaseName
+}
+
 dependencies {
-    compile project(':server:common')
-    testCompile project(':server:common')
+    compile project(":server:common")
+    testCompile project(":server:common")
+}
+
+afterEvaluate {
+    rpm {
+        packageName project.rpmName
+        packageDescription "This RPM contains the Threats service for RSA Security Analytics."
+
+        requires("java", "1.8.0", GREATER | EQUAL)
+
+        postInstall file("${project.rpmScriptsDir}/postInstall.sh")
+        postUninstall file("${project.rpmScriptsDir}/postUninstall.sh")
+
+        from(new File(project.libsDir.path, project.serviceFile)) {
+            into project.serviceLocation
+        }
+    }
 }

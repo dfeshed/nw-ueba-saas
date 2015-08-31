@@ -1,56 +1,11 @@
-buildscript {
-    ext {
-        nginxLocation = "/etc/nginx"
-        nginxConfLocation = project.nginxLocation + "/conf.d"
-        nginxHtmlLocation = "/usr/share/nginx/html"
-
-        rpmName = rootProject.name + "-client"
-        htmlRootLocation = "/opt/rsa/" + rootProject.name + "/html"
-    }
-    dependencies {
-        classpath "com.moowork.gradle:gradle-node-plugin:0.10"
-    }
-}
-
-apply plugin: "com.moowork.node"
-
 ext {
-    bower = file("node_modules/bower/bin/bower")
-    ember = file("node_modules/ember-cli/bin/ember")
-}
+    nginxLocation = "/etc/nginx"
+    nginxConfLocation = "${project.nginxLocation}/conf.d"
+    nginxHtmlLocation = "/usr/share/nginx/html"
 
-node {
-    version = "0.12.4"
-    download = true
-}
-
-task clean(type: Delete) {
-    delete "build", "node_modules", "bower_components", "dist", "tmp"
-}
-
-task bowerInstall(type: NodeTask, dependsOn: ["npmInstall"]) {
-    script = bower
-    args = ["install"]
-
-    project.afterEvaluate {
-        getInputs().file(new File(node.nodeModulesDir, "bower.json"))
-        getOutputs().dir(new File(node.nodeModulesDir, "bower_components"))
-    }
-}
-
-task test(type: NodeTask, dependsOn: ["bowerInstall"]) {
-    script = ember
-    args = ["test", "--silent"]
-
-    def testDir = new File(project.buildDir, "test-results")
-    if (!testDir.exists()) {
-        testDir.mkdirs()
-    }
-
-    def dest = new File(testDir, "TEST-ember.xml")
-    execOverrides {
-        it.standardOutput = new FileOutputStream(dest)
-    }
+    createRPM = true
+    rpmName = "${rootProject.name}-client"
+    htmlRootLocation = "/opt/rsa/${rootProject.name}/html"
 }
 
 task emberFixturedBuild(type: NodeTask, dependsOn: ["test"]) {
@@ -67,57 +22,33 @@ task fixtured(type: Zip, dependsOn: ["emberFixturedBuild"]) {
     }
 }
 
-task emberProductionBuild(type: NodeTask, dependsOn: ["test"]) {
-    script = ember
-    args = ["build", "-e", "production", "-o", "dist/production", "--silent"]
-}
-
-task build(type: Zip, dependsOn: ["emberProductionBuild"]) {
-    dependsOn fixtured
-
-    destinationDir file(project.buildDir)
-    archiveName "sa-ui.zip"
-
-    from("dist/production") {
-        include "**/*"
-    }
-}
-
 task nginxConf(type: Copy) {
     from(fileTree("rpm/nginx"))
     into "build/rpm/nginx"
     expand project.properties
 }
 
-task rpmScripts(type: Copy) {
-    from(fileTree("rpm/scripts"))
-    into "build/rpm/scripts"
-    expand project.properties
-}
+afterEvaluate {
+    rpm {
+        dependsOn("nginxConf")
 
-task rpm(type:Rpm, dependsOn: ["nginxConf", "rpmScripts"]) {
-    packageName project.rpmName
-    version project.rpmVersion
-    release "el6"
-    arch "noarch"
-    os "LINUX"
-    prefix "/"
-    summary project.rpmSummary
-    vendor project.rpmVendor
-    license project.rpmLicense
-    packageDescription "This RPM contains RSA Security Analytics User Interface."
-    user "root"
+        packageName project.rpmName
+        packageDescription "This RPM contains RSA Security Analytics User Interface."
 
-    requires("nginx")
+        requires("nginx")
 
-    postInstall file("build/rpm/scripts/postInstall.sh")
+        postInstall file("${project.rpmScriptsDir}/postInstall.sh")
 
-    from(fileTree("build/rpm/nginx")) {
-        fileType CONFIG
-        into project.nginxLocation
-    }
+        from(fileTree("build/rpm/nginx")) {
+            fileType CONFIG
+            into project.nginxLocation
+        }
 
-    from(fileTree("dist/production")) {
-        into project.htmlRootLocation
+        from(fileTree("dist/production")) {
+            into project.htmlRootLocation
+        }
     }
 }
+
+test.dependsOn(":client:sa:lib/dashboard:build")
+build.dependsOn("fixtured", ":client:sa:lib/dashboard:build")

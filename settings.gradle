@@ -1,11 +1,13 @@
-include 'client:sa'
-include 'server:common'
-include 'server:investigation'
-include 'server:threats'
+include "client:sa"
+include "client:sa:lib/dashboard"
+include "server:common"
+include "server:investigation"
+include "server:threats"
 
-def projects = rootProject.children + project(':client').children + project(':server').children
+def projects = rootProject.children + project(":client").children + project(":client:sa").children + project(":server").children
 projects.each { project ->
-    project.buildFileName = "${project.name}.gradle"
+    def nameNodes = project.name.split("/")
+    project.buildFileName = ((nameNodes.length > 1) ? project.name.split("/")[nameNodes.length - 1] : project.name) + ".gradle"
     if (project.projectDir.isDirectory() && project.buildFile.exists()) {
         assert project.buildFile.isFile()
     }
