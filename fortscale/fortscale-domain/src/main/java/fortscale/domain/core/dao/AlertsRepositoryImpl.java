@@ -163,7 +163,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 					feedbackList.add(feedback.name());
 				}
 			}
-			//If filter includes all status entries, ignore the filter as it is the same as without filter
+			//If filter includes all feedback entries, ignore the filter as it is the same as without filter
 			if (feedbackList.size() != AlertFeedback.values().length) {
 				feedbackCriteria = where(feedbackFieldName).in(feedbackList);
 				query.addCriteria(feedbackCriteria);
