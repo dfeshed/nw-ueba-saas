@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
+	final String F_FEATURE_VALUE ="F";
+	final String P_FEATURE_VALUE ="P";
+	final String AGGREGATED_FEATURE_TYPE_KEY = "aggregated_feature_type";
 
 	/**
 	 * Logger
@@ -139,6 +143,70 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> createEvidencesList(EntityEvent entityEvent) {
+		List<Evidence> evidenceList = new ArrayList<>();
+
+		for (JSONObject aggregatedFeatureEvent : entityEvent.getAggregated_feature_events())
+		{
+			evidenceList.add(createEvidenceFromAggregatedFeature(aggregatedFeatureEvent));
+		}
+
+		return evidenceList;
+	}
+
+	private Evidence createEvidenceFromAggregatedFeature(JSONObject aggregatedFeatureEvent) {
+		String featureType = getFeatureType(aggregatedFeatureEvent);
+		switch (featureType) {
+		case F_FEATURE_VALUE:
+			return getFFeature(aggregatedFeatureEvent);
+		// As for now, we do not create evidences for P features.
+		// P is only used for the joker score
+		//case P_FEATURE_VALUE:
+			//return getPFeature(aggregatedFeatureEvent);
+		default:
+			logger.debug("Illegal feature type. Feature type: " + featureType);
+			break;
+		}
+
+		return null;
+	}
+
+	private String getFeatureType(JSONObject aggregatedFeatureEvent) {
+		return aggregatedFeatureEvent.getAsString(AGGREGATED_FEATURE_TYPE_KEY);
+	}
+
+	private Evidence getPFeature(JSONObject aggregatedFeatureEvent) {
+		// plcaeholder for P features
+		return null;
+	}
+
+	private Evidence getFFeature(JSONObject aggregatedFeatureEvent) {
+		Evidence fEvidence;
+		fEvidence = findFEvidence(aggregatedFeatureEvent);
+
+		// In case we found previously created evidence in the repository, return it
+		if (fEvidence != null) {
+			return fEvidence;
+		}
+
+		// Else, create the evidence in the repository and return it
+		return createFEvidence(aggregatedFeatureEvent);
+	}
+
+	/**
+	 * Find evidnece in the repository for F feature
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
+	private Evidence findFEvidence(JSONObject aggregatedFeatureEvent) {
+		return null;
+	}
+
+	/**
+	 * Create evidence for F feature
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
+	private Evidence createFEvidence(JSONObject aggregatedFeatureEvent) {
 		return null;
 	}
 
