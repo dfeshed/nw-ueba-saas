@@ -2,28 +2,36 @@ package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import fortscale.utils.logging.annotation.LogException;
-import javax.validation.Valid;
-import org.springframework.stereotype.Controller;
-import javax.annotation.PostConstruct;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -293,9 +301,40 @@ public class ApiAlertController extends BaseController {
 	}
 
 	/**
-	 * A URL for checking the controller
+	 * API to update alert status
+	 * @param body
 	 * @return
 	 */
+	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@LogException
+	@ResponseBody
+	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
+		Alert alert = alertsDao.getAlertById(id);
+		JSONObject params = new JSONObject(body);
+		boolean alertUpdated = false;
+		if (params.has("status")) {
+			String status = params.getString("status");
+			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
+			if (alertStatus == null) {
+				throw new InvalidValueException("Invalid AlertStatus: " + status);
+			}
+			alert.setStatus(alertStatus);
+			alertUpdated = true;
+		}
+		if (params.has("feedback")) {
+			String feedback = params.getString("feedback");
+			AlertFeedback alertFeedback = AlertFeedback.getByStringCaseInsensitive(feedback);
+			if (alertFeedback == null) {
+				throw new InvalidValueException("Invalid AlertFeedback: " + feedback);
+			}
+			alert.setFeedback(alertFeedback);
+			alertUpdated = true;
+		}
+		if (alertUpdated) {
+			alertsDao.saveAlertInRepository(alert);
+		}
+	}
+
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

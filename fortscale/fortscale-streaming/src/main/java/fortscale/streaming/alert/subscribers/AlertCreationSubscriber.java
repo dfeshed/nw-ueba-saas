@@ -88,7 +88,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                         createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
                     }
                     Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
-                            severity, AlertStatus.Open, "", entityId);
+                            severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);
                 } catch (RuntimeException ex) {
