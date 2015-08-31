@@ -1,22 +1,19 @@
 package fortscale.aggregation;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
+import fortscale.aggregation.feature.extraction.Event;
+import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-
-import fortscale.aggregation.feature.extraction.Event;
-import fortscale.utils.ConversionUtils;
+import java.util.*;
 
 public class DataSourcesSyncTimer implements InitializingBean {
 	private static final int DEFAULT_INITIAL_CAPACITY = 100;
 
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 	@Value("${fortscale.aggregation.sync.timer.cycle.length.in.seconds}")
@@ -25,49 +22,49 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	private long waitingTimeBeforeNotification;
 
 	private long lastCycleTime;
-	private long lastEventEpochtime;
-
-	// Priority queue of pending listeners (and their data sources),
-	// sorted according to the awaited notification epochtime
-	private PriorityQueue<Registration> pending;
-	// Priority queue of listeners (and their data sources) that are ready to be notified. These listeners
-	// aren't notified immediately, but only after 'waitingTimeBeforeNotification' seconds have passed
-	private PriorityQueue<Registration> readyForNotification;
-	// Mapping from registration ID to registration (in either queue)
-	private Map<Long, Registration> idToRegistrationMap;
+	// Epochtime of latest event received, per data source
+	private Map<String, Long> dataSourceToLastEventEpochtimeMap;
+	// Priority queue of pending listeners, sorted according to their awaited notification epochtime, per data source
+	private Map<String, PriorityQueue<Registration>> dataSourceToPendingQueueMap;
+	// Priority queue of listeners that their awaited notification epochtime has been reached, per data source
+	private Map<String, PriorityQueue<Registration>> dataSourceToReadyForNotificationQueueMap;
+	// Mapping from registration ID to registration (and data source)
+	private Map<Long, Pair<Registration, String>> idToRegistrationMap;
 	// The ID that will be given in the next registration
 	private long nextRegistrationId;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		Assert.isTrue(StringUtils.isNotBlank(dataSourceFieldName));
 		Assert.isTrue(StringUtils.isNotBlank(epochtimeFieldName));
 		Assert.isTrue(cycleLengthInSeconds > 0);
 		Assert.isTrue(waitingTimeBeforeNotification >= 0);
 
 		lastCycleTime = -1;
-		lastEventEpochtime = 0;
-
-		pending = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new EpochtimeComparator());
-		readyForNotification = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new SendingSystemTimeComparator());
+		dataSourceToLastEventEpochtimeMap = new HashMap<>();
+		dataSourceToPendingQueueMap = new HashMap<>();
+		dataSourceToReadyForNotificationQueueMap = new HashMap<>();
 		idToRegistrationMap = new HashMap<>();
 		nextRegistrationId = 0;
 	}
 
 	public void process(Event event) {
+		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 		Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
 
-		if (epochtime != null && epochtime > lastEventEpochtime) {
-			lastEventEpochtime = epochtime;
+		if (StringUtils.isNotBlank(dataSource) && epochtime != null) {
+			Long lastEventEpochtime = dataSourceToLastEventEpochtimeMap.get(dataSource);
+			if (lastEventEpochtime == null || epochtime > lastEventEpochtime) {
+				dataSourceToLastEventEpochtimeMap.put(dataSource, epochtime);
+			}
 		}
 	}
 
 	/**
-	 * Registers a listener that will be notified when all given data sources reach the input epochtime.
-	 * NOTE: Currently the timer keeps a 'last event epochtime' for all the events (regardless of their data source).
-	 * In the future, such epochtime will be kept for each data source separately,
-	 * then the list of data sources will be needed.
+	 * Registers a listener that will be notified when the given data source reaches the input epochtime.
+	 * NOTE: Currently multiple data sources is not supported, so only the first data source in the list is considered.
 	 *
-	 * @param dataSources list of all the data sources that need to reach the awaited epochtime. Notice: currently it is not used.
+	 * @param dataSources list of all the data sources that need to reach the awaited epochtime.
 	 * @param epochtime   the awaited epochtime that needs to be reached.
 	 * @param listener    the listener that will be notified.
 	 * @return the ID of the new registration.
@@ -78,25 +75,43 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		Assert.isTrue(epochtime >= 0);
 		Assert.notNull(listener);
 
+		String dataSource = dataSources.get(0);
+		Assert.hasText(dataSource);
+		PriorityQueue<Registration> pendingQueue = dataSourceToPendingQueueMap.get(dataSource);
+		if (pendingQueue == null) {
+			pendingQueue = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new EpochtimeComparator());
+			dataSourceToPendingQueueMap.put(dataSource, pendingQueue);
+
+			if (!dataSourceToLastEventEpochtimeMap.containsKey(dataSource)) {
+				dataSourceToLastEventEpochtimeMap.put(dataSource, 0L);
+			}
+		}
+
 		Registration registration = new Registration(listener, epochtime, nextRegistrationId);
-		pending.add(registration);
-		idToRegistrationMap.put(nextRegistrationId, registration);
+		pendingQueue.add(registration);
+		idToRegistrationMap.put(nextRegistrationId, Pair.of(registration, dataSource));
 		nextRegistrationId++;
 		return registration.getId();
 	}
 
 	public long updateNotificationRegistration(long registrationId, long epochtime) {
-		Registration registration = idToRegistrationMap.get(registrationId);
+		Pair<Registration, String> pair = idToRegistrationMap.get(registrationId);
 
-		if (registration != null && epochtime >= 0) {
-			if (pending.contains(registration)) {
-				pending.remove(registration);
-			} else if (readyForNotification.contains(registration)) {
-				readyForNotification.remove(registration);
+		if (pair != null && epochtime >= 0) {
+			Registration registration = pair.getLeft();
+			String dataSource = pair.getRight();
+
+			PriorityQueue<Registration> pendingQueue = dataSourceToPendingQueueMap.get(dataSource);
+			PriorityQueue<Registration> readyForNotificationQueue = dataSourceToReadyForNotificationQueueMap.get(dataSource);
+
+			if (pendingQueue.contains(registration)) {
+				pendingQueue.remove(registration);
+			} else {
+				readyForNotificationQueue.remove(registration);
 			}
 
 			registration.setEpochtime(epochtime);
-			pending.add(registration);
+			pendingQueue.add(registration);
 			return registrationId;
 		} else {
 			return -1;
@@ -107,24 +122,39 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		long systemTimeInSeconds = systemTimeInMillis / 1000;
 		if (systemTimeInSeconds >= lastCycleTime + cycleLengthInSeconds) {
 			lastCycleTime = systemTimeInSeconds;
-			handlePendingQueue(systemTimeInSeconds);
-			handleReadyForNotificationQueue(systemTimeInSeconds);
+			handlePendingQueues(systemTimeInSeconds);
+			handleReadyForNotificationQueues(systemTimeInSeconds);
 		}
 	}
 
-	private void handlePendingQueue(long currentSystemTime) {
-		while (!pending.isEmpty() && pending.peek().getEpochtime() <= lastEventEpochtime) {
-			Registration registration = pending.poll();
-			registration.setSendingSystemTime(currentSystemTime + waitingTimeBeforeNotification);
-			readyForNotification.add(registration);
+	private void handlePendingQueues(long currentSystemTime) {
+		for (Map.Entry<String, PriorityQueue<Registration>> entry : dataSourceToPendingQueueMap.entrySet()) {
+			String dataSource = entry.getKey();
+			Long lastEventEpochtime = dataSourceToLastEventEpochtimeMap.get(dataSource);
+			PriorityQueue<Registration> pendingQueue = entry.getValue();
+
+			while (!pendingQueue.isEmpty() && pendingQueue.peek().getEpochtime() <= lastEventEpochtime) {
+				Registration registration = pendingQueue.poll();
+				registration.setSendingSystemTime(currentSystemTime + waitingTimeBeforeNotification);
+
+				PriorityQueue<Registration> readyForNotificationQueue = dataSourceToReadyForNotificationQueueMap.get(dataSource);
+				if (readyForNotificationQueue == null) {
+					readyForNotificationQueue = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new SendingSystemTimeComparator());
+					dataSourceToReadyForNotificationQueueMap.put(dataSource, readyForNotificationQueue);
+				}
+
+				readyForNotificationQueue.add(registration);
+			}
 		}
 	}
 
-	private void handleReadyForNotificationQueue(long currentSystemTime) {
-		while (!readyForNotification.isEmpty() && readyForNotification.peek().getSendingSystemTime() <= currentSystemTime) {
-			Registration registration = readyForNotification.poll();
-			idToRegistrationMap.remove(registration.getId());
-			registration.getListener().dataSourcesReachedTime();
+	private void handleReadyForNotificationQueues(long currentSystemTime) {
+		for (PriorityQueue<Registration> readyForNotificationQueue : dataSourceToReadyForNotificationQueueMap.values()) {
+			while (!readyForNotificationQueue.isEmpty() && readyForNotificationQueue.peek().getSendingSystemTime() <= currentSystemTime) {
+				Registration registration = readyForNotificationQueue.poll();
+				idToRegistrationMap.remove(registration.getId());
+				registration.getListener().dataSourcesReachedTime();
+			}
 		}
 	}
 
