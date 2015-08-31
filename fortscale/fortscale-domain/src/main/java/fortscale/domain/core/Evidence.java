@@ -63,6 +63,8 @@ public class Evidence extends AbstractDocument{
 	// supporting Information
 	public static final String supportingInformationField = "supportingInformation";
 
+	public static final String timeframeField = "timeframe";
+
 	// severity and score
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
@@ -127,6 +129,9 @@ public class Evidence extends AbstractDocument{
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
+	@Field(timeframeField)
+	private EvidenceTimeframe timeframe;
+
 
 	@JsonInclude
 	@Field(supportingInformationField)
@@ -135,7 +140,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
-			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents) {
+			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents, EvidenceTimeframe timeframe) {
 		this.entityType = entityType;
 		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
@@ -155,6 +160,8 @@ public class Evidence extends AbstractDocument{
 		this.dataEntitiesIds = dataEntitiesIds;
 		this.score = score;
 		this.severity = severity;
+
+		this.timeframe = timeframe;
 
 
 		// set retention to start date
@@ -291,6 +298,14 @@ public class Evidence extends AbstractDocument{
 
 	public Map<String, Object>[] getTop3events() {
 		return top3events;
+	}
+
+	public EvidenceTimeframe getTimeframe() {
+		return timeframe;
+	}
+
+	public void setTimeframe(EvidenceTimeframe timeframe) {
+		this.timeframe = timeframe;
 	}
 
 	@Override public String toString() {
