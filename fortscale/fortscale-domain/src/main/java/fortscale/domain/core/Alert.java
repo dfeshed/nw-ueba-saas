@@ -38,6 +38,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 	public static final String statusField = "status";
+	public static final String feedbackField = "feedback";
 	public static final String commentField = "comment";
 
 	//document's fields

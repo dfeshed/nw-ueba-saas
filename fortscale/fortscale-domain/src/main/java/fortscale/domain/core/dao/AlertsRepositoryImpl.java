@@ -76,12 +76,12 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
-				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, entitiesIds,
-				pageRequest);
+				Alert.entityNameField, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
+				entityName, entitiesIds, pageRequest);
 		List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
@@ -90,12 +90,12 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 
 		//build the query
-		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
-				Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter, entityName, entitiesIds,
-				pageRequest);
+		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
+				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter,
+				entityName, entitiesIds, pageRequest);
 		return mongoTemplate.count(query, Alert.class);
 	}
 
@@ -107,13 +107,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param statusFieldName     name of the field to access status property
 	 * @param severityArrayFilter comma separated list of severity attributes to include
 	 * @param statusArrayFilter   comma separated list of status attributes to include
+	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
 	 * @param users   		  	  set of users to search if alerts contain them
 	 * @param pageable
 	 * @return
 	 */
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 			String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter,
-			String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users,
+							 Pageable pageable) {
 		List<Alert> result;
 		Criteria severityCriteria = new Criteria();
 		Criteria statusCriteria = new Criteria();
