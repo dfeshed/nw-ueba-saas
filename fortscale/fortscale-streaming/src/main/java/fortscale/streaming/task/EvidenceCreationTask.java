@@ -263,7 +263,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
 		if (evidenceType == EvidenceType.AnomalyAggregatedEvent) { // timeframe is relevant only to aggregated events
-			Long roundedEndTime = eventEndTimestampInSeconds + 1; // add 1 second to round the end time
+			// aggregation timeframe in seconds = (end time - start time) + 1
+			// ==> need to add 1 second to the end time to get the timeframe, e.g. one hour / one day (in seconds)
+			// TODO logic is quite fragile and coupled to the aggregation framework - need to be changed in the future
+			Long roundedEndTime = eventEndTimestampInSeconds + 1;
 			long timeframeInSeconds = roundedEndTime - eventStartTimestampInSeconds;
 			long hours = TimeUnit.SECONDS.toHours(timeframeInSeconds);
 
