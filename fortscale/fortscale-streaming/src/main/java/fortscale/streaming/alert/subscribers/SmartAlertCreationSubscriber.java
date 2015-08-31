@@ -44,8 +44,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private UserService userService;
 
-	public void update(Map[] insertStream) {
-		if (insertStream != null) {
+	public void update(EntityEvent insertStream) {
+
+		String ty = "";
+		ty+= "try";
+
+		/*if (insertStream != null) {
 			for (Map insertStreamOutput : insertStream) {
 				try {
 					List<Evidence> evidences = createEvidencesList(insertStreamOutput);
@@ -84,7 +88,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					ex.printStackTrace();
 				}
 			}
-		}
+		}*/
 	}
 
 	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
