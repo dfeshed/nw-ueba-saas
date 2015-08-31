@@ -44,10 +44,34 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private UserService userService;
 
-	public void update(EntityEvent insertStream) {
+	public void update(EntityEvent entityEvent) {
+		List<Evidence> evidences = createEvidencesList(entityEvent);
+		Integer roundScore = ((Double)(entityEvent.getScore())).intValue();
+		Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+		EntityType entityType = EntityType.User;
+		String entityName = entityEvent.getContext().get("normalized_username");
+		String entityId;
+		switch (entityType) {
+		case User: {
+			entityId = userService.getUserId(entityName);
+			break;
+		}
+		case Machine: {
+			entityId = computerService.getComputerId(entityName);
+			break;
+		}
+		default: {
+			entityId = "";
+		}
+		//TODO - handle the rest of the entity types
+		}
 
-		String ty = "";
-		ty+= "try";
+		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(),
+				EntityType.User,entityName, evidences, roundScore, severity,
+				AlertStatus.Open, "", entityId);
+
+		//Save alert to mongoDB
+		alertsService.saveAlertInRepository(alert);
 	}
 
 	public void update(Map[] insertStream) {
@@ -91,6 +115,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 				}
 			}
 		}
+	}
+
+	private List<Evidence> createEvidencesList(EntityEvent entityEvent) {
+		return null;
 	}
 
 	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
