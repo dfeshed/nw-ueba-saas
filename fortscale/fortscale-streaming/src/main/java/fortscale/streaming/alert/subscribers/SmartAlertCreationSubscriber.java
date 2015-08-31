@@ -44,9 +44,16 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private UserService userService;
 
+	/**
+	 * Create alert from entity event
+	 * @param entityEvent
+	 */
 	public void update(EntityEvent entityEvent) {
+		// Create the evidences list
 		List<Evidence> evidences = createEvidencesList(entityEvent);
-		Integer roundScore = ((Double)(entityEvent.getScore())).intValue();
+
+		// Get alert parameters
+		Integer roundScore = ((Double) (entityEvent.getScore())).intValue();
 		Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 		EntityType entityType = EntityType.User;
 		String entityName = entityEvent.getContext().get("normalized_username");
@@ -66,19 +73,25 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		//TODO - handle the rest of the entity types
 		}
 
-		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(),
-				EntityType.User,entityName, evidences, roundScore, severity,
-				AlertStatus.Open, "", entityId);
+		// Create the alert
+		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
 	}
 
+	/**
+	 * Create alert from stream events
+	 * @param insertStream
+	 */
 	public void update(Map[] insertStream) {
 		if (insertStream != null) {
 			for (Map insertStreamOutput : insertStream) {
 				try {
+					// Create evidences list
 					List<Evidence> evidences = createEvidencesList(insertStreamOutput);
+
+					// Get alert parameters
 					//TODO: take from esper rule
 					String title = ALERT_TITLE; //(String) insertStreamOutput.get("title");
 					Long startDate = (Long) insertStreamOutput.get("start_time_unix");
@@ -106,7 +119,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					Double score = (Double) insertStreamOutput.get("score");
 					Integer roundScore = score.intValue();
 					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+
+					// Create the alert
 					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
+
 					//Save alert to mongoDB
 					alertsService.saveAlertInRepository(alert);
 				} catch (RuntimeException ex) {
@@ -117,10 +133,20 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
+	/**
+	 * Create evidences list from entity event
+	 * @param entityEvent
+	 * @return
+	 */
 	private List<Evidence> createEvidencesList(EntityEvent entityEvent) {
 		return null;
 	}
 
+	/**
+	 * Create evidences list from Map
+	 * @param insertStreamOutput
+	 * @return
+	 */
 	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
 		return null;
 	}
