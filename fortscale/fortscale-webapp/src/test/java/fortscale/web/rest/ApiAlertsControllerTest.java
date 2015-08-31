@@ -85,7 +85,7 @@ public class ApiAlertsControllerTest {
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
-		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(alerts);
+		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(alerts);
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(get("/api/alerts?severity=high,MEDIUM&sort_field=startTime&sort_direction=DESC&page=1&size=20").accept(MediaType.APPLICATION_JSON))
@@ -95,7 +95,7 @@ public class ApiAlertsControllerTest {
 
 		//validate
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class ApiAlertsControllerTest {
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
-		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(alerts);
+		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(alerts);
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(get("/api/alerts?entity_name=user1&sort_field=startTime&sort_direction=DESC&page=1&size=20").accept(MediaType.APPLICATION_JSON))
@@ -117,7 +117,7 @@ public class ApiAlertsControllerTest {
 
 		//validate
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 	}
 
 	@Test
