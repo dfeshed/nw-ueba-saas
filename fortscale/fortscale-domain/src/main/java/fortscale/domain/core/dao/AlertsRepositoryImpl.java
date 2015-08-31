@@ -1,9 +1,6 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.Severity;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,9 +76,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 
 		//build the query
-		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.startDateField,
-				Alert.entityNameField, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, entitiesIds, pageRequest);
+		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
+				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
 		List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
@@ -94,8 +91,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
-				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter, dateRangeFilter,
-				entityName, entitiesIds, pageRequest);
+				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
 		return mongoTemplate.count(query, Alert.class);
 	}
 
@@ -105,6 +102,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param pageRequest
 	 * @param severityFieldName   name of the field to access severity property
 	 * @param statusFieldName     name of the field to access status property
+	 * @param feedbackFieldName   name of the field to access feedback property
 	 * @param severityArrayFilter comma separated list of severity attributes to include
 	 * @param statusArrayFilter   comma separated list of status attributes to include
 	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
@@ -113,9 +111,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @return
 	 */
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
-			String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users,
-							 Pageable pageable) {
+							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
+							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
+							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable) {
 		Query query = new Query().with(pageRequest.getSort());
 		//build severity filter
 		if (severityArrayFilter != null) {

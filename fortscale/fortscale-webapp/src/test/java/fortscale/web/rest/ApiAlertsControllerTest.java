@@ -97,7 +97,7 @@ public class ApiAlertsControllerTest {
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\"}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class ApiAlertsControllerTest {
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\"}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 	}
 
 	@Test
