@@ -116,10 +116,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users,
 							 Pageable pageable) {
-		List<Alert> result;
-		Criteria severityCriteria = new Criteria();
-		Criteria statusCriteria = new Criteria();
-		Criteria feedbackCriteria = new Criteria();
 		Query query = new Query().with(pageRequest.getSort());
 		//build severity filter
 		if (severityArrayFilter != null) {
@@ -133,7 +129,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			}
 			//If filter includes all severity entries, ignore the filter as it is the same as without filter
 			if (severityList.size() != Severity.values().length) {
-				severityCriteria = where(severityFieldName).in(severityList);
+				Criteria severityCriteria = where(severityFieldName).in(severityList);
 				query.addCriteria(severityCriteria);
 			}
 		}
@@ -149,14 +145,14 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			}
 			//If filter includes all status entries, ignore the filter as it is the same as without filter
 			if (statusList.size() != AlertStatus.values().length) {
-				statusCriteria = where(statusFieldName).in(statusList);
+				Criteria statusCriteria = where(statusFieldName).in(statusList);
 				query.addCriteria(statusCriteria);
 			}
 		}
 		//build feedback filter
 		if (feedbackArrayFilter != null) {
 			String[] feedbackFilterVals = feedbackArrayFilter.split(",");
-			List<String> feedbackList = new ArrayList<>();
+			List<String> feedbackList = new ArrayList();
 			for (String val : feedbackFilterVals) {
 				AlertFeedback feedback = AlertFeedback.getByStringCaseInsensitive(val);
 				if (feedback != null) {
@@ -165,7 +161,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			}
 			//If filter includes all feedback entries, ignore the filter as it is the same as without filter
 			if (feedbackList.size() != AlertFeedback.values().length) {
-				feedbackCriteria = where(feedbackFieldName).in(feedbackList);
+				Criteria feedbackCriteria = where(feedbackFieldName).in(feedbackList);
 				query.addCriteria(feedbackCriteria);
 			}
 		}
@@ -185,7 +181,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 				}
 			}
 		}
-
 		//build entity filter
 		if (entityFilter != null) {
 			String[] entityNameFilterVals = entityFilter.split(",");
