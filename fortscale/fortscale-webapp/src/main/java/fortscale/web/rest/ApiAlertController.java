@@ -2,9 +2,12 @@ package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.FeedbackStatus;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.web.BaseController;
@@ -290,9 +293,40 @@ public class ApiAlertController extends BaseController {
 	}
 
 	/**
-	 * A URL for checking the controller
+	 * API to update alert status
+	 * @param status
+	 * @param feedback
 	 * @return
+	 * @throws Exception
 	 */
+	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@LogException
+	@ResponseBody
+	public void updateStatus(@PathVariable String id, @RequestParam(required=false, value = "status") String status,
+							 @RequestParam(required=false, value = "feedback") String feedback) {
+		Alert alert = alertsDao.getAlertById(id);
+		boolean alertUpdated = false;
+		if (status != null) {
+			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
+			if (alertStatus == null) {
+				throw new InvalidValueException("Invalid AlertStatus: " + status);
+			}
+			alert.setStatus(alertStatus);
+			alertUpdated = true;
+		}
+		if (feedback != null) {
+			FeedbackStatus feedbackStatus = FeedbackStatus.getByStringCaseInsensitive(feedback);
+			if (feedbackStatus == null) {
+				throw new InvalidValueException("Invalid FeedbackStatus: " + feedback);
+			}
+			alert.setFeedback(feedbackStatus);
+			alertUpdated = true;
+		}
+		if (alertUpdated) {
+			alertsDao.saveAlertInRepository(alert);
+		}
+	}
+
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

@@ -4,28 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent status of evidence/alert
- * Date: 6/22/2015.
+ * Represent analyst feedback
+ * Date: 8/30/2015.
  */
-public enum AlertStatus {
-	Open ("OPEN"),
-	Closed("CLOSED");
+public enum FeedbackStatus {
+	None ("NONE"),
+	Approved ("APPROVED"),
+	Rejected("REJECTED");
 
 	private String upperCaseValue;
 
-	private AlertStatus(String upperCaseValue) {
+	private FeedbackStatus(String upperCaseValue) {
 		this.upperCaseValue = upperCaseValue;
 	}
 
 	public static List<String> getUpperCaseValues(){
 		List<String> upperCaseValues = new ArrayList<>();
-		for (AlertStatus status : AlertStatus.values()){
+		for (FeedbackStatus status : FeedbackStatus.values()){
 			upperCaseValues.add(status.upperCaseValue);
 		}
 		return upperCaseValues;
 	}
-	public static AlertStatus getByStringCaseInsensitive(String value){
-		for (AlertStatus status : AlertStatus.values()){
+	public static FeedbackStatus getByStringCaseInsensitive(String value){
+		for (FeedbackStatus status : FeedbackStatus.values()){
 			if (status.upperCaseValue.equals(value.toUpperCase())){
 				return status;
 			}
