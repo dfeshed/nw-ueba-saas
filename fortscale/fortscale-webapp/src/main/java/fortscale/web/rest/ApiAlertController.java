@@ -12,6 +12,8 @@ import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -294,19 +296,18 @@ public class ApiAlertController extends BaseController {
 
 	/**
 	 * API to update alert status
-	 * @param status
-	 * @param feedback
+	 * @param body
 	 * @return
-	 * @throws Exception
 	 */
-	@RequestMapping(value="{id}", method = RequestMethod.POST)
+	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
 	@ResponseBody
-	public void updateStatus(@PathVariable String id, @RequestParam(required=false, value = "status") String status,
-							 @RequestParam(required=false, value = "feedback") String feedback) {
+	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
 		Alert alert = alertsDao.getAlertById(id);
+		JSONObject params = new JSONObject(body);
 		boolean alertUpdated = false;
-		if (status != null) {
+		if (params.has("status")) {
+			String status = params.getString("status");
 			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
 			if (alertStatus == null) {
 				throw new InvalidValueException("Invalid AlertStatus: " + status);
@@ -314,7 +315,8 @@ public class ApiAlertController extends BaseController {
 			alert.setStatus(alertStatus);
 			alertUpdated = true;
 		}
-		if (feedback != null) {
+		if (params.has("feedback")) {
+			String feedback = params.getString("feedback");
 			FeedbackStatus feedbackStatus = FeedbackStatus.getByStringCaseInsensitive(feedback);
 			if (feedbackStatus == null) {
 				throw new InvalidValueException("Invalid FeedbackStatus: " + feedback);
