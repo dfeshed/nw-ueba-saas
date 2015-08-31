@@ -119,6 +119,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		List<Alert> result;
 		Criteria severityCriteria = new Criteria();
 		Criteria statusCriteria = new Criteria();
+		Criteria feedbackCriteria = new Criteria();
 		Query query = new Query().with(pageRequest.getSort());
 		//build severity filter
 		if (severityArrayFilter != null) {
@@ -152,7 +153,22 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 				query.addCriteria(statusCriteria);
 			}
 		}
-
+		//build feedback filter
+		if (feedbackArrayFilter != null) {
+			String[] feedbackFilterVals = feedbackArrayFilter.split(",");
+			List<String> feedbackList = new ArrayList<>();
+			for (String val : feedbackFilterVals) {
+				AlertFeedback feedback = AlertFeedback.getByStringCaseInsensitive(val);
+				if (feedback != null) {
+					feedbackList.add(feedback.name());
+				}
+			}
+			//If filter includes all status entries, ignore the filter as it is the same as without filter
+			if (feedbackList.size() != AlertFeedback.values().length) {
+				feedbackCriteria = where(feedbackFieldName).in(feedbackList);
+				query.addCriteria(feedbackCriteria);
+			}
+		}
 		//build dateRange filter
 		if (dateRangeFilter != null) {
 			String[] dateRangeFilterVals = dateRangeFilter.split(",");
