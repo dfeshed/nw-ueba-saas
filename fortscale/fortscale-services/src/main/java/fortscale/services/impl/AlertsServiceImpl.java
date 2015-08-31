@@ -92,24 +92,34 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, String entityTags) {
+									  String dateRangeFilter, String entityName, String entityTags, String entityId) {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
 			ids = userService.findIdsByTags(tagsFilter);
 		}
+
+		for  (String singleId : entityId.split(",")) {
+			ids.add(singleId);
+		}
+
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, String entityTags) {
+									 String dateRangeFilter, String entityName, String entityTags, String entityId) {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
 			ids = userService.findIdsByTags(tagsFilter);
 		}
+
+		for  (String singleId : entityId.split(",")) {
+			ids.add(singleId);
+		}
+
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
