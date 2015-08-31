@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
@@ -100,6 +101,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		}
 
 		if (entityId != null) {
+			if (ids == null) {
+				ids = new HashSet();
+			}
+
 			for (String singleId : entityId.split(",")) {
 				ids.add(singleId);
 			}
@@ -119,6 +124,11 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		}
 
 		if (entityId != null) {
+
+			if (ids == null) {
+				ids = new HashSet();
+			}
+
 			for (String singleId : entityId.split(",")) {
 				ids.add(singleId);
 			}
