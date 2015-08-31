@@ -92,26 +92,28 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, String entityTags) {
+									  String feedbackArrayFilter, String dateRangeFilter, String entityName,
+									  String entityTags) {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
 			ids = userService.findIdsByTags(tagsFilter);
 		}
-		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
-				entityName, ids);
+		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter,
+				dateRangeFilter, entityName, ids);
 	}
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, String entityTags) {
+									 String feedbackArrayFilter, String dateRangeFilter, String entityName,
+									 String entityTags) {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
 			ids = userService.findIdsByTags(tagsFilter);
 		}
-		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
-				entityName, ids);
+		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter,
+				dateRangeFilter, entityName, ids);
 	}
 
 	@Override

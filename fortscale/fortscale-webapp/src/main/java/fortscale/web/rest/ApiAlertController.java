@@ -90,6 +90,7 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "page") Integer fromPage,
 								  @RequestParam(required=false, value = "severity") String severity,
 								  @RequestParam(required=false, value = "status") String status,
+								  @RequestParam(required=false, value = "feedback") String feedback,
 								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags
@@ -107,8 +108,8 @@ public class ApiAlertController extends BaseController {
 
 
 		int pageSize = 0; //Fetch all rows.
-		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize, fromPage, severity,
-				status,	alertStartRange,	entityName, entityTags);
+		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize, fromPage,
+				severity, status, feedback, alertStartRange, entityName, entityTags);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -170,6 +171,7 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
 										  @RequestParam(required=false, value = "status") String status,
+										  @RequestParam(required=false, value = "feedback") String feedback,
 										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 										  @RequestParam(required=false, value = "entity_name") String entityName,
 										  @RequestParam(required=false, value = "entity_tags") String entityTags) {
@@ -200,15 +202,16 @@ public class ApiAlertController extends BaseController {
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
-		if (severity == null && status == null && alertStartRange == null && entityName == null && entityTags == null) {
+		if (severity == null && status == null && feedback == null && alertStartRange == null && entityName == null &&
+				entityTags == null) {
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
 					entityTags);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
 					entityTags);
 		}
 
