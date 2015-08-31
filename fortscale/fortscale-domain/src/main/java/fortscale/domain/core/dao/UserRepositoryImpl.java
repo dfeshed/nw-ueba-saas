@@ -475,7 +475,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		return (wrapper==null)? null : wrapper.getId();
 	}
 
-	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+	private  List<Map<String, String>> getUsersByCriteria(Criteria criteria, Pageable pageable) {
 		List<Map<String, String>> res = new ArrayList<>();
 
 		String displayId = "id";
@@ -483,7 +483,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		try {
 			Query query = new Query().with(pageable);
 			// criteria for 'contains'
-			Criteria criteria = where(User.searchFieldName).regex(prefix);
 			query.addCriteria(criteria);
 
 			query.fields().include(User.ID_FIELD);
@@ -502,6 +501,17 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		return res;
+	}
+
+	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+		Criteria criteria = where(User.searchFieldName).regex(prefix);
+		return getUsersByCriteria(criteria, pageable);
+	}
+
+	public  List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+		String[] idsSet = ids.split(",");
+		Criteria criteria = where(User.ID_FIELD).in(idsSet);
+		return getUsersByCriteria(criteria, pageable);
 	}
 
 	public HashSet<String> getUsersGUID(){

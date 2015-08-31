@@ -40,12 +40,16 @@ public class ApiEntityController extends DataQueryController{
 	@LogException
 	public @ResponseBody
 	DataBean<List<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-											@RequestParam(required=true, value = "entity_name") String entityName,
+											@RequestParam(required=false, value = "entity_name") String entityName,
+											@RequestParam(required=false, value = "entity_id") String entityId,
 											@RequestParam(required=false, value = "page") Integer fromPage,
 											@RequestParam(required=false, value = "size")  Integer size) {
-		if (entityName == null || entityName == "") {
-			logger.debug("Received empty entity name when trying to read entity list");
-			return null;
+
+		DataBean<List<Map<String, String>>> entities = new DataBean<>();
+
+		if ((entityName == null || entityName == "") && (entityId == null || entityId == "")) {
+			logger.debug("Received empty entity name and empty entity id when trying to read entity list");
+			return entities;
 		}
 
 		//if pageForMongo is not set, get first pageForMongo
@@ -64,10 +68,13 @@ public class ApiEntityController extends DataQueryController{
 
 		PageRequest pageRequest = new PageRequest(pageForMongo, size);
 
-		DataBean<List<Map<String, String>>> entities = new DataBean<>();
 
 		// Read users
-		entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
+		if (entityName != null) {
+			entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
+		} else if (entityId != null) {
+			entities.setData(usersDao.getUsersByIds(entityId, pageRequest));
+		}
 
 		return  entities;
 	}
