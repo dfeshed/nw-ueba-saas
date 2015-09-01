@@ -8,14 +8,12 @@ import fortscale.services.ComputerService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.computer.EndpointDetectionService;
 import fortscale.services.computer.filtering.FilterMachinesService;
-import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
 import static org.python.google.common.base.Preconditions.checkNotNull;
-
-
 
 public class ComputerServiceImpl implements ComputerService {
 
@@ -42,11 +37,6 @@ public class ComputerServiceImpl implements ComputerService {
 
 	@Autowired
 	private EndpointDetectionService endpointDetectionService;
-
-	@Value("${computer.cluster.regex.patterns:}")
-	private String clusterGroupsRegexProperty;
-
-	private RegexMatcher clusterMatcher;
 
 	private ADParser parser = new ADParser();
 
@@ -188,15 +178,14 @@ public class ComputerServiceImpl implements ComputerService {
 		if (hostname.contains("."))
 			hostname = hostname.substring(0, hostname.indexOf("."));
 
-		RegexMatcher matcher = getClusterGroupsRegexMatcher();
-		return matcher.replaceInPlace(hostname).toUpperCase();
+		return hostname.toUpperCase();
 	}
 
 	@Override
 	public String getDomainNameForHostname(String hostname) {
 		if (StringUtils.isEmpty(hostname))
 			return null;
-		List<String> hostNames = new ArrayList();
+		List<String> hostNames = new ArrayList<>();
 		hostNames.add(hostname.toUpperCase());
 		List<Computer> computers = repository.getComputersFromNames(hostNames);
 		if (computers == null || computers.isEmpty() || computers.size() > 1)
@@ -207,18 +196,6 @@ public class ComputerServiceImpl implements ComputerService {
 		return computer.getDomain();
 	}
 
-	private RegexMatcher getClusterGroupsRegexMatcher() {
-		if (clusterMatcher == null) {
-			String[][] configPatternsArray = ConfigurationUtils.getStringArrays(clusterGroupsRegexProperty);
-			clusterMatcher = new RegexMatcher(configPatternsArray);
-		}
-		return clusterMatcher;
-	}
-
-	public void setClusterGroupsRegexProperty(String val) {
-		this.clusterGroupsRegexProperty = val;
-	}
-
 	public void classifyAllComputers() {
 		// go over the computers in the repository in pages 
 		// and classify all of them 
@@ -226,7 +203,7 @@ public class ComputerServiceImpl implements ComputerService {
 		Page<Computer> computers = repository.findAll(pageRequest);
 		while (computers != null && computers.hasContent()) {
 			// classify all computers in the page
-			List<Computer> changedComputers = new LinkedList<Computer>();
+			List<Computer> changedComputers = new LinkedList<>();
 			for (Computer computer : computers) {
 				boolean changed = endpointDetectionService.classifyComputer(computer);
 				if (changed) {

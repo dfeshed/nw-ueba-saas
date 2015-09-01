@@ -1,30 +1,28 @@
 package fortscale.services.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.util.*;
-
-import fortscale.services.cache.CacheHandler;
-import org.junit.Test;
-import org.junit.Before;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageClassifier;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.services.cache.CacheHandler;
 import fortscale.services.computer.EndpointDetectionService;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.io.IOException;
+import java.util.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ComputerServiceTest {
 
@@ -203,14 +201,11 @@ public class ComputerServiceTest {
 		assertNotNull(captor.getValue().getUsageClassifier("login"));
 		assertEquals("6.3 (9600)", captor.getValue().getOperatingSystemVersion());
 	}
-	
+
 	@Test
 	public void getClusterGroupNameForHostname_should_replace_string_according_to_regex() {
-		service.setClusterGroupsRegexProperty("(?i)FS-DC-\\d\\d# # #FS-DC");
-		
 		String actual = service.getClusterGroupNameForHostname("fs-dc-01.fortscale.com");
-		
-		assertEquals("FS-DC", actual);
+		assertEquals("FS-DC-01", actual);
 	}
 
 	@Test
@@ -232,11 +227,11 @@ public class ComputerServiceTest {
 		List<Computer> computerList1 = new ArrayList<>();
 		computerList1.add(computerList.get(0));
 		computerList1.add(computerList.get(1));
-		Page<Computer> computers1 = new PageImpl<Computer>(computerList1);
+		Page<Computer> computers1 = new PageImpl<>(computerList1);
 
 		List<Computer> computerList2 = new ArrayList<>();
 		computerList2.add(computerList.get(2));
-		Page<Computer> computers2 = new PageImpl<Computer>(computerList2);
+		Page<Computer> computers2 = new PageImpl<>(computerList2);
 
 		when(repository.findAll(any(Pageable.class))).thenReturn(computers1).thenReturn(computers2).thenReturn(null);
 		return computerList;
