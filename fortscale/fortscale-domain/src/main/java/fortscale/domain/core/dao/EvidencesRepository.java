@@ -10,7 +10,7 @@ import java.util.List;
  * Repository for evidences
  * Date: 6/22/2015.
  */
-public interface EvidencesRepository extends MongoRepository<Evidence,String> {
+public interface EvidencesRepository extends MongoRepository<Evidence,String>, EvidencesRepositoryCustom {
 
 	/**
 	 * Find single evidence by ID

@@ -106,7 +106,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					// TODO: missing!
 					EntityType entityType = EntityType.User;
 					JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get("context"));
-					String entityName = entities.getAsString("normalized_username");
+					String entityName = entities.getAsString(USER_ENTITY_KEY);
 					String entityId;
 					switch (entityType) {
 					case User: {
@@ -202,6 +202,20 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private Evidence findFEvidence(JSONObject aggregatedFeatureEvent) {
+		if (aggregatedFeatureEvent == null){
+			return null;
+		}
+
+		EntityType entityType = EntityType.User;
+		String entityValue = getEntityValue(aggregatedFeatureEvent);
+		Long startDate = (Long) aggregatedFeatureEvent.get("start_time_unix");
+		Long endDate = (Long) aggregatedFeatureEvent.get("end_time_unix");
+		String dataEntities = aggregatedFeatureEvent.getAsString("data_sources");
+		String featureName = aggregatedFeatureEvent.getAsString("bucket_conf_name");
+		return evidencesService.findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
+	}
+
+	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
 		return null;
 	}
 
