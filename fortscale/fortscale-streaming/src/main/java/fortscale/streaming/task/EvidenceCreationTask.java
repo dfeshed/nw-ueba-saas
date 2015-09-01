@@ -22,6 +22,7 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.joda.time.Duration;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
@@ -30,7 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.*;
@@ -43,7 +43,9 @@ import static fortscale.utils.ConversionUtils.*;
  */
 public class EvidenceCreationTask extends AbstractStreamTask {
 
-
+	private static final int HOURS_IN_DAY = 24;
+	private static final int HOURS_IN_WEEK = HOURS_IN_DAY * 7;
+	private static final int HOURS_IN_MONTH = HOURS_IN_DAY * 30;
 	/**
 	 * Logger
 	 */
@@ -268,17 +270,22 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// TODO logic is quite fragile and coupled to the aggregation framework - need to be changed in the future
 			Long roundedEndTime = eventEndTimestampInSeconds + 1;
 			long timeframeInSeconds = roundedEndTime - eventStartTimestampInSeconds;
-			long hours = TimeUnit.SECONDS.toHours(timeframeInSeconds);
 
-			if (hours == 1) {
-				return EvidenceTimeframe.Hourly;
-			}
+			Duration duration = new Duration(TimestampUtils.convertToMilliSeconds(timeframeInSeconds));
+			int timeframeInHours = (int) duration.getStandardHours();
 
-			long days = TimeUnit.SECONDS.toDays(timeframeInSeconds);
-			if (days == 1) {
-				return EvidenceTimeframe.Daily;
-			} else {
-				logger.warn("Could not map aggregated event time to evidence timeframe. Start time = " + eventStartTimestampInSeconds + " # End time = " + roundedEndTime);
+			switch (timeframeInHours) {
+				case 1 :
+					return EvidenceTimeframe.Hourly;
+				case HOURS_IN_DAY:
+					return EvidenceTimeframe.Daily;
+				case HOURS_IN_WEEK:
+					return EvidenceTimeframe.Weekly;
+				case HOURS_IN_MONTH:
+					return EvidenceTimeframe.Monthly;
+				default:
+					logger.warn("Could not map aggregated event time to evidence timeframe. Start time = " + eventStartTimestampInSeconds + " # End time = " + eventEndTimestampInSeconds);
+					break;
 			}
 		}
 
