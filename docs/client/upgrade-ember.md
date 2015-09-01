@@ -24,3 +24,20 @@ Once the upgrade is successful,
 * Run unit tests in sa and dashboard
 * Test the pages that uses thrid-party addons and make sure the functionality is not broken
 * If there are new deprecation warnings in our source code, plan to fix them
+
+
+# List of addons used by SA
+* [ember-cli-blanket](https://github.com/sglanzer/ember-cli-blanket)
+* [ember-cli-mirage](https://github.com/samselikoff/ember-cli-mirage)
+* [ember-cli-simple-auth](https://github.com/simplabs/ember-cli-simple-auth)
+* [ember-cli-simple-auth-testing](https://github.com/simplabs/ember-cli-simple-auth-testing)
+* [ember-i18n](https://github.com/jamesarosen/ember-i18n)
+* [liquid-fire](https://github.com/ef4/liquid-fire)
+* [mock-socket](https://github.com/thoov/mock-socket)
+* [pretender](https://github.com/pretenderjs/pretender)
+* [sockjs](https://github.com/sockjs)
+* [stomp-websocket](https://github.com/jmesnil/stomp-websocket)
+
+# List of addons used by dashboard
+* [foundation-apps](https://github.com/zurb/foundation-apps)
+* [highlightjs](https://highlightjs.org)
