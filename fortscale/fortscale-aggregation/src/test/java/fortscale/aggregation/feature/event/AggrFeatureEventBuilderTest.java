@@ -253,14 +253,17 @@ public class AggrFeatureEventBuilderTest {
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         Assert.assertNull(event);
 
+        event = null;
         builder.updateAggrFeatureEventData(bucket3.getBucketId(), bucket3.getStrategyId(), bucket3.getContextFieldNameToValueMap(), bucket3.getStartTime(), bucket3.getEndTime());
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 1, 3, 6L);
 
+        event = null;
         builder.updateAggrFeatureEventData(bucket4.getBucketId(), bucket4.getStrategyId(), bucket4.getContextFieldNameToValueMap(), bucket4.getStartTime(), bucket4.getEndTime());
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 2, 4, 6L);
 
+        event = null;
         AggrFeatureEventData.BucketTick bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
         NextBucketEndTimeListener nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
 
@@ -268,6 +271,7 @@ public class AggrFeatureEventBuilderTest {
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 3, 5, 5L);
 
+        event = null;
         bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
         nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
 
@@ -275,11 +279,12 @@ public class AggrFeatureEventBuilderTest {
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 4, 6, 4L);
 
+        event = null;
         bucketTick = (AggrFeatureEventData.BucketTick)dataSourcesSyncTimerListener;
         nextBucketEndTimeListener = (NextBucketEndTimeListener) bucketTick.getEventData();
         nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 6 * day, endTime1 + 6 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
-        assertEvent(event, 5, 7, 0L);
+        Assert.assertNull(event);
 
     }
 

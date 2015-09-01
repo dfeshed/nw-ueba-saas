@@ -1,17 +1,17 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
-import fortscale.services.AlertsService;
-import fortscale.services.ComputerService;
-import fortscale.services.UserService;
-import fortscale.services.EvidencesService;
-import fortscale.services.UserSupportingInformationService;
+import fortscale.services.*;
 import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -88,7 +88,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                         createTagEvidence(insertStreamOutput, evidences, startDate, endDate, entityType, entityName);
                     }
                     Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
-                            severity, AlertStatus.Open, "", entityId);
+                            severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
                     //Save alert to mongoDB
                     alertsService.saveAlertInRepository(alert);
                 } catch (RuntimeException ex) {
@@ -116,7 +116,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
             Evidence evidence = evidencesService.createTransientEvidence(entityType, entityTypeFieldName,
                     entityName, EvidenceType.Tag, new Date(startDate), new Date(endDate),
-                    dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag",0);
+                    dataEntitiesIds, TAG_EVIDENCE_SCORE, tag, "tag",0, null);
             //EvidenceSupportingInformation is part of Evidence. not like supportionInformationData which comes directly from rest
             EntitySupportingInformation entitySupportingInformation = createTagEvidenceSupportingInformationData(evidence);
 

@@ -12,12 +12,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
 public class DataSourcesSyncTimerTest {
 	private static final String DEFAULT_DATA_SOURCE = "ssh";
 
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 	@Value("${fortscale.aggregation.sync.timer.cycle.length.in.seconds}")
@@ -32,6 +33,7 @@ public class DataSourcesSyncTimerTest {
 	public void timer_should_notify_listeners_when_their_awaited_epochtime_is_reached() throws Exception {
 		Assert.assertNotNull(timer);
 		JSONObject message = new JSONObject();
+		message.put(dataSourceFieldName, DEFAULT_DATA_SOURCE);
 
 		// First registration
 		List<String> dataSources1 = new ArrayList<>();

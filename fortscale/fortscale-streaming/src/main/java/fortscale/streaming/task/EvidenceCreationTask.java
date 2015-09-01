@@ -3,11 +3,12 @@ package fortscale.streaming.task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceTimeframe;
 import fortscale.domain.core.EvidenceType;
+import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.*;
@@ -200,7 +202,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
 
 		// check score
-		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField,true));
+		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField, true));
 		if (score >= dataSourceConfiguration.scoreThreshold) {
 			// create evidence
 
@@ -226,8 +228,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Get the value in the field which is the anomaly
 			String anomalyValue = convertToString(message.get(anomalyValueField));
 
+			EvidenceTimeframe evidenceTimeframe = calculateEvidenceTimeframe(dataSourceConfiguration.evidenceType, startTimestampSeconds, endTimestampSeconds);
+
 			// Create evidence from event
-			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents);
+			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents, evidenceTimeframe);
 
 
 			// Save evidence to MongoDB
@@ -255,6 +259,30 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence", inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
 			}
 		}
+	}
+
+	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
+		if (evidenceType == EvidenceType.AnomalyAggregatedEvent) { // timeframe is relevant only to aggregated events
+			// aggregation timeframe in seconds = (end time - start time) + 1
+			// ==> need to add 1 second to the end time to get the timeframe, e.g. one hour / one day (in seconds)
+			// TODO logic is quite fragile and coupled to the aggregation framework - need to be changed in the future
+			Long roundedEndTime = eventEndTimestampInSeconds + 1;
+			long timeframeInSeconds = roundedEndTime - eventStartTimestampInSeconds;
+			long hours = TimeUnit.SECONDS.toHours(timeframeInSeconds);
+
+			if (hours == 1) {
+				return EvidenceTimeframe.Hourly;
+			}
+
+			long days = TimeUnit.SECONDS.toDays(timeframeInSeconds);
+			if (days == 1) {
+				return EvidenceTimeframe.Daily;
+			} else {
+				logger.warn("Could not map aggregated event time to evidence timeframe. Start time = " + eventStartTimestampInSeconds + " # End time = " + roundedEndTime);
+			}
+		}
+
+		return null;
 	}
 
 	/**

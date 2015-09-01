@@ -22,6 +22,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
+	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE ="F";
 	final String P_FEATURE_VALUE ="P";
 	final String AGGREGATED_FEATURE_TYPE_KEY = "aggregated_feature_type";
@@ -60,7 +61,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		Integer roundScore = ((Double) (entityEvent.getScore())).intValue();
 		Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 		EntityType entityType = EntityType.User;
-		String entityName = entityEvent.getContext().get("normalized_username");
+		String entityName = entityEvent.getContext().get(USER_ENTITY_KEY);
 		String entityId;
 		switch (entityType) {
 		case User: {
@@ -78,7 +79,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Create the alert
-		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
+		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(),
+								EntityType.User, entityName, evidences, roundScore, severity,
+								AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
@@ -125,7 +128,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 
 					// Create the alert
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
+					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences,
+											roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 					//Save alert to mongoDB
 					alertsService.saveAlertInRepository(alert);
