@@ -47,7 +47,7 @@ public class ApiEntityController extends DataQueryController{
 
 		DataBean<List<Map<String, String>>> entities = new DataBean<>();
 
-		if ((entityName == null || entityName == "") && (entityId == null || entityId == "")) {
+		if ((entityName == null || entityName.isEmpty()) && (entityId == null || entityId.isEmpty())) {
 			logger.debug("Received empty entity name and empty entity id when trying to read entity list");
 			return entities;
 		}
