@@ -21,6 +21,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
+	static String USER_ENTITY_KEY = "normalized_username";
 
 	/**
 	 * Logger
@@ -56,7 +57,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		Integer roundScore = ((Double) (entityEvent.getScore())).intValue();
 		Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 		EntityType entityType = EntityType.User;
-		String entityName = entityEvent.getContext().get("normalized_username");
+		String entityName = entityEvent.getContext().get(USER_ENTITY_KEY);
 		String entityId;
 		switch (entityType) {
 		case User: {
