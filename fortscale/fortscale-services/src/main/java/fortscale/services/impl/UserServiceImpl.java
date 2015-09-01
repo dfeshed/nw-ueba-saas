@@ -1136,6 +1136,10 @@ public class UserServiceImpl implements UserService{
 	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
+
+	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+		return userRepository.getUsersByIds(ids, pageable);
+	}
 	
 	@Override public Boolean isPasswordExpired(User user) {
 		try{

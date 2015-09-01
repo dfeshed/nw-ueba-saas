@@ -122,6 +122,8 @@ public interface UserService extends CachingService{
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
+	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
+
 	public Set<String> findIdsByTags(String[] tags);
 
 }
