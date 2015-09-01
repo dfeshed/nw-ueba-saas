@@ -217,8 +217,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
-		JSONObject entities = (JSONObject) JSONValue.parse((String) aggregatedFeatureEvent.get("context"));
-		return entities.getAsString(USER_ENTITY_KEY);
+		Map entities = (Map)aggregatedFeatureEvent.get("context");
+		return (String)entities.get(USER_ENTITY_KEY);
 	}
 
 	private String getDataSource(JSONObject aggregatedFeatureEvent) {
