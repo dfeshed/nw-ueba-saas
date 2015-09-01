@@ -209,8 +209,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		EntityType entityType = EntityType.User;
 		String entityValue = getEntityValue(aggregatedFeatureEvent);
-		Long startDate = (Long) aggregatedFeatureEvent.get("start_time_unix");
-		Long endDate = (Long) aggregatedFeatureEvent.get("date_time_unix");
+		Long startDate = new Long((Integer)aggregatedFeatureEvent.get("start_time_unix"));
+		Long endDate = new Long((Integer)aggregatedFeatureEvent.get("date_time_unix"));
 		String dataEntities = getDataSource(aggregatedFeatureEvent);
 		String featureName = aggregatedFeatureEvent.getAsString("bucket_conf_name");
 		return evidencesService.findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
