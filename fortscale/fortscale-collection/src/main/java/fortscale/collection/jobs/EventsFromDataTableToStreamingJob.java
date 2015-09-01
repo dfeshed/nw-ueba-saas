@@ -37,15 +37,14 @@ import java.util.Map;
 
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
-
 @DisallowConcurrentExecution
 public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static Logger logger = Logger.getLogger(EventsFromDataTableToStreamingJob.class);
 
-    private static int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
-    private static String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
-    private static long LOGGER_MAX_FREQUENCY = 20 * 60;
-    private static long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
+    private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
+    private static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
+    private static final long LOGGER_MAX_FREQUENCY = 20 * 60;
+    private static final long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
 
     private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
     private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
@@ -94,7 +93,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private Long maxSourceDestinationTimeGap;
     private long destinationTableLatestTime = 0;
     private long latestLoggerWriteTime = 0;
-    private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<String, FieldRegexMatcherConverter>();
+    private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
+    private int sleepingCounter = 0;
 
     protected String getTableName() {
         return impalaTableName;
@@ -134,7 +134,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private void fillRegexMatcherMap(File f) {
         try {
             if (f.exists() && f.isFile()) {
-                ArrayList<String> fieldConfList = new ArrayList<String>(FileUtils.readLines(f));
+                ArrayList<String> fieldConfList = new ArrayList<>(FileUtils.readLines(f));
                 for (String fieldConf : fieldConfList) {
                     FieldRegexMatcherConverter fieldRegexMatcherConverter = new FieldRegexMatcherConverter(fieldConf);
                     fieldRegexMatcherMap.put(fieldRegexMatcherConverter.getInputField(), fieldRegexMatcherConverter);
@@ -209,11 +209,13 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
                         long currentTimeMillis = TimestampUtils.convertToSeconds(System.currentTimeMillis());
                         if (currentTimeMillis - latestLoggerWriteTime >= LOGGER_MAX_FREQUENCY) {
+                            logger.info("Total number of sleeps so far: {}. Total sleeping time (in seconds) so far: {}.", sleepingCounter, sleepingCounter * throttlingSleepField);
                             logger.info("Gap of {} between events written to topic {} and scored events in table {}. Latest epoch time sent is {}. Next timestamp cursor is {} -> Sleeping...", timeGap, streamingTopic, impalaDestinationTable, latestEpochTimeSent, nextTimestampCursor);
                             latestLoggerWriteTime = currentTimeMillis;
                         }
                         try {
                             Thread.sleep(throttlingSleepField*1000);
+                            sleepingCounter++;
                         } catch (InterruptedException e) {
                         }
                     }
