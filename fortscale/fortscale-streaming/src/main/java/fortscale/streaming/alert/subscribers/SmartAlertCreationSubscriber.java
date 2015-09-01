@@ -75,7 +75,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Create the alert
-		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
+		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(),
+								EntityType.User, entityName, evidences, roundScore, severity,
+								AlertStatus.Open, AlertFeedback.None,  "", entityId);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
@@ -122,7 +124,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 
 					// Create the alert
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, "", entityId);
+					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences,
+											roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 					//Save alert to mongoDB
 					alertsService.saveAlertInRepository(alert);
