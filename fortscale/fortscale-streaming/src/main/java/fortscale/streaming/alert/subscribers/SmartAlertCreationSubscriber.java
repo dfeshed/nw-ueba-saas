@@ -5,6 +5,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.ComputerService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,14 +210,20 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		EntityType entityType = EntityType.User;
 		String entityValue = getEntityValue(aggregatedFeatureEvent);
 		Long startDate = (Long) aggregatedFeatureEvent.get("start_time_unix");
-		Long endDate = (Long) aggregatedFeatureEvent.get("end_time_unix");
-		String dataEntities = aggregatedFeatureEvent.getAsString("data_sources");
+		Long endDate = (Long) aggregatedFeatureEvent.get("date_time_unix");
+		String dataEntities = getDataSource(aggregatedFeatureEvent);
 		String featureName = aggregatedFeatureEvent.getAsString("bucket_conf_name");
 		return evidencesService.findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
 	}
 
 	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
-		return null;
+		JSONObject entities = (JSONObject) JSONValue.parse((String) aggregatedFeatureEvent.get("context"));
+		return entities.getAsString(USER_ENTITY_KEY);
+	}
+
+	private String getDataSource(JSONObject aggregatedFeatureEvent) {
+		JSONArray dataSources = (JSONArray) JSONValue.parse((String) aggregatedFeatureEvent.get("data_sources"));
+		return dataSources.get(0).toString();
 	}
 
 	/**
