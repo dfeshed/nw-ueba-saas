@@ -1,19 +1,17 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceType;
-import fortscale.domain.core.Severity;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.EvidencesService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * Services for managing the evidences
@@ -58,7 +56,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	public Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
 											EvidenceType evidenceType, Date startDate, Date endDate,
 											List<String> dataEntitiesIds, Double score, String anomalyValue,
-											String anomalyTypeFieldName, Integer totalAmountOfEvents ) {
+											String anomalyTypeFieldName, Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe) {
 
 		// casting score to int
 		int intScore = score.intValue();
@@ -69,7 +67,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		// create new transient evidence (do not save to Mongo yet)
 		return new Evidence(entityType, entityTypeFieldName, entityName, evidenceType, startDate.getTime(),
 				endDate.getTime(), anomalyTypeFieldName, anomalyValue, dataEntitiesIds, intScore, severity,
-				totalAmountOfEvents);
+				totalAmountOfEvents, evidenceTimeframe);
 	}
 
 	@Override
