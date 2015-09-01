@@ -41,14 +41,16 @@ public interface AlertsService {
 	 * @return
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, String entityTags, String entityId);
+								String feedbackArrayFilter, String dateRangeFilter, String entityName,
+								String entityTags, String entityId);
 
 	/**
 	 * returns a the number of all alerts matching filters
 	 * @return
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, String entityTags, String entityId);
+								String feedbackArrayFilter, String dateRangeFilter, String entityName,
+								String entityTags, String entityId);
 
 	/**
 	 * Add alert to Alerts repository

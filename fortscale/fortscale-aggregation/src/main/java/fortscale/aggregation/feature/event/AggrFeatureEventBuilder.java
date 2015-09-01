@@ -164,16 +164,24 @@ public class AggrFeatureEventBuilder {
                             startTime = bucketTick.getStrategyData().getStartTime();
                         }
                     }
-                    bucketAggrFeaturesMapList.add(aggrFeatures);
+
+                    if(bucket!=null || (bucket==null && conf.getFireEventsAlsoForEmptyBucketTicks())) {
+                        bucketAggrFeaturesMapList.add(aggrFeatures);
+                    }
                 }
-                // Calculating the new feature
-                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
 
-                // Building the event
-                JSONObject event = buildEvent(aggrFeatureEventData.getContext(), feature, startTime, wakedBucketTick.getEndTime());
+                // Firing event only if at least one bucekt exists or if no bucket exists but
+                // conf.getFireEventsAlsoForEmptyBucketTicks() == true
+                if(bucketAggrFeaturesMapList.size() > 0) {
+                    // Calculating the new feature
+                    Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
 
-                // Sending the event
-                sendEvent(event);
+                    // Building the event
+                    JSONObject event = buildEvent(aggrFeatureEventData.getContext(), feature, startTime, wakedBucketTick.getEndTime());
+
+                    // Sending the event
+                    sendEvent(event);
+                }
 
                 aggrFeatureEventData.clearOldBucketData();
             }
