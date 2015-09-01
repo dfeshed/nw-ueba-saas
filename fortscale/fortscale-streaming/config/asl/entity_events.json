@@ -41,7 +41,7 @@
               "normalized_username_ssh_daily.distinct_number_of_src_machines_ssh",
               "normalized_username_ssh_daily.distinct_number_of_dst_machines_ssh"
             ],
-              "failed_kerberos_events": [
+            "failed_kerberos_events": [
               "normalized_username_kerberos_logins_daily.number_of_failed_kerberos_events"
             ],
             "failed_vpn_events": [
