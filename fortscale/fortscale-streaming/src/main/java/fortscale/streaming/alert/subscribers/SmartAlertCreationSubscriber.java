@@ -217,13 +217,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
-		Map entities = (Map)aggregatedFeatureEvent.get("context");
-		return (String)entities.get(USER_ENTITY_KEY);
+		Map<String, String> entities = (Map)aggregatedFeatureEvent.get("context");
+		return entities.get(USER_ENTITY_KEY);
 	}
 
 	private String getDataSource(JSONObject aggregatedFeatureEvent) {
-		JSONArray dataSources = (JSONArray) JSONValue.parse((String) aggregatedFeatureEvent.get("data_sources"));
-		return dataSources.get(0).toString();
+		ArrayList<String> dataSources = (ArrayList)aggregatedFeatureEvent.get("data_sources");
+		return dataSources.get(0);
 	}
 
 	/**
