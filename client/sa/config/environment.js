@@ -14,7 +14,8 @@ module.exports = function(environment) {
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
-    'socketURL': '/ws',
+    'socketURL': '/threats/socket',
+    'socketDebug': false,
     'i18n': {
         defaultLocale:'en'
     },
@@ -30,7 +31,10 @@ module.exports = function(environment) {
         // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
         // Should match a DOM node in index.html.
         // Used by app's ready() handler to find & hide the loading animation.
-        appLoadingSelector: '#sa-app-spinner'
+        appLoadingSelector: '#sa-app-spinner',
+
+        // Default theme to be applied when no theme preference is found in localeStorage.
+        defaultTheme: "menlo-park"
     },
     'simple-auth': {
         authenticate: 'authenticator:sa-authenticator'
@@ -38,7 +42,8 @@ module.exports = function(environment) {
     contentSecurityPolicy: {
 
         // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
-        "img-src": "'self' data:"
+        "img-src": "'self' data:",
+        'connect-src': "'self' ws:"
     }
   };
 
@@ -52,6 +57,7 @@ module.exports = function(environment) {
         authenticate: 'authenticator:sa-authenticator',
         store: 'simple-auth-session-store:local-storage'
     };
+    ENV.socketDebug = true;
   }
 
   if (environment === 'test') {

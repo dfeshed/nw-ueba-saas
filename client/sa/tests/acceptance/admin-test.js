@@ -19,6 +19,6 @@ test("visiting /do/admin and check DOM", function(assert) {
 
     andThen(function() {
         assert.equal(currentPath(), "protected.admin");
-        assert.equal(find(".js-test-find-admin").length, 1, "Could not find the route DOM.");
+        assert.equal(find(".js-test-admin-root").length, 1, "Could not find the route DOM.");
     });
 });

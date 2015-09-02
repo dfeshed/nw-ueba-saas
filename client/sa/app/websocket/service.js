@@ -41,7 +41,7 @@ function _shouldParseBody(message){
         var hdrs = message.headers,
             type = hdrs && hdrs["content-type"];
         return type?
-            (type === "application/json") :
+            (type.indexOf("application/json") >= 0) :
             (typeof message.body === "string");
     }
     return false;
@@ -80,8 +80,8 @@ export default Ember.Service.extend({
     connect: function(headers) {
         if (!_connectionPromise) {
             _connectionPromise = new Ember.RSVP.Promise(function(resolve, reject){
-                _stompClient = Stomp.over(new SockJS(config.socketURL));
-                _stompClient.debug = null;  // to disable stomp library's debug messages in console
+                _stompClient = Stomp.over(new SockJS(config.socketURL, {}, { protocols_whitelist: ['websocket'] }));
+                _stompClient.debug = config.socketDebug ? (console.debug || console.info).bind(console) : null;
                 _stompClient.connect(headers || {}, resolve, reject);
             });
         }

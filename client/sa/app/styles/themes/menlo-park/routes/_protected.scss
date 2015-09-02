@@ -1,0 +1,27 @@
+.#{$ns}menlo-park {
+    .#{$ns}protected {
+        background-color: $menlo-park-app-body-bg;
+
+        /* App header: */
+        > header {
+            background-color: $menlo-park-app-header-bg;
+
+            a[href],
+            button {
+                padding-top: 9px;
+                padding-bottom: 9px;
+            }
+            button {
+                &.#{$ns}dropdown {
+                    @include menlo-park-light-on-trans-btn(false, true);
+                }
+                &:not(.#{$ns}dropdown) {
+                    @include menlo-park-light-on-trans-btn(false, false);
+                }
+            }
+            a[href] {
+                @include menlo-park-light-on-trans-btn(true, false);
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+/* Enables scrolling, if needed. */
+.#{$ns} {
+    &-scroll {
+        overflow: auto;
+    }
+}

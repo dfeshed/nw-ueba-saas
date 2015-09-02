@@ -1,0 +1,3 @@
+label:not(#{$ignore-tag-name}) {
+    padding-right: $base-padding-x;
+}

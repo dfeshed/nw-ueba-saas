@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -f "/etc/init.d/${project.serviceName}"
+rm -f "/etc/init.d/sa-ui-threats"

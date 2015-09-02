@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -f "${project.nginxConfLocation}/default.conf"
+rm -f "/etc/nginx/conf.d/default.conf"

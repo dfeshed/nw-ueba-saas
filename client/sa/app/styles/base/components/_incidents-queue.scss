@@ -1,0 +1,44 @@
+$incidents-queue-header-height: 107px;
+$incidents-queue-footer-height: $base-font-size * $base-line-height + $base-padding-y * 2;
+$incidents-queue-toolbar-height: $base-padding-y * 2 + $base-font-size * $base-line-height;
+
+.#{$ns} {
+    &incidents-queue {
+        @include rsa-vertical-triplet($incidents-queue-header-height, $incidents-queue-footer-height);
+
+        > header {
+            @include rsa-col(justify,fill);
+        }
+        > section {
+            @include rsa-vertical-triplet($incidents-queue-toolbar-height, 0);
+        }
+        > header,
+        > section {
+            button {
+                @include rsa-vendor-prefix(flex-basis,50%);
+                text-align: left;
+            }
+        }
+        > footer {
+            text-align: center;
+            line-height: $incidents-queue-footer-height;
+            padding: 0 $base-padding-x;
+        }
+
+        .#{$ns}paging-list {
+            @include rsa-vertical-triplet(0,$incidents-queue-footer-height);
+
+            > footer {
+                text-align: center;
+
+                button {
+                    text-align: center;
+                }
+                input {
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+

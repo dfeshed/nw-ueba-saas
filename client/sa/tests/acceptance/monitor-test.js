@@ -19,7 +19,7 @@ test("visiting /do/monitor and check DOM", function(assert) {
 
     andThen(function() {
         assert.equal(currentPath(), "protected.monitor");
-        assert.equal(find(".js-test-find-monitor").length, 1, "Could not find the route DOM.");
+        assert.equal(find(".js-test-monitor-root").length, 1, "Could not find the route DOM.");
     });
 
 });

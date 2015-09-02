@@ -1,0 +1,18 @@
+$incidents-queue-width: 320px !default;
+
+.#{$ns}respond {
+    .#{$ns}incidents-queue {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: $incidents-queue-width;
+        bottom: 0;
+    }
+    .#{$ns}incident-info {
+        position: absolute;
+        top: 0;
+        left: $incidents-queue-width;
+        right: 0;
+        bottom: 0;
+    }
+}

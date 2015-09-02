@@ -1,0 +1,4 @@
+a[href]:not(#{$ignore-tag-name}) {
+    padding: $base-padding;
+    text-decoration: none;
+}

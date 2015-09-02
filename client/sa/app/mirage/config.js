@@ -12,6 +12,12 @@ import users from "sa/mirage/routes/users";
 import info from "sa/mirage/routes/info";
 import initSockets from "sa/mirage/config-sockets";
 
+
+import connect from "sa/mirage/sockets/connect";
+import disconnect from "sa/mirage/sockets/disconnect";
+import echo from "sa/mirage/sockets/echo";
+import files from "sa/mirage/sockets/files";
+
 export default function() {
     /* initalize the list of all apis that doesn't need mirage*/
     passthrough(this);
@@ -23,5 +29,9 @@ export default function() {
     users(this);
     info(this);
 
-    initSockets();
+    var server = initSockets();
+    connect(server);
+    disconnect(server);
+    echo(server);
+    files(server);
 }

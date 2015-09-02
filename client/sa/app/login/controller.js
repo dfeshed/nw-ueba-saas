@@ -60,15 +60,6 @@ export default Ember.Controller.extend({
         return (typeof uid !== "string") || !uid.trim().length || (this.get("status") === _STATUS.WAIT);
     }.property("username", "status"),
 
-    /**
-     * True unless status is "success".
-     * Used for hiding the login UI once the user has successfully authenticated.
-     * @type Boolean
-     */
-    isLoginVisible: function(){
-        return this.get("status") !== _STATUS.SUCCESS;
-    }.property("status"),
-
     actions: {
         /**
          * Establishes session when users logs in.

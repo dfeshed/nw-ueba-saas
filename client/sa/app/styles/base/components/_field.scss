@@ -1,0 +1,13 @@
+.#{$ns}{
+    &field {
+        padding: $base-padding;
+
+        > label {
+            display: inline-block;
+            min-width: 92px;
+        }
+        > span > ul {
+            display: inline;
+        }
+    }
+}

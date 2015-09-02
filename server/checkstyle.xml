@@ -46,8 +46,10 @@
         <!-- 2.1, 2.2.2 No package or import line wraps -->
         <module name="NoLineWrap"/>
 
-        <!-- 2.2.1 No wildcard imports -->
-        <module name="AvoidStarImport"/>
+        <!-- 2.2.1 No wildcard imports (Except for testing) -->
+        <module name="AvoidStarImport">
+            <property name="excludes" value="org.junit.Assert,org.mockito.Mockito,org.mockito.Matchers"/>
+        </module>
 
         <!-- 2.3.1 Exactly one top-level class declaration -->
         <module name="OneTopLevelClass"/>
@@ -80,9 +82,6 @@
         <module name="LeftCurly">
             <property name="maxLineLength" value="120"/>
         </module>
-
-        <!-- 3.1.2 Nonempty blocks -->
-        <module name="RightCurly"/>
 
         <!-- 3.1.2 Nonempty blocks -->
         <module name="RightCurly">
@@ -120,7 +119,7 @@
         <module name="OperatorWrap">
             <property name="option" value="NL"/>
             <property name="tokens"
-                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
+                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, QUESTION, SL, SR, STAR "/>
         </module>
 
         <!-- 3.5.2 Horizontal whitespace -->
@@ -149,6 +148,9 @@
             <message key="ws.notPreceded"
                      value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
         </module>
+
+        <!-- 3.5.2 Horizontal whitespace -->
+        <module name="MethodParamPad"/>
 
         <!-- 3.7.1.1 One variable per declaraction -->
         <module name="MultipleVariableDeclarations"/>
