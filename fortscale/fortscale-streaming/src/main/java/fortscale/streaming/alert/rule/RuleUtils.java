@@ -31,4 +31,11 @@ public class RuleUtils {
 		}
 		return startTimestamp+(60*60*24*1000-1);
 	}
+
+	public static String extractNormalizedUsernameFromContextId(String contextId){
+		if(contextId == null){
+			return null;
+		}
+		 return contextId.split("normalized_username_")[1];
+	}
 }

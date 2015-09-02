@@ -134,6 +134,7 @@ public class EntityEventBuilder {
 		// time of the event to be compared against other events from different types (raw events, entity event...)
 		entityEvent.put(epochtimeFieldName, entityEventData.getEndTime());
 		entityEvent.put("context", entityEventData.getContext());
+		entityEvent.put("contextId", entityEventData.getContextId());
 		entityEvent.put("aggregated_feature_events", aggrFeatureEvents);
 
 		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), entityEvent.toJSONString()));
