@@ -70,7 +70,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Value("${fortscale.smart.f.field.entities}") private String entitiesKey;
 	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
 
-	@Value("${fortscale.smart.p.field.numberofevents}") private int numberOfEvents;
 
 	/**
 	 * Create alert from entity event
