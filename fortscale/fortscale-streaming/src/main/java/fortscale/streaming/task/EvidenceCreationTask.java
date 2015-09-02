@@ -225,7 +225,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField,
 					anomalyField, totalAmountOfEvents);
 		}
-		//TODO - work on this
 		if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
 			String entitySupportingInformationPopulatorClass = convertToString(validateFieldExistsAndGetValue(message,
 					dataSourceConfiguration.entitySupportingInformationPopulatorClass, true));

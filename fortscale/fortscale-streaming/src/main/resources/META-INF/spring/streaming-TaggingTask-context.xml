@@ -187,4 +187,6 @@
 
     <bean id="vpnSessionPreProcess" class="fortscale.streaming.task.evidence.pre.process.VpnSessionEvidencePreProcess" scope="prototype"/>
 
+    <bean id="notificationSupportingInformationPopulator" class="fortscale.streaming.task.NotificationSupportingInformationPopulator" scope="prototype"/>
+
 </beans>
