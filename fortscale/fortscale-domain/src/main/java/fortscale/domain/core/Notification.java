@@ -64,9 +64,9 @@ public class Notification extends AbstractDocument implements Serializable {
 	public Map<String, String> getAttributes(){
 		return attributes;
 	}
-	
-	
-	
+
+	public boolean hasAttributes() { return attributes != null; }
+
 	public String getIndex() {
 		return index;
 	}
