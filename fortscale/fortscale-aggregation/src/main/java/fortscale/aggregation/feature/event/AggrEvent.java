@@ -198,6 +198,22 @@ public class AggrEvent implements Serializable {
         return endTimeUnix.getTime();
     }
 
+    public String getDataSource() {return  dataSource; }
+
+    public JSONArray getDataSources() {return dataSources; }
+
+    public List<String> getDataSourcesAsList() {
+        ArrayList<String> list = new ArrayList<String>();
+        if (dataSources != null) {
+            int len = dataSources.size();
+            for (int i=0;i<len;i++){
+                list.add(dataSources.get(i).toString());
+            }
+        }
+
+        return list;
+    }
+
     public static JSONObject buildEvent(String dataSource, String featureType, String aggregatedFeatureName, Object value, Map<String, Object> additionalInfoMap, String bucketConfName,
                                         Map<String, String> context, Long startTimeSec, Long endTimeSec, JSONArray dataSourcesJsonArray) {
         return buildEvent(dataSource, featureType, aggregatedFeatureName, value, additionalInfoMap, bucketConfName, context, startTimeSec, endTimeSec, dataSourcesJsonArray, 0L);

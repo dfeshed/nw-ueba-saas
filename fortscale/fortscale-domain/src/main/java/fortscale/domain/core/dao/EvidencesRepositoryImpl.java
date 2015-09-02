@@ -6,6 +6,9 @@ import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -16,7 +19,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public Evidence findFEvidence(EntityType entityType, String entityName, long startDate, long endDate,
+	public List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName) {
 		Query query = new Query(where
 				(Evidence.entityTypeField).is(entityType).and
@@ -27,6 +30,6 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 				(Evidence.anomalyTypeFieldNameField).is(featureName)
 		);
 
-		return mongoTemplate.findOne(query, Evidence.class);
+		return mongoTemplate.find(query, Evidence.class);
 	}
 }

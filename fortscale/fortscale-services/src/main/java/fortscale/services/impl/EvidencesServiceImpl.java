@@ -85,9 +85,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.findById(id);
 	}
 
-	public Evidence findFEvidence(EntityType entityEvent, String entityName, long startDate, long endDate,
+	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName) {
-		return evidencesRepository.findFEvidence(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
+		return evidencesRepository.findFeatureEvidences(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
 	}
 
 	/**
