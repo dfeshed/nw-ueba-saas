@@ -1,7 +1,10 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import org.json.JSONArray;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
+import org.json.JSONObject;
 
 /**
  * supporting information for notification evidences - map of keys and values changing based on the type of notification
@@ -11,13 +14,15 @@ import org.json.JSONArray;
 @JsonTypeName("notificationSupportingInformation")
 public class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    private JSONArray data;
+    private JsonNode data;
 
-    public void setData(JSONArray data) {
-        this.data = data;
+    public void setData(JSONObject json) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JsonOrgModule());
+        data = mapper.valueToTree(json);
     }
 
-    public JSONArray getData() {
+    public JsonNode getData() {
         return data;
     }
 

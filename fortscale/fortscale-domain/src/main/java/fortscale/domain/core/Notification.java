@@ -141,6 +141,16 @@ public class Notification extends AbstractDocument implements Serializable {
 		this.comments.add(comment);
 	}
 
+	public String attributesToString() {
+		StringBuilder sb = new StringBuilder();
+		if (attributes != null) {
+			for (Map.Entry<String, String> entry : attributes.entrySet()) {
+				sb.append(entry.getKey() + ":" + entry.getValue());
+			}
+		}
+		return sb.toString();
+	}
+
 	public void setTs(long ts) {
 		this.ts = ts;
 	}

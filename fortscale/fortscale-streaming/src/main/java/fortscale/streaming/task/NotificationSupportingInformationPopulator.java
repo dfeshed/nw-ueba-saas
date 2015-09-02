@@ -2,8 +2,8 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.EntitySupportingInformation;
 import fortscale.domain.core.NotificationSupportingInformation;
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class NotificationSupportingInformationPopulator implements EntitySupport
     public EntitySupportingInformation populate(String data) {
         NotificationSupportingInformation notificationSupportingInformation = new NotificationSupportingInformation();
         try {
-            notificationSupportingInformation.setData(new JSONArray(data));
+            notificationSupportingInformation.setData(new JSONObject(data));
         } catch (JSONException ex) {
             logger.error("String is not a valid JSON object {}", ex.getMessage());
         }
