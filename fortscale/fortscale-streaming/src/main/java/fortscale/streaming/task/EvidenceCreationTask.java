@@ -86,62 +86,84 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.score.threshold.%s", dataSource)));
+			int scoreThreshold = Integer.parseInt(getConfigString(config,
+					String.format("fortscale.events.score.threshold.%s", dataSource)));
 			List<String> anomalyFields = null;
 			String scoreField = null;
-			String  anomalyValueField = null;
+			String anomalyValueField = null;
 			String anomalyTypeField = null;
 			String preProcessClassField = null;
 			String postProcessClassField = null;
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyFields.%s", dataSource))) {
-				anomalyFields = getConfigStringList(config, String.format("fortscale.events.anomalyFields.%s", dataSource));
+				anomalyFields = getConfigStringList(config, String.format("fortscale.events.anomalyFields.%s",
+						dataSource));
 			}
-
 			if (isConfigContainKey(config, String.format("fortscale.events.scoreField.%s", dataSource))) {
 				scoreField = getConfigString(config, String.format("fortscale.events.scoreField.%s", dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyValueField.%s", dataSource))) {
-				anomalyValueField = getConfigString(config, String.format("fortscale.events.anomalyValueField.%s", dataSource));
+				anomalyValueField = getConfigString(config, String.format("fortscale.events.anomalyValueField.%s",
+						dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource))) {
-				anomalyTypeField = getConfigString(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource));
+				anomalyTypeField = getConfigString(config, String.format("fortscale.events.anomalyTypeField.%s",
+						dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.preprocess.class.%s", dataSource))) {
-				preProcessClassField = getConfigString(config, String.format("fortscale.events.preprocess.class.%s", dataSource));
+				preProcessClassField = getConfigString(config, String.format("fortscale.events.preprocess.class.%s",
+						dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.postprocess.class.%s", dataSource))) {
-				postProcessClassField = getConfigString(config, String.format("fortscale.events.postprocess.class.%s", dataSource));
+				postProcessClassField = getConfigString(config, String.format("fortscale.events.postprocess.class.%s",
+						dataSource));
 			}
-			EntityType entityType = EntityType.valueOf(getConfigString(config, String.format("fortscale.events.entityType.%s", dataSource)));
-			String entityNameField = getConfigString(config, String.format("fortscale.events.entityName.field.%s", dataSource));
-			String startTimestampField = getConfigString(config, String.format("fortscale.events.startTimestamp.field.%s", dataSource));
-			String endTimestampField = getConfigString(config, String.format("fortscale.events.endTimestamp.field.%s", dataSource));
-			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
-			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
+			EntityType entityType = EntityType.valueOf(getConfigString(config,
+					String.format("fortscale.events.entityType.%s", dataSource)));
+			String entityNameField = getConfigString(config, String.format("fortscale.events.entityName.field.%s",
+					dataSource));
+			String startTimestampField = getConfigString(config,
+					String.format("fortscale.events.startTimestamp.field.%s", dataSource));
+			String endTimestampField = getConfigString(config, String.format("fortscale.events.endTimestamp.field.%s",
+					dataSource));
+			String partitionField = getConfigString(config,
+					String.format("fortscale.events.partition.field.%s", dataSource));
+			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config,
+					String.format("fortscale.events.evidence.type.%s", dataSource)));
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
             String totalFieldPath = null;
+			String supportingInformationField = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
-				dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
+				dataEntitiesIdsField = getConfigString(config,
+						String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
 			} else if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.%s", dataSource))) {
-				dataEntitiesIds = getConfigStringList(config, String.format("fortscale.events.dataEntitiesIds.%s", dataSource));
+				dataEntitiesIds = getConfigStringList(config,
+						String.format("fortscale.events.dataEntitiesIds.%s", dataSource));
 			}
 			List<String> defaultFields = null;
 			if (isConfigContainKey(config, String.format("fortscale.events.defaultFields.%s", dataSource))) {
-				defaultFields = getConfigStringList(config, String.format("fortscale.events.addDefaultFields.%s", dataSource));
+				defaultFields = getConfigStringList(config,
+						String.format("fortscale.events.addDefaultFields.%s", dataSource));
 			}
-
             if (isConfigContainKey(config, String.format("fortscale.events.total.field.path.%s", dataSource))) {
-                totalFieldPath = getConfigString(config, String.format("fortscale.events.total.field.path.%s", dataSource));
+                totalFieldPath = getConfigString(config,
+						String.format("fortscale.events.total.field.path.%s", dataSource));
             }
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType,scoreThreshold,dataEntitiesIds,dataEntitiesIdsField,startTimestampField,
-					endTimestampField,entityType,entityNameField,partitionField,anomalyFields, scoreField,
-					anomalyValueField,anomalyTypeField, preProcessClassField, postProcessClassField, defaultFields, totalFieldPath));
+			if (isConfigContainKey(config, String.format("fortscale.events.supportinginformation.field.%s",
+					dataSource))) {
+				supportingInformationField = getConfigString(config,
+						String.format("fortscale.events.supportinginformation.field.%s", dataSource));
+			}
+			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType, scoreThreshold,
+					dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
+					entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
+					preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
+					supportingInformationField));
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
@@ -200,7 +222,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					anomalyField, totalAmountOfEvents);
 		}
 		//TODO - work on this
-		if (evidence != null && false) {
+		if (evidence != null && dataSourceConfiguration.supportingInformationField != null) {
+			String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
+					dataSourceConfiguration.supportingInformationField, true));
 			VPNOverlappingSupportingInformation vpnOverlappingSupportingInformation =
 					new VPNOverlappingSupportingInformation();
 			vpnOverlappingSupportingInformation.setRaw_events(null);
@@ -380,9 +404,32 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 */
 	public static class DataSourceConfiguration {
 
-		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
-				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField ,String preProcessClassField, String postProcessClassField, List<String> defaultFields,String totalFieldPath) {
+		public EvidenceType evidenceType;
+		public int scoreThreshold;
+		public List<String> dataEntitiesIds;
+		public String dataEntitiesIdsField;
+		public String startTimestampField;
+		public String endTimestampField;
+		public EntityType entityType;
+		public String entityNameField;
+		public String partitionField;
+		public List<String> anomalyFields;
+		public String scoreField;
+		public String anomalyValueField;
+		public String anomalyTypeField;
+		public String preProcessClassField;
+		public String postProcessClassField;
+		public List<String> defaultFields;
+		public String totalFieldPath;
+		public String supportingInformationField;
 
+		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds,
+									   String dataEntitiesIdsField, String startTimestampField,
+									   String endTimestampField, EntityType entityType, String entityNameField,
+				 					   String partitionField, List<String> anomalyFields, String scoreField,
+									   String anomalyValueField, String anomalyTypeField ,String preProcessClassField,
+									   String postProcessClassField, List<String> defaultFields,String totalFieldPath,
+									   String supportingInformationField) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -400,26 +447,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.postProcessClassField = postProcessClassField;
 			this.defaultFields = defaultFields;
             this.totalFieldPath = totalFieldPath;
-
+			this.supportingInformationField = supportingInformationField;
 		}
 
-
-		public EvidenceType evidenceType;
-		public int scoreThreshold;
-		public List<String> dataEntitiesIds;
-		public String dataEntitiesIdsField;
-		public String startTimestampField;
-		public String endTimestampField;
-		public EntityType entityType;
-		public String entityNameField;
-		public String partitionField;
-		public List<String> anomalyFields;
-		public String scoreField;
-		public String anomalyValueField;
-		public String anomalyTypeField;
-		public String preProcessClassField;
-		public String postProcessClassField;
-		public List<String> defaultFields;
-        public String totalFieldPath;
 	}
+
 }
