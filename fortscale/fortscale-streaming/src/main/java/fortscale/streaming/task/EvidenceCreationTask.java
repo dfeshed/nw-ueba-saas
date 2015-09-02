@@ -220,22 +220,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			}
 		} else {
 			String anomalyField = convertToString(validateFieldExistsAndGetValue(message,
-					dataSourceConfiguration.anomalyTypeField,true));
+					dataSourceConfiguration.anomalyTypeField, true));
 			evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
 					dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField,
 					anomalyField, totalAmountOfEvents);
-		}
-		if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
-			String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
-					entitySupportingInformationPopulatorClass;
-			String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
-					supportingInformationField, true));
-			EntitySupportingInformationPopulator entitySupportingInformationPopulator =
-					(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
-							forName(entitySupportingInformationPopulatorClass));
-			EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
-					populate(supportingInformation);
-			evidence.setSupportingInformation(entitySupportingInformation);
 		}
 	}
 
@@ -276,6 +264,18 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Create evidence from event
 			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents, evidenceTimeframe);
 
+			if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
+				String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
+						entitySupportingInformationPopulatorClass;
+				String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
+						supportingInformationField, true));
+				EntitySupportingInformationPopulator entitySupportingInformationPopulator =
+						(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
+								forName(entitySupportingInformationPopulatorClass));
+				EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+						populate(supportingInformation);
+				evidence.setSupportingInformation(entitySupportingInformation);
+			}
 
 			// Save evidence to MongoDB
 			try {
