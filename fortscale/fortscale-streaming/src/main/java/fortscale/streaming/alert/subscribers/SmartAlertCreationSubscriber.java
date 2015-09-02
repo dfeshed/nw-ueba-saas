@@ -9,10 +9,13 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +30,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	final String F_FEATURE_VALUE ="F";
 	final String P_FEATURE_VALUE ="P";
 	final String AGGREGATED_FEATURE_TYPE_KEY = "aggregated_feature_type";
+	final String ENTITY_NAME_FIELD  = "context.normalized_username";
 
 	/**
 	 * Logger
@@ -49,6 +53,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired protected ComputerService computerService;
 
 	@Autowired private UserService userService;
+
+	@Value("${fortscale.smart.f.score}")
+	private int fFeatureTresholdScore;
+
+	@Value("${fortscale.smart.p.count}")
+	private int pFeatureTreshholdCount;
 
 	/**
 	 * Create alert from entity event
@@ -152,7 +162,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		for (JSONObject aggregatedFeatureEvent : entityEvent.getAggregated_feature_events())
 		{
-			evidenceList.add(createEvidenceFromAggregatedFeature(aggregatedFeatureEvent));
+			Evidence evidence = createEvidenceFromAggregatedFeature(aggregatedFeatureEvent);
+			if (evidence != null) {
+				evidenceList.add(evidence);
+			}
 		}
 
 		return evidenceList;
@@ -163,10 +176,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		switch (featureType) {
 		case F_FEATURE_VALUE:
 			return getFFeature(aggregatedFeatureEvent);
-		// As for now, we do not create evidences for P features.
-		// P is only used for the joker score
-		//case P_FEATURE_VALUE:
-			//return getPFeature(aggregatedFeatureEvent);
+		case P_FEATURE_VALUE:
+			return getPFeature(aggregatedFeatureEvent);
 		default:
 			logger.debug("Illegal feature type. Feature type: " + featureType);
 			break;
@@ -185,8 +196,22 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	private Evidence getFFeature(JSONObject aggregatedFeatureEvent) {
-		Evidence fEvidence;
-		fEvidence = findFEvidence(aggregatedFeatureEvent);
+
+		// Filter features with low score
+		double score = getScore(aggregatedFeatureEvent);
+		if (score <= fFeatureTresholdScore) {
+			return null;
+		}
+
+		// Read common information for finding and creation evidence
+		EntityType entityType = EntityType.User;
+		String entityValue = getEntityValue(aggregatedFeatureEvent);
+		Long startDate = new Long((Integer)aggregatedFeatureEvent.get("start_time_unix")) * 1000;
+		Long endDate = new Long((Integer)aggregatedFeatureEvent.get("date_time_unix")) * 1000;
+		String dataEntities = getDataSource(aggregatedFeatureEvent);
+		String featureName = aggregatedFeatureEvent.getAsString("aggregated_feature_name");
+
+		Evidence fEvidence = findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
 
 		// In case we found previously created evidence in the repository, return it
 		if (fEvidence != null) {
@@ -194,26 +219,26 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Else, create the evidence in the repository and return it
-		return createFEvidence(aggregatedFeatureEvent);
+		return createFEvidence(entityType, entityValue, startDate, endDate, dataEntities, score, featureName, aggregatedFeatureEvent);
 	}
 
 	/**
 	 * Find evidnece in the repository for F feature
-	 * @param aggregatedFeatureEvent
+	 * @param entityType
+	 * @param entityValue
+	 * @param startDate
+	 * @param endDate
+	 * @param dataEntities
+	 * @param featureName
 	 * @return
 	 */
-	private Evidence findFEvidence(JSONObject aggregatedFeatureEvent) {
-		if (aggregatedFeatureEvent == null){
-			return null;
-		}
-
-		EntityType entityType = EntityType.User;
-		String entityValue = getEntityValue(aggregatedFeatureEvent);
-		Long startDate = new Long((Integer)aggregatedFeatureEvent.get("start_time_unix")) * 1000;
-		Long endDate = new Long((Integer)aggregatedFeatureEvent.get("date_time_unix")) * 1000;
-		String dataEntities = getDataSource(aggregatedFeatureEvent);
-		String featureName = aggregatedFeatureEvent.getAsString("aggregated_feature_name");
+	private Evidence findFEvidence(EntityType entityType, String entityValue, Long startDate, Long endDate,
+			String dataEntities, String featureName) {
 		return evidencesService.findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
+	}
+
+	private double getScore(JSONObject aggregatedFeatureEvent) {
+		return (double)aggregatedFeatureEvent.get("score");
 	}
 
 	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
@@ -227,12 +252,36 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	/**
-	 * Create evidence for F feature
-	 * @param aggregatedFeatureEvent
-	 * @return
+	 * Create evidence for F feature and save it to the repository
+	 *
+	 * @param entityType
+	 * @param entityName
+	 * @param startDate
+	 * @param endDate
+	 * @param dataEntities
+	 * @param featureName
+	 * @param aggregatedFeatureEvent  @return
 	 */
-	private Evidence createFEvidence(JSONObject aggregatedFeatureEvent) {
-		return null;
+	private Evidence createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
+			String dataEntities, Double score, String featureName, JSONObject aggregatedFeatureEvent) {
+
+		String anomalyValue = aggregatedFeatureEvent.getAsString("aggregated_feature_value");
+		List<String> dataEntitiesArray = new ArrayList<>();
+		dataEntitiesArray.add(dataEntities);
+
+		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
+				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntitiesArray, score, anomalyValue,featureName,
+				1, null);
+
+		try {
+			evidencesService.saveEvidenceInRepository(evidence);
+		} catch (DuplicateKeyException e) {
+			logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
+			// In case this evidence is duplicated, we don't send it to output topic and continue to next score
+			return null;
+		}
+
+		return evidence;
 	}
 
 	/**
