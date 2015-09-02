@@ -5,6 +5,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.scopetest.EPAssertionUtil;
+import com.espertech.esper.client.scopetest.ScopeTestHelper;
 import com.espertech.esper.client.scopetest.SupportUpdateListener;
 import fortscale.domain.core.EntityEvent;
 import fortscale.domain.core.EntityTags;
@@ -35,12 +36,12 @@ public class EsperRulesTest {
 
 		//load esper configuration file which
 		Configuration esperConfig = new Configuration();
-		esperConfig.addPlugInSingleRowFunction("extractNormalizedUsernameFromContextId", RuleUtils.class.getName(),"extractNormalizedUsernameFromContextId");
+		esperConfig.addPlugInSingleRowFunction("extractNormalizedUsernameFromContextId", RuleUtils.class.getName(), "extractNormalizedUsernameFromContextId");
 		esperConfig.addEventType(EntityEvent.class);
 		esperConfig.addEventType(EntityTags.class);
 
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
-		MockitoAnnotations.initMocks(this);
+
 
 	}
 
@@ -51,7 +52,6 @@ public class EsperRulesTest {
 	 */
 	@Test
 	public void testSmartEventWithSensitiveAccountTest() throws Exception{
-		String contextEntityEvent = "create context EntityEventFrame partition by contextId from EntityEvent";
 		String SmartEventWithSensitiveAccount = "select 'Suspicious Activity For Sensitive Account' as title, Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags from EntityEvent(score > 50).std:groupwin(contextId).win:time(1 sec) as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and (('admin' = any(Tags.tags)) or ('executive' = any(Tags.tags)) or('service' = any(Tags.tags)))";
 		EPStatement stmt = epService.getEPAdministrator().createEPL(SmartEventWithSensitiveAccount);
 
@@ -59,8 +59,6 @@ public class EsperRulesTest {
 		SupportUpdateListener listener = new SupportUpdateListener();
 		stmt.addListener(listener);
 		EntityEvent entityEventGood = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventNotSensitive = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user2@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventNoScore = new EntityEvent(1234L,99,"event_type",0,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 		List<String> userTags = new ArrayList<>();
 		userTags.add("admin");
@@ -70,13 +68,6 @@ public class EsperRulesTest {
 		epService.getEPRuntime().sendEvent(entityEventGood);
 		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName" }, new Object[] { "user1@fs.com" });
 
-		epService.getEPRuntime().sendEvent(entityTags);
-		epService.getEPRuntime().sendEvent(entityEventNotSensitive);
-		assertFalse(listener.getAndClearIsInvoked());
-
-		epService.getEPRuntime().sendEvent(entityTags);
-		epService.getEPRuntime().sendEvent(entityEventNoScore);
-		assertFalse(listener.getAndClearIsInvoked());
 
 
 	}
