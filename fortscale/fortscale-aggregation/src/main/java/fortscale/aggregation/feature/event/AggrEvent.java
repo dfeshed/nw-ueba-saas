@@ -120,7 +120,7 @@ public class AggrEvent implements Serializable {
         featureType = event.getAsString(EVENT_FIELD_FEATURE_TYPE);
         aggregatedFeatureName = event.getAsString(EVENT_FIELD_AGGREGATED_FEATURE_NAME);
         aggregatedFeatureValue = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_AGGREFGATED_FEATURE_VALUE));
-        aggregatedFeatureInfo = (JSONObject)event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO);
+        aggregatedFeatureInfo = new JSONObject((Map<String, String>) event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO));
         bucketConfName = event.getAsString(EVENT_FIELD_BUCKET_CONF_NAME);
         context = (Map)event.get(EVENT_FIELD_CONTEXT);
         creationEpochTime = event.getAsNumber(EVENT_FIELD_CREATION_EPOCHTIME).longValue();
