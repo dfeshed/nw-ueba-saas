@@ -254,7 +254,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 				aggregatedFeatureEvent.getDataSource(), aggregatedFeatureEvent.getAggregatedFeatureName());
 
 		// In case we found previously created evidence in the repository, return it
-		if (fEvidences != null) {
+		if (fEvidences != null && !fEvidences.isEmpty()) {
 			return fEvidences;
 		}
 
