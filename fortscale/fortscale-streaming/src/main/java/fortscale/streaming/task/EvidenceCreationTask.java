@@ -226,8 +226,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					anomalyField, totalAmountOfEvents);
 		}
 		if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
-			String entitySupportingInformationPopulatorClass = convertToString(validateFieldExistsAndGetValue(message,
-					dataSourceConfiguration.entitySupportingInformationPopulatorClass, true));
+			String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
+					entitySupportingInformationPopulatorClass;
 			String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
 					supportingInformationField, true));
 			EntitySupportingInformationPopulator entitySupportingInformationPopulator =
