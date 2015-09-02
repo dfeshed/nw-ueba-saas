@@ -26,11 +26,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
+
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE ="F";
 	final String P_FEATURE_VALUE ="P";
 	final String AGGREGATED_FEATURE_TYPE_KEY = "aggregated_feature_type";
-	final String ENTITY_NAME_FIELD  = "context.normalized_username";
+	final String ENTITY_NAME_FIELD  = "normalized_username";
 
 	/**
 	 * Logger
@@ -52,13 +53,32 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	@Autowired protected ComputerService computerService;
 
+	/**
+	 * User service (for user resolving)
+	 */
 	@Autowired private UserService userService;
 
+	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}")
 	private int fFeatureTresholdScore;
-
 	@Value("${fortscale.smart.p.count}")
 	private int pFeatureTreshholdCount;
+
+	// Reading the json object keys
+	@Value("${fortscale.smart.f.field.startdate}")
+	private String startDateKey;
+	@Value("${fortscale.smart.f.field.enddate}")
+	private String endDateKey;
+	@Value("${fortscale.smart.f.field.featurename}")
+	private String featureNameKey;
+	@Value("${fortscale.smart.f.field.datasources}")
+	private String dataSourcesKey;
+	@Value("${fortscale.smart.f.field.score}")
+	private String scoreKey;
+	@Value("${fortscale.smart.f.field.entities}")
+	private String entitiesKey;
+	@Value("${fortscale.smart.f.field.anomalyvalue}")
+	private String anomalyValueKey;
 
 	/**
 	 * Create alert from entity event
@@ -112,11 +132,11 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					// Get alert parameters
 					//TODO: take from esper rule
 					String title = ALERT_TITLE; //(String) insertStreamOutput.get("title");
-					Long startDate = (Long) insertStreamOutput.get("start_time_unix");
-					Long endDate = (Long) insertStreamOutput.get("end_time_unix");
+					Long startDate = (Long) insertStreamOutput.get(startDateKey);
+					Long endDate = (Long) insertStreamOutput.get(endDateKey);
 					// TODO: missing!
 					EntityType entityType = EntityType.User;
-					JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get("context"));
+					JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get(entitiesKey));
 					String entityName = entities.getAsString(USER_ENTITY_KEY);
 					String entityId;
 					switch (entityType) {
@@ -134,7 +154,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 					//TODO - handle the rest of the entity types
 					}
 
-					Double score = (Double) insertStreamOutput.get("score");
+					Double score = (Double) insertStreamOutput.get(scoreKey);
 					Integer roundScore = score.intValue();
 					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 
@@ -160,8 +180,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> createEvidencesList(EntityEvent entityEvent) {
 		List<Evidence> evidenceList = new ArrayList<>();
 
+		// Iterate through the features
 		for (JSONObject aggregatedFeatureEvent : entityEvent.getAggregated_feature_events())
 		{
+			// Get the evidence and add it to list
 			Evidence evidence = createEvidenceFromAggregatedFeature(aggregatedFeatureEvent);
 			if (evidence != null) {
 				evidenceList.add(evidence);
@@ -171,8 +193,17 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return evidenceList;
 	}
 
+	/**
+	 * Create single evidence
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private Evidence createEvidenceFromAggregatedFeature(JSONObject aggregatedFeatureEvent) {
+
+		// Get feature type
 		String featureType = getFeatureType(aggregatedFeatureEvent);
+
+		// Depended on the feature type, get the evidence
 		switch (featureType) {
 		case F_FEATURE_VALUE:
 			return getFFeature(aggregatedFeatureEvent);
@@ -186,15 +217,30 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return null;
 	}
 
+	/**
+	 * Get the feature type out of the JSON representation of the object
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private String getFeatureType(JSONObject aggregatedFeatureEvent) {
 		return aggregatedFeatureEvent.getAsString(AGGREGATED_FEATURE_TYPE_KEY);
 	}
 
+	/**
+	 * Handle P feature - fetch existing evidence or create a new evidence
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private Evidence getPFeature(JSONObject aggregatedFeatureEvent) {
-		// plcaeholder for P features
+		// TODO: plcaeholder for P features
 		return null;
 	}
 
+	/**
+	 * Handle F feature - fetch existing evidence or create a new evidence
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private Evidence getFFeature(JSONObject aggregatedFeatureEvent) {
 
 		// Filter features with low score
@@ -206,11 +252,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		// Read common information for finding and creation evidence
 		EntityType entityType = EntityType.User;
 		String entityValue = getEntityValue(aggregatedFeatureEvent);
-		Long startDate = new Long((Integer)aggregatedFeatureEvent.get("start_time_unix")) * 1000;
-		Long endDate = new Long((Integer)aggregatedFeatureEvent.get("date_time_unix")) * 1000;
+		Long startDate = new Long((Integer)aggregatedFeatureEvent.get(startDateKey)) * 1000;
+		Long endDate = new Long((Integer)aggregatedFeatureEvent.get(endDateKey)) * 1000;
 		String dataEntities = getDataSource(aggregatedFeatureEvent);
-		String featureName = aggregatedFeatureEvent.getAsString("aggregated_feature_name");
+		String featureName = aggregatedFeatureEvent.getAsString(featureNameKey);
 
+		// try to fetch evidence from repository
 		Evidence fEvidence = findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
 
 		// In case we found previously created evidence in the repository, return it
@@ -237,17 +284,32 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return evidencesService.findFEvidence(entityType, entityValue, startDate, endDate, dataEntities, featureName);
 	}
 
+	/**
+	 * Read score from JSON
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private double getScore(JSONObject aggregatedFeatureEvent) {
-		return (double)aggregatedFeatureEvent.get("score");
+		return (double)aggregatedFeatureEvent.get(scoreKey);
 	}
 
+	/**
+	 * Read entities from JSON
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private String getEntityValue(JSONObject aggregatedFeatureEvent) {
-		Map<String, String> entities = (Map)aggregatedFeatureEvent.get("context");
+		Map<String, String> entities = (Map)aggregatedFeatureEvent.get(entitiesKey);
 		return entities.get(USER_ENTITY_KEY);
 	}
 
+	/**
+	 * Read data source from JSON
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
 	private String getDataSource(JSONObject aggregatedFeatureEvent) {
-		ArrayList<String> dataSources = (ArrayList)aggregatedFeatureEvent.get("data_sources");
+		ArrayList<String> dataSources = (ArrayList)aggregatedFeatureEvent.get(dataSourcesKey);
 		return dataSources.get(0);
 	}
 
@@ -265,7 +327,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private Evidence createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
 			String dataEntities, Double score, String featureName, JSONObject aggregatedFeatureEvent) {
 
-		String anomalyValue = aggregatedFeatureEvent.getAsString("aggregated_feature_value");
+		String anomalyValue = aggregatedFeatureEvent.getAsString(anomalyValueKey);
 		List<String> dataEntitiesArray = new ArrayList<>();
 		dataEntitiesArray.add(dataEntities);
 
