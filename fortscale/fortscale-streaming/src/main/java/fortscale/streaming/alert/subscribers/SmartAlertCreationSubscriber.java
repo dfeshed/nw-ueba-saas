@@ -112,7 +112,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		// Create the alert
 		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(),
 								EntityType.User, entityName, evidences, roundScore, severity,
-								AlertStatus.Open, AlertFeedback.None, "", entityId);
+								AlertStatus.Open, AlertFeedback.None,  "", entityId);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);

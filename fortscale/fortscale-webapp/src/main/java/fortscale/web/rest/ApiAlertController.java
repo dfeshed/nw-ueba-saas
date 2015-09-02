@@ -93,7 +93,8 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "feedback") String feedback,
 								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
-								  @RequestParam(required=false, value = "entity_tags") String entityTags
+								  @RequestParam(required=false, value = "entity_tags") String entityTags,
+								  @RequestParam(required=false, value = "entity_id") String entityId
 
 	)  throws  Exception{
 
@@ -108,8 +109,9 @@ public class ApiAlertController extends BaseController {
 
 
 		int pageSize = 0; //Fetch all rows.
-		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize, fromPage,
-				severity, status, feedback, alertStartRange, entityName, entityTags);
+		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
+												fromPage, severity,	status, feedback, alertStartRange,entityName,
+												entityTags, entityId);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -174,7 +176,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "feedback") String feedback,
 										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 										  @RequestParam(required=false, value = "entity_name") String entityName,
-										  @RequestParam(required=false, value = "entity_tags") String entityTags) {
+										  @RequestParam(required=false, value = "entity_tags") String entityTags,
+										  @RequestParam(required=false, value = "entity_id") String entityId) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -202,17 +205,16 @@ public class ApiAlertController extends BaseController {
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
-		if (severity == null && status == null && feedback == null && alertStartRange == null && entityName == null &&
-				entityTags == null) {
+		if (severity == null && status == null  && feedback == null &&  alertStartRange == null && entityName == null && entityTags == null && entityId == null) {
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags);
+					entityTags, entityId);
 			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags);
+					entityTags, entityId);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -335,6 +337,10 @@ public class ApiAlertController extends BaseController {
 		}
 	}
 
+	/**
+	 * A URL for checking the controller
+	 * @return
+	 */
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

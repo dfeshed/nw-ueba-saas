@@ -11,7 +11,8 @@ import net.minidev.json.JSONObject;
     @JsonSubTypes.Type(value=ConstantValueFeatureAdjustor.class, name=ConstantValueFeatureAdjustor.CONSTANT_VALUE_FEATURE_ADJUSTOR_TYPE),
     @JsonSubTypes.Type(value=ChainFeatureAdjustor.class, name=ChainFeatureAdjustor.CHAIN_FEATURE_ADJUSTOR_TYPE),
     @JsonSubTypes.Type(value=IPv4FeatureAdjustor.class, name=IPv4FeatureAdjustor.IPV4_FEATURE_ADJUSTOR_TYPE),
-    @JsonSubTypes.Type(value=PatternReplacementFeatureAdjustor.class, name=PatternReplacementFeatureAdjustor.PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE)
+    @JsonSubTypes.Type(value=PatternReplacementFeatureAdjustor.class, name=PatternReplacementFeatureAdjustor.PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE),
+    @JsonSubTypes.Type(value=ConditionalPatternReplacementFeatureAdjuster.class, name=ConditionalPatternReplacementFeatureAdjuster.CONDITIONAL_PATTERN_REPLACEMENT_FEATURE_ADJUSTER_TYPE)
 })
 public interface FeatureAdjustor {
 	public Object adjust(Object feature, JSONObject message);

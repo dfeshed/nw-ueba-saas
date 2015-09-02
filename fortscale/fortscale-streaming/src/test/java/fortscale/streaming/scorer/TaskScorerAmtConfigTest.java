@@ -18,7 +18,7 @@ public class TaskScorerAmtConfigTest extends TaskScorerConfigTest{
 	private static final String AMT_SESSION_HOST_MODEL_NAME = "amtsessionshost";
 	private static final String AMT_SESSION_HOST_CONTEXT = "testhost";
 	private static final String CONTEXT_USER_FIELD_NAME = "username";
-	private static final String CONTEXT_HOST_FIELD_NAME = "normalized_amt_host";
+	private static final String CONTEXT_HOST_FIELD_NAME = "src_machine_cluster";
 	private static final String HOST_FIELD_NAME = "amt_host";
 	private static final String HOST_SCORER_NAME = "hostScorer";
 	private static final double HOST_SCORER_REDUCTING_WEIGHT = 0.5;

@@ -475,13 +475,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		return (wrapper==null)? null : wrapper.getId();
 	}
 
-	public  List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+	private  List<Map<String, String>> getUsersByCriteria(Criteria criteria, Pageable pageable) {
 		List<Map<String, String>> res = new ArrayList<>();
+
+		String displayId = "id";
 
 		try {
 			Query query = new Query().with(pageable);
 			// criteria for 'contains'
-			Criteria criteria = where(User.searchFieldName).regex(prefix);
 			query.addCriteria(criteria);
 
 			query.fields().include(User.ID_FIELD);
@@ -490,7 +491,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			for (DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
 				Map<String, String> entry = new HashMap<String, String>();
 				entry.put(User.usernameField, displayname.getDisplayName());
-				entry.put(User.ID_FIELD, displayname.getId());
+				entry.put(displayId, displayname.getId());
 
 				res.add(entry);
 			}
@@ -500,6 +501,17 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		return res;
+	}
+
+	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+		Criteria criteria = where(User.searchFieldName).regex(prefix);
+		return getUsersByCriteria(criteria, pageable);
+	}
+
+	public  List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+		String[] idsSet = ids.split(",");
+		Criteria criteria = where(User.ID_FIELD).in(idsSet);
+		return getUsersByCriteria(criteria, pageable);
 	}
 
 	public HashSet<String> getUsersGUID(){
