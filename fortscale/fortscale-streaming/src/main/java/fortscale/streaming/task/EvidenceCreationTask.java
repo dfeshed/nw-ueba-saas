@@ -166,10 +166,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		}
 
         //Get the total events amount if exist
-        Integer totalAmiountOfEvents = null;
+        Integer totalAmountOfEvents = null;
 
 		if(dataSourceConfiguration.totalFieldPath != null)
-        	totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
+        	totalAmountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
 
 
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
@@ -190,14 +190,14 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						dataEntityField.getScoreField());
 				evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
 						scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField),
-						anomalyField, totalAmiountOfEvents);
+						anomalyField, totalAmountOfEvents);
 			}
 		} else {
 			String anomalyField = convertToString(validateFieldExistsAndGetValue(message,
 					dataSourceConfiguration.anomalyTypeField,true));
 			evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
 					dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField,
-					anomalyField, totalAmiountOfEvents);
+					anomalyField, totalAmountOfEvents);
 		}
 		//TODO - work on this
 		if (evidence != null && false) {
