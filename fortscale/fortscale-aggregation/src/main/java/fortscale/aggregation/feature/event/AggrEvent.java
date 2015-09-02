@@ -131,6 +131,7 @@ public class AggrEvent implements Serializable {
         endTime  = event.getAsString(EVENT_FIELD_END_TIME);
         endTimeUnix  = new Date(event.getAsNumber(EVENT_FIELD_END_TIME_UNIX).longValue());
         epochTime  = event.getAsNumber(EVENT_FIELD_EPOCHTIME).longValue();
+        dataSources = new JSONArray();
         dataSources.addAll ((ArrayList)event.get(EVENT_FIELD_DATA_SOURCES));
         score = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_SCORE));
     }
