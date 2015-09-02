@@ -1,10 +1,7 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceTimeframe;
-import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
@@ -185,21 +182,39 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
+		Evidence evidence = null;
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
 				DataEntityField dataEntityField = dataEntity.getField(anomalyField);
-				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), dataEntityField.getScoreField());
-				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmiountOfEvents);
+				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0),
+						dataEntityField.getScoreField());
+				evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
+						scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField),
+						anomalyField, totalAmiountOfEvents);
 			}
 		} else {
-			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
-			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmiountOfEvents);
+			String anomalyField = convertToString(validateFieldExistsAndGetValue(message,
+					dataSourceConfiguration.anomalyTypeField,true));
+			evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
+					dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField,
+					anomalyField, totalAmiountOfEvents);
+		}
+		//TODO - work on this
+		if (evidence != null && false) {
+			VPNOverlappingSupportingInformation vpnOverlappingSupportingInformation =
+					new VPNOverlappingSupportingInformation();
+			vpnOverlappingSupportingInformation.setRaw_events(null);
+			EntitySupportingInformation entitySupportingInformation = new EntitySupportingInformation();
+			evidence.setSupportingInformation(entitySupportingInformation);
 		}
 	}
 
 
 
-	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
+	private Evidence createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector,
+									String inputTopic, JSONObject message, List<String> dataEntitiesIds,
+									String scoreField, String anomalyValueField, String anomalyTypeField,
+									Integer totalAmountOfEvents) throws Exception{
 
 		// check score
 		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField, true));
@@ -240,7 +255,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			} catch (DuplicateKeyException e) {
 				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
 				// In case this evidence is duplicated, we don't send it to output topic and continue to next score
-				return;
+				return null;
 			}
 
 			// only if we have default fields for the message
@@ -258,7 +273,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence", inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
 			}
+			return evidence;
 		}
+		return null;
 	}
 
 	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {

@@ -51,6 +51,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationStartTimestampField;
 	private String notificationEndTimestampField;
 	private String notificationTypeField;
+	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
 
@@ -79,6 +80,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationEndTimestampField");
 		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+		notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationSupportingInformationField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
@@ -122,6 +125,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationValueField, getAnomalyField(notification));
 				evidence.put(notificationEntityField, getEntity(notification));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
+				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.debug("Writing to topic evidence - {}", messageToWrite);
 				streamWriter.send(notification.getIndex(), messageToWrite);
@@ -135,6 +139,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchConfiguration.setLastFetchTime(dateStr);
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
+	}
+
+	private String getSupportingInformation(Notification notification) {
+		//TODO - do something here?
+		return notification.getAttributes() != null ? notification.getAttributes().toString() : "";
 	}
 
 	private String getAnomalyField(Notification notification) {

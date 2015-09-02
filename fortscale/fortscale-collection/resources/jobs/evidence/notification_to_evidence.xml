@@ -51,6 +51,10 @@
                     <value>${collection.evidence.notification.entity.field}</value>
                 </entry>
                 <entry>
+                    <key>notificationSupportingInformationField</key>
+                    <value>${collection.evidence.notification.supportinginformation.field}</value>
+                </entry>
+                <entry>
                     <key>notificationAnomalyMap</key>
                     <value>${collection.evidence.notification.anomaly.map}</value>
                 </entry>
