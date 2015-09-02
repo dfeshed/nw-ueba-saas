@@ -245,7 +245,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Filter features with low score
 		double score = getScore(aggregatedFeatureEvent);
-		if (score <= fFeatureTresholdScore) {
+		if (score < fFeatureTresholdScore) {
 			return null;
 		}
 
