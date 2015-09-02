@@ -135,8 +135,12 @@ public class AggrEvent implements Serializable {
     }
 
     public JSONObject getAsJSONObject() {
-        return buildEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo,
+        JSONObject event =  buildEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo,
                 bucketConfName, context, startTimeUnix, endTimeUnix.getTime(), dataSources, creationEpochTime);
+        if(score!=null) {
+            event.put(EVENT_FIELD_SCORE, score);
+        }
+        return event;
     }
 
     public String getAggregatedFeatureType() {
