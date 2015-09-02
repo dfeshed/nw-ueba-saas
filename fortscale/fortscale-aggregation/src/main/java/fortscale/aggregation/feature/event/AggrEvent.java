@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.event;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -120,7 +121,7 @@ public class AggrEvent implements Serializable {
         featureType = event.getAsString(EVENT_FIELD_FEATURE_TYPE);
         aggregatedFeatureName = event.getAsString(EVENT_FIELD_AGGREGATED_FEATURE_NAME);
         aggregatedFeatureValue = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_AGGREFGATED_FEATURE_VALUE));
-        aggregatedFeatureInfo = new JSONObject((Map<String, String>) event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO));
+        aggregatedFeatureInfo = new JSONObject((Map) event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO));
         bucketConfName = event.getAsString(EVENT_FIELD_BUCKET_CONF_NAME);
         context = (Map)event.get(EVENT_FIELD_CONTEXT);
         creationEpochTime = event.getAsNumber(EVENT_FIELD_CREATION_EPOCHTIME).longValue();
@@ -130,7 +131,7 @@ public class AggrEvent implements Serializable {
         endTime  = event.getAsString(EVENT_FIELD_END_TIME);
         endTimeUnix  = new Date(event.getAsNumber(EVENT_FIELD_END_TIME_UNIX).longValue());
         epochTime  = event.getAsNumber(EVENT_FIELD_EPOCHTIME).longValue();
-        dataSources =(JSONArray)event.get(EVENT_FIELD_DATA_SOURCES);
+        dataSources.addAll ((ArrayList)event.get(EVENT_FIELD_DATA_SOURCES));
         score = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_SCORE));
     }
 
