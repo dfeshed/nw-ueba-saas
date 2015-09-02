@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationBasePopulator;
 import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
@@ -69,6 +70,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	private DataEntitiesConfig dataEntitiesConfig;
 
+	private String supportingInformationField;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -81,6 +83,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 		// Get the output topic
 		outputTopic = getConfigString(config, "fortscale.output.topic");
+
+		supportingInformationField = getConfigString(config, "fortscale.evidence.supporting.information.field");
 
 		// Fill the map between the input topic and the data source
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
@@ -136,7 +140,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
             String totalFieldPath = null;
-			String supportingInformationField = null;
+			String entitySupportingInformationPopulatorClass = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
 				dataEntitiesIdsField = getConfigString(config,
@@ -154,16 +158,16 @@ public class EvidenceCreationTask extends AbstractStreamTask {
                 totalFieldPath = getConfigString(config,
 						String.format("fortscale.events.total.field.path.%s", dataSource));
             }
-			if (isConfigContainKey(config, String.format("fortscale.events.supportinginformation.field.%s",
+			if (isConfigContainKey(config, String.format("fortscale.events.supportinginformation.populator.%s",
 					dataSource))) {
-				supportingInformationField = getConfigString(config,
-						String.format("fortscale.events.supportinginformation.field.%s", dataSource));
+				entitySupportingInformationPopulatorClass = getConfigString(config,
+						String.format("fortscale.events.supportinginformation.populator.%s", dataSource));
 			}
 			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType, scoreThreshold,
 					dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
 					entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
 					preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
-					supportingInformationField));
+					entitySupportingInformationPopulatorClass));
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
@@ -222,18 +226,19 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					anomalyField, totalAmountOfEvents);
 		}
 		//TODO - work on this
-		if (evidence != null && dataSourceConfiguration.supportingInformationField != null) {
+		if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
+			String entitySupportingInformationPopulatorClass = convertToString(validateFieldExistsAndGetValue(message,
+					dataSourceConfiguration.entitySupportingInformationPopulatorClass, true));
 			String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
-					dataSourceConfiguration.supportingInformationField, true));
-			VPNOverlappingSupportingInformation vpnOverlappingSupportingInformation =
-					new VPNOverlappingSupportingInformation();
-			vpnOverlappingSupportingInformation.setRaw_events(null);
-			EntitySupportingInformation entitySupportingInformation = new EntitySupportingInformation();
+					supportingInformationField, true));
+			EntitySupportingInformationPopulator entitySupportingInformationPopulator =
+					(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
+							forName(entitySupportingInformationPopulatorClass));
+			EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+					populate(supportingInformation);
 			evidence.setSupportingInformation(entitySupportingInformation);
 		}
 	}
-
-
 
 	private Evidence createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector,
 									String inputTopic, JSONObject message, List<String> dataEntitiesIds,
@@ -421,7 +426,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public String postProcessClassField;
 		public List<String> defaultFields;
 		public String totalFieldPath;
-		public String supportingInformationField;
+		public String entitySupportingInformationPopulatorClass;
 
 		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds,
 									   String dataEntitiesIdsField, String startTimestampField,
@@ -429,7 +434,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				 					   String partitionField, List<String> anomalyFields, String scoreField,
 									   String anomalyValueField, String anomalyTypeField ,String preProcessClassField,
 									   String postProcessClassField, List<String> defaultFields,String totalFieldPath,
-									   String supportingInformationField) {
+									   String entitySupportingInformationPopulatorClass) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -447,7 +452,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.postProcessClassField = postProcessClassField;
 			this.defaultFields = defaultFields;
             this.totalFieldPath = totalFieldPath;
-			this.supportingInformationField = supportingInformationField;
+			this.entitySupportingInformationPopulatorClass = entitySupportingInformationPopulatorClass;
 		}
 
 	}

@@ -1,11 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.domain.ad.AdUserGroup;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.json.JSONObject;
 
 /**
  * supporting information for notification evidences - map of keys and values changing based on the type of notification
@@ -13,4 +9,16 @@ import java.util.Set;
  */
 
 @JsonTypeName("notificationSupportingInformation")
-public class NotificationSupportingInformation extends EntitySupportingInformation {}
+public class NotificationSupportingInformation extends EntitySupportingInformation {
+
+    private JSONObject data;
+
+    public void setData(JSONObject data) {
+        this.data = data;
+    }
+
+    public JSONObject getData() {
+        return data;
+    }
+
+}
