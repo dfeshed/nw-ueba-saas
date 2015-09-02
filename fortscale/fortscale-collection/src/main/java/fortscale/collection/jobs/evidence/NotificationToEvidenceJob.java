@@ -144,7 +144,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String getSupportingInformation(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		if (attributes != null && attributes.containsKey("raw_events")) {
-			return attributes.get("raw_events");
+			return new JSONObject(attributes).toJSONString(JSONStyle.NO_COMPRESS);
 		}
 		return "";
 	}
