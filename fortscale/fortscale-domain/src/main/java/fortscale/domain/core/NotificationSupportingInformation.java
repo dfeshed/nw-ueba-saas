@@ -1,7 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * supporting information for notification evidences - map of keys and values changing based on the type of notification
@@ -11,13 +11,13 @@ import org.json.JSONObject;
 @JsonTypeName("notificationSupportingInformation")
 public class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    private JSONObject data;
+    private JSONArray data;
 
-    public void setData(JSONObject data) {
+    public void setData(JSONArray data) {
         this.data = data;
     }
 
-    public JSONObject getData() {
+    public JSONArray getData() {
         return data;
     }
 
