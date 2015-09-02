@@ -30,7 +30,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE = "F";
 	final String P_FEATURE_VALUE = "P";
-	final String AGGREGATED_FEATURE_TYPE_KEY = "aggregated_feature_type";
 	final String ENTITY_NAME_FIELD = "normalized_username";
 
 	/**
