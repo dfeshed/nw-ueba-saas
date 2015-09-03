@@ -2,21 +2,16 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.EntitySupportingInformation;
 import fortscale.domain.core.NotificationSupportingInformation;
-import org.json.JSONException;
-import org.json.JSONObject;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import fortscale.domain.core.VpnOverlappingSupportingInformation;
 
 /**
  * Created by Amir Keren on 02/09/15.
  */
 public class NotificationSupportingInformationPopulator implements EntitySupportingInformationPopulator {
 
-    private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformationPopulator.class);
-
     @Override
     public EntitySupportingInformation populate(String data) {
-        NotificationSupportingInformation notificationSupportingInformation = new NotificationSupportingInformation();
+        NotificationSupportingInformation notificationSupportingInformation = new VpnOverlappingSupportingInformation();
         notificationSupportingInformation.setData(data);
         return notificationSupportingInformation;
     }
