@@ -4,8 +4,8 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.histogram.HistogramDualKey;
-import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.historical.data.SupportingInformationDualKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -26,7 +26,7 @@ import java.util.*;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationBasePopulator {
+public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationHistogramPopulator {
 
     private static Logger logger = Logger.getLogger(SupportingInformationHourlyCountGroupByDayOfWeekPopulator.class);
 
@@ -44,8 +44,8 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
      * Assuming hour range is positive integer in the range [0..23].
      */
     @Override
-    protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
-        Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
+        Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
 
@@ -76,11 +76,11 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = new HistogramDualKey(TimeUtils.getDayOfWeek(dayOfWeek), hour.toString());
+                    SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), hour.toString());
 
-                    Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null) ?  histogramKeyObjectMap.get(histogramKey) : 0;
+                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null) ?  histogramKeyObjectMap.get(supportingInformationKey) : 0;
 
-                    histogramKeyObjectMap.put(histogramKey, currHistogramValue + currValue);
+                    histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
                 }
 
             } else {
@@ -95,7 +95,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
      * Converting the anomaly value which is in concrete date format to an histogram key
      * consist of the day of week (Sunday, Monday etc.) AND the cieled hour (0, 1, .. 23)
      */
-    HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
+    SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
         String anomalyValue = extractAnomalyValue(evidence, featureName);
 
         // the anomaly value in this case is date string, i.e. 2015-07-15 02:05:53.
@@ -118,7 +118,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
                 logger.error("Illegal day of week value: {}", dayOfWeekOrdinalVal);
             }
 
-            return new HistogramDualKey(dayOfWeek, hourVal.toString());
+            return new SupportingInformationDualKey(dayOfWeek, hourVal.toString());
 
         } catch (ParseException e) {
             logger.error("Cannot parse date string {} to format {}", anomalyValue, DATE_FORMAT);

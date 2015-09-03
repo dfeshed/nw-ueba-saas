@@ -1,7 +1,6 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationBasePopulator;
 import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
@@ -44,6 +43,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private static final int HOURS_IN_DAY = 24;
 	private static final int HOURS_IN_WEEK = HOURS_IN_DAY * 7;
 	private static final int HOURS_IN_MONTH = HOURS_IN_DAY * 30;
+	private static final int ONE_HOUR = 1;
+
 	/**
 	 * Logger
 	 */
@@ -298,7 +299,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			int timeframeInHours = (int) duration.getStandardHours();
 
 			switch (timeframeInHours) {
-				case 1 :
+				case ONE_HOUR:
 					return EvidenceTimeframe.Hourly;
 				case HOURS_IN_DAY:
 					return EvidenceTimeframe.Daily;

@@ -4,11 +4,12 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationTimeGranularity;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.histogram.HistogramKey;
-import fortscale.domain.histogram.HistogramSingleKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.Map;
  */
 @Component
 @Scope("prototype")
-public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationBasePopulator {
+public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationHistogramPopulator {
 
     private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
 
@@ -45,20 +46,20 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
      * Use same logic as in the base populator and set the time granularity
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationHistogramData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
 
-        SupportingInformationData supportingInformationData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
+        SupportingInformationHistogramData supportingInformationHistogramData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
-        SupportingInformationData.TimeGranularity timeGranularity = determineTimeGranularity();
+        SupportingInformationTimeGranularity timeGranularity = determineTimeGranularity();
 
-        supportingInformationData.setTimeGranularity(timeGranularity);
+        supportingInformationHistogramData.setTimeGranularity(timeGranularity);
 
-        return supportingInformationData;
+        return supportingInformationHistogramData;
     }
 
     @Override
-    protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
-        Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
+        Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
             String normalizedFeatureName = getNormalizedFeatureName(featureName);
@@ -89,9 +90,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
                         continue;
                     }
 
-                    HistogramKey histogramKey = new HistogramSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
+                    SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
 
-                    histogramKeyObjectMap.put(histogramKey, new Double(numOfEvents));
+                    histogramKeyObjectMap.put(supportingInformationKey, new Double(numOfEvents));
                 }
             } else {
                 logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
@@ -100,17 +101,17 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
         return histogramKeyObjectMap;
     }
 
-    protected SupportingInformationData.TimeGranularity determineTimeGranularity() {
+    protected SupportingInformationTimeGranularity determineTimeGranularity() {
         AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(featureName);
 
         String strategyName = aggregatedFeatureEventConf.getOutputBucketStrategy();
 
         // TODO need to use the feature bucket strategy service, currently it's in the streaming project
         if (FIXED_DURATION_DAILY_STRATEGY.equals(strategyName)) {
-            return SupportingInformationData.TimeGranularity.Daily;
+            return SupportingInformationTimeGranularity.Daily;
         }
         else if (FIXED_DURATION_HOURLY_STRATEGY.equals(strategyName)) {
-            return SupportingInformationData.TimeGranularity.Hourly;
+            return SupportingInformationTimeGranularity.Hourly;
         }
 
         logger.warn("Could not find strategy with name {}", strategyName);
@@ -143,9 +144,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     }
 
     @Override
-    HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
+    SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
         // TODO need to check if this correct
-        return new HistogramSingleKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
+        return new SupportingInformationSingleKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
     }
 
     @Override

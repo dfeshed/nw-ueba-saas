@@ -4,8 +4,8 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.histogram.HistogramKey;
-import fortscale.domain.histogram.HistogramSingleKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationCountPopulator extends SupportingInformationBasePopulator {
+public class SupportingInformationCountPopulator extends SupportingInformationHistogramPopulator {
 
     private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
@@ -36,8 +36,8 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
     }
 
     @Override
-    protected Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
-        Map<HistogramKey, Double> histogramKeyObjectMap = new HashMap<>();
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
+        Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
             String normalizedFeatureName = getNormalizedFeatureName(featureName);
@@ -57,11 +57,11 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
                     Double currValue = histogramEntry.getValue();
 
-                    HistogramKey histogramKey = new HistogramSingleKey(histogramEntry.getKey());
+                    SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(histogramEntry.getKey());
 
-                    Double currHistogramValue = (histogramKeyObjectMap.get(histogramKey) != null ? histogramKeyObjectMap.get(histogramKey) : 0);
+                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null ? histogramKeyObjectMap.get(supportingInformationKey) : 0);
 
-                    histogramKeyObjectMap.put(histogramKey, currHistogramValue + currValue);
+                    histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
                 }
             } else {
                 logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
@@ -81,10 +81,10 @@ public class SupportingInformationCountPopulator extends SupportingInformationBa
     }
 
     @Override
-    HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
+    SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
         String anomalyValue = extractAnomalyValue(evidence, featureName);
 
-        return new HistogramSingleKey(anomalyValue);
+        return new SupportingInformationSingleKey(anomalyValue);
     }
 
     @Override

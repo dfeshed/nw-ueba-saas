@@ -1,4 +1,4 @@
-package fortscale.domain.histogram;
+package fortscale.domain.historical.data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,29 +12,27 @@ import java.util.Map;
  * }
  * Created by galiar on 21/07/2015.
  */
-public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
-
-
+public class SupportingInformationEntry<VAL_TYPE extends Comparable> implements Serializable, Comparable<SupportingInformationEntry>{
 
 	private List<String> keys;
 	private Map additionalInformation;
-	private Double value;
+	private VAL_TYPE value;
 	private boolean anomaly;
 
 
-	public HistogramEntry(){}
+	public SupportingInformationEntry(){}
 
-	public HistogramEntry(List<String> keys, Double count){
+	public SupportingInformationEntry(List<String> keys, VAL_TYPE value){
 
-		this.value = count;
+		this.value = value;
 		this.keys = keys;
 	}
 
-	public Double getValue() {
+	public VAL_TYPE getValue() {
 		return value;
 	}
 
-	public void setValue(Double value) {
+	public void setValue(VAL_TYPE value) {
 		this.value = value;
 	}
 
@@ -61,7 +59,7 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 	 * @return
 	 */
 	@Override
-	public int compareTo(HistogramEntry other){
+	public int compareTo(SupportingInformationEntry other){
 		// sort by value, i.e. the natural order of histogram entries
 		return value.compareTo(other.value);
 	}
@@ -71,7 +69,7 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		HistogramEntry that = (HistogramEntry) o;
+		SupportingInformationEntry that = (SupportingInformationEntry) o;
 
 		if (anomaly != that.anomaly) return false;
 		if (keys != null ? !keys.equals(that.keys) : that.keys != null) return false;
@@ -92,7 +90,7 @@ public class HistogramEntry implements Serializable, Comparable<HistogramEntry>{
 
 	@Override
 	public String toString() {
-		return "HistogramEntry{" +
+		return "SupportingInformationEntry{" +
 				"keys=" + keys +
 				", value=" + value +
 				", anomaly=" + anomaly +

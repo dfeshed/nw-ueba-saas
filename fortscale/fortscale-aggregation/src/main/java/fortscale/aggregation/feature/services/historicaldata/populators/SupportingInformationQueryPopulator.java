@@ -1,8 +1,8 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.time.TimeUtils;
 
 import java.util.HashMap;
@@ -17,9 +17,9 @@ import java.util.Map;
 public abstract class SupportingInformationQueryPopulator implements SupportingInformationDataPopulator {
 
     //this method will vary according to which Mongo service will be used to fetch the data from
-    protected abstract HistogramKey populate(Evidence evidence, String contextValue, long startTime, long endTime,
-                                             Map<HistogramKey, Double> histogramMap,
-                                             Map<HistogramKey, Map> additionalInformation);
+    protected abstract SupportingInformationKey populate(Evidence evidence, String contextValue, long startTime, long endTime,
+                                             Map<SupportingInformationKey, Double> histogramMap,
+                                             Map<SupportingInformationKey, Map> additionalInformation);
 
     /*
      * Basic flow of the populator:
@@ -28,20 +28,20 @@ public abstract class SupportingInformationQueryPopulator implements SupportingI
      * 3. Create the anomaly histogram key
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue,
+    public SupportingInformationHistogramData createSupportingInformationData(Evidence evidence, String contextValue,
                                                                      long evidenceEndTime, int timePeriodInDays) {
         long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        Map<HistogramKey, Double> histogramMap = new HashMap<>();
-        Map<HistogramKey, Map> additionalInformation = new HashMap<>();
-        HistogramKey anomaly = populate(evidence, contextValue, startTime, evidenceEndTime, histogramMap,
+        Map<SupportingInformationKey, Double> histogramMap = new HashMap<>();
+        Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
+        SupportingInformationKey anomaly = populate(evidence, contextValue, startTime, evidenceEndTime, histogramMap,
                 additionalInformation);
-        SupportingInformationData supportingInformationData;
+        SupportingInformationHistogramData supportingInformationHistogramData;
         if (anomaly != null) {
-            supportingInformationData = new SupportingInformationData(histogramMap, anomaly);
+            supportingInformationHistogramData = new SupportingInformationHistogramData(histogramMap, anomaly);
         } else {
-            supportingInformationData = new SupportingInformationData(histogramMap);
+            supportingInformationHistogramData = new SupportingInformationHistogramData(histogramMap);
         }
-        supportingInformationData.setAdditionalInformation(additionalInformation);
-        return supportingInformationData;
+        supportingInformationHistogramData.setAdditionalInformation(additionalInformation);
+        return supportingInformationHistogramData;
     }
 }
