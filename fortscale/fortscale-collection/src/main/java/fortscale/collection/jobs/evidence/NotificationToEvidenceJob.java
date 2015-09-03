@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -141,14 +142,20 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private JSONObject getSupportingInformation(Notification notification) {
+	private org.json.JSONObject getSupportingInformation(Notification notification) {
 		/*Map<String, String> attributes = notification.getAttributes();
 		if (attributes != null && attributes.containsKey("raw_events")) {
 			String json = "[" + attributes.get("raw_events") + "]";
 			return json.replace("$", "");
 		}
 		return "";*/
-		return notification.hasAttributes() ? new JSONObject(notification.getAttributes()) : new JSONObject();
+		try {
+			return notification.hasAttributes() ? new org.json.JSONObject(notification.getAttributes().toString()) :
+					new org.json.JSONObject();
+		} catch (JSONException ex) {
+			logger.error("Invalid JSON string - {}", ex.getMessage());
+		}
+		return new org.json.JSONObject();
 	}
 
 	private String getAnomalyField(Notification notification) {

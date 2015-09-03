@@ -9,8 +9,8 @@ public class VpnSessionOverlap {
     private long duration;
     private String source_ip;
     private String local_ip;
+    private long readbytes;
     private long totalbytes;
-    private double bytesavg;
     private String hostname;
     private String country;
 
@@ -46,22 +46,6 @@ public class VpnSessionOverlap {
         this.local_ip = local_ip;
     }
 
-    public long getTotalbytes() {
-        return totalbytes;
-    }
-
-    public void setTotalbytes(long totalbytes) {
-        this.totalbytes = totalbytes;
-    }
-
-    public double getBytesavg() {
-        return bytesavg;
-    }
-
-    public void setBytesavg(double bytesavg) {
-        this.bytesavg = bytesavg;
-    }
-
     public String getHostname() {
         return hostname;
     }
@@ -76,6 +60,22 @@ public class VpnSessionOverlap {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public long getReadbytes() {
+        return readbytes;
+    }
+
+    public void setReadbytes(long readbytes) {
+        this.readbytes = readbytes;
+    }
+
+    public long getTotalbytes() {
+        return totalbytes;
+    }
+
+    public void setTotalbytes(long totalbytes) {
+        this.totalbytes = totalbytes;
     }
 
 }
