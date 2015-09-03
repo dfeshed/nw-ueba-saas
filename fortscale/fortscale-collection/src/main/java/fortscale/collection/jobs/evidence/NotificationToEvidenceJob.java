@@ -1,18 +1,5 @@
 package fortscale.collection.jobs.evidence;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
@@ -25,6 +12,12 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import java.util.*;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -142,20 +135,13 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private org.json.JSONObject getSupportingInformation(Notification notification) {
-		/*Map<String, String> attributes = notification.getAttributes();
+	private String getSupportingInformation(Notification notification) {
+		Map<String, String> attributes = notification.getAttributes();
+		//TODO - get attributes as a whole and not just raw_events object
 		if (attributes != null && attributes.containsKey("raw_events")) {
-			String json = "[" + attributes.get("raw_events") + "]";
-			return json.replace("$", "");
+			return "[" + attributes.get("raw_events") + "]";
 		}
-		return "";*/
-		try {
-			return notification.hasAttributes() ? new org.json.JSONObject(notification.getAttributes().toString()) :
-					new org.json.JSONObject();
-		} catch (JSONException ex) {
-			logger.error("Invalid JSON string - {}", ex.getMessage());
-		}
-		return new org.json.JSONObject();
+		return "";
 	}
 
 	private String getAnomalyField(Notification notification) {
