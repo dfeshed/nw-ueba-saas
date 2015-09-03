@@ -294,7 +294,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate * 1000), new Date(endDate * 1000), dataEntities, score,
-				featureName, anomalyValueKey, 1, null);
+				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, null);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);
