@@ -308,6 +308,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
 			// In case this evidence is duplicated, we don't send it to output topic and continue to next score
 			return null;
+		} catch (Exception e){
+			logger.warn("Error while writing evidence to repository. Error: " + e.getMessage());
+			return null;
 		}
 
 		// To keep the structure, create a single evidence list..
