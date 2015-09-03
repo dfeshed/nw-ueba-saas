@@ -90,73 +90,59 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
-			int scoreThreshold = Integer.parseInt(getConfigString(config,
-					String.format("fortscale.events.score.threshold.%s", dataSource)));
+			int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.score.threshold.%s", dataSource)));
 			List<String> anomalyFields = null;
 			String scoreField = null;
-			String anomalyValueField = null;
+			String  anomalyValueField = null;
 			String anomalyTypeField = null;
 			String preProcessClassField = null;
 			String postProcessClassField = null;
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyFields.%s", dataSource))) {
-				anomalyFields = getConfigStringList(config, String.format("fortscale.events.anomalyFields.%s",
-						dataSource));
+				anomalyFields = getConfigStringList(config, String.format("fortscale.events.anomalyFields.%s", dataSource));
 			}
+
 			if (isConfigContainKey(config, String.format("fortscale.events.scoreField.%s", dataSource))) {
 				scoreField = getConfigString(config, String.format("fortscale.events.scoreField.%s", dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyValueField.%s", dataSource))) {
-				anomalyValueField = getConfigString(config, String.format("fortscale.events.anomalyValueField.%s",
-						dataSource));
+				anomalyValueField = getConfigString(config, String.format("fortscale.events.anomalyValueField.%s", dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource))) {
-				anomalyTypeField = getConfigString(config, String.format("fortscale.events.anomalyTypeField.%s",
-						dataSource));
+				anomalyTypeField = getConfigString(config, String.format("fortscale.events.anomalyTypeField.%s", dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.preprocess.class.%s", dataSource))) {
-				preProcessClassField = getConfigString(config, String.format("fortscale.events.preprocess.class.%s",
-						dataSource));
+				preProcessClassField = getConfigString(config, String.format("fortscale.events.preprocess.class.%s", dataSource));
 			}
 
 			if (isConfigContainKey(config, String.format("fortscale.events.postprocess.class.%s", dataSource))) {
-				postProcessClassField = getConfigString(config, String.format("fortscale.events.postprocess.class.%s",
-						dataSource));
+				postProcessClassField = getConfigString(config, String.format("fortscale.events.postprocess.class.%s", dataSource));
 			}
-			EntityType entityType = EntityType.valueOf(getConfigString(config,
-					String.format("fortscale.events.entityType.%s", dataSource)));
-			String entityNameField = getConfigString(config, String.format("fortscale.events.entityName.field.%s",
-					dataSource));
-			String startTimestampField = getConfigString(config,
-					String.format("fortscale.events.startTimestamp.field.%s", dataSource));
-			String endTimestampField = getConfigString(config, String.format("fortscale.events.endTimestamp.field.%s",
-					dataSource));
-			String partitionField = getConfigString(config,
-					String.format("fortscale.events.partition.field.%s", dataSource));
-			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config,
-					String.format("fortscale.events.evidence.type.%s", dataSource)));
+			EntityType entityType = EntityType.valueOf(getConfigString(config, String.format("fortscale.events.entityType.%s", dataSource)));
+			String entityNameField = getConfigString(config, String.format("fortscale.events.entityName.field.%s", dataSource));
+			String startTimestampField = getConfigString(config, String.format("fortscale.events.startTimestamp.field.%s", dataSource));
+			String endTimestampField = getConfigString(config, String.format("fortscale.events.endTimestamp.field.%s", dataSource));
+			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
+			EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.evidence.type.%s", dataSource)));
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
             String totalFieldPath = null;
 			String entitySupportingInformationPopulatorClass = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
-				dataEntitiesIdsField = getConfigString(config,
-						String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
+				dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
 			} else if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.%s", dataSource))) {
-				dataEntitiesIds = getConfigStringList(config,
-						String.format("fortscale.events.dataEntitiesIds.%s", dataSource));
+				dataEntitiesIds = getConfigStringList(config, String.format("fortscale.events.dataEntitiesIds.%s", dataSource));
 			}
 			List<String> defaultFields = null;
 			if (isConfigContainKey(config, String.format("fortscale.events.defaultFields.%s", dataSource))) {
-				defaultFields = getConfigStringList(config,
-						String.format("fortscale.events.addDefaultFields.%s", dataSource));
+				defaultFields = getConfigStringList(config, String.format("fortscale.events.addDefaultFields.%s", dataSource));
 			}
+
             if (isConfigContainKey(config, String.format("fortscale.events.total.field.path.%s", dataSource))) {
-                totalFieldPath = getConfigString(config,
-						String.format("fortscale.events.total.field.path.%s", dataSource));
+                totalFieldPath = getConfigString(config, String.format("fortscale.events.total.field.path.%s", dataSource));
             }
 			if (isConfigContainKey(config, String.format("fortscale.events.supportinginformation.populator.%s",
 					dataSource))) {
@@ -208,29 +194,21 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
-		Evidence evidence = null;
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
 				DataEntityField dataEntityField = dataEntity.getField(anomalyField);
-				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0),
-						dataEntityField.getScoreField());
-				evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
-						scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField),
-						anomalyField, totalAmountOfEvents);
+				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), dataEntityField.getScoreField());
+				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmountOfEvents);
 			}
 		} else {
-			String anomalyField = convertToString(validateFieldExistsAndGetValue(message,
-					dataSourceConfiguration.anomalyTypeField, true));
-			evidence = createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds,
-					dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField,
-					anomalyField, totalAmountOfEvents);
+			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
+			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmountOfEvents);
 		}
 	}
 
-	private Evidence createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector,
-									String inputTopic, JSONObject message, List<String> dataEntitiesIds,
-									String scoreField, String anomalyValueField, String anomalyTypeField,
-									Integer totalAmountOfEvents) throws Exception{
+
+
+	private void createEvidence(DataSourceConfiguration dataSourceConfiguration, MessageCollector collector, String inputTopic, JSONObject message, List<String> dataEntitiesIds, String scoreField, String anomalyValueField, String anomalyTypeField,Integer totalAmountOfEvents) throws Exception{
 
 		// check score
 		Double score = convertToDouble(validateFieldExistsAndGetValue(message, scoreField, true));
@@ -285,7 +263,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			} catch (DuplicateKeyException e) {
 				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
 				// In case this evidence is duplicated, we don't send it to output topic and continue to next score
-				return null;
+				return;
 			}
 
 			// only if we have default fields for the message
@@ -303,9 +281,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence", inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
 			}
-			return evidence;
 		}
-		return null;
 	}
 
 	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
