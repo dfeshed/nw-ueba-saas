@@ -27,11 +27,11 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
 
+
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE = "F";
 	final String P_FEATURE_VALUE = "P";
 	final String ENTITY_NAME_FIELD = "normalized_username";
-
 	/**
 	 * Logger
 	 */
@@ -294,7 +294,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,
-				aggregatedFeatureEvent.getAggregatedFeatureName(), featureName, 1, null);
+				featureName, anomalyValueKey, 1, null);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);
