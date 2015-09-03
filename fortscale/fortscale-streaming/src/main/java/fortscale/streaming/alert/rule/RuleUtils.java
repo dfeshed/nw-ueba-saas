@@ -5,6 +5,8 @@ package fortscale.streaming.alert.rule;
  */
 public class RuleUtils {
 
+	public static final String ENTITY_TYPE_PREFIX_USER = "normalized_username_";
+
 	public static Long hourStartTimestamp(Long timestamp){
 		if (timestamp == null){
 			return 0L;
@@ -36,6 +38,6 @@ public class RuleUtils {
 		if(contextId == null){
 			return null;
 		}
-		 return contextId.split("normalized_username_")[1];
+		 return contextId.split(ENTITY_TYPE_PREFIX_USER)[1];
 	}
 }
