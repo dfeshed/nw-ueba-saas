@@ -250,7 +250,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// try to fetch evidence from repository
 		List<Evidence> fEvidences = findFEvidences(EntityType.User,  entityValue,
-				aggregatedFeatureEvent.getStartTime(), aggregatedFeatureEvent.getEndTime(),
+				aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000,
 				aggregatedFeatureEvent.getDataSource(), aggregatedFeatureEvent.getAggregatedFeatureName());
 
 		// In case we found previously created evidence in the repository, return it
