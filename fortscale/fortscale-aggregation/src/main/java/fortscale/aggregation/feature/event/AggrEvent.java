@@ -105,9 +105,6 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_SCORE)
     Double score;
 
-    @Transient
-    private JSONObject event;
-
     private static SimpleDateFormat getSimpleDateFormat(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
@@ -118,7 +115,6 @@ public class AggrEvent implements Serializable {
 
     public AggrEvent(JSONObject event) {
         Assert.notNull(event);
-        this.event = event;
         eventType = event.getAsString(EVENT_FIELD_EVENT_TYPE);
         dataSource = event.getAsString(EVENT_FILED_DATA_SOURCE);
         featureType = event.getAsString(EVENT_FIELD_FEATURE_TYPE);
@@ -138,7 +134,12 @@ public class AggrEvent implements Serializable {
         score = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_SCORE));
     }
 
-    public JSONObject unwrap() {
+    public JSONObject getAsJSONObject() {
+        JSONObject event =  buildEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo,
+                bucketConfName, context, startTimeUnix, endTimeUnix.getTime(), dataSources, creationEpochTime);
+        if(score!=null) {
+            event.put(EVENT_FIELD_SCORE, score);
+        }
         return event;
     }
 

@@ -2,28 +2,36 @@ package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import fortscale.utils.logging.annotation.LogException;
-import javax.validation.Valid;
-import org.springframework.stereotype.Controller;
-import javax.annotation.PostConstruct;
+import fortscale.web.exceptions.InvalidParameterException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -82,9 +90,11 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "page") Integer fromPage,
 								  @RequestParam(required=false, value = "severity") String severity,
 								  @RequestParam(required=false, value = "status") String status,
+								  @RequestParam(required=false, value = "feedback") String feedback,
 								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
-								  @RequestParam(required=false, value = "entity_tags") String entityTags
+								  @RequestParam(required=false, value = "entity_tags") String entityTags,
+								  @RequestParam(required=false, value = "entity_id") String entityId
 
 	)  throws  Exception{
 
@@ -99,8 +109,9 @@ public class ApiAlertController extends BaseController {
 
 
 		int pageSize = 0; //Fetch all rows.
-		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize, fromPage, severity,
-				status,	alertStartRange,	entityName, entityTags);
+		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
+												fromPage, severity,	status, feedback, alertStartRange,entityName,
+												entityTags, entityId);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -162,9 +173,11 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "page") Integer fromPage,
 										  @RequestParam(required=false, value = "severity") String severity,
 										  @RequestParam(required=false, value = "status") String status,
+										  @RequestParam(required=false, value = "feedback") String feedback,
 										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 										  @RequestParam(required=false, value = "entity_name") String entityName,
-										  @RequestParam(required=false, value = "entity_tags") String entityTags) {
+										  @RequestParam(required=false, value = "entity_tags") String entityTags,
+										  @RequestParam(required=false, value = "entity_id") String entityId) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -192,16 +205,16 @@ public class ApiAlertController extends BaseController {
 		Long count;
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
-		if (severity == null && status == null && alertStartRange == null && entityName == null && entityTags == null) {
+		if (severity == null && status == null  && feedback == null &&  alertStartRange == null && entityName == null && entityTags == null && entityId == null) {
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
-					entityTags);
-			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, alertStartRange, entityName,
-					entityTags);
+			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
+					entityTags, entityId);
+			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
+					entityTags, entityId);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -287,6 +300,41 @@ public class ApiAlertController extends BaseController {
 		toReturn.setData(alert);
 
 		return toReturn;
+	}
+
+	/**
+	 * API to update alert status
+	 * @param body
+	 * @return
+	 */
+	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@LogException
+	@ResponseBody
+	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
+		Alert alert = alertsDao.getAlertById(id);
+		JSONObject params = new JSONObject(body);
+		boolean alertUpdated = false;
+		if (params.has("status")) {
+			String status = params.getString("status");
+			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
+			if (alertStatus == null) {
+				throw new InvalidParameterException("Invalid AlertStatus: " + status);
+			}
+			alert.setStatus(alertStatus);
+			alertUpdated = true;
+		}
+		if (params.has("feedback")) {
+			String feedback = params.getString("feedback");
+			AlertFeedback alertFeedback = AlertFeedback.getByStringCaseInsensitive(feedback);
+			if (alertFeedback == null) {
+				throw new InvalidParameterException("Invalid AlertFeedback: " + feedback);
+			}
+			alert.setFeedback(alertFeedback);
+			alertUpdated = true;
+		}
+		if (alertUpdated) {
+			alertsDao.saveAlertInRepository(alert);
+		}
 	}
 
 	/**

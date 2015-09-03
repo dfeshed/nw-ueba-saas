@@ -38,19 +38,34 @@ public interface AlertsRepositoryCustom {
 	/**
 	 * find alerts by filters
 	 * @param pageRequest
-	 * @param severityArray comma separated list of severity to filter by
+	 * @param severityArray   	  name of the field to access severity property
+	 * @param statusArrayFilter   name of the field to access status property
+	 * @param feedbackArrayFilter comma separated list of severity attributes to include
+	 * @param statusArrayFilter   comma separated list of status attributes to include
+	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
+	 * @param dateRangeFilter 	  range of dates to filter
+	 * @param entitiesIds 	 	  set of entity ids to filter by
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, Set<String> entitiesIds);
+							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+							   Set<String> entitiesIds);
 
 	/**
 	 *
 	 * @param pageRequest
+	 * @param severityArray   	  name of the field to access severity property
+	 * @param statusArrayFilter   name of the field to access status property
+	 * @param feedbackArrayFilter comma separated list of severity attributes to include
+	 * @param statusArrayFilter   comma separated list of status attributes to include
+	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
+	 * @param dateRangeFilter 	  range of dates to filter
+	 * @param entitiesIds 	 	  set of entity ids to filter by
 	 * @param severityArray comma separated list of severity to filter by
 	 * @return count of alert objects that apply to the filter
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, Set<String> entitiesIds);
+							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
+							  Set<String> entitiesIds);
 
 }

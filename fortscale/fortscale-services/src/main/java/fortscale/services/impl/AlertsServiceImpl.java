@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
@@ -90,27 +91,39 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		return alertsRepository.count(pageRequest);
 	}
 
-	@Override
-	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									  String dateRangeFilter, String entityName, String entityTags) {
+	private Set<String> getUserIds(String entityTags, String entityId) {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
 			ids = userService.findIdsByTags(tagsFilter);
 		}
-		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
+
+		if (entityId != null) {
+			if (ids == null) {
+				ids = new HashSet();
+			}
+
+			for (String singleId : entityId.split(",")) {
+				ids.add(singleId);
+			}
+		}
+
+		return ids;
+	}
+
+	@Override
+	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
+		Set<String> ids = getUserIds(entityTags, entityId);
+		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-									 String dateRangeFilter, String entityName, String entityTags) {
-		Set<String> ids = null;
-		if (entityTags != null) {
-			String[] tagsFilter = entityTags.split(",");
-			ids = userService.findIdsByTags(tagsFilter);
-		}
-		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, dateRangeFilter,
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
+		Set<String> ids = getUserIds(entityTags, entityId);
+		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
 

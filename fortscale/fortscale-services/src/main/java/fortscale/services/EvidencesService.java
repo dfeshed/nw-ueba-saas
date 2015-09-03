@@ -2,7 +2,9 @@ package fortscale.services;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceTimeframe;
 import fortscale.domain.core.EvidenceType;
+
 import java.util.Date;
 import java.util.List;
 
@@ -13,18 +15,19 @@ public interface EvidencesService {
 
 	/**
 	 * Create new object (transient) of evidence
-	 * @param entityType    	The type of the entity
-	 * @param entityName    	The name of the entity
-	 * @param evidenceType   	The type of evidence
+	 * @param entityType        The type of the entity
+	 * @param entityName        The name of the entity
+	 * @param evidenceType    The type of evidence
 	 * @param dataEntitiesIds   The relevant data sources
 	 * @param score             The score
-	 * @param anomalyValue		Value of the field
+	 * @param anomalyValue        Value of the field
+	 * @param evidenceTimeframe evidence timeframe
 	 * @return					New evidence
 	 */
 	Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
 									 EvidenceType evidenceType, Date startDate, Date endDate,
-			List<String> dataEntitiesIds, Double score, String anomalyValue, String anomalyTypeFieldName,
-									 Integer totalAmountOfEvents);
+									 List<String> dataEntitiesIds, Double score, String anomalyValue, String anomalyTypeFieldName,
+									 Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe);
 
 	/**
 	 * Create new evidence in Mongo
