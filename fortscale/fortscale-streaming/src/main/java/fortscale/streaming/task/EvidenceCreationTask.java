@@ -274,7 +274,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 								forName(entitySupportingInformationPopulatorClass));
 				EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
 						populate(anomalyTypeField, supportingInformation);
-				evidence.setSupportingInformation(entitySupportingInformation);
+				if (entitySupportingInformation != null) {
+					evidence.setSupportingInformation(entitySupportingInformation);
+				}
 			}
 
 			// Save evidence to MongoDB

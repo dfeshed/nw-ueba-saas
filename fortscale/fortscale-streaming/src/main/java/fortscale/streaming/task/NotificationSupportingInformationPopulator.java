@@ -14,8 +14,11 @@ public class NotificationSupportingInformationPopulator implements EntitySupport
     public EntitySupportingInformation populate(String notificationType, String data) {
         NotificationSupportingInformation notificationSupportingInformation = NotificationSupportingInformationFactory.
                 getNotificationSupportingInformation(notificationType);
-        notificationSupportingInformation.setData(data);
-        return notificationSupportingInformation;
+        if (notificationSupportingInformation != null) {
+            notificationSupportingInformation.setData(data);
+            return notificationSupportingInformation;
+        }
+        return null;
     }
 
 }

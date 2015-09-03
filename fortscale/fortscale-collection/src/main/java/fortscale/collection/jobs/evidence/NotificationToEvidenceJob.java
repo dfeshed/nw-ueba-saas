@@ -141,14 +141,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private String getSupportingInformation(Notification notification) {
+	private JSONObject getSupportingInformation(Notification notification) {
 		/*Map<String, String> attributes = notification.getAttributes();
 		if (attributes != null && attributes.containsKey("raw_events")) {
 			String json = "[" + attributes.get("raw_events") + "]";
 			return json.replace("$", "");
 		}
 		return "";*/
-		return notification.hasAttributes() ? notification.getAttributes().toString() : "";
+		return notification.hasAttributes() ? new JSONObject(notification.getAttributes()) : new JSONObject();
 	}
 
 	private String getAnomalyField(Notification notification) {
