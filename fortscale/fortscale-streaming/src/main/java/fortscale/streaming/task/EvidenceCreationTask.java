@@ -1,10 +1,8 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceTimeframe;
-import fortscale.domain.core.EvidenceType;
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationBasePopulator;
+import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
@@ -74,6 +72,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	private DataEntitiesConfig dataEntitiesConfig;
 
+	private String supportingInformationField;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -86,6 +85,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 		// Get the output topic
 		outputTopic = getConfigString(config, "fortscale.output.topic");
+
+		supportingInformationField = getConfigString(config, "fortscale.evidence.supporting.information.field");
 
 		// Fill the map between the input topic and the data source
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
@@ -130,6 +131,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			List<String> dataEntitiesIds = null;
 			String dataEntitiesIdsField = null;
             String totalFieldPath = null;
+			String entitySupportingInformationPopulatorClass = null;
 			//if dataEntitiesIds is a field name and not a value
 			if (isConfigContainKey(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource))) {
 				dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.dataEntitiesIds.field.%s", dataSource));
@@ -144,9 +146,16 @@ public class EvidenceCreationTask extends AbstractStreamTask {
             if (isConfigContainKey(config, String.format("fortscale.events.total.field.path.%s", dataSource))) {
                 totalFieldPath = getConfigString(config, String.format("fortscale.events.total.field.path.%s", dataSource));
             }
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType,scoreThreshold,dataEntitiesIds,dataEntitiesIdsField,startTimestampField,
-					endTimestampField,entityType,entityNameField,partitionField,anomalyFields, scoreField,
-					anomalyValueField,anomalyTypeField, preProcessClassField, postProcessClassField, defaultFields, totalFieldPath));
+			if (isConfigContainKey(config, String.format("fortscale.events.supportinginformation.populator.%s",
+					dataSource))) {
+				entitySupportingInformationPopulatorClass = getConfigString(config,
+						String.format("fortscale.events.supportinginformation.populator.%s", dataSource));
+			}
+			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType, scoreThreshold,
+					dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
+					entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
+					preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
+					entitySupportingInformationPopulatorClass));
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
@@ -171,10 +180,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		}
 
         //Get the total events amount if exist
-        Integer totalAmiountOfEvents = null;
+        Integer totalAmountOfEvents = null;
 
 		if(dataSourceConfiguration.totalFieldPath != null)
-        	totalAmiountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
+        	totalAmountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
 
 
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
@@ -191,11 +200,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
 				DataEntityField dataEntityField = dataEntity.getField(anomalyField);
 				String scoreField = dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), dataEntityField.getScoreField());
-				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmiountOfEvents);
+				createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, scoreField, dataEntitiesConfig.getFieldColumn(dataEntitiesIds.get(0), anomalyField), anomalyField,totalAmountOfEvents);
 			}
 		} else {
 			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
-			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmiountOfEvents);
+			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmountOfEvents);
 		}
 	}
 
@@ -235,6 +244,20 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Create evidence from event
 			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents, evidenceTimeframe);
 
+			if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
+				String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
+						entitySupportingInformationPopulatorClass;
+				String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
+						supportingInformationField, true));
+				EntitySupportingInformationPopulator entitySupportingInformationPopulator =
+						(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
+								forName(entitySupportingInformationPopulatorClass));
+				EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+						populate(anomalyTypeField, supportingInformation);
+				if (entitySupportingInformation != null) {
+					evidence.setSupportingInformation(entitySupportingInformation);
+				}
+			}
 
 			// Save evidence to MongoDB
 			try {
@@ -370,9 +393,32 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 */
 	public static class DataSourceConfiguration {
 
-		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds, String dataEntitiesIdsField, String startTimestampField, String endTimestampField, EntityType entityType, String entityNameField,
-				 String partitionField, List<String> anomalyFields, String scoreField, String anomalyValueField, String anomalyTypeField ,String preProcessClassField, String postProcessClassField, List<String> defaultFields,String totalFieldPath) {
+		public EvidenceType evidenceType;
+		public int scoreThreshold;
+		public List<String> dataEntitiesIds;
+		public String dataEntitiesIdsField;
+		public String startTimestampField;
+		public String endTimestampField;
+		public EntityType entityType;
+		public String entityNameField;
+		public String partitionField;
+		public List<String> anomalyFields;
+		public String scoreField;
+		public String anomalyValueField;
+		public String anomalyTypeField;
+		public String preProcessClassField;
+		public String postProcessClassField;
+		public List<String> defaultFields;
+		public String totalFieldPath;
+		public String entitySupportingInformationPopulatorClass;
 
+		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds,
+									   String dataEntitiesIdsField, String startTimestampField,
+									   String endTimestampField, EntityType entityType, String entityNameField,
+				 					   String partitionField, List<String> anomalyFields, String scoreField,
+									   String anomalyValueField, String anomalyTypeField ,String preProcessClassField,
+									   String postProcessClassField, List<String> defaultFields,String totalFieldPath,
+									   String entitySupportingInformationPopulatorClass) {
 			this.evidenceType = evidenceType;
 			this.scoreThreshold = scoreThreshold;
 			this.dataEntitiesIds = dataEntitiesIds;
@@ -390,26 +436,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.postProcessClassField = postProcessClassField;
 			this.defaultFields = defaultFields;
             this.totalFieldPath = totalFieldPath;
-
+			this.entitySupportingInformationPopulatorClass = entitySupportingInformationPopulatorClass;
 		}
 
-
-		public EvidenceType evidenceType;
-		public int scoreThreshold;
-		public List<String> dataEntitiesIds;
-		public String dataEntitiesIdsField;
-		public String startTimestampField;
-		public String endTimestampField;
-		public EntityType entityType;
-		public String entityNameField;
-		public String partitionField;
-		public List<String> anomalyFields;
-		public String scoreField;
-		public String anomalyValueField;
-		public String anomalyTypeField;
-		public String preProcessClassField;
-		public String postProcessClassField;
-		public List<String> defaultFields;
-        public String totalFieldPath;
 	}
+
 }
