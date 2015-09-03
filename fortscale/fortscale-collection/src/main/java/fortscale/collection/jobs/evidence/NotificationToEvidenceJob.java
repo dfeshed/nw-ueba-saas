@@ -148,7 +148,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			return json.replace("$", "");
 		}
 		return "";*/
-		return notification.attributesToString();
+		return notification.toString();
 	}
 
 	private String getAnomalyField(Notification notification) {

@@ -1,10 +1,13 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
-import org.json.JSONObject;
+import fortscale.domain.events.VpnSession;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * supporting information for notification evidences - map of keys and values changing based on the type of notification
@@ -14,15 +17,20 @@ import org.json.JSONObject;
 @JsonTypeName("notificationSupportingInformation")
 public class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    private JsonNode data;
+    private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
 
-    public void setData(JSONObject json) {
+    private List<VpnSession> data;
+
+    public void setData(String json) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JsonOrgModule());
-        data = mapper.valueToTree(json);
+        try {
+            data = mapper.readValue(json, new TypeReference<List<VpnSession>>(){});
+        } catch (IOException ex) {
+            logger.error("String is not a valid JSON object {}", ex.getMessage());
+        }
     }
 
-    public JsonNode getData() {
+    public List<VpnSession> getData() {
         return data;
     }
 

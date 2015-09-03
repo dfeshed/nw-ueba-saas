@@ -17,11 +17,7 @@ public class NotificationSupportingInformationPopulator implements EntitySupport
     @Override
     public EntitySupportingInformation populate(String data) {
         NotificationSupportingInformation notificationSupportingInformation = new NotificationSupportingInformation();
-        try {
-            notificationSupportingInformation.setData(new JSONObject(data));
-        } catch (JSONException ex) {
-            logger.error("String is not a valid JSON object {}", ex.getMessage());
-        }
+        notificationSupportingInformation.setData(data);
         return notificationSupportingInformation;
     }
 
