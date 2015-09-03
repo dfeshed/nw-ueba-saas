@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.events.VpnSession;
 import parquet.org.slf4j.Logger;
@@ -19,19 +20,21 @@ public class NotificationSupportingInformation extends EntitySupportingInformati
 
     private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
 
-    private List<VpnSession> data;
+    private List<VpnSessionOverlap> data;
 
     public void setData(String json) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            data = mapper.readValue(json, new TypeReference<List<VpnSession>>(){});
+            data = mapper.readValue(json, new TypeReference<List<VpnSessionOverlap>>(){});
         } catch (IOException ex) {
             logger.error("String is not a valid JSON object {}", ex.getMessage());
         }
     }
 
-    public List<VpnSession> getData() {
+    public List<VpnSessionOverlap> getData() {
         return data;
     }
+
 
 }
