@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.EntitySupportingInformation;
 import fortscale.domain.core.NotificationSupportingInformation;
+import fortscale.domain.core.NotificationSupportingInformationFactory;
 import fortscale.domain.core.VpnOverlappingSupportingInformation;
 
 /**
@@ -10,8 +11,9 @@ import fortscale.domain.core.VpnOverlappingSupportingInformation;
 public class NotificationSupportingInformationPopulator implements EntitySupportingInformationPopulator {
 
     @Override
-    public EntitySupportingInformation populate(String data) {
-        NotificationSupportingInformation notificationSupportingInformation = new VpnOverlappingSupportingInformation();
+    public EntitySupportingInformation populate(String notificationType, String data) {
+        NotificationSupportingInformation notificationSupportingInformation = NotificationSupportingInformationFactory.
+                getNotificationSupportingInformation(notificationType);
         notificationSupportingInformation.setData(data);
         return notificationSupportingInformation;
     }

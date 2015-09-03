@@ -7,6 +7,6 @@ import fortscale.domain.core.EntitySupportingInformation;
  */
 public interface EntitySupportingInformationPopulator {
 
-    EntitySupportingInformation populate(String data);
+    EntitySupportingInformation populate(String type, String data);
 
 }
