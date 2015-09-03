@@ -132,6 +132,16 @@
             "failed_ssh_events": 1.0
           },
           "betas": {
+            "normalized_username_kerberos_logins_hourly.has_high_score_date_time_events_kerberos_logins": 1.0,
+            "normalized_username_ssh_hourly.has_high_score_date_time_events_ssh": 1.0,
+            "normalized_username_vpn_hourly.has_high_score_date_time_events_vpn": 1.0,
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_src_machines_with_high_score_kerberos": 1.0,
+            "normalized_username_ssh_hourly.distinct_number_of_src_machines_with_high_score_ssh":1.0,
+            "normalized_username_vpn_hourly.distinct_number_of_src_machines_with_high_score_vpn":1.0,
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_with_high_score_kerberos": 1.0,
+            "normalized_username_ssh_hourly.distinct_number_of_dst_machines_with_high_score_ssh":1.0,
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_failure_code_with_high_score_kerberos":1.0,
+            "normalized_username_vpn_hourly.distinct_number_of_country_with_high_score_vpn":1.0
           }
         }
       }
