@@ -37,6 +37,8 @@ public class EsperRulesTest {
 		//load esper configuration file which
 		Configuration esperConfig = new Configuration();
 		esperConfig.addPlugInSingleRowFunction("extractNormalizedUsernameFromContextId", RuleUtils.class.getName(), "extractNormalizedUsernameFromContextId");
+		esperConfig.getEngineDefaults().getLogging().setEnableExecutionDebug(true);
+		esperConfig.getEngineDefaults().getLogging().setEnableTimerDebug(false);
 		esperConfig.addEventType(EntityEvent.class);
 		esperConfig.addEventType(EntityTags.class);
 
@@ -52,23 +54,53 @@ public class EsperRulesTest {
 	 */
 	@Test
 	public void testSmartEventWithSensitiveAccountTest() throws Exception{
-		String SmartEventWithSensitiveAccount = "select 'Suspicious Activity For Sensitive Account' as title, Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags from EntityEvent(score > 50).std:groupwin(contextId).win:time(1 sec) as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and (('admin' = any(Tags.tags)) or ('executive' = any(Tags.tags)) or('service' = any(Tags.tags)))";
-		EPStatement stmt = epService.getEPAdministrator().createEPL(SmartEventWithSensitiveAccount);
+		// this rule is a copy of the rule exist in alert-generation-task.properties
+		String jokerSensitiveAccount =
+				"@Audit select  'Suspicious Activity For Sensitive Account' as title,"+
+				"case when score >= 50 and score < 65 then 'Low' when score >= 65 and score < 75 then 'Medium' when score >= 75 and score < 90 then 'High'"+
+				" when score >= 90 then 'Critical'  end as severity ,"+
+				" Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags"+
+				" from EntityEvent(score >= 50).std:groupwin(contextId).std:lastevent() as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags"+
+				" where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and " +
+				" (('admin' = any(Tags.tags)) or ('executive' = any(Tags.tags)) or('service' = any(Tags.tags)))";
+
+		EPStatement stmtLow = epService.getEPAdministrator().createEPL(jokerSensitiveAccount);
 
 		//listener catches only events that pass the rule
 		SupportUpdateListener listener = new SupportUpdateListener();
-		stmt.addListener(listener);
-		EntityEvent entityEventGood = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		stmtLow.addListener(listener);
+
+		//create events for testing
+		//each of these event should satisfy one rule exactly
+		EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,"event_type",70,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,"event_type",80,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventCritical = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+
+		//these events should not satisfy any rule
+		EntityEvent entityEventTooLow = new   EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventNotAdmin = new EntityEvent(1234L,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user10@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+
 
 		List<String> userTags = new ArrayList<>();
 		userTags.add("admin");
-
 		EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
 		epService.getEPRuntime().sendEvent(entityTags);
-		epService.getEPRuntime().sendEvent(entityEventGood);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName" }, new Object[] { "user1@fs.com" });
+		epService.getEPRuntime().sendEvent(entityEventLow);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
+
+		epService.getEPRuntime().sendEvent(entityEventMedium);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Medium" });
+
+		epService.getEPRuntime().sendEvent(entityEventHigh);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "High" });
 
 
+		epService.getEPRuntime().sendEvent(entityEventCritical);
+		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
+		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Critical" });
 
 	}
 }
