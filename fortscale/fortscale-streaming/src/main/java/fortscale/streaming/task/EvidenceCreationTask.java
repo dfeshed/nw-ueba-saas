@@ -263,7 +263,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		}
 	}
 
-	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
+	public static EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
 		if (evidenceType == EvidenceType.AnomalyAggregatedEvent) { // timeframe is relevant only to aggregated events
 			// aggregation timeframe in seconds = (end time - start time) + 1
 			// ==> need to add 1 second to the end time to get the timeframe, e.g. one hour / one day (in seconds)

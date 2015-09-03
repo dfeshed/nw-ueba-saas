@@ -6,6 +6,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.ComputerService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
+import fortscale.streaming.task.EvidenceCreationTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -294,9 +295,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
+		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(
+				EvidenceType.AnomalyAggregatedEvent, startDate, endDate);
+
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate * 1000), new Date(endDate * 1000), dataEntities, score,
-				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, null);
+				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);
