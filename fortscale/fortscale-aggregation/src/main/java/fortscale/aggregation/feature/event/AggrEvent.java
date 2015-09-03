@@ -121,7 +121,9 @@ public class AggrEvent implements Serializable {
         featureType = event.getAsString(EVENT_FIELD_FEATURE_TYPE);
         aggregatedFeatureName = event.getAsString(EVENT_FIELD_AGGREGATED_FEATURE_NAME);
         aggregatedFeatureValue = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_AGGREFGATED_FEATURE_VALUE));
-        aggregatedFeatureInfo = new JSONObject((Map) event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO));
+        if (event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO) != null) {
+            aggregatedFeatureInfo = new JSONObject((Map) event.get(EVENT_FIELD_AGGREGATED_FEATURE_INFO));
+        }
         bucketConfName = event.getAsString(EVENT_FIELD_BUCKET_CONF_NAME);
         context = (Map)event.get(EVENT_FIELD_CONTEXT);
         creationEpochTime = event.getAsNumber(EVENT_FIELD_CREATION_EPOCHTIME).longValue();
@@ -131,8 +133,10 @@ public class AggrEvent implements Serializable {
         endTime  = event.getAsString(EVENT_FIELD_END_TIME);
         endTimeUnix  = new Date(event.getAsNumber(EVENT_FIELD_END_TIME_UNIX).longValue());
         epochTime  = event.getAsNumber(EVENT_FIELD_EPOCHTIME).longValue();
-        dataSources = new JSONArray();
-        dataSources.addAll ((ArrayList)event.get(EVENT_FIELD_DATA_SOURCES));
+        if (event.get(EVENT_FIELD_DATA_SOURCES) != null) {
+            dataSources = new JSONArray();
+            dataSources.addAll((ArrayList) event.get(EVENT_FIELD_DATA_SOURCES));
+        }
         score = ConversionUtils.convertToDouble(event.get(EVENT_FIELD_SCORE));
     }
 
