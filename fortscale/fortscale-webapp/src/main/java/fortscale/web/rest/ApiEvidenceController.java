@@ -212,19 +212,19 @@ public class ApiEvidenceController extends DataQueryController {
 
 		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
 
-		List<SupportingInformationEntry> listOfEntries = createListOfEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
+		List<SupportingInformationEntry> rawListOfEntries = createListOfEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
 		if(numOfColumns == null){
-			numOfColumns = listOfEntries.size();
+			numOfColumns = rawListOfEntries.size();
 		}
 
-		reArrangeEntriesIfNeeded(listOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
+		List<SupportingInformationEntry> rearrangedEntries = reArrangeEntriesIfNeeded(rawListOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
 
 		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
 		}
 
-		supportingInformationBean.setData(listOfEntries);
+		supportingInformationBean.setData(rearrangedEntries);
 		return supportingInformationBean;
 	}
 
