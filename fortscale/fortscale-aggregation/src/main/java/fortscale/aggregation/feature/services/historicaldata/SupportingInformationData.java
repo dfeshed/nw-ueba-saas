@@ -11,8 +11,8 @@ import java.util.Map;
  * @author gils
  * Date: 03/09/2015
  */
-public interface SupportingInformationData<VAL_TYPE> {
-    Map<SupportingInformationKey, VAL_TYPE> getData();
+public interface SupportingInformationData<T> {
+    Map<SupportingInformationKey, T> getData();
     SupportingInformationKey getAnomalyValue();
     SupportingInformationTimeGranularity getTimeGranularity();
     Map<SupportingInformationKey, Map> getAdditionalInformation();

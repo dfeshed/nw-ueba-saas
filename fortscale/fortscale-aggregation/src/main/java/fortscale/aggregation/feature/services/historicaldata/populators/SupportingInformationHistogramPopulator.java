@@ -5,7 +5,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.logging.Logger;
@@ -56,7 +56,7 @@ public abstract class SupportingInformationHistogramPopulator implements Support
      * 4. Validate data consistency (histogram + anomaly)
      */
     @Override
-    public SupportingInformationHistogramData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
@@ -71,10 +71,10 @@ public abstract class SupportingInformationHistogramPopulator implements Support
 
             validateHistogramDataConsistency(histogramMap, anomalySupportingInformationKey);
 
-            return new SupportingInformationHistogramData(histogramMap, anomalySupportingInformationKey);
+            return new SupportingInformationGenericData<Double>(histogramMap, anomalySupportingInformationKey);
         }
         else {
-            return new SupportingInformationHistogramData(histogramMap);
+            return new SupportingInformationGenericData<Double>(histogramMap);
         }
     }
 

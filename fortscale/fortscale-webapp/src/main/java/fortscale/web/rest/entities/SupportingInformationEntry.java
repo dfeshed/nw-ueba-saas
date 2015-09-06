@@ -1,4 +1,4 @@
-package fortscale.domain.historical.data;
+package fortscale.web.rest.entities;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,27 +12,27 @@ import java.util.Map;
  * }
  * Created by galiar on 21/07/2015.
  */
-public class SupportingInformationEntry<VAL_TYPE extends Comparable> implements Serializable, Comparable<SupportingInformationEntry>{
+public class SupportingInformationEntry<T extends Comparable> implements Serializable, Comparable<SupportingInformationEntry>{
 
 	private List<String> keys;
 	private Map additionalInformation;
-	private VAL_TYPE value;
+	private T value;
 	private boolean anomaly;
 
 
 	public SupportingInformationEntry(){}
 
-	public SupportingInformationEntry(List<String> keys, VAL_TYPE value){
+	public SupportingInformationEntry(List<String> keys, T value){
 
 		this.value = value;
 		this.keys = keys;
 	}
 
-	public VAL_TYPE getValue() {
+	public T getValue() {
 		return value;
 	}
 
-	public void setValue(VAL_TYPE value) {
+	public void setValue(T value) {
 		this.value = value;
 	}
 

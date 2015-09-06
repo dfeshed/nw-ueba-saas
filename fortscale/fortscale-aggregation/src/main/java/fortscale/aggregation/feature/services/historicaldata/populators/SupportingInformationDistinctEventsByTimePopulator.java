@@ -4,7 +4,7 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationTimeGranularity;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
@@ -46,9 +46,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
      * Use same logic as in the base populator and set the time granularity
      */
     @Override
-    public SupportingInformationHistogramData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
 
-        SupportingInformationHistogramData supportingInformationHistogramData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
+        SupportingInformationGenericData<Double> supportingInformationHistogramData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
         SupportingInformationTimeGranularity timeGranularity = determineTimeGranularity();
 

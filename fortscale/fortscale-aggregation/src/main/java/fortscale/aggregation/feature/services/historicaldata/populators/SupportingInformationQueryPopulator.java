@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.time.TimeUtils;
@@ -28,18 +28,18 @@ public abstract class SupportingInformationQueryPopulator implements SupportingI
      * 3. Create the anomaly histogram key
      */
     @Override
-    public SupportingInformationHistogramData createSupportingInformationData(Evidence evidence, String contextValue,
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue,
                                                                      long evidenceEndTime, int timePeriodInDays) {
         long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         Map<SupportingInformationKey, Double> histogramMap = new HashMap<>();
         Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
         SupportingInformationKey anomaly = populate(evidence, contextValue, startTime, evidenceEndTime, histogramMap,
                 additionalInformation);
-        SupportingInformationHistogramData supportingInformationHistogramData;
+        SupportingInformationGenericData<Double> supportingInformationHistogramData;
         if (anomaly != null) {
-            supportingInformationHistogramData = new SupportingInformationHistogramData(histogramMap, anomaly);
+            supportingInformationHistogramData = new SupportingInformationGenericData<Double>(histogramMap, anomaly);
         } else {
-            supportingInformationHistogramData = new SupportingInformationHistogramData(histogramMap);
+            supportingInformationHistogramData = new SupportingInformationGenericData<Double>(histogramMap);
         }
         supportingInformationHistogramData.setAdditionalInformation(additionalInformation);
         return supportingInformationHistogramData;

@@ -11,8 +11,8 @@ import java.util.Map;
  * @author gils
  * Date: 03/09/2015
  */
-public class SupportingInformationGenericData<VAL_TYPE> implements SupportingInformationData{
-    protected Map<SupportingInformationKey, VAL_TYPE> dataMap = new HashMap<>();
+public class SupportingInformationGenericData<T> implements SupportingInformationData{
+    protected Map<SupportingInformationKey, T> dataMap = new HashMap<>();
 
     protected Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
 
@@ -20,17 +20,17 @@ public class SupportingInformationGenericData<VAL_TYPE> implements SupportingInf
 
     protected SupportingInformationTimeGranularity timeGranularity;
 
-    public SupportingInformationGenericData(Map<SupportingInformationKey, VAL_TYPE> dataMap, SupportingInformationKey anomalyValue) {
+    public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap, SupportingInformationKey anomalyValue) {
         this.dataMap = dataMap;
         this.anomalyValue = anomalyValue;
     }
 
-    public SupportingInformationGenericData(Map<SupportingInformationKey, VAL_TYPE> dataMap) {
+    public SupportingInformationGenericData(Map<SupportingInformationKey, T> dataMap) {
         this.dataMap = dataMap;
     }
 
     @Override
-    public Map<SupportingInformationKey, VAL_TYPE> getData() {
+    public Map<SupportingInformationKey, T> getData() {
         return dataMap;
     }
 

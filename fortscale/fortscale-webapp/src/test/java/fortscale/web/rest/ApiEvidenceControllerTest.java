@@ -1,6 +1,6 @@
 package fortscale.web.rest;
 
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationHistogramData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
@@ -90,7 +90,7 @@ public class ApiEvidenceControllerTest {
 		when(mockEvidence.getId()).thenReturn(MOCK_EVIDENCE_ID);
 		when(mockEvidence.getAnomalyValue()).thenReturn("Afghanistan");
 		when(mockEvidence.getDataEntitiesIds()).thenReturn(dataEntities);
-		when(supportingInformationService.getEvidenceSupportingInformationData(eq(mockEvidence), anyString(), anyString(), anyString(), anyInt(), eq("Count"))).thenReturn(new SupportingInformationHistogramData(countries, anomalyCountry));
+		when(supportingInformationService.getEvidenceSupportingInformationData(eq(mockEvidence), anyString(), anyString(), anyString(), anyInt(), eq("Count"))).thenReturn(new SupportingInformationGenericData<Double>(countries, anomalyCountry));
 
 
 	}
@@ -219,7 +219,7 @@ public class ApiEvidenceControllerTest {
 		when(mockEvidence.getAnomalyValue()).thenReturn("2015-08-05 02:05:53");
 		when(mockEvidence.getDataEntitiesIds()).thenReturn(dataEntities);
 
-		when(supportingInformationService.getEvidenceSupportingInformationData(eq(mockEvidence), anyString(), anyString(), anyString(), anyInt(), eq("hourlyCountGroupByDayOfWeek"))).thenReturn(new SupportingInformationHistogramData(heatmap, anomalyTime));
+		when(supportingInformationService.getEvidenceSupportingInformationData(eq(mockEvidence), anyString(), anyString(), anyString(), anyInt(), eq("hourlyCountGroupByDayOfWeek"))).thenReturn(new SupportingInformationGenericData<Double>(heatmap, anomalyTime));
 
 		MvcResult result =   mockMvc.perform(get("/api/evidences/" + MOCK_EVIDENCE_ID + "/historical-data?context_type=someCT&context_value=someCV&feature=someFeature&function=hourlyCountGroupByDayOfWeek").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"))

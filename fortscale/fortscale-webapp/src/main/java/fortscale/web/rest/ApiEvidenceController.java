@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.historical.data.SupportingInformationEntry;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
@@ -17,6 +16,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -218,7 +218,7 @@ public class ApiEvidenceController extends DataQueryController {
 			numOfColumns = rawListOfEntries.size();
 		}
 
-		List<SupportingInformationEntry> rearrangedEntries = reArrangeEntriesIfNeeded(rawListOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
+		List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
 
 		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
@@ -234,7 +234,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * 2. Add additional anomaly value entry (if exist)
 	 *
 	 */
-	private List<SupportingInformationEntry> reArrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, String aggFunction, Integer numOfColumns, String sortDirection, boolean isSupportingInformationAnomalyValueExists) {
+	private List<SupportingInformationEntry> rearrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, String aggFunction, Integer numOfColumns, String sortDirection, boolean isSupportingInformationAnomalyValueExists) {
 
 		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
 			Collections.sort(listOfEntries); // the default sort is ascending
