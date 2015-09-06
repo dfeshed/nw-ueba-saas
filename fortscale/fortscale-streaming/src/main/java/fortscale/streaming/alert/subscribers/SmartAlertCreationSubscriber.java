@@ -43,7 +43,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Aggregated feature configuration service
 	 */
-	@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService = new AggregatedFeatureEventsConfService();
+	@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
 	/**
 	 * Alerts service (for Mongo export)
