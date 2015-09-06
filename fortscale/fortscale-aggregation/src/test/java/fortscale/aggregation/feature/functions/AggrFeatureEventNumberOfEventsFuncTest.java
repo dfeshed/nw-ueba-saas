@@ -15,6 +15,8 @@ import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
+import static org.mockito.Matchers.anyString;
+
 /**
  * Created by orend on 26/07/2015.
  */
@@ -37,7 +39,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureEventNumberOfEventsFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "AnomalyAggregatedEvent", anyString(),  map, new JSONObject());
 	}
 
 	@Test
