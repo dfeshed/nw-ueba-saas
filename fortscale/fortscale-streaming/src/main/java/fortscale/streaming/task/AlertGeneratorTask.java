@@ -126,6 +126,10 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		return info;
 	}
 
+	/**
+	 * initializing esper rules, variables, subscribers from config
+	 * @param config
+	 */
 	private void createEsperConfiguration(Config config){
 		//subscribe instances of Esper EPL statements
 		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleUtils {
 
+	public static final String ENTITY_TYPE_PREFIX_USER = "normalized_username_";
+
 	private static Logger logger = LoggerFactory.getLogger(RuleUtils.class);
 
 	public static Long hourStartTimestamp(Long timestamp){
@@ -43,5 +45,12 @@ public class RuleUtils {
 			return Long.MAX_VALUE;
 		}
 		return startTimestamp+(60*60*24*1000-1);
+	}
+
+	public static String extractNormalizedUsernameFromContextId(String contextId){
+		if(contextId == null){
+			return null;
+		}
+		 return contextId.split(ENTITY_TYPE_PREFIX_USER)[1];
 	}
 }

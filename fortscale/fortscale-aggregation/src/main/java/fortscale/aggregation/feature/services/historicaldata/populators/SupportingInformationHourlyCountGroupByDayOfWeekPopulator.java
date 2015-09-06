@@ -110,7 +110,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
             calendar.setTime(truncatedDate);
 
             Integer dayOfWeekOrdinalVal = calendar.get(Calendar.DAY_OF_WEEK);
-            Integer hourVal = calendar.get(Calendar.HOUR);
+            Integer hourVal = calendar.get(Calendar.HOUR_OF_DAY);
 
             String dayOfWeek = TimeUtils.getDayOfWeek(dayOfWeekOrdinalVal);
 
