@@ -66,13 +66,24 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 	}
 
 	public String getAnomalyType(String aggregatedFeatureName){
-		// TODO: 
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
+			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
+				return  aggregatedFeatureEventConf.getAnomalyType();
+			}
+		}
+
 		return null;
 	}
 
-	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String featureName){
-		// TODO
-		return AggrEventEvidenceFilteringStrategyEnum.HIGHESTSCORE;
+	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String aggregatedFeatureName){
+		String strategy = "";
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
+			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
+				strategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
+			}
+		}
+
+		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy.toUpperCase());
 	}
 
 	private void loadAggregatedFeatureEventDefinitions() {

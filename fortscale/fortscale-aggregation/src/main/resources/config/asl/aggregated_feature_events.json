@@ -322,6 +322,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -338,6 +340,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -354,6 +358,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -370,6 +376,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -387,6 +395,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -404,6 +414,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -421,6 +433,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -438,6 +452,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -455,6 +471,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "failure_code",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "failure_code_with_high_score_histogram"
@@ -472,6 +490,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "country",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "country_with_high_score_histogram"
