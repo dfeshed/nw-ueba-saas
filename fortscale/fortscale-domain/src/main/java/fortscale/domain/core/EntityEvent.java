@@ -21,6 +21,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private String event_type;
 	private double score;
 	private Map<String, String> context;
+	private String contextId;
 	private long end_time_unix;
 	private long creation_epochtime;
 	private String entity_event_type;
@@ -30,12 +31,13 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 
 	public EntityEvent() {}
 
-	public EntityEvent(long start_time_unix, double entity_event_value, String event_type, double score, Map<String, String> context, long end_time_unix, long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events) {
+	public EntityEvent(long start_time_unix, double entity_event_value, String event_type, double score, Map<String, String> context, String contextId, long end_time_unix, long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events) {
 		this.start_time_unix = start_time_unix;
 		this.entity_event_value = entity_event_value;
 		this.event_type = event_type;
 		this.score = score;
 		this.context = context;
+		this.contextId = contextId;
 		this.end_time_unix = end_time_unix;
 		this.creation_epochtime = creation_epochtime;
 		this.entity_event_type = entity_event_type;
@@ -122,4 +124,13 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public void setAggregated_feature_events(List<JSONObject> aggregated_feature_events) {
 		this.aggregated_feature_events = aggregated_feature_events;
 	}
+	public String getContextId() {
+		return contextId;
+	}
+
+	public void setContextId(String contextId) {
+		this.contextId = contextId;
+	}
+
+
 }

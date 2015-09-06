@@ -87,9 +87,9 @@ public class SupportingInformationServiceTest {
 
         when(featureBucketsStore.getFeatureBucketsByContextAndTimeRange(any(FeatureBucketConf.class), anyString(), anyString(), anyLong(), anyLong())).thenReturn(featureBuckets);
 
-        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, timePeriodInDays, aggregationFunc);
+        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, timePeriodInDays, aggregationFunc);
 
-        Assert.assertTrue(!evidenceSupportingInformationData.getHistogram().isEmpty() && evidenceSupportingInformationData.getAnomalyValue() != null);
+        Assert.assertTrue(!evidenceSupportingInformationHistogramData.getData().isEmpty() && evidenceSupportingInformationHistogramData.getAnomalyValue() != null);
     }
 
     private ArrayList<FeatureBucket> createHistoricalFeatureBuckets(String contextType, String contextValue, long evidenceEndTime, int timePeriodInDays, String anomalyValue) {
@@ -182,9 +182,9 @@ public class SupportingInformationServiceTest {
 //
 //        when(featureBucketsStore.getFeatureBucketsByContextAndTimeRange(any(FeatureBucketConf.class), anyString(), anyString(), anyLong(), anyLong())).thenReturn(featureBuckets);
 //
-//        SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, timePeriodInDays, aggregationFunc);
+//        SupportingInformationHistogramData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, timePeriodInDays, aggregationFunc);
 //
-//        Assert.assertTrue(!evidenceSupportingInformationData.getHistogram().isEmpty() && evidenceSupportingInformationData.getAnomalyValue() != null);
+//        Assert.assertTrue(!evidenceSupportingInformationData.getData().isEmpty() && evidenceSupportingInformationData.getAnomalyValue() != null);
     }
 
 

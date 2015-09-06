@@ -1,73 +1,19 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
-import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
+
 /**
- * Representation of Supporting Information data.
- * Data must contain the histogram mapping (key-value) and optionally the anomaly value
+ * Interface for supporting information data representation
  *
  * @author gils
- * Date: 29/07/2015
+ * Date: 03/09/2015
  */
-public class SupportingInformationData {
-
-    private Map<HistogramKey, Double> histogram = new HashMap<>();
-
-    private Map<HistogramKey, Map> additionalInformation = new HashMap<>();
-
-    private HistogramKey anomalyValue;
-
-    private TimeGranularity timeGranularity;
-
-    public SupportingInformationData(Map<HistogramKey, Double> histogram, HistogramKey anomalyValue) {
-        this.histogram = histogram;
-        this.anomalyValue = anomalyValue;
-    }
-
-    public SupportingInformationData(Map<HistogramKey, Double> histogram) {
-        this.histogram = histogram;
-    }
-
-    public Map<HistogramKey, Double> getHistogram() {
-        return Collections.unmodifiableMap(histogram);
-    }
-
-    public HistogramKey getAnomalyValue() {
-        return anomalyValue;
-    }
-
-    public Map<HistogramKey, Map> getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public void setAdditionalInformation(Map<HistogramKey, Map> additionalInformation) {
-        this.additionalInformation = additionalInformation;
-    }
-
-    @Override
-    public String toString() {
-        return "SupportingInformationData{" +
-                "histogram=" + histogram +
-                ", additionalInformation=" + additionalInformation +
-                ", anomalyValue=" + anomalyValue +
-                ", timeGranularity=" + timeGranularity +
-                '}';
-    }
-
-    public TimeGranularity getTimeGranularity() {
-        return timeGranularity;
-    }
-
-    public void setTimeGranularity(TimeGranularity timeGranularity) {
-        this.timeGranularity = timeGranularity;
-    }
-
-    public enum TimeGranularity {
-        Hourly,
-        Daily
-    }
+public interface SupportingInformationData<T> {
+    Map<SupportingInformationKey, T> getData();
+    SupportingInformationKey getAnomalyValue();
+    SupportingInformationTimeGranularity getTimeGranularity();
+    Map<SupportingInformationKey, Map> getAdditionalInformation();
 }

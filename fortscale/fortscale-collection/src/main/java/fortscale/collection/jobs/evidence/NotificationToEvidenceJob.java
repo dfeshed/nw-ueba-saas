@@ -1,17 +1,5 @@
 package fortscale.collection.jobs.evidence;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
@@ -24,6 +12,12 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import java.util.*;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -51,6 +45,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationStartTimestampField;
 	private String notificationEndTimestampField;
 	private String notificationTypeField;
+	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
 
@@ -79,6 +74,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationEndTimestampField");
 		notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+		notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map,
+				"notificationSupportingInformationField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
@@ -122,6 +119,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationValueField, getAnomalyField(notification));
 				evidence.put(notificationEntityField, getEntity(notification));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
+				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.debug("Writing to topic evidence - {}", messageToWrite);
 				streamWriter.send(notification.getIndex(), messageToWrite);
@@ -135,6 +133,15 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchConfiguration.setLastFetchTime(dateStr);
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
+	}
+
+	private String getSupportingInformation(Notification notification) {
+		Map<String, String> attributes = notification.getAttributes();
+		//TODO - get attributes as a whole and not just raw_events object
+		if (attributes != null && attributes.containsKey("raw_events")) {
+			return "[" + attributes.get("raw_events") + "]";
+		}
+		return "";
 	}
 
 	private String getAnomalyField(Notification notification) {
