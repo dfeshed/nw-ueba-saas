@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Matchers.anyString;
 
 /**
  * Created by amira on 18/06/2015.
@@ -38,7 +37,7 @@ public class AggrFeatureHistogramFuncTest {
         }
         Map<String, List<String>> map = new HashMap<>();
         map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, 300, "AnomalyAggregatedEvent", anyString(), map, new JSONObject());
+        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE", map, new JSONObject());
     }
 
     @Test
