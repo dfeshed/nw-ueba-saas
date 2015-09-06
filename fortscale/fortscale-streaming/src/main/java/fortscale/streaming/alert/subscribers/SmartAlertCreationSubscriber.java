@@ -15,6 +15,7 @@ import fortscale.streaming.task.EvidenceCreationTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
@@ -25,6 +26,7 @@ import java.util.*;
 /**
  * Created by tomerd on 30/08/2015.
  */
+@Configurable(preConstruction = true)
 public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
