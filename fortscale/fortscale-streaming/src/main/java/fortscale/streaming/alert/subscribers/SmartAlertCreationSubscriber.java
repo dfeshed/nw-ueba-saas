@@ -26,7 +26,6 @@ import java.util.*;
 /**
  * Created by tomerd on 30/08/2015.
  */
-@Configurable(preConstruction = true)
 public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//TODO: Move to esper rule
