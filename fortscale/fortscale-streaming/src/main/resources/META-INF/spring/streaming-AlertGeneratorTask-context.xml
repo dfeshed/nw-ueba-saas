@@ -97,8 +97,7 @@
     <bean id="destroyVariableUpdateStatementSubscriber" class="fortscale.streaming.alert.subscribers.DestroyVariableUpdateStatementSubscriber" scope="prototype" />
 
     <bean id="smartAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SmartAlertCreationSubscriber" scope="prototype" />
-    <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
-    
+
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
 </beans>
