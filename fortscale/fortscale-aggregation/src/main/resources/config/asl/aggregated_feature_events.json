@@ -9,6 +9,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_kerberos",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -27,6 +29,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_kerberos_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -45,6 +49,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_kerberos",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -63,6 +69,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_kerberos_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -81,6 +89,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_ssh",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -99,6 +109,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_ssh_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -117,6 +129,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_ssh",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -135,6 +149,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_ssh_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -153,6 +169,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_vpn_events",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -170,6 +188,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_vpn_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -187,6 +207,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -204,6 +226,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -221,6 +245,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -238,6 +264,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -255,6 +283,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_ssh_events",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -272,6 +302,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_ssh_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -289,6 +321,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_events",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -306,6 +340,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
