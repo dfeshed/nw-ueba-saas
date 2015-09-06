@@ -86,6 +86,21 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	/**
+	 * Finds evidences in mongo based on entity, time and type of feature
+	 * @param entityEvent
+	 * @param entityName
+	 * @param startDate
+	 * @param endDate
+	 * @param dataEntities
+	 * @param featureName
+	 * @return
+	 */
+	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long startDate, long endDate,
+			String dataEntities, String featureName) {
+		return evidencesRepository.findFeatureEvidences(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
+	}
+
+	/**
 	 * Saves evidence in Mongo
 	 * @param evidence the evidence to save
 	 * @return the saved evidence
