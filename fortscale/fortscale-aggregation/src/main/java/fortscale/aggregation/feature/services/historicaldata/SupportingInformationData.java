@@ -6,6 +6,8 @@ import java.util.Map;
 
 
 /**
+ * Interface for supporting information data representation
+ *
  * @author gils
  * Date: 03/09/2015
  */

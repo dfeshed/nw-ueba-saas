@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Generic implementation of supporting information data
+ *
  * @author gils
  * Date: 03/09/2015
  */

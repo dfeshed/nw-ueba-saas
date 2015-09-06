@@ -5,8 +5,7 @@ import fortscale.domain.historical.data.SupportingInformationKey;
 import java.util.Map;
 
 /**
- * Representation of Supporting Information data.
- * Data must contain the histogram mapping (key-value) and optionally the anomaly value
+ * Representation of Supporting Information data for histograms
  *
  * @author gils
  * Date: 29/07/2015
@@ -19,10 +18,6 @@ public class SupportingInformationHistogramData extends SupportingInformationGen
 
     public SupportingInformationHistogramData(Map<SupportingInformationKey, Double> dataMap) {
         super(dataMap);
-    }
-
-    public Map<SupportingInformationKey, Double> getHistogram() {
-        return dataMap;
     }
 
     @Override

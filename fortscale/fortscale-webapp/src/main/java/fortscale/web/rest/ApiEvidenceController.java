@@ -197,7 +197,7 @@ public class ApiEvidenceController extends DataQueryController {
 																		   @RequestParam(value = "context_value") String contextValue,
 																		   @RequestParam(value = "feature") String feature,
 																		   @RequestParam(value = "function") String aggFunction,
-																		   @RequestParam(required = false, value = "num_columns") Integer numColumns,
+																		   @RequestParam(required = false, value = "num_columns") Integer numOfColumns,
 																		   @RequestParam(required = false, defaultValue = DESC, value = "sort_direction") String sortDirection,
 																		   @RequestParam(required = false, defaultValue = "90", value = "time_range") Integer timePeriodInDays) {
 		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
@@ -208,32 +208,17 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.
-				getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
 
-		boolean isSupportingInformationAnomalyValueExists = evidenceSupportingInformationData.getAnomalyValue() != null;
+		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
 
-		List<SupportingInformationEntry> listOfEntries = createListOfEntries(evidenceSupportingInformationData,
-				isSupportingInformationAnomalyValueExists);
+		List<SupportingInformationEntry> listOfEntries = createListOfEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
-		if(numColumns == null){
-			numColumns = listOfEntries.size();
+		if(numOfColumns == null){
+			numOfColumns = listOfEntries.size();
 		}
 
-		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
-			Collections.sort(listOfEntries); // the default sort is ascending
-
-			// re -arrange list according to num columns, if necessary
-			if(listOfEntries.size() >= numColumns +
-					getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
-				//create new list divided into others, columns and anomaly
-				listOfEntries = createListWithOthers(listOfEntries, numColumns);
-			}
-
-			if (sortDirection.equals(DESC)) {
-				Collections.reverse(listOfEntries);
-			}
-		}
+		reArrangeEntriesIfNeeded(listOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
 
 		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
@@ -241,6 +226,34 @@ public class ApiEvidenceController extends DataQueryController {
 
 		supportingInformationBean.setData(listOfEntries);
 		return supportingInformationBean;
+	}
+
+	/*
+	 * Rearrange the entries for histograms (i.e. count aggregation based):
+	 * 1. optionally limit the number of entries by setting 'Others' entry
+	 * 2. Add additional anomaly value entry (if exist)
+	 *
+	 */
+	private List<SupportingInformationEntry> reArrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, String aggFunction, Integer numOfColumns, String sortDirection, boolean isSupportingInformationAnomalyValueExists) {
+
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
+			Collections.sort(listOfEntries); // the default sort is ascending
+
+			// re -arrange list according to num columns, if necessary
+			if(listOfEntries.size() >= numOfColumns + getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
+				//create new list divided into others, columns and anomaly
+				listOfEntries = createListWithOthers(listOfEntries, numOfColumns);
+			}
+
+			if (sortDirection.equals(DESC)) {
+				Collections.reverse(listOfEntries);
+			}
+		}
+		return listOfEntries;
+	}
+
+	private boolean isSupportingInformationAnomalyValueExists(SupportingInformationData evidenceSupportingInformationData) {
+		return evidenceSupportingInformationData.getAnomalyValue() != null;
 	}
 
 	private void addTimeGranularityInformation(DataBean<List<SupportingInformationEntry>> supportingInformationBean,
@@ -262,7 +275,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * @param numColumns the number of columns to keep. the rest will be inserted into 'others'
 	 * @return list divided into 'others' column and the rest of columns.
 	 */
-	private  List<SupportingInformationEntry> createListWithOthers(List<SupportingInformationEntry> oldList, int numColumns) {
+	private List<SupportingInformationEntry> createListWithOthers(List<SupportingInformationEntry> oldList, int numColumns) {
 
 		SupportingInformationEntry anomalyPair = new SupportingInformationEntry();
 		boolean hasAnomaly = false;
