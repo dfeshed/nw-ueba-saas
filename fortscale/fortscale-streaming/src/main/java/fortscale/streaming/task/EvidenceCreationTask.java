@@ -1,7 +1,6 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationBasePopulator;
 import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
@@ -44,6 +43,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private static final int HOURS_IN_DAY = 24;
 	private static final int HOURS_IN_WEEK = HOURS_IN_DAY * 7;
 	private static final int HOURS_IN_MONTH = HOURS_IN_DAY * 30;
+	private static final int ONE_HOUR = 1;
+
 	/**
 	 * Logger
 	 */
@@ -183,7 +184,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
         Integer totalAmountOfEvents = null;
 
 		if(dataSourceConfiguration.totalFieldPath != null)
-        	totalAmountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
+			totalAmountOfEvents = convertToInteger(validateFieldExistsAndGetValue(message, dataSourceConfiguration.totalFieldPath,false));
 
 
 		// Go over anomaly fields, check each one of them for anomaly according to threshold
@@ -248,14 +249,20 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
 						entitySupportingInformationPopulatorClass;
 				String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
-						supportingInformationField, true));
-				EntitySupportingInformationPopulator entitySupportingInformationPopulator =
-						(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
-								forName(entitySupportingInformationPopulatorClass));
-				EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
-						populate(anomalyTypeField, supportingInformation);
-				if (entitySupportingInformation != null) {
-					evidence.setSupportingInformation(entitySupportingInformation);
+						supportingInformationField, false));
+
+				if (supportingInformation != null) {
+					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
+							(EntitySupportingInformationPopulator) SpringService.getInstance().resolve(Class.
+									forName(entitySupportingInformationPopulatorClass));
+					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+							populate(anomalyTypeField, supportingInformation);
+					if (entitySupportingInformation != null) {
+						evidence.setSupportingInformation(entitySupportingInformation);
+					}
+				}
+				else {
+					logger.info("Could not populate supporting information field. Evidence ID = {} # entitySupportingInformationPopulatorClass = ", evidence.getId(), entitySupportingInformationPopulatorClass);
 				}
 			}
 
@@ -298,7 +305,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			int timeframeInHours = (int) duration.getStandardHours();
 
 			switch (timeframeInHours) {
-				case 1 :
+				case ONE_HOUR:
 					return EvidenceTimeframe.Hourly;
 				case HOURS_IN_DAY:
 					return EvidenceTimeframe.Daily;
@@ -322,7 +329,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * @return	New message
 	 */
 	private JSONObject convertMessageToStandardFormat(JSONObject message,
-			DataSourceConfiguration dataSourceConfiguration) {
+													  DataSourceConfiguration dataSourceConfiguration) {
 		JSONObject newMessage = new JSONObject();
 		for (String fieldId : dataSourceConfiguration.defaultFields) {
 			Object valueOfColumn = message.get(fieldId);
@@ -348,8 +355,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			value = ((JSONObject) value).get(fieldPart);
 
 		}
-		if (value == null && throwException) {
+		if (value == null ) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
+		}
+		if (throwException){
 			throw new StreamMessageNotContainFieldException(mapper.writeValueAsString(message), field);
 		}
 		return value;
@@ -415,7 +424,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds,
 									   String dataEntitiesIdsField, String startTimestampField,
 									   String endTimestampField, EntityType entityType, String entityNameField,
-				 					   String partitionField, List<String> anomalyFields, String scoreField,
+									   String partitionField, List<String> anomalyFields, String scoreField,
 									   String anomalyValueField, String anomalyTypeField ,String preProcessClassField,
 									   String postProcessClassField, List<String> defaultFields,String totalFieldPath,
 									   String entitySupportingInformationPopulatorClass) {
@@ -435,7 +444,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.preProcessClassField = preProcessClassField;
 			this.postProcessClassField = postProcessClassField;
 			this.defaultFields = defaultFields;
-            this.totalFieldPath = totalFieldPath;
+			this.totalFieldPath = totalFieldPath;
 			this.entitySupportingInformationPopulatorClass = entitySupportingInformationPopulatorClass;
 		}
 
