@@ -56,13 +56,7 @@ public class EsperRulesTest {
 	public void testSmartEventWithSensitiveAccountTest() throws Exception{
 		// this rule is a copy of the rule exist in alert-generation-task.properties
 		String jokerSensitiveAccount =
-				"@Audit select  'Suspicious Activity For Sensitive Account' as title,"+
-				"case when score >= 50 and score < 65 then 'Low' when score >= 65 and score < 75 then 'Medium' when score >= 75 and score < 90 then 'High'"+
-				" when score >= 90 then 'Critical'  end as severity ,"+
-				" Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags"+
-				" from EntityEvent(score >= 50).std:groupwin(contextId).std:lastevent() as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags"+
-				" where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and " +
-				" (('admin' = any(Tags.tags)) or ('executive' = any(Tags.tags)) or('service' = any(Tags.tags)))";
+				"select 'Suspicious Activity For Sensitive Account' as title, case when score >= 50 and score < 65 then 'Low' when score >= 65 and score < 75 then 'Medium' when score >= 75 and score < 90 then 'High' when score >= 90 then 'Critical'  end as severity , Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags from EntityEvent(score >= 50).std:groupwin(contextId).std:lastevent() as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and ( 'admin' = any(Tags.tags) or 'executive' = any(Tags.tags) or 'service' = any(Tags.tags) )";
 
 		EPStatement stmtLow = epService.getEPAdministrator().createEPL(jokerSensitiveAccount);
 
