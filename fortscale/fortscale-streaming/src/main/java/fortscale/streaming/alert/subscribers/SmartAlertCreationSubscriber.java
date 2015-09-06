@@ -223,7 +223,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// In case we found mismatch between the number of evidences and the aggregation value, report it
 		if (pEvidences.size() != aggregatedFeatureEvent.getAggregatedFeatureValue()) {
-			logger.debug("Mismatch was found while handling P aggregated feature - " + "Number of evidences in repository is different than the aggregation value  ");
+			logger.warn("Mismatch was found while handling P aggregated feature - " + "Number of evidences in repository is different than the aggregation value  ");
 		}
 
 		return pEvidences;
