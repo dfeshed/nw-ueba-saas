@@ -355,11 +355,14 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			value = ((JSONObject) value).get(fieldPart);
 
 		}
-		if (value == null ) {
+
+		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
-		}
-		if (throwException){
+
 			throw new StreamMessageNotContainFieldException(mapper.writeValueAsString(message), field);
+		}
+		else if (value == null){
+			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 		}
 		return value;
 	}
