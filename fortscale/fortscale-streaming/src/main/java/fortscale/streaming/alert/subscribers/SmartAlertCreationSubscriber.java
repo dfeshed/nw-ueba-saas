@@ -43,6 +43,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Aggregated feature configuration service
 	 */
+	@Autowired
 	AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService = new AggregatedFeatureEventsConfService();
 
 	/**
