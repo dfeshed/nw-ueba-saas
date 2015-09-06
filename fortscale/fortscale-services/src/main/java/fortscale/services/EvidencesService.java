@@ -50,6 +50,6 @@ public interface EvidencesService {
 	 */
 	public Evidence findById(String id);
 
-	List<Evidence> findFeatureEvidences(EntityType ntityType, String entityName, long startDate, long endDate,
+	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 							String dataEntities, String featureName);
 }

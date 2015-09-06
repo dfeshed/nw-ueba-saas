@@ -65,6 +65,16 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		return returned;
 	}
 
+	public String getAnomalyType(String aggregatedFeatureName){
+		// TODO: 
+		return null;
+	}
+
+	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String featureName){
+		// TODO
+		return AggrEventEvidenceFilteringStrategyEnum.HIGHESTSCORE;
+	}
+
 	private void loadAggregatedFeatureEventDefinitions() {
 		JSONObject aggregatedFeatureEvents;
 		JSONArray arrayOfEvents;
