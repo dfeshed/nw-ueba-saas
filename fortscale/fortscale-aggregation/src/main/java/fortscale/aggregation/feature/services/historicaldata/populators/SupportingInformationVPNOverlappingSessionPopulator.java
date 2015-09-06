@@ -29,6 +29,7 @@ public class SupportingInformationVPNOverlappingSessionPopulator implements Supp
     private static final String COUNTRY_FIELD = "country";
     private static final String LOCAL_IP_FIELD = "local_ip";
     private static final String READ_BYTES_FIELD = "readbytes";
+    private static final String DATA_BUCKET_FIELD = "databucket";
 
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
@@ -58,12 +59,7 @@ public class SupportingInformationVPNOverlappingSessionPopulator implements Supp
 
             vpnSessionIntervalToIp.put(supportingInformationKey, vpnSessionOverlap.getSource_ip());
 
-            Map<String, Object> additionalInformationValues = new HashMap<>();
-            additionalInformationValues.put(DURATION_FIELD, duration);
-            additionalInformationValues.put(HOSTNAME_FIELD, vpnSessionOverlap.getHostname());
-            additionalInformationValues.put(COUNTRY_FIELD, vpnSessionOverlap.getCountry());
-            additionalInformationValues.put(LOCAL_IP_FIELD, vpnSessionOverlap.getLocal_ip());
-            additionalInformationValues.put(READ_BYTES_FIELD, vpnSessionOverlap.getReadbytes());
+            Map<String, Object> additionalInformationValues = createAdditionalInformationMap(vpnSessionOverlap, duration);
 
             additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
         }
@@ -73,6 +69,19 @@ public class SupportingInformationVPNOverlappingSessionPopulator implements Supp
         supportingInformationData.setAdditionalInformation(additionalInformationMap);
 
         return supportingInformationData;
+    }
+
+    private Map<String, Object> createAdditionalInformationMap(VpnSessionOverlap vpnSessionOverlap, long duration) {
+        Map<String, Object> additionalInformationValues = new HashMap<>();
+
+        additionalInformationValues.put(DURATION_FIELD, duration);
+        additionalInformationValues.put(HOSTNAME_FIELD, vpnSessionOverlap.getHostname());
+        additionalInformationValues.put(COUNTRY_FIELD, vpnSessionOverlap.getCountry());
+        additionalInformationValues.put(LOCAL_IP_FIELD, vpnSessionOverlap.getLocal_ip());
+        additionalInformationValues.put(READ_BYTES_FIELD, vpnSessionOverlap.getReadbytes());
+        additionalInformationValues.put(DATA_BUCKET_FIELD, vpnSessionOverlap.getDatabucket());
+
+        return additionalInformationValues;
     }
 
 }
