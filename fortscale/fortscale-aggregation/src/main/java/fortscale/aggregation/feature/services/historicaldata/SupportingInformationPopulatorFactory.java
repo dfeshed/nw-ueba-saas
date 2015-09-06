@@ -20,12 +20,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class SupportingInformationPopulatorFactory implements ApplicationContextAware {
 
-    // TODO use a static map in the bean
+
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
     private static final String SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR = "supportingInformationDistinctEventsByTimePopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
-    
+    private static final String SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN = "supportingInformationVPNOverlappingSessionPopulator";
+
+    private static final String VPN_OVERLAPPING_SESSION = "VPN_user_creds_share";
+
 
     private ApplicationContext applicationContext;
 
@@ -56,12 +59,17 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
         } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
         }
+        // TODO shouldn't we use the feature name instead?
         else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
         }
-        else {
-            throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
+        else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
+            if (VPN_OVERLAPPING_SESSION.equalsIgnoreCase(featureName)) {
+                return (SupportingInformationVPNOverlappingSessionPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
+            }
         }
+
+        throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
     }
 
     @Override

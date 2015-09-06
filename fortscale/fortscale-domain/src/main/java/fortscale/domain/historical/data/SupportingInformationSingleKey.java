@@ -1,18 +1,18 @@
-package fortscale.domain.histogram;
+package fortscale.domain.historical.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * a histogram key with one key. usage example: histogram
+ * supporting information single key representation. usage example: histogram
  * @author gils
  * Date: 05/08/2015
  */
-public class HistogramSingleKey implements HistogramKey {
+public class SupportingInformationSingleKey implements SupportingInformationKey {
 
     private String key;
 
-    public HistogramSingleKey(String key) {
+    public SupportingInformationSingleKey(String key) {
         this.key = key;
     }
 
@@ -38,7 +38,7 @@ public class HistogramSingleKey implements HistogramKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        HistogramSingleKey that = (HistogramSingleKey) o;
+        SupportingInformationSingleKey that = (SupportingInformationSingleKey) o;
 
         return !(key != null ? !key.equals(that.key) : that.key != null);
 
@@ -51,7 +51,7 @@ public class HistogramSingleKey implements HistogramKey {
 
     @Override
     public String toString() {
-        return "HistogramSingleKey{" +
+        return "SupportingInformationSingleKey{" +
                 "key='" + key + '\'' +
                 '}';
     }

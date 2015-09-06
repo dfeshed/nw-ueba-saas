@@ -215,9 +215,8 @@ public class AggrEvent implements Serializable {
     public List<String> getDataSourcesAsList() {
         ArrayList<String> list = new ArrayList<String>();
         if (dataSources != null) {
-            int len = dataSources.size();
-            for (int i=0;i<len;i++){
-                list.add(dataSources.get(i).toString());
+            for (Object source : dataSources){
+                list.add(source.toString());
             }
         }
 
