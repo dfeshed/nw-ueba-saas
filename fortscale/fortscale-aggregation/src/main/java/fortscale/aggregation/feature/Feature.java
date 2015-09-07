@@ -2,9 +2,13 @@ package fortscale.aggregation.feature;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 /**
  * Created by amira on 15/06/2015.
  */
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class Feature implements Serializable{
     private static final long serialVersionUID = 1L;
 

@@ -123,6 +123,10 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		}
 	}
 
+	public long getLastEventEpochtime() {
+		return lastEventEpochtime;
+	}
+
 	private static final class Registration {
 		// The listener that needs to be notified
 		private DataSourcesSyncTimerListener listener;
