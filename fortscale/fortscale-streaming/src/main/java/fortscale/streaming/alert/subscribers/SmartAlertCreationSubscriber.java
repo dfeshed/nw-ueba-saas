@@ -190,6 +190,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			}
 		}
 
+		// Read notifications evidence from repository
 		List<Evidence> notificationEvidences = findNotificationEvidences(entityEvent);
 		if (notificationEvidences != null) {
 			evidenceList.addAll(notificationEvidences);
