@@ -125,18 +125,15 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		if (insertStream != null) {
 			for (Map insertStreamOutput : insertStream) {
 				try {
-					// Create evidences list
-					List<Evidence> evidences = createEvidencesList(insertStreamOutput);
-
 					// Get alert parameters
-					//TODO: take from esper rule
-					String title = ALERT_TITLE; //(String) insertStreamOutput.get("title");
+					String title = (String) insertStreamOutput.get("title");
 					Long startDate = (Long) insertStreamOutput.get(startDateKey);
 					Long endDate = (Long) insertStreamOutput.get(endDateKey);
 					// TODO: missing!
 					EntityType entityType = EntityType.User;
-					JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get(entitiesKey));
-					String entityName = entities.getAsString(USER_ENTITY_KEY);
+					//JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get(entitiesKey));
+					//String entityName = entities.getAsString(USER_ENTITY_KEY);
+					String entityName = (String) insertStreamOutput.get("entityName");
 					String entityId;
 					switch (entityType) {
 					case User: {
@@ -155,7 +152,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 					Double score = (Double) insertStreamOutput.get(scoreKey);
 					Integer roundScore = score.intValue();
-					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+					Severity severity = Severity.valueOf((String) insertStreamOutput.get("severity"));
+
+					List<JSONObject> aggregated_feature_events = (List<JSONObject>) insertStreamOutput.get("aggregated_feature_events");
+
+					// Create evidences list
+					List<Evidence> evidences = createEvidencesList(aggregated_feature_events, startDate, endDate, entityName);
 
 					// Create the alert
 					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
@@ -168,6 +170,30 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 				}
 			}
 		}
+	}
+
+	private List<Evidence> createEvidencesList(List<JSONObject> aggregated_feature_events, Long startDate, Long endDate,
+			String entityName) {
+		List<Evidence> evidenceList = new ArrayList<>();
+
+		// Iterate through the features
+		for (JSONObject aggregatedFeatureEvent : aggregated_feature_events) {
+			AggrEvent aggrEvent = new AggrEvent(aggregatedFeatureEvent);
+
+			// Get the evidence and add it to list
+			List<Evidence> evidences = createEvidencesFromAggregatedFeature(aggrEvent);
+			if (evidences != null) {
+				evidenceList.addAll(evidences);
+			}
+		}
+
+		// Read notifications evidence from repository
+		List<Evidence> notificationEvidences = findNotificationEvidences(startDate, endDate, entityName);
+		if (notificationEvidences != null) {
+			evidenceList.addAll(notificationEvidences);
+		}
+
+		return evidenceList;
 	}
 
 	/**
@@ -208,6 +234,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		Long startTime = entityEvent.getStart_time_unix() * 1000;
 		Long endTime = entityEvent.getEnd_time_unix() * 1000;
 		String entityValue = entityEvent.getContext().get(USER_ENTITY_KEY);
+		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
+				NOTIFICATION_EVIDENCE_TYPE, entityValue);
+	}
+
+	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
+		startTime *=  1000;
+		endTime *= 1000;
 		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
 				NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
