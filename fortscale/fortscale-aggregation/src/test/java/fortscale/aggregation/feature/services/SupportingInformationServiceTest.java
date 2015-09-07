@@ -8,9 +8,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.*;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -151,6 +149,64 @@ public class SupportingInformationServiceTest {
         anomalyFeatureBucket.setAggregatedFeatures(anomalyFeatureMap);
 
         return anomalyFeatureBucket;
+    }
+
+    @Test
+    public void testVPNOverlappingSessionEvidence() {
+
+        String featureName = "VPN_user_creds_share";
+        String aggregationFunc = "timeIntervals";
+        String contextType = "normalized_username";
+        String contextValue = "mosheb@somebigcompany.com";
+
+        ArrayList<String> dataSources = new ArrayList<>();
+        dataSources.add("vpn");
+
+        int numOfEvents = 5;
+
+        VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = createVpnOverlappingSupportingInformationOfEvidence(numOfEvents);
+
+        when(mockEvidence.getEntityType()).thenReturn(EntityType.User);
+        when(mockEvidence.getEvidenceType()).thenReturn(EvidenceType.Notification);
+        when(mockEvidence.getAnomalyTypeFieldName()).thenReturn(featureName);
+        when(mockEvidence.getDataEntitiesIds()).thenReturn(dataSources);
+        when(mockEvidence.getSupportingInformation()).thenReturn(vpnOverlappingSupportingInformation);
+
+        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, null, aggregationFunc);
+
+        Assert.assertTrue(evidenceSupportingInformationHistogramData.getData().size() == numOfEvents);
+
+
+    }
+
+    private VpnOverlappingSupportingInformation createVpnOverlappingSupportingInformationOfEvidence(int numOfEvents) {
+        VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = new VpnOverlappingSupportingInformation();
+
+        vpnOverlappingSupportingInformation.setRawEvents("[]");
+
+        for  (int i = 0; i < numOfEvents; i++) {
+            VpnSessionOverlap vpnSessionOverlapEvent = createVpnSessionOverlapEvent(Integer.toString(i));
+
+            vpnOverlappingSupportingInformation.getRawEvents().add(vpnSessionOverlapEvent);
+        }
+
+        return vpnOverlappingSupportingInformation;
+    }
+
+    private VpnSessionOverlap createVpnSessionOverlapEvent(String ipIndex) {
+        VpnSessionOverlap vpnSessionOverlap = new VpnSessionOverlap();
+
+        vpnSessionOverlap.setDate_time_unix(1440483492);
+        vpnSessionOverlap.setDuration(28800);
+        vpnSessionOverlap.setSource_ip("41.60.0." + ipIndex);
+        vpnSessionOverlap.setLocal_ip("10.10.0.12");
+        vpnSessionOverlap.setReadbytes(2411724);
+        vpnSessionOverlap.setTotalbytes(2411724);
+        vpnSessionOverlap.setDatabucket(2411724);
+        vpnSessionOverlap.setCountry("Israel");
+        vpnSessionOverlap.setHostname("SRVX_1");
+
+        return vpnSessionOverlap;
     }
 
     @Test

@@ -29,7 +29,7 @@ public abstract class SupportingInformationQueryPopulator implements SupportingI
      */
     @Override
     public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue,
-                                                                     long evidenceEndTime, int timePeriodInDays) {
+                                                                     long evidenceEndTime, Integer timePeriodInDays) {
         long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         Map<SupportingInformationKey, Double> histogramMap = new HashMap<>();
         Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
