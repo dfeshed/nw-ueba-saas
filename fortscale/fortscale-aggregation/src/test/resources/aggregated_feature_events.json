@@ -8,6 +8,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 1,
+        "anomalyType": "number_of_ssh_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
             "aggregatedFeatureName1",
@@ -31,6 +33,8 @@
         "numberOfBuckets": 2,
         "bucketsLeap": 2,
         "waitAfterBucketCloseSeconds": 2,
+        "anomalyType": "number_of_ssh_events_hourly",
+        "evidencesFilterStrategy": "HighestScore",
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
             "aggregatedFeatureName1",
