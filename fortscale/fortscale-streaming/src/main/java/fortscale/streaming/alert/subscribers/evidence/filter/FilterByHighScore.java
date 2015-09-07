@@ -9,6 +9,11 @@ import java.util.List;
 
 public class FilterByHighScore implements EvidenceFilter {
 
+	/**
+	 * Find the evidence with the max score
+	 * @param evidences
+	 * @param aggregatedFeatureEvent
+	 */
 	@Override public void filterList(List<Evidence> evidences, AggrEvent aggregatedFeatureEvent) {
 		Evidence max = Collections.max(evidences, new Comparator<Evidence>() {
 			@Override public int compare(Evidence o1, Evidence o2) {
@@ -22,7 +27,6 @@ public class FilterByHighScore implements EvidenceFilter {
 			}
 		});
 
-		// TODO: what to do in case max is null?
 		evidences.clear();
 		evidences.add(max);
 	}

@@ -231,7 +231,14 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return pEvidences;
 	}
 
+	/**
+	 * Filter the Evidences list, created from P features
+	 * @param pEvidences
+	 * @param aggregatedFeatureEvent
+	 */
 	private void filterPEvidences(List<Evidence> pEvidences, AggrEvent aggregatedFeatureEvent) {
+
+		// Get the filtering strategy
 		String featureName = aggregatedFeatureEvent.getAggregatedFeatureName();
 		AggrEventEvidenceFilteringStrategyEnum filteringStrategy = aggregatedFeatureEventsConfService.getEvidenceReadingStrategy(featureName);
 
@@ -298,6 +305,16 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
 	}
 
+	/**
+	 * Find evidneces in the repository for P feature
+	 * @param entityType
+	 * @param entityValue
+	 * @param startDate
+	 * @param endDate
+	 * @param dataSource
+	 * @param anomalyType
+	 * @return
+	 */
 	private List<Evidence> findPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
 			String dataSource, String anomalyType) {
 		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);

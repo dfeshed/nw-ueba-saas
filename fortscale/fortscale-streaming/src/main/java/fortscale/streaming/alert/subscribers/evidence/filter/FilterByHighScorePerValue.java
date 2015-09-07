@@ -36,11 +36,6 @@ public class FilterByHighScorePerValue implements EvidenceFilter{
 			}
 		}
 
-		// In case The number of evidences after the filter is not match the P value
-		if (!aggregatedFeatureEvent.getAggregatedFeatureValue().equals(evidenceMap.size())) {
-			// TODO: what to do?
-		}
-
 		// populate the evidences list with the filtered evidences map
 		evidences.clear();
 		evidences.addAll(evidenceMap.values());
