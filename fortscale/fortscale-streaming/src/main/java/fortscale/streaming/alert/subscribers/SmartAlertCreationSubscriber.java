@@ -9,8 +9,8 @@ import fortscale.services.ComputerService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
-import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScore;
-import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerValue;
+import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
+import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.task.EvidenceCreationTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -226,8 +226,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		// Fetch evidences from repository
 		List<Evidence> pEvidences = findPEvidences(aggregatedFeatureEvent);
 
-		filterPEvidences(pEvidences, aggregatedFeatureEvent);
-
 		return pEvidences;
 	}
 
@@ -245,14 +243,15 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		EvidenceFilter evidenceFilter;
 
 		switch (filteringStrategy) {
-		case HIGHESTSCORE:
-			evidenceFilter = new FilterByHighScore();
+		case HIGHEST_SCORE:
+			evidenceFilter = new FilterByHighestScore();
 			break;
-		case HIGHESTSCOREPERVALUE:
-			evidenceFilter = new FilterByHighScorePerValue();
+		case HIGHEST_SCORE_PER_VALUE:
+			evidenceFilter = new FilterByHighScorePerUnqiuePValue();
 			break;
 		default:
 			// If a filter function is not define, do not filter
+			logger.warn("No evidence filter was define; Not filtering evidences");
 			return;
 		}
 
@@ -295,6 +294,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> findPEvidences(AggrEvent aggrEvent) {
+
+		// Get the parameters for reading evidences
 		EntityType entityType = EntityType.User;
 		String entityValue = aggrEvent.getContext().get(USER_ENTITY_KEY);
 		Long startDate = aggrEvent.getStartTime() * 1000;
@@ -302,7 +303,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		String dataSource = (String) aggrEvent.getDataSources().get(0);
 		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggrEvent.getAggregatedFeatureName());
 
-		return findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+		// Read evidences from mongo
+		List<Evidence> evidences = findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+
+		// Filter results
+		filterPEvidences(evidences, aggrEvent);
+
+		return evidences;
 	}
 
 	/**

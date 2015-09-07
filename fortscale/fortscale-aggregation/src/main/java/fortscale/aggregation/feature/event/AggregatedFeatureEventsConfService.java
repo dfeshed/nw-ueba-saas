@@ -83,7 +83,7 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 			}
 		}
 
-		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy.toUpperCase());
+		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy);
 	}
 
 	private void loadAggregatedFeatureEventDefinitions() {

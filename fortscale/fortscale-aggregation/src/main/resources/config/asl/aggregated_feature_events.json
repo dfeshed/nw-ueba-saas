@@ -10,7 +10,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_src_machines_kerberos",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -30,7 +30,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_src_machines_kerberos_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -50,7 +50,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_dst_machines_kerberos",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -70,7 +70,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_dst_machines_kerberos_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -90,7 +90,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_kerberos_events",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -109,7 +109,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_kerberos_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -128,7 +128,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_kerberos_events",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -147,7 +147,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_kerberos_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -167,7 +167,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_src_machines_ssh",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -187,7 +187,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_src_machines_ssh_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -207,7 +207,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_dst_machines_ssh",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -227,7 +227,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "distinct_number_of_dst_machines_ssh_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -247,7 +247,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_vpn_events",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -266,7 +266,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_vpn_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -285,7 +285,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_kerberos_events",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -304,7 +304,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_kerberos_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -324,7 +324,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_kerberos_events",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -343,7 +343,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "number_of_failed_kerberos_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -365,7 +365,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -383,7 +383,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -401,7 +401,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "source_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -420,7 +420,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "source_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -439,7 +439,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "destination_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -458,7 +458,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "destination_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -477,7 +477,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "failure_code",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "failure_code_with_high_score_histogram"
@@ -496,7 +496,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "failure_code",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "failure_code_with_high_score_histogram"
@@ -516,7 +516,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -534,7 +534,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -552,7 +552,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "source_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -571,7 +571,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "source_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -590,7 +590,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "destination_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -609,7 +609,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "destination_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -629,7 +629,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -647,7 +647,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -665,7 +665,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "destination_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -684,7 +684,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "source_machine",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -703,7 +703,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "country",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "country_with_high_score_histogram"
@@ -722,7 +722,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "country",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "country_with_high_score_histogram"
@@ -742,7 +742,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "data_bucket",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_high_score_rate_vpnsession"
@@ -760,7 +760,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "data_bucket",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_high_score_rate_vpnsession"

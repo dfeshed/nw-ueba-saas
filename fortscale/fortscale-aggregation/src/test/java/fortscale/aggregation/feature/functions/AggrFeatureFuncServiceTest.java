@@ -983,7 +983,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE",
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureAvgStdNFunc);
 
@@ -1013,7 +1013,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE",
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 
@@ -1044,7 +1044,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE",
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 newAvgStdNFuncJson);
 
@@ -1080,7 +1080,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE",
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 dummyFunction);
 
@@ -1119,7 +1119,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300, "AnomalyAggregatedEvent", "HIGHESTSCORE",
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 

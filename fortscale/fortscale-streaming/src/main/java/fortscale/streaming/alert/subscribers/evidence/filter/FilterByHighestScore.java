@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FilterByHighScore implements EvidenceFilter {
+public class FilterByHighestScore implements EvidenceFilter {
 
 	/**
 	 * Find the evidence with the max score
