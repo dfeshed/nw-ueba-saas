@@ -204,8 +204,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> findNotificationEvidences(EntityEvent entityEvent) {
-		Long startTime = entityEvent.getStart_time_unix();
-		Long endTime = entityEvent.getEnd_time_unix();
+		Long startTime = entityEvent.getStart_time_unix() * 1000;
+		Long endTime = entityEvent.getEnd_time_unix() * 1000;
 		String entityValue = entityEvent.getContext().get(USER_ENTITY_KEY);
 		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
 				NOTIFICATION_EVIDENCE_TYPE, entityValue);
