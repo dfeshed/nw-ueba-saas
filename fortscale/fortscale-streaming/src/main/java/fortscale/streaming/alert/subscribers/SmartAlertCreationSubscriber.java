@@ -172,6 +172,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
+	public void update(String title, String severity, EntityType entityType, String entityName,
+			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score, List<String> tags) {
+		String test = "";
+		test += "df";
+	}
+
 	private List<Evidence> createEvidencesList(List<JSONObject> aggregated_feature_events, Long startDate, Long endDate,
 			String entityName) {
 		List<Evidence> evidenceList = new ArrayList<>();
