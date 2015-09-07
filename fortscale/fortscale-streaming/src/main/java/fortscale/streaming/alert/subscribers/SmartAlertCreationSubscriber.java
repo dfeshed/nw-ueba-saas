@@ -327,7 +327,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		List<Evidence> evidences = findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
 
 		// Filter results
-		filterPEvidences(evidences, aggrEvent);
+		if (evidences != null && evidences.size() > 0) {
+			filterPEvidences(evidences, aggrEvent);
+		}
 
 		return evidences;
 	}
