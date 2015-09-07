@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -26,7 +27,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
+		Assert.notNull(context);
 		featureBucketStore = (KeyValueStore<String, FeatureBucket>)context.getStore(STORE_NAME);
+		Assert.notNull(featureBucketStore);
 	}
 	
 	
