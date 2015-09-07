@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * supporting information key consist of two keys. usage example: heat-map
+ * Supporting information key consist of two keys. usage example: heat-map.
+ * The creation of SupportingInformationDualKey object is based on 2 keys (key 1, key 2) and [optionally] on a key identifier.
+ * The key identifier should be used for internal use only while key1/key2 are exposed to the user.
  *
  * @author gils
  * Date: 05/08/2015
@@ -13,10 +15,17 @@ public class SupportingInformationDualKey implements SupportingInformationKey {
 
     private String key1;
     private String key2;
+    private String keyIdentifier;
 
     public SupportingInformationDualKey(String key1, String key2) {
         this.key1 = key1;
         this.key2 = key2;
+    }
+
+    public SupportingInformationDualKey(String key1, String key2, String keyIdentifier) {
+        this.key1 = key1;
+        this.key2 = key2;
+        this.keyIdentifier = keyIdentifier;
     }
 
     public String getKey1() {
@@ -40,6 +49,7 @@ public class SupportingInformationDualKey implements SupportingInformationKey {
         return genKey;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,7 +58,8 @@ public class SupportingInformationDualKey implements SupportingInformationKey {
         SupportingInformationDualKey that = (SupportingInformationDualKey) o;
 
         if (key1 != null ? !key1.equals(that.key1) : that.key1 != null) return false;
-        return !(key2 != null ? !key2.equals(that.key2) : that.key2 != null);
+        if (key2 != null ? !key2.equals(that.key2) : that.key2 != null) return false;
+        return !(keyIdentifier != null ? !keyIdentifier.equals(that.keyIdentifier) : that.keyIdentifier != null);
 
     }
 
@@ -56,6 +67,7 @@ public class SupportingInformationDualKey implements SupportingInformationKey {
     public int hashCode() {
         int result = key1 != null ? key1.hashCode() : 0;
         result = 31 * result + (key2 != null ? key2.hashCode() : 0);
+        result = 31 * result + (keyIdentifier != null ? keyIdentifier.hashCode() : 0);
         return result;
     }
 
@@ -64,6 +76,7 @@ public class SupportingInformationDualKey implements SupportingInformationKey {
         return "SupportingInformationDualKey{" +
                 "key1='" + key1 + '\'' +
                 ", key2='" + key2 + '\'' +
+                ", keyIdentifier='" + keyIdentifier + '\'' +
                 '}';
     }
 }

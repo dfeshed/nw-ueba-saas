@@ -2,17 +2,15 @@ package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationTimeGranularity;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceTimeframe;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +33,6 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     private static final String ESCAPED_DOT_DELIMITER = "#dot#";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
-    @Autowired
-    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-
     public SupportingInformationDistinctEventsByTimePopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
@@ -46,13 +41,13 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
      * Use same logic as in the base populator and set the time granularity
      */
     @Override
-    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
         SupportingInformationGenericData<Double> supportingInformationHistogramData = super.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
 
-        SupportingInformationTimeGranularity timeGranularity = determineTimeGranularity();
+        SupportingInformationTimeGranularity supportingInformationTimeGranularity = determineTimeGranularity(evidence);
 
-        supportingInformationHistogramData.setTimeGranularity(timeGranularity);
+        supportingInformationHistogramData.setTimeGranularity(supportingInformationTimeGranularity);
 
         return supportingInformationHistogramData;
     }
@@ -101,20 +96,23 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
         return histogramKeyObjectMap;
     }
 
-    protected SupportingInformationTimeGranularity determineTimeGranularity() {
-        AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(featureName);
+    protected SupportingInformationTimeGranularity determineTimeGranularity(Evidence evidence) {
+        EvidenceTimeframe evidenceTimeframe = evidence.getTimeframe();
 
-        String strategyName = aggregatedFeatureEventConf.getOutputBucketStrategy();
-
-        // TODO need to use the feature bucket strategy service, currently it's in the streaming project
-        if (FIXED_DURATION_DAILY_STRATEGY.equals(strategyName)) {
-            return SupportingInformationTimeGranularity.Daily;
+        if (evidenceTimeframe != null) {
+            if (evidenceTimeframe == EvidenceTimeframe.Hourly) {
+                return SupportingInformationTimeGranularity.Hourly;
+            }
+            else if (evidenceTimeframe == EvidenceTimeframe.Daily) {
+                return SupportingInformationTimeGranularity.Daily;
+            }
+            else {
+                logger.error("Could not determine supporting information time granularity for evidence ID {} with timeframe {}", evidence.getId(), evidence.getTimeframe());
+            }
         }
-        else if (FIXED_DURATION_HOURLY_STRATEGY.equals(strategyName)) {
-            return SupportingInformationTimeGranularity.Hourly;
+        else {
+            logger.error("Could not determine supporting information time granularity for evidence ID {} : evidence timeframe field is not set", evidence.getId());
         }
-
-        logger.warn("Could not find strategy with name {}", strategyName);
 
         return null;
     }
