@@ -35,4 +35,14 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String>, E
 	 */
 	List<Evidence> findByEvidenceTypeAndAnomalyValueIn(EvidenceType evidenceType, String[] anomalyValues);
 
+	/**
+	 * Find all evidences that are in the time window, the same type and for the same entity
+	 * @param startDate
+	 * @param endDate
+	 * @param evidenceType
+	 * @param entityName
+	 * @return
+	 */
+	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
+			String evidenceType, String entityName);
 }

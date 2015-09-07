@@ -34,6 +34,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	final String F_FEATURE_VALUE = "F";
 	final String P_FEATURE_VALUE = "P";
 	final String ENTITY_NAME_FIELD = "normalized_username";
+	final String NOTIFICATION_EVIDENCE_TYPE = "Notification";
+
 	/**
 	 * Logger
 	 */
@@ -188,7 +190,25 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			}
 		}
 
+		List<Evidence> notificationEvidences = findNotificationEvidences(entityEvent);
+		if (notificationEvidences != null) {
+			evidenceList.addAll(notificationEvidences);
+		}
+
 		return evidenceList;
+	}
+
+	/**
+	 * Find notification evidences in the repository
+	 * @param entityEvent
+	 * @return
+	 */
+	private List<Evidence> findNotificationEvidences(EntityEvent entityEvent) {
+		Long startTime = entityEvent.getStart_time_unix();
+		Long endTime = entityEvent.getEnd_time_unix();
+		String entityValue = entityEvent.getContext().get(USER_ENTITY_KEY);
+		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
+				NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
 
 	/**

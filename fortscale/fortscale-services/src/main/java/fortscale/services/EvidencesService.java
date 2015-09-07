@@ -52,4 +52,7 @@ public interface EvidencesService {
 
 	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 							String dataEntities, String featureName);
+
+	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
+			String evidenceType, String entityName);
 }
