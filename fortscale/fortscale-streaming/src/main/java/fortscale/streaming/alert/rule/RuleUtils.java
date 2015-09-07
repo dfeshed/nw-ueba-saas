@@ -47,10 +47,17 @@ public class RuleUtils {
 		return startTimestamp+(60*60*24*1000-1);
 	}
 
+	/**
+	 * context id comes in form of prefix+ entity name, e.g normalized_username_user123@fs.com
+	 * in order to convert contexId to entity name, we should strip it from the prefix
+	 * @param contextId
+	 * @return
+	 */
 	public static String extractNormalizedUsernameFromContextId(String contextId){
 		if(contextId == null){
 			return null;
 		}
 		 return contextId.split(ENTITY_TYPE_PREFIX_USER)[1];
 	}
+
 }
