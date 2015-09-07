@@ -1,11 +1,16 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnum;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
 import fortscale.services.ComputerService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
+import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
+import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
+import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.task.EvidenceCreationTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -15,10 +20,7 @@ import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by tomerd on 30/08/2015.
@@ -28,15 +30,21 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	//TODO: Move to esper rule
 	static String ALERT_TITLE = "SMART alert";
 
-
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE = "F";
 	final String P_FEATURE_VALUE = "P";
 	final String ENTITY_NAME_FIELD = "normalized_username";
+	final String NOTIFICATION_EVIDENCE_TYPE = "Notification";
+
 	/**
 	 * Logger
 	 */
 	private static Logger logger = LoggerFactory.getLogger(SmartAlertCreationSubscriber.class);
+
+	/**
+	 * Aggregated feature configuration service
+	 */
+	@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
 	/**
 	 * Alerts service (for Mongo export)
@@ -70,7 +78,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Value("${fortscale.smart.f.field.score}") private String scoreKey;
 	@Value("${fortscale.smart.f.field.entities}") private String entitiesKey;
 	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
-
 
 	/**
 	 * Create alert from entity event
@@ -183,7 +190,26 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			}
 		}
 
+		// Read notifications evidence from repository
+		List<Evidence> notificationEvidences = findNotificationEvidences(entityEvent);
+		if (notificationEvidences != null) {
+			evidenceList.addAll(notificationEvidences);
+		}
+
 		return evidenceList;
+	}
+
+	/**
+	 * Find notification evidences in the repository
+	 * @param entityEvent
+	 * @return
+	 */
+	private List<Evidence> findNotificationEvidences(EntityEvent entityEvent) {
+		Long startTime = entityEvent.getStart_time_unix() * 1000;
+		Long endTime = entityEvent.getEnd_time_unix() * 1000;
+		String entityValue = entityEvent.getContext().get(USER_ENTITY_KEY);
+		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
+				NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
 
 	/**
@@ -221,16 +247,36 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		// Fetch evidences from repository
 		List<Evidence> pEvidences = findPEvidences(aggregatedFeatureEvent);
 
-		// In case we found mismatch between the number of evidences and the aggregation value, report it
-		if (pEvidences.size() != aggregatedFeatureEvent.getAggregatedFeatureValue()) {
-			logger.warn("Mismatch was found while handling P aggregated feature - " + "Number of evidences in repository is different than the aggregation value  ");
-		}
-
 		return pEvidences;
 	}
 
-	private List<Evidence> findPEvidences(AggrEvent aggregatedFeatureEvent) {
-		return null;
+	/**
+	 * Filter the Evidences list, created from P features
+	 * @param pEvidences
+	 * @param aggregatedFeatureEvent
+	 */
+	private void filterPEvidences(List<Evidence> pEvidences, AggrEvent aggregatedFeatureEvent) {
+
+		// Get the filtering strategy
+		String featureName = aggregatedFeatureEvent.getAggregatedFeatureName();
+		AggrEventEvidenceFilteringStrategyEnum filteringStrategy = aggregatedFeatureEventsConfService.getEvidenceReadingStrategy(featureName);
+
+		EvidenceFilter evidenceFilter;
+
+		switch (filteringStrategy) {
+		case HIGHEST_SCORE:
+			evidenceFilter = new FilterByHighestScore();
+			break;
+		case HIGHEST_SCORE_PER_VALUE:
+			evidenceFilter = new FilterByHighScorePerUnqiuePValue();
+			break;
+		default:
+			// If a filter function is not define, do not filter
+			logger.warn("No evidence filter was define; Not filtering evidences");
+			return;
+		}
+
+		evidenceFilter.filterList(pEvidences, aggregatedFeatureEvent);
 	}
 
 	/**
@@ -250,11 +296,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
 		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
 
-
 		// try to fetch evidence from repository
-		List<Evidence> fEvidences = findFEvidences(EntityType.User,  entityValue,
-				aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000,
-				dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
+		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
 
 		// In case we found previously created evidence in the repository, return it
 		if (fEvidences != null && !fEvidences.isEmpty()) {
@@ -266,7 +309,49 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	/**
-	 * Find evidnece in the repository for F feature
+	 * Find evidneces in the repository for P feature
+	 *
+	 * @param aggrEvent
+	 * @return
+	 */
+	private List<Evidence> findPEvidences(AggrEvent aggrEvent) {
+
+		// Get the parameters for reading evidences
+		EntityType entityType = EntityType.User;
+		String entityValue = aggrEvent.getContext().get(USER_ENTITY_KEY);
+		Long startDate = aggrEvent.getStartTime() * 1000;
+		Long endDate = aggrEvent.getEndTime() * 1000;
+		String dataSource = (String) aggrEvent.getDataSources().get(0);
+		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggrEvent.getAggregatedFeatureName());
+
+		// Read evidences from mongo
+		List<Evidence> evidences = findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+
+		// Filter results
+		if (evidences != null && evidences.size() > 0) {
+			filterPEvidences(evidences, aggrEvent);
+		}
+
+		return evidences;
+	}
+
+	/**
+	 * Find evidneces in the repository for P feature
+	 * @param entityType
+	 * @param entityValue
+	 * @param startDate
+	 * @param endDate
+	 * @param dataSource
+	 * @param anomalyType
+	 * @return
+	 */
+	private List<Evidence> findPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
+			String dataSource, String anomalyType) {
+		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+	}
+
+	/**
+	 * Find evidneces in the repository for F feature
 	 *
 	 * @param entityType
 	 * @param entityValue
@@ -295,12 +380,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
-		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(
-				EvidenceType.AnomalyAggregatedEvent, startDate, endDate);
+		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent, startDate, endDate);
 
-		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
-				EvidenceType.AnomalyAggregatedEvent, new Date(startDate * 1000), new Date(endDate * 1000), dataEntities, score,
-				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
+		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName, EvidenceType.AnomalyAggregatedEvent, new Date(startDate * 1000), new Date(endDate * 1000), dataEntities, score, aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);
@@ -308,7 +390,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
 			// In case this evidence is duplicated, we don't send it to output topic and continue to next score
 			return null;
-		} catch (Exception e){
+		} catch (Exception e) {
 			logger.warn("Error while writing evidence to repository. Error: " + e.getMessage());
 			return null;
 		}
