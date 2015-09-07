@@ -7,9 +7,7 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.scopetest.EPAssertionUtil;
 import com.espertech.esper.client.scopetest.ScopeTestHelper;
 import com.espertech.esper.client.scopetest.SupportUpdateListener;
-import fortscale.domain.core.EntityEvent;
-import fortscale.domain.core.EntityTags;
-import fortscale.domain.core.EntityType;
+import fortscale.domain.core.*;
 import fortscale.streaming.alert.rule.RuleUtils;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
@@ -37,10 +35,15 @@ public class EsperRulesTest {
 		//load esper configuration file which
 		Configuration esperConfig = new Configuration();
 		esperConfig.addPlugInSingleRowFunction("extractNormalizedUsernameFromContextId", RuleUtils.class.getName(), "extractNormalizedUsernameFromContextId");
+		esperConfig.addPlugInSingleRowFunction("hourStartTimestamp",RuleUtils.class.getName(),"hourStartTimestamp");
+		esperConfig.addPlugInSingleRowFunction("hourEndTimestamp",RuleUtils.class.getName(),"hourEndTimestamp");
+		esperConfig.addPlugInSingleRowFunction("dayStartTimestamp",RuleUtils.class.getName(),"dayStartTimestamp");
+		esperConfig.addImport("fortscale.domain.core.*");
 		esperConfig.getEngineDefaults().getLogging().setEnableExecutionDebug(true);
 		esperConfig.getEngineDefaults().getLogging().setEnableTimerDebug(false);
 		esperConfig.addEventType(EntityEvent.class);
 		esperConfig.addEventType(EntityTags.class);
+		esperConfig.addEventType(Evidence.class);
 
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 
@@ -54,27 +57,63 @@ public class EsperRulesTest {
 	 */
 	@Test
 	public void testSmartEventWithSensitiveAccountTest() throws Exception{
+
+
+
+
+		String enrichEvidence = "insert into EnrichedEvidence select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate from Evidence";
+		String enrichedEntityEvent = "insert into EnrichedEntityEvent select EntityType.User as entityType, extractNormalizedUsernameFromContextId(contextId) as entityName, score, hourStartTimestamp(start_time_unix) as hourlyStartDate, dayStartTimestamp(start_time_unix) as dailyStartDate, aggregated_feature_events, start_time_unix, end_time_unix from EntityEvent";
+		String hourlyContextByUser = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedEvidence";
+
+		String createTimestamp = "create variable Long currentTimestamp = 1234L";
+		String createLastEventTimestamp = "create variable Long lastEventTimestamp = 1234L";
+
 		// this rule is a copy of the rule exist in alert-generation-task.properties
 		String jokerSensitiveAccount =
-				"select 'Suspicious Activity For Sensitive Account' as title, case when score >= 50 and score < 65 then 'Low' when score >= 65 and score < 75 then 'Medium' when score >= 75 and score < 90 then 'High' when score >= 90 then 'Critical'  end as severity , Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, score * 1.0 as score, Tags.tags as tags from EntityEvent(score >= 50).std:groupwin(contextId).std:lastevent() as SmartEvent, EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags where extractNormalizedUsernameFromContextId(contextId) = Tags.entityName and ( 'admin' = any(Tags.tags) or 'executive' = any(Tags.tags) or 'service' = any(Tags.tags) )";
+				"select 'Suspicious Activity For Sensitive Account' as title, size,"
+						+ " case"
+						+ " when (SmartEvent.score in [50:65) ) or (SmartEvent.score in [50:60) and size >=1 ) then 'Low' "
+						+ " when (SmartEvent.score in [65:75)  ) or (SmartEvent.score in [60:70) and size >=1 ) then 'Medium'"
+						+ " when (SmartEvent.score in [75:90)  ) or (SmartEvent.score in [70:85) and size >=1 ) then 'High'"
+						+ " when (SmartEvent.score >= 90 ) or (SmartEvent.score >= 85 and size>= 1 ) then 'Critical'"
+						+ "  end as severity , Tags.entityType as entityType, Tags.entityName as entityName,"
+						+ " aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score, Tags.tags as tags"
+						+ " from "
+						+ "EnrichedEntityEvent(score >= 50).std:groupwin(entityName,entityType).std:lastevent() as SmartEvent"
+						+ " inner join"
+						+ " EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags "
+						+ " on SmartEvent.entityName = EntityTags.entityName and SmartEvent.entityType = Tags.entityType "
+						+ "left outer join"
+						+ " EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or"
+						+ " (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:size(entityType,entityName) as Notification"
+						+ " on SmartEvent.entityName = Notification.entityName and SmartEvent.entityType = Notification.entityType"
+						+ " where "
+						+ "  'admin' = any(Tags.tags) or 'executive' = any(Tags.tags) or 'service' = any(Tags.tags) ";
 
-		EPStatement stmtLow = epService.getEPAdministrator().createEPL(jokerSensitiveAccount);
+
+		epService.getEPAdministrator().createEPL(createTimestamp);
+		epService.getEPAdministrator().createEPL(createLastEventTimestamp);
+		epService.getEPAdministrator().createEPL(enrichEvidence);
+		epService.getEPAdministrator().createEPL(enrichedEntityEvent);
+		epService.getEPAdministrator().createEPL(hourlyContextByUser);
+		EPStatement stmt = epService.getEPAdministrator().createEPL(jokerSensitiveAccount);
 
 		//listener catches only events that pass the rule
 		SupportUpdateListener listener = new SupportUpdateListener();
-		stmtLow.addListener(listener);
+		stmt.addListener(listener);
 
 		//create events for testing
 		//each of these event should satisfy one rule exactly
-		EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,"event_type",70,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,"event_type",80,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",62,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,"event_type",72,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,"event_type",88,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 		EntityEvent entityEventCritical = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 		//these events should not satisfy any rule
 		EntityEvent entityEventTooLow = new   EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 		EntityEvent entityEventNotAdmin = new EntityEvent(1234L,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user10@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
+		//---test the rule without the notification
 
 		List<String> userTags = new ArrayList<>();
 		userTags.add("admin");
@@ -95,6 +134,31 @@ public class EsperRulesTest {
 		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
 		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
 		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Critical" });
+
+		//---test the rule with notification
+
+		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L,12345L,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
+
+		entityEventLow.setScore(55);
+		entityEventMedium.setScore(62);
+		entityEventHigh.setScore(72);
+		entityEventCritical.setScore(90);
+
+		epService.getEPRuntime().sendEvent(entityEventLow);
+		epService.getEPRuntime().sendEvent(notification);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity", "size" }, new Object[] { "user1@fs.com", "Low",1 });
+
+		epService.getEPRuntime().sendEvent(entityEventMedium);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Medium",1 });
+
+		epService.getEPRuntime().sendEvent(entityEventHigh);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "High",1 });
+
+		epService.getEPRuntime().sendEvent(entityEventCritical);
+		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
+		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Critical",1 });
+
 
 	}
 }
