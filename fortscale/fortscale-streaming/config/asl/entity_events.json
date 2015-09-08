@@ -77,11 +77,12 @@
             "normalized_username_kerberos_logins_daily.has_high_score_date_time_events_kerberos_logins": 1.0,
             "normalized_username_ssh_daily.distinct_number_of_dst_machines_with_high_score_ssh":1.0,
             "normalized_username_ssh_daily.distinct_number_of_src_machines_with_high_score_ssh":1.0,
-          	"normalized_username_ssh_daily.has_high_score_date_time_events_ssh": 1.0,
-          	"normalized_username_vpn_daily.has_high_score_date_time_events_vpn": 1.0,
+            "normalized_username_ssh_daily.has_high_score_date_time_events_ssh": 1.0,
+            "normalized_username_vpn_daily.has_high_score_date_time_events_vpn": 1.0,
             "normalized_username_vpn_daily.distinct_number_of_src_machines_with_high_score_vpn":1.0,
             "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn":1.0,
-            "normalized_username_vpn_session_daily.number_of_high_score_rate_vpnsession": 1.0
+            "normalized_username_vpn_session_daily.number_of_high_score_rate_vpnsession": 1.0,
+            "normalized_username_ssh_daily.has_high_score_auth_method_events_ssh_daily": 1.0
           }
         }
       },
@@ -160,7 +161,8 @@
             "normalized_username_vpn_hourly.has_high_score_date_time_events_vpn_hourly": 1.0,
             "normalized_username_vpn_hourly.distinct_number_of_src_machines_with_high_score_vpn_hourly":1.0,
             "normalized_username_vpn_hourly.distinct_number_of_country_with_high_score_vpn_hourly":1.0,
-            "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpnsession_hourly": 1.0
+            "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpnsession_hourly": 1.0,
+            "normalized_username_ssh_hourly.has_high_score_auth_method_events_ssh_hourly": 1.0
           }
         }
       }
