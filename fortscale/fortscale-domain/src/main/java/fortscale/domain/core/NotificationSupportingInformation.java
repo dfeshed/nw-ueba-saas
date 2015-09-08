@@ -12,6 +12,6 @@ import java.util.List;
 @JsonTypeName("notificationSupportingInformation")
 public abstract class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    public abstract void setData(String json);
+    public abstract void setData(Evidence evidence, String json);
 
 }
