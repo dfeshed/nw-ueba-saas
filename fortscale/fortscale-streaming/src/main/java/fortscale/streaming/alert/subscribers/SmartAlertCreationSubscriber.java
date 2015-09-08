@@ -79,6 +79,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Value("${fortscale.smart.f.field.entities}") private String entitiesKey;
 	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
 
+	//<editor-fold desc="Esper update methods">
 	/**
 	 * Create alert from entity event
 	 *
@@ -169,6 +170,29 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			}
 		}
 	}
+	//</editor-fold>
+
+	//<editor-fold desc="General evidences handling">
+	/**
+	 * Create single evidence
+	 *
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
+	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
+		// Depended on the feature type, get the evidence
+		switch (aggregatedFeatureEvent.getAggregatedFeatureType()) {
+		case F_FEATURE_VALUE:
+			return getFFeature(aggregatedFeatureEvent);
+		case P_FEATURE_VALUE:
+			return getPFeature(aggregatedFeatureEvent);
+		default:
+			logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getAggregatedFeatureType());
+			break;
+		}
+
+		return null;
+	}
 
 	/**
 	 * Create evidences list from entity event
@@ -200,6 +224,18 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	/**
+	 * Create evidences list from Map
+	 *
+	 * @param insertStreamOutput
+	 * @return
+	 */
+	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
+		return null;
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="Notification and tag evidence handling">
+	/**
 	 * Find notification evidences in the repository
 	 * @param entityEvent
 	 * @return
@@ -213,26 +249,35 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	/**
-	 * Create single evidence
-	 *
-	 * @param aggregatedFeatureEvent
+	 * Create tag evidences
+	 * @param entityType
+	 * @param entityTypeFieldName
+	 * @param entityName
+	 * @param startDate
+	 * @param endDate
+	 * @param dataEntitiesIds
+	 * @param tags
 	 * @return
 	 */
-	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
-		// Depended on the feature type, get the evidence
-		switch (aggregatedFeatureEvent.getAggregatedFeatureType()) {
-		case F_FEATURE_VALUE:
-			return getFFeature(aggregatedFeatureEvent);
-		case P_FEATURE_VALUE:
-			return getPFeature(aggregatedFeatureEvent);
-		default:
-			logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getAggregatedFeatureType());
-			break;
+	private List<Evidence> createTagEvidences(EntityType entityType, String entityTypeFieldName, String entityName,
+			Long startDate,	long endDate, List<String> dataEntitiesIds, List<String> tags) {
+
+		// Create new evidence list
+		List<Evidence> evidences = new ArrayList<>();
+
+		// Iterate the tags list and create evidence for each tag
+		for (String tag : tags) {
+			Evidence evidence = evidencesService.createTagEvidence(entityType, entityTypeFieldName, entityName,
+					startDate, endDate, dataEntitiesIds, tag);
+
+			evidences.add(evidence);
 		}
 
-		return null;
+		return  evidences;
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="P features handling">
 	/**
 	 * Handle P feature - fetch existing evidence or create a new evidence
 	 *
@@ -240,12 +285,14 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> getPFeature(AggrEvent aggregatedFeatureEvent) {
-		if (aggregatedFeatureEvent.getAggregatedFeatureValue() < pFeatureTreshholdCount) {
-			return null;
+		List<Evidence> pEvidences = new ArrayList<>();
+
+		if (aggregatedFeatureEvent.getAggregatedFeatureValue() <= pFeatureTreshholdCount) {
+			return pEvidences;
 		}
 
 		// Fetch evidences from repository
-		List<Evidence> pEvidences = findPEvidences(aggregatedFeatureEvent);
+		pEvidences = findPEvidences(aggregatedFeatureEvent);
 
 		return pEvidences;
 	}
@@ -277,35 +324,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		evidenceFilter.filterList(pEvidences, aggregatedFeatureEvent);
-	}
-
-	/**
-	 * Handle F feature - fetch existing evidence or create a new evidence
-	 *
-	 * @param aggregatedFeatureEvent
-	 * @return
-	 */
-	private List<Evidence> getFFeature(AggrEvent aggregatedFeatureEvent) {
-
-		// Filter features with low score
-		if (aggregatedFeatureEvent.getScore() < fFeatureTresholdScore) {
-			return null;
-		}
-
-		// Read common information for finding and creation evidence
-		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
-		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
-
-		// try to fetch evidence from repository
-		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
-
-		// In case we found previously created evidence in the repository, return it
-		if (fEvidences != null && !fEvidences.isEmpty()) {
-			return fEvidences;
-		}
-
-		// Else, create the evidence in the repository and return it
-		return createFEvidence(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime(), aggregatedFeatureEvent.getEndTime(), aggregatedFeatureEvent.getDataSourcesAsList(), aggregatedFeatureEvent.getScore(), aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
 	}
 
 	/**
@@ -348,6 +366,37 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> findPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
 			String dataSource, String anomalyType) {
 		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="F features handling ">
+	/**
+	 * Handle F feature - fetch existing evidence or create a new evidence
+	 *
+	 * @param aggregatedFeatureEvent
+	 * @return
+	 */
+	private List<Evidence> getFFeature(AggrEvent aggregatedFeatureEvent) {
+
+		// Filter features with low score
+		if (aggregatedFeatureEvent.getScore() < fFeatureTresholdScore) {
+			return null;
+		}
+
+		// Read common information for finding and creation evidence
+		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
+		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
+
+		// try to fetch evidence from repository
+		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
+
+		// In case we found previously created evidence in the repository, return it
+		if (fEvidences != null && !fEvidences.isEmpty()) {
+			return fEvidences;
+		}
+
+		// Else, create the evidence in the repository and return it
+		return createFEvidence(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime(), aggregatedFeatureEvent.getEndTime(), aggregatedFeatureEvent.getDataSourcesAsList(), aggregatedFeatureEvent.getScore(), aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
 	}
 
 	/**
@@ -400,14 +449,5 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		evidences.add(evidence);
 		return evidences;
 	}
-
-	/**
-	 * Create evidences list from Map
-	 *
-	 * @param insertStreamOutput
-	 * @return
-	 */
-	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
-		return null;
-	}
+	//</editor-fold>
 }
