@@ -159,8 +159,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		List<String> result = new ArrayList<String>();
 		if (notification.getCause().toLowerCase().contains("amt")) {
 			result.add("amt");
-		}
-		else if (notification.getCause().toLowerCase().contains("vpn")) {
+		} else if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+			result.add("vpn_session");
+		} else if (notification.getCause().toLowerCase().contains("vpn")) {
 			result.add("vpn");
 		} else {
 			result.add("active_directory");
