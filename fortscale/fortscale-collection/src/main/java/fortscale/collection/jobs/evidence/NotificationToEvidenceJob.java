@@ -113,8 +113,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				//convert each notification to evidence and send it to the appropriate Kafka topic
 				JSONObject evidence = new JSONObject();
 				evidence.put(notificationScoreField, score);
-				evidence.put(notificationStartTimestampField, notification.getTs());
-				evidence.put(notificationEndTimestampField, notification.getTs());
+				evidence.put(notificationStartTimestampField, getStartTimeStamp(notification));
+				evidence.put(notificationEndTimestampField, getEndTimeStamp(notification));
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
 				evidence.put(notificationEntityField, getEntity(notification));
@@ -133,6 +133,28 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchConfiguration.setLastFetchTime(dateStr);
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
+	}
+
+	private long getStartTimeStamp(Notification notification) {
+		final String START_DATE = "start_date";
+		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+			Map<String, String> attributes = notification.getAttributes();
+			if (attributes != null && attributes.containsKey(START_DATE)) {
+				return Long.parseLong(attributes.get(START_DATE));
+			}
+		}
+		return notification.getTs();
+	}
+
+	private long getEndTimeStamp(Notification notification) {
+		final String END_DATE = "end_date";
+		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+			Map<String, String> attributes = notification.getAttributes();
+			if (attributes != null && attributes.containsKey(END_DATE)) {
+				return Long.parseLong(attributes.get(END_DATE));
+			}
+		}
+		return notification.getTs();
 	}
 
 	private String getSupportingInformation(Notification notification) {
