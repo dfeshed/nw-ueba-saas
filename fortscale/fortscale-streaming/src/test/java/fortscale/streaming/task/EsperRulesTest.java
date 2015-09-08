@@ -59,23 +59,24 @@ public class EsperRulesTest {
 	public void testSmartEventWithSensitiveAccountTest() throws Exception{
 
 
-
+		long eventStartData= 1441694789L;
+		long eventHourEndDate = 1441695599L;
 
 		String enrichEvidence = "insert into EnrichedEvidence select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate from Evidence";
 		String enrichedEntityEvent = "insert into EnrichedEntityEvent select EntityType.User as entityType, extractNormalizedUsernameFromContextId(contextId) as entityName, score, hourStartTimestamp(start_time_unix) as hourlyStartDate, dayStartTimestamp(start_time_unix) as dailyStartDate, aggregated_feature_events, start_time_unix, end_time_unix from EntityEvent";
 		String hourlyContextByUser = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedEvidence";
 
-		String createTimestamp = "create variable Long currentTimestamp = 1234L";
-		String createLastEventTimestamp = "create variable Long lastEventTimestamp = 1234L";
+		String createTimestamp = "create variable Long currentTimestamp =5400110L";
+		String createLastEventTimestamp = "create variable Long lastEventTimestamp =" + eventHourEndDate +" + (30*60*1000) - 1"; // bigger in one than 30*60*1000+hourEndTimestamp
 
 		// this rule is a copy of the rule exist in alert-generation-task.properties
 		String jokerSensitiveAccount =
-				"select 'Suspicious Activity For Sensitive Account' as title, size,"
+				" @Audit select 'Suspicious Activity For Sensitive Account' as title, size,"
 						+ " case"
-						+ " when (SmartEvent.score in [50:65) ) or (SmartEvent.score in [50:60) and size >=1 ) then 'Low' "
-						+ " when (SmartEvent.score in [65:75)  ) or (SmartEvent.score in [60:70) and size >=1 ) then 'Medium'"
-						+ " when (SmartEvent.score in [75:90)  ) or (SmartEvent.score in [70:85) and size >=1 ) then 'High'"
-						+ " when (SmartEvent.score >= 90 ) or (SmartEvent.score >= 85 and size>= 1 ) then 'Critical'"
+						+ " when (SmartEvent.score in [50:65) ) or (SmartEvent.score in [50:60)  ) then 'Low' "
+						+ " when (SmartEvent.score in [65:75)  ) or (SmartEvent.score in [60:70) ) then 'Medium'"
+						+ " when (SmartEvent.score in [75:90)  ) or (SmartEvent.score in [70:85) ) then 'High'"
+						+ " when (SmartEvent.score >= 90  ) or (SmartEvent.score >= 85  ) then 'Critical'"
 						+ "  end as severity , Tags.entityType as entityType, Tags.entityName as entityName,"
 						+ " aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score, Tags.tags as tags"
 						+ " from "
@@ -104,14 +105,15 @@ public class EsperRulesTest {
 
 		//create events for testing
 		//each of these event should satisfy one rule exactly
-		EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",62,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,"event_type",72,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,"event_type",88,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventCritical = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		//1441694790L == 2014/09/08:09:46:29
+		EntityEvent entityEventLow =      new EntityEvent(eventStartData,99,"event_type",62,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventMedium =   new EntityEvent(eventStartData,99,"event_type",72,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventHigh =     new EntityEvent(eventStartData,99,"event_type",88,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventCritical = new EntityEvent(eventStartData,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 		//these events should not satisfy any rule
-		EntityEvent entityEventTooLow = new   EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventNotAdmin = new EntityEvent(1234L,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user10@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventTooLow = new   EntityEvent(eventStartData,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com", eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventNotAdmin = new EntityEvent(eventStartData,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user10@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 		//---test the rule without the notification
 
@@ -137,27 +139,28 @@ public class EsperRulesTest {
 
 		//---test the rule with notification
 
-		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L,12345L,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
+		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
 
 		entityEventLow.setScore(55);
 		entityEventMedium.setScore(62);
 		entityEventHigh.setScore(72);
 		entityEventCritical.setScore(90);
 
-		epService.getEPRuntime().sendEvent(entityEventLow);
 		epService.getEPRuntime().sendEvent(notification);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity", "size" }, new Object[] { "user1@fs.com", "Low",1 });
+		listener.reset();
+		epService.getEPRuntime().sendEvent(entityEventLow);
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity", "size" }, new Object[] { "user1@fs.com", "Low",1L });
 
 		epService.getEPRuntime().sendEvent(entityEventMedium);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Medium",1 });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Medium",1L });
 
 		epService.getEPRuntime().sendEvent(entityEventHigh);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "High",1 });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "High",1L });
 
 		epService.getEPRuntime().sendEvent(entityEventCritical);
 		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
 		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Critical",1 });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Critical",1L });
 
 
 	}
