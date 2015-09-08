@@ -136,8 +136,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private long getStartTimeStamp(Notification notification) {
-		final String START_DATE = "start_date";
 		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+			final String START_DATE = "start_date";
 			Map<String, String> attributes = notification.getAttributes();
 			if (attributes != null && attributes.containsKey(START_DATE)) {
 				return Long.parseLong(attributes.get(START_DATE));
@@ -147,8 +147,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private long getEndTimeStamp(Notification notification) {
-		final String END_DATE = "end_date";
 		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+			final String END_DATE = "end_date";
 			Map<String, String> attributes = notification.getAttributes();
 			if (attributes != null && attributes.containsKey(END_DATE)) {
 				return Long.parseLong(attributes.get(END_DATE));
