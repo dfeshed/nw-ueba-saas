@@ -368,7 +368,7 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.counrtyscore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.countryScore >= 50)]"}
         }
       ]
     },
@@ -434,7 +434,7 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.counrty_score >= 50)]"}
+          "filter": {"jsonPath": "[?(@.countryScore >= 50)]"}
         }
       ]
     },
@@ -453,7 +453,7 @@
           "name": "number_of_high_score_rate_vpnsession",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
-          "filter": {"jsonPath": "[?(@.databucketscore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
     },
@@ -471,7 +471,7 @@
           "name": "number_of_high_score_rate_vpnsession",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
-          "filter": {"jsonPath": "[?(@.databucketscore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
     },
