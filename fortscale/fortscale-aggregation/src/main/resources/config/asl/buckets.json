@@ -218,6 +218,12 @@
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_auth_method_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.auth_method_score > 50)]"}
         }
       ]
     },
@@ -291,6 +297,12 @@
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_auth_method_events",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "filter": {"jsonPath": "[?(@.auth_method_score > 50)]"}
         }
       ]
     },
