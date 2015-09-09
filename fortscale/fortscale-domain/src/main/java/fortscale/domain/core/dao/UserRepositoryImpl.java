@@ -292,6 +292,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public Map<String, Long> groupByTags() {
 		final String DISABLED = "disabled";
 		final String INACTIVE = "inactive";
+		//group by the user's tag field and count results
 		Aggregation agg = newAggregation(
 			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
 			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
@@ -299,6 +300,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
 		List<TagCount> groups = groupResults.getMappedResults();
 		Map<String, Long> result = new HashMap();
+		//create the map to be returned
 		for (TagCount group: groups) {
 			for (String tag: group.getTags()) {
 				if (result.containsKey(tag)) {

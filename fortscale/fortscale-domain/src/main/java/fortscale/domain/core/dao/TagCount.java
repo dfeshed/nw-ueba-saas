@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * Created by Amir Keren on 09/09/15.
+ *
+ * This POJO class is used as the result of the mongo groupby query - groupByTags()
  */
 public class TagCount {
 
