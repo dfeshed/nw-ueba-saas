@@ -121,7 +121,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 *
 	 * @param insertStream
 	 */
-	public void update(Map[] insertStream) {
+	public void update(Map[] insertStream , Map[] removeStream) {
 		if (insertStream != null) {
 			for (Map insertStreamOutput : insertStream) {
 				try {
