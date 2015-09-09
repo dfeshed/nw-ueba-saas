@@ -148,6 +148,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	public void update(String title, String severity, EntityType entityType, String entityName,
 			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score,List<String> tags) {
 
+		// Convert to miliseconds
+		startTime *= 1000;
+		endTime *= 1000;
+
 		// Create the evidences list
 		List<Evidence> evidences = createEvidencesList(startTime, endTime, entityName, entityType, aggregatedFeatureEvents, tags);
 
@@ -173,7 +177,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		Severity severityEnum = Severity.valueOf(severity);
 
 		// Create the alert
-		Alert alert = new Alert(title, startTime * 1000, endTime * 1000 , EntityType.User, entityName, evidences, roundScore,
+		Alert alert = new Alert(title, startTime, endTime, EntityType.User, entityName, evidences, roundScore,
 				severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 		//Save alert to mongoDB
@@ -291,8 +295,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
-		startTime *=  1000;
-		endTime *= 1000;
 		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
 				NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
@@ -478,7 +480,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent, startDate, endDate);
 
-		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName, EvidenceType.AnomalyAggregatedEvent, new Date(startDate * 1000), new Date(endDate * 1000), dataEntities, score, aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
+		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName, EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score, aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);
