@@ -290,9 +290,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public Map<String, Long> groupByTags() {
+		final String DISABLED = "disabled";
+		final String INACTIVE = "inactive";
 		Aggregation agg = newAggregation(
-			group("tags").count().as("total"),
-			project("total").and("tags").previousOperation()
+			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
+			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
 		);
 		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
 		List<TagCount> groups = groupResults.getMappedResults();
@@ -306,8 +308,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				}
 			}
 		}
-		result.put("disabled", getNumberOfDisabledAccounts());
-		result.put("inactive", getNumberOfInactiveAccounts());
+		result.put(DISABLED, getNumberOfDisabledAccounts());
+		result.put(INACTIVE, getNumberOfInactiveAccounts());
 		return result;
 	}
 

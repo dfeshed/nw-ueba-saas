@@ -7,6 +7,8 @@ import java.util.List;
  */
 public class TagCount {
 
+    public static String COUNT_FIELD = "total";
+
     private List<String> tags;
     private long total;
 
