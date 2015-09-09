@@ -173,7 +173,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		Severity severityEnum = Severity.valueOf(severity);
 
 		// Create the alert
-		Alert alert = new Alert(title, startTime, endTime, EntityType.User, entityName, evidences, roundScore,
+		Alert alert = new Alert(title, startTime * 1000, endTime * 1000, EntityType.User, entityName, evidences, roundScore,
 				severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 		//Save alert to mongoDB
