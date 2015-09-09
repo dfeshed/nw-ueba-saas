@@ -2,6 +2,7 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnum;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
@@ -45,6 +46,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * Aggregated feature configuration service
 	 */
 	@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	
+	/**
+	 * Aggregated feature event builder service
+	 */
+	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+	
 
 	/**
 	 * Alerts service (for Mongo export)
@@ -181,7 +188,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Iterate through the features
 		for (JSONObject aggregatedFeatureEvent : entityEvent.getAggregated_feature_events()) {
-			AggrEvent aggrEvent = new AggrEvent(aggregatedFeatureEvent);
+			AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
 
 			// Get the evidence and add it to list
 			List<Evidence> evidences = createEvidencesFromAggregatedFeature(aggrEvent);
@@ -220,13 +227,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
 		// Depended on the feature type, get the evidence
-		switch (aggregatedFeatureEvent.getAggregatedFeatureType()) {
+		switch (aggregatedFeatureEvent.getFeatureType()) {
 		case F_FEATURE_VALUE:
 			return getFFeature(aggregatedFeatureEvent);
 		case P_FEATURE_VALUE:
 			return getPFeature(aggregatedFeatureEvent);
 		default:
-			logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getAggregatedFeatureType());
+			logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getFeatureType());
 			break;
 		}
 
@@ -297,7 +304,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
 
 		// try to fetch evidence from repository
-		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
+		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTimeUnix() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
 
 		// In case we found previously created evidence in the repository, return it
 		if (fEvidences != null && !fEvidences.isEmpty()) {
@@ -305,7 +312,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Else, create the evidence in the repository and return it
-		return createFEvidence(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime(), aggregatedFeatureEvent.getEndTime(), aggregatedFeatureEvent.getDataSourcesAsList(), aggregatedFeatureEvent.getScore(), aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
+		return createFEvidence(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime(), aggregatedFeatureEvent.getEndTimeUnix(), aggregatedFeatureEvent.getDataSources(), aggregatedFeatureEvent.getScore(), aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
 	}
 
 	/**
@@ -320,7 +327,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		EntityType entityType = EntityType.User;
 		String entityValue = aggrEvent.getContext().get(USER_ENTITY_KEY);
 		Long startDate = aggrEvent.getStartTime() * 1000;
-		Long endDate = aggrEvent.getEndTime() * 1000;
+		Long endDate = aggrEvent.getEndTimeUnix() * 1000;
 		String dataSource = (String) aggrEvent.getDataSources().get(0);
 		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggrEvent.getAggregatedFeatureName());
 
