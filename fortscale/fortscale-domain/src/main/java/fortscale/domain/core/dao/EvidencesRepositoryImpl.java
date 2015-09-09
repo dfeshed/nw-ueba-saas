@@ -24,8 +24,8 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		Query query = new Query(where
 				(Evidence.entityTypeField).is(entityType).and
 				(Evidence.entityNameField).is(entityName).and
-				(Evidence.startDateField).is(startDate).and
-				(Evidence.endDateField).is(endDate).and
+				(Evidence.startDateField).gte(startDate).and
+				(Evidence.endDateField).lte(endDate).and
 				(Evidence.dataEntityIdField).is(dataEntities).and
 				(Evidence.anomalyTypeFieldNameField).is(featureName)
 		);

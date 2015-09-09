@@ -225,7 +225,7 @@ public class ApiEvidenceControllerTest {
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Tuesday\",\"16:00\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Monday\",\"13:00\"],\"additionalInformation\":null,\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"13:00\"],\"additionalInformation\":null,\"value\":9.0,\"anomaly\":false},{\"keys\":[\"Sunday\",\"07:00\"],\"additionalInformation\":null,\"value\":8.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Sunday\",\"07:00\"],\"additionalInformation\":null,\"value\":8.0,\"anomaly\":false},{\"keys\":[\"Monday\",\"13:00\"],\"additionalInformation\":null,\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Tuesday\",\"16:00\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Sunday\",\"13:00\"],\"additionalInformation\":null,\"value\":9.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 	}
 
 

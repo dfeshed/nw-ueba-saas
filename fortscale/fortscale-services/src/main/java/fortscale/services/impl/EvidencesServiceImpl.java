@@ -3,6 +3,8 @@ package fortscale.services.impl;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.EvidencesService;
+import fortscale.services.UserService;
+import fortscale.services.UserSupportingInformationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +23,21 @@ import java.util.TreeMap;
 @Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
+	final double TAG_EVIDENCE_SCORE = 50;
+	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
+
+
 	/**
 	 * Mongo repository for evidences
 	 */
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UserSupportingInformationService userSupportingInformationService;
 
 	// Severity thresholds for evidence
 	@Value("${evidence.severity.medium:80}")
@@ -68,6 +79,27 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return new Evidence(entityType, entityTypeFieldName, entityName, evidenceType, startDate.getTime(),
 				endDate.getTime(), anomalyTypeFieldName, anomalyValue, dataEntitiesIds, intScore, severity,
 				totalAmountOfEvents, evidenceTimeframe);
+	}
+
+	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
+			Long startDate, long endDate, List<String> dataEntitiesIds, String tag){
+		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
+				new Date(startDate), new Date(endDate), dataEntitiesIds, TAG_EVIDENCE_SCORE, tag,
+				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
+
+		setTagEvidenceSupportingInformationData(evidence);
+
+		// Save evidence to MongoDB
+		saveEvidenceInRepository(evidence);
+
+		return evidence;
+	}
+
+	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
+		User user = userService.findByUsername(evidence.getEntityName());
+		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
+
+		evidence.setSupportingInformation(entitySupportingInformation);
 	}
 
 	@Override

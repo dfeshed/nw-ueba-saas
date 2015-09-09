@@ -69,7 +69,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
             }
         }
 
-        throw new UnsupportedOperationException("Aggregation function " + aggregationFunction + " is not supported");
+        throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);
     }
 
     @Override

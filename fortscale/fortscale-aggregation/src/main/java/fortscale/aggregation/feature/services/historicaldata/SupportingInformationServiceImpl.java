@@ -27,7 +27,7 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, int timePeriodInDays, String aggregationFunction) {
+    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, Integer timePeriodInDays, String aggregationFunction) {
         EvidenceType evidenceType = evidence.getEvidenceType();
         List<String> dataEntities = evidence.getDataEntitiesIds();
 

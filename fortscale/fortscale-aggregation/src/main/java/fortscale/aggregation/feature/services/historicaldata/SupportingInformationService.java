@@ -15,10 +15,10 @@ public interface SupportingInformationService {
      * @param contextType the context type (user, source machine, dest machine etc.)
      * @param contextValue the context value (e.g. mike@cnn.com)
      * @param featureName the related feature name
-     * @param timePeriodInDays evidence end time in milliseconds
+     * @param timePeriodInDays evidence end time in milliseconds (optional value)
      * @param aggregationFunction the aggregation function
      *
      * @return supporting information data representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, int timePeriodInDays, String aggregationFunction);
+    SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, Integer timePeriodInDays, String aggregationFunction);
 }
