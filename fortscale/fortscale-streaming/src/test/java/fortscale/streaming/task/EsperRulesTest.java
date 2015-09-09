@@ -5,19 +5,16 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.scopetest.EPAssertionUtil;
-import com.espertech.esper.client.scopetest.ScopeTestHelper;
 import com.espertech.esper.client.scopetest.SupportUpdateListener;
 import fortscale.domain.core.*;
 import fortscale.streaming.alert.rule.RuleUtils;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
-import java.util.*;
-
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Tests EPL rules: verify they satisfy their conditions.
@@ -56,7 +53,7 @@ public class EsperRulesTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testSmartEventWithSensitiveAccountTest() throws Exception{
+	public void testSmartEventWithNotificationTest() throws Exception{
 
 
 		long eventStartData= 1441694789L;
@@ -121,7 +118,11 @@ public class EsperRulesTest {
 		userTags.add("admin");
 		EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
 
+		Evidence notificationEvidence = new Evidence(EntityType.User, "normalized_username", "user1@fs.com", EvidenceType.Notification, eventStartData, eventStartData+1, "Geo_Hoping",
+				"Geo_Hoping", null , 99, Severity.Critical, 1, EvidenceTimeframe.Hourly);
+
 		epService.getEPRuntime().sendEvent(entityTags);
+		epService.getEPRuntime().sendEvent(notificationEvidence);
 		epService.getEPRuntime().sendEvent(entityEventLow);
 		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 
