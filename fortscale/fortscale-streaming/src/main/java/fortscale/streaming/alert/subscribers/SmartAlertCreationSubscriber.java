@@ -13,7 +13,6 @@ import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScor
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.task.EvidenceCreationTask;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,8 +26,7 @@ import java.util.*;
  */
 public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
-	//TODO: Move to esper rule
-	static String ALERT_TITLE = "SMART alert";
+	static String ALERT_DEFAULT_TITLE = "Suspicious Activity For Sensitive Account";
 
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE = "F";
@@ -111,67 +109,77 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Create the alert
-		Alert alert = new Alert(ALERT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+		Alert alert = new Alert(ALERT_DEFAULT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
 	}
 
 	/**
-	 * Create alert from stream events
-	 *
-	 * @param insertStream
+	 * Create alert directly from rule without tags
+	 * @param title
+	 * @param severity
+	 * @param entityType
+	 * @param entityName
+	 * @param aggregatedFeatureEvents
+	 * @param startTime
+	 * @param endTime
+	 * @param score
 	 */
-	public void update(Map[] insertStream , Map[] removeStream) {
-		if (insertStream != null) {
-			for (Map insertStreamOutput : insertStream) {
-				try {
-					// Get alert parameters
-					String title = (String) insertStreamOutput.get("title");
-					Long startDate = (Long) insertStreamOutput.get(startDateKey);
-					Long endDate = (Long) insertStreamOutput.get(endDateKey);
-					// TODO: missing!
-					EntityType entityType = EntityType.User;
-					//JSONObject entities = (JSONObject) JSONValue.parse((String) insertStreamOutput.get(entitiesKey));
-					//String entityName = entities.getAsString(USER_ENTITY_KEY);
-					String entityName = (String) insertStreamOutput.get("entityName");
-					String entityId;
-					switch (entityType) {
-					case User: {
-						entityId = userService.getUserId(entityName);
-						break;
-					}
-					case Machine: {
-						entityId = computerService.getComputerId(entityName);
-						break;
-					}
-					default: {
-						entityId = "";
-					}
-					//TODO - handle the rest of the entity types
-					}
-
-					Double score = (Double) insertStreamOutput.get(scoreKey);
-					Integer roundScore = score.intValue();
-					Severity severity = Severity.valueOf((String) insertStreamOutput.get("severity"));
-
-					List<JSONObject> aggregated_feature_events = (List<JSONObject>) insertStreamOutput.get("aggregated_feature_events");
-
-					// Create evidences list
-					List<Evidence> evidences = createEvidencesList(aggregated_feature_events, startDate, endDate, entityName);
-
-					// Create the alert
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
-
-					//Save alert to mongoDB
-					alertsService.saveAlertInRepository(alert);
-				} catch (RuntimeException ex) {
-					logger.error(ex.getMessage(), ex);
-					ex.printStackTrace();
-				}
-			}
-		}
+	public void update(String title, String severity, EntityType entityType, String entityName,
+			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score) {
+		// Create empty tags list
+		List<String> tags = new ArrayList<>();
+		update(title, severity, entityType, entityName, aggregatedFeatureEvents, startTime, endTime, score, tags);
 	}
+
+	/**
+	 * Create alert directly from rule
+	 * @param title
+	 * @param severity
+	 * @param entityType
+	 * @param entityName
+	 * @param aggregatedFeatureEvents
+	 * @param startTime
+	 * @param endTime
+	 * @param score
+	 * @param tags
+	 */
+	public void update(String title, String severity, EntityType entityType, String entityName,
+			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score,List<String> tags) {
+
+		// Create the evidences list
+		List<Evidence> evidences = createEvidencesList(startTime, endTime, entityName, entityType, aggregatedFeatureEvents, tags);
+
+		// Get alert parameters
+		Integer roundScore = score.intValue();
+		String entityId;
+		switch (entityType) {
+		case User: {
+			entityId = userService.getUserId(entityName);
+			break;
+		}
+		case Machine: {
+			entityId = computerService.getComputerId(entityName);
+			break;
+		}
+		default: {
+			entityId = "";
+		}
+		//TODO - handle the rest of the entity types
+		}
+
+		// Create Severity Enum from String value
+		Severity severityEnum = Severity.valueOf(severity);
+
+		// Create the alert
+		Alert alert = new Alert(title, startTime, endTime, EntityType.User, entityName, evidences, roundScore,
+				severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId);
+
+		//Save alert to mongoDB
+		alertsService.saveAlertInRepository(alert);
+	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="General evidences handling">
@@ -196,14 +204,19 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return null;
 	}
 
-	public void update(String title, String severity, EntityType entityType, String entityName,
-			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score, List<String> tags) {
-		String test = "";
-		test += "df";
-	}
-
-	private List<Evidence> createEvidencesList(List<JSONObject> aggregated_feature_events, Long startDate, Long endDate,
-			String entityName) {
+	/**
+	 * Create list of evidences
+	 * @param startDate
+	 * @param endDate
+	 * @param entityName
+	 * @param entityType
+	 * @param aggregated_feature_events
+	 * @param tags
+	 * @return
+	 */
+	private List<Evidence> createEvidencesList(Long startDate, Long endDate, String entityName, EntityType entityType,
+			List<JSONObject> aggregated_feature_events, List<String> tags) {
+		// New evidence list
 		List<Evidence> evidenceList = new ArrayList<>();
 
 		// Iterate through the features
@@ -222,6 +235,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		if (notificationEvidences != null) {
 			evidenceList.addAll(notificationEvidences);
 		}
+
+		// Create tag evidences
+		createTagEvidences(entityType, entityName, startDate, endDate, tags);
 
 		return evidenceList;
 	}
@@ -255,15 +271,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return evidenceList;
 	}
 
-	/**
-	 * Create evidences list from Map
-	 *
-	 * @param insertStreamOutput
-	 * @return
-	 */
-	private List<Evidence> createEvidencesList(Map insertStreamOutput) {
-		return null;
-	}
 	//</editor-fold>
 
 	//<editor-fold desc="Notification and tag evidence handling">
@@ -290,24 +297,22 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Create tag evidences
 	 * @param entityType
-	 * @param entityTypeFieldName
 	 * @param entityName
 	 * @param startDate
 	 * @param endDate
-	 * @param dataEntitiesIds
 	 * @param tags
 	 * @return
 	 */
-	private List<Evidence> createTagEvidences(EntityType entityType, String entityTypeFieldName, String entityName,
-			Long startDate,	long endDate, List<String> dataEntitiesIds, List<String> tags) {
+	private List<Evidence> createTagEvidences(EntityType entityType, String entityName, Long startDate, long endDate,
+			List<String> tags) {
 
 		// Create new evidence list
 		List<Evidence> evidences = new ArrayList<>();
 
 		// Iterate the tags list and create evidence for each tag
 		for (String tag : tags) {
-			Evidence evidence = evidencesService.createTagEvidence(entityType, entityTypeFieldName, entityName,
-					startDate, endDate, dataEntitiesIds, tag);
+			Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
+					entityName,	startDate, endDate, tag);
 
 			evidences.add(evidence);
 		}

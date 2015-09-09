@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Services for managing the evidences
@@ -25,6 +22,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	final double TAG_EVIDENCE_SCORE = 50;
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
+	final String TAG_DATA_ENTITY ="active_directory";
 
 
 	/**
@@ -82,7 +80,12 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-			Long startDate, long endDate, List<String> dataEntitiesIds, String tag){
+			Long startDate, long endDate, String tag){
+
+		// Create data entities array for tag evidence with constant value
+		List<String> dataEntitiesIds = new ArrayList<>();
+		dataEntitiesIds.add(TAG_DATA_ENTITY);
+
 		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
 				new Date(startDate), new Date(endDate), dataEntitiesIds, TAG_EVIDENCE_SCORE, tag,
 				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);

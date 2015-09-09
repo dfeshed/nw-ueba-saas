@@ -33,11 +33,10 @@ public interface EvidencesService {
 	 * @param entityName
 	 * @param startDate
 	 * @param endDate
-	 * @param dataEntitiesIds
 	 * @return
 	 */
 	Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName, Long startDate,
-			long endDate, List<String> dataEntitiesIds, String tag);
+			long endDate, String tag);
 
 	/**
 	 * Add supporting information data to the evidence
