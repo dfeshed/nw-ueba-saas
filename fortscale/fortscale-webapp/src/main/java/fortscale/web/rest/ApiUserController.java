@@ -147,7 +147,14 @@ public class ApiUserController extends BaseController{
 		List<User> users = userRepository.findByIds(ids);
 		return userDetails(users);
 	}
-	
+
+	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public Map<String, Long> usersTagsCount() {
+		return userRepository.groupByTags();
+	}
+
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
