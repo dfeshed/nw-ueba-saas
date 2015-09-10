@@ -288,6 +288,10 @@ public class Evidence extends AbstractDocument{
 		return anomalyValue;
 	}
 
+	public void setAnomalyValue(String anomalyValue) {
+		this.anomalyValue = anomalyValue;
+	}
+
 	public Integer getNumOfEvents() {
 		return numOfEvents;
 	}
