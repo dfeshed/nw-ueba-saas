@@ -143,7 +143,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
      */
     public EntitySupportingInformation createTagEvidenceSupportingInformationData(Evidence evidence){
 
-        User user= userService.findByUsername(evidence.getEntityName());
+        User user = userService.findByUsername(evidence.getEntityName());
         if(user == null || user.getUsername() == null){
             logger.warn("No user {} exist! ");
             return null;
