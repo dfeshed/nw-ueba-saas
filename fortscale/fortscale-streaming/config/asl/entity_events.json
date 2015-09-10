@@ -65,18 +65,18 @@
             "distinct_countries_vpn": 0.09
           },
           "betas": {
-            "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_with_high_score_kerberos": 0.087,
-            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 0.087,
-            "normalized_username_kerberos_logins_daily.distinct_number_of_failure_code_with_high_score_kerberos": 0.087,
-            "normalized_username_kerberos_logins_daily.has_high_score_date_time_events_kerberos_logins": 0.087,
-            "normalized_username_ssh_daily.distinct_number_of_src_machines_with_high_score_ssh": 0.087,
-            "normalized_username_ssh_daily.distinct_number_of_dst_machines_with_high_score_ssh": 0.087,
-            "normalized_username_ssh_daily.has_high_score_date_time_events_ssh": 0.087,
-            "normalized_username_ssh_daily.has_high_score_auth_method_events_ssh_daily": 0.043,
-            "normalized_username_vpn_daily.has_high_score_date_time_events_vpn": 0.087,
-            "normalized_username_vpn_daily.distinct_number_of_src_machines_with_high_score_vpn": 0.087,
-            "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn": 0.087,
-            "normalized_username_vpn_session_daily.number_of_high_score_rate_vpnsession": 0.087
+            "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_with_high_score_kerberos": 0.174,
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_with_high_score_kerberos": 0.174,
+            "normalized_username_kerberos_logins_daily.distinct_number_of_failure_code_with_high_score_kerberos": 0.174,
+            "normalized_username_kerberos_logins_daily.has_high_score_date_time_events_kerberos_logins": 0.174,
+            "normalized_username_ssh_daily.distinct_number_of_src_machines_with_high_score_ssh": 0.174,
+            "normalized_username_ssh_daily.distinct_number_of_dst_machines_with_high_score_ssh": 0.174,
+            "normalized_username_ssh_daily.has_high_score_date_time_events_ssh": 0.174,
+            "normalized_username_ssh_daily.has_high_score_auth_method_events_ssh_daily": 0.086,
+            "normalized_username_vpn_daily.has_high_score_date_time_events_vpn": 0.174,
+            "normalized_username_vpn_daily.distinct_number_of_src_machines_with_high_score_vpn": 0.174,
+            "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn": 0.174,
+            "normalized_username_vpn_session_daily.number_of_high_score_rate_vpnsession": 0.174
           }
         }
       },
@@ -139,18 +139,18 @@
             "distinct_countries_vpn": 0.09
           },
           "betas": {
-            "normalized_username_kerberos_logins_hourly.distinct_number_of_src_machines_with_high_score_kerberos_hourly": 0.087,
-            "normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_with_high_score_kerberos_hourly": 0.087,
-            "normalized_username_kerberos_logins_hourly.distinct_number_of_failure_code_with_high_score_kerberos_hourly": 0.087,
-            "normalized_username_kerberos_logins_hourly.has_high_score_date_time_events_kerberos_logins_hourly": 0.087,
-            "normalized_username_ssh_hourly.distinct_number_of_src_machines_with_high_score_ssh_hourly": 0.087,
-            "normalized_username_ssh_hourly.distinct_number_of_dst_machines_with_high_score_ssh_hourly": 0.087,
-            "normalized_username_ssh_hourly.has_high_score_date_time_events_ssh_hourly": 0.087,
-            "normalized_username_ssh_hourly.has_high_score_auth_method_events_ssh_hourly": 0.043,
-            "normalized_username_vpn_hourly.has_high_score_date_time_events_vpn_hourly": 0.087,
-            "normalized_username_vpn_hourly.distinct_number_of_src_machines_with_high_score_vpn_hourly": 0.087,
-            "normalized_username_vpn_hourly.distinct_number_of_country_with_high_score_vpn_hourly": 0.087,
-            "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpnsession_hourly": 0.087
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_src_machines_with_high_score_kerberos_hourly": 0.174,
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_with_high_score_kerberos_hourly": 0.174,
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_failure_code_with_high_score_kerberos_hourly": 0.174,
+            "normalized_username_kerberos_logins_hourly.has_high_score_date_time_events_kerberos_logins_hourly": 0.174,
+            "normalized_username_ssh_hourly.distinct_number_of_src_machines_with_high_score_ssh_hourly": 0.174,
+            "normalized_username_ssh_hourly.distinct_number_of_dst_machines_with_high_score_ssh_hourly": 0.174,
+            "normalized_username_ssh_hourly.has_high_score_date_time_events_ssh_hourly": 0.174,
+            "normalized_username_ssh_hourly.has_high_score_auth_method_events_ssh_hourly": 0.086,
+            "normalized_username_vpn_hourly.has_high_score_date_time_events_vpn_hourly": 0.174,
+            "normalized_username_vpn_hourly.distinct_number_of_src_machines_with_high_score_vpn_hourly": 0.174,
+            "normalized_username_vpn_hourly.distinct_number_of_country_with_high_score_vpn_hourly": 0.174,
+            "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpnsession_hourly": 0.174
           }
         }
       }
