@@ -7,7 +7,7 @@ http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
     <engine-settings>
         <defaults>
             <threading>
-                <threadpool-inbound enabled="true" num-threads="300"/>
+                <threadpool-inbound enabled="true" num-threads="10"/>
                 <!--<threadpool-outbound enabled="true" num-threads="2"/>-->
                 <!--<threadpool-timerexec enabled="true" num-threads="2"/>-->
                 <!--<threadpool-routeexec enabled="true" num-threads="2"/>-->
