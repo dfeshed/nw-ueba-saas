@@ -2,6 +2,7 @@ package fortscale.web.rest;
 
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
+import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
@@ -136,13 +137,13 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map.Entry<String, Long>>> usersTagsCount() {
-		List<Map.Entry<String, Long>> result = new ArrayList();
+	public DataBean<List<TagPair>> usersTagsCount() {
+		List<TagPair> result = new ArrayList();
 		Map<String, Long> items = userService.groupByTags();
 		for (Map.Entry<String, Long> entry : items.entrySet()) {
-			result.add(entry);
+			result.add(new TagPair(entry.getKey(), entry.getValue()));
 		}
-		DataBean<List<Map.Entry<String, Long>>> ret = new DataBean();
+		DataBean<List<TagPair>> ret = new DataBean();
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;
