@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static org.mockito.Matchers.anyString;
+
 /**
  * Created by orend on 26/07/2015.
  */
@@ -21,7 +23,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE", map, new JSONObject());
 	}
 
 	@Test

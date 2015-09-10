@@ -11,6 +11,7 @@ public class VpnSessionOverlap {
     private String local_ip;
     private long readbytes;
     private long totalbytes;
+    private long databucket;
     private String hostname;
     private String country;
 
@@ -78,4 +79,11 @@ public class VpnSessionOverlap {
         this.totalbytes = totalbytes;
     }
 
+    public long getDatabucket() {
+        return databucket;
+    }
+
+    public void setDatabucket(long databucket) {
+        this.databucket = databucket;
+    }
 }

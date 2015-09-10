@@ -2,8 +2,8 @@ package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.domain.core.Evidence;
 import fortscale.domain.events.VpnSession;
-import fortscale.domain.histogram.HistogramKey;
-import fortscale.domain.histogram.HistogramSingleKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.event.VpnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -37,16 +37,16 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
      * @param evidenceEndTime end time for the search
      * @param histogramMap the histogram map to populate
      * @param additionalInformation additional information to populate
-     * @return HistogramKey representing the anomaly value's key
+     * @return SupportingInformationKey representing the anomaly value's key
      */
-    protected HistogramKey populate(Evidence evidence, String normalizedUsername, long startTime, long evidenceEndTime,
-                                    Map<HistogramKey, Double> histogramMap,
-                                    Map<HistogramKey, Map> additionalInformation) {
+    protected SupportingInformationKey populate(Evidence evidence, String normalizedUsername, long startTime, long evidenceEndTime,
+                                    Map<SupportingInformationKey, Double> histogramMap,
+                                    Map<SupportingInformationKey, Map> additionalInformation) {
         List<VpnSession> vpnSessions = vpnService.findByNormalizedUserNameAndCreatedAtEpochBetweenAndDurationExists(
                 normalizedUsername, startTime, evidenceEndTime);
-        HistogramKey anomaly = null;
+        SupportingInformationKey anomaly = null;
         for (VpnSession vpnSession: vpnSessions) {
-            HistogramKey key = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
+            SupportingInformationKey key = new SupportingInformationSingleKey(vpnSession.getCreatedAtEpoch() + "");
             histogramMap.put(key, (double)vpnSession.getDataBucket());
             Map<String, Long> info = new HashMap<>();
             info.put(DURATION, (long)vpnSession.getDuration());
@@ -54,7 +54,7 @@ public class SupportingInformationVPNSessionPopulator extends SupportingInformat
             additionalInformation.put(key, info);
             //if this is the vpnsession that caused the evidence to be created - get its start time as the anomaly key
             if (anomaly == null && vpnSession.getClosedAtEpoch() == evidenceEndTime) {
-                anomaly = new HistogramSingleKey(vpnSession.getCreatedAtEpoch() + "");
+                anomaly = new SupportingInformationSingleKey(vpnSession.getCreatedAtEpoch() + "");
             }
         }
         return anomaly;

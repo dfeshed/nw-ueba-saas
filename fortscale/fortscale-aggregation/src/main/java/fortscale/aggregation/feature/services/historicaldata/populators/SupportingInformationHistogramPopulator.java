@@ -4,10 +4,10 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.histogram.HistogramKey;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  * @author gils
  * Date: 05/08/2015
  */
-public abstract class SupportingInformationBasePopulator implements SupportingInformationDataPopulator{
+public abstract class SupportingInformationHistogramPopulator implements SupportingInformationDataPopulator{
 
-    private static Logger logger = Logger.getLogger(SupportingInformationBasePopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationHistogramPopulator.class);
 
     protected String contextType;
     protected String dataEntity;
@@ -42,7 +42,7 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
 
-    public SupportingInformationBasePopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationHistogramPopulator(String contextType, String dataEntity, String featureName) {
         this.contextType = contextType;
         this.dataEntity = dataEntity;
         this.featureName = featureName;
@@ -56,7 +56,7 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
      * 4. Validate data consistency (histogram + anomaly)
      */
     @Override
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
@@ -64,26 +64,26 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
         }
 
-        Map<HistogramKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
 
         if (isAnomalyIndicationRequired(evidence)) {
-            HistogramKey anomalyHistogramKey = createAnomalyHistogramKey(evidence, featureName);
+            SupportingInformationKey anomalySupportingInformationKey = createAnomalyHistogramKey(evidence, featureName);
 
-            validateHistogramDataConsistency(histogramMap, anomalyHistogramKey);
+            validateHistogramDataConsistency(histogramMap, anomalySupportingInformationKey);
 
-            return new SupportingInformationData(histogramMap, anomalyHistogramKey);
+            return new SupportingInformationGenericData<Double>(histogramMap, anomalySupportingInformationKey);
         }
         else {
-            return new SupportingInformationData(histogramMap);
+            return new SupportingInformationGenericData<Double>(histogramMap);
         }
     }
 
     /**
      * Abstract method to the histogram creation functionality
      */
-    abstract Map<HistogramKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
+    abstract Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
 
-    abstract HistogramKey createAnomalyHistogramKey(Evidence evidence, String featureName);
+    abstract SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName);
 
     /*
      * Fetch the relevant feature buckets based on the context value and time values.
@@ -153,9 +153,9 @@ public abstract class SupportingInformationBasePopulator implements SupportingIn
         return feature.equalsIgnoreCase(evidence.getEntityTypeFieldName());
     }
 
-    protected void validateHistogramDataConsistency(Map<HistogramKey, Double> histogramMap, HistogramKey anomalyHistogramKey) {
-        if (!histogramMap.containsKey(anomalyHistogramKey)) {
-            throw new SupportingInformationException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalyHistogramKey + " # Histogram map = " + histogramMap);
+    protected void validateHistogramDataConsistency(Map<SupportingInformationKey, Double> histogramMap, SupportingInformationKey anomalySupportingInformationKey) {
+        if (!histogramMap.containsKey(anomalySupportingInformationKey)) {
+            throw new SupportingInformationException("Could not find anomaly histogram key in histogram map. Anomaly key = " + anomalySupportingInformationKey + " # Histogram map = " + histogramMap);
         }
     }
 

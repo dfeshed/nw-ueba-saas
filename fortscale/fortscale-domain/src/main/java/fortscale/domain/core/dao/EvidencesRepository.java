@@ -10,7 +10,7 @@ import java.util.List;
  * Repository for evidences
  * Date: 6/22/2015.
  */
-public interface EvidencesRepository extends MongoRepository<Evidence,String> {
+public interface EvidencesRepository extends MongoRepository<Evidence,String>, EvidencesRepositoryCustom {
 
 	/**
 	 * Find single evidence by ID
@@ -35,4 +35,14 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String> {
 	 */
 	List<Evidence> findByEvidenceTypeAndAnomalyValueIn(EvidenceType evidenceType, String[] anomalyValues);
 
+	/**
+	 * Find all evidences that are in the time window, the same type and for the same entity
+	 * @param startDate
+	 * @param endDate
+	 * @param evidenceType
+	 * @param entityName
+	 * @return
+	 */
+	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
+			String evidenceType, String entityName);
 }

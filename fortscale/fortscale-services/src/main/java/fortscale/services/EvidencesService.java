@@ -1,9 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceTimeframe;
-import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.*;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +27,24 @@ public interface EvidencesService {
 									 Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe);
 
 	/**
+	 * Create tag evidence
+	 * @param entityType
+	 * @param entityTypeFieldName
+	 * @param entityName
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName, Long startDate,
+			long endDate, String tag);
+
+	/**
+	 * Add supporting information data to the evidence
+	 * @param evidence
+	 */
+	void setTagEvidenceSupportingInformationData(Evidence evidence);
+
+	/**
 	 * Create new evidence in Mongo
 	 * @param evidence	The evidence
 	 */
@@ -49,5 +64,29 @@ public interface EvidencesService {
 	 * @return Single evidence
 	 */
 	public Evidence findById(String id);
+
+	/**
+	 * Find evidences from P and F features
+	 * @param entityType
+	 * @param entityName
+	 * @param startDate
+	 * @param endDate
+	 * @param dataEntities
+	 * @param featureName
+	 * @return
+	 */
+	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
+							String dataEntities, String featureName);
+
+	/**
+	 * Find evidences by start time, end time, type and entity
+	 * @param startDate
+	 * @param endDate
+	 * @param evidenceType
+	 * @param entityName
+	 * @return
+	 */
+	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
+			String evidenceType, String entityName);
 
 }

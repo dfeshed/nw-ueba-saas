@@ -7,9 +7,9 @@ public class NotificationSupportingInformationFactory {
 
     private final static String VPN_OVERLAPPING = "VPN_user_creds_share";
 
-    public static NotificationSupportingInformation getNotificationSupportingInformation(String notificationType) {
+    public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence) {
         //TODO - add additional types of notifications here
-        if (notificationType.equalsIgnoreCase(VPN_OVERLAPPING)) {
+        if (evidence.getAnomalyTypeFieldName().equalsIgnoreCase(VPN_OVERLAPPING)) {
             return new VpnOverlappingSupportingInformation();
         }
         return null;

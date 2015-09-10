@@ -33,6 +33,10 @@
 
     <bean id="usernameService" class="fortscale.services.impl.UsernameService"/>
 
+    <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+    <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
+    <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
+
     <!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
     <bean id="computerServiceCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
         <constructor-arg name="innerCache">

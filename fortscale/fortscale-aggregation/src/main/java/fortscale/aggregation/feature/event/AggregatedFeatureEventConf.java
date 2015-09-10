@@ -22,6 +22,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private int numberOfBuckets;
 	private int bucketsLeap;
 	private long waitAfterBucketCloseSeconds;
+	private String anomalyType;
+	private String evidencesFilterStrategy;
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
@@ -36,11 +38,13 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
 			@JsonProperty("waitAfterBucketCloseSeconds") long waitAfterBucketCloseSeconds,
+			@JsonProperty("anomalyType") String anomalyType,
+			@JsonProperty("evidencesFilterStrategy") String evidencesFilterStrategy,
 			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
 
 		init(name, type, bucketConfName, numberOfBuckets, bucketsLeap, waitAfterBucketCloseSeconds,
-				aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
+				anomalyType, evidencesFilterStrategy, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
 
 	}
 
@@ -51,6 +55,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 			int numberOfBuckets,
 			int bucketsLeap,
 			long waitAfterBucketCloseSeconds,
+			String anomalyType,
+			String evidencesFilterStrategy,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction,
 			boolean fireEventsAlsoForEmptyBucketTicks) {
@@ -61,6 +67,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 		Assert.isTrue(numberOfBuckets >= 1);
 		Assert.isTrue(bucketsLeap >= 1);
 		Assert.isTrue(waitAfterBucketCloseSeconds >= 0);
+		Assert.isTrue(StringUtils.isNotBlank(anomalyType));
+		Assert.isTrue(StringUtils.isNotBlank(evidencesFilterStrategy));
 		Assert.notNull(aggregatedFeatureEventFunction);
 		Assert.notEmpty(aggregatedFeatureNamesMap);
 		for (Map.Entry<String, List<String>> entry : aggregatedFeatureNamesMap.entrySet()) {
@@ -78,6 +86,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 		this.numberOfBuckets = numberOfBuckets;
 		this.bucketsLeap = bucketsLeap;
 		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
+		this.anomalyType = anomalyType;
+		this.evidencesFilterStrategy = evidencesFilterStrategy;
 		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
 		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
 		this.fireEventsAlsoForEmptyBucketTicks = fireEventsAlsoForEmptyBucketTicks;
@@ -115,6 +125,10 @@ public class AggregatedFeatureEventConf implements Serializable {
 	public long getWaitAfterBucketCloseSeconds() {
 		return waitAfterBucketCloseSeconds;
 	}
+
+	public String getAnomalyType() { return anomalyType; }
+
+	public String getEvidencesFilterStrategy() { return evidencesFilterStrategy; }
 
 	public Map<String, List<String>> getAggregatedFeatureNamesMap() {
 		Map<String, List<String>> mapClone = new HashMap<>(aggregatedFeatureNamesMap.size());
@@ -166,6 +180,14 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public void setWaitAfterBucketCloseSeconds(long waitAfterBucketCloseSeconds) {
 		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
+	}
+
+	public void setAnomalyType(String anomalyType) {
+		this.anomalyType = anomalyType;
+	}
+
+	public void setEvidencesFilterStrategy(String evidencesFilterStrategy) {
+		this.evidencesFilterStrategy = evidencesFilterStrategy;
 	}
 
 	public void setAggregatedFeatureNamesMap(Map<String, List<String>> aggregatedFeatureNamesMap) {

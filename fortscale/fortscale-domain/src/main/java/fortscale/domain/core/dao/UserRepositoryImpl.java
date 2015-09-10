@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -25,6 +27,7 @@ import parquet.org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.Update.update;
@@ -285,6 +288,33 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return mongoTemplate.find(query, User.class);
 	}
 
+	@Override
+	public Map<String, Long> groupByTags() {
+		final String DISABLED = "disabled";
+		final String INACTIVE = "inactive";
+		//group by the user's tag field and count results
+		Aggregation agg = newAggregation(
+			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
+			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
+		);
+		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
+		List<TagCount> groups = groupResults.getMappedResults();
+		Map<String, Long> result = new HashMap();
+		//create the map to be returned
+		for (TagCount group: groups) {
+			for (String tag: group.getTags()) {
+				if (result.containsKey(tag)) {
+					result.put(tag, result.get(tag) + group.getTotal());
+				} else {
+					result.put(tag, group.getTotal());
+				}
+			}
+		}
+		result.put(DISABLED, getNumberOfDisabledAccounts());
+		result.put(INACTIVE, getNumberOfInactiveAccounts());
+		return result;
+	}
+
 
 	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable) {
@@ -400,10 +430,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public long getNumberOfInactiveAccounts() {
-		//temporary implementation
-		Query query = new Query(Criteria.where(
-				User.lastActivityField)
-				.is(null));
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.MONTH, -1);
+		//condition is - (user active) AND (last activity date older than one month OR no last activity date found)
+		Criteria userActiveCriteria = Criteria.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField)).is(false);
+		Criteria lastActivityDateCriteria = Criteria.where(User.lastActivityField).lt(calendar.getTime());
+		Criteria lastActivityDoesNotExistCriteria = Criteria.where(User.
+				getAdInfoField(User.lastActivityField)).exists(false);
+		Query query = new Query(new Criteria().andOperator(userActiveCriteria,
+				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
 		return mongoTemplate.count(query, User.class);
 	}
 	

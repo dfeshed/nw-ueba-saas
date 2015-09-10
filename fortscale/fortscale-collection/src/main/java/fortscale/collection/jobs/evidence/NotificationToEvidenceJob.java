@@ -32,7 +32,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
 	private String SORT_FIELD = "ts";
-	private String SPECIAL_NOTIFICATION = "VPN_user_creds_share";
+	private String VPN_OVERLAPPING = "VPN_user_creds_share";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -113,11 +113,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				//convert each notification to evidence and send it to the appropriate Kafka topic
 				JSONObject evidence = new JSONObject();
 				evidence.put(notificationScoreField, score);
-				evidence.put(notificationStartTimestampField, notification.getTs());
-				evidence.put(notificationEndTimestampField, notification.getTs());
+				evidence.put(notificationStartTimestampField, getStartTimeStamp(notification));
+				evidence.put(notificationEndTimestampField, getEndTimeStamp(notification));
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
-				evidence.put(notificationEntityField, getEntity(notification));
+				evidence.put(notificationEntityField, getEntity(notification.getCause().toLowerCase()));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
@@ -133,6 +133,28 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		fetchConfiguration.setLastFetchTime(dateStr);
 		fetchConfigurationRepository.save(fetchConfiguration);
 		finishStep();
+	}
+
+	private long getStartTimeStamp(Notification notification) {
+		if (notification.getCause().equals(VPN_OVERLAPPING)) {
+			final String START_DATE = "start_date";
+			Map<String, String> attributes = notification.getAttributes();
+			if (attributes != null && attributes.containsKey(START_DATE)) {
+				return Long.parseLong(attributes.get(START_DATE));
+			}
+		}
+		return notification.getTs();
+	}
+
+	private long getEndTimeStamp(Notification notification) {
+		if (notification.getCause().equals(VPN_OVERLAPPING)) {
+			final String END_DATE = "end_date";
+			Map<String, String> attributes = notification.getAttributes();
+			if (attributes != null && attributes.containsKey(END_DATE)) {
+				return Long.parseLong(attributes.get(END_DATE));
+			}
+		}
+		return notification.getTs();
 	}
 
 	private String getSupportingInformation(Notification notification) {
@@ -155,12 +177,16 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		return notification.getCause();
 	}
 
-	private List<String> getEntity(Notification notification) {
-		List<String> result = new ArrayList<String>();
-		if (notification.getCause().toLowerCase().contains("amt")) {
-			result.add("amt");
+	private List<String> getEntity(String cause) {
+		List<String> result = new ArrayList();
+		if (cause.equalsIgnoreCase(VPN_OVERLAPPING)) {
+			result.add("vpn_session");
+			return result;
 		}
-		else if (notification.getCause().toLowerCase().contains("vpn")) {
+		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
+		if (cause.contains("amt")) {
+			result.add("amt");
+		} else if (cause.contains("vpn")) {
 			result.add("vpn");
 		} else {
 			result.add("active_directory");
@@ -169,7 +195,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private String getNormalizedUsername(Notification notification) {
-		if (notification.getCause().equals(SPECIAL_NOTIFICATION)) {
+		if (notification.getCause().equals(VPN_OVERLAPPING)) {
 			return notification.getDisplayName();
 		}
 		//attempt to normalize username
