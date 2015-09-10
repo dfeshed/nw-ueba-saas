@@ -38,6 +38,8 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
         setRawEvents(json);
         if (rawEvents != null) {
             evidence.setNumOfEvents(rawEvents.size());
+            evidence.setAnomalyValue(Integer.toString(rawEvents.size()));
+
         }
     }
 
