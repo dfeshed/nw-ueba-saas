@@ -26,7 +26,6 @@ import java.util.*;
  */
 public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
-	static String ALERT_DEFAULT_TITLE = "Suspicious Activity For Sensitive Account";
 
 	static String USER_ENTITY_KEY = "normalized_username";
 	final String F_FEATURE_VALUE = "F";
@@ -78,43 +77,6 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
 
 	//<editor-fold desc="Esper update methods">
-	/**
-	 * Create alert from entity event
-	 *
-	 * @param entityEvent
-	 */
-	public void update(EntityEvent entityEvent) {
-		// Create the evidences list
-		List<Evidence> evidences = createEvidencesList(entityEvent);
-
-		// Get alert parameters
-		Integer roundScore = ((Double) (entityEvent.getScore())).intValue();
-		Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-		EntityType entityType = EntityType.User;
-		String entityName = entityEvent.getContext().get(USER_ENTITY_KEY);
-		String entityId;
-		switch (entityType) {
-		case User: {
-			entityId = userService.getUserId(entityName);
-			break;
-		}
-		case Machine: {
-			entityId = computerService.getComputerId(entityName);
-			break;
-		}
-		default: {
-			entityId = "";
-		}
-		//TODO - handle the rest of the entity types
-		}
-
-		// Create the alert
-		Alert alert = new Alert(ALERT_DEFAULT_TITLE, entityEvent.getStart_time_unix(), entityEvent.getEnd_time_unix(), EntityType.User, entityName, evidences, roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
-
-		//Save alert to mongoDB
-		alertsService.saveAlertInRepository(alert);
-	}
-
 	/**
 	 * Create alert directly from rule without tags
 	 * @param title
@@ -249,51 +211,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		return evidenceList;
 	}
 
-	/**
-	 * Create evidences list from entity event
-	 *
-	 * @param entityEvent
-	 * @return
-	 */
-	private List<Evidence> createEvidencesList(EntityEvent entityEvent) {
-		List<Evidence> evidenceList = new ArrayList<>();
-
-		// Iterate through the features
-		for (JSONObject aggregatedFeatureEvent : entityEvent.getAggregated_feature_events()) {
-			AggrEvent aggrEvent = new AggrEvent(aggregatedFeatureEvent);
-
-			// Get the evidence and add it to list
-			List<Evidence> evidences = createEvidencesFromAggregatedFeature(aggrEvent);
-			if (evidences != null) {
-				evidenceList.addAll(evidences);
-			}
-		}
-
-		// Read notifications evidence from repository
-		List<Evidence> notificationEvidences = findNotificationEvidences(entityEvent);
-		if (notificationEvidences != null) {
-			evidenceList.addAll(notificationEvidences);
-		}
-
-		return evidenceList;
-	}
-
 	//</editor-fold>
 
 	//<editor-fold desc="Notification and tag evidence handling">
-	/**
-	 * Find notification evidences in the repository
-	 * @param entityEvent
-	 * @return
-	 */
-	private List<Evidence> findNotificationEvidences(EntityEvent entityEvent) {
-		Long startTime = entityEvent.getStart_time_unix() * 1000;
-		Long endTime = entityEvent.getEnd_time_unix() * 1000;
-		String entityValue = entityEvent.getContext().get(USER_ENTITY_KEY);
-		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
-				NOTIFICATION_EVIDENCE_TYPE, entityValue);
-	}
-
 	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
 		return evidencesService.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startTime, endTime,
 				NOTIFICATION_EVIDENCE_TYPE, entityValue);
