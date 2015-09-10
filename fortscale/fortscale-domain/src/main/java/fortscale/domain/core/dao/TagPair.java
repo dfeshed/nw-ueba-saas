@@ -10,6 +10,8 @@ public class TagPair {
     private String key;
     private long value;
 
+    public TagPair() {}
+
     public TagPair(String key, long value) {
         this.key = key;
         this.value = value;
