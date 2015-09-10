@@ -12,6 +12,7 @@ import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -111,11 +112,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			List<JSONObject> aggregatedFeatureEvents, long startTime, long endTime, Double score,List<String> tags) {
 
 		// Convert to miliseconds
-		startTime *= 1000;
-		endTime *= 1000;
+
+		startTime = TimestampUtils.convertToMilliSeconds(startTime);
+		endTime =TimestampUtils.convertToMilliSeconds(endTime);
 
 		// Create the evidences list
-		List<Evidence> evidences = createEvidencesList(startTime, endTime, entityName, entityType, aggregatedFeatureEvents, tags);
+		List<Evidence> evidences = createEvidencesList(startTime, endTime, entityName, entityType,
+				aggregatedFeatureEvents, tags);
 
 		// Get alert parameters
 		Integer roundScore = score.intValue();
@@ -275,7 +278,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Get the filtering strategy
 		String featureName = aggregatedFeatureEvent.getAggregatedFeatureName();
-		AggrEventEvidenceFilteringStrategyEnum filteringStrategy = aggregatedFeatureEventsConfService.getEvidenceReadingStrategy(featureName);
+		AggrEventEvidenceFilteringStrategyEnum filteringStrategy =
+				aggregatedFeatureEventsConfService.getEvidenceReadingStrategy(featureName);
 
 		EvidenceFilter evidenceFilter;
 
@@ -306,8 +310,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		// Get the parameters for reading evidences
 		EntityType entityType = EntityType.User;
 		String entityValue = aggrEvent.getContext().get(USER_ENTITY_KEY);
-		Long startDate = aggrEvent.getStartTime() * 1000;
-		Long endDate = aggrEvent.getEndTime() * 1000;
+		Long startDate = TimestampUtils.convertToMilliSeconds(aggrEvent.getStartTime());
+		Long endDate = TimestampUtils.convertToMilliSeconds(aggrEvent.getEndTime());
 		String dataSource = (String) aggrEvent.getDataSources().get(0);
 		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggrEvent.getAggregatedFeatureName());
 
@@ -357,7 +361,10 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
 
 		// try to fetch evidence from repository
-		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
+		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue,
+				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getStartTime()),
+				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getEndTime()),
+				dataSource, aggregatedFeatureEvent.getAggregatedFeatureName());
 
 		// In case we found previously created evidence in the repository, return it
 		if (fEvidences != null && !fEvidences.isEmpty()) {
@@ -365,7 +372,11 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		// Else, create the evidence in the repository and return it
-		return createFEvidence(EntityType.User, entityValue, aggregatedFeatureEvent.getStartTime() * 1000, aggregatedFeatureEvent.getEndTime() * 1000, aggregatedFeatureEvent.getDataSourcesAsList(), aggregatedFeatureEvent.getScore(), aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
+		return createFEvidence(EntityType.User, entityValue,
+				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getStartTime()),
+				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getEndTime()),
+				aggregatedFeatureEvent.getDataSourcesAsList(), aggregatedFeatureEvent.getScore(),
+				aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
 	}
 
 	/**
@@ -398,9 +409,12 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
-		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent, startDate, endDate);
+		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent,
+				startDate, endDate);
 
-		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName, EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score, aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
+		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
+				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,
+				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName, 1, evidenceTimeframe);
 
 		try {
 			evidencesService.saveEvidenceInRepository(evidence);

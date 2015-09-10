@@ -20,7 +20,6 @@ import java.util.*;
 @Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
-	//final double TAG_EVIDENCE_SCORE = 50;
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 	final String TAG_DATA_ENTITY ="active_directory";
 
