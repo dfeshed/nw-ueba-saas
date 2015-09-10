@@ -353,7 +353,86 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-
+      {
+        "name": "distinct_number_of_src_machines_vpn",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_vpn",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_vpn_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "outputBucketStrategy": "fixed_duration_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_vpn_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
+        "name": "distinct_number_of_countries_vpn",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_countries_vpn",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "country_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+      {
+        "name": "distinct_number_of_countries_vpn_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "outputBucketStrategy": "fixed_duration_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_countries_vpn_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "country_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
 
 
 
