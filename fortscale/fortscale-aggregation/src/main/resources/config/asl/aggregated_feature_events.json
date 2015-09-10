@@ -9,6 +9,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_kerberos",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -27,6 +29,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_kerberos_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -45,6 +49,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_kerberos",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -63,6 +69,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_kerberos_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -74,6 +82,83 @@
         }
       },
       {
+        "name": "number_of_kerberos_events",
+        "type": "F",
+        "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+      {
+        "name": "number_of_kerberos_events_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
+        "outputBucketStrategy": "fixed_duration_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+      {
+        "name": "number_of_failed_kerberos_events",
+        "type": "F",
+        "bucketConfName": "normalized_username_kerberos_logins_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_failed_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+      {
+        "name": "number_of_failed_kerberos_events_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
+        "outputBucketStrategy": "fixed_duration_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_failed_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+
+      {
         "name": "distinct_number_of_src_machines_ssh",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
@@ -81,6 +166,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_ssh",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -99,6 +186,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_src_machines_ssh_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_histogram"
@@ -117,6 +206,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_ssh",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -135,6 +226,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "distinct_number_of_dst_machines_ssh_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_histogram"
@@ -146,108 +239,6 @@
         }
       },
       {
-        "name": "number_of_failed_vpn_events",
-        "type": "F",
-        "bucketConfName": "normalized_username_vpn_daily",
-        "outputBucketStrategy": "fixed_duration_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
-        "name": "number_of_failed_vpn_events_hourly",
-        "type": "F",
-        "bucketConfName": "normalized_username_vpn_hourly",
-        "outputBucketStrategy": "fixed_duration_hourly",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
-        "name": "number_of_kerberos_events",
-        "type": "F",
-        "bucketConfName": "normalized_username_kerberos_logins_daily",
-        "outputBucketStrategy": "fixed_duration_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
-        "name": "number_of_kerberos_events_hourly",
-        "type": "F",
-        "bucketConfName": "normalized_username_kerberos_logins_hourly",
-        "outputBucketStrategy": "fixed_duration_hourly",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
-        "name": "number_of_failed_kerberos_events",
-        "type": "F",
-        "bucketConfName": "normalized_username_kerberos_logins_daily",
-        "outputBucketStrategy": "fixed_duration_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
-        "name": "number_of_failed_kerberos_events_hourly",
-        "type": "F",
-        "bucketConfName": "normalized_username_kerberos_logins_hourly",
-        "outputBucketStrategy": "fixed_duration_hourly",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
-        }
-      },
-      {
         "name": "number_of_ssh_events",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
@@ -255,6 +246,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_vpn_events",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -272,6 +265,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_vpn_events_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_events"
@@ -282,13 +277,15 @@
         }
       },
       {
-        "name": "number_of_failed_events",
+        "name": "number_of_failed_ssh_events",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "outputBucketStrategy": "fixed_duration_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -299,13 +296,15 @@
         }
       },
       {
-        "name": "number_of_failed_events_hourly",
+        "name": "number_of_failed_ssh_events_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_hourly",
         "outputBucketStrategy": "fixed_duration_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
@@ -315,6 +314,49 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
+
+      {
+        "name": "number_of_failed_vpn_events",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "outputBucketStrategy": "fixed_duration_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_failed_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+      {
+        "name": "number_of_failed_vpn_events_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "outputBucketStrategy": "fixed_duration_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "number_of_failed_kerberos_events_hourly",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_failed_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+
+
+
+
       {
         "name": "has_high_score_date_time_events_kerberos_logins",
         "type": "P",
@@ -322,6 +364,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -332,28 +376,14 @@
         }
       },
       {
-        "name": "has_high_score_date_time_events_ssh",
+        "name": "has_high_score_date_time_events_kerberos_logins_hourly",
         "type": "P",
-        "bucketConfName": "normalized_username_ssh_daily",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
-        }
-      },
-      {
-        "name": "has_high_score_date_time_events_vpn",
-        "type": "P",
-        "bucketConfName": "normalized_username_vpn_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_date_time_events"
@@ -370,6 +400,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -381,29 +413,14 @@
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_ssh",
+        "name": "distinct_number_of_src_machines_with_high_score_kerberos_hourly",
         "type": "P",
-        "bucketConfName": "normalized_username_ssh_daily",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "source_machine_with_high_score_histogram"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
-          "includeValues": true
-        }
-      },
-      {
-        "name": "distinct_number_of_src_machines_with_high_score_vpn",
-        "type": "P",
-        "bucketConfName": "normalized_username_vpn_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "source_machine_with_high_score_histogram"
@@ -421,6 +438,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -432,12 +451,14 @@
         }
       },
       {
-        "name": "distinct_number_of_dst_machines_with_high_score_ssh",
+        "name": "distinct_number_of_dst_machines_with_high_score_kerberos_hourly",
         "type": "P",
-        "bucketConfName": "normalized_username_ssh_daily",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "destination_machine_with_high_score_histogram"
@@ -455,9 +476,254 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "failure_code",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "failure_code_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_failure_code_with_high_score_kerberos_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_kerberos_logins_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "failure_code",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "failure_code_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+
+      {
+        "name": "has_high_score_date_time_events_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "has_high_score_date_time_events_ssh_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_with_high_score_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_with_high_score_ssh_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_dst_machines_with_high_score_ssh",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "destination_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_dst_machines_with_high_score_ssh_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "destination_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "has_high_score_auth_method_events_ssh_daily",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "auth_method",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_auth_method_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "has_high_score_auth_method_events_ssh_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_ssh_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "auth_method",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_auth_method_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+
+      {
+        "name": "has_high_score_date_time_events_vpn",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "has_high_score_date_time_events_vpn_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "high_score_date_time_events"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_has_events_func"
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_with_high_score_vpn",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "destination_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_src_machines_with_high_score_vpn_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_with_high_score_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -472,6 +738,8 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "country",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
             "country_with_high_score_histogram"
@@ -480,6 +748,62 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_country_with_high_score_vpn_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "country",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "country_with_high_score_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": true
+        }
+      },
+
+      {
+        "name": "number_of_high_score_rate_vpnsession",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_session_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "data_bucket",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_high_score_rate_vpnsession"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+      {
+        "name": "number_of_high_score_rate_vpnsession_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_vpn_session_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "data_bucket",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "number_of_high_score_rate_vpnsession"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
         }
       }
     ]

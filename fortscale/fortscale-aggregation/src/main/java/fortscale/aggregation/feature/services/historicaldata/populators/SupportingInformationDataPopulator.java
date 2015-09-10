@@ -21,5 +21,5 @@ public interface SupportingInformationDataPopulator {
      *
      * @return Supporting information data with/without anomaly value indication
      */
-    SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays);
+    SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays);
 }

@@ -65,6 +65,27 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		return returned;
 	}
 
+	public String getAnomalyType(String aggregatedFeatureName){
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
+			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
+				return  aggregatedFeatureEventConf.getAnomalyType();
+			}
+		}
+
+		return null;
+	}
+
+	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String aggregatedFeatureName){
+		String strategy = "";
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
+			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
+				strategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
+			}
+		}
+
+		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy);
+	}
+
 	private void loadAggregatedFeatureEventDefinitions() {
 		JSONObject aggregatedFeatureEvents;
 		JSONArray arrayOfEvents;

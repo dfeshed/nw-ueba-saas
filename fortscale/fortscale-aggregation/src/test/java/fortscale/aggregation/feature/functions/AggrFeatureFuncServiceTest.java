@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.anyString;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/aggr-feature-service-context-test.xml" })
 public class AggrFeatureFuncServiceTest {
@@ -981,7 +983,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureAvgStdNFunc);
 
@@ -1011,7 +1013,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 
@@ -1042,7 +1044,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 newAvgStdNFuncJson);
 
@@ -1078,7 +1080,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 dummyFunction);
 
@@ -1117,7 +1119,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 

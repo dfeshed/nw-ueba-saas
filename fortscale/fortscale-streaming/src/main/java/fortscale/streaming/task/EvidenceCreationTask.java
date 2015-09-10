@@ -250,13 +250,12 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						entitySupportingInformationPopulatorClass;
 				String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
 						supportingInformationField, false));
-
 				if (supportingInformation != null) {
 					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
-							(EntitySupportingInformationPopulator) SpringService.getInstance().resolve(Class.
+							(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
 									forName(entitySupportingInformationPopulatorClass));
 					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
-							populate(anomalyTypeField, supportingInformation);
+							populate(evidence, supportingInformation);
 					if (entitySupportingInformation != null) {
 						evidence.setSupportingInformation(entitySupportingInformation);
 					}
@@ -293,7 +292,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		}
 	}
 
-	private EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
+	public static EvidenceTimeframe calculateEvidenceTimeframe(EvidenceType evidenceType, Long eventStartTimestampInSeconds, Long eventEndTimestampInSeconds) {
 		if (evidenceType == EvidenceType.AnomalyAggregatedEvent) { // timeframe is relevant only to aggregated events
 			// aggregation timeframe in seconds = (end time - start time) + 1
 			// ==> need to add 1 second to the end time to get the timeframe, e.g. one hour / one day (in seconds)
@@ -355,11 +354,14 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			value = ((JSONObject) value).get(fieldPart);
 
 		}
-		if (value == null ) {
+
+		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
-		}
-		if (throwException){
+
 			throw new StreamMessageNotContainFieldException(mapper.writeValueAsString(message), field);
+		}
+		else if (value == null){
+			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 		}
 		return value;
 	}

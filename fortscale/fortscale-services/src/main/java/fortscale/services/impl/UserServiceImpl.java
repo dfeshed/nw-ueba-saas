@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,7 +87,11 @@ public class UserServiceImpl implements UserService{
 	private UsernameService usernameService;
 
 	@Autowired 
-	private ADParser adUserParser; 
+	private ADParser adUserParser;
+
+	@Autowired
+	@Qualifier("groupByTagsCache")
+	private CacheHandler<String, Map<String, Long>> groupByTagsCache;
 
 	@Value("${ad.info.update.read.page.size:1000}")
 	private int readPageSize;
@@ -1073,6 +1078,17 @@ public class UserServiceImpl implements UserService{
 			idsByTag.add(user.getId());
 		}
 		return idsByTag;
+	}
+
+	@Override
+	public Map<String, Long> groupByTags() {
+		final String TAGS = "tags";
+		Map<String, Long> items = groupByTagsCache.get(TAGS);
+		if (items == null) {
+			items = userRepository.groupByTags();
+			groupByTagsCache.put(TAGS, items);
+		}
+		return items;
 	}
 
 	@Override
