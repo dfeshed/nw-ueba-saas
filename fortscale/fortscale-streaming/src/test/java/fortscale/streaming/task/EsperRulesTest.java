@@ -190,7 +190,7 @@ public class EsperRulesTest {
                         + "EnrichedEntityEvent(score >= 50).std:groupwin(entityName,entityType).std:lastevent() as SmartEvent"
                         + " inner join"
                         + " EntityTags('admin' = any(Tags.tags) or 'executive' = any(Tags.tags) or 'service' = any(Tags.tags) ).std:groupwin(entityType,entityName).std:lastevent() as Tags "
-                        + " on SmartEvent.entityName = EntityTags.entityName and SmartEvent.entityType = Tags.entityType "
+                        + " on SmartEvent.entityName = Tags.entityName and SmartEvent.entityType = Tags.entityType "
                         + "left outer join"
                         + " EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or"
                         + " (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent() as Notification"
@@ -276,51 +276,27 @@ public class EsperRulesTest {
 
 		EPAssertionUtil.assertAllBooleanTrue(new Boolean[] {!listener.isInvoked()});
 
+
+
+		// Alert with notification and tag
+
+		entityEventLow =   new EntityEvent(eventStartData,99,"event_type",60,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +2,eventStartData +2,"entity_event_type",eventStartData +2,new ArrayList<JSONObject>());
 		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
+
+		epService.getEPRuntime().sendEvent(entityEventLow);
+		listener.reset(); // reset the listener to avoid the notification that the above line will triggered
+
+
 		epService.getEPRuntime().sendEvent(notification);
+
 		result = listener.assertOneGetNewAndReset();
 		EPAssertionUtil.assertProps(result, new String[] { "entityName","severity" }, new Object[] { "user1@fs.com","Medium"});
 
-/*
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 
-		epService.getEPRuntime().sendEvent(entityEventMedium);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Medium" });
-
-		epService.getEPRuntime().sendEvent(entityEventHigh);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "High" });
-
-
-		epService.getEPRuntime().sendEvent(entityEventCritical);
-		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
-		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Critical" });
-
-		//---test the rule with notification
-
-
-
-		entityEventLow.setScore(55);
-		entityEventMedium.setScore(62);
-		entityEventHigh.setScore(72);
-		entityEventCritical.setScore(90);
-
+		//Notification for user without tag should be ignored
+		notification = new Evidence(EntityType.User,"entityTypeFieldName","user10@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
 		epService.getEPRuntime().sendEvent(notification);
-		listener.reset();
-		epService.getEPRuntime().sendEvent(entityEventLow);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity", "size" }, new Object[] { "user1@fs.com", "Low",1L });
+		EPAssertionUtil.assertAllBooleanTrue(new Boolean[] {!listener.isInvoked()});
 
-		epService.getEPRuntime().sendEvent(entityEventMedium);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Medium",1L });
-
-		epService.getEPRuntime().sendEvent(entityEventHigh);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "High",1L });
-
-		epService.getEPRuntime().sendEvent(entityEventCritical);
-		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
-		epService.getEPRuntime().sendEvent(entityEventNotAdmin); // this one shouldn't affect
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity","size" }, new Object[] { "user1@fs.com", "Critical",1L });
-
-*/
     }
 }
