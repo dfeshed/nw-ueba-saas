@@ -1,32 +1,12 @@
 package fortscale.web.rest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
@@ -34,13 +14,16 @@ import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.DataListWrapperBean;
-import fortscale.web.beans.DataWarningsEnum;
-import fortscale.web.beans.FeatureBean;
-import fortscale.web.beans.UserDetailsBean;
-import fortscale.web.beans.UserMachinesBean;
-import fortscale.web.beans.UserSearchBean;
+import fortscale.web.beans.*;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/user/**")
@@ -49,10 +32,12 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
+
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private UserRepository userRepository;
-	
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
@@ -151,8 +136,16 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public Map<String, Long> usersTagsCount() {
-		return userRepository.groupByTags();
+	public DataBean<List<Map.Entry<String, Long>>> usersTagsCount() {
+		List<Map.Entry<String, Long>> result = new ArrayList();
+		Map<String, Long> items = userService.groupByTags();
+		for (Map.Entry<String, Long> entry : items.entrySet()) {
+			result.add(entry);
+		}
+		DataBean<List<Map.Entry<String, Long>>> ret = new DataBean();
+		ret.setData(result);
+		ret.setTotal(result.size());
+		return ret;
 	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
