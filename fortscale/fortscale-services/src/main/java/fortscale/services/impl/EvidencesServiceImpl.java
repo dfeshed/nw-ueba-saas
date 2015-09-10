@@ -20,7 +20,7 @@ import java.util.*;
 @Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
-	final double TAG_EVIDENCE_SCORE = 50;
+	//final double TAG_EVIDENCE_SCORE = 50;
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 	final String TAG_DATA_ENTITY ="active_directory";
 
@@ -44,6 +44,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	protected int high;
 	@Value("${evidence.severity.critical:95}")
 	protected int critical;
+
+	@Value("${collection.evidence.tag.score:50}")
+	protected double tagScore;
 
 	/**
 	 * Keeps mapping between score and severity
@@ -87,7 +90,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		dataEntitiesIds.add(TAG_DATA_ENTITY);
 
 		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
-				new Date(startDate), new Date(endDate), dataEntitiesIds, TAG_EVIDENCE_SCORE, tag,
+				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
 				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
 
 		setTagEvidenceSupportingInformationData(evidence);
