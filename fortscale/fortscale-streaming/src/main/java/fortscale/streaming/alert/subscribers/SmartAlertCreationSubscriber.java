@@ -23,6 +23,7 @@ import parquet.org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
+ * create alert from smart events. smart events may appear in combination with other evidences, such as tags and notifications.
  * Created by tomerd on 30/08/2015.
  */
 public class SmartAlertCreationSubscriber extends AbstractSubscriber {
