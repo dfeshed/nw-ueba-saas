@@ -19,6 +19,7 @@ http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
         </defaults>
     </engine-settings>
     <event-type-auto-name package-name="fortscale.domain.core"/>
+    <auto-import import-name="fortscale.domain.core.*"/>
     <event-type name="SessionTimeUpdate" class="fortscale.domain.core.SessionTimeUpdate"/>
     <plugin-singlerow-function name="hourStartTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="hourStartTimestamp" />
     <plugin-singlerow-function name="dayStartTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="dayStartTimestamp" />
