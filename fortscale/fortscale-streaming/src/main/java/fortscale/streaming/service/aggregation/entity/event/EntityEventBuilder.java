@@ -2,6 +2,7 @@ package fortscale.streaming.service.aggregation.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +31,11 @@ public class EntityEventBuilder {
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
+	
+	@Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+	
+	
 
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
@@ -75,8 +81,8 @@ public class EntityEventBuilder {
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
 		String contextId = getContextId(context);
 
-		Long startTime = aggrFeatureEvent.getStartTime();
-		Long endTime = aggrFeatureEvent.getEndTime();
+		Long startTime = aggrFeatureEvent.getStartTimeUnix();
+		Long endTime = aggrFeatureEvent.getEndTimeUnix();
 
 		if (StringUtils.isBlank(contextId) || startTime == null || endTime == null) {
 			return null;
@@ -117,7 +123,7 @@ public class EntityEventBuilder {
 							aggrFeatureEvent.getBucketConfName(),
 							aggrFeatureEvent.getAggregatedFeatureName()),
 					aggrFeatureEvent);
-			aggrFeatureEvents.add(aggrFeatureEvent.getAsJSONObject());
+			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}
 
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);

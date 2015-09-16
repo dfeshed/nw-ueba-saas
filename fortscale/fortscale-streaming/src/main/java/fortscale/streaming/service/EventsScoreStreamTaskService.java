@@ -133,7 +133,9 @@ public class EventsScoreStreamTaskService {
 		}
 
 		EventPersistencyHandler eventPersitencyHandler = eventPersitencyHandlerFactory.getEventPersitencyHandler(event);
-		eventPersitencyHandler.saveEvent(event, SCORED_EVENTS_COLLECTION_NAME_PREFIX);
+		if(eventPersitencyHandler != null){
+			eventPersitencyHandler.saveEvent(event, SCORED_EVENTS_COLLECTION_NAME_PREFIX);
+		}
 
 	}
 }

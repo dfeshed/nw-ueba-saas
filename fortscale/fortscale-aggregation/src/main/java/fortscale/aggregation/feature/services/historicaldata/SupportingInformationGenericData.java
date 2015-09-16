@@ -14,7 +14,8 @@ import java.util.Map;
 public class SupportingInformationGenericData<T> implements SupportingInformationData{
     protected Map<SupportingInformationKey, T> dataMap = new HashMap<>();
 
-    protected Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
+    @SuppressWarnings("rawtypes")
+	protected Map<SupportingInformationKey, Map> additionalInformation = new HashMap<>();
 
     protected SupportingInformationKey anomalyValue;
 
@@ -38,11 +39,12 @@ public class SupportingInformationGenericData<T> implements SupportingInformatio
         return anomalyValue;
     }
 
-    public Map<SupportingInformationKey, Map> getAdditionalInformation() {
+    @SuppressWarnings("rawtypes")
+	public Map<SupportingInformationKey, Map> getAdditionalInformation() {
         return additionalInformation;
     }
 
-    public void setAdditionalInformation(Map<SupportingInformationKey, Map> additionalInformation) {
+    public void setAdditionalInformation(@SuppressWarnings("rawtypes") Map<SupportingInformationKey, Map> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
 
