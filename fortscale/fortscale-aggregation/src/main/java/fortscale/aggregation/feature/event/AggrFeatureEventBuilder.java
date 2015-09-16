@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
-    private static final long SECONDS_TO_ADD_TO_PASS_END_TIME = 1;
+    protected static final long SECONDS_TO_ADD_TO_PASS_END_TIME = 1;
 
     @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;

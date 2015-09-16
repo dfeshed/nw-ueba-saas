@@ -1,23 +1,16 @@
 package fortscale.aggregation.feature.event;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.DataSourcesSyncTimerListener;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.*;
+import fortscale.aggregation.feature.util.GenericHistogram;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,18 +20,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.DataSourcesSyncTimerListener;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
-import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
-import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventBuilderTest {    
@@ -101,11 +89,7 @@ public class AggrFeatureEventBuilderTest {
         strategy = createFixedDurationStrategy();
 
         // Create AggrFeatureEventBuilder
-        AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
-
-
-
-        return builder;
+        return new AggrFeatureEventBuilder(eventConf, strategy, featureBucketsService);
     }
 
     private FeatureBucketStrategy createFixedDurationStrategy() throws Exception{
@@ -192,7 +176,8 @@ public class AggrFeatureEventBuilderTest {
         AggrFeatureEventBuilder builder = createBuilder(1, 1);
         FeatureBucket bucket1 = createFeatureBucket(1);
 
-        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(eq(bucket1.getDataSources()), eq(bucket1.getEndTime()), any(DataSourcesSyncTimerListener.class))).then(new Answer<Object>() {
+        long epochtime1 = bucket1.getEndTime() + AggrFeatureEventBuilder.SECONDS_TO_ADD_TO_PASS_END_TIME;
+        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(eq(bucket1.getDataSources()), eq(epochtime1), any(DataSourcesSyncTimerListener.class))).then(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 dataSourcesSyncTimerListener = (DataSourcesSyncTimerListener) args[2];
