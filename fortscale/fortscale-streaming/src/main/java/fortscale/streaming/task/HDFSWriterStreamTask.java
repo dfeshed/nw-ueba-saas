@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
@@ -22,15 +23,17 @@ import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
+import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.streaming.ConfigUtils.*;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
@@ -70,11 +73,14 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		public BarrierService barrier;
 		public List<MessageFilter> filters = new LinkedList<>();
 		public PartitionStrategy partitionStrategy;
-
+		public List<String> outputTopics;
+		public List<String> bdpOutputTopics;
 		public FeatureExtractionService featureExtractionService;
 
 	}
 
+	@Value("${fortscale.bdp.run:false}")
+	private boolean isBDPRunning;
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -97,6 +103,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				topicToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
 			}
 			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
+
+			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
+				writerConfiguration.outputTopics = getConfigStringList(config,
+						String.format("fortscale.%s.output.topics", eventType));
+			}
+			if (isConfigContainKey(config, String.format("fortscale.%s.bdp.output.topics", eventType))) {
+				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
+						String.format("fortscale.%s.bdp.output.topics", eventType));
+			}
 
 			// read configuration properties
 
@@ -200,6 +215,27 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					String eventLine = buildEventLine(message, writerConfiguration);
 					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp.longValue());
 					writerConfiguration.processedMessageCount.inc();
+					// send to output topics
+					List<String> outputTopics;
+					if (!isBDPRunning) {
+						outputTopics = writerConfiguration.outputTopics;
+					} else {
+						outputTopics = writerConfiguration.bdpOutputTopics;
+					}
+					if (outputTopics != null) {
+						for (String outputTopic : outputTopics) {
+							try {
+								//TODO - partition key?
+								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+									   outputTopic), writerConfiguration.partitionStrategy, message.toJSONString());
+								collector.send(output);
+							} catch (Exception exception) {
+								throw new KafkaPublisherException(String.
+								  format("failed to send event from input topic %s to output topic %s after HDFS write",
+										  topic, outputTopic), exception);
+							}
+						}
+					}
 				}
 				// update barrier
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);
