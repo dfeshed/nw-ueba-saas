@@ -3,7 +3,6 @@ package fortscale.streaming.service.event;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class EventPersistencyHandlerFactory {
     	handlers.put(eventType, handler);
     }
     
-    public void registerdefaultEventPersistencyHandler(EventPersistencyHandler handler){
+    public void registerDefaultEventPersistencyHandler(EventPersistencyHandler handler){
     	defaultEventPersistencyHandler = handler;
     }
 
