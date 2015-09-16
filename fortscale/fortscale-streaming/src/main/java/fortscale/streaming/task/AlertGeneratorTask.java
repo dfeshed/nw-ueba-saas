@@ -55,6 +55,8 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		Configuration esperConfig = new Configuration();
 		String confFileName = getConfigString(config,"fortscale.esper.config.file.path");
 		esperConfig.configure(new File(confFileName));
+		// Added for prohibiting from logging of " Spin wait timeout exceeded in". This thing is better for performence.
+		esperConfig.getEngineDefaults().getThreading().setInsertIntoDispatchPreserveOrder(false);
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 		createEsperConfiguration(config);

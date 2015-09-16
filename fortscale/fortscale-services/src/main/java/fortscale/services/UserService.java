@@ -126,4 +126,6 @@ public interface UserService extends CachingService{
 
 	public Set<String> findIdsByTags(String[] tags);
 
+	public Map<String, Long> groupByTags();
+
 }

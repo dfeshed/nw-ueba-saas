@@ -81,7 +81,7 @@ public class EntityEventBuilder {
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
 		String contextId = getContextId(context);
 
-		Long startTime = aggrFeatureEvent.getStartTime();
+		Long startTime = aggrFeatureEvent.getStartTimeUnix();
 		Long endTime = aggrFeatureEvent.getEndTimeUnix();
 
 		if (StringUtils.isBlank(contextId) || startTime == null || endTime == null) {

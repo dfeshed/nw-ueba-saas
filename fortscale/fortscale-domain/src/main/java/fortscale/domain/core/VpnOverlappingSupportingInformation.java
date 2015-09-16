@@ -34,8 +34,13 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
     }
 
     @Override
-    public void setData(String json) {
+    public void setData(Evidence evidence, String json) {
         setRawEvents(json);
+        if (rawEvents != null) {
+            evidence.setNumOfEvents(rawEvents.size());
+            evidence.setAnomalyValue(Integer.toString(rawEvents.size()));
+
+        }
     }
 
 }

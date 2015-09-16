@@ -195,10 +195,6 @@ public class AggrEvent implements Serializable {
         return context;
     }
 
-    public Long getStartTime() {
-        return startTimeUnix;
-    }
-
     public Long getEndTimeUnix() {
         return endTimeUnix;
     }

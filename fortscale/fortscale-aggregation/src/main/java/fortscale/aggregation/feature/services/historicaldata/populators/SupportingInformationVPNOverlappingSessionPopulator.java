@@ -68,11 +68,11 @@ public class SupportingInformationVPNOverlappingSessionPopulator implements Supp
         Map<SupportingInformationKey, Map> additionalInformationMap = new HashMap<>();
 
         for (VpnSessionOverlap vpnSessionOverlap : vpnSessionOverlapEvents) {
-            long startTime = vpnSessionOverlap.getDate_time_unix();
+            long endTime = vpnSessionOverlap.getDate_time_unix();
             long duration = vpnSessionOverlap.getDuration();
 
-            Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime);
-            Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime + duration);
+            Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime - duration);
+            Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime);
 
             SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getSource_ip());
 
