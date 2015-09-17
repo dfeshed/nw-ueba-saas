@@ -29,6 +29,7 @@ import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -42,6 +43,8 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Stream tasks that receives events and write them to hdfs using a partitioned
  * writer
  */
+@Configurable(preConstruction = true)
+@Component
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
