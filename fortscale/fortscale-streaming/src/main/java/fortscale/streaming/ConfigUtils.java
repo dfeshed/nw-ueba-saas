@@ -26,6 +26,13 @@ public final class ConfigUtils {
 		return values;
 	}
 
+	public static List<String> getConfigStringListWithEmpty(Config config, String key) throws ConfigException {
+		List<String> values = config.getList(key);
+		if (values == null)
+			throw new ConfigException("configuration is missing key " + key);
+		return values;
+	}
+
 	public static double getConfigDouble(Config config, String key) throws ConfigException {
 		Double value = config.getDouble(key);
 		if (value == null)

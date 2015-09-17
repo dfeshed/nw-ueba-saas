@@ -103,11 +103,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
-				writerConfiguration.outputTopics = getConfigStringList(config,
+				writerConfiguration.outputTopics = getConfigStringListWithEmpty(config,
 						String.format("fortscale.%s.output.topics", eventType));
 			}
 			if (isConfigContainKey(config, String.format("fortscale.%s.bdp.output.topics", eventType))) {
-				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
+				writerConfiguration.bdpOutputTopics = getConfigStringListWithEmpty(config,
 						String.format("fortscale.%s.bdp.output.topics", eventType));
 			}
 
