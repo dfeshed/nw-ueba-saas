@@ -44,6 +44,8 @@ import static fortscale.utils.ConversionUtils.*;
 
 	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
+	@Value("${collection.evidence.notification.topic}")
+	private String evidenceNotificationTopic;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
@@ -165,10 +167,7 @@ import static fortscale.utils.ConversionUtils.*;
 
 		Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
 		if (isRunGeoHopping != null && isRunGeoHopping) {
-			JSONObject jsonObject = processGeoHopping(vpnSessionUpdateConfig, vpnSession);
-			if (jsonObject != null) {
-				sendEvidence(jsonObject, collector);
-			}
+			sendEvidence(processGeoHopping(vpnSessionUpdateConfig, vpnSession), collector);
 		}
 
 		if (vpnSession.getCreatedAt() != null) {
@@ -183,7 +182,8 @@ import static fortscale.utils.ConversionUtils.*;
 	private void sendEvidence(JSONObject evidence, MessageCollector collector) {
 		if (evidence != null && collector != null) {
 			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", "fortscale-notification-event-score"), evidence.get("index"), evidence.toJSONString(JSONStyle.NO_COMPRESS));
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+					   evidenceNotificationTopic), evidence.get("index"), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 				collector.send(output);
 			} catch (Exception e) {
 				logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
