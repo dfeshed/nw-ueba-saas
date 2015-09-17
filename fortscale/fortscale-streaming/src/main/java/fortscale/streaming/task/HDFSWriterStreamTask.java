@@ -42,7 +42,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Stream tasks that receives events and write them to hdfs using a partitioned
  * writer
  */
-@Configurable(preConstruction = true)
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
@@ -83,6 +82,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
+	@Value("${collection.evidence.notification.topic}")
+	private String notificationTopic;
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
