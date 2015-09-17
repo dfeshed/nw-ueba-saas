@@ -44,7 +44,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * writer
  */
 @Configurable(preConstruction = true)
-@Component
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
