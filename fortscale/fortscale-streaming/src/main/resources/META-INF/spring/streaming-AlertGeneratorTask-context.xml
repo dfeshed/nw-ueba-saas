@@ -36,6 +36,7 @@
     <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
     <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
+    <bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
 
     <!-- group by tags service cache that uses memory based implementation -->
     <bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
