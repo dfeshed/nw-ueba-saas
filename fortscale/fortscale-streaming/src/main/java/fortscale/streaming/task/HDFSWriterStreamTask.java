@@ -7,10 +7,7 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
-import fortscale.streaming.service.BarrierService;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.HdfsService;
-import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.*;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -58,6 +55,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	 */
 	protected Map<String, List<WriterConfiguration>> topicToWriterConfigurationMap = new HashMap<>();
 
+	private BDPService bdpService;
+
 	/**
 	 * Private class for configuration of specific writer (specific topic, specific HDFS file)
 	 */
@@ -81,11 +80,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		public FeatureExtractionService featureExtractionService;
 
 	}
-
-	@Value("${fortscale.bdp.run}")
-	private boolean isBDPRunning;
-	@Value("${collection.evidence.notification.topic}")
-	private String notificationTopic;
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -162,6 +156,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
 
+			bdpService = new BDPService();
+
 		}
 	}
 
@@ -222,7 +218,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					writerConfiguration.processedMessageCount.inc();
 					// send to output topics
 					List<String> outputTopics;
-					if (!isBDPRunning) {
+					if (!bdpService.isBDPRunning()) {
 						outputTopics = writerConfiguration.outputTopics;
 					} else {
 						outputTopics = writerConfiguration.bdpOutputTopics;
