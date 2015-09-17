@@ -11,8 +11,6 @@ public class BDPService {
 
     @Value("${fortscale.bdp.run}")
     private boolean isBDPRunning;
-    @Value("${collection.evidence.notification.topic}")
-    private String notificationTopic;
 
     public boolean isBDPRunning() {
         return isBDPRunning;

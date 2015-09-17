@@ -155,9 +155,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
 
-			bdpService = new BDPService();
-
 		}
+
+		bdpService = new BDPService();
+
 	}
 
 	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
