@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -107,11 +108,11 @@ public class AggrEvent implements Serializable {
         this.bucketConfName = bucketConfName;
         this.context = context;
         this.creationEpochTime = creationEpochTimeSeconds;
-        creationDateTime = new Date(creationEpochTimeSeconds*1000);
+        creationDateTime = new Date(TimestampUtils.convertToMilliSeconds(creationEpochTimeSeconds));
         this.startTimeUnix  = startTimeUnixSeconds;
-        startTime = new Date(startTimeUnixSeconds*1000);
+        startTime = new Date(TimestampUtils.convertToMilliSeconds(startTimeUnixSeconds));
         this.endTimeUnix  = endTimeUnixSeconds;
-        endTime  = new Date(endTimeUnixSeconds*1000);
+        endTime  = new Date(TimestampUtils.convertToMilliSeconds(endTimeUnixSeconds));
         
         this.dataSources = dataSources;
         this.score = score;
