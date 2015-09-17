@@ -350,11 +350,17 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private Object validateFieldExistsAndGetValue(JSONObject message, String field, boolean throwException) throws Exception {
 		String[] fieldHierarchy = field.split("\\.");
 		Object value = message;
-		for(String fieldPart : fieldHierarchy){
-			value = ((JSONObject) value).get(fieldPart);
+		try {
+			for (String fieldPart : fieldHierarchy) {
+				value = ((JSONObject) value).get(fieldPart);
 
+			}
+		} catch (Exception ex) {
+			//TODO - remove this!
+			ex.printStackTrace();
+			int x = 2;
+			x = 4;
 		}
-
 		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 
