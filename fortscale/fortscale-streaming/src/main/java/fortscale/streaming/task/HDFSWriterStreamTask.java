@@ -79,7 +79,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	}
 
-	@Value("${fortscale.bdp.run:false}")
+	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
 
     /** reads task configuration from job config and initialize hdfs appender */
@@ -225,9 +225,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
-								//TODO - partition key?
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-									   outputTopic), writerConfiguration.partitionStrategy, message.toJSONString());
+									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
 								throw new KafkaPublisherException(String.
