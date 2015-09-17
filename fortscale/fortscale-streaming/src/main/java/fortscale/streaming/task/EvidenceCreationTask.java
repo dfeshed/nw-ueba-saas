@@ -254,7 +254,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
 							(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
 									forName(entitySupportingInformationPopulatorClass));
-					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.populate(evidence, supportingInformation);
+					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+							populate(evidence, supportingInformation);
 					if (entitySupportingInformation != null) {
 						evidence.setSupportingInformation(entitySupportingInformation);
 					}
