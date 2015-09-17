@@ -9,12 +9,14 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
+import java.beans.PropertyDescriptor;
 import java.util.*;
 
 @Component("vpnGeoHoppingNotificationGenerator")
@@ -180,6 +182,13 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {}
+	public void afterPropertiesSet() throws Exception {
+		//Get vpn session fields
+		vpnSessionFields = new ArrayList<>();
+		for(PropertyDescriptor propertyDescriptor: PropertyUtils.getPropertyDescriptors(VpnSession.class)){
+			String fieldName = propertyDescriptor.getName();
+			vpnSessionFields.add(fieldName);
+		}
+	}
 	
 }
