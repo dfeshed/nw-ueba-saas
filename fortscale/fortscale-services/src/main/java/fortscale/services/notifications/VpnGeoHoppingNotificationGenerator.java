@@ -1,13 +1,21 @@
 package fortscale.services.notifications;
 
+import fortscale.domain.core.Notification;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.NotificationsRepository;
+import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 @Component("vpnGeoHoppingNotificationGenerator")
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
@@ -38,7 +46,72 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	@Value("${collection.evidence.notification.supportinginformation.field}")
 	private String notificationSupportingInformationField;
 
-	public JSONObject createNotifications(List<VpnSession> vpnSessions){
+	@Autowired
+	private NotificationsRepository notificationsRepository;
+	@Autowired
+	private UserRepository userRepository;
+
+	private List<String> vpnSessionFields;
+
+	public void createNotifications(List<VpnSession> vpnSessions){
+		List<Notification> notifications = new ArrayList<>();
+		for(VpnSession vpnSession: vpnSessions){
+			User user = userRepository.findByUsername(vpnSession.getNormalizedUserName());
+			Notification notification = new Notification();
+			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
+			notification.setTs(TimestampUtils.convertToSeconds(ts));
+			notification.setIndex(buildIndex(vpnSession));
+			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
+			notification.setName(vpnSession.getNormalizedUserName());
+			notification.setCause(VPN_GEO_HOPPING_CAUSE);
+			notification.setUuid(UUID.randomUUID().toString());
+			if(user != null){
+				notification.setDisplayName(user.getDisplayName());
+				notification.setFsId(user.getId());
+			} else{
+				notification.setDisplayName(vpnSession.getNormalizedUserName());
+				notification.setFsId(vpnSession.getNormalizedUserName());
+			}
+
+			notification.setAttributes(getVpnSessionAttributes(vpnSession));
+
+			logger.info("adding geo hopping notification with the index {}", notification.getIndex());
+			notifications.add(notification);
+		}
+
+		try{
+			notificationsRepository.save(notifications);
+		} catch (DuplicateKeyException ex){
+			logger.info("got geo hopping notification duplication exception", ex);
+		} catch (Exception e) {
+			logger.info("got the following exception while trying to save new notifications to DB.", e);
+		}
+	}
+
+	private String buildIndex(VpnSession vpnSession){
+		StringBuilder builder = new StringBuilder();
+		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
+
+		return builder.toString();
+	}
+
+	private Map<String, String> getVpnSessionAttributes(VpnSession vpnSession){
+		Map<String, String> attributes = new HashMap<>();
+		for (String field : vpnSessionFields) {
+			try {
+				String value = BeanUtils.getProperty(vpnSession, field);
+				if(value != null){
+					attributes.put(field, value);
+				}
+			} catch (Exception e) {
+				logger.debug("while extracting data from {} got an exception for the field {}.", vpnSession.getClass(), field);
+				logger.debug("while extracting data from VpnSession got an exception", e);
+			}
+		}
+		return attributes;
+	}
+
+	public JSONObject createIndicator(List<VpnSession> vpnSessions){
 		if (vpnSessions.size() < 2) {
 			return null;
 		}
@@ -104,13 +177,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		}
 
 		return sessionsTimeframe;
-	}
-
-	private String buildIndex(VpnSession vpnSession){
-		StringBuilder builder = new StringBuilder();
-		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").
-				append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
-		return builder.toString();
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,9 @@ import static fortscale.utils.ConversionUtils.*;
 	@Autowired private VpnService vpnService;
 	@Autowired private RecordToVpnSessionConverter recordToVpnSessionConverter;
 	@Autowired private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+
+	@Value("${fortscale.bdp.run}")
+	private boolean isBDPRunning;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
@@ -161,7 +165,10 @@ import static fortscale.utils.ConversionUtils.*;
 
 		Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
 		if (isRunGeoHopping != null && isRunGeoHopping) {
-			sendEvidence(processGeoHopping(vpnSessionUpdateConfig, vpnSession), collector);
+			JSONObject jsonObject = processGeoHopping(vpnSessionUpdateConfig, vpnSession);
+			if (jsonObject != null) {
+				sendEvidence(jsonObject, collector);
+			}
 		}
 
 		if (vpnSession.getCreatedAt() != null) {
@@ -234,7 +241,10 @@ import static fortscale.utils.ConversionUtils.*;
 				}
 
 				//create notifications for the vpn sessions
-				return vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				if (!isBDPRunning) {
+					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
+				}
+				vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
 			}
 
 		}
