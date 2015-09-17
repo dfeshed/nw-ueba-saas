@@ -97,7 +97,7 @@ public class AggrEvent implements Serializable {
     public AggrEvent() {}
 
     public AggrEvent(String dataSource, String featureType, String aggregatedFeatureName, Double aggregatedFeatureValue, Map<String, Object> aggregatedFeatureInfo, String bucketConfName, Map<String, String> context, 
-    		Long creationEpochTime, Long startTimeUnix, Long endTimeUnix, List<String> dataSources, Double score) {
+    		Long creationEpochTimeSeconds, Long startTimeUnixSeconds, Long endTimeUnixSeconds, List<String> dataSources, Double score) {
     	this.dataSource = dataSource;
         this.featureType = featureType;
         this.aggregatedFeatureName = aggregatedFeatureName;
@@ -106,12 +106,12 @@ public class AggrEvent implements Serializable {
         
         this.bucketConfName = bucketConfName;
         this.context = context;
-        this.creationEpochTime = creationEpochTime;
-        creationDateTime = new Date(creationEpochTime);
-        this.startTimeUnix  = startTimeUnix;
-        startTime = new Date(startTimeUnix);
-        this.endTimeUnix  = endTimeUnix;
-        endTime  = new Date(endTimeUnix);
+        this.creationEpochTime = creationEpochTimeSeconds;
+        creationDateTime = new Date(creationEpochTimeSeconds*1000);
+        this.startTimeUnix  = startTimeUnixSeconds;
+        startTime = new Date(startTimeUnixSeconds*1000);
+        this.endTimeUnix  = endTimeUnixSeconds;
+        endTime  = new Date(endTimeUnixSeconds*1000);
         
         this.dataSources = dataSources;
         this.score = score;
