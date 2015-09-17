@@ -254,8 +254,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
 							(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
 									forName(entitySupportingInformationPopulatorClass));
-					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
-							populate(evidence, supportingInformation);
+					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.populate(evidence, supportingInformation);
 					if (entitySupportingInformation != null) {
 						evidence.setSupportingInformation(entitySupportingInformation);
 					}
@@ -350,17 +349,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private Object validateFieldExistsAndGetValue(JSONObject message, String field, boolean throwException) throws Exception {
 		String[] fieldHierarchy = field.split("\\.");
 		Object value = message;
-		try {
-			for (String fieldPart : fieldHierarchy) {
-				value = ((JSONObject) value).get(fieldPart);
+		for(String fieldPart : fieldHierarchy){
+			value = ((JSONObject) value).get(fieldPart);
 
-			}
-		} catch (Exception ex) {
-			//TODO - remove this!
-			ex.printStackTrace();
-			int x = 2;
-			x = 4;
 		}
+
 		if (value == null && throwException) {
 			logger.error("message {} does not contains value in field {}", mapper.writeValueAsString(message), field);
 
