@@ -25,8 +25,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
 
 	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
-	public static final String START_DATE = "start_date";
-	public static final String END_DATE = "end_date";
+	public static final String START_TIME = "start_time";
+	public static final String END_TIME = "end_time";
 
 	private static final String NOTIFICATION_ENTITY = "vpn";
 
@@ -93,8 +93,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		}
 
 		Map<String, String> attributes = getVpnSessionAttributes(vpnSessions.get(0));
-		attributes.put(START_DATE, startTimestamp + "");
-		attributes.put(END_DATE, endTimestamp + "");
+		attributes.put(START_TIME, startTimestamp + "");
+		attributes.put(END_TIME, endTimestamp + "");
 		notification.setAttributes(attributes);
 
 

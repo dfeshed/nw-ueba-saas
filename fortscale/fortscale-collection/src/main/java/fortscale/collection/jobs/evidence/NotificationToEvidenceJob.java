@@ -34,6 +34,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private final String SORT_FIELD = "ts";
 	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String START_DATE = "start_date";
+	private final String END_DATE = "end_date";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -140,8 +142,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		if (notification.getCause().equals(VPN_OVERLAPPING) ||
 				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
 			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_DATE)) {
-				return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_DATE));
+			if (attributes != null) {
+				if (attributes.containsKey(START_DATE))
+					return Long.parseLong(attributes.get(START_DATE));
+				if (attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME))
+					return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME));
 			}
 		}
 		return notification.getTs();
@@ -151,8 +156,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		if (notification.getCause().equals(VPN_OVERLAPPING) ||
 				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
 			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_DATE)) {
-				return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_DATE));
+			if (attributes != null) {
+				if (attributes.containsKey(END_DATE))
+					return Long.parseLong(attributes.get(END_DATE));
+				if (attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME))
+					return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME));
 			}
 		}
 		return notification.getTs();
