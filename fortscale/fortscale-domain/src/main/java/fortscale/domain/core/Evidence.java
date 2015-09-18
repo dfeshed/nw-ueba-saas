@@ -168,6 +168,7 @@ public class Evidence extends AbstractDocument{
 
 		this.timeframe = timeframe;
 
+		this.createdDate = new Date();
 
 		// set retention to start date
 		this.retentionDate = new Date(startDate);
