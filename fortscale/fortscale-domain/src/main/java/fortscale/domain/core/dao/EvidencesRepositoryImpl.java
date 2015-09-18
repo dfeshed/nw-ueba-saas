@@ -40,7 +40,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	public long deleteEvidenceAfterTime(long timeAfterWhichToDelete) {
 		Calendar calendar = Calendar.getInstance();
 		long currentTime = new Date().getTime();
-		long shiftedTime = currentTime + Evidence.ttl;
+		long shiftedTime = currentTime + Evidence.ttl * 1000;
 		calendar.setTimeInMillis(shiftedTime - timeAfterWhichToDelete);
 		//formula is   : retention date = insertion date + ttl
 		//condition is : retention date > shifted date - time after which to delete ==>
