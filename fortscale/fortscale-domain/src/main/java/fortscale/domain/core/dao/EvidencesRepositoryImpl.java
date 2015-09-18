@@ -37,16 +37,14 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	}
 
 	@Override
-	public long deleteEvidenceAfterTime(long timeAfterWhichToDelete) {
+	public long deleteEvidenceAfterTime(Date timeAfterWhichToDelete) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
+		calendar.setTime(timeAfterWhichToDelete);
 		calendar.add(Calendar.SECOND, Evidence.ttl);
-		long shiftedTime = calendar.getTimeInMillis();
-		calendar.setTimeInMillis(shiftedTime - timeAfterWhichToDelete);
 		long targetTime = calendar.getTimeInMillis();
-		//formula is   : retention date = insertion date + ttl
-		//condition is : retention date > shifted date - time after which to delete ==>
-		//all records inserted after timeAfterWhichToDelete
+		//1st formula is : retention date = insertion date + ttl
+		//2nd formula is : target time = timeAfterWhichToDelete + ttl
+		//condition is   : retention date > target time, means all records inserted after timeAfterWhichToDelete
 		Query query = new Query(where(Evidence.retentionDateField).gt(targetTime));
 		long numberOfEvidenceToRemove = mongoTemplate.count(query, Evidence.class);
 		mongoTemplate.remove(query, Evidence.class, Evidence.COLLECTION_NAME);

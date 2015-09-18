@@ -34,7 +34,7 @@ public class CleanEvidenceJob extends FortscaleJob {
 	@Autowired
 	private EvidencesService evidencesService;
 
-	private long timeAfterWhichToDelete;
+	private Date timeAfterWhichToDelete;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -43,7 +43,7 @@ public class CleanEvidenceJob extends FortscaleJob {
 		int hoursBack = jobDataMapExtension.getJobDataMapIntValue(map, "hoursBack");
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.HOUR, -hoursBack);
-		timeAfterWhichToDelete = calendar.getTimeInMillis();
+		timeAfterWhichToDelete = calendar.getTime();
 	}
 
 	@Override
