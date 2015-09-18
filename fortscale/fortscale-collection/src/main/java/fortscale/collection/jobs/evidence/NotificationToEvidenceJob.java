@@ -8,6 +8,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.services.impl.SamAccountNameService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -31,8 +32,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
-	private String SORT_FIELD = "ts";
-	private String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String SORT_FIELD = "ts";
+	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -136,22 +137,22 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private long getStartTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING)) {
-			final String START_DATE = "start_date";
+		if (notification.getCause().equals(VPN_OVERLAPPING) ||
+				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
 			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(START_DATE)) {
-				return Long.parseLong(attributes.get(START_DATE));
+			if (attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_DATE)) {
+				return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_DATE));
 			}
 		}
 		return notification.getTs();
 	}
 
 	private long getEndTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING)) {
-			final String END_DATE = "end_date";
+		if (notification.getCause().equals(VPN_OVERLAPPING) ||
+				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
 			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(END_DATE)) {
-				return Long.parseLong(attributes.get(END_DATE));
+			if (attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_DATE)) {
+				return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_DATE));
 			}
 		}
 		return notification.getTs();

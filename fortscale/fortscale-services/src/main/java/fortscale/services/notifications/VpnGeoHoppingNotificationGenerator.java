@@ -23,9 +23,12 @@ import java.util.*;
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
-	
+
 	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
-	public static final String NOTIFICATION_ENTITY = "vpn";
+	public static final String START_DATE = "start_date";
+	public static final String END_DATE = "end_date";
+
+	private static final String NOTIFICATION_ENTITY = "vpn";
 
 	@Value("${collection.evidence.notification.score.field}")
 	private String notificationScoreField;
@@ -56,33 +59,49 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private List<String> vpnSessionFields;
 
 	public void createNotifications(List<VpnSession> vpnSessions){
-		List<Notification> notifications = new ArrayList<>();
-		for(VpnSession vpnSession: vpnSessions){
-			User user = userRepository.findByUsername(vpnSession.getNormalizedUserName());
-			Notification notification = new Notification();
-			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
-			notification.setTs(TimestampUtils.convertToSeconds(ts));
-			notification.setIndex(buildIndex(vpnSession));
-			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
-			notification.setName(vpnSession.getNormalizedUserName());
-			notification.setCause(VPN_GEO_HOPPING_CAUSE);
-			notification.setUuid(UUID.randomUUID().toString());
-			if(user != null){
-				notification.setDisplayName(user.getDisplayName());
-				notification.setFsId(user.getId());
-			} else{
-				notification.setDisplayName(vpnSession.getNormalizedUserName());
-				notification.setFsId(vpnSession.getNormalizedUserName());
-			}
-
-			notification.setAttributes(getVpnSessionAttributes(vpnSession));
-
-			logger.info("adding geo hopping notification with the index {}", notification.getIndex());
-			notifications.add(notification);
+		if (vpnSessions.size() < 2) {
+			return;
 		}
 
+		List<Long> sessionsTimeframe = getSessionsTimeframe(vpnSessions);
+
+		if (sessionsTimeframe == null || sessionsTimeframe.size() != 2){
+			logger.debug("Can't find time frame for vpn session");
+			return;
+		}
+
+		long startTimestamp = sessionsTimeframe.get(0);
+		long endTimestamp = sessionsTimeframe.get(1);
+		String index = buildIndex(vpnSessions.get(0));
+
+		User user = userRepository.findByUsername(vpnSessions.get(0).getNormalizedUserName());
+		Notification notification = new Notification();
+		long ts = vpnSessions.get(0).getClosedAtEpoch() != null ? vpnSessions.get(0).getClosedAtEpoch() :
+				vpnSessions.get(0).getCreatedAtEpoch();
+		notification.setTs(TimestampUtils.convertToSeconds(ts));
+		notification.setIndex(index);
+		notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
+		notification.setName(vpnSessions.get(0).getNormalizedUserName());
+		notification.setCause(VPN_GEO_HOPPING_CAUSE);
+		notification.setUuid(UUID.randomUUID().toString());
+		if(user != null){
+			notification.setDisplayName(user.getDisplayName());
+			notification.setFsId(user.getId());
+		} else{
+			notification.setDisplayName(vpnSessions.get(0).getNormalizedUserName());
+			notification.setFsId(vpnSessions.get(0).getNormalizedUserName());
+		}
+
+		Map<String, String> attributes = getVpnSessionAttributes(vpnSessions.get(0));
+		attributes.put(START_DATE, startTimestamp + "");
+		attributes.put(END_DATE, endTimestamp + "");
+		notification.setAttributes(attributes);
+
+
+		logger.info("adding geo hopping notification with the index {}", notification.getIndex());
+
 		try{
-			notificationsRepository.save(notifications);
+			notificationsRepository.save(notification);
 		} catch (DuplicateKeyException ex){
 			logger.info("got geo hopping notification duplication exception", ex);
 		} catch (Exception e) {
