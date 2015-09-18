@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -70,7 +71,7 @@ public class Evidence extends AbstractDocument{
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 
-
+	public static final String createdDateField = "createdDate";
 
 
 	//-- Document's Fields
@@ -137,6 +138,9 @@ public class Evidence extends AbstractDocument{
 	@JsonInclude
 	@Field(supportingInformationField)
 	private EntitySupportingInformation supportingInformation;
+
+	@CreatedDate
+	private Date createdDate;
 
 	// C-tor
 
@@ -322,6 +326,15 @@ public class Evidence extends AbstractDocument{
 				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
 				'}';
 	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
 }
 
 
