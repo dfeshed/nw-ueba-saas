@@ -41,8 +41,8 @@ public class ReadWin2003SecEvtRouterNitroTest {
 		return	$(
 				$ (
 						"Successfull 540 Event",
-						"144116287956583680,10830961599,ELM,1437870767,,,11.176.91.253||Security||1489839827||Security||540||52||1437865378||4||STAP0024||NT AUTHORITY\\SYSTEM||Logon/Logoff||15||STAP0024$||RBSRES07||(0x4,0xEAF9B9CF)||3||Kerberos||Kerberos||||{1204f6a7-306b-a34f-27f9-639a055534e6}||-||-||-||-||-||11.176.91.245||44280||Successful Network Logon:%0D %0D %09User Name:%09ROND-PC$%0D %0D %09Domain:%09%09RBSRES07%0D %0D %09Logon ID:%09%09(0x4,0xEAF9B9CF)%0D %0D %09Logon Type:%093%0D %0D %09Logon Process:%09Kerberos%0D %0D %09Authentication Package:%09Kerberos%0D %0D %09Workstation Name:%09%0D %0D %09Logon GUID:%09{1204f6a7-306b-a34f-27f9-639a055534e6}%0D %0D %09Caller User Name:%09-%0D %0D %09Caller Domain:%09-%0D %0D %09Caller Logon ID:%09-%0D %0D %09Caller Process ID: -%0D %0D %09Transited Services: -%0D %0D %09Source Network Address:%0911.176.91.245%0D %0D %09Source Port:%0944280%0D %0D",
-						"ROND-PC$,4624"
+						"144116287956582912,11013904892,ELM,1438389171,,,11.176.92.244||Security||104918383||Security||540||52||1438256514||4||STAPSQL0014||NT AUTHORITY\\SYSTEM||Logon/Logoff||15||STAPSQL0014$||RBSRES07||(0x9,0xB4E8F6B2)||3||Kerberos||Kerberos||||{49565cdc-f504-0b10-f759-01eeaf7c2c54}||-||-||-||-||-||-||-||Successful Network Logon:%0D %0D %09User Name:%09STAPSQL0014$%0D %0D %09Domain:%09%09RBSRES07%0D %0D %09Logon ID:%09%09(0x9,0xB4E8F6B2)%0D %0D %09Logon Type:%093%0D %0D %09Logon Process:%09Kerberos%0D %0D %09Authentication Package:%09Kerberos%0D %0D %09Workstation Name:%09%0D %0D %09Logon GUID:%09{49565cdc-f504-0b10-f759-01eeaf7c2c54}%0D %0D %09Caller User Name:%09-%0D %0D %09Caller Domain:%09-%0D %0D %09Caller Logon ID:%09-%0D %0D %09Caller Process ID: -%0D %0D %09Transited Services: -%0D %0D %09Source Network Address:%09-%0D %0D %09Source Port:%09-%0D %0D",
+						"LONMS06531$,4624"
 				),
 				$ (
 						"673 Event",
