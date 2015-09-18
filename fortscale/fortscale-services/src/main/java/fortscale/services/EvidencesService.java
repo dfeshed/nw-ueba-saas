@@ -89,4 +89,6 @@ public interface EvidencesService {
 	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
 			String evidenceType, String entityName);
 
+	long deleteEvidenceAfterTime(long creationTime);
+
 }

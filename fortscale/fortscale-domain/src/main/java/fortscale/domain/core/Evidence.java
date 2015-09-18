@@ -34,6 +34,7 @@ public class Evidence extends AbstractDocument{
 	 */
 	public static final String COLLECTION_NAME = "evidences";
 
+	public static final int ttl = 60 * 60 * 24 * 365; //one year
 
 	//-- Document's Field Names
 
@@ -90,8 +91,8 @@ public class Evidence extends AbstractDocument{
 	@Field(endDateField)
 	private Long endDate;
 
-	// Index for expiration (TTL): one year
-	@Indexed(expireAfterSeconds = 31536000)
+	// Index for expiration (TTL)
+	@Indexed(expireAfterSeconds = ttl)
 	@Field(retentionDateField)
 	private Date retentionDate;
 

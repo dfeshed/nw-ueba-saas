@@ -143,6 +143,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				evidenceType, entityName);
 	}
 
+	@Override
+	public long deleteEvidenceAfterTime(long creationTime) {
+		return evidencesRepository.deleteEvidenceAfterTime(creationTime);
+	}
+
 	/**
 	 * Saves evidence in Mongo
 	 * @param evidence the evidence to save

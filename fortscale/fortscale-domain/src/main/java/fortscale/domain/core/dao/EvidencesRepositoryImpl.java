@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.WriteResult;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -31,5 +34,20 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		);
 
 		return mongoTemplate.find(query, Evidence.class);
+	}
+
+	@Override
+	public long deleteEvidenceAfterTime(long timeAfterWhichToDelete) {
+		Calendar calendar = Calendar.getInstance();
+		long currentTime = new Date().getTime();
+		long shiftedTime = currentTime + Evidence.ttl;
+		calendar.setTimeInMillis(shiftedTime - timeAfterWhichToDelete);
+		//formula is   : retention date = insertion date + ttl
+		//condition is : retention date > shifted date - time after which to delete ==>
+		//all records inserted after timeAfterWhichToDelete
+		Query query = new Query(where(Evidence.retentionDateField).gt(calendar.getTime()));
+		long numberOfEvidenceToRemove = mongoTemplate.count(query, Evidence.class);
+		mongoTemplate.remove(query, Evidence.class, Evidence.COLLECTION_NAME);
+		return numberOfEvidenceToRemove;
 	}
 }
