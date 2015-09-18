@@ -139,31 +139,29 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private long getStartTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING) ||
-				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
-			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null) {
-				if (attributes.containsKey(START_DATE))
-					return Long.parseLong(attributes.get(START_DATE));
-				if (attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME))
-					return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME));
-			}
+		Map<String, String> attributes = notification.getAttributes();
+		switch (notification.getCause()) {
+			case VPN_OVERLAPPING: {
+				return attributes != null && attributes.containsKey(START_DATE) ?
+				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
+			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME) ?
+				   Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME)) : notification.getTs();
+			} default: return notification.getTs();
 		}
-		return notification.getTs();
 	}
 
 	private long getEndTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING) ||
-				notification.getCause().equals(VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE)) {
-			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null) {
-				if (attributes.containsKey(END_DATE))
-					return Long.parseLong(attributes.get(END_DATE));
-				if (attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME))
-					return Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME));
-			}
+		Map<String, String> attributes = notification.getAttributes();
+		switch (notification.getCause()) {
+			case VPN_OVERLAPPING: {
+				return attributes != null && attributes.containsKey(END_DATE) ?
+					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
+			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME) ?
+					Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME)) : notification.getTs();
+			} default: return notification.getTs();
 		}
-		return notification.getTs();
 	}
 
 	private String getSupportingInformation(Notification notification) {
