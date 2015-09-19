@@ -24,6 +24,6 @@ public interface EvidencesRepositoryCustom {
 	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName);
 
-	long deleteEvidenceBetween(Date startTime, Date endTime);
+	long deleteEvidenceAfter(Date date);
 
 }
