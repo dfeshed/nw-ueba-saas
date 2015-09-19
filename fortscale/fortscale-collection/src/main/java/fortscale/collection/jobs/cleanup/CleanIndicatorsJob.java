@@ -39,7 +39,7 @@ public class CleanIndicatorsJob extends FortscaleJob {
 		// get parameters values from the job data map
 		String startStr = jobDataMapExtension.getJobDataMapStringValue(map, START_TIME);
 		String endStr = jobDataMapExtension.getJobDataMapStringValue(map, END_TIME);
-		DateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
 		try {
 			startTime = sdf.parse(startStr);
 			endTime = sdf.parse(endStr);
