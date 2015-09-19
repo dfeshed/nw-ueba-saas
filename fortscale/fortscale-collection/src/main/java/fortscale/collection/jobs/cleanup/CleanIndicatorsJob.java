@@ -27,8 +27,8 @@ public class CleanIndicatorsJob extends FortscaleJob {
 	@Autowired
 	private EvidencesService evidencesService;
 
-	private DateTime startTime;
-	private DateTime endTime;
+	private Date startTime;
+	private Date endTime;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -36,15 +36,14 @@ public class CleanIndicatorsJob extends FortscaleJob {
 		// get parameters values from the job data map
 		String startStr = jobDataMapExtension.getJobDataMapStringValue(map, START_TIME);
 		String endStr = jobDataMapExtension.getJobDataMapStringValue(map, END_TIME);
-		startTime = new DateTime(startStr);
-		endTime = new DateTime(endStr);
+		startTime = new DateTime(startStr).toDate();
+		endTime = new DateTime(endStr).toDate();
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Indicators job");
-		TimeZone.setDefault(startTime.getZone().toTimeZone());
-		long foundRecords = evidencesService.deleteEvidenceBetween(startTime.toDate(), endTime.toDate());
+		long foundRecords = evidencesService.deleteEvidenceBetween(startTime, endTime);
 		logger.info("Deleted {} indicators", foundRecords);
 		finishStep();
 	}
