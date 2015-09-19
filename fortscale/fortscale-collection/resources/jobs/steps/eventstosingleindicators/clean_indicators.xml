@@ -7,7 +7,7 @@
 
     <schedule>
         <job>
-            <name>Indicator</name>
+            <name>CleanIndicators</name>
             <group>EventsToSingleIndicators</group>
             <description>Cleans indicators from mongo after a given point in time</description>
             <job-class>fortscale.collection.jobs.cleanup.CleanIndicatorsJob</job-class>
