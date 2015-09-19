@@ -43,6 +43,7 @@ public class CleanIndicatorsJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Indicators job");
+		TimeZone.setDefault(startTime.getZone().toTimeZone());
 		long foundRecords = evidencesService.deleteEvidenceBetween(startTime.toDate(), endTime.toDate());
 		logger.info("Deleted {} indicators", foundRecords);
 		finishStep();
