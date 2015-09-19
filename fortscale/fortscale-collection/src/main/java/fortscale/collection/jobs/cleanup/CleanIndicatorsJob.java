@@ -1,35 +1,24 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fetch.FetchConfiguration;
-import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.services.EvidencesService;
-import fortscale.services.impl.SamAccountNameService;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 
 import java.util.*;
 
 /**
  * Created by Amir Keren on 18/09/2015.
  *
- * This task clears evidence after a particular date
+ * This task clears indicators after a particular date
  *
  */
-public class CleanEvidenceJob extends FortscaleJob {
+public class CleanIndicatorsJob extends FortscaleJob {
 
-	private static Logger logger = Logger.getLogger(CleanEvidenceJob.class);
+	private static Logger logger = Logger.getLogger(CleanIndicatorsJob.class);
 
 	@Autowired
 	private EvidencesService evidencesService;
@@ -48,9 +37,9 @@ public class CleanEvidenceJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		startNewStep("Running Clean Evidence job");
+		startNewStep("Running Clean Indicators job");
 		long foundRecords = evidencesService.deleteEvidenceAfterTime(timeAfterWhichToDelete);
-		logger.info("Deleted {} evidence", foundRecords);
+		logger.info("Deleted {} indicators", foundRecords);
 		finishStep();
 	}
 
