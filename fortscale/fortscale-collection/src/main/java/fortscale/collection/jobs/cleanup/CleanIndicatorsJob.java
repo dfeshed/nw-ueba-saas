@@ -3,6 +3,7 @@ package fortscale.collection.jobs.cleanup;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.services.EvidencesService;
 import fortscale.utils.logging.Logger;
+import org.joda.time.DateTime;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -20,25 +21,29 @@ public class CleanIndicatorsJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanIndicatorsJob.class);
 
+	private final String START_TIME = "start_time";
+	private final String END_TIME = "end_time";
+
 	@Autowired
 	private EvidencesService evidencesService;
 
-	private Date timeAfterWhichToDelete;
+	private DateTime startTime;
+	private DateTime endTime;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		// get parameters values from the job data map
-		int hoursBack = jobDataMapExtension.getJobDataMapIntValue(map, "hoursBack");
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, -hoursBack);
-		timeAfterWhichToDelete = calendar.getTime();
+		String startStr = jobDataMapExtension.getJobDataMapStringValue(map, START_TIME);
+		String endStr = jobDataMapExtension.getJobDataMapStringValue(map, END_TIME);
+		startTime = new DateTime(startStr);
+		endTime = new DateTime(endStr);
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Indicators job");
-		long foundRecords = evidencesService.deleteEvidenceAfterTime(timeAfterWhichToDelete);
+		long foundRecords = evidencesService.deleteEvidenceBetween(startTime.toDate(), endTime.toDate());
 		logger.info("Deleted {} indicators", foundRecords);
 		finishStep();
 	}

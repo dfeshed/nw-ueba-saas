@@ -1,6 +1,9 @@
 package fortscale.services;
 
-import fortscale.domain.core.*;
+import fortscale.domain.core.EntityType;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceTimeframe;
+import fortscale.domain.core.EvidenceType;
 
 import java.util.Date;
 import java.util.List;
@@ -89,6 +92,6 @@ public interface EvidencesService {
 	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
 			String evidenceType, String entityName);
 
-	long deleteEvidenceAfterTime(Date creationTime);
+	long deleteEvidenceBetween(Date startTime, Date endTime);
 
 }

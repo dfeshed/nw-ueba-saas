@@ -144,8 +144,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override
-	public long deleteEvidenceAfterTime(Date creationTime) {
-		return evidencesRepository.deleteEvidenceAfterTime(creationTime);
+	public long deleteEvidenceBetween(Date startTime, Date endTime) {
+		return evidencesRepository.deleteEvidenceBetween(startTime, endTime);
 	}
 
 	/**
