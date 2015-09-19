@@ -47,16 +47,15 @@ public class CleanIndicatorsJob extends FortscaleJob {
 		startNewStep("Running Clean Indicators job");
 		//get the last runtime from the fetchConfiguration Mongo repository
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchConfigurationType);
-		if (fetchConfiguration == null) {
+		if (fetchConfiguration != null) {
+			long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(lastFetchTime);
+			long deletedRecords = evidencesService.deleteEvidenceAfter(calendar.getTime());
+			logger.info("Deleted {} indicators", deletedRecords);
+		} else {
 			logger.warn("No step configuration found");
-			finishStep();
-			return;
 		}
-		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(lastFetchTime);
-		long deletedRecords = evidencesService.deleteEvidenceAfter(calendar.getTime());
-		logger.info("Deleted {} indicators", deletedRecords);
 		finishStep();
 	}
 
