@@ -9,6 +9,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -36,8 +39,14 @@ public class CleanIndicatorsJob extends FortscaleJob {
 		// get parameters values from the job data map
 		String startStr = jobDataMapExtension.getJobDataMapStringValue(map, START_TIME);
 		String endStr = jobDataMapExtension.getJobDataMapStringValue(map, END_TIME);
-		startTime = new DateTime(startStr).toDate();
-		endTime = new DateTime(endStr).toDate();
+		DateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+		try {
+			startTime = sdf.parse(startStr);
+			endTime = sdf.parse(endStr);
+		} catch (ParseException ex) {
+			logger.error("bad date format - {}", ex);
+			throw new JobExecutionException(ex);
+		}
 	}
 
 	@Override
