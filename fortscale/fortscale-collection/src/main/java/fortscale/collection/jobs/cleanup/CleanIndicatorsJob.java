@@ -49,6 +49,7 @@ public class CleanIndicatorsJob extends FortscaleJob {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchConfigurationType);
 		if (fetchConfiguration == null) {
 			logger.warn("No step configuration found");
+			finishStep();
 			return;
 		}
 		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
