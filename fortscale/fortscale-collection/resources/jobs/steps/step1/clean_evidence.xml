@@ -8,7 +8,7 @@
     <schedule>
         <job>
             <name>Evidence</name>
-            <group>Cleanup</group>
+            <group>Step1</group>
             <description>Cleans evidence from mongo after a given point in time</description>
             <job-class>fortscale.collection.jobs.cleanup.CleanEvidenceJob</job-class>
             <durability>true</durability>
