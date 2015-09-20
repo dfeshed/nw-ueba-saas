@@ -53,6 +53,7 @@ public class CleanIndicatorsJob extends FortscaleJob {
 			calendar.setTimeInMillis(lastFetchTime);
 			long deletedRecords = evidencesService.deleteEvidenceAfter(calendar.getTime());
 			logger.info("Deleted {} indicators", deletedRecords);
+			fetchConfigurationRepository.delete(fetchConfiguration);
 		} else {
 			logger.warn("No step configuration found");
 		}
