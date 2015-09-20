@@ -92,11 +92,14 @@ public class CleanJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Job");
 		boolean success = false;
+		DAO dao = dataSourceToDAO.get(dataSource);
 		switch (strategy) {
 			case DELETE: {
+				logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
 				success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
 				break;
 			} case RESTORE: {
+				logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
 				success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
 			}
 		}
