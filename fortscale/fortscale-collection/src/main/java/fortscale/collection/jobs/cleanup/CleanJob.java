@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.cleanup;
 
-import com.mongodb.CommandResult;
 import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
