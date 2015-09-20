@@ -101,7 +101,7 @@ public class CleanJob extends FortscaleJob {
 				success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
 				break;
 			} case RESTORE: {
-				logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
+				logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField, restoreName);
 				success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
 			}
 		}
@@ -149,6 +149,11 @@ public class CleanJob extends FortscaleJob {
 							break;
 						}
 					}
+				} else {
+					String message = String.format("snapshot failed to restore - no backup collection %s found",
+							restoreName);
+					monitor.error(getMonitorId(), getStepName(), message);
+					break;
 				}
 				monitor.error(getMonitorId(), getStepName(),
 						"snapshot failed to restore - manually rename backup collection");
