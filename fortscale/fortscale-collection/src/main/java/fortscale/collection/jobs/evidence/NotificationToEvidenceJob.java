@@ -8,6 +8,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.services.impl.SamAccountNameService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -31,8 +32,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
-	private String SORT_FIELD = "ts";
-	private String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String SORT_FIELD = "ts";
+	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String START_DATE = "start_date";
+	private final String END_DATE = "end_date";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -136,25 +139,29 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private long getStartTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING)) {
-			final String START_DATE = "start_date";
-			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(START_DATE)) {
-				return Long.parseLong(attributes.get(START_DATE));
-			}
+		Map<String, String> attributes = notification.getAttributes();
+		switch (notification.getCause()) {
+			case VPN_OVERLAPPING: {
+				return attributes != null && attributes.containsKey(START_DATE) ?
+				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
+			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME) ?
+				   Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME)) : notification.getTs();
+			} default: return notification.getTs();
 		}
-		return notification.getTs();
 	}
 
 	private long getEndTimeStamp(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING)) {
-			final String END_DATE = "end_date";
-			Map<String, String> attributes = notification.getAttributes();
-			if (attributes != null && attributes.containsKey(END_DATE)) {
-				return Long.parseLong(attributes.get(END_DATE));
-			}
+		Map<String, String> attributes = notification.getAttributes();
+		switch (notification.getCause()) {
+			case VPN_OVERLAPPING: {
+				return attributes != null && attributes.containsKey(END_DATE) ?
+					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
+			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME) ?
+					Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME)) : notification.getTs();
+			} default: return notification.getTs();
 		}
-		return notification.getTs();
 	}
 
 	private String getSupportingInformation(Notification notification) {

@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,11 @@ import static fortscale.utils.ConversionUtils.*;
 	@Autowired private VpnService vpnService;
 	@Autowired private RecordToVpnSessionConverter recordToVpnSessionConverter;
 	@Autowired private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+
+	@Value("${fortscale.bdp.run}")
+	private boolean isBDPRunning;
+	@Value("${collection.evidence.notification.topic}")
+	private String evidenceNotificationTopic;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
@@ -176,7 +182,8 @@ import static fortscale.utils.ConversionUtils.*;
 	private void sendEvidence(JSONObject evidence, MessageCollector collector) {
 		if (evidence != null && collector != null) {
 			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", "fortscale-notification-event-score"), evidence.get("index"), evidence.toJSONString(JSONStyle.NO_COMPRESS));
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+					   evidenceNotificationTopic), evidence.get("index"), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 				collector.send(output);
 			} catch (Exception e) {
 				logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
@@ -234,7 +241,10 @@ import static fortscale.utils.ConversionUtils.*;
 				}
 
 				//create notifications for the vpn sessions
-				return vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				if (!isBDPRunning) {
+					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
+				}
+				vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
 			}
 
 		}
