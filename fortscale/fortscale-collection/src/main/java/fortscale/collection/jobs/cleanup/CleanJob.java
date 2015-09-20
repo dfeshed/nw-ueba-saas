@@ -130,21 +130,21 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case MONGO: {
 				logger.debug("check if backup collection exists");
-				if (mongoTemplate.collectionExists(backupCollectionName)) {
+				if (mongoTemplate.collectionExists(toRestore.queryField)) {
 					logger.debug("drop collection");
-					mongoTemplate.dropCollection(toRestore.getClass());
+					mongoTemplate.dropCollection(toRestore.queryField);
 					//verify drop
-					if (mongoTemplate.collectionExists(toRestore.getClass())) {
+					if (mongoTemplate.collectionExists(toRestore.queryField)) {
 						logger.debug("dropping failed, abort");
 						break;
 					}
 					logger.debug("renaming backup collection");
 					CommandResult result = mongoTemplate.
 							executeCommand("{ db.runCommand({ renameCollection: \"fortscale." +
-							backupCollectionName + "\", to: \"fortscale." + toRestore.queryField + "\" }) }");
+									backupCollectionName + "\", to: \"fortscale." + toRestore.queryField + "\" }) }");
 					if (result.ok()) {
 						//verify restore
-						if (mongoTemplate.collectionExists(toRestore.getClass())) {
+						if (mongoTemplate.collectionExists(toRestore.queryField)) {
 							logger.info("snapshot restored");
 							success = true;
 							break;
