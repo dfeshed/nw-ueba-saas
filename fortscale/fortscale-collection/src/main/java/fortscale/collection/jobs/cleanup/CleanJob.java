@@ -3,7 +3,6 @@ package fortscale.collection.jobs.cleanup;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.services.EvidencesService;
 import fortscale.services.Service;
-import fortscale.services.SpringService;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
