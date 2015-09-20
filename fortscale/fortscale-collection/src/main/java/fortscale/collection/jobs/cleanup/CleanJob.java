@@ -72,12 +72,14 @@ public class CleanJob extends FortscaleJob {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		try {
-			startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
-			endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
-		} catch (Exception ex) {
-			logger.error("Bad date format - {}", ex);
-			throw new JobExecutionException(ex);
+		if (strategy == Strategy.DELETE) {
+			try {
+				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
+				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
+			} catch (Exception ex) {
+				logger.error("Bad date format - {}", ex);
+				throw new JobExecutionException(ex);
+			}
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "strategy"));
