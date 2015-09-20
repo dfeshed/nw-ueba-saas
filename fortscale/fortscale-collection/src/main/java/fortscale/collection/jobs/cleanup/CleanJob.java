@@ -139,8 +139,9 @@ public class CleanJob extends FortscaleJob {
 						break;
 					}
 					logger.debug("renaming backup collection");
-					CommandResult result=mongoTemplate.executeCommand("db.runCommand({ renameCollection: \"fortscale." +
-							backupCollectionName + "\", to: \"fortscale." + toRestore.queryField + "\" })");
+					CommandResult result = mongoTemplate.
+							executeCommand("{ db.runCommand({ renameCollection: \"fortscale." +
+							backupCollectionName + "\", to: \"fortscale." + toRestore.queryField + "\" }) }");
 					if (result.ok()) {
 						//verify restore
 						if (mongoTemplate.collectionExists(toRestore.getClass())) {
