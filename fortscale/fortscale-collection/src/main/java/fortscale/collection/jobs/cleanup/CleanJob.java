@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,14 +73,14 @@ public class CleanJob extends FortscaleJob {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		if (strategy == Strategy.DELETE) {
-			try {
-				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
-				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
-			} catch (Exception ex) {
-				logger.error("Bad date format - {}", ex);
-				throw new JobExecutionException(ex);
-			}
+		try {
+			startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
+			endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
+		} catch (JobExecutionException ex) {
+			//didn't pass startTime or endTime - ignore
+		} catch (ParseException ex) {
+			logger.error("Bad date format - {}", ex);
+			throw new JobExecutionException(ex);
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "strategy"));
@@ -97,8 +98,13 @@ public class CleanJob extends FortscaleJob {
 		DAO dao = dataSourceToDAO.get(dataSource);
 		switch (strategy) {
 			case DELETE: {
-				logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
-				success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+				if (startTime == null && endTime == null) {
+					logger.info("deleting all {}", dao.daoObject.getSimpleName());
+					success = deleteAll(dataSourceToDAO.get(dataSource));
+				} else {
+					logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
+					success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+				}
 				break;
 			} case RESTORE: {
 				logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField, restoreName);
@@ -163,6 +169,33 @@ public class CleanJob extends FortscaleJob {
 				String message = "snapshot failed to restore - manually rename backup collection";
 				logger.error(message);
 				monitor.error(getMonitorId(), getStepName(), message);
+				break;
+			}
+			case HDFS: {
+				//TODO - implement
+				success = false;
+				break;
+			}
+		}
+		return success;
+	}
+
+	private boolean deleteAll(DAO toDelete) {
+		boolean success = false;
+		switch (technology) {
+			case MONGO: {
+				logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
+				mongoTemplate.remove(new Query(), toDelete.daoObject);
+				long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
+				if (recordsFound > 0) {
+					success = false;
+					String message = "failed to remove documents";
+					logger.error(message);
+					monitor.error(getMonitorId(), getStepName(), message);
+				} else {
+					success = true;
+					logger.info("successfully removed all documents");
+				}
 				break;
 			}
 			case HDFS: {
