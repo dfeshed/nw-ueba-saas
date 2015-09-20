@@ -474,6 +474,36 @@ public class EsperRulesTest {
     }
 
     /**
+     * Test normal user rule on user with notifiation, and with tag which is not admin, executive or service.
+     * @throws Exception
+     */
+    @Test
+    public void testSmartEventWithSensetiveUserOnNormalUserRule() throws Exception{
+
+
+        EPStatement stmt = initSmartEventWithNormalUserAccount();
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+
+
+        stmt.addListener(listener);
+
+        EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
+
+
+        List<String> userTags = new ArrayList<>();
+        userTags.add("admin");
+        EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
+        epService.getEPRuntime().sendEvent(notification);
+        epService.getEPRuntime().sendEvent(entityTags);
+        epService.getEPRuntime().sendEvent(entityEventLow);
+        EPAssertionUtil.assertAllBooleanTrue(new Boolean[] { !listener.isInvoked() });
+
+    }
+
+    /**
      * Create esper statement (rule) for event on normal users with score above 50, with and without notification
      * Normal users are users which don't have "admin", "service", or "executive" tags.
      * @return esper statment
@@ -501,13 +531,13 @@ public class EsperRulesTest {
                 + "when  ((Notification.entityName is null and SmartEvent.score >= 80 and  SmartEvent.score < 95) or (Notification.entityName is not null and SmartEvent.score >= 70 and  SmartEvent.score < 85)) then 'High' "
                 + "when  ((Notification.entityName is null and SmartEvent.score >= 95) or (Notification.entityName is not null and SmartEvent.score >= 85)) then 'Critical' "
                 + "end as severity , "
-                + "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
+                + "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score,case when Tags.entityName is null then 'good' else 'bad' end as test  from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
                 + "left outer join "
                 + "EntityTags('admin' = any(Tags.tags) or 'executive' = any(Tags.tags) or 'service' = any(Tags.tags) ).std:groupwin(entityType,entityName).std:lastevent() as Tags on Tags.entityName = SmartEvent.entityName  "
                 + "left outer join"
                 + " EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or"
                 + " (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent() as Notification"
-                + " on SmartEvent.entityName = Notification.entityName and SmartEvent.entityType = Notification.entityType where Tags.tags is null";
+                + " on SmartEvent.entityName = Notification.entityName and SmartEvent.entityType = Notification.entityType where Tags.entityName is null";
 
 
         epService.getEPAdministrator().createEPL(createTimestamp);
