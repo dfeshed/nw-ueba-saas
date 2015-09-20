@@ -90,7 +90,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@RequestMapping(value="/findByAnomalyType", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Evidence>> list(
+	public DataBean<List<Map<String, Object>>> list(
 			@RequestParam(defaultValue="1", required=false) int page,
 			@RequestParam(defaultValue="20", required=false) int size,
 			@RequestParam(defaultValue="vpn_geo_hopping", required=true) String anomalyTypeFieldName,
@@ -99,13 +99,32 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(defaultValue="True") boolean sortDesc) {
 
 		// calculate the page request based on the parameters given
+		if (size > 200) {
+			size = 200; //page size should not extend 200
+		}
 		PageRequest request = new PageRequest(page, size,
 				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
 
 		List<Evidence> evidences = evidencesService.findByStartDateBetweenAndAnomalyTypeFieldName(after, before, anomalyTypeFieldName);
-		DataBean<List<Evidence>> ret = new DataBean<>();
-		ret.setData(evidences);
-		return ret;
+
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (Evidence evidence : evidences){
+			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
+			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
+			for (Map<String, Object> mapObject : data){
+				Object normalizedUsername = mapObject.get("normalized_username");
+				if (normalizedUsername != null){
+					String userId = evidencesService.getUserIdByUserName(normalizedUsername.toString()).getId();
+					mapObject.put("userid",userId);
+					mapObject.put("id",userId + mapObject.get("event_time") + mapObject.get("source_ip"));
+				}
+				mapObject.put("evidenceId", evidence.getId());
+			}
+			result.addAll(data);
+		}
+		DataBean<List<Map<String, Object>>> dataBean = new DataBean<>();
+		dataBean.setData(result);
+		return dataBean;
 	}
 
 
@@ -140,6 +159,10 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new InvalidValueException("Can't get evidence of id: " + id);
 		}
 
+		return getListOfEvents(request_total, use_cache, page, size, sort_field, sort_direction, evidence);
+	}
+
+	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
 		String entityName = evidence.getEntityName();
 		List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
 		//TODO: add support to multiple dataEntitiies in a single query
@@ -185,8 +208,9 @@ public class ApiEvidenceController extends DataQueryController {
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
 					size);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	/**

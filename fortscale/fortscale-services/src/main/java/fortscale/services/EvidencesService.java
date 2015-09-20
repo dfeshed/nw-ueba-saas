@@ -45,6 +45,14 @@ public interface EvidencesService {
 	void setTagEvidenceSupportingInformationData(Evidence evidence);
 
 	/**
+	 * return userId from user service
+	 * @param userName
+	 * @return
+	 */
+	User getUserIdByUserName(String userName);
+
+
+	/**
 	 * Create new evidence in Mongo
 	 * @param evidence	The evidence
 	 */

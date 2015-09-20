@@ -102,10 +102,14 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
-		User user = userService.findByUsername(evidence.getEntityName());
+		User user = getUserIdByUserName(evidence.getEntityName());
 		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
 
 		evidence.setSupportingInformation(entitySupportingInformation);
+	}
+
+	public User getUserIdByUserName(String userName) {
+		return userService.findByUsername(userName);
 	}
 
 	@Override
