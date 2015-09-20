@@ -142,18 +142,15 @@ public class CleanJob extends FortscaleJob {
 					CommandResult result = mongoTemplate.
 							executeCommand("{ renameCollection: \"fortscale." + backupCollectionName +
 									"\", to: \"fortscale." + toRestore.queryField + "\" }");
-					if (result.ok()) {
+					if (result.ok() && mongoTemplate.collectionExists(toRestore.daoObject)) {
 						//verify restore
-						if (mongoTemplate.collectionExists(toRestore.daoObject)) {
-							logger.info("snapshot restored");
-							success = true;
-							break;
-						}
+						logger.info("snapshot restored");
+						success = true;
+						break;
 					} else {
 						String message = String.format("snapshot failed to restore - could not rename collection - %s",
 								result.getErrorMessage());
 						monitor.error(getMonitorId(), getStepName(), message);
-						break;
 					}
 				} else {
 					String message = String.format("snapshot failed to restore - no backup collection %s found",
