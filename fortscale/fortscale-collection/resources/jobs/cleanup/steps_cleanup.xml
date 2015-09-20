@@ -7,12 +7,18 @@
 
     <schedule>
         <job>
-            <name>CleanIndicators</name>
-            <group>EventsToSingleIndicators</group>
+            <name>Clean</name>
+            <group>StepsCleanup</group>
             <description>Cleans indicators from mongo after a given point in time</description>
             <job-class>fortscale.collection.jobs.cleanup.CleanIndicatorsJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>serviceMap</key>
+                    <value>${collection.steps.service.map}</value>
+                </entry>
+            </job-data-map>
         </job>
     </schedule>
 

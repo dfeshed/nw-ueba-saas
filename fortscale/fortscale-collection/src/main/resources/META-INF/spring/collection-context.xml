@@ -14,6 +14,8 @@
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-collection-context.xml"/>
 
 <!-- 	<context:property-placeholder location="classpath*:META-INF/fortscale-collection.properties" order="1" ignore-unresolvable="true"/> -->

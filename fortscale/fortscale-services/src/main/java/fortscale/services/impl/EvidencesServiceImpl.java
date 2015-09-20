@@ -143,11 +143,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				evidenceType, entityName);
 	}
 
-	@Override
-	public long deleteEvidenceAfter(Date date) {
-		return evidencesRepository.deleteEvidenceAfter(date);
-	}
-
 	/**
 	 * Saves evidence in Mongo
 	 * @param evidence the evidence to save
@@ -157,4 +152,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.save(evidence);
 	}
 
+	@Override
+	public long deleteBetween(Date start, Date end) {
+		return evidencesRepository.deleteEvidenceBetween(start, end);
+	}
 }

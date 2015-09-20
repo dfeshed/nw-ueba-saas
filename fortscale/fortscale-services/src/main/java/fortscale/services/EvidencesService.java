@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Date: 6/23/2015.
  */
-public interface EvidencesService {
+public interface EvidencesService extends Service {
 
 	/**
 	 * Create new object (transient) of evidence
@@ -91,7 +91,5 @@ public interface EvidencesService {
 	 */
 	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
 			String evidenceType, String entityName);
-
-	long deleteEvidenceAfter(Date date);
 
 }

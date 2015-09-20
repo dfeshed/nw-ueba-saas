@@ -34,8 +34,8 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	}
 
 	@Override
-	public long deleteEvidenceAfter(Date date) {
-		Query query = new Query(where(Evidence.createdDateField).gt(date));
+	public long deleteEvidenceBetween(Date startDate, Date endDate) {
+		Query query = new Query(where(Evidence.createdDateField).gte(startDate).lt(endDate));
 		long numberOfEvidenceToRemove = mongoTemplate.count(query, Evidence.class);
 		mongoTemplate.remove(query, Evidence.class, Evidence.COLLECTION_NAME);
 		return numberOfEvidenceToRemove;
