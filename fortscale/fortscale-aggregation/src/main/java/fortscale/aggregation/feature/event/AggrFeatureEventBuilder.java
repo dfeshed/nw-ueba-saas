@@ -1,18 +1,5 @@
 package fortscale.aggregation.feature.event;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
-
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -21,12 +8,26 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
-	@Value("${fetch.data.cycle.in.seconds}")
+    protected static final long SECONDS_TO_ADD_TO_PASS_END_TIME = 1;
+
+    @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;
-	
+
     @Autowired
     private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
     
