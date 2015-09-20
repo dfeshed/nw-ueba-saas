@@ -1,7 +1,6 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -35,7 +34,6 @@ public class Evidence extends AbstractDocument{
 	 */
 	public static final String COLLECTION_NAME = "evidences";
 
-	public static final int ttl = 60 * 60 * 24 * 365; //one year
 
 	//-- Document's Field Names
 
@@ -71,7 +69,7 @@ public class Evidence extends AbstractDocument{
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 
-	public static final String createdDateField = "createdDate";
+
 
 
 	//-- Document's Fields
@@ -92,8 +90,8 @@ public class Evidence extends AbstractDocument{
 	@Field(endDateField)
 	private Long endDate;
 
-	// Index for expiration (TTL)
-	@Indexed(expireAfterSeconds = ttl)
+	// Index for expiration (TTL): one year
+	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
 	private Date retentionDate;
 
@@ -139,9 +137,6 @@ public class Evidence extends AbstractDocument{
 	@Field(supportingInformationField)
 	private EntitySupportingInformation supportingInformation;
 
-	@CreatedDate
-	private Date createdDate;
-
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
@@ -168,7 +163,6 @@ public class Evidence extends AbstractDocument{
 
 		this.timeframe = timeframe;
 
-		this.createdDate = new Date();
 
 		// set retention to start date
 		this.retentionDate = new Date(startDate);
@@ -327,15 +321,6 @@ public class Evidence extends AbstractDocument{
 				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
 				'}';
 	}
-
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
 }
 
 

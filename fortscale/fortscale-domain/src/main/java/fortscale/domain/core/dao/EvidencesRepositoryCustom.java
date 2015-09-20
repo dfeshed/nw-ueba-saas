@@ -2,8 +2,8 @@ package fortscale.domain.core.dao;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +23,4 @@ public interface EvidencesRepositoryCustom {
 	 */
 	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName);
-
-	long deleteEvidenceBetween(Date startDate, Date endDate);
-
 }

@@ -152,8 +152,4 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.save(evidence);
 	}
 
-	@Override
-	public long deleteBetween(Date start, Date end) {
-		return evidencesRepository.deleteEvidenceBetween(start, end);
-	}
 }

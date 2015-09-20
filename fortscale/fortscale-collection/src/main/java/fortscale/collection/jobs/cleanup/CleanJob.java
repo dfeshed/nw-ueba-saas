@@ -1,60 +1,110 @@
 package fortscale.collection.jobs.cleanup;
 
+import com.mongodb.CommandResult;
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.services.EvidencesService;
-import fortscale.services.Service;
+import fortscale.domain.core.Evidence;
+import fortscale.ml.service.dao.Model;
 import fortscale.utils.logging.Logger;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
+import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * Created by Amir Keren on 18/09/2015.
  *
- * This task clears indicators after a particular date
+ * This task is in charge of cleaning various information from the system
  *
  */
 public class CleanJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
+	private enum Technology { MONGO, HDFS, KAFKA, SAMZA }
+	private enum Strategy { DELETE, RESTORE }
+
 	@Autowired
-	EvidencesService evidencesService;
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private FileSystem hadoopFs;
 
 	private Date startTime;
 	private Date endTime;
 	private String dataSource;
-	private Map<String, Service> serviceMap;
+	private String restoreName;
+	private Strategy strategy;
+	private Technology technology;
+	private Map<String, DAO> dataSourceToDAO;
+
+	private PathFilter filter;
+
+	public CleanJob() {
+		createDataSourceToDAOMap();
+		filter = new PathFilter() {
+			@Override
+			public boolean accept(Path path) {
+			try {
+				return hadoopFs.isDirectory(path);
+			} catch (Exception ex) {
+				return false;
+			}
+			}
+		};
+	}
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		createServiceMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
 			startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
 			endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
-		} catch (ParseException ex) {
+		} catch (Exception ex) {
 			logger.error("Bad date format - {}", ex);
 			throw new JobExecutionException(ex);
 		}
+		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
+		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "strategy"));
+		if (strategy == Strategy.RESTORE) {
+			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
+		}
 		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
+
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Job");
-		long deletedRecords = serviceMap.get(dataSource).deleteBetween(startTime, endTime);
-		logger.info("Deleted {} records", deletedRecords);
+		boolean success = false;
+		switch (strategy) {
+			case DELETE: {
+				success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+				break;
+			} case RESTORE: {
+				success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
+			}
+		}
+		if (success) {
+			logger.info("Clean operation successful");
+		} else {
+			monitor.error(getMonitorId(), getStepName(), "Clean operation failed");
+		}
 		finishStep();
 	}
 
@@ -64,9 +114,109 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
 
-	private void createServiceMap() {
-		serviceMap = new HashMap();
-		serviceMap.put("evidence", evidencesService);
+	private void createDataSourceToDAOMap() {
+		dataSourceToDAO = new HashMap();
+		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
+		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
+	}
+
+	private boolean restoreSnapshot(DAO toRestore, String backupCollectionName) {
+		boolean success = false;
+		switch (technology) {
+			case MONGO: {
+				logger.debug("check if backup collection exists");
+				if (mongoTemplate.collectionExists(backupCollectionName)) {
+					logger.debug("drop collection");
+					mongoTemplate.dropCollection(toRestore.getClass());
+					//verify drop
+					if (mongoTemplate.collectionExists(toRestore.getClass())) {
+						logger.debug("dropping failed, abort");
+						break;
+					}
+					logger.debug("renaming backup collection");
+					CommandResult result=mongoTemplate.executeCommand("db.runCommand({ renameCollection: \"fortscale." +
+							backupCollectionName + "\", to: \"fortscale." + toRestore.queryField + "\" })");
+					if (result.ok()) {
+						//verify restore
+						if (mongoTemplate.collectionExists(toRestore.getClass())) {
+							logger.info("snapshot restored");
+							success = true;
+							break;
+						}
+					}
+				}
+				monitor.error(getMonitorId(), getStepName(),
+						"snapshot failed to restore - manually rename backup collection");
+				break;
+			}
+			case HDFS: {
+				//TODO - implement
+				success = false;
+				break;
+			}
+		}
+		return success;
+	}
+
+	private boolean deleteBetween(DAO toDelete, Date startDate, Date endDate) {
+		boolean success = false;
+		switch (technology) {
+			case MONGO: {
+				logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
+				Query query = new Query(where(toDelete.queryField).gte(startDate).lt(endDate));
+				long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
+				logger.info("found {} records", recordsFound);
+				if (recordsFound > 0) {
+					mongoTemplate.remove(query, toDelete.daoObject);
+				}
+				success = true;
+				break;
+			} case HDFS: {
+				//TODO - get hdfs path
+				String hdfsPath = "";
+				try {
+					if (!hadoopFs.exists(new Path(hdfsPath))) {
+						String message = String.format("hdfs path '%s' does not exists", hdfsPath);
+						monitor.error(getMonitorId(), getStepName(), message);
+						return false;
+					}
+					// get all matching folders
+					FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath), filter);
+					for (FileStatus file : files) {
+						Path path = file.getPath();
+						logger.info("deleting hdfs path {}", path);
+						success = hadoopFs.delete(path, true);
+						if (!success) {
+							monitor.error(getMonitorId(), getStepName(), "cannot delete hdfs path " + path);
+						}
+					}
+				} catch (IOException ex) {
+					monitor.error(getMonitorId(), getStepName(), "cannot delete hdfs path " + ex.getMessage());
+				}
+				break;
+			} case KAFKA: {
+				//TODO - implement
+				success = false;
+				break;
+			} case SAMZA: {
+				//TODO - implement
+				success = false;
+				break;
+			}
+		}
+		return success;
+	}
+
+	private class DAO {
+
+		public Class daoObject;
+		public String queryField;
+
+		public DAO(Class daoObject, String queryField) {
+			this.daoObject = daoObject;
+			this.queryField = queryField;
+		}
+
 	}
 
 }

@@ -1,9 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceTimeframe;
-import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.*;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +8,7 @@ import java.util.List;
 /**
  * Date: 6/23/2015.
  */
-public interface EvidencesService extends Service {
+public interface EvidencesService {
 
 	/**
 	 * Create new object (transient) of evidence
