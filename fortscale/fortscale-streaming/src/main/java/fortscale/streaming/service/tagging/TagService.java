@@ -15,7 +15,7 @@ import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 
 /**
  * Created by idanp on 7/8/2014.

@@ -8,7 +8,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;

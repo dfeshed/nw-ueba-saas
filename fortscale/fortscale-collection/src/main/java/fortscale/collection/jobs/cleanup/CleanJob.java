@@ -1,12 +1,14 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.services.EvidencesService;
 import fortscale.services.Service;
 import fortscale.services.SpringService;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,9 +23,12 @@ import java.util.Map;
  * This task clears indicators after a particular date
  *
  */
-public class CleanIndicatorsJob extends FortscaleJob {
+public class CleanJob extends FortscaleJob {
 
-	private static Logger logger = Logger.getLogger(CleanIndicatorsJob.class);
+	private static Logger logger = Logger.getLogger(CleanJob.class);
+
+	@Autowired
+	EvidencesService evidencesService;
 
 	private Date startTime;
 	private Date endTime;
@@ -33,12 +38,7 @@ public class CleanIndicatorsJob extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		try {
-			createServiceMap(jobDataMapExtension.getJobDataMapStringValue(map, "serviceMap"));
-		} catch (ClassNotFoundException ex) {
-			logger.error("Bad service map - {}", ex);
-			throw new JobExecutionException(ex);
-		}
+		createServiceMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
@@ -65,16 +65,10 @@ public class CleanIndicatorsJob extends FortscaleJob {
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
 
-	private Map<String, Service> createServiceMap(String serviceMapString) throws ClassNotFoundException {
+	private Map<String, Service> createServiceMap() {
 		Map<String, Service> result = new HashMap();
-		for (String pair: serviceMapString.split(",")) {
-			String dataSource = pair.split(":")[0];
-			String className = pair.split(":")[1];
-			Service service = (Service)SpringService.getInstance().resolve(Class.forName(className));
-			result.put(dataSource, service);
-		}
+		result.put("evidence", evidencesService);
 		return result;
 	}
-
 
 }

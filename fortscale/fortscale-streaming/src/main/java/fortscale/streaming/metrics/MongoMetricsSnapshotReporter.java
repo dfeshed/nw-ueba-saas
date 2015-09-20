@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.monitor.JobProgressReporter;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 
 import java.util.HashMap;
 import java.util.Map;

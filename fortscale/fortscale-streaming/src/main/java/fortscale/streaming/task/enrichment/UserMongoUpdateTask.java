@@ -3,7 +3,7 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;

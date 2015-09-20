@@ -3,7 +3,7 @@ package fortscale.streaming.task;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.UserEventTypePair;
 import fortscale.streaming.model.UserTopEvents;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;

@@ -3,7 +3,6 @@ package fortscale.streaming.service;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fortscale.services.SpringService;
 import fortscale.services.UserService;
 import net.minidev.json.JSONObject;
 

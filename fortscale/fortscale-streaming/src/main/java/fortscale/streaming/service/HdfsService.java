@@ -1,6 +1,5 @@
 package fortscale.streaming.service;
 
-import fortscale.services.SpringService;
 import fortscale.streaming.exceptions.HdfsException;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;

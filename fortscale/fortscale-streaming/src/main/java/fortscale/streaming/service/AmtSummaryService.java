@@ -1,6 +1,5 @@
 package fortscale.streaming.service;
 
-import fortscale.services.SpringService;
 import fortscale.services.notifications.AmtActionToSensitiveAccountNotificationGenerator;
 import fortscale.streaming.model.AmtSession;
 import fortscale.utils.time.TimestampUtils;

@@ -9,7 +9,7 @@ import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.HdfsService;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;

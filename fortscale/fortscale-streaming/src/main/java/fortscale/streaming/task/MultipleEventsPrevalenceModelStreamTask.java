@@ -17,7 +17,7 @@ import com.google.common.collect.Iterables;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.services.SpringService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 
 public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
