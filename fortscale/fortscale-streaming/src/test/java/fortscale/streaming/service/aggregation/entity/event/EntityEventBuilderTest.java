@@ -97,11 +97,11 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(String.format("%s_%s", USERNAME_CONTEXT_FIELD, username), entityEventData.getContextId());
 		Assert.assertEquals(800, entityEventData.getStartTime());
 		Assert.assertEquals(900, entityEventData.getEndTime());
-		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getNotIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents.size());
 		for (AggrEvent actualAggrFeatureEvent : allAggrFeatureEvents)
 			Assert.assertEquals(wrapper, actualAggrFeatureEvent);
-		Assert.assertFalse(entityEventData.isFired());
+		Assert.assertFalse(entityEventData.isTransmitted());
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
 
-		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getNotIncludedAggrFeatureEvents();
 		Assert.assertEquals(2, allAggrFeatureEvents.size());
 	}
 
@@ -151,9 +151,9 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
 
-		Set<AggrEvent> allAggrFeatureEvents1 = allEntityEventData.get(0).getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents1 = allEntityEventData.get(0).getNotIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents1.size());
-		Set<AggrEvent> allAggrFeatureEvents2 = allEntityEventData.get(1).getAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents2 = allEntityEventData.get(1).getNotIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents2.size());
 	}
 
@@ -201,7 +201,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
-		entityEventData.setFired(true);
+		entityEventData.setTransmitted(true);
 		entityEventDataStore.storeEntityEventData(entityEventData);
 
 		AggrEvent wrapper2 = createAggrEvent(createMessage(
@@ -211,7 +211,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		entityEventData = allEntityEventData.get(0);
-		Assert.assertEquals(1, entityEventData.getAggrFeatureEvents().size());
+		Assert.assertEquals(1, entityEventData.getNotIncludedAggrFeatureEvents().size());
 	}
 
 	@Test
@@ -252,6 +252,6 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
 		for (EntityEventData entityEventData : allEntityEventData)
-			Assert.assertTrue(entityEventData.isFired());
+			Assert.assertTrue(entityEventData.isTransmitted());
 	}
 }

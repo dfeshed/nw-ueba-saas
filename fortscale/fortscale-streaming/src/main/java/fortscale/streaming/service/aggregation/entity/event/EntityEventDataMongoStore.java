@@ -35,7 +35,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
-			query.addCriteria(where(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD).lte(firingTimeInSeconds));
+			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
 
@@ -47,8 +47,8 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
-			query.addCriteria(where(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD).lte(firingTimeInSeconds));
-			query.addCriteria(where(EntityEventData.FIRED_FIELD).is(false));
+			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
+			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
 
@@ -60,7 +60,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		if (!mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			mongoTemplate.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.CONTEXT_ID_FIELD, Direction.ASC));
-			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD, Direction.ASC));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD, Direction.ASC));
 		}
 
 		mongoTemplate.save(entityEventData, COLLECTION_NAME);

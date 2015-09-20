@@ -20,7 +20,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();
 			EntityEventData value = entry.getValue();
-			if (StringUtils.startsWith(key, entityEventName) && value.getFiringTimeInSeconds() <= firingTimeInSeconds) {
+			if (StringUtils.startsWith(key, entityEventName) && value.getTransmissionEpochtime() <= firingTimeInSeconds) {
 				listOfEntityEventData.add(value);
 			}
 		}
@@ -31,7 +31,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
 		for (EntityEventData entityEventData : getEntityEventDataWithFiringTimeLte(entityEventName, firingTimeInSeconds)) {
-			if (!entityEventData.isFired()) {
+			if (!entityEventData.isTransmitted()) {
 				listOfEntityEventData.add(entityEventData);
 			}
 		}
