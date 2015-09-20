@@ -7,11 +7,13 @@ import fortscale.domain.core.VpnOverlappingSupportingInformation;
 import fortscale.domain.core.VpnSessionOverlap;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +25,8 @@ import java.util.Map;
 @Component
 @Scope("prototype")
 public class SupportingInformationVPNOverlappingSessionPopulator implements SupportingInformationDataPopulator {
+
+    private static Logger logger = Logger.getLogger(SupportingInformationVPNOverlappingSessionPopulator.class);
 
     private static final String DURATION_FIELD = "duration";
     private static final String HOSTNAME_FIELD = "hostname";
@@ -41,21 +45,36 @@ public class SupportingInformationVPNOverlappingSessionPopulator implements Supp
      *
      * @return Supporting information data with/without anomaly value indication
      */
-    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationData createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
         Map<SupportingInformationKey, String> vpnSessionIntervalToIp = new HashMap<>();
-        Map<SupportingInformationKey, Map> additionalInformationMap = new HashMap<>();
 
         VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = (VpnOverlappingSupportingInformation) evidence.getSupportingInformation();
 
-        for (VpnSessionOverlap vpnSessionOverlap : vpnOverlappingSupportingInformation.getRawEvents()) {
-            long startTime = vpnSessionOverlap.getDate_time_unix();
+        if (vpnOverlappingSupportingInformation == null) {
+            logger.error("Could not find vpn overlapping supporting information data of evidence {}", evidence.getId());
+
+            return new SupportingInformationGenericData<>(vpnSessionIntervalToIp);
+        }
+
+        List<VpnSessionOverlap> vpnSessionOverlapEvents = vpnOverlappingSupportingInformation.getRawEvents();
+
+        if (vpnSessionOverlapEvents == null || vpnSessionOverlapEvents.isEmpty()) {
+            logger.error("Could not find any vpn session overlapping event for evidence {}", evidence.getId());
+
+            return new SupportingInformationGenericData<>(vpnSessionIntervalToIp);
+        }
+
+        Map<SupportingInformationKey, Map> additionalInformationMap = new HashMap<>();
+
+        for (VpnSessionOverlap vpnSessionOverlap : vpnSessionOverlapEvents) {
+            long endTime = vpnSessionOverlap.getDate_time_unix();
             long duration = vpnSessionOverlap.getDuration();
 
-            Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime);
-            Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime + duration);
+            Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime - duration);
+            Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime);
 
-            SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.toString(startTimeInMillis), Long.toString(endTimeInMillis));
+            SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getSource_ip());
 
             vpnSessionIntervalToIp.put(supportingInformationKey, vpnSessionOverlap.getSource_ip());
 

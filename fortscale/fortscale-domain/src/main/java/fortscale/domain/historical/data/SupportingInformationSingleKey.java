@@ -4,16 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * supporting information single key representation. usage example: histogram
+ * Supporting information single key representation. usage example: histogram.
+ * The creation of SupportingInformationSingleKey object is based on a singe key and [optionally] on a key identifier.
+ * The key identifier should be used for internal use only while the key is exposed to the user.
+ *
  * @author gils
  * Date: 05/08/2015
  */
 public class SupportingInformationSingleKey implements SupportingInformationKey {
 
-    private String key;
+    protected String key;
+
+    protected String keyIdentifier;
 
     public SupportingInformationSingleKey(String key) {
         this.key = key;
+    }
+
+    public SupportingInformationSingleKey(String key, String uniqueIdentifier) {
+        this.key = key;
+        this.keyIdentifier = uniqueIdentifier;
     }
 
     public String getKey() {
@@ -32,7 +42,6 @@ public class SupportingInformationSingleKey implements SupportingInformationKey 
         return genKey;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,19 +49,23 @@ public class SupportingInformationSingleKey implements SupportingInformationKey 
 
         SupportingInformationSingleKey that = (SupportingInformationSingleKey) o;
 
-        return !(key != null ? !key.equals(that.key) : that.key != null);
+        if (key != null ? !key.equals(that.key) : that.key != null) return false;
+        return !(keyIdentifier != null ? !keyIdentifier.equals(that.keyIdentifier) : that.keyIdentifier != null);
 
     }
 
     @Override
     public int hashCode() {
-        return key != null ? key.hashCode() : 0;
+        int result = key != null ? key.hashCode() : 0;
+        result = 31 * result + (keyIdentifier != null ? keyIdentifier.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "SupportingInformationSingleKey{" +
                 "key='" + key + '\'' +
+                ", keyIdentifier='" + keyIdentifier + '\'' +
                 '}';
     }
 }

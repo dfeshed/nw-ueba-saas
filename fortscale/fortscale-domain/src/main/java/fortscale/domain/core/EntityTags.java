@@ -13,6 +13,8 @@ public class EntityTags {
 
 	private List<String> tags;
 
+	public EntityTags(){};
+
 	public EntityTags(EntityType entityType, String entityName, List<String> tags) {
 		this.entityType = entityType;
 		this.entityName = entityName;

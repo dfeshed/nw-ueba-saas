@@ -250,13 +250,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						entitySupportingInformationPopulatorClass;
 				String supportingInformation = convertToString(validateFieldExistsAndGetValue(message,
 						supportingInformationField, false));
-
 				if (supportingInformation != null) {
 					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
-							(EntitySupportingInformationPopulator) SpringService.getInstance().resolve(Class.
+							(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
 									forName(entitySupportingInformationPopulatorClass));
-					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
-							populate(anomalyTypeField, supportingInformation);
+					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.populate(evidence, supportingInformation);
 					if (entitySupportingInformation != null) {
 						evidence.setSupportingInformation(entitySupportingInformation);
 					}

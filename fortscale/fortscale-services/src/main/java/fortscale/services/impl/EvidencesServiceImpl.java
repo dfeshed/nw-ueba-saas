@@ -3,15 +3,14 @@ package fortscale.services.impl;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.EvidencesService;
+import fortscale.services.UserService;
+import fortscale.services.UserSupportingInformationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Services for managing the evidences
@@ -21,12 +20,21 @@ import java.util.TreeMap;
 @Service("evidencesService")
 public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
+	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
+	final String TAG_DATA_ENTITY ="active_directory";
+
+
 	/**
 	 * Mongo repository for evidences
 	 */
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UserSupportingInformationService userSupportingInformationService;
 
 	// Severity thresholds for evidence
 	@Value("${evidence.severity.medium:80}")
@@ -35,6 +43,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	protected int high;
 	@Value("${evidence.severity.critical:95}")
 	protected int critical;
+
+	@Value("${collection.evidence.tag.score:50}")
+	protected double tagScore;
 
 	/**
 	 * Keeps mapping between score and severity
@@ -70,6 +81,32 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				totalAmountOfEvents, evidenceTimeframe);
 	}
 
+	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
+			Long startDate, long endDate, String tag){
+
+		// Create data entities array for tag evidence with constant value
+		List<String> dataEntitiesIds = new ArrayList<>();
+		dataEntitiesIds.add(TAG_DATA_ENTITY);
+
+		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
+				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
+				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
+
+		setTagEvidenceSupportingInformationData(evidence);
+
+		// Save evidence to MongoDB
+		saveEvidenceInRepository(evidence);
+
+		return evidence;
+	}
+
+	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
+		User user = userService.findByUsername(evidence.getEntityName());
+		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
+
+		evidence.setSupportingInformation(entitySupportingInformation);
+	}
+
 	@Override
 	public void saveEvidenceInRepository(Evidence evidence) {
 		saveEvidence(evidence);
@@ -98,6 +135,12 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName) {
 		return evidencesRepository.findFeatureEvidences(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
+	}
+
+	public  List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
+			String evidenceType, String entityName) {
+		return evidencesRepository.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startDate, endDate,
+				evidenceType, entityName);
 	}
 
 	/**

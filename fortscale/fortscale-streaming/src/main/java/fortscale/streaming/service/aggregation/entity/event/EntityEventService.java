@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -23,6 +24,9 @@ public class EntityEventService {
 
 	@Autowired
 	private EntityEventConfService entityEventConfService;
+	
+	@Autowired
+	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
 	public EntityEventService() {
 		getGlobalParams();
@@ -31,7 +35,7 @@ public class EntityEventService {
 	}
 
 	public void process(JSONObject message) {
-		AggrEvent aggrFeatureEvent = new AggrEvent(message);
+		AggrEvent aggrFeatureEvent = aggrFeatureEventBuilderService.buildEvent(message);
 
 		Set<EntityEventBuilder> builders = fullEventNameToBuilders.get(getFullEventName(aggrFeatureEvent));
 		if (builders != null) {

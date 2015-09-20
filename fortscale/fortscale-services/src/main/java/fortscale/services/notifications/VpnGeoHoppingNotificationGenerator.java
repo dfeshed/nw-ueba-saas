@@ -35,6 +35,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String notificationNumOfEventsField;
 	@Value("${collection.evidence.notification.score}")
 	private String score;
+	@Value("${collection.evidence.notification.supportinginformation.field}")
+	private String notificationSupportingInformationField;
 
 	public JSONObject createNotifications(List<VpnSession> vpnSessions){
 		if (vpnSessions.size() < 2) {
@@ -58,6 +60,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
 		evidence.put(notificationValueField, vpnSessions.get(0).getCountry());
 		evidence.put(notificationNumOfEventsField, vpnSessions.size());
+		evidence.put(notificationSupportingInformationField, "");
 		List<String> entities = new ArrayList();
 		entities.add(NOTIFICATION_ENTITY);
 		evidence.put(notificationEntityField, entities);

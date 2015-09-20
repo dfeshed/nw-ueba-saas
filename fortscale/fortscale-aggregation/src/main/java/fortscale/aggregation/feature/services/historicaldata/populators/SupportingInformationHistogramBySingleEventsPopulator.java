@@ -17,24 +17,19 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Basic implementation for supporting information populator class
+ * Abstract class with generic implementation for supporting information histogram populator of single events
  *
  * @author gils
  * Date: 05/08/2015
  */
-public abstract class SupportingInformationHistogramPopulator implements SupportingInformationDataPopulator{
+public abstract class SupportingInformationHistogramBySingleEventsPopulator extends SupportingInformationBaseHistogramPopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationHistogramPopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationHistogramBySingleEventsPopulator.class);
 
-    protected String contextType;
-    protected String dataEntity;
-    protected String featureName;
+    private static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
+    private static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
 
-    static final String FIXED_DURATION_DAILY_STRATEGY = "fixed_duration_daily";
-    static final String FIXED_DURATION_HOURLY_STRATEGY = "fixed_duration_hourly";
-
-    static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
-    static final String BUCKET_CONF_HOURLY_STRATEGY_SUFFIX = "hourly";
+    private static final String BUCKET_CONF_DAILY_STRATEGY_SUFFIX = "daily";
 
     @Autowired
     protected BucketConfigurationService bucketConfigurationService;
@@ -42,10 +37,8 @@ public abstract class SupportingInformationHistogramPopulator implements Support
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
 
-    public SupportingInformationHistogramPopulator(String contextType, String dataEntity, String featureName) {
-        this.contextType = contextType;
-        this.dataEntity = dataEntity;
-        this.featureName = featureName;
+    public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
+        super(contextType, dataEntity, featureName);
     }
 
     /*
@@ -56,34 +49,21 @@ public abstract class SupportingInformationHistogramPopulator implements Support
      * 4. Validate data consistency (histogram + anomaly)
      */
     @Override
-    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, int timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
-        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
-
-        if (featureBuckets.isEmpty()) {
-            throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
-        }
-
-        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(featureBuckets);
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays);
 
         if (isAnomalyIndicationRequired(evidence)) {
             SupportingInformationKey anomalySupportingInformationKey = createAnomalyHistogramKey(evidence, featureName);
 
             validateHistogramDataConsistency(histogramMap, anomalySupportingInformationKey);
 
-            return new SupportingInformationGenericData<Double>(histogramMap, anomalySupportingInformationKey);
+            return new SupportingInformationGenericData<>(histogramMap, anomalySupportingInformationKey);
         }
         else {
-            return new SupportingInformationGenericData<Double>(histogramMap);
+            return new SupportingInformationGenericData<>(histogramMap);
         }
     }
-
-    /**
-     * Abstract method to the histogram creation functionality
-     */
-    abstract Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets);
-
-    abstract SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName);
 
     /*
      * Fetch the relevant feature buckets based on the context value and time values.
@@ -162,10 +142,4 @@ public abstract class SupportingInformationHistogramPopulator implements Support
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
-
-    protected abstract boolean isAnomalyIndicationRequired(Evidence evidence);
-
-    abstract String getNormalizedContextType(String contextType);
-
-    abstract String getNormalizedFeatureName(String featureName);
 }

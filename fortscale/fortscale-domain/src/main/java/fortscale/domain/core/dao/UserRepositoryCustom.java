@@ -32,6 +32,7 @@ public interface UserRepositoryCustom {
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
 	public List<User> findAllUsers(Pageable pageable);
+	public Map<String, Long> groupByTags();
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
