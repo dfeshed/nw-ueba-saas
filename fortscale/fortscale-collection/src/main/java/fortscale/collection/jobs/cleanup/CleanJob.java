@@ -64,10 +64,9 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
 
-	private Map<String, Service> createServiceMap() {
-		Map<String, Service> result = new HashMap();
-		result.put("evidence", evidencesService);
-		return result;
+	private void createServiceMap() {
+		serviceMap = new HashMap();
+		serviceMap.put("evidence", evidencesService);
 	}
 
 }
