@@ -21,6 +21,7 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/api/evidences")
+@SpringApplicationConfiguration(classes = FilteringPropertiesConfigurationHandler.class)
 public class ApiEvidenceController extends DataQueryController {
 
 	private static final String DESC = "DESC";
@@ -68,10 +70,8 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private Map evidenceTypeMap;
 
-	@Value("${evidence.events.filtering.map}")
-	private String eventsFilteringProperty;
-
-	private FilteringPropertiesConfigurationHandler eventsFilter = new FilteringPropertiesConfigurationHandler();
+	@Autowired
+	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@PostConstruct
 	public void initEvidenceMap(){
