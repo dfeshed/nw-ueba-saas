@@ -82,7 +82,7 @@ public class CleanJob extends FortscaleJob {
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "strategy"));
 		if (strategy == Strategy.RESTORE) {
-			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
+			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, "restoreName");
 		}
 		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
 
@@ -163,7 +163,8 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case MONGO: {
 				logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
-				Query query = new Query(where(toDelete.queryField).gte(startDate).lt(endDate));
+				Query query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
+				logger.debug("query is {}", query.toString());
 				long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
 				logger.info("found {} records", recordsFound);
 				if (recordsFound > 0) {
