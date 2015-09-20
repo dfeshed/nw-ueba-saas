@@ -149,6 +149,11 @@ public class CleanJob extends FortscaleJob {
 							success = true;
 							break;
 						}
+					} else {
+						String message = String.format("snapshot failed to restore - could not rename collection - %s",
+								result.getErrorMessage());
+						monitor.error(getMonitorId(), getStepName(), message);
+						break;
 					}
 				} else {
 					String message = String.format("snapshot failed to restore - no backup collection %s found",
