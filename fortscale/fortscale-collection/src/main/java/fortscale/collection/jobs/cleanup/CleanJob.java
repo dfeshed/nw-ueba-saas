@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.cleanup;
 
 import com.mongodb.CommandResult;
+import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
@@ -132,26 +133,24 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case MONGO: {
 				logger.debug("check if backup collection exists");
-				if (mongoTemplate.collectionExists(toRestore.daoObject)) {
+				if (mongoTemplate.collectionExists(backupCollectionName)) {
+					DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
 					logger.debug("drop collection");
 					mongoTemplate.dropCollection(toRestore.queryField);
 					//verify drop
-					if (mongoTemplate.collectionExists(toRestore.daoObject)) {
+					if (mongoTemplate.collectionExists(toRestore.queryField)) {
 						logger.debug("dropping failed, abort");
 						break;
 					}
 					logger.debug("renaming backup collection");
-					CommandResult result = mongoTemplate.
-							executeCommand("{ renameCollection: \"fortscale." + backupCollectionName +
-									"\", to: \"fortscale." + toRestore.queryField + "\" }");
-					if (result.ok() && mongoTemplate.collectionExists(toRestore.daoObject)) {
+					backupCollection.rename(toRestore.queryField);
+					if (mongoTemplate.collectionExists(toRestore.queryField)) {
 						//verify restore
 						logger.info("snapshot restored");
 						success = true;
 						break;
 					} else {
-						String message = String.format("snapshot failed to restore - could not rename collection - %s",
-								result.getErrorMessage());
+						String message = "snapshot failed to restore - could not rename collection";
 						logger.error(message);
 						monitor.error(getMonitorId(), getStepName(), message);
 					}
