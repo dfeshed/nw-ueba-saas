@@ -1,16 +1,18 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.DataSourcesSyncTimerListener;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.strategy.*;
-import fortscale.aggregation.feature.util.GenericHistogram;
-import junitparams.JUnitParamsRunner;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,13 +22,22 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.DataSourcesSyncTimerListener;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
+import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.utils.ConversionUtils;
+import junitparams.JUnitParamsRunner;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
 @RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventBuilderTest {    
@@ -150,7 +161,7 @@ public class AggrFeatureEventBuilderTest {
         //{"start_time_unix":1436918400,"max_cout_object":"c","end_time":"2015-07-16 02:59:59","bucket_conf_name":null,"event_type":"aggregated_feature_event","context":{"username":"john","machine":"m1"},"start_time":"2015-07-15 03:00:00","end_time_unix":1437004799,"date_time":"2015-07-20 10:14:49","date_time_unix":1437376489}
         System.out.println(event.toString());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+//        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 
         Long startTime = startTime1 + (startTimeDayNumber-1)*day;
         Long endTime = endTime1 + (endTimeDayNumber-1)*day;
@@ -162,7 +173,7 @@ public class AggrFeatureEventBuilderTest {
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get(AggrEvent.EVENT_FIELD_END_TIME));
         Assert.assertEquals("my_number_of_distinct_values", event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldName()));
-        Assert.assertEquals(numberOfDistinctValues, event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldValue()));
+        Assert.assertEquals(ConversionUtils.convertToDouble(numberOfDistinctValues), event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureNameFieldValue()));
         Assert.assertEquals("john", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("username"));
         Assert.assertEquals("m1", ((HashMap<?, ?>)event.get(aggrFeatureEventBuilderTestHelper.getAggrFeatureContextFieldName())).get("machine"));
         Assert.assertEquals(startTime, event.get(AggrEvent.EVENT_FIELD_START_TIME_UNIX));

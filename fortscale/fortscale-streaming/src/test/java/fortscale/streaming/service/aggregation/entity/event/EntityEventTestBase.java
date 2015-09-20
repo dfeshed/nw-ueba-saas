@@ -1,10 +1,15 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import net.minidev.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EntityEventTestBase {
@@ -17,6 +22,9 @@ public class EntityEventTestBase {
     private String aggrFeatureValueFieldName;
 	@Value("${streaming.aggr_event.field.context}")
 	private String contextFieldName;
+	
+	@Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 	
 
 	protected JSONObject createMessage(
@@ -34,9 +42,14 @@ public class EntityEventTestBase {
 		for(String key: context.keySet()) {
 			newContext.put(key, (String)context.get(key));
 		}
-		JSONObject event = AggrEvent.buildEvent(null, aggrFeatureType, aggrFeatureName, aggrFeatureValue, null, bucketConfName, newContext, startTime, endTime, null, dateTime);
+		List<String> dataSources = Collections.emptyList();
+		JSONObject event = aggrFeatureEventBuilderService.buildEvent(null, aggrFeatureType, aggrFeatureName, aggrFeatureValue, null, bucketConfName, newContext, startTime, endTime, dataSources, dateTime);
 		event.put(AggrEvent.EVENT_FIELD_SCORE, score);
 		return event; 
 
+	}
+	
+	protected AggrEvent createAggrEvent(JSONObject event){
+		return aggrFeatureEventBuilderService.buildEvent(event);
 	}
 }

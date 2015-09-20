@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class SupportingInformationSingleKey implements SupportingInformationKey {
 
-    private String key;
+    protected String key;
 
-    private String keyIdentifier;
+    protected String keyIdentifier;
 
     public SupportingInformationSingleKey(String key) {
         this.key = key;
