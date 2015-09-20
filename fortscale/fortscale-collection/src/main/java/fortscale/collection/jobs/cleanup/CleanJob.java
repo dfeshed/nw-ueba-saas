@@ -108,7 +108,9 @@ public class CleanJob extends FortscaleJob {
 		if (success) {
 			logger.info("Clean operation successful");
 		} else {
-			monitor.error(getMonitorId(), getStepName(), "Clean operation failed");
+			String message = "Clean operation failed";
+			logger.error(message);
+			monitor.error(getMonitorId(), getStepName(), message);
 		}
 		finishStep();
 	}
@@ -150,16 +152,19 @@ public class CleanJob extends FortscaleJob {
 					} else {
 						String message = String.format("snapshot failed to restore - could not rename collection - %s",
 								result.getErrorMessage());
+						logger.error(message);
 						monitor.error(getMonitorId(), getStepName(), message);
 					}
 				} else {
 					String message = String.format("snapshot failed to restore - no backup collection %s found",
 							restoreName);
+					logger.error(message);
 					monitor.error(getMonitorId(), getStepName(), message);
 					break;
 				}
-				monitor.error(getMonitorId(), getStepName(),
-						"snapshot failed to restore - manually rename backup collection");
+				String message = "snapshot failed to restore - manually rename backup collection";
+				logger.error(message);
+				monitor.error(getMonitorId(), getStepName(), message);
 				break;
 			}
 			case HDFS: {
@@ -191,6 +196,7 @@ public class CleanJob extends FortscaleJob {
 				try {
 					if (!hadoopFs.exists(new Path(hdfsPath))) {
 						String message = String.format("hdfs path '%s' does not exists", hdfsPath);
+						logger.error(message);
 						monitor.error(getMonitorId(), getStepName(), message);
 						return false;
 					}
@@ -201,11 +207,15 @@ public class CleanJob extends FortscaleJob {
 						logger.info("deleting hdfs path {}", path);
 						success = hadoopFs.delete(path, true);
 						if (!success) {
-							monitor.error(getMonitorId(), getStepName(), "cannot delete hdfs path " + path);
+							String message = "cannot delete hdfs path " + path;
+							logger.error(message);
+							monitor.error(getMonitorId(), getStepName(), message);
 						}
 					}
 				} catch (IOException ex) {
-					monitor.error(getMonitorId(), getStepName(), "cannot delete hdfs path " + ex.getMessage());
+					String message = "cannot delete hdfs path " + ex.getMessage();
+					logger.error(message);
+					monitor.error(getMonitorId(), getStepName(), message);
 				}
 				break;
 			} case KAFKA: {
