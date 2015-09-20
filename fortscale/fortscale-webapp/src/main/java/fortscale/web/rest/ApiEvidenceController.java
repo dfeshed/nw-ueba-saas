@@ -17,8 +17,10 @@ import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
 	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
+	private static final String TIME_STAMP = "ts";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
@@ -44,7 +47,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * Mongo repository for fetching evidences
 	 */
 	@Autowired
-	private EvidencesService evidencesDao;
+	private EvidencesService evidencesService;
 
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
@@ -84,6 +87,28 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 	}
 
+	@RequestMapping(value="/findByAnomalyType", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Evidence>> list(
+			@RequestParam(defaultValue="1", required=false) int page,
+			@RequestParam(defaultValue="20", required=false) int size,
+			@RequestParam(defaultValue="vpn_geo_hopping", required=true) String anomalyTypeFieldName,
+			@RequestParam(required=false, defaultValue="0") long after,
+			@RequestParam(required=false, defaultValue="0") long before,
+			@RequestParam(defaultValue="True") boolean sortDesc) {
+
+		// calculate the page request based on the parameters given
+		PageRequest request = new PageRequest(page, size,
+				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
+
+		List<Evidence> evidences = evidencesService.findByStartDateBetweenAndAnomalyTypeFieldName(after, before, anomalyTypeFieldName);
+		DataBean<List<Evidence>> ret = new DataBean<>();
+		ret.setData(evidences);
+		return ret;
+	}
+
+
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
 	 * @param id The ID of the requested evidence
@@ -93,7 +118,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@LogException
 	public DataBean<Evidence> getEvidence(@PathVariable String id) {
 		DataBean<Evidence> ret = new DataBean<>();
-		Evidence evidence = evidencesDao.findById(id);
+		Evidence evidence = evidencesService.findById(id);
 		updateEvidenceFields(evidence);
 		ret.setData(evidence);
 		return ret;
@@ -110,7 +135,7 @@ public class ApiEvidenceController extends DataQueryController {
 															 @RequestParam(required=false) String sort_field,
 															 @RequestParam(required=false) String sort_direction) {
 
-		Evidence evidence = evidencesDao.findById(id);
+		Evidence evidence = evidencesService.findById(id);
 		if (evidence == null || evidence.getId() == null){
 			throw new InvalidValueException("Can't get evidence of id: " + id);
 		}
@@ -203,7 +228,7 @@ public class ApiEvidenceController extends DataQueryController {
 		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
-		Evidence evidence = evidencesDao.findById(evidenceId);
+		Evidence evidence = evidencesService.findById(evidenceId);
 		if (evidence == null || evidence.getId() == null){
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}

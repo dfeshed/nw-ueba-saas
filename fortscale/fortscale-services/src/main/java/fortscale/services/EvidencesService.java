@@ -89,4 +89,13 @@ public interface EvidencesService {
 	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
 			String evidenceType, String entityName);
 
+	/**
+	 *
+	 * @param afterDate
+	 * @param beforeDate
+	 * @param anomalyType
+	 * @return
+	 */
+	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType);
+
 }

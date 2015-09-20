@@ -5,6 +5,7 @@ import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.UserSupportingInformationService;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,6 +142,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			String evidenceType, String entityName) {
 		return evidencesRepository.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startDate, endDate,
 				evidenceType, entityName);
+	}
+
+	public List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType){
+		return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);
 	}
 
 	/**
