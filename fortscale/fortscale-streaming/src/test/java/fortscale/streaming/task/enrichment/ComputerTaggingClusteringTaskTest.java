@@ -7,7 +7,6 @@ import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;

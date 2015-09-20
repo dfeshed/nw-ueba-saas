@@ -10,7 +10,7 @@ import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.SpringService;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;

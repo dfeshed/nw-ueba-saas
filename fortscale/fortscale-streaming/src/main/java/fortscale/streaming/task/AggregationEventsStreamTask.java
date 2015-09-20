@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;

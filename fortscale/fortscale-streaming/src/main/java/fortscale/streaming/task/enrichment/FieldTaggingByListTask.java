@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables;
 import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.SpringService;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;

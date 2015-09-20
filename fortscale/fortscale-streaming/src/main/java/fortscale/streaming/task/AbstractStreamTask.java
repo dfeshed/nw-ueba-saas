@@ -16,7 +16,7 @@ import fortscale.streaming.exceptions.HdfsException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.SpringService;
 import fortscale.utils.logging.Logger;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {

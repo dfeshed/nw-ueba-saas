@@ -1,22 +1,19 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.fetch.FetchConfiguration;
-import fortscale.domain.fetch.FetchConfigurationRepository;
-import fortscale.services.EvidencesService;
 import fortscale.services.Service;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.SpringService;
 import fortscale.utils.logging.Logger;
-import org.joda.time.DateTime;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 18/09/2015.
