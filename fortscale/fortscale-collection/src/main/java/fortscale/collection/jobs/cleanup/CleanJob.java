@@ -212,7 +212,7 @@ public class CleanJob extends FortscaleJob {
 				}
 			} case KAFKA: {
 				ZkClient zkClient = new ZkClient("localhost:2181", 10000);
-				zkClient.deleteRecursive(ZkUtils.getTopicPath("test2"));
+				success = zkClient.deleteRecursive(ZkUtils.getTopicPath("fortscale-amt-sessionized"));
 				if (technology != Technology.ALL) {
 					break;
 				}
