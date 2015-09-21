@@ -13,6 +13,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,6 +45,8 @@ public class CleanJob extends FortscaleJob {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private FileSystem hadoopFs;
+	@Value("${hdfs.user.data.vpn.path}")
+	private String impalaVpnDataDirectory;
 
 	private Date startTime;
 	private Date endTime;
@@ -263,7 +266,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = "data/vpn";
+				String hdfsPath = impalaVpnDataDirectory;
 				success = deleteBetweenHDFS(hdfsPath);
 				break;
 			} case KAFKA: {
