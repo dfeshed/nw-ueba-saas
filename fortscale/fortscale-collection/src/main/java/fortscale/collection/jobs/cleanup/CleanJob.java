@@ -283,7 +283,7 @@ public class CleanJob extends FortscaleJob {
 			if (partitionStrategy.isPartitionPath(partition.toString())) {
 				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
 				if (partitionName != null) {
-					RemoteIterator<LocatedFileStatus> files = hadoopFs.listFiles(new Path(partitionName), false);
+					RemoteIterator<LocatedFileStatus> files = hadoopFs.listFiles(partition, false);
 					while (files.hasNext()) {
 						System.out.println(files.next().getPath());
 					}
