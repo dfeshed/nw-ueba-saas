@@ -3,6 +3,7 @@ package fortscale.collection.jobs.cleanup;
 import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
@@ -39,6 +40,9 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
+	@Value("${hdfs.user.processeddata.path}")
+	private String processedDataPath;
 
 	private Date startTime;
 	private Date endTime;
@@ -131,6 +135,7 @@ public class CleanJob extends FortscaleJob {
 		dataSourceToDAO = new HashMap();
 		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
 		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
+		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, processedDataPath + "/vpn/yearmonthday="));
 	}
 
 	private boolean restoreSnapshot(DAO toRestore, String backupCollectionName) {
