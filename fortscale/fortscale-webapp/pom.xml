@@ -321,7 +321,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>../../../fortscale-ui/app</directory>
+									<directory>../../../fortscale-ui/dist</directory>
 									<includes>
 										<include>**</include>
 									</includes>
