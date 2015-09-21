@@ -299,8 +299,8 @@ public class CleanJob extends FortscaleJob {
             } else {
                 // get all matching folders
                 /*FileStatus[] files = hadoopFs.listStatus(path, filter);
-                for (FileStatus file : files) {
-                    Path filePath = file.getPath();
+                for (FileStatus file : files) {*/
+                    Path filePath = new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729");
                     logger.info("deleting hdfs path {}", filePath);
                     success = hadoopFs.delete(filePath, true);
                     if (!success) {
@@ -308,8 +308,7 @@ public class CleanJob extends FortscaleJob {
                         logger.error(message);
                         monitor.error(getMonitorId(), getStepName(), message);
                     }
-                }*/
-				impalaClient.dropPartitionFromTable(impalaVpnDataTableName, hdfsPath + "/yearmonth=201507");
+                //}
             }
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
