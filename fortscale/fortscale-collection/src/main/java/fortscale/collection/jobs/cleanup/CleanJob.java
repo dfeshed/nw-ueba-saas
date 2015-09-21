@@ -6,6 +6,8 @@ import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -26,6 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -62,25 +66,10 @@ public class CleanJob extends FortscaleJob {
 	private Technology technology;
 	private Map<String, DAO> dataSourceToDAO;
 
-	private PathFilter filter;
-
-	public CleanJob() {
-		createDataSourceToDAOMap();
-		filter = new PathFilter() {
-			@Override
-			public boolean accept(Path path) {
-			try {
-				return hadoopFs.isDirectory(path);
-			} catch (Exception ex) {
-				return false;
-			}
-			}
-		};
-	}
-
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		createDataSourceToDAOMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
@@ -298,9 +287,9 @@ public class CleanJob extends FortscaleJob {
                 monitor.error(getMonitorId(), getStepName(), message);
             } else {
                 // get all matching folders
-                /*FileStatus[] files = hadoopFs.listStatus(path, filter);
-                for (FileStatus file : files) {*/
-                    Path filePath = new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv");
+                FileStatus[] files = hadoopFs.listStatus(path, new RegexFilter());
+                for (FileStatus file : files) {
+                    Path filePath = file.getPath();
                     logger.info("deleting hdfs path {}", filePath);
                     success = hadoopFs.delete(filePath, true);
                     if (!success) {
@@ -308,7 +297,7 @@ public class CleanJob extends FortscaleJob {
                         logger.error(message);
                         monitor.error(getMonitorId(), getStepName(), message);
                     }
-                //}
+                }
             }
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
@@ -345,6 +334,27 @@ public class CleanJob extends FortscaleJob {
 		public DAO(Class daoObject, String queryField) {
 			this.daoObject = daoObject;
 			this.queryField = queryField;
+		}
+
+	}
+
+	private class RegexFilter extends Configured implements PathFilter {
+
+		Pattern pattern;
+		Configuration conf;
+
+		@Override
+		public boolean accept(Path path) {
+			Matcher m = pattern.matcher(path.toString());
+			System.out.println("Is path : " + path.toString() + " matching "
+					+ conf.get("file.pattern") + " ? , " + m.matches());
+			return m.matches();
+		}
+
+		@Override
+		public void setConf(Configuration conf) {
+			this.conf = conf;
+			pattern = Pattern.compile(conf.get("file.pattern"));
 		}
 
 	}
