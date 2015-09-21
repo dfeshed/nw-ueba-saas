@@ -291,7 +291,6 @@ public class CleanJob extends FortscaleJob {
 	private boolean deleteBetweenHDFS(String hdfsPath) {
 		boolean success = false;
 		try {
-			hdfsPath += "/yearmonth=201507";
 			Path path = new Path(hdfsPath);
             if (!hadoopFs.exists(path)) {
                 String message = String.format("hdfs path '%s' does not exists", hdfsPath);
@@ -310,7 +309,7 @@ public class CleanJob extends FortscaleJob {
                         monitor.error(getMonitorId(), getStepName(), message);
                     }
                 }*/
-				impalaClient.dropPartitionFromTable(impalaVpnDataTableName, hdfsPath);
+				impalaClient.dropPartitionFromTable(impalaVpnDataTableName, hdfsPath + "/yearmonth=201507");
             }
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
