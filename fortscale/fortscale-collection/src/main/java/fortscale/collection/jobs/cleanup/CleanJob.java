@@ -36,7 +36,7 @@ public class CleanJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
-	private enum Technology { MONGO, HDFS, KAFKA, SAMZA }
+	private enum Technology { MONGO, HDFS, KAFKA, STORE, ALL }
 	private enum Strategy { DELETE, RESTORE }
 
 	@Autowired
@@ -79,7 +79,9 @@ public class CleanJob extends FortscaleJob {
 		} catch (JobExecutionException ex) {
 			//didn't pass startTime or endTime - ignore
 		} catch (ParseException ex) {
-			logger.error("Bad date format - {}", ex);
+			String message = String.format("Bad date format - %s", ex.getMessage());
+			logger.error(message);
+			monitor.error(getMonitorId(), getStepName(), message);
 			throw new JobExecutionException(ex);
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
@@ -88,35 +90,52 @@ public class CleanJob extends FortscaleJob {
 			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, "restoreName");
 		}
 		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
-
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Running Clean Job");
 		boolean success = false;
-		DAO dao = dataSourceToDAO.get(dataSource);
-		switch (strategy) {
-			case DELETE: {
-				if (startTime == null && endTime == null) {
-					logger.info("deleting all {}", dao.daoObject.getSimpleName());
-					success = deleteAll(dataSourceToDAO.get(dataSource));
+		//if command is to delete everything
+		if (technology == Technology.ALL && strategy == Strategy.DELETE) {
+			//for each data source (evidence, alerts etc.) clear all technologies (Mongo, HDFS etc.)
+			for (Map.Entry<String, DAO> entry : dataSourceToDAO.entrySet()) {
+				DAO dao = entry.getValue();
+				logger.info("deleting all {}", dao.daoObject.getSimpleName());
+				success = deleteAll(dao);
+				if (success) {
+					logger.info("Clean operation successful");
 				} else {
-					logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
-					success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+					String message = "Clean operation failed";
+					logger.error(message);
+					monitor.error(getMonitorId(), getStepName(), message);
 				}
-				break;
-			} case RESTORE: {
-				logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField, restoreName);
-				success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
 			}
-		}
-		if (success) {
-			logger.info("Clean operation successful");
 		} else {
-			String message = "Clean operation failed";
-			logger.error(message);
-			monitor.error(getMonitorId(), getStepName(), message);
+			DAO dao = dataSourceToDAO.get(dataSource);
+			switch (strategy) {
+				case DELETE: {
+					if (startTime == null && endTime == null) {
+						logger.info("deleting all {}", dao.daoObject.getSimpleName());
+						success = deleteAll(dataSourceToDAO.get(dataSource));
+					} else {
+						logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
+						success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+					}
+					break;
+				}
+				case RESTORE: {
+					logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField, restoreName);
+					success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
+				}
+			}
+			if (success) {
+				logger.info("Clean operation successful");
+			} else {
+				String message = "Clean operation failed";
+				logger.error(message);
+				monitor.error(getMonitorId(), getStepName(), message);
+			}
 		}
 		finishStep();
 	}
@@ -137,73 +156,101 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				logger.debug("check if backup collection exists");
-				if (mongoTemplate.collectionExists(backupCollectionName)) {
-					DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
-					logger.debug("drop collection");
-					mongoTemplate.dropCollection(toRestore.queryField);
-					//verify drop
-					if (mongoTemplate.collectionExists(toRestore.queryField)) {
-						logger.debug("dropping failed, abort");
-						break;
-					}
-					logger.debug("renaming backup collection");
-					backupCollection.rename(toRestore.queryField);
-					if (mongoTemplate.collectionExists(toRestore.queryField)) {
-						//verify restore
-						logger.info("snapshot restored");
-						success = true;
-						break;
-					} else {
-						String message = "snapshot failed to restore - could not rename collection";
-						logger.error(message);
-						monitor.error(getMonitorId(), getStepName(), message);
-					}
-				} else {
-					String message = String.format("snapshot failed to restore - no backup collection %s found",
-							restoreName);
-					logger.error(message);
-					monitor.error(getMonitorId(), getStepName(), message);
-					break;
-				}
-				String message = "snapshot failed to restore - manually rename backup collection";
-				logger.error(message);
-				monitor.error(getMonitorId(), getStepName(), message);
+				success = restoreMongo(toRestore, backupCollectionName);
 				break;
 			}
 			case HDFS: {
 				//TODO - implement
-				success = false;
+				break;
+			}case STORE: {
+				//TODO - implement
 				break;
 			}
 		}
 		return success;
 	}
 
+	private boolean restoreMongo(DAO toRestore, String backupCollectionName) {
+		boolean success = false;
+		logger.debug("check if backup collection exists");
+		if (mongoTemplate.collectionExists(backupCollectionName)) {
+            DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
+            logger.debug("drop collection");
+            mongoTemplate.dropCollection(toRestore.queryField);
+            //verify drop
+            if (mongoTemplate.collectionExists(toRestore.queryField)) {
+                logger.debug("dropping failed, abort");
+				return success;
+            }
+            logger.debug("renaming backup collection");
+            backupCollection.rename(toRestore.queryField);
+            if (mongoTemplate.collectionExists(toRestore.queryField)) {
+                //verify restore
+                logger.info("snapshot restored");
+                success = true;
+				return success;
+            } else {
+                String message = "snapshot failed to restore - could not rename collection";
+                logger.error(message);
+                monitor.error(getMonitorId(), getStepName(), message);
+            }
+        } else {
+            String message = String.format("snapshot failed to restore - no backup collection %s found",
+                    restoreName);
+            logger.error(message);
+            monitor.error(getMonitorId(), getStepName(), message);
+			return success;
+        }
+		String message = "snapshot failed to restore - manually rename backup collection";
+		logger.error(message);
+		monitor.error(getMonitorId(), getStepName(), message);
+		return success;
+	}
+
 	private boolean deleteAll(DAO toDelete) {
 		boolean success = false;
 		switch (technology) {
+			case ALL: {}
 			case MONGO: {
-				logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
-				mongoTemplate.remove(new Query(), toDelete.daoObject);
-				long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
-				if (recordsFound > 0) {
-					success = false;
-					String message = "failed to remove documents";
-					logger.error(message);
-					monitor.error(getMonitorId(), getStepName(), message);
-				} else {
-					success = true;
-					logger.info("successfully removed all documents");
+				success = deleteAllMongo(toDelete);
+				if (technology != Technology.ALL) {
+					break;
 				}
-				break;
 			}
 			case HDFS: {
 				//TODO - implement
-				success = false;
-				break;
+				if (technology != Technology.ALL) {
+					break;
+				}
+			} case KAFKA: {
+				//TODO - implement
+				if (technology != Technology.ALL) {
+					break;
+				}
+			} case STORE: {
+				//TODO - implement
+				if (technology != Technology.ALL) {
+					break;
+				}
 			}
 		}
+		return success;
+	}
+
+	private boolean deleteAllMongo(DAO toDelete) {
+		boolean success;
+		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
+		mongoTemplate.remove(new Query(), toDelete.daoObject);
+		long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
+		if (recordsFound > 0) {
+            success = false;
+            String message = "failed to remove documents";
+            logger.error(message);
+            monitor.error(getMonitorId(), getStepName(), message);
+        } else {
+            success = true;
+            logger.info("successfully removed all documents");
+        }
 		return success;
 	}
 
@@ -211,55 +258,63 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
-				Query query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
-				logger.debug("query is {}", query.toString());
-				long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
-				logger.info("found {} records", recordsFound);
-				if (recordsFound > 0) {
-					mongoTemplate.remove(query, toDelete.daoObject);
-				}
-				success = true;
+				success = deleteBetweenMongo(toDelete, startDate, endDate);
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
 				String hdfsPath = "";
-				try {
-					if (!hadoopFs.exists(new Path(hdfsPath))) {
-						String message = String.format("hdfs path '%s' does not exists", hdfsPath);
-						logger.error(message);
-						monitor.error(getMonitorId(), getStepName(), message);
-						return false;
-					}
-					// get all matching folders
-					FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath), filter);
-					for (FileStatus file : files) {
-						Path path = file.getPath();
-						logger.info("deleting hdfs path {}", path);
-						success = hadoopFs.delete(path, true);
-						if (!success) {
-							String message = "cannot delete hdfs path " + path;
-							logger.error(message);
-							monitor.error(getMonitorId(), getStepName(), message);
-						}
-					}
-				} catch (IOException ex) {
-					String message = "cannot delete hdfs path " + ex.getMessage();
-					logger.error(message);
-					monitor.error(getMonitorId(), getStepName(), message);
-				}
+				success = deleteBetweenHDFS(hdfsPath);
 				break;
 			} case KAFKA: {
 				//TODO - implement
-				success = false;
 				break;
-			} case SAMZA: {
+			} case STORE: {
 				//TODO - implement
-				success = false;
 				break;
 			}
 		}
 		return success;
+	}
+
+	private boolean deleteBetweenHDFS(String hdfsPath) {
+		boolean success = false;
+		try {
+            if (!hadoopFs.exists(new Path(hdfsPath))) {
+                String message = String.format("hdfs path '%s' does not exists", hdfsPath);
+                logger.error(message);
+                monitor.error(getMonitorId(), getStepName(), message);
+            } else {
+                // get all matching folders
+                FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath), filter);
+                for (FileStatus file : files) {
+                    Path path = file.getPath();
+                    logger.info("deleting hdfs path {}", path);
+                    success = hadoopFs.delete(path, true);
+                    if (!success) {
+                        String message = "cannot delete hdfs path " + path;
+                        logger.error(message);
+                        monitor.error(getMonitorId(), getStepName(), message);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            String message = "cannot delete hdfs path " + ex.getMessage();
+            logger.error(message);
+            monitor.error(getMonitorId(), getStepName(), message);
+        }
+		return success;
+	}
+
+	private boolean deleteBetweenMongo(DAO toDelete, Date startDate, Date endDate) {
+		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
+		Query query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
+		logger.debug("query is {}", query.toString());
+		long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
+		logger.info("found {} records", recordsFound);
+		if (recordsFound > 0) {
+            mongoTemplate.remove(query, toDelete.daoObject);
+        }
+		return true;
 	}
 
 	private class DAO {
