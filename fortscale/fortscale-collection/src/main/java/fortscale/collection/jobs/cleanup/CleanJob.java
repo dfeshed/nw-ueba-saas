@@ -4,11 +4,7 @@ import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
-import org.apache.hadoop.fs.*;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -42,10 +38,6 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
-	private FileSystem hadoopFs;
-	@Autowired
-	protected ImpalaClient impalaClient;
 
 	@Value("${impala.data.vpn.table.name}")
 	private String impalaVpnDataTableName;
@@ -260,9 +252,7 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				//TODO - get hdfs path
 				String hdfsPath = impalaVpnDataDirectory;
-				try {
-					success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
-				} catch (Exception ex) {}
+				success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
 				break;
 			} case KAFKA: {
 				//TODO - implement
@@ -275,25 +265,23 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) throws IOException {
+	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
+		String file = hdfsPath + "/yearmonth=201507/vpnETL_20150729";
+		logger.debug("attempting to remove {}", file);
+		ProcessBuilder pb = new ProcessBuilder("hdfs", "dfs -rm " + file);
 		try {
-			Path partition = new Path(hdfsPath + "/yearmonth=201507/");
-			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
-			if (partitionStrategy.isPartitionPath(partition.toString())) {
-				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
-				if (partitionName != null) {
-					RemoteIterator<LocatedFileStatus> files = hadoopFs.listFiles(partition, false);
-					while (files.hasNext()) {
-						System.out.println(files.next().getPath());
-					}
-				}
+			Process process = pb.start();
+			int errCode = process.waitFor();
+			if (errCode == 0) {
+				success = true;
 			}
-        } catch (IOException ex) {
-            String message = "cannot delete hdfs path " + ex.getMessage();
-            logger.error(message);
-            monitor.error(getMonitorId(), getStepName(), message);
-        }
+			logger.info("deleted {} successfully", file);
+		} catch (Exception ex) {
+			String message = "failed to remove partition files";
+			logger.error(message);
+			monitor.error(getMonitorId(), getStepName(), message);
+		}
 		return success;
 	}
 
@@ -324,15 +312,6 @@ public class CleanJob extends FortscaleJob {
 		public DAO(Class daoObject, String queryField) {
 			this.daoObject = daoObject;
 			this.queryField = queryField;
-		}
-
-	}
-
-	private class Filter implements PathFilter {
-
-		@Override
-		public boolean accept(Path path) {
-			return true;
 		}
 
 	}
