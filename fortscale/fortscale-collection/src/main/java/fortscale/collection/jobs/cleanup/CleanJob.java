@@ -301,9 +301,9 @@ public class CleanJob extends FortscaleJob {
 		if (startDate != null && endDate == null) {
 			query = new Query(where(toDelete.queryField).gte(startDate.getTime()));
 		} else if (startDate == null && endDate != null) {
-			query = new Query(where(toDelete.queryField).lt(endDate.getTime()));
+			query = new Query(where(toDelete.queryField).lte(endDate.getTime()));
 		} else {
-			query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
+			query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lte(endDate.getTime()));
 		}
 		logger.debug("query is {}", query.toString());
 		long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
