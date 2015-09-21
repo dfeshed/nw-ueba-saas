@@ -6,6 +6,8 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.logging.Logger;
+import kafka.utils.ZkUtils;
+import org.I0Itec.zkclient.ZkClient;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -209,7 +211,8 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 			} case KAFKA: {
-				//TODO - implement
+				ZkClient zkClient = new ZkClient("localhost:2181", 10000);
+				zkClient.deleteRecursive(ZkUtils.getTopicPath("test2"));
 				if (technology != Technology.ALL) {
 					break;
 				}
