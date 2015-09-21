@@ -278,7 +278,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) throws IOException {
 		boolean success = false;
 		try {
-			Path partition = new Path(hdfsPath + "/yearmonth=201507");
+			Path partition = new Path(hdfsPath + "/yearmonth=201507/");
 			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
 			if (partitionStrategy.isPartitionPath(partition.toString())) {
 				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
