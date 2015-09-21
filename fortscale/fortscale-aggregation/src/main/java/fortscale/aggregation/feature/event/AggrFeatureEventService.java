@@ -107,7 +107,7 @@ public class AggrFeatureEventService {
             List<AggrFeatureEventBuilder> builders = getRelatedAggrFeatureEventBuildersByBucketConfName(featureBucket.getFeatureBucketConfName());
             if(builders==null) continue;
             for(AggrFeatureEventBuilder builder : builders) {
-                builder.updateFeatureBacketEndTime(featureBucket.getBucketId(), featureBucket.getEndTime());
+                builder.updateFeatureBucketEndTime(featureBucket.getBucketId(), featureBucket.getEndTime());
             }
         }
     }
