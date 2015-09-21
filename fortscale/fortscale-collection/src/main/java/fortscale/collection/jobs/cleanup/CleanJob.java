@@ -279,23 +279,23 @@ public class CleanJob extends FortscaleJob {
 	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
 		try {
-			Path path = new Path(hdfsPath);
+			Path partition = new Path(hdfsPath + "/yearmonth=201507");
 			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
-			System.out.println(partitionStrategy.isPartitionPath(hdfsPath));
-			System.out.println(partitionStrategy.isPartitionPath(hdfsPath + "/yearmonth=201507"));
-			System.out.println(partitionStrategy.isPartitionPath(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv"));
-			if (!hadoopFs.exists(path)) {
-                String message = String.format("hdfs path '%s' does not exists", hdfsPath);
-                logger.error(message);
-                monitor.error(getMonitorId(), getStepName(), message);
-            } else {
-				FileStatus[] files = hadoopFs.listStatus(path, new Filter());
-				for (FileStatus file : files) {
-					System.out.println(file.getPath());
+			if (partitionStrategy.isPartitionPath(partition.toString())) {
+				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
+				if (partitionName!=null)
+					impalaClient.dropPartitionFromTable(impalaVpnDataTableName, partitionName);
+
+				logger.info("partition {} dropped from table {}", partitionName, impalaVpnDataTableName);
+
+				// delete the partition folder from hdfs
+				logger.info("deleting hdfs path {}", partition);
+				boolean succeed = hadoopFs.delete(partition, true);
+				if (!succeed) {
+					logger.error("error deleting hdfs path " + partition);
+					monitor.warn(getMonitorId(), getStepName(), "cannot delete hdfs path " + partition);
 				}
-
-
-            }
+			}
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
             logger.error(message);
