@@ -8,10 +8,7 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.fs.*;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -263,7 +260,9 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				//TODO - get hdfs path
 				String hdfsPath = impalaVpnDataDirectory;
-				success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
+				try {
+					success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
+				} catch (Exception ex) {}
 				break;
 			} case KAFKA: {
 				//TODO - implement
@@ -276,24 +275,18 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
+	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) throws IOException {
 		boolean success = false;
 		try {
 			Path partition = new Path(hdfsPath + "/yearmonth=201507");
 			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
 			if (partitionStrategy.isPartitionPath(partition.toString())) {
 				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
-				if (partitionName!=null)
-					impalaClient.dropPartitionFromTable(impalaVpnDataTableName, partitionName);
-
-				logger.info("partition {} dropped from table {}", partitionName, impalaVpnDataTableName);
-
-				// delete the partition folder from hdfs
-				logger.info("deleting hdfs path {}", partition);
-				boolean succeed = hadoopFs.delete(partition, true);
-				if (!succeed) {
-					logger.error("error deleting hdfs path " + partition);
-					monitor.warn(getMonitorId(), getStepName(), "cannot delete hdfs path " + partition);
+				if (partitionName != null) {
+					RemoteIterator<LocatedFileStatus> files = hadoopFs.listFiles(new Path(partitionName), false);
+					while (files.hasNext()) {
+						System.out.println(files.next().getPath());
+					}
 				}
 			}
         } catch (IOException ex) {
