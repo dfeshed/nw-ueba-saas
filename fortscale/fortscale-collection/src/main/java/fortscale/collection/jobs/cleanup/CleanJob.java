@@ -6,8 +6,6 @@ import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -18,7 +16,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
@@ -28,8 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -338,19 +333,11 @@ public class CleanJob extends FortscaleJob {
 
 	}
 
-	private class RegexFilter extends Configured implements PathFilter {
-
-		Pattern pattern;
+	private class RegexFilter implements PathFilter {
 
 		@Override
 		public boolean accept(Path path) {
-			Matcher m = pattern.matcher(path.toString());
-			return m.matches();
-		}
-
-		@Override
-		public void setConf(Configuration conf) {
-			pattern = Pattern.compile("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$");
+			return true;
 		}
 
 	}
