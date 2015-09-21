@@ -38,7 +38,7 @@ public class CleanJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
-	private enum Technology { MONGO, HDFS, KAFKA, STORE, ALL }
+	private enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
 	private enum Strategy { DELETE, RESTORE }
 
 	@Autowired
@@ -56,10 +56,25 @@ public class CleanJob extends FortscaleJob {
 	private Technology technology;
 	private Map<String, DAO> dataSourceToDAO;
 
+	private PathFilter filter;
+
+	public CleanJob() {
+		createDataSourceToDAOMap();
+		filter = new PathFilter() {
+			@Override
+			public boolean accept(Path path) {
+			try {
+				return hadoopFs.isDirectory(path);
+			} catch (Exception ex) {
+				return false;
+			}
+			}
+		};
+	}
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		createDataSourceToDAOMap();
 		// get parameters values from the job data map
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
@@ -221,6 +236,8 @@ public class CleanJob extends FortscaleJob {
 				if (technology != Technology.ALL) {
 					break;
 				}
+			} case IMPALA: {
+				//TODO - implement
 			}
 		}
 		return success;
@@ -251,7 +268,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = impalaVpnDataDirectory + "/yearmonth=201507";
+				String hdfsPath = impalaVpnDataDirectory;
 				success = deleteBetweenHDFS(hdfsPath);
 				break;
 			} case KAFKA: {
@@ -267,15 +284,15 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean deleteBetweenHDFS(String hdfsPath) {
 		boolean success = false;
-		Path path = new Path(hdfsPath);
 		try {
+			Path path = new Path(hdfsPath);
             if (!hadoopFs.exists(path)) {
                 String message = String.format("hdfs path '%s' does not exists", hdfsPath);
                 logger.error(message);
                 monitor.error(getMonitorId(), getStepName(), message);
             } else {
                 // get all matching folders
-                FileStatus[] files = hadoopFs.listStatus(path);
+                FileStatus[] files = hadoopFs.listStatus(path, filter);
                 for (FileStatus file : files) {
                     Path filePath = file.getPath();
                     logger.info("deleting hdfs path {}", filePath);
