@@ -14,6 +14,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
@@ -262,7 +263,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = "";
+				String hdfsPath = "data/vpn";
 				success = deleteBetweenHDFS(hdfsPath);
 				break;
 			} case KAFKA: {
@@ -307,7 +308,14 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean deleteBetweenMongo(DAO toDelete, Date startDate, Date endDate) {
 		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
-		Query query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
+		Query query;
+		if (startDate != null && endDate == null) {
+			query = new Query(where(toDelete.queryField).gte(startDate.getTime()));
+		} else if (startDate == null && endDate != null) {
+			query = new Query(where(toDelete.queryField).lt(endDate.getTime()));
+		} else {
+			query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lt(endDate.getTime()));
+		}
 		logger.debug("query is {}", query.toString());
 		long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
 		logger.info("found {} records", recordsFound);
