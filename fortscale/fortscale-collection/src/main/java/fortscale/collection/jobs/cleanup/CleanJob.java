@@ -269,7 +269,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		String file = hdfsPath + "/yearmonth=201507/vpnETL_20150729";
 		logger.debug("attempting to remove {}", file);
-		ProcessBuilder pb = new ProcessBuilder("hdfs dfs -rm", file);
+		ProcessBuilder pb = new ProcessBuilder("hdfs dfs -rm " + file);
 		try {
 			Process process = pb.start();
 			int errCode = process.waitFor();
@@ -278,7 +278,7 @@ public class CleanJob extends FortscaleJob {
 			}
 			logger.info("deleted {} successfully", file);
 		} catch (Exception ex) {
-			String message = "failed to remove partition files";
+			String message = "failed to remove partition files - " + ex.getMessage();
 			logger.error(message);
 			monitor.error(getMonitorId(), getStepName(), message);
 		}
