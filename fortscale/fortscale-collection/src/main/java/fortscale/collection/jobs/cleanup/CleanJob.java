@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,13 +39,6 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
-	@Value("${impala.data.vpn.table.name}")
-	private String impalaVpnDataTableName;
-	@Value("${hdfs.user.data.vpn.path}")
-	private String impalaVpnDataDirectory;
-	@Value("${impala.data.vpn.table.partition.type}")
-	private String impalaVpnDataTablePartitionType;
 
 	private Date startTime;
 	private Date endTime;
@@ -251,7 +245,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = impalaVpnDataDirectory;
+				String hdfsPath = "/user/cloudera/processeddata/vpn/yearmonthday=";
 				success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
 				break;
 			} case KAFKA: {
@@ -267,14 +261,13 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
-		String file = hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv";
-		logger.debug("attempting to remove {}", file);
+		String files = buildFileList(hdfsPath, startDate, endDate);
+		logger.debug("attempting to remove {}", files);
 		try {
-			Process process = Runtime.getRuntime().exec("hdfs dfs -rm " +file);
-			int errCode = process.waitFor();
-			if (errCode == 0) {
+			Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + files);
+			if (process.waitFor() == 0) {
 				success = true;
-				logger.info("deleted {} successfully", file);
+				logger.info("deleted successfully");
 			}
 		} catch (Exception ex) {
 			String message = "failed to remove partition files - " + ex.getMessage();
@@ -282,6 +275,20 @@ public class CleanJob extends FortscaleJob {
 			monitor.error(getMonitorId(), getStepName(), message);
 		}
 		return success;
+	}
+
+	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
+		StringBuilder sb = new StringBuilder();
+		//TODO - generalize this to account for different strategies (monthly partitions for example)
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(startDate);
+		//creating list of files by advancing the date one day at a time from startDate to endDate
+		while (calendar.getTimeInMillis() < endDate.getTime()) {
+			sb.append(hdfsPath + sdf.format(calendar.getTime()) + " ");
+			calendar.add(Calendar.DATE, 1);
+		}
+		return sb.toString();
 	}
 
 	private boolean deleteBetweenMongo(DAO toDelete, Date startDate, Date endDate) {
