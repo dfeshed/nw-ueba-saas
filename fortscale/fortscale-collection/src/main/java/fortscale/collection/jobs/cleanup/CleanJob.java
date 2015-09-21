@@ -341,20 +341,16 @@ public class CleanJob extends FortscaleJob {
 	private class RegexFilter extends Configured implements PathFilter {
 
 		Pattern pattern;
-		Configuration conf;
 
 		@Override
 		public boolean accept(Path path) {
 			Matcher m = pattern.matcher(path.toString());
-			System.out.println("Is path : " + path.toString() + " matching "
-					+ conf.get("file.pattern") + " ? , " + m.matches());
 			return m.matches();
 		}
 
 		@Override
 		public void setConf(Configuration conf) {
-			this.conf = conf;
-			pattern = Pattern.compile(conf.get("file.pattern"));
+			pattern = Pattern.compile("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$");
 		}
 
 	}
