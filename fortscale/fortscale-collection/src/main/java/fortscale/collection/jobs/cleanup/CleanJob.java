@@ -282,7 +282,13 @@ public class CleanJob extends FortscaleJob {
                 monitor.error(getMonitorId(), getStepName(), message);
             } else {
                 // get all matching folders
-                FileStatus[] files = hadoopFs.listStatus(path, new RegexFilter());
+				System.out.println(hadoopFs.isDirectory(path));
+				System.out.println(hadoopFs.isFile(path));
+				System.out.println(hadoopFs.isDirectory(new Path(hdfsPath + "/yearmonth=201507")));
+				System.out.println(hadoopFs.isFile(new Path(hdfsPath + "/yearmonth=201507")));
+				System.out.println(hadoopFs.isDirectory(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv")));
+				System.out.println(hadoopFs.isFile(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv")));
+                FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv"));
                 for (FileStatus file : files) {
                     Path filePath = file.getPath();
                     logger.info("deleting hdfs path {}", filePath);
