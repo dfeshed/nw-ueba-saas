@@ -259,7 +259,7 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				//TODO - get hdfs path
 				String hdfsPath = impalaVpnDataDirectory;
-				success = deleteBetweenHDFS(hdfsPath);
+				success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
 				break;
 			} case KAFKA: {
 				//TODO - implement
@@ -272,33 +272,24 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteBetweenHDFS(String hdfsPath) {
+	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
 		try {
-			Path path = new Path(hdfsPath);
+			Path path = new Path(hdfsPath+"/yearmonth=201507");
+
+			System.out.println(path.toString());
+
             if (!hadoopFs.exists(path)) {
                 String message = String.format("hdfs path '%s' does not exists", hdfsPath);
                 logger.error(message);
                 monitor.error(getMonitorId(), getStepName(), message);
             } else {
-                // get all matching folders
-				System.out.println(hadoopFs.isDirectory(path));
-				System.out.println(hadoopFs.isFile(path));
-				System.out.println(hadoopFs.isDirectory(new Path(hdfsPath + "/yearmonth=201507")));
-				System.out.println(hadoopFs.isFile(new Path(hdfsPath + "/yearmonth=201507")));
-				System.out.println(hadoopFs.isDirectory(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv")));
-				System.out.println(hadoopFs.isFile(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv")));
-                FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv"));
-                for (FileStatus file : files) {
-                    Path filePath = file.getPath();
-                    logger.info("deleting hdfs path {}", filePath);
-                    success = hadoopFs.delete(filePath, true);
-                    if (!success) {
-                        String message = "cannot delete hdfs path " + filePath;
-                        logger.error(message);
-                        monitor.error(getMonitorId(), getStepName(), message);
-                    }
-                }
+				FileStatus[] files = hadoopFs.listStatus(path, new Filter());
+				for (FileStatus file : files) {
+					System.out.println(file.getPath());
+				}
+
+
             }
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
@@ -339,7 +330,7 @@ public class CleanJob extends FortscaleJob {
 
 	}
 
-	private class RegexFilter implements PathFilter {
+	private class Filter implements PathFilter {
 
 		@Override
 		public boolean accept(Path path) {
