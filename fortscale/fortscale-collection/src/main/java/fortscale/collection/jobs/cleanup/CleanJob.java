@@ -250,8 +250,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = "/user/cloudera/processeddata/vpn/yearmonthday=";
-				success = deleteBetweenHDFS(hdfsPath, startDate, endDate);
+				success = deleteBetweenHDFS(toDelete.queryField, startDate, endDate);
 				break;
 			} case KAFKA: {
 				//TODO - implement
