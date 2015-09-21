@@ -4,6 +4,7 @@ import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -45,6 +46,11 @@ public class CleanJob extends FortscaleJob {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private FileSystem hadoopFs;
+	@Autowired
+	protected ImpalaClient impalaClient;
+
+	@Value("${impala.data.vpn.table.name}")
+	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
 
@@ -292,7 +298,7 @@ public class CleanJob extends FortscaleJob {
                 monitor.error(getMonitorId(), getStepName(), message);
             } else {
                 // get all matching folders
-                FileStatus[] files = hadoopFs.listStatus(path, filter);
+                /*FileStatus[] files = hadoopFs.listStatus(path, filter);
                 for (FileStatus file : files) {
                     Path filePath = file.getPath();
                     logger.info("deleting hdfs path {}", filePath);
@@ -302,7 +308,8 @@ public class CleanJob extends FortscaleJob {
                         logger.error(message);
                         monitor.error(getMonitorId(), getStepName(), message);
                     }
-                }
+                }*/
+				impalaClient.dropPartitionFromTable(impalaVpnDataTableName, impalaVpnDataTableName + "/yearmonth=201507");
             }
         } catch (IOException ex) {
             String message = "cannot delete hdfs path " + ex.getMessage();
