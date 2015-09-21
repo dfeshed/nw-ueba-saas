@@ -251,7 +251,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				String hdfsPath = impalaVpnDataDirectory;
+				String hdfsPath = impalaVpnDataDirectory + "/yearmonth=201507";
 				success = deleteBetweenHDFS(hdfsPath);
 				break;
 			} case KAFKA: {
