@@ -300,7 +300,7 @@ public class CleanJob extends FortscaleJob {
                 // get all matching folders
                 /*FileStatus[] files = hadoopFs.listStatus(path, filter);
                 for (FileStatus file : files) {*/
-                    Path filePath = new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729");
+                    Path filePath = new Path(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv");
                     logger.info("deleting hdfs path {}", filePath);
                     success = hadoopFs.delete(filePath, true);
                     if (!success) {
