@@ -4,6 +4,8 @@ import com.mongodb.DBCollection;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.ml.service.dao.Model;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 import org.apache.hadoop.fs.FileStatus;
@@ -52,6 +54,8 @@ public class CleanJob extends FortscaleJob {
 	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
+	@Value("${impala.data.vpn.table.partition.type}")
+	private String impalaVpnDataTablePartitionType;
 
 	private Date startTime;
 	private Date endTime;
@@ -275,11 +279,12 @@ public class CleanJob extends FortscaleJob {
 	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
 		try {
-			Path path = new Path(hdfsPath+"/yearmonth=201507");
-
-			System.out.println(path.toString());
-
-            if (!hadoopFs.exists(path)) {
+			Path path = new Path(hdfsPath);
+			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
+			System.out.println(partitionStrategy.isPartitionPath(hdfsPath));
+			System.out.println(partitionStrategy.isPartitionPath(hdfsPath + "/yearmonth=201507"));
+			System.out.println(partitionStrategy.isPartitionPath(hdfsPath + "/yearmonth=201507/vpnETL_20150729.csv"));
+			if (!hadoopFs.exists(path)) {
                 String message = String.format("hdfs path '%s' does not exists", hdfsPath);
                 logger.error(message);
                 monitor.error(getMonitorId(), getStepName(), message);
