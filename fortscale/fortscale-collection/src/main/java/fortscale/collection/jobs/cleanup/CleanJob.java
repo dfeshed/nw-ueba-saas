@@ -20,10 +20,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -67,8 +64,7 @@ public class CleanJob extends FortscaleJob {
 			//didn't pass startTime or endTime - ignore
 		} catch (ParseException ex) {
 			String message = String.format("Bad date format - %s", ex.getMessage());
-			logger.error(message);
-			monitor.error(getMonitorId(), getStepName(), message);
+			logError(message);
 			throw new JobExecutionException(ex);
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
@@ -84,7 +80,7 @@ public class CleanJob extends FortscaleJob {
 		startNewStep("Running Clean Job");
 		boolean success = false;
 		//if command is to delete everything
-		if (technology == Technology.ALL && strategy == Strategy.DELETE) {
+		if (strategy == Strategy.DELETE && technology == Technology.ALL) {
 			//for each data source (evidence, alerts etc.) clear all technologies (Mongo, HDFS etc.)
 			for (Map.Entry<String, DAO> entry : dataSourceToDAO.entrySet()) {
 				DAO dao = entry.getValue();
@@ -93,9 +89,7 @@ public class CleanJob extends FortscaleJob {
 				if (success) {
 					logger.info("Clean operation successful");
 				} else {
-					String message = "Clean operation failed";
-					logger.error(message);
-					monitor.error(getMonitorId(), getStepName(), message);
+					logError(String.format("Clean operation failed,delete %s manually", dao.daoObject.getSimpleName()));
 				}
 			}
 		} else {
@@ -112,93 +106,42 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 				case RESTORE: {
-					logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField, restoreName);
+					logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField,
+							restoreName);
 					success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
 				}
 			}
 			if (success) {
 				logger.info("Clean operation successful");
 			} else {
-				String message = "Clean operation failed";
-				logger.error(message);
-				monitor.error(getMonitorId(), getStepName(), message);
+				logError("Clean operation failed");
 			}
 		}
 		finishStep();
 	}
 
-	@Override
-	protected int getTotalNumOfSteps() { return 1; }
-
-	@Override
-	protected boolean shouldReportDataReceived() { return false; }
-
-	private void createDataSourceToDAOMap() {
-		dataSourceToDAO = new HashMap();
-		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
-		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
-		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, processedDataPath + "/vpn/yearmonthday="));
-	}
-
-	private boolean restoreSnapshot(DAO toRestore, String backupCollectionName) {
+	private boolean deleteBetween(DAO toDelete, Date startDate, Date endDate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = restoreMongo(toRestore, backupCollectionName);
+				success = deleteBetweenMongo(toDelete, startDate, endDate);
 				break;
-			}
-			case HDFS: {
-				//TODO - implement
+			} case HDFS: {
+				//TODO - get hdfs path
+				success = deleteBetweenHDFS(toDelete.queryField, startDate, endDate);
 				break;
-			}case STORE: {
+			} case STORE: {
 				//TODO - implement
 				break;
 			}
 		}
-		return success;
-	}
-
-	private boolean restoreMongo(DAO toRestore, String backupCollectionName) {
-		boolean success = false;
-		logger.debug("check if backup collection exists");
-		if (mongoTemplate.collectionExists(backupCollectionName)) {
-            DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
-            logger.debug("drop collection");
-            mongoTemplate.dropCollection(toRestore.queryField);
-            //verify drop
-            if (mongoTemplate.collectionExists(toRestore.queryField)) {
-                logger.debug("dropping failed, abort");
-				return success;
-            }
-            logger.debug("renaming backup collection");
-            backupCollection.rename(toRestore.queryField);
-            if (mongoTemplate.collectionExists(toRestore.queryField)) {
-                //verify restore
-                logger.info("snapshot restored");
-                success = true;
-				return success;
-            } else {
-                String message = "snapshot failed to restore - could not rename collection";
-                logger.error(message);
-                monitor.error(getMonitorId(), getStepName(), message);
-            }
-        } else {
-            String message = String.format("snapshot failed to restore - no backup collection %s found",
-                    restoreName);
-            logger.error(message);
-            monitor.error(getMonitorId(), getStepName(), message);
-			return success;
-        }
-		String message = "snapshot failed to restore - manually rename backup collection";
-		logger.error(message);
-		monitor.error(getMonitorId(), getStepName(), message);
 		return success;
 	}
 
 	private boolean deleteAll(DAO toDelete) {
 		boolean success = false;
 		switch (technology) {
-			case ALL: {}
+			case ALL: //continue through all cases
 			case MONGO: {
 				success = deleteAllMongo(toDelete);
 				if (technology != Technology.ALL) {
@@ -211,8 +154,10 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 			} case KAFKA: {
-				ZkClient zkClient = new ZkClient("localhost:2181", 10000);
-				success = zkClient.deleteRecursive(ZkUtils.getTopicPath("fortscale-amt-sessionized"));
+				List<String> topics = new ArrayList();
+				topics.add("fortscale-amt-sessionized");
+				topics.add("ssh-user-score-changelog");
+				success = deleteAllKafka(topics);
 				if (technology != Technology.ALL) {
 					break;
 				}
@@ -228,6 +173,80 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
+	private boolean restoreSnapshot(DAO toRestore, String backupCollectionName) {
+		boolean success = false;
+		switch (technology) {
+			case MONGO: {
+				success = restoreMongo(toRestore, backupCollectionName);
+				break;
+			}
+			case HDFS: {
+				//TODO - implement
+				break;
+			} case STORE: {
+				//TODO - implement
+				break;
+			} case IMPALA: {
+				//TODO - implement
+				break;
+			}
+		}
+		return success;
+	}
+
+	private boolean restoreMongo(DAO toRestore, String backupCollectionName) {
+		boolean success = false;
+		logger.debug("check if backup collection exists");
+		if (mongoTemplate.collectionExists(backupCollectionName)) {
+			DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
+			logger.debug("drop collection");
+			mongoTemplate.dropCollection(toRestore.queryField);
+			//verify drop
+			if (mongoTemplate.collectionExists(toRestore.queryField)) {
+				logger.debug("dropping failed, abort");
+				return success;
+			}
+			logger.debug("renaming backup collection");
+			backupCollection.rename(toRestore.queryField);
+			if (mongoTemplate.collectionExists(toRestore.queryField)) {
+				//verify restore
+				logger.info("snapshot restored");
+				success = true;
+				return success;
+			} else {
+				logError("snapshot failed to restore - could not rename collection");
+			}
+		} else {
+			logError(String.format("snapshot failed to restore - no backup collection %s found", restoreName));
+			return success;
+		}
+		logError("snapshot failed to restore - manually rename backup collection");
+		return success;
+	}
+
+	private boolean deleteAllKafka(List<String> topics) {
+		boolean success = false;
+		logger.debug("establishing connection to zookeeper");
+		ZkClient zkClient = new ZkClient("localhost:218", 10000);
+		logger.debug("connection established, starting to delete topics");
+		for (String topic: topics) {
+			if (zkClient.exists(topic)) {
+				logger.debug("attempting to delete topic {}", topic);
+				success = zkClient.deleteRecursive(ZkUtils.getTopicPath(topic));
+				if (success) {
+					logger.info("deleted topic");
+				} else {
+					logError("failed to delete topic");
+				}
+			} else {
+				String message = String.format("topic %s doesn't exist", topic);
+				logger.warn(message);
+				monitor.warn(getMonitorId(), getStepName(), message);
+			}
+		}
+		return success;
+	}
+
 	private boolean deleteAllMongo(DAO toDelete) {
 		boolean success;
 		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
@@ -235,34 +254,11 @@ public class CleanJob extends FortscaleJob {
 		long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
 		if (recordsFound > 0) {
             success = false;
-            String message = "failed to remove documents";
-            logger.error(message);
-            monitor.error(getMonitorId(), getStepName(), message);
+			logError("failed to remove documents");
         } else {
             success = true;
             logger.info("successfully removed all documents");
         }
-		return success;
-	}
-
-	private boolean deleteBetween(DAO toDelete, Date startDate, Date endDate) {
-		boolean success = false;
-		switch (technology) {
-			case MONGO: {
-				success = deleteBetweenMongo(toDelete, startDate, endDate);
-				break;
-			} case HDFS: {
-				//TODO - get hdfs path
-				success = deleteBetweenHDFS(toDelete.queryField, startDate, endDate);
-				break;
-			} case KAFKA: {
-				//TODO - implement
-				break;
-			} case STORE: {
-				//TODO - implement
-				break;
-			}
-		}
 		return success;
 	}
 
@@ -277,25 +273,9 @@ public class CleanJob extends FortscaleJob {
 				logger.info("deleted successfully");
 			}
 		} catch (Exception ex) {
-			String message = "failed to remove partition files - " + ex.getMessage();
-			logger.error(message);
-			monitor.error(getMonitorId(), getStepName(), message);
+			logError("failed to remove partition files - " + ex.getMessage());
 		}
 		return success;
-	}
-
-	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
-		StringBuilder sb = new StringBuilder();
-		//TODO - generalize this to account for different strategies (monthly partitions for example)
-		DateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(startDate);
-		//creating list of files by advancing the date one day at a time from startDate to endDate
-		while (calendar.getTimeInMillis() < endDate.getTime()) {
-			sb.append(hdfsPath + sdf.format(calendar.getTime()) + " ");
-			calendar.add(Calendar.DATE, 1);
-		}
-		return sb.toString();
 	}
 
 	private boolean deleteBetweenMongo(DAO toDelete, Date startDate, Date endDate) {
@@ -315,6 +295,38 @@ public class CleanJob extends FortscaleJob {
             mongoTemplate.remove(query, toDelete.daoObject);
         }
 		return true;
+	}
+
+	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
+		StringBuilder sb = new StringBuilder();
+		//TODO - generalize this to account for different strategies (monthly partitions for example)
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(startDate);
+		//creating list of files by advancing the date one day at a time from startDate to endDate
+		while (calendar.getTimeInMillis() < endDate.getTime()) {
+			sb.append(hdfsPath + sdf.format(calendar.getTime()) + " ");
+			calendar.add(Calendar.DATE, 1);
+		}
+		return sb.toString();
+	}
+
+	private void logError(String message) {
+		logger.error(message);
+		monitor.error(getMonitorId(), getStepName(), message);
+	}
+
+	@Override
+	protected int getTotalNumOfSteps() { return 1; }
+
+	@Override
+	protected boolean shouldReportDataReceived() { return false; }
+
+	private void createDataSourceToDAOMap() {
+		dataSourceToDAO = new HashMap();
+		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
+		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
+		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, processedDataPath + "/vpn/yearmonthday="));
 	}
 
 	private class DAO {
