@@ -230,9 +230,10 @@ public class CleanJob extends FortscaleJob {
 		ZkClient zkClient = new ZkClient("localhost:2181", 5000);
 		logger.debug("connection established, starting to delete topics");
 		for (String topic: topics) {
-			if (zkClient.exists(topic)) {
+			String topicPath = ZkUtils.getTopicPath(topic);
+			if (zkClient.exists(topicPath)) {
 				logger.debug("attempting to delete topic {}", topic);
-				success = zkClient.deleteRecursive(ZkUtils.getTopicPath(topic));
+				success = zkClient.deleteRecursive(topicPath);
 				if (success) {
 					logger.info("deleted topic");
 				} else {
