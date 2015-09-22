@@ -123,11 +123,11 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case MONGO: {
 				if (startTime == null && endTime == null) {
-					Collection<String> collections = toDelete.keySet();
+					Collection<String> temp = toDelete.keySet();
+					Set<String> collections = new HashSet(temp);
 					for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 						if (entry.getValue().equals(prefixFlag)) {
-							Collection<String> temp = mongoUtils.getAllCollectionsWithPrefix(entry.getKey());
-							collections.addAll(temp);
+							collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
 						}
 					}
 					logger.info("deleting all {} entities", collections);
@@ -147,7 +147,8 @@ public class CleanJob extends FortscaleJob {
 				}
 				break;
 			} case IMPALA: {
-				Collection<String> tables = toDelete.keySet();
+				Collection<String> temp = toDelete.keySet();
+				Set<String> tables = new HashSet(temp);
 				for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 					if (entry.getValue().equals(prefixFlag)) {
 						tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
