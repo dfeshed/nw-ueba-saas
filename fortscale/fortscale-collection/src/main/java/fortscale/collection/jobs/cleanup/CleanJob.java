@@ -5,6 +5,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -38,6 +39,8 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private ImpalaClient impalaClient;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -102,6 +105,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		//if command is to delete everything
 		if (strategy == Strategy.DELETE && technology == Technology.ALL) {
+			dropMongoCollections(mongoTemplate.getCollectionNames());
 			//for each data source (evidence, alerts etc.) clear all technologies (Mongo, HDFS etc.)
 			for (Map.Entry<String, DAO> entry : dataSourceToDAO.entrySet()) {
 				DAO dao = entry.getValue();
@@ -175,9 +179,9 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 			} case KAFKA: {
-				Set<String> collections = getAllMongoCollectionsWithPrefix("aggr_");
-				dropMongoCollections(collections);
 				List<String> topics = new ArrayList();
+				impalaClient.isTableExists("logindata");
+				impalaClient.dropTable("logindata");
 				topics.add("fortscale-amt-sessionized");
 				topics.add("ssh-user-score-changelog");
 				success = deleteKafkaTopics(topics);

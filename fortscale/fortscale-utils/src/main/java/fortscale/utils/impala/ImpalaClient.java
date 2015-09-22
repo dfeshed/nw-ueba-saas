@@ -10,6 +10,11 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @Component
 public class ImpalaClient {
 
@@ -99,6 +104,33 @@ public class ImpalaClient {
 		Assert.hasText(selectStatement);
 		String sql = String.format("CREATE VIEW %s AS %s", tableViewName, selectStatement);
 		impalaJdbcTemplate.execute(sql);
+	}
+
+	public boolean dropTable(String tableViewName){
+		Assert.hasText(tableViewName);
+		boolean success = false;
+		String sql = String.format("DROP TABLE %s", tableViewName);
+		try {
+			impalaJdbcTemplate.execute(sql);
+			success = true;
+		} catch (Exception ex) {}
+		return success;
+	}
+
+	public Set<String> getAllTables() {
+		String sql = String.format("show tables");
+		List<Map<String, Object>> result = impalaJdbcTemplate.queryForList(sql);
+		Set<String> tableNames = new HashSet();
+		for (Map<String, Object> tableName: result) {
+			tableNames.addAll(tableNames);
+		}
+		return tableNames;
+	}
+
+	public boolean isTableExists(String tableViewName){
+		Assert.hasText(tableViewName);
+		Set<String> tableNames = getAllTables();
+		return tableNames.contains(tableViewName);
 	}
 	
 }
