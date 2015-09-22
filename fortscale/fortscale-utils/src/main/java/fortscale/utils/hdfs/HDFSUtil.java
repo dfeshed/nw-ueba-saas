@@ -19,6 +19,8 @@ public class HDFSUtil implements CustomUtil {
 
     private static Logger logger = Logger.getLogger(HDFSUtil.class);
 
+    @Value("${hdfs.user.path}")
+    private String basePath;
     @Value("${hdfs.user.data.path}")
     private String dataPath;
     @Value("${hdfs.user.rawdata.path}")
@@ -51,6 +53,7 @@ public class HDFSUtil implements CustomUtil {
 
     private boolean deletePath(String hdfsPath) {
         boolean success = false;
+        hdfsPath = basePath + "/" + hdfsPath;
         logger.debug("attempting to remove {}", hdfsPath);
         try {
             Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
@@ -74,6 +77,7 @@ public class HDFSUtil implements CustomUtil {
     @Override
     public boolean restoreSnapshot(String hdfsPath, String restorePath) {
         boolean success = false;
+        hdfsPath = basePath + "/" + hdfsPath;
         logger.debug("check if backup file exists");
         if (new File(restorePath).exists()) {
             logger.debug("delete destination file");

@@ -56,6 +56,8 @@ public class CleanJob extends FortscaleJob {
 	private String dataSourcesFieldDelimiter;
 	@Value("${dates.format}")
 	private String datesFormat;
+	@Value("${prefix.flag}")
+	private String prefixFlag;
 
 	private Date startTime;
 	private Date endTime;
@@ -121,8 +123,14 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case MONGO: {
 				if (startTime == null && endTime == null) {
-					logger.info("deleting all {} entities", toDelete.size());
-					success = mongoUtils.dropCollections(toDelete.keySet());
+					Collection<String> collections = toDelete.keySet();
+					for (Map.Entry<String, String> entry: toDelete.entrySet()) {
+						if (entry.getValue().equals(prefixFlag)) {
+							collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
+						}
+					}
+					logger.info("deleting all {} entities", collections);
+					success = mongoUtils.dropCollections(collections);
 				} else {
 					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 					success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
@@ -138,6 +146,13 @@ public class CleanJob extends FortscaleJob {
 				}
 				break;
 			} case IMPALA: {
+				Collection<String> tables = toDelete.keySet();
+				for (Map.Entry<String, String> entry: toDelete.entrySet()) {
+					if (entry.getValue().equals(prefixFlag)) {
+						tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
+					}
+				}
+				logger.info("deleting all {} tables", tables);
 				success = impalaUtils.dropTables(toDelete.keySet());
 				break;
 			} case STORE: {

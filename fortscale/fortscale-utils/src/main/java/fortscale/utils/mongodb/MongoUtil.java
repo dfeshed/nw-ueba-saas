@@ -28,6 +28,7 @@ public class MongoUtil implements CustomUtil {
     public boolean deleteEntityBetween(String collection, String dateField, Date startDate, Date endDate) {
         logger.info("attempting to delete from collection {}", collection);
         Query query;
+        //TODO - generalize this in the case where dateField is not in unix time
         if (startDate != null && endDate == null) {
             query = new Query(where(dateField).gte(startDate.getTime()));
         } else if (startDate == null && endDate != null) {
@@ -79,7 +80,7 @@ public class MongoUtil implements CustomUtil {
     }
 
     //run with empty prefix to get all collections
-    private Collection<String> getAllCollectionsWithPrefix(String prefix) {
+    public Collection<String> getAllCollectionsWithPrefix(String prefix) {
         logger.debug("getting all collections");
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());
