@@ -111,9 +111,9 @@ public class CleanJob extends FortscaleJob {
 			}
 		}
 		if (success) {
-			logger.info("Clean operation successful");
+			logger.info("Clean job successful");
 		} else {
-			logger.error("Clean operation failed");
+			logger.error("Clean job failed");
 		}
 		finishStep();
 	}
@@ -157,7 +157,7 @@ public class CleanJob extends FortscaleJob {
 					}
 				}
 				logger.info("deleting all {} tables", tables);
-				success = impalaUtils.dropTables(toDelete.keySet());
+				success = impalaUtils.dropTables(tables);
 				break;
 			} case STORE: {
 				//TODO - implement
