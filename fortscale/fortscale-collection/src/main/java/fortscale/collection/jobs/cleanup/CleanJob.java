@@ -39,9 +39,6 @@ public class CleanJob extends FortscaleJob {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Value("${hdfs.user.processeddata.path}")
-	private String processedDataPath;
-
 	@Value("${start.time.param}")
 	private String startTimeParam;
 	@Value("${end.time.param}")
@@ -60,6 +57,9 @@ public class CleanJob extends FortscaleJob {
 	private String zookeeperConnection;
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
+
+	@Value("${hdfs.user.processeddata.path}")
+	private String processedDataPath;
 
 	private Date startTime;
 	private Date endTime;
@@ -175,6 +175,8 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 			} case KAFKA: {
+				Set<String> collections = getAllMongoCollectionsWithPrefix("aggr_");
+				dropMongoCollections(collections);
 				List<String> topics = new ArrayList();
 				topics.add("fortscale-amt-sessionized");
 				topics.add("ssh-user-score-changelog");
@@ -319,6 +321,30 @@ public class CleanJob extends FortscaleJob {
 		return true;
 	}
 
+	private boolean dropMongoCollections(Set<String> collectionNames) {
+		int numberOfCollectionsDropped = 0;
+		logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
+		for (String collectionName: collectionNames) {
+			mongoTemplate.dropCollection(collectionName);
+			//verify drop
+			if (mongoTemplate.collectionExists(collectionName)) {
+				String message = "failed to drop collection " + collectionName;
+				logger.warn(message);
+				monitor.warn(getMonitorId(), getStepName(), message);
+			} else {
+				logger.info("dropped collection {}", collectionName);
+				numberOfCollectionsDropped++;
+			}
+		}
+		if (numberOfCollectionsDropped == collectionNames.size()) {
+			logger.info("dropped all {} collections", collectionNames.size());
+			return true;
+		}
+		logError(String.format("failed to drop all %s collections, dropped only %s", collectionNames.size(),
+				numberOfCollectionsDropped));
+		return false;
+	}
+
 	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
 		StringBuilder sb = new StringBuilder();
 		//TODO - generalize this to account for different strategies (monthly partitions for example)
@@ -331,6 +357,22 @@ public class CleanJob extends FortscaleJob {
 			calendar.add(Calendar.DATE, 1);
 		}
 		return sb.toString();
+	}
+
+	private Set<String> getAllMongoCollectionsWithPrefix(String prefix) {
+		logger.debug("getting all collections");
+		Set<String> collectionNames = mongoTemplate.getCollectionNames();
+		logger.debug("found {} collections", collectionNames.size());
+		Iterator<String> it = collectionNames.iterator();
+		logger.debug("filtering out collections not starting with {}", prefix);
+		while (it.hasNext()) {
+			String collectionName = it.next();
+			if (!collectionName.startsWith(prefix)) {
+				it.remove();
+			}
+		}
+		logger.info("found {} collections with prefix {}", collectionNames.size(), prefix);
+		return collectionNames;
 	}
 
 	private void logError(String message) {
