@@ -63,6 +63,8 @@ public class MongoUtil implements CustomUtil {
      */
     public boolean dropAllCollections(boolean doValidate) {
         Collection<String> collectionNames = getAllCollectionsWithPrefix("");
+        //system collection - ignore
+        collectionNames.remove("system.indexes");
         logger.debug("found {} collections to drop", collectionNames.size());
         return dropCollections(collectionNames, doValidate);
     }

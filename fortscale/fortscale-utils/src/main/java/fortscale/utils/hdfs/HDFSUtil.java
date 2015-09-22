@@ -85,7 +85,9 @@ public class HDFSUtil implements CustomUtil {
      */
     private boolean deletePath(String hdfsPath, boolean doValidate) {
         boolean success = false;
-        hdfsPath = basePath + "/" + hdfsPath;
+        if (!hdfsPath.contains(basePath)) {
+            hdfsPath = basePath + "/" + hdfsPath;
+        }
         logger.debug("attempting to remove {}", hdfsPath);
         try {
             Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
