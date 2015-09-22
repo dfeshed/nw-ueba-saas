@@ -19,12 +19,12 @@ public class KafkaUtils {
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
 
-    public boolean deleteTopics(Collection<String> topics) {
+    public boolean deleteTopics(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         logger.debug("establishing connection to zookeeper");
         logger.debug("connection established, starting to delete topics");
         for (String topic: topics) {
-            if (deleteTopic(topic)) {
+            if (deleteTopic(topic, doValidate)) {
                 numberOfTopicsDeleted++;
             }
         }
@@ -36,17 +36,21 @@ public class KafkaUtils {
         return false;
     }
 
-    public boolean deleteTopic(String topic) {
+    public boolean deleteTopic(String topic, boolean doValidate) {
         boolean success = false;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         String topicPath = ZkUtils.getTopicPath(topic);
         logger.debug("attempting to delete topic {}", topic);
         zkClient.deleteRecursive(topicPath);
-        if (!zkClient.exists(topicPath)) {
-            logger.info("deleted topic [}", topic);
-            success = true;
+        if (doValidate) {
+            if (!zkClient.exists(topicPath)) {
+                logger.info("deleted topic [}", topic);
+                success = true;
+            } else {
+                logger.error("failed to delete topic " + topic);
+            }
         } else {
-            logger.error("failed to delete topic " + topic);
+            success = true;
         }
         zkClient.close();
         return success;
@@ -60,9 +64,9 @@ public class KafkaUtils {
 
     }
 
-    public boolean deleteAllTopics() {
+    public boolean deleteAllTopics(boolean doValidate) {
         Collection<String> kafkaTopics = getAllTopics();
-        return deleteTopics(kafkaTopics);
+        return deleteTopics(kafkaTopics, doValidate);
     }
 
 }

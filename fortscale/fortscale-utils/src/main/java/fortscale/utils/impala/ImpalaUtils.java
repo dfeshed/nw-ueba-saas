@@ -17,16 +17,20 @@ public class ImpalaUtils {
     @Autowired
     private ImpalaClient impalaClient;
 
-    public boolean dropTables(Collection<String> tableNames) {
+    public boolean dropTables(Collection<String> tableNames, boolean doValidate) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
         for (String tableName: tableNames) {
             impalaClient.dropTable(tableName);
-            //verify drop
-            if (impalaClient.isTableExists(tableName)) {
-                logger.error("failed to drop table {}", tableName);
+            if (doValidate) {
+                //verify drop
+                if (impalaClient.isTableExists(tableName)) {
+                    logger.error("failed to drop table {}", tableName);
+                } else {
+                    logger.info("dropped table {}", tableName);
+                    numberOfTablesDropped++;
+                }
             } else {
-                logger.info("dropped table {}", tableName);
                 numberOfTablesDropped++;
             }
         }
@@ -58,10 +62,10 @@ public class ImpalaUtils {
         return tableNames;
     }
 
-    public boolean dropAllTables() {
+    public boolean dropAllTables(boolean doValidate) {
         Collection<String> tableNames = getAllTablesWithPrefix("");
         logger.debug("found {} tables to drop", tableNames.size());
-        return dropTables(tableNames);
+        return dropTables(tableNames, doValidate);
     }
 
 }

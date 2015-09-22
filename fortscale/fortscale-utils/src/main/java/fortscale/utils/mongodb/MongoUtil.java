@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Set;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -45,17 +44,17 @@ public class MongoUtil implements CustomUtil {
         return true;
     }
 
-    public boolean dropAllCollections() {
+    public boolean dropAllCollections(boolean doValidate) {
         Collection<String> collectionNames = getAllCollectionsWithPrefix("");
         logger.debug("found {} collections to drop", collectionNames.size());
-        return dropCollections(collectionNames);
+        return dropCollections(collectionNames, doValidate);
     }
 
-    public boolean dropCollections(Collection<String> collectionNames) {
+    public boolean dropCollections(Collection<String> collectionNames, boolean doValidate) {
         int numberOfCollectionsDropped = 0;
         logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
         for (String collectionName: collectionNames) {
-            if (dropCollection(collectionName)) {
+            if (dropCollection(collectionName, doValidate)) {
                 numberOfCollectionsDropped++;
             }
         }
@@ -68,12 +67,14 @@ public class MongoUtil implements CustomUtil {
         return false;
     }
 
-    private boolean dropCollection(String collectionName) {
+    private boolean dropCollection(String collectionName, boolean doValidate) {
         mongoTemplate.dropCollection(collectionName);
-        //verify drop
-        if (mongoTemplate.collectionExists(collectionName)) {
-            logger.warn("failed to drop collection " + collectionName);
-            return false;
+        if (doValidate) {
+            //verify drop
+            if (mongoTemplate.collectionExists(collectionName)) {
+                logger.warn("failed to drop collection " + collectionName);
+                return false;
+            }
         }
         logger.info("dropped collection {}", collectionName);
         return true;

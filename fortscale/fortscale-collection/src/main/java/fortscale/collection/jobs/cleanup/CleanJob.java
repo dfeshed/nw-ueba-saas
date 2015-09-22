@@ -29,7 +29,7 @@ public class CleanJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
 	private enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
-	private enum Strategy { DELETE, RESTORE }
+	private enum Strategy { DELETE, FASTDELETE, RESTORE }
 
 	@Autowired
 	private MongoUtil mongoUtils;
@@ -94,13 +94,16 @@ public class CleanJob extends FortscaleJob {
 		startNewStep("Clean Job");
 		boolean success = false;
 		//if command is to delete everything
-		if (strategy == Strategy.DELETE && technology == Technology.ALL) {
-			success = clearAllData();
+		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
+			//if fast delete - no validation is performed
+			success = clearAllData(strategy == Strategy.DELETE);
 		} else {
 			switch (strategy) {
-				case DELETE: {
+				case DELETE:
+				case FASTDELETE: {
+					//if fast delete - no validation is performed
 					logger.info("deleting {} entities", dataSources.size());
-					success = deleteEntities(dataSources, startTime, endTime);
+					success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
 					break;
 				}
 				case RESTORE: {
@@ -118,7 +121,7 @@ public class CleanJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate) {
+	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
@@ -132,7 +135,7 @@ public class CleanJob extends FortscaleJob {
 						}
 					}
 					logger.info("deleting all {} entities", collections);
-					success = mongoUtils.dropCollections(collections);
+					success = mongoUtils.dropCollections(collections, doValidate);
 				} else {
 					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 					success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
@@ -141,7 +144,7 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				if (startTime == null && endTime == null) {
 					logger.info("deleting all {} entities", toDelete.size());
-					success = hdfsUtils.deleteFiles(toDelete.keySet());
+					success = hdfsUtils.deleteFiles(toDelete.keySet(), doValidate);
 				} else {
 					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 					success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
@@ -157,7 +160,7 @@ public class CleanJob extends FortscaleJob {
 					}
 				}
 				logger.info("deleting all {} tables", tables);
-				success = impalaUtils.dropTables(tables);
+				success = impalaUtils.dropTables(tables, doValidate);
 				break;
 			} case STORE: {
 				//TODO - implement
@@ -225,29 +228,29 @@ public class CleanJob extends FortscaleJob {
 		return true;
 	}
 
-	private boolean clearMongo() {
+	private boolean clearMongo(boolean doValidate) {
 		logger.info("attempting to clear all mongo collections");
-		return mongoUtils.dropAllCollections();
+		return mongoUtils.dropAllCollections(doValidate);
 	}
 
-	private boolean clearImpala() {
+	private boolean clearImpala(boolean doValidate) {
 		logger.info("attempting to clear all impala tables");
-		return impalaUtils.dropAllTables();
+		return impalaUtils.dropAllTables(doValidate);
 	}
 
-	private boolean clearHDFS() {
+	private boolean clearHDFS(boolean doValidate) {
 		logger.info("attempting to clear all hdfs partitions");
-		return hdfsUtils.deleteAll();
+		return hdfsUtils.deleteAll(doValidate);
 	}
 
-	private boolean clearKafka() {
+	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaUtils.deleteAllTopics();
+		return kafkaUtils.deleteAllTopics(doValidate);
 	}
 
-	private boolean clearAllData() {
+	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		return clearMongo() && clearImpala() && clearHDFS() && clearKafka();
+		return clearMongo(doValidate) && clearImpala(doValidate) && clearHDFS(doValidate) && clearKafka(doValidate);
 	}
 
 	private void createDataSourcesMap(String dataSourcesString) {

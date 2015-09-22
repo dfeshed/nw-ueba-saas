@@ -30,16 +30,16 @@ public class HDFSUtil implements CustomUtil {
     @Value("${hdfs.user.processeddata.path}")
     private String processedDataPath;
 
-    public boolean deleteAll() {
-        return deletePath(dataPath) && deletePath(rawDataPath) &&
-               deletePath(enrichedDataPath) && deletePath(processedDataPath);
+    public boolean deleteAll(boolean doValidate) {
+        return deletePath(dataPath, doValidate) && deletePath(rawDataPath, doValidate) &&
+               deletePath(enrichedDataPath, doValidate) && deletePath(processedDataPath, doValidate);
     }
 
-    public boolean deleteFiles(Collection<String> hdfsPaths) {
+    public boolean deleteFiles(Collection<String> hdfsPaths, boolean doValidate) {
         int numberOfDeletedFiles = 0;
         logger.debug("attempting to delete {} files from hdfs", hdfsPaths.size());
         for (String hdfsPath: hdfsPaths) {
-            if (deletePath(hdfsPath)) {
+            if (deletePath(hdfsPath, doValidate)) {
                 numberOfDeletedFiles++;
             }
         }
@@ -51,7 +51,7 @@ public class HDFSUtil implements CustomUtil {
         return false;
     }
 
-    private boolean deletePath(String hdfsPath) {
+    private boolean deletePath(String hdfsPath, boolean doValidate) {
         boolean success = false;
         hdfsPath = basePath + "/" + hdfsPath;
         logger.debug("attempting to remove {}", hdfsPath);
@@ -59,7 +59,7 @@ public class HDFSUtil implements CustomUtil {
             Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
             if (process.waitFor() != 0) {
                 logger.error("failed to remove {}", hdfsPath);
-            } else {
+            } else if (doValidate) {
                 process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
                 if (process.waitFor() != 0) {
                     success = true;
@@ -67,6 +67,8 @@ public class HDFSUtil implements CustomUtil {
                 } else {
                     logger.error("failed to remove {}", hdfsPath);
                 }
+            } else {
+                success = true;
             }
         } catch (Exception ex) {
             logger.error("failed to remove partition {} - {}", hdfsPath, ex.getMessage());
@@ -81,7 +83,7 @@ public class HDFSUtil implements CustomUtil {
         logger.debug("check if backup file exists");
         if (new File(restorePath).exists()) {
             logger.debug("delete destination file");
-            if (!deletePath(hdfsPath)) {
+            if (!deletePath(hdfsPath, true)) {
                 logger.debug("deleting failed, abort");
                 return success;
             }
@@ -116,7 +118,7 @@ public class HDFSUtil implements CustomUtil {
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
         }
-        return deletePath(hdfsPath);
+        return deletePath(hdfsPath, true);
     }
 
     private String buildFileList(String hdfsBasePath, String partitionType, Date startDate, Date endDate) {
