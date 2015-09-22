@@ -11,13 +11,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 public class FeatureBucketsTimerListener implements DataSourcesSyncTimerListener {
 
 	
-	@Autowired
 	private FeatureBucketsStoreSamza featureBucketsStoreSamza;
-	
 	private FeatureBucketConf featureBucketConf;
 	private String bucketId;
 	
-	public FeatureBucketsTimerListener(FeatureBucketConf featureBucketConf, String bucketId) {
+	public FeatureBucketsTimerListener(FeatureBucketsStoreSamza featureBucketsStoreSamza, FeatureBucketConf featureBucketConf, String bucketId) {
+		this.featureBucketsStoreSamza = featureBucketsStoreSamza;
 		this.featureBucketConf = featureBucketConf;
 		this.bucketId = bucketId;
 	}
@@ -25,7 +24,7 @@ public class FeatureBucketsTimerListener implements DataSourcesSyncTimerListener
 	
 	
 	@Override
-	public void dataSourcesReachedTime() {
+	public void dataSourcesReachedTime() throws Exception {
 		featureBucketsStoreSamza.sync(featureBucketConf, bucketId);
 	}
 

@@ -133,6 +133,7 @@ public class FeatureBucket {
 				"startTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)) +
 				", endTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)) +
 				", id='" + id + '\'' +
+				", bucketId='" + bucketId + '\'' +
 				'}';
 	}
 }

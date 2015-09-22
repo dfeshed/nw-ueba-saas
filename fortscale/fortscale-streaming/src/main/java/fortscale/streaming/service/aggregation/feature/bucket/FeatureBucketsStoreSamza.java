@@ -33,12 +33,13 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	}
 	
 	
-	public void sync(FeatureBucketConf featureBucketConf, String bucketId){
-		FeatureBucket featureBucket = featureBucketStore.get(bucketId);
+	public void sync(FeatureBucketConf featureBucketConf, String bucketId) throws Exception{
+		FeatureBucket featureBucket = featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
 		if(featureBucket != null){
 			storeFeatureBucket(featureBucketConf, featureBucket);
 		}
 	}
+
 
 	@Override
 	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
@@ -49,11 +50,11 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		
 		List<FeatureBucket> ret = new ArrayList<>();
 		for(FeatureBucket featureBucket: superRet){
-			FeatureBucket featureBucketSamza = featureBucketStore.get(featureBucket.getBucketId());
+			FeatureBucket featureBucketSamza = featureBucketStore.get(getBucketKey(featureBucket));
 			featureBucketSamza.setEndTime(newCloseTime);
-			featureBucketStore.put(featureBucketSamza.getBucketId(), featureBucketSamza);
+			featureBucketStore.put(getBucketKey(featureBucket), featureBucketSamza);
 			ret.add(featureBucketSamza);
-			FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(featureBucketConf, featureBucketSamza.getBucketId());
+			FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(this, featureBucketConf, featureBucketSamza.getBucketId());
 			dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(featureBucketConf.getDataSources(), featureBucket.getEndTime()+1, featureBucketsTimerListener);
 		}
 		return ret;
@@ -61,20 +62,40 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf, String bucketId) {
-		return featureBucketStore.get(bucketId);
+		return featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
 	}
 
 	@Override
-	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) {
-		String bucketId = featureBucket.getId();
-		if(bucketId == null || featureBucket.getEndTime() <= dataSourcesSyncTimer.getLastEventEpochtime()){
-			if(bucketId == null){
-				FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(featureBucketConf, bucketId);
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
+		String id = featureBucket.getId();
+		String bucketId = featureBucket.getBucketId();
+
+		// Storing the bucket at the first time when it is created (id==null) and after endTime is passed
+		if(id == null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
+			if(id == null){
+				FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(this, featureBucketConf, bucketId);
 				dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(featureBucketConf.getDataSources(), featureBucket.getEndTime()+1, featureBucketsTimerListener);
 			}
 			super.storeFeatureBucket(featureBucketConf, featureBucket);
+
 		}
 
-		featureBucketStore.put(bucketId, featureBucket);
+		if(id==null) {
+			// At the first time the bucket is stored in mongo it gets an id, so we
+			// need to get the updated bucket with the id otherwise when coming to save
+			// the bucket in mongo next time it will throw com.mongodb.MongoException$DuplicateKey exception
+			featureBucket = super.getFeatureBucket(featureBucketConf, bucketId);
+		}
+
+		String key = getBucketKey(featureBucket);
+		featureBucketStore.put(key, featureBucket);
+	}
+
+	private String getBucketKey(FeatureBucket featureBucket) {
+		return getBucketKey(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId());
+	}
+
+	private String getBucketKey(String featureBucketConfName, String bucketId) {
+		return featureBucketConfName + "." + bucketId;
 	}
 }

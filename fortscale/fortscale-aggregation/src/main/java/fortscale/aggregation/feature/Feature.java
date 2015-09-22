@@ -15,6 +15,8 @@ public class Feature implements Serializable{
     private String name;
     private Object value;
 
+    public Feature() {}
+
     public Feature(String name, Object value) {
         this.name = name;
         this.value = value;

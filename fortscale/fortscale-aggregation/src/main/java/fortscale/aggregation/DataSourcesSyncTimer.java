@@ -98,7 +98,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		}
 	}
 
-	public void timeCheck(long systemTimeInMillis) {
+	public void timeCheck(long systemTimeInMillis) throws Exception {
 		long systemTimeInSeconds = systemTimeInMillis / 1000;
 		if (systemTimeInSeconds >= lastCycleTime + cycleLengthInSeconds) {
 			lastCycleTime = systemTimeInSeconds;
@@ -115,7 +115,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		}
 	}
 
-	private void handleReadyForNotificationQueue(long currentSystemTime) {
+	private void handleReadyForNotificationQueue(long currentSystemTime) throws Exception {
 		while (!readyForNotification.isEmpty() && readyForNotification.peek().getSendingSystemTime() <= currentSystemTime) {
 			Registration registration = readyForNotification.poll();
 			idToRegistrationMap.remove(registration.getId());
