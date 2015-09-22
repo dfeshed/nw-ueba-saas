@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
@@ -26,7 +27,7 @@ import java.util.*;
 
 @Component
 @Scope("prototype")
-public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationHistogramPopulator {
+public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends SupportingInformationHistogramBySingleEventsPopulator {
 
     private static Logger logger = Logger.getLogger(SupportingInformationHourlyCountGroupByDayOfWeekPopulator.class);
 
@@ -38,12 +39,21 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         super(contextType, dataEntity, featureName);
     }
 
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
+        List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
+
+        if (featureBuckets.isEmpty()) {
+            throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
+        }
+
+        return createSupportingInformationHistogram(featureBuckets);
+    }
+
     /**
      * Creating histogram data of {day of week + hour} based on hourly distribution of events on daily basis.
      * Day value is extracted from the bucket itself and the events distribution in the feature values of the bucket.
      * Assuming hour range is positive integer in the range [0..23].
      */
-    @Override
     protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
         Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 

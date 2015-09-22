@@ -9,6 +9,8 @@
 
 	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataTestStore"/>
+	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
+	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
 
 	<context:spring-configured />
 	<context:annotation-config />
