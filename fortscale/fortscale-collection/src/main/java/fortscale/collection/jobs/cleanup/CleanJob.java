@@ -3,7 +3,6 @@ package fortscale.collection.jobs.cleanup;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
-import fortscale.ml.service.dao.Model;
 import fortscale.utils.hdfs.HDFSUtils;
 import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
@@ -162,7 +161,6 @@ public class CleanJob extends FortscaleJob {
 			} case KAFKA: {
 				//TODO - finish this
 				List<String> topics = new ArrayList();
-				hdfsUtils.deleteHDFSFilesBetween("bla", null, new Date());
 				success = kafkaUtils.deleteKafkaTopics(topics);
 				if (technology != Technology.ALL) {
 					break;
@@ -236,7 +234,6 @@ public class CleanJob extends FortscaleJob {
 	private void createDataSourceToDAOMap() {
 		dataSourceToDAO = new HashMap();
 		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
-		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
 		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, "/vpn/yearmonthday="));
 	}
 
