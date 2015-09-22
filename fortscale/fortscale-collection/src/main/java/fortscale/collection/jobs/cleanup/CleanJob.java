@@ -227,7 +227,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean deleteAllKafka(List<String> topics) {
 		boolean success = false;
 		logger.debug("establishing connection to zookeeper");
-		ZkClient zkClient = new ZkClient("localhost:218", 10000);
+		ZkClient zkClient = new ZkClient("localhost:2181", 5000);
 		logger.debug("connection established, starting to delete topics");
 		for (String topic: topics) {
 			if (zkClient.exists(topic)) {
