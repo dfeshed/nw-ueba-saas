@@ -12,6 +12,7 @@ import fortscale.domain.historical.data.SupportingInformationTimestampKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     private static final String CONTEXT_PREFIX = "context";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
+    @Autowired
     private AggregatedEventQueryService aggregatedEventQueryService;
 
     public SupportingInformationDistinctEventsByTimePopulator(String contextType, String dataEntity, String featureName) {
