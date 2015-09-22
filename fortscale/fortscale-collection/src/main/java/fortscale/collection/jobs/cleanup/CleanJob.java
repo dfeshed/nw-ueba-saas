@@ -185,13 +185,13 @@ public class CleanJob extends FortscaleJob {
 				break;
 			}
 			case HDFS: {
-				//TODO - implement
+				success = hdfsUtils.restoreSnapshot(null, backupCollectionName);
 				break;
 			} case STORE: {
-				//TODO - implement
+				//TODO - implement?
 				break;
 			} case IMPALA: {
-				//TODO - implement
+				//TODO - implement?
 				break;
 			}
 		}

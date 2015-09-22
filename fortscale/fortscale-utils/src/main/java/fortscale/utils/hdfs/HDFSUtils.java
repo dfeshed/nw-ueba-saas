@@ -3,6 +3,7 @@ package fortscale.utils.hdfs;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,6 +49,41 @@ public class HDFSUtils {
         } catch (Exception ex) {
             logger.error("failed to remove partition {} - {}", hdfsPath, ex.getMessage());
         }
+        return success;
+    }
+
+    public boolean restoreSnapshot(String hdfsPath, String restorePath) {
+        boolean success = false;
+        logger.debug("check if backup file exists");
+        if (new File(restorePath).exists()) {
+            logger.debug("delete destination file");
+            if (!deleteHDFSPath(hdfsPath)) {
+                logger.debug("deleting failed, abort");
+                return success;
+            }
+            logger.debug("uploading backup file");
+            try {
+                Process process = Runtime.getRuntime().exec("hdfs dfs -put " + restorePath + " " + hdfsPath);
+                if (process.waitFor() != 0) {
+                    logger.error("failed to remove {}", hdfsPath);
+                } else {
+                    process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
+                    if (process.waitFor() == 0) {
+                        success = true;
+                        logger.info("snapshot restored");
+                    } else {
+                        logger.error("snapshot failed to restore - could not upload file");
+                    }
+                }
+            } catch (Exception ex) {
+                logger.error("snapshot failed to restore - manually upload backup file");
+                return success;
+            }
+        } else {
+            logger.error("snapshot failed to restore - no backup file {} found", restorePath);
+            return success;
+        }
+        logger.error("snapshot failed to restore - manually upload backup file");
         return success;
     }
 
