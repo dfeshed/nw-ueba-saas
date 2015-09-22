@@ -90,7 +90,7 @@ public class CleanJob extends FortscaleJob {
 	}
 
 	@Override
-	protected void runSteps() throws Exception {
+	protected void runSteps() {
 		startNewStep("Clean Job");
 		boolean success = false;
 		//if command is to delete everything
@@ -121,25 +121,21 @@ public class CleanJob extends FortscaleJob {
 		finishStep();
 	}
 
+	/***
+	 *
+	 * This method handles the delete command, determines which technology to use and executes it
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param startDate   start date to filter deletion by
+	 * @param endDate	  end date to filter deletion by
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				if (startTime == null && endTime == null) {
-					Collection<String> temp = toDelete.keySet();
-					Set<String> collections = new HashSet(temp);
-					for (Map.Entry<String, String> entry: toDelete.entrySet()) {
-						if (entry.getValue().equals(prefixFlag)) {
-							collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
-							collections.remove(entry.getKey());
-						}
-					}
-					logger.info("deleting all {} entities", collections);
-					success = mongoUtils.dropCollections(collections, doValidate);
-				} else {
-					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-					success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
-				}
+				success = handleMongoDeletion(toDelete, startDate, endDate, doValidate);
 				break;
 			} case HDFS: {
 				if (startTime == null && endTime == null) {
@@ -151,16 +147,11 @@ public class CleanJob extends FortscaleJob {
 				}
 				break;
 			} case IMPALA: {
-				Collection<String> temp = toDelete.keySet();
-				Set<String> tables = new HashSet(temp);
-				for (Map.Entry<String, String> entry: toDelete.entrySet()) {
-					if (entry.getValue().equals(prefixFlag)) {
-						tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
-						tables.remove(entry.getKey());
-					}
-				}
-				logger.info("deleting all {} tables", tables);
-				success = impalaUtils.dropTables(tables, doValidate);
+				success = handleImpalaDeletion(toDelete, doValidate);
+				break;
+			} case KAFKA: {
+				logger.info("deleting all {} topics", toDelete.size());
+				success = kafkaUtils.deleteTopics(toDelete.keySet(), doValidate);
 				break;
 			} case STORE: {
 				//TODO - implement
@@ -170,6 +161,13 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
+	/***
+	 *
+	 * This method handles the restore command, determines which technology to use and executes it
+	 *
+	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @return
+	 */
 	private boolean restoreEntities(Map<String, String> sources) {
 		boolean success = false;
 		switch (technology) {
@@ -191,6 +189,68 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
+	/***
+	 *
+	 * This method handles deletion of tables from impala
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean handleImpalaDeletion(Map<String, String> toDelete, boolean doValidate) {
+		boolean success;Collection<String> temp = toDelete.keySet();
+		Set<String> tables = new HashSet(temp);
+		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+			if (entry.getValue().equals(prefixFlag)) {
+				tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
+				tables.remove(entry.getKey());
+			}
+		}
+		logger.info("deleting all {} tables", tables);
+		success = impalaUtils.dropTables(tables, doValidate);
+		return success;
+	}
+
+	/***
+	 *
+	 * This method handles the different cases of deleting objects from mongo (with or without dates)
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param startDate   start date to filter deletion by
+	 * @param endDate	  end date to filter deletion by
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+		boolean success;
+		if (startTime == null && endTime == null) {
+			Collection<String> temp = toDelete.keySet();
+			Set<String> collections = new HashSet(temp);
+			for (Map.Entry<String, String> entry: toDelete.entrySet()) {
+				if (entry.getValue().equals(prefixFlag)) {
+					collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
+					collections.remove(entry.getKey());
+				}
+			}
+			logger.info("deleting all {} entities", collections);
+			success = mongoUtils.dropCollections(collections, doValidate);
+		} else {
+			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
+			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
+		}
+		return success;
+	}
+
+	/***
+	 *
+	 * This method deletes whatever object it was given in the sources param between the two given dates
+	 *
+	 * @param sources	  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param startDate   start date to filter deletion by
+	 * @param endDate	  end date to filter deletion by
+	 * @param customUtil
+	 * @return
+	 */
 	private boolean deleteEntityBetween(Map<String, String> sources, Date startDate, Date endDate,
 										CustomUtil customUtil) {
 		int deleted = 0;
@@ -208,6 +268,15 @@ public class CleanJob extends FortscaleJob {
 		return true;
 	}
 
+	/****
+	 *
+	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
+	 * it with the intended backup
+	 *
+	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param customUtil
+	 * @return
+	 */
 	private boolean restoreSnapshot(Map<String, String> sources, CustomUtil customUtil) {
 		int restored = 0;
 		logger.debug("trying to restore {} snapshots", sources.size());
