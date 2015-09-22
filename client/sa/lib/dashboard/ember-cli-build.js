@@ -13,6 +13,9 @@ module.exports = function(defaults) {
     */
 
     var app = new EmberAddon(defaults, {
+        sassOptions: {
+            extension: 'scss'
+        }
         // Any other options
     });
 

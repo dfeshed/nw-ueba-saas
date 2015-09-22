@@ -43,7 +43,7 @@
   "dependencies": {
     "broccoli-funnel": "^0.2.8",
     "ember-cli-babel": "^5.1.5",
-    "ember-cli-sass": "athielke/ember-cli-sass#bugfix/addon-styles"
+    "ember-cli-sass": "4.2.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
