@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.cleanup;
+package fortscale.utils.mongodb;
 
 import com.mongodb.DBCollection;
 import fortscale.utils.logging.Logger;
@@ -21,9 +21,9 @@ public class MongoUtils {
     private static Logger logger = Logger.getLogger(MongoUtils.class);
 
     @Autowired
-    private static MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
-    public static boolean deleteMongoEntityBetween(DAO toDelete, Date startDate, Date endDate) {
+    public boolean deleteMongoEntityBetween(DAO toDelete, Date startDate, Date endDate) {
         logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
         Query query;
         if (startDate != null && endDate == null) {
@@ -42,13 +42,13 @@ public class MongoUtils {
         return true;
     }
 
-    public static boolean dropAllCollections() {
+    public boolean dropAllCollections() {
         Collection<String> collectionNames = getAllMongoCollectionsWithPrefix("");
         logger.debug("found {} collections to drop", collectionNames.size());
         return dropMongoCollections(collectionNames);
     }
 
-    private static boolean dropMongoCollections(Collection<String> collectionNames) {
+    private boolean dropMongoCollections(Collection<String> collectionNames) {
         int numberOfCollectionsDropped = 0;
         logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
         for (String collectionName: collectionNames) {
@@ -73,7 +73,7 @@ public class MongoUtils {
     }
 
     //run with empty prefix to get all collections
-    private static Collection<String> getAllMongoCollectionsWithPrefix(String prefix) {
+    private Collection<String> getAllMongoCollectionsWithPrefix(String prefix) {
         logger.debug("getting all collections");
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());
@@ -92,7 +92,7 @@ public class MongoUtils {
         return collectionNames;
     }
 
-    public static boolean restoreMongoForEntity(DAO toRestore, String backupCollectionName) {
+    public boolean restoreMongoForEntity(DAO toRestore, String backupCollectionName) {
         boolean success = false;
         logger.debug("check if backup collection exists");
         if (mongoTemplate.collectionExists(backupCollectionName)) {
@@ -122,7 +122,7 @@ public class MongoUtils {
         return success;
     }
 
-    public static boolean clearMongoOfEntity(DAO toDelete) {
+    public boolean clearMongoOfEntity(DAO toDelete) {
         boolean success;
         logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
         mongoTemplate.remove(new Query(), toDelete.daoObject);
@@ -137,9 +137,21 @@ public class MongoUtils {
         return success;
     }
 
-    private static void logError(String message) {
+    private void logError(String message) {
         logger.error(message);
         //monitor.error(getMonitorId(), getStepName(), message);
+    }
+
+    private class DAO {
+
+        public Class daoObject;
+        public String queryField;
+
+        public DAO(Class daoObject, String queryField) {
+            this.daoObject = daoObject;
+            this.queryField = queryField;
+        }
+
     }
 
 }

@@ -6,6 +6,7 @@ import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.MongoUtils;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.quartz.JobDataMap;
@@ -34,6 +35,8 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private ImpalaClient impalaClient;
+	@Autowired
+	private MongoUtils mongoUtils;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -137,7 +140,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = MongoUtils.deleteMongoEntityBetween(toDelete, startDate, endDate);
+				success = mongoUtils.deleteMongoEntityBetween(null, startDate, endDate);
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
@@ -156,7 +159,7 @@ public class CleanJob extends FortscaleJob {
 		switch (technology) {
 			case ALL: //continue through all cases
 			case MONGO: {
-				success = MongoUtils.clearMongoOfEntity(toDelete);
+				success = mongoUtils.clearMongoOfEntity(null);
 				if (technology != Technology.ALL) {
 					break;
 				}
@@ -188,7 +191,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = MongoUtils.restoreMongoForEntity(toRestore, backupCollectionName);
+				success = mongoUtils.restoreMongoForEntity(null, backupCollectionName);
 				break;
 			}
 			case HDFS: {
@@ -327,7 +330,7 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean clearMongo() {
 		logger.info("attempting to clear all mongo collections");
-		return MongoUtils.dropAllCollections();
+		return mongoUtils.dropAllCollections();
 	}
 
 	private boolean clearImpala() {
