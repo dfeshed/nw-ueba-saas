@@ -109,11 +109,12 @@ public class ImpalaClient {
 	public boolean dropTable(String tableViewName){
 		Assert.hasText(tableViewName);
 		boolean success;
-		String sql = String.format("DROP TABLE %s IF EXISTS", tableViewName);
+		String sql = String.format("DROP TABLE IF EXISTS %s", tableViewName);
 		try {
 			impalaJdbcTemplate.execute(sql);
 			success = true;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			success = false;
 		}
 		return success;
