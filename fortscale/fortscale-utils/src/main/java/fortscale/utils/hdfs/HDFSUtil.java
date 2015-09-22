@@ -43,8 +43,12 @@ public class HDFSUtil implements CustomUtil {
      * @return
      */
     public boolean deleteAll(boolean doValidate) {
-        return deletePath(dataPath, doValidate) && deletePath(rawDataPath, doValidate) &&
-               deletePath(enrichedDataPath, doValidate) && deletePath(processedDataPath, doValidate);
+        logger.info("attempting to delete all HDFS folders");
+        boolean dataSuccess = deletePath(dataPath, doValidate);
+        boolean rawDataSuccess = deletePath(rawDataPath, doValidate);
+        boolean enrichedDataSuccess = deletePath(enrichedDataPath, doValidate);
+        boolean processedDataSuccess = deletePath(processedDataPath, doValidate);
+        return dataSuccess && rawDataSuccess && enrichedDataSuccess && processedDataSuccess;
     }
 
     /***

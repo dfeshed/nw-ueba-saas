@@ -369,7 +369,11 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		return clearMongo(doValidate) && clearImpala(doValidate) && clearHDFS(doValidate) && clearKafka(doValidate);
+		boolean mongoSuccess = clearMongo(doValidate);
+		boolean impalaSuccess = clearImpala(doValidate);
+		boolean hdfsSuccess = clearHDFS(doValidate);
+		boolean kafkaSuccess = clearKafka(doValidate);
+		return mongoSuccess && impalaSuccess && hdfsSuccess && kafkaSuccess;
 	}
 
 	/***
