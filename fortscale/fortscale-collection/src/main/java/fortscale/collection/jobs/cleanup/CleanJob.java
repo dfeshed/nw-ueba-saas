@@ -140,7 +140,7 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				if (startTime == null && endTime == null) {
 					logger.info("deleting all {} entities", toDelete.size());
-					success = hdfsUtils.deleteFiles(toDelete.keySet(), doValidate);
+					success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 				} else {
 					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 					success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);

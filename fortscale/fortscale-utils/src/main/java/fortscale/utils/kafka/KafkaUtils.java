@@ -19,6 +19,14 @@ public class KafkaUtils {
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
 
+    /***
+     *
+     * This method deletes a given list of topics
+     *
+     * @param topics      list of topics to delete
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean deleteTopics(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         logger.debug("establishing connection to zookeeper");
@@ -36,6 +44,14 @@ public class KafkaUtils {
         return false;
     }
 
+    /***
+     *
+     * This method deletes a specific topic
+     *
+     * @param topic       topic to delete
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean deleteTopic(String topic, boolean doValidate) {
         boolean success = false;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
@@ -56,6 +72,12 @@ public class KafkaUtils {
         return success;
     }
 
+    /***
+     *
+     * This method returns all of the topics in Kafka
+     *
+     * @return
+     */
     private Collection<String> getAllTopics() {
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
@@ -64,6 +86,13 @@ public class KafkaUtils {
 
     }
 
+    /***
+     *
+     * This methods deletes all of the topics in Kafka
+     *
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean deleteAllTopics(boolean doValidate) {
         Collection<String> kafkaTopics = getAllTopics();
         return deleteTopics(kafkaTopics, doValidate);

@@ -23,6 +23,16 @@ public class MongoUtil implements CustomUtil {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /***
+     *
+     * This method deletes documents according to their date
+     *
+     * @param collection collection name to delete from
+     * @param dateField  date field that will be used for the filter query
+     * @param startDate  documents after that date will be deleted
+     * @param endDate    documents before that date will be deleted
+     * @return
+     */
     @Override
     public boolean deleteEntityBetween(String collection, String dateField, Date startDate, Date endDate) {
         logger.info("attempting to delete from collection {}", collection);
@@ -44,12 +54,27 @@ public class MongoUtil implements CustomUtil {
         return true;
     }
 
+    /***
+     *
+     * This method drops all collections in the database
+     *
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean dropAllCollections(boolean doValidate) {
         Collection<String> collectionNames = getAllCollectionsWithPrefix("");
         logger.debug("found {} collections to drop", collectionNames.size());
         return dropCollections(collectionNames, doValidate);
     }
 
+    /***
+     *
+     * This method drops the given list of collections from the database
+     *
+     * @param collectionNames a list of collection names to drop
+     * @param doValidate      flag to determine should we perform validations
+     * @return
+     */
     public boolean dropCollections(Collection<String> collectionNames, boolean doValidate) {
         int numberOfCollectionsDropped = 0;
         logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
@@ -67,6 +92,14 @@ public class MongoUtil implements CustomUtil {
         return false;
     }
 
+    /***
+     *
+     * This method drops a single collection from the database
+     *
+     * @param collectionName  collection name to drop
+     * @param doValidate      flag to determine should we perform validations
+     * @return
+     */
     private boolean dropCollection(String collectionName, boolean doValidate) {
         mongoTemplate.dropCollection(collectionName);
         if (doValidate) {
@@ -80,7 +113,13 @@ public class MongoUtil implements CustomUtil {
         return true;
     }
 
-    //run with empty prefix to get all collections
+    /***
+     *
+     * This method gets all of the documents starting with the given prefix
+     *
+     * @param prefix  run with empty prefix to get all collections
+     * @return
+     */
     public Collection<String> getAllCollectionsWithPrefix(String prefix) {
         logger.debug("getting all collections");
         Collection<String> collectionNames = mongoTemplate.getCollectionNames();
@@ -100,6 +139,14 @@ public class MongoUtil implements CustomUtil {
         return collectionNames;
     }
 
+    /***
+     *
+     * This methods attempts to restore an entire collection from a backup collection
+     *
+     * @param collectionName        the collection to drop
+     * @param backupCollectionName  the backup collection name to rename back
+     * @return
+     */
     @Override
     public boolean restoreSnapshot(String collectionName, String backupCollectionName) {
         boolean success = false;

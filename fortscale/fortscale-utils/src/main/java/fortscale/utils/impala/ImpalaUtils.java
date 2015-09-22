@@ -17,6 +17,14 @@ public class ImpalaUtils {
     @Autowired
     private ImpalaClient impalaClient;
 
+    /***
+     *
+     * This method drops a given list of tables from Impala
+     *
+     * @param tableNames  list of tables to drop
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean dropTables(Collection<String> tableNames, boolean doValidate) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
@@ -42,7 +50,13 @@ public class ImpalaUtils {
         return false;
     }
 
-    //run with empty prefix to get all tables
+    /***
+     *
+     * This method returns a list of all of the tables starting with the given prefix
+     *
+     * @param prefix run with empty prefix to get all tables
+     * @return
+     */
     public Collection<String> getAllTablesWithPrefix(String prefix) {
         logger.debug("getting all tables");
         Collection<String> tableNames = impalaClient.getAllTables();
@@ -62,6 +76,13 @@ public class ImpalaUtils {
         return tableNames;
     }
 
+    /***
+     *
+     * This method drops all of the tables from Impala
+     *
+     * @param doValidate  flag to determine should we perform validations
+     * @return
+     */
     public boolean dropAllTables(boolean doValidate) {
         Collection<String> tableNames = getAllTablesWithPrefix("");
         logger.debug("found {} tables to drop", tableNames.size());
