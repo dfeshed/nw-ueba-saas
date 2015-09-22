@@ -4,6 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
+import fortscale.utils.hdfs.HDFSUtils;
 import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
@@ -38,6 +39,8 @@ public class CleanJob extends FortscaleJob {
 	private KafkaUtils kafkaUtils;
 	@Autowired
 	private ImpalaUtils impalaUtils;
+	@Autowired
+	private HDFSUtils hdfsUtils;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -53,15 +56,6 @@ public class CleanJob extends FortscaleJob {
 	private String restoreNameParam;
 	@Value("${dates.format}")
 	private String datesFormat;
-
-	@Value("${hdfs.user.data.path}")
-	private String dataPath;
-	@Value("${hdfs.user.rawdata.path}")
-	private String rawDataPath;
-	@Value("${hdfs.user.enricheddata.path}")
-	private String enrichedDataPath;
-	@Value("${hdfs.user.processeddata.path}")
-	private String processedDataPath;
 
 	private Date startTime;
 	private Date endTime;
@@ -86,8 +80,7 @@ public class CleanJob extends FortscaleJob {
 				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam));
 			}
 		} catch (ParseException ex) {
-			String message = String.format("Bad date format - %s", ex.getMessage());
-			logError(message);
+			logger.error("Bad date format - {}", ex.getMessage());
 			throw new JobExecutionException(ex);
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
@@ -127,7 +120,7 @@ public class CleanJob extends FortscaleJob {
 			if (success) {
 				logger.info("Clean operation successful");
 			} else {
-				logError("Clean operation failed");
+				logger.error("Clean operation failed");
 			}
 		}
 		finishStep();
@@ -141,7 +134,7 @@ public class CleanJob extends FortscaleJob {
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				success = deleteHDFSFilesBetween(toDelete.queryField, startDate, endDate);
+				success = hdfsUtils.deleteHDFSFilesBetween(toDelete.queryField, startDate, endDate);
 				break;
 			} case STORE: {
 				//TODO - implement
@@ -169,7 +162,7 @@ public class CleanJob extends FortscaleJob {
 			} case KAFKA: {
 				//TODO - finish this
 				List<String> topics = new ArrayList();
-				impalaUtils.dropImpalaTables(topics);
+				hdfsUtils.deleteHDFSFilesBetween("bla", null, new Date());
 				success = kafkaUtils.deleteKafkaTopics(topics);
 				if (technology != Technology.ALL) {
 					break;
@@ -207,49 +200,6 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteHDFSPath(String hdfsPath) {
-		boolean success = false;
-		logger.debug("attempting to remove {}", hdfsPath);
-		try {
-			Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
-			if (process.waitFor() != 0) {
-				logError("failed to remove " + hdfsPath);
-			} else {
-				process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-				if (process.waitFor() != 0) {
-					success = true;
-					logger.info("deleted successfully");
-				} else {
-					logError("failed to remove " + hdfsPath);
-				}
-			}
-		} catch (Exception ex) {
-			logError(String.format("failed to remove partition %s - %s", hdfsPath, ex.getMessage()));
-		}
-		return success;
-	}
-
-	private boolean deleteHDFSFilesBetween(String hdfsPath, Date startDate, Date endDate) {
-		if (startDate != null && endDate != null) {
-			hdfsPath = buildFileList(hdfsPath, startDate, endDate);
-		}
-		return deleteHDFSPath(hdfsPath);
-	}
-
-	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
-		StringBuilder sb = new StringBuilder();
-		//TODO - generalize this to account for different strategies (monthly partitions for example)
-		DateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(startDate);
-		//creating list of files by advancing the date one day at a time from startDate to endDate
-		while (calendar.getTimeInMillis() < endDate.getTime()) {
-			sb.append(hdfsPath + sdf.format(calendar.getTime()) + " ");
-			calendar.add(Calendar.DATE, 1);
-		}
-		return sb.toString();
-	}
-
 	private boolean clearMongo() {
 		logger.info("attempting to clear all mongo collections");
 		return mongoUtils.dropAllCollections();
@@ -262,8 +212,7 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean clearHDFS() {
 		logger.info("attempting to clear all hdfs partitions");
-		return deleteHDFSPath(dataPath) && deleteHDFSPath(rawDataPath) &&
-				deleteHDFSPath(enrichedDataPath) && deleteHDFSPath(processedDataPath);
+		return hdfsUtils.deleteAllHDFS();
 	}
 
 	private boolean clearKafka() {
@@ -278,11 +227,6 @@ public class CleanJob extends FortscaleJob {
 		clearKafka();
 	}
 
-	private void logError(String message) {
-		logger.error(message);
-		monitor.error(getMonitorId(), getStepName(), message);
-	}
-
 	@Override
 	protected int getTotalNumOfSteps() { return 1; }
 
@@ -293,7 +237,7 @@ public class CleanJob extends FortscaleJob {
 		dataSourceToDAO = new HashMap();
 		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
 		dataSourceToDAO.put("model", new DAO(Model.class, Model.COLLECTION_NAME));
-		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, processedDataPath + "/vpn/yearmonthday="));
+		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, "/vpn/yearmonthday="));
 	}
 
 }
