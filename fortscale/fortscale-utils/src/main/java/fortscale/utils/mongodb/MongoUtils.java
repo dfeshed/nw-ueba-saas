@@ -55,9 +55,7 @@ public class MongoUtils {
             mongoTemplate.dropCollection(collectionName);
             //verify drop
             if (mongoTemplate.collectionExists(collectionName)) {
-                String message = "failed to drop collection " + collectionName;
-                logger.warn(message);
-                //monitor.warn(getMonitorId(), getStepName(), message);
+                logger.warn("failed to drop collection " + collectionName);
             } else {
                 logger.info("dropped collection {}", collectionName);
                 numberOfCollectionsDropped++;
@@ -67,8 +65,8 @@ public class MongoUtils {
             logger.info("dropped all {} collections", collectionNames.size());
             return true;
         }
-        logError(String.format("failed to drop all %s collections, dropped only %s", collectionNames.size(),
-                numberOfCollectionsDropped));
+        logger.error("failed to drop all {} collections, dropped only {}", collectionNames.size(),
+                numberOfCollectionsDropped);
         return false;
     }
 
@@ -112,13 +110,13 @@ public class MongoUtils {
                 success = true;
                 return success;
             } else {
-                logError("snapshot failed to restore - could not rename collection");
+                logger.error("snapshot failed to restore - could not rename collection");
             }
         } else {
-            logError(String.format("snapshot failed to restore - no backup collection %s found", backupCollectionName));
+            logger.error("snapshot failed to restore - no backup collection {} found", backupCollectionName);
             return success;
         }
-        logError("snapshot failed to restore - manually rename backup collection");
+        logger.error("snapshot failed to restore - manually rename backup collection");
         return success;
     }
 
@@ -129,17 +127,12 @@ public class MongoUtils {
         long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
         if (recordsFound > 0) {
             success = false;
-            logError("failed to remove documents");
+            logger.error("failed to remove documents");
         } else {
             success = true;
             logger.info("successfully removed all documents");
         }
         return success;
-    }
-
-    private void logError(String message) {
-        logger.error(message);
-        //monitor.error(getMonitorId(), getStepName(), message);
     }
 
     private class DAO {

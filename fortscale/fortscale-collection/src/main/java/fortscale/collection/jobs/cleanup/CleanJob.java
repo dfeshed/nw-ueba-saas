@@ -5,10 +5,9 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
 import fortscale.utils.impala.ImpalaClient;
+import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.MongoUtils;
-import kafka.utils.ZkUtils;
-import org.I0Itec.zkclient.ZkClient;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -37,6 +36,9 @@ public class CleanJob extends FortscaleJob {
 	private ImpalaClient impalaClient;
 	@Autowired
 	private MongoUtils mongoUtils;
+	@Autowired
+	private KafkaUtils kafkaUtils;
+
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -52,10 +54,6 @@ public class CleanJob extends FortscaleJob {
 	private String restoreNameParam;
 	@Value("${dates.format}")
 	private String datesFormat;
-	@Value("${zookeeper.connection}")
-	private String zookeeperConnection;
-	@Value("${zookeeper.timeout}")
-	private int zookeeperTimeout;
 
 	@Value("${hdfs.user.data.path}")
 	private String dataPath;
@@ -170,8 +168,9 @@ public class CleanJob extends FortscaleJob {
 					break;
 				}
 			} case KAFKA: {
+				//TODO - finish this
 				List<String> topics = new ArrayList();
-				success = deleteKafkaTopics(topics);
+				success = kafkaUtils.deleteKafkaTopics(topics);
 				if (technology != Technology.ALL) {
 					break;
 				}
@@ -203,30 +202,6 @@ public class CleanJob extends FortscaleJob {
 			} case IMPALA: {
 				//TODO - implement
 				break;
-			}
-		}
-		return success;
-	}
-
-	private boolean deleteKafkaTopics(Collection<String> topics) {
-		boolean success = false;
-		logger.debug("establishing connection to zookeeper");
-		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-		logger.debug("connection established, starting to delete topics");
-		for (String topic: topics) {
-			String topicPath = ZkUtils.getTopicPath(topic);
-			if (zkClient.exists(topicPath)) {
-				logger.debug("attempting to delete topic {}", topic);
-				success = zkClient.deleteRecursive(topicPath);
-				if (success) {
-					logger.info("deleted topic [}", topic);
-				} else {
-					logError("failed to delete topic " + topic);
-				}
-			} else {
-				String message = String.format("topic %s doesn't exist", topic);
-				logger.warn(message);
-				monitor.warn(getMonitorId(), getStepName(), message);
 			}
 		}
 		return success;
@@ -319,14 +294,7 @@ public class CleanJob extends FortscaleJob {
 		return tableNames;
 	}
 
-	private Collection<String> getAllKafkaTopics() {
-		boolean success = false;
-		logger.debug("establishing connection to zookeeper");
-		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-		logger.debug("connection established, fetching topics");
-		return scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
 
-	}
 
 	private boolean clearMongo() {
 		logger.info("attempting to clear all mongo collections");
@@ -348,8 +316,7 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean clearKafka() {
 		logger.info("attempting to clear all kafka topics");
-		Collection<String> kafkaTopics = getAllKafkaTopics();
-		return deleteKafkaTopics(kafkaTopics);
+		return kafkaUtils.deleteAllKafkaTopics();
 	}
 
 	private void clearAllData() {

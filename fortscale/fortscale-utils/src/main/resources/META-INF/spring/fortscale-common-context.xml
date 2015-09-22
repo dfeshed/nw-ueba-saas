@@ -23,4 +23,6 @@
 
 	<bean id="mongoUtils" class="fortscale.utils.mongodb.MongoUtils" />
 
+	<bean id="kafkaUtils" class="fortscale.utils.kafka.KafkaUtils" />
+
 </beans>
