@@ -14,7 +14,6 @@ import fortscale.ml.model.prevalance.PrevalanceModel;
 })
 public class Model {
 
-	public static final String COLLECTION_NAME = "streaming_models";
 	public static final String MODEL_NAME_FIELD = "modelName";
 	public static final String CONTEXT_NAME_FIELD = "context";
 	public static final String MODEL_FIELD = "model";
