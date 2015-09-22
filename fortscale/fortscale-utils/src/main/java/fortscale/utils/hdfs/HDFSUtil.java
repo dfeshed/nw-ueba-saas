@@ -5,6 +5,7 @@ import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -18,6 +19,10 @@ import java.util.Date;
 public class HDFSUtil implements CustomUtil {
 
     private static Logger logger = Logger.getLogger(HDFSUtil.class);
+
+    private enum PartitionType { daily, monthly }
+
+    private String DEFAULT_PARTITION_TYPE = PartitionType.daily.name();
 
     @Value("${hdfs.user.path}")
     private String basePath;
@@ -174,6 +179,11 @@ public class HDFSUtil implements CustomUtil {
      */
     private String buildFileList(String hdfsBasePath, String partitionType, Date startDate, Date endDate) {
         StringBuilder sb = new StringBuilder();
+        //if partition type is invalid or not supported yet
+        if (!EnumUtils.isValidEnum(PartitionType.class, partitionType)) {
+            //revert to default partition type
+            partitionType = DEFAULT_PARTITION_TYPE;
+        }
         PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);

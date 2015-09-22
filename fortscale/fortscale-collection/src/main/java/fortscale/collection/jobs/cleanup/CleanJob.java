@@ -138,13 +138,7 @@ public class CleanJob extends FortscaleJob {
 				success = handleMongoDeletion(toDelete, startDate, endDate, doValidate);
 				break;
 			} case HDFS: {
-				if (startTime == null && endTime == null) {
-					logger.info("deleting all {} entities", toDelete.size());
-					success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
-				} else {
-					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-					success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
-				}
+				success = handleHDFSDeletion(toDelete, startDate, endDate, doValidate);
 				break;
 			} case IMPALA: {
 				success = handleImpalaDeletion(toDelete, doValidate);
@@ -163,6 +157,28 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
+	 * This method handles HDFS deletion operations
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param startDate   start date to filter deletion by
+	 * @param endDate	  end date to filter deletion by
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+		boolean success;
+		if (startTime == null && endTime == null) {
+            logger.info("deleting all {} entities", toDelete.size());
+            success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
+        } else {
+            logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
+            success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
+        }
+		return success;
+	}
+
+	/***
+	 *
 	 * This method handles the restore command, determines which technology to use and executes it
 	 *
 	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
@@ -174,8 +190,7 @@ public class CleanJob extends FortscaleJob {
 			case MONGO: {
 				success = restoreSnapshot(sources, mongoUtils);
 				break;
-			}
-			case HDFS: {
+			} case HDFS: {
 				success = restoreSnapshot(sources, hdfsUtils);
 				break;
 			} case IMPALA: {
@@ -297,31 +312,73 @@ public class CleanJob extends FortscaleJob {
 		return true;
 	}
 
+	/***
+	 *
+	 * This method clears Mongo entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean clearMongo(boolean doValidate) {
 		logger.info("attempting to clear all mongo collections");
 		return mongoUtils.dropAllCollections(doValidate);
 	}
 
+	/***
+	 *
+	 * This method clears Impala entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean clearImpala(boolean doValidate) {
 		logger.info("attempting to clear all impala tables");
 		return impalaUtils.dropAllTables(doValidate);
 	}
 
+	/***
+	 *
+	 * This method clears HDFS entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean clearHDFS(boolean doValidate) {
 		logger.info("attempting to clear all hdfs partitions");
 		return hdfsUtils.deleteAll(doValidate);
 	}
 
+	/***
+	 *
+	 * This method clears Kafka entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
 		return kafkaUtils.deleteAllTopics(doValidate);
 	}
 
+	/***
+	 *
+	 * This method clears the system entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
 		return clearMongo(doValidate) && clearImpala(doValidate) && clearHDFS(doValidate) && clearKafka(doValidate);
 	}
 
+	/***
+	 *
+	 * This method builds the list of sources to delete according to the following format -
+	 * dataSource (collection name, kafka topic, etc.) DELIMITER queryField (prefix flag, partition type etc.)
+	 *
+	 * @param dataSourcesString
+	 */
 	private void createDataSourcesMap(String dataSourcesString) {
 		dataSources = new HashMap();
 		for (String entry: dataSourcesString.split(dataSourcesDelimiter)) {
