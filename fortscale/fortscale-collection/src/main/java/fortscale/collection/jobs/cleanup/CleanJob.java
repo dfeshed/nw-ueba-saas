@@ -181,7 +181,6 @@ public class CleanJob extends FortscaleJob {
 			} case KAFKA: {
 				List<String> topics = new ArrayList();
 				impalaClient.isTableExists("logindata");
-				impalaClient.dropTable("logindata");
 				topics.add("fortscale-amt-sessionized");
 				topics.add("ssh-user-score-changelog");
 				success = deleteKafkaTopics(topics);
@@ -290,6 +289,21 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
+	private boolean deleteHDFSPartition(String hdfsPath) {
+		boolean success = false;
+		logger.debug("attempting to remove {}", hdfsPath);
+		try {
+			Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
+			if (process.waitFor() == 0) {
+				success = true;
+				logger.info("deleted successfully");
+			}
+		} catch (Exception ex) {
+			logError(String.format("failed to remove partition %s - %s", hdfsPath, ex.getMessage()));
+		}
+		return success;
+	}
+
 	private boolean deleteHDFSFilesBetween(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
 		String files = buildFileList(hdfsPath, startDate, endDate);
@@ -323,6 +337,30 @@ public class CleanJob extends FortscaleJob {
             mongoTemplate.remove(query, toDelete.daoObject);
         }
 		return true;
+	}
+
+	private boolean dropImpalaTables(Set<String> tableNames) {
+		int numberOfTablesDropped = 0;
+		logger.debug("attempting to drop {} tables from impala", tableNames.size());
+		for (String tableName: tableNames) {
+			impalaClient.dropTable(tableName);
+			//verify drop
+			if (impalaClient.isTableExists(tableName)) {
+				String message = "failed to drop table " + tableName;
+				logger.warn(message);
+				monitor.warn(getMonitorId(), getStepName(), message);
+			} else {
+				logger.info("dropped table {}", tableName);
+				numberOfTablesDropped++;
+			}
+		}
+		if (numberOfTablesDropped == tableNames.size()) {
+			logger.info("dropped all {} tables", tableNames.size());
+			return true;
+		}
+		logError(String.format("failed to drop all %s tables, dropped only %s", tableNames.size(),
+				numberOfTablesDropped));
+		return false;
 	}
 
 	private boolean dropMongoCollections(Set<String> collectionNames) {
@@ -363,10 +401,34 @@ public class CleanJob extends FortscaleJob {
 		return sb.toString();
 	}
 
+	//run with empty prefix to get all tables
+	private Set<String> getAllImpalaTablesWithPrefix(String prefix) {
+		logger.debug("getting all tables");
+		Set<String> tableNames = impalaClient.getAllTables();
+		logger.debug("found {} tables", tableNames.size());
+		if (prefix.isEmpty()) {
+			return tableNames;
+		}
+		Iterator<String> it = tableNames.iterator();
+		logger.debug("filtering out tables not starting with {}", prefix);
+		while (it.hasNext()) {
+			String collectionName = it.next();
+			if (!collectionName.startsWith(prefix)) {
+				it.remove();
+			}
+		}
+		logger.info("found {} tables with prefix {}", tableNames.size(), prefix);
+		return tableNames;
+	}
+
+	//run with empty prefix to get all collections
 	private Set<String> getAllMongoCollectionsWithPrefix(String prefix) {
 		logger.debug("getting all collections");
 		Set<String> collectionNames = mongoTemplate.getCollectionNames();
 		logger.debug("found {} collections", collectionNames.size());
+		if (prefix.isEmpty()) {
+			return collectionNames;
+		}
 		Iterator<String> it = collectionNames.iterator();
 		logger.debug("filtering out collections not starting with {}", prefix);
 		while (it.hasNext()) {

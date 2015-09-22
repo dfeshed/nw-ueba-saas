@@ -121,8 +121,8 @@ public class ImpalaClient {
 		String sql = String.format("show tables");
 		List<Map<String, Object>> result = impalaJdbcTemplate.queryForList(sql);
 		Set<String> tableNames = new HashSet();
-		for (Map<String, Object> tableName: result) {
-			tableNames.addAll(tableNames);
+		for (Map<String, Object> entry: result) {
+			tableNames.add((String)entry.get("name"));
 		}
 		return tableNames;
 	}
