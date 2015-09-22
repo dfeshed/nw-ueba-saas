@@ -128,6 +128,7 @@ public class CleanJob extends FortscaleJob {
 					for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 						if (entry.getValue().equals(prefixFlag)) {
 							collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
+							collections.remove(entry.getKey());
 						}
 					}
 					logger.info("deleting all {} entities", collections);
@@ -152,6 +153,7 @@ public class CleanJob extends FortscaleJob {
 				for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 					if (entry.getValue().equals(prefixFlag)) {
 						tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
+						tables.remove(entry.getKey());
 					}
 				}
 				logger.info("deleting all {} tables", tables);
