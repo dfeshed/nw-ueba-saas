@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +42,25 @@ public class CleanJob extends FortscaleJob {
 	@Value("${hdfs.user.processeddata.path}")
 	private String processedDataPath;
 
+	@Value("${start.time.param}")
+	private String startTimeParam;
+	@Value("${end.time.param}")
+	private String endTimeParam;
+	@Value("${technology.param}")
+	private String technologyParam;
+	@Value("${strategy.param}")
+	private String strategyParam;
+	@Value("${data.source.param}")
+	private String dataSourceParam;
+	@Value("${restore.name.param}")
+	private String restoreNameParam;
+	@Value("${dates.format}")
+	private String datesFormat;
+	@Value("${zookeeper.connection}")
+	private String zookeeperConnection;
+	@Value("${zookeeper.timeout}")
+	private int zookeeperTimeout;
+
 	private Date startTime;
 	private Date endTime;
 	private String dataSource;
@@ -54,30 +72,33 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		Set<String> keys = map.keySet();
 		createDataSourceToDAOMap();
+		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
-			startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTime"));
-			endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTime"));
-		} catch (JobExecutionException ex) {
-			//didn't pass startTime or endTime - ignore
+			if (keys.contains(startTimeParam)) {
+				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam));
+			}
+			if (keys.contains(endTimeParam)) {
+				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam));
+			}
 		} catch (ParseException ex) {
 			String message = String.format("Bad date format - %s", ex.getMessage());
 			logError(message);
 			throw new JobExecutionException(ex);
 		}
-		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "technology"));
-		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "strategy"));
+		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
+		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (strategy == Strategy.RESTORE) {
-			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, "restoreName");
+			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, restoreNameParam);
 		}
-		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, "dataSource");
+		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, dataSourceParam);
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
-		startNewStep("Running Clean Job");
+		startNewStep("Clean Job");
 		boolean success = false;
 		//if command is to delete everything
 		if (strategy == Strategy.DELETE && technology == Technology.ALL) {
@@ -85,7 +106,7 @@ public class CleanJob extends FortscaleJob {
 			for (Map.Entry<String, DAO> entry : dataSourceToDAO.entrySet()) {
 				DAO dao = entry.getValue();
 				logger.info("deleting all {}", dao.daoObject.getSimpleName());
-				success = deleteAll(dao);
+				success = clearAllOfEntity(dao);
 				if (success) {
 					logger.info("Clean operation successful");
 				} else {
@@ -98,17 +119,17 @@ public class CleanJob extends FortscaleJob {
 				case DELETE: {
 					if (startTime == null && endTime == null) {
 						logger.info("deleting all {}", dao.daoObject.getSimpleName());
-						success = deleteAll(dataSourceToDAO.get(dataSource));
+						success = clearAllOfEntity(dataSourceToDAO.get(dataSource));
 					} else {
 						logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
-						success = deleteBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
+						success = deleteEntityBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
 					}
 					break;
 				}
 				case RESTORE: {
 					logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField,
 							restoreName);
-					success = restoreSnapshot(dataSourceToDAO.get(dataSource), restoreName);
+					success = restoreSnapshotOfEntity(dataSourceToDAO.get(dataSource), restoreName);
 				}
 			}
 			if (success) {
@@ -120,15 +141,15 @@ public class CleanJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private boolean deleteBetween(DAO toDelete, Date startDate, Date endDate) {
+	private boolean deleteEntityBetween(DAO toDelete, Date startDate, Date endDate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = deleteBetweenMongo(toDelete, startDate, endDate);
+				success = deleteMongoEntityBetween(toDelete, startDate, endDate);
 				break;
 			} case HDFS: {
 				//TODO - get hdfs path
-				success = deleteBetweenHDFS(toDelete.queryField, startDate, endDate);
+				success = deleteHDFSFilesBetween(toDelete.queryField, startDate, endDate);
 				break;
 			} case STORE: {
 				//TODO - implement
@@ -138,12 +159,12 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteAll(DAO toDelete) {
+	private boolean clearAllOfEntity(DAO toDelete) {
 		boolean success = false;
 		switch (technology) {
 			case ALL: //continue through all cases
 			case MONGO: {
-				success = deleteAllMongo(toDelete);
+				success = clearMongoOfEntity(toDelete);
 				if (technology != Technology.ALL) {
 					break;
 				}
@@ -157,7 +178,7 @@ public class CleanJob extends FortscaleJob {
 				List<String> topics = new ArrayList();
 				topics.add("fortscale-amt-sessionized");
 				topics.add("ssh-user-score-changelog");
-				success = deleteAllKafka(topics);
+				success = deleteKafkaTopics(topics);
 				if (technology != Technology.ALL) {
 					break;
 				}
@@ -173,11 +194,11 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean restoreSnapshot(DAO toRestore, String backupCollectionName) {
+	private boolean restoreSnapshotOfEntity(DAO toRestore, String backupCollectionName) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = restoreMongo(toRestore, backupCollectionName);
+				success = restoreMongoForEntity(toRestore, backupCollectionName);
 				break;
 			}
 			case HDFS: {
@@ -194,7 +215,7 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean restoreMongo(DAO toRestore, String backupCollectionName) {
+	private boolean restoreMongoForEntity(DAO toRestore, String backupCollectionName) {
 		boolean success = false;
 		logger.debug("check if backup collection exists");
 		if (mongoTemplate.collectionExists(backupCollectionName)) {
@@ -224,10 +245,10 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteAllKafka(List<String> topics) {
+	private boolean deleteKafkaTopics(List<String> topics) {
 		boolean success = false;
 		logger.debug("establishing connection to zookeeper");
-		ZkClient zkClient = new ZkClient("localhost:2181", 5000);
+		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
 		logger.debug("connection established, starting to delete topics");
 		for (String topic: topics) {
 			String topicPath = ZkUtils.getTopicPath(topic);
@@ -235,9 +256,9 @@ public class CleanJob extends FortscaleJob {
 				logger.debug("attempting to delete topic {}", topic);
 				success = zkClient.deleteRecursive(topicPath);
 				if (success) {
-					logger.info("deleted topic");
+					logger.info("deleted topic [}", topic);
 				} else {
-					logError("failed to delete topic");
+					logError("failed to delete topic " + topic);
 				}
 			} else {
 				String message = String.format("topic %s doesn't exist", topic);
@@ -248,7 +269,7 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteAllMongo(DAO toDelete) {
+	private boolean clearMongoOfEntity(DAO toDelete) {
 		boolean success;
 		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
 		mongoTemplate.remove(new Query(), toDelete.daoObject);
@@ -263,7 +284,7 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteBetweenHDFS(String hdfsPath, Date startDate, Date endDate) {
+	private boolean deleteHDFSFilesBetween(String hdfsPath, Date startDate, Date endDate) {
 		boolean success = false;
 		String files = buildFileList(hdfsPath, startDate, endDate);
 		logger.debug("attempting to remove {}", files);
@@ -279,7 +300,7 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean deleteBetweenMongo(DAO toDelete, Date startDate, Date endDate) {
+	private boolean deleteMongoEntityBetween(DAO toDelete, Date startDate, Date endDate) {
 		logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
 		Query query;
 		if (startDate != null && endDate == null) {
