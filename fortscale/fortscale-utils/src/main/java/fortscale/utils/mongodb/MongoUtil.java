@@ -82,7 +82,7 @@ public class MongoUtil implements CustomUtil {
     //run with empty prefix to get all collections
     public Collection<String> getAllCollectionsWithPrefix(String prefix) {
         logger.debug("getting all collections");
-        Set<String> collectionNames = mongoTemplate.getCollectionNames();
+        Collection<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());
         if (prefix.isEmpty()) {
             return collectionNames;

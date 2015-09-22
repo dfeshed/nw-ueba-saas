@@ -126,7 +126,8 @@ public class CleanJob extends FortscaleJob {
 					Collection<String> collections = toDelete.keySet();
 					for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 						if (entry.getValue().equals(prefixFlag)) {
-							collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
+							Collection<String> temp = mongoUtils.getAllCollectionsWithPrefix(entry.getKey());
+							collections.addAll(temp);
 						}
 					}
 					logger.info("deleting all {} entities", collections);

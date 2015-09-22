@@ -41,7 +41,7 @@ public class ImpalaUtils {
     //run with empty prefix to get all tables
     public Collection<String> getAllTablesWithPrefix(String prefix) {
         logger.debug("getting all tables");
-        Set<String> tableNames = impalaClient.getAllTables();
+        Collection<String> tableNames = impalaClient.getAllTables();
         logger.debug("found {} tables", tableNames.size());
         if (prefix.isEmpty()) {
             return tableNames;
