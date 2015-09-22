@@ -1,16 +1,13 @@
 package fortscale.aggregation.feature.event;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
-import net.minidev.json.JSONArray;
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -19,26 +16,21 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.functions.AggrFeatureValue;
-import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
-
+    protected static final long SECONDS_TO_ADD_TO_PASS_END_TIME = 1;
 
     @Value("${fetch.data.cycle.in.seconds}")
     private long fetchDataCycleInSeconds;
 
-    @Value("${impala.table.fields.epochtime}")
-	private String epochtimeFieldName;
-
-
+    @Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+    
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
 
@@ -56,7 +48,7 @@ public class AggrFeatureEventBuilder {
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
     private Map<EventContextData, AggrFeatureEventData> bucketAndStrategyContexts2eventDataMap;
-    private Map<String, AggrFeatureEventData> bucktID2eventDataMap;
+    private Map<String, AggrFeatureEventData> bucketID2eventDataMap;
 
 
     AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, FeatureBucketsService featureBucketsService) {
@@ -64,7 +56,7 @@ public class AggrFeatureEventBuilder {
         this.bucketStrategy = bucketStrategy;
         this.featureBucketsService = featureBucketsService;
         bucketAndStrategyContexts2eventDataMap = new HashMap<>();
-        bucktID2eventDataMap = new HashMap<>();
+        bucketID2eventDataMap = new HashMap<>();
     }
 
     
@@ -80,9 +72,9 @@ public class AggrFeatureEventBuilder {
         Assert.notEmpty(context);
         Assert.isTrue(endTime > startTime && startTime > 946684800); //01 Jan 2000 00:00:00 GMT
 
-        String startegyContextId = bucketStrategy.getStrategyContextIdFromStrategyId(strategyId);
+        String strategyContextId = bucketStrategy.getStrategyContextIdFromStrategyId(strategyId);
 
-        EventContextData eventContextData = new EventContextData(context, startegyContextId);
+        EventContextData eventContextData = new EventContextData(context, strategyContextId);
         AggrFeatureEventData eventData = bucketAndStrategyContexts2eventDataMap.get(eventContextData);
         if(eventData==null) {
             eventData = new AggrFeatureEventData(this, context, strategyId);
@@ -90,14 +82,14 @@ public class AggrFeatureEventBuilder {
         }
 
         AggrFeatureEventData.BucketTick bucketTick =  eventData.addBucketID(bucketID, startTime, endTime);
-        bucktID2eventDataMap.put(bucketID, eventData);
+        bucketID2eventDataMap.put(bucketID, eventData);
 
         registerInTimerForNextBucketEndTime(bucketTick, endTime);
     }
 
-    void updateFeatureBacketEndTime(String bucketID, Long endTime) {
+    void updateFeatureBucketEndTime(String bucketID, Long endTime) {
         if(bucketID!=null && StringUtils.isNotEmpty(bucketID)) {
-            AggrFeatureEventData eventData = bucktID2eventDataMap.get(bucketID);
+            AggrFeatureEventData eventData = bucketID2eventDataMap.get(bucketID);
             if(eventData!=null) {
                 AggrFeatureEventData.BucketTick bucketTick = eventData.setEndTime(bucketID, endTime);
                 long newRegistrationID = dataSourcesSyncTimer.updateNotificationRegistration(bucketTick.getSyncTimerRegistrationID(), endTime+fetchDataCycleInSeconds);
@@ -165,19 +157,19 @@ public class AggrFeatureEventBuilder {
                         }
                     }
 
-                    if(bucket!=null || (bucket==null && conf.getFireEventsAlsoForEmptyBucketTicks())) {
+                    if (bucket != null || conf.getFireEventsAlsoForEmptyBucketTicks()) {
                         bucketAggrFeaturesMapList.add(aggrFeatures);
                     }
                 }
 
-                // Firing event only if at least one bucekt exists or if no bucket exists but
+                // Firing event only if at least one bucket exists or if no bucket exists but
                 // conf.getFireEventsAlsoForEmptyBucketTicks() == true
                 if(bucketAggrFeaturesMapList.size() > 0) {
                     // Calculating the new feature
                     Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
 
                     // Building the event
-                    JSONObject event = buildEvent(aggrFeatureEventData.getContext(), feature, startTime, wakedBucketTick.getEndTime());
+                    JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, aggrFeatureEventData.getContext(), feature, startTime, wakedBucketTick.getEndTime());
 
                     // Sending the event
                     sendEvent(event);
@@ -199,88 +191,16 @@ public class AggrFeatureEventBuilder {
         }
     }
 
-    void registerInTimerForNextBucketEndTime(AggrFeatureEventData.BucketTick bucketTick, Long time) {
-        if(bucketTick !=null && time!=null) {
-            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time + fetchDataCycleInSeconds, bucketTick);
+    void registerInTimerForNextBucketEndTime(AggrFeatureEventData.BucketTick bucketTick, Long endTime) {
+        if (bucketTick != null && endTime != null) {
+            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), endTime + SECONDS_TO_ADD_TO_PASS_END_TIME + fetchDataCycleInSeconds, bucketTick);
             bucketTick.setSyncTimerRegistrationID(registrationID);
         }
     }
 
     private void sendEvent(JSONObject event) {
         aggrEventTopologyService.sendEvent(event);
-    }
-
-    /**
-     * Builds an event in the following format:
-     * <pre>
-     *    {
-     *      "aggregated_feature_type": "F",
-     *      "aggregated_feature_name": "number_of_distinct_src_machines",
-     *      "aggregated_feature_value": 42,
-     *      "aggregated_feature_info": {
-     *          "list_of_distinct_src_machines": [
-     *              "src_machine_1",
-     *              "src_machine_2",
-     *              "src_machine_3"
-     *          ]
-     *      },
-     *
-     *     "bucket_conf_name": "bucket_conf_1",
-     *
-     *     "date_time_unix": 1430460833,
-     *     "date_time": "2015-05-01 06:13:53",
-     *
-     *     "start_time_unix": 1430460833,
-     *     "start_time": "2015-05-01 06:13:53",
-     *
-     *     "end_time_unix": 1430460833,
-     *     "end_time": "2015-05-01 06:13:53",
-     *
-     *     "context": {
-     *          "user": "John Smith",
-     *          "machine": "machine_1"
-     *     },
-     *
-     *     "data_sources": ["ssh", "vpn"],
-     *
-     *     "score": 85
-     *
-     *   }
-     *</pre>
-     * @return the event as JSONObject
-     */
-    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) throws IllegalArgumentException{
-        AggrFeatureValue featureValue;
-        Object value;
-        Map<String, Object> additionalInfoMap;
-
-        try {
-            featureValue = (AggrFeatureValue)feature.getValue();
-            value = featureValue.getValue();
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(String.format("Feature is null or value is null or value is not a AggrFeatureValue object: %s", feature), ex);
-        }
-        if(value==null) {
-            throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
-        }
-        additionalInfoMap = featureValue.getAdditionalInformationMap();
-
-        // Data Sources
-        JSONArray dataSourcesJsonArray = new JSONArray();
-        dataSourcesJsonArray.addAll(conf.getBucketConf().getDataSources());
-
-        return AggrEvent.buildEvent(aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf),
-                conf.getType(),
-                conf.getName(),
-                value,
-                additionalInfoMap,
-                conf.getBucketConfName(),
-                context,
-                startTimeSec,
-                endTimeSec,
-                dataSourcesJsonArray
-        );
-    }
+    }    
 
     AggregatedFeatureEventConf getConf() {
         return conf;
@@ -291,7 +211,7 @@ public class AggrFeatureEventBuilder {
     }
 
     void removeBucketId2eventDataMapping(String bucketId) {
-        bucktID2eventDataMap.remove(bucketId);
+        bucketID2eventDataMap.remove(bucketId);
     }
 
     private static class EventContextData {

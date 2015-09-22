@@ -1,44 +1,69 @@
 package fortscale.streaming.service.event;
 
 
-import fortscale.aggregation.feature.event.AggrEvent;
-import net.minidev.json.JSONObject;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import net.minidev.json.JSONObject;
+
 /**
  * Created by amira on 23/08/2015.
  */
-public class AggregatedEventPersistencyHandler implements EventPersistencyHandler {
+public class AggregatedEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
     private static final String COLLECTION_NAME_SEPERATOR = "__";
+    
+    @Autowired
+    private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
 
+    @Autowired
     private MongoTemplate mongoTemplate;
-    private String eventTypeFieldName;
+    
+    @Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
-    public AggregatedEventPersistencyHandler(MongoTemplate mongoTemplate, String eventTypeFieldName) {
-        this.mongoTemplate = mongoTemplate;
-        this.eventTypeFieldName = eventTypeFieldName;
-    }
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String eventTypeFieldValue;
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
+    
+    private Set<String> collectionNames;
+
 
     @Override
     public void saveEvent(JSONObject event, String collectionPrefix) {
-        String eventTypeValue = (String) event.get(eventTypeFieldName);
-        String aggrFeatureName = (String) event.get("aggregated_feature_name");
-        String bucketConfName = (String) event.get("bucket_conf_name");
-        String collectionName = new StringBuilder(collectionPrefix).append(COLLECTION_NAME_SEPERATOR)
-                .append(eventTypeValue).append(COLLECTION_NAME_SEPERATOR)
-                .append(aggrFeatureName).toString();
+        String aggrFeatureName = (String) event.get(aggrFeatureNameFieldName);
+        String collectionName = new StringBuilder(collectionPrefix).append(COLLECTION_NAME_SEPERATOR).append(eventTypeFieldValue).append(COLLECTION_NAME_SEPERATOR).append(aggrFeatureName).toString();
 
-
-        if (!mongoTemplate.collectionExists(collectionName)) {
+        if (!isCollectionExist(collectionName)) {
             mongoTemplate.createCollection(collectionName);
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_START_TIME_UNIX, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_END_TIME_UNIX, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_CONTEXT, Sort.Direction.DESC));
+            collectionNames.add(collectionName);
         }
 
-        mongoTemplate.save(new AggrEvent(event), collectionName);
+        AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(event);
+        mongoTemplate.save(aggrEvent, collectionName);
     }
+    
+    private boolean isCollectionExist(String collectionName){
+		return collectionNames.contains(collectionName);
+	}
+
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		eventPersistencyHandlerFactory.register(eventTypeFieldValue, this);
+		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
+	}
 }

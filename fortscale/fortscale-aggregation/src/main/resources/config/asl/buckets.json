@@ -48,6 +48,14 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "failure_code_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["failure_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
+        },
+        {
           "name": "number_of_events",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
@@ -119,6 +127,14 @@
             "groupBy": ["failure_code"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "failure_code_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["failure_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         },
         {
           "name": "number_of_events",
