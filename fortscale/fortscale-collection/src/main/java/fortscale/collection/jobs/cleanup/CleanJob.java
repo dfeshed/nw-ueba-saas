@@ -180,7 +180,7 @@ public class CleanJob extends FortscaleJob {
 				}
 			} case KAFKA: {
 				List<String> topics = new ArrayList();
-				impalaClient.isTableExists("logindata");
+				deleteHDFSPartition("/user/cloudera/rawdata");
 				topics.add("fortscale-amt-sessionized");
 				topics.add("ssh-user-score-changelog");
 				success = deleteKafkaTopics(topics);
@@ -294,9 +294,21 @@ public class CleanJob extends FortscaleJob {
 		logger.debug("attempting to remove {}", hdfsPath);
 		try {
 			Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
-			if (process.waitFor() == 0) {
-				success = true;
-				logger.info("deleted successfully");
+			if (process.waitFor() != 0) {
+				logError("failed to remove " + hdfsPath);
+			} else {
+				process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
+				/*OutputStream stdin = process.getOutputStream();
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+				while ((line = reader.readLine ()) != null) {
+					System.out.println ("Stdout: " + line);
+				}*/
+				if (process.waitFor() == 0) {
+					success = true;
+					logger.info("deleted successfully");
+				} else {
+					logError("failed to remove " + hdfsPath);
+				}
 			}
 		} catch (Exception ex) {
 			logError(String.format("failed to remove partition %s - %s", hdfsPath, ex.getMessage()));
