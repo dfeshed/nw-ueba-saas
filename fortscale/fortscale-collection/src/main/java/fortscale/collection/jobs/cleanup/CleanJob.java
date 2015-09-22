@@ -1,13 +1,12 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.fe.dao.impl.VpnDAOImpl;
-import fortscale.utils.hdfs.HDFSUtils;
+import fortscale.utils.CustomUtil;
+import fortscale.utils.hdfs.HDFSUtil;
 import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.MongoUtils;
+import fortscale.utils.mongodb.MongoUtil;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -33,13 +32,13 @@ public class CleanJob extends FortscaleJob {
 	private enum Strategy { DELETE, RESTORE }
 
 	@Autowired
-	private MongoUtils mongoUtils;
+	private MongoUtil mongoUtils;
 	@Autowired
 	private KafkaUtils kafkaUtils;
 	@Autowired
 	private ImpalaUtils impalaUtils;
 	@Autowired
-	private HDFSUtils hdfsUtils;
+	private HDFSUtil hdfsUtils;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -49,26 +48,25 @@ public class CleanJob extends FortscaleJob {
 	private String technologyParam;
 	@Value("${strategy.param}")
 	private String strategyParam;
-	@Value("${data.source.param}")
-	private String dataSourceParam;
-	@Value("${restore.name.param}")
-	private String restoreNameParam;
+	@Value("${data.sources.param}")
+	private String dataSourcesParam;
+	@Value("${data.sources.delimiter}")
+	private String dataSourcesDelimiter;
+	@Value("${data.sources.field.delimiter}")
+	private String dataSourcesFieldDelimiter;
 	@Value("${dates.format}")
 	private String datesFormat;
 
 	private Date startTime;
 	private Date endTime;
-	private String dataSource;
-	private String restoreName;
+	private Map<String, String> dataSources;
 	private Strategy strategy;
 	private Technology technology;
-	private Map<String, DAO> dataSourceToDAO;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		Set<String> keys = map.keySet();
-		createDataSourceToDAOMap();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
 		try {
@@ -84,10 +82,9 @@ public class CleanJob extends FortscaleJob {
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
-		if (strategy == Strategy.RESTORE) {
-			restoreName = jobDataMapExtension.getJobDataMapStringValue(map, restoreNameParam);
+		if (keys.contains(dataSourcesParam)) {
+			createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
-		dataSource = jobDataMapExtension.getJobDataMapStringValue(map, dataSourceParam);
 	}
 
 	@Override
@@ -95,45 +92,53 @@ public class CleanJob extends FortscaleJob {
 		startNewStep("Clean Job");
 		boolean success = false;
 		//if command is to delete everything
-		if (strategy == Strategy.DELETE && technology == Technology.ALL && dataSource == null) {
-			clearAllData();
+		if (strategy == Strategy.DELETE && technology == Technology.ALL) {
+			success = clearAllData();
 		} else {
-			DAO dao = dataSourceToDAO.get(dataSource);
 			switch (strategy) {
 				case DELETE: {
-					if (startTime == null && endTime == null) {
-						logger.info("deleting all {}", dao.daoObject.getSimpleName());
-						success = clearAllOfEntity(dataSourceToDAO.get(dataSource));
-					} else {
-						logger.info("deleting {} from {} to {}", dao.daoObject.getSimpleName(), startTime, endTime);
-						success = deleteEntityBetween(dataSourceToDAO.get(dataSource), startTime, endTime);
-					}
+					logger.info("deleting {} entities", dataSources.size());
+					success = deleteEntities(dataSources, startTime, endTime);
 					break;
 				}
 				case RESTORE: {
-					logger.info("restoring {} from {} to {}", dao.daoObject.getSimpleName(), dao.queryField,
-							restoreName);
-					success = restoreSnapshotOfEntity(dataSourceToDAO.get(dataSource), restoreName);
+					logger.info("restoring {} entities", dataSources.size());
+					success = restoreEntities(dataSources);
+					break;
 				}
 			}
-			if (success) {
-				logger.info("Clean operation successful");
-			} else {
-				logger.error("Clean operation failed");
-			}
+		}
+		if (success) {
+			logger.info("Clean operation successful");
+		} else {
+			logger.error("Clean operation failed");
 		}
 		finishStep();
 	}
 
-	private boolean deleteEntityBetween(DAO toDelete, Date startDate, Date endDate) {
+	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = mongoUtils.deleteMongoEntityBetween(null, startDate, endDate);
+				if (startTime == null && endTime == null) {
+					logger.info("deleting all {} entities", toDelete.size());
+					success = mongoUtils.dropCollections(toDelete.keySet());
+				} else {
+					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
+					success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
+				}
 				break;
 			} case HDFS: {
-				//TODO - get hdfs path
-				success = hdfsUtils.deleteHDFSFilesBetween(toDelete.queryField, startDate, endDate);
+				if (startTime == null && endTime == null) {
+					logger.info("deleting all {} entities", toDelete.size());
+					success = hdfsUtils.deleteFiles(toDelete.keySet());
+				} else {
+					logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
+					success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
+				}
+				break;
+			} case IMPALA: {
+				success = impalaUtils.dropTables(toDelete.keySet());
 				break;
 			} case STORE: {
 				//TODO - implement
@@ -143,59 +148,62 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private boolean clearAllOfEntity(DAO toDelete) {
+	private boolean restoreEntities(Map<String, String> sources) {
 		boolean success = false;
 		switch (technology) {
-			case ALL: //continue through all cases
 			case MONGO: {
-				success = mongoUtils.clearMongoOfEntity(null);
-				if (technology != Technology.ALL) {
-					break;
-				}
+				success = restoreSnapshot(sources, mongoUtils);
+				break;
 			}
 			case HDFS: {
-				//TODO - implement
-				if (technology != Technology.ALL) {
-					break;
-				}
-			} case KAFKA: {
-				//TODO - finish this
-				List<String> topics = new ArrayList();
-				success = kafkaUtils.deleteKafkaTopics(topics);
-				if (technology != Technology.ALL) {
-					break;
-				}
-			} case STORE: {
-				//TODO - implement
-				if (technology != Technology.ALL) {
-					break;
-				}
+				success = restoreSnapshot(sources, hdfsUtils);
+				break;
 			} case IMPALA: {
-				//TODO - implement
+				//TODO - implement?
+				break;
+			} case STORE: {
+				//TODO - implement?
+				break;
 			}
 		}
 		return success;
 	}
 
-	private boolean restoreSnapshotOfEntity(DAO toRestore, String backupCollectionName) {
-		boolean success = false;
-		switch (technology) {
-			case MONGO: {
-				success = mongoUtils.restoreMongoForEntity(null, backupCollectionName);
-				break;
-			}
-			case HDFS: {
-				success = hdfsUtils.restoreSnapshot(null, backupCollectionName);
-				break;
-			} case STORE: {
-				//TODO - implement?
-				break;
-			} case IMPALA: {
-				//TODO - implement?
-				break;
+	private boolean deleteEntityBetween(Map<String, String> sources, Date startDate, Date endDate,
+										CustomUtil customUtil) {
+		int deleted = 0;
+		logger.debug("trying to delete {} entities", sources.size());
+		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
+			if (customUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+				deleted++;
 			}
 		}
-		return success;
+		if (deleted != sources.size()) {
+			logger.error("failed to delete all {} entities, deleted only {}", sources.size(), deleted);
+			return true;
+		}
+		logger.info("deleted all {} entities", sources.size());
+		return true;
+	}
+
+	private boolean restoreSnapshot(Map<String, String> sources, CustomUtil customUtil) {
+		int restored = 0;
+		logger.debug("trying to restore {} snapshots", sources.size());
+		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
+            String toRestore = dataSource.getKey();
+            String backupCollectionName = dataSource.getValue();
+			logger.debug("origin - {}, backup - {}", toRestore, backupCollectionName);
+            if (customUtil.restoreSnapshot(toRestore, backupCollectionName)) {
+                restored++;
+            }
+        }
+		if (restored != sources.size()) {
+			logger.error("failed to restore all {} collections, restored only {}", sources.size(),
+					restored);
+			return false;
+		}
+		logger.info("restored all {} collections", sources.size());
+		return true;
 	}
 
 	private boolean clearMongo() {
@@ -210,19 +218,26 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean clearHDFS() {
 		logger.info("attempting to clear all hdfs partitions");
-		return hdfsUtils.deleteAllHDFS();
+		return hdfsUtils.deleteAll();
 	}
 
 	private boolean clearKafka() {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaUtils.deleteAllKafkaTopics();
+		return kafkaUtils.deleteAllTopics();
 	}
 
-	private void clearAllData() {
-		clearMongo();
-		clearImpala();
-		clearHDFS();
-		clearKafka();
+	private boolean clearAllData() {
+		logger.info("attempting to clear system");
+		return clearMongo() && clearImpala() && clearHDFS() && clearKafka();
+	}
+
+	private void createDataSourcesMap(String dataSourcesString) {
+		dataSources = new HashMap();
+		for (String entry: dataSourcesString.split(dataSourcesDelimiter)) {
+			String dataSource = entry.split(dataSourcesFieldDelimiter)[0];
+			String queryField = entry.split(dataSourcesFieldDelimiter)[1];
+			dataSources.put(dataSource, queryField);
+		}
 	}
 
 	@Override
@@ -230,11 +245,5 @@ public class CleanJob extends FortscaleJob {
 
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
-
-	private void createDataSourceToDAOMap() {
-		dataSourceToDAO = new HashMap();
-		dataSourceToDAO.put("evidence", new DAO(Evidence.class, Evidence.startDateField));
-		dataSourceToDAO.put("vpn", new DAO(VpnDAOImpl.class, "/vpn/yearmonthday="));
-	}
 
 }

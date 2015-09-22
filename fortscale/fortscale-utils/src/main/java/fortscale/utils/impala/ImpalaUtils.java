@@ -17,7 +17,7 @@ public class ImpalaUtils {
     @Autowired
     private ImpalaClient impalaClient;
 
-    public boolean dropImpalaTables(Collection<String> tableNames) {
+    public boolean dropTables(Collection<String> tableNames) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
         for (String tableName: tableNames) {
@@ -39,7 +39,7 @@ public class ImpalaUtils {
     }
 
     //run with empty prefix to get all tables
-    private Collection<String> getAllImpalaTablesWithPrefix(String prefix) {
+    private Collection<String> getAllTablesWithPrefix(String prefix) {
         logger.debug("getting all tables");
         Set<String> tableNames = impalaClient.getAllTables();
         logger.debug("found {} tables", tableNames.size());
@@ -59,9 +59,9 @@ public class ImpalaUtils {
     }
 
     public boolean dropAllTables() {
-        Collection<String> tableNames = getAllImpalaTablesWithPrefix("");
+        Collection<String> tableNames = getAllTablesWithPrefix("");
         logger.debug("found {} tables to drop", tableNames.size());
-        return dropImpalaTables(tableNames);
+        return dropTables(tableNames);
     }
 
 }

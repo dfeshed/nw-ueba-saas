@@ -1,6 +1,7 @@
 package fortscale.utils.mongodb;
 
 import com.mongodb.DBCollection;
+import fortscale.utils.CustomUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,48 +17,44 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class MongoUtils {
+public class MongoUtil implements CustomUtil {
 
-    private static Logger logger = Logger.getLogger(MongoUtils.class);
+    private static Logger logger = Logger.getLogger(MongoUtil.class);
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public boolean deleteMongoEntityBetween(DAO toDelete, Date startDate, Date endDate) {
-        logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
+    @Override
+    public boolean deleteEntityBetween(String collection, String dateField, Date startDate, Date endDate) {
+        logger.info("attempting to delete from collection {}", collection);
         Query query;
         if (startDate != null && endDate == null) {
-            query = new Query(where(toDelete.queryField).gte(startDate.getTime()));
+            query = new Query(where(dateField).gte(startDate.getTime()));
         } else if (startDate == null && endDate != null) {
-            query = new Query(where(toDelete.queryField).lte(endDate.getTime()));
+            query = new Query(where(dateField).lte(endDate.getTime()));
         } else {
-            query = new Query(where(toDelete.queryField).gte(startDate.getTime()).lte(endDate.getTime()));
+            query = new Query(where(dateField).gte(startDate.getTime()).lte(endDate.getTime()));
         }
         logger.debug("query is {}", query.toString());
-        long recordsFound = mongoTemplate.count(query, toDelete.daoObject);
+        long recordsFound = mongoTemplate.count(query, collection);
         logger.info("found {} records", recordsFound);
         if (recordsFound > 0) {
-            mongoTemplate.remove(query, toDelete.daoObject);
+            mongoTemplate.remove(query, collection);
         }
         return true;
     }
 
     public boolean dropAllCollections() {
-        Collection<String> collectionNames = getAllMongoCollectionsWithPrefix("");
+        Collection<String> collectionNames = getAllCollectionsWithPrefix("");
         logger.debug("found {} collections to drop", collectionNames.size());
-        return dropMongoCollections(collectionNames);
+        return dropCollections(collectionNames);
     }
 
-    private boolean dropMongoCollections(Collection<String> collectionNames) {
+    public boolean dropCollections(Collection<String> collectionNames) {
         int numberOfCollectionsDropped = 0;
         logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
         for (String collectionName: collectionNames) {
-            mongoTemplate.dropCollection(collectionName);
-            //verify drop
-            if (mongoTemplate.collectionExists(collectionName)) {
-                logger.warn("failed to drop collection " + collectionName);
-            } else {
-                logger.info("dropped collection {}", collectionName);
+            if (dropCollection(collectionName)) {
                 numberOfCollectionsDropped++;
             }
         }
@@ -70,8 +67,19 @@ public class MongoUtils {
         return false;
     }
 
+    private boolean dropCollection(String collectionName) {
+        mongoTemplate.dropCollection(collectionName);
+        //verify drop
+        if (mongoTemplate.collectionExists(collectionName)) {
+            logger.warn("failed to drop collection " + collectionName);
+            return false;
+        }
+        logger.info("dropped collection {}", collectionName);
+        return true;
+    }
+
     //run with empty prefix to get all collections
-    private Collection<String> getAllMongoCollectionsWithPrefix(String prefix) {
+    private Collection<String> getAllCollectionsWithPrefix(String prefix) {
         logger.debug("getting all collections");
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());
@@ -90,21 +98,22 @@ public class MongoUtils {
         return collectionNames;
     }
 
-    public boolean restoreMongoForEntity(DAO toRestore, String backupCollectionName) {
+    @Override
+    public boolean restoreSnapshot(String collectionName, String backupCollectionName) {
         boolean success = false;
         logger.debug("check if backup collection exists");
         if (mongoTemplate.collectionExists(backupCollectionName)) {
             DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
             logger.debug("drop collection");
-            mongoTemplate.dropCollection(toRestore.queryField);
+            mongoTemplate.dropCollection(collectionName);
             //verify drop
-            if (mongoTemplate.collectionExists(toRestore.queryField)) {
+            if (mongoTemplate.collectionExists(collectionName)) {
                 logger.debug("dropping failed, abort");
                 return success;
             }
             logger.debug("renaming backup collection");
-            backupCollection.rename(toRestore.queryField);
-            if (mongoTemplate.collectionExists(toRestore.queryField)) {
+            backupCollection.rename(collectionName);
+            if (mongoTemplate.collectionExists(collectionName)) {
                 //verify restore
                 logger.info("snapshot restored");
                 success = true;
@@ -118,34 +127,6 @@ public class MongoUtils {
         }
         logger.error("snapshot failed to restore - manually rename backup collection");
         return success;
-    }
-
-    public boolean clearMongoOfEntity(DAO toDelete) {
-        boolean success;
-        logger.info("attempting to delete {} from mongo", toDelete.daoObject.getSimpleName());
-        mongoTemplate.remove(new Query(), toDelete.daoObject);
-        long recordsFound = mongoTemplate.count(new Query(), toDelete.daoObject);
-        if (recordsFound > 0) {
-            success = false;
-            logger.error("failed to remove documents");
-        } else {
-            success = true;
-            logger.info("successfully removed all documents");
-        }
-        return success;
-    }
-
-    //TODO - remove this
-    private class DAO {
-
-        public Class daoObject;
-        public String queryField;
-
-        public DAO(Class daoObject, String queryField) {
-            this.daoObject = daoObject;
-            this.queryField = queryField;
-        }
-
     }
 
 }

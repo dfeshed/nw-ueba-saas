@@ -19,20 +19,13 @@ public class KafkaUtils {
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
 
-    public boolean deleteKafkaTopics(Collection<String> topics) {
+    public boolean deleteTopics(Collection<String> topics) {
         int numberOfTopicsDeleted = 0;
         logger.debug("establishing connection to zookeeper");
-        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, starting to delete topics");
         for (String topic: topics) {
-            String topicPath = ZkUtils.getTopicPath(topic);
-            logger.debug("attempting to delete topic {}", topic);
-            zkClient.deleteRecursive(topicPath);
-            if (!zkClient.exists(topicPath)) {
-                logger.info("deleted topic [}", topic);
+            if (deleteTopic(topic)) {
                 numberOfTopicsDeleted++;
-            } else {
-                logger.error("failed to delete topic " + topic);
             }
         }
         if (numberOfTopicsDeleted == topics.size()) {
@@ -43,7 +36,23 @@ public class KafkaUtils {
         return false;
     }
 
-    private Collection<String> getAllKafkaTopics() {
+    public boolean deleteTopic(String topic) {
+        boolean success = false;
+        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        String topicPath = ZkUtils.getTopicPath(topic);
+        logger.debug("attempting to delete topic {}", topic);
+        zkClient.deleteRecursive(topicPath);
+        if (!zkClient.exists(topicPath)) {
+            logger.info("deleted topic [}", topic);
+            success = true;
+        } else {
+            logger.error("failed to delete topic " + topic);
+        }
+        zkClient.close();
+        return success;
+    }
+
+    private Collection<String> getAllTopics() {
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, fetching topics");
@@ -51,9 +60,9 @@ public class KafkaUtils {
 
     }
 
-    public boolean deleteAllKafkaTopics() {
-        Collection<String> kafkaTopics = getAllKafkaTopics();
-        return deleteKafkaTopics(kafkaTopics);
+    public boolean deleteAllTopics() {
+        Collection<String> kafkaTopics = getAllTopics();
+        return deleteTopics(kafkaTopics);
     }
 
 }

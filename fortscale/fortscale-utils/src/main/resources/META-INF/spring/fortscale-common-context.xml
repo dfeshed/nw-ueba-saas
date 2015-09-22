@@ -21,12 +21,12 @@
 	  <constructor-arg ref="dataSource"/>
 	</bean>
 
-	<bean id="mongoUtils" class="fortscale.utils.mongodb.MongoUtils" />
+	<bean id="mongoUtils" class="fortscale.utils.mongodb.MongoUtil" />
 
 	<bean id="kafkaUtils" class="fortscale.utils.kafka.KafkaUtils" />
 
 	<bean id="impalaUtils" class="fortscale.utils.impala.ImpalaUtils" />
 
-	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtils" />
+	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtil" />
 
 </beans>
