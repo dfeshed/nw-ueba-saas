@@ -3,6 +3,7 @@ package fortscale.collection.jobs.cleanup;
 /**
  * Created by Amir Keren on 22/09/15.
  */
+//TODO - remove this
 public class DAO {
 
     public Class daoObject;

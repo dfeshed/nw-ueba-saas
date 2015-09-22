@@ -25,4 +25,6 @@
 
 	<bean id="kafkaUtils" class="fortscale.utils.kafka.KafkaUtils" />
 
+	<bean id="impalaUtils" class="fortscale.utils.impala.ImpalaUtils" />
+
 </beans>

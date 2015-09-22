@@ -4,7 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 import fortscale.ml.service.dao.Model;
-import fortscale.utils.impala.ImpalaClient;
+import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.MongoUtils;
@@ -33,12 +33,11 @@ public class CleanJob extends FortscaleJob {
 	private enum Strategy { DELETE, RESTORE }
 
 	@Autowired
-	private ImpalaClient impalaClient;
-	@Autowired
 	private MongoUtils mongoUtils;
 	@Autowired
 	private KafkaUtils kafkaUtils;
-
+	@Autowired
+	private ImpalaUtils impalaUtils;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -170,6 +169,7 @@ public class CleanJob extends FortscaleJob {
 			} case KAFKA: {
 				//TODO - finish this
 				List<String> topics = new ArrayList();
+				impalaUtils.dropImpalaTables(topics);
 				success = kafkaUtils.deleteKafkaTopics(topics);
 				if (technology != Technology.ALL) {
 					break;
@@ -236,30 +236,6 @@ public class CleanJob extends FortscaleJob {
 		return deleteHDFSPath(hdfsPath);
 	}
 
-	private boolean dropImpalaTables(Collection<String> tableNames) {
-		int numberOfTablesDropped = 0;
-		logger.debug("attempting to drop {} tables from impala", tableNames.size());
-		for (String tableName: tableNames) {
-			impalaClient.dropTable(tableName);
-			//verify drop
-			if (impalaClient.isTableExists(tableName)) {
-				String message = "failed to drop table " + tableName;
-				logger.warn(message);
-				monitor.warn(getMonitorId(), getStepName(), message);
-			} else {
-				logger.info("dropped table {}", tableName);
-				numberOfTablesDropped++;
-			}
-		}
-		if (numberOfTablesDropped == tableNames.size()) {
-			logger.info("dropped all {} tables", tableNames.size());
-			return true;
-		}
-		logError(String.format("failed to drop all %s tables, dropped only %s", tableNames.size(),
-				numberOfTablesDropped));
-		return false;
-	}
-
 	private String buildFileList(String hdfsPath, Date startDate, Date endDate) {
 		StringBuilder sb = new StringBuilder();
 		//TODO - generalize this to account for different strategies (monthly partitions for example)
@@ -274,28 +250,6 @@ public class CleanJob extends FortscaleJob {
 		return sb.toString();
 	}
 
-	//run with empty prefix to get all tables
-	private Collection<String> getAllImpalaTablesWithPrefix(String prefix) {
-		logger.debug("getting all tables");
-		Set<String> tableNames = impalaClient.getAllTables();
-		logger.debug("found {} tables", tableNames.size());
-		if (prefix.isEmpty()) {
-			return tableNames;
-		}
-		Iterator<String> it = tableNames.iterator();
-		logger.debug("filtering out tables not starting with {}", prefix);
-		while (it.hasNext()) {
-			String collectionName = it.next();
-			if (!collectionName.startsWith(prefix)) {
-				it.remove();
-			}
-		}
-		logger.info("found {} tables with prefix {}", tableNames.size(), prefix);
-		return tableNames;
-	}
-
-
-
 	private boolean clearMongo() {
 		logger.info("attempting to clear all mongo collections");
 		return mongoUtils.dropAllCollections();
@@ -303,9 +257,7 @@ public class CleanJob extends FortscaleJob {
 
 	private boolean clearImpala() {
 		logger.info("attempting to clear all impala tables");
-		Collection<String> tableNames = getAllImpalaTablesWithPrefix("");
-		logger.debug("found {} tables to drop", tableNames.size());
-		return dropImpalaTables(tableNames);
+		return impalaUtils.dropAllTables();
 	}
 
 	private boolean clearHDFS() {

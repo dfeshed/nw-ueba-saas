@@ -20,31 +20,30 @@ public class KafkaUtils {
     private int zookeeperTimeout;
 
     public boolean deleteKafkaTopics(Collection<String> topics) {
-        boolean success = false;
+        int numberOfTopicsDeleted = 0;
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, starting to delete topics");
         for (String topic: topics) {
             String topicPath = ZkUtils.getTopicPath(topic);
-            if (zkClient.exists(topicPath)) {
-                logger.debug("attempting to delete topic {}", topic);
-                success = zkClient.deleteRecursive(topicPath);
-                if (success) {
-                    logger.info("deleted topic [}", topic);
-                } else {
-                    logger.error("failed to delete topic " + topic);
-                }
+            logger.debug("attempting to delete topic {}", topic);
+            zkClient.deleteRecursive(topicPath);
+            if (!zkClient.exists(topicPath)) {
+                logger.info("deleted topic [}", topic);
+                numberOfTopicsDeleted++;
             } else {
-                String message = String.format("topic %s doesn't exist", topic);
-                logger.warn(message);
-                //monitor.warn(getMonitorId(), getStepName(), message);
+                logger.error("failed to delete topic " + topic);
             }
         }
-        return success;
+        if (numberOfTopicsDeleted == topics.size()) {
+            logger.info("dropped all {} topics", topics.size());
+            return true;
+        }
+        logger.error("failed to drop all {} topics, dropped only {}", topics.size(), numberOfTopicsDeleted);
+        return false;
     }
 
     private Collection<String> getAllKafkaTopics() {
-        boolean success = false;
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, fetching topics");
