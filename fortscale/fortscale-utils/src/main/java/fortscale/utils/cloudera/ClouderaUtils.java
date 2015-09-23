@@ -50,7 +50,7 @@ public class ClouderaUtils {
      * @param isStop       whether to stop or to start the service roles. stop == true, start == false
      * @return
      */
-    public ApiBulkCommandList startOrStopService(String serviceName, boolean isStop) {
+    public boolean startOrStopService(String serviceName, boolean isStop) {
         ApiBulkCommandList api;
         ApiRoleState desiredRoleState;
         ApiRoleNameList rolesFullNames = new ApiRoleNameList();
@@ -81,7 +81,7 @@ public class ClouderaUtils {
                     logger.error("sleep interrupted {}", ex.getMessage());
                 }
                 if (timer % 10 == 0) {
-                    logger.info("waited {} seconds", timer);
+                    logger.debug("waited {} seconds", timer);
                 }
                 timer++;
             }
@@ -95,10 +95,19 @@ public class ClouderaUtils {
             }
             timer = 0;
         }
-        logger.info("Number of roles in state {} is {} out of {} roles", desiredRoleState, numberOfRolesInDesiredState, rolesFullNames.size());
-        logger.warn("Number of roles in BAD health {} (out of {} roles)", numberOfRolesInBadHealth, rolesFullNames.size());
-        logger.info("roles have stopped / starterd successfully. ");
-        return api;
+        if (numberOfRolesInDesiredState == rolesFullNames.size()) {
+            if (isStop) {
+                logger.info("roles have stopped successfully");
+            } else {
+                logger.info("roles have started successfully");
+            }
+            return true;
+        }
+        logger.info("Number of roles in state {} is {} out of {} roles", desiredRoleState, numberOfRolesInDesiredState,
+                rolesFullNames.size());
+        logger.warn("Number of roles in BAD health {} (out of {} roles)", numberOfRolesInBadHealth,
+                rolesFullNames.size());
+        return false;
     }
 
     /**
