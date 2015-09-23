@@ -2,6 +2,7 @@ package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.CustomUtil;
+import fortscale.utils.cloudera.ClouderaUtils;
 import fortscale.utils.hdfs.HDFSUtil;
 import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
@@ -39,6 +40,8 @@ public class CleanJob extends FortscaleJob {
 	private ImpalaUtils impalaUtils;
 	@Autowired
 	private HDFSUtil hdfsUtils;
+	@Autowired
+	private ClouderaUtils clouderaUtils;
 
 	@Value("${start.time.param}")
 	private String startTimeParam;
@@ -58,6 +61,12 @@ public class CleanJob extends FortscaleJob {
 	private String datesFormat;
 	@Value("${prefix.flag}")
 	private String prefixFlag;
+	@Value("${kafka.service.name}")
+	private String kafkaServiceName;
+	@Value("${streaming.service.name}")
+	private String streamingServiceName;
+	@Value("${collection.service.name}")
+	private String collectionServiceName;
 
 	private Date startTime;
 	private Date endTime;
@@ -364,16 +373,41 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method clears the system entirely
 	 *
-	 * @param doValidate  flag to determine should we perform validations
+	 * @param doValidate  flag to determine should we perform validations and stop services
 	 * @return
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
+		if (doValidate) {
+			checkService(streamingServiceName);
+			checkService(collectionServiceName);
+			checkService(kafkaServiceName);
+		}
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);
 		boolean kafkaSuccess = clearKafka(doValidate);
 		return mongoSuccess && impalaSuccess && hdfsSuccess && kafkaSuccess;
+	}
+
+	/***
+	 *
+	 * This method checks if the service name is running, and if so - tries to stop it
+	 *
+	 * @param serviceName
+	 */
+	private void checkService(String serviceName) {
+		boolean stopped = true;
+		//if service is not stopped
+		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
+			logger.info("{} service is not stopped, attempting to stop...");
+			//try to stop the service
+			clouderaUtils.startOrStopService(serviceName, stopped);
+			//validate if stopping succeeded
+			if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
+				logger.warn("{} service is not stopped, cleaning might not be performed fully");
+			}
+		}
 	}
 
 	/***

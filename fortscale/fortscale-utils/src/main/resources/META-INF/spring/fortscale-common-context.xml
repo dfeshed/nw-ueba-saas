@@ -29,4 +29,11 @@
 
 	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtil" />
 
+	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
+		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
+		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
+		<constructor-arg name="cmAdminUser" value="${cm_user}" />
+		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
+	</bean>
+
 </beans>

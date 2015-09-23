@@ -29,8 +29,6 @@ public class KafkaUtils {
      */
     public boolean deleteTopics(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
-        logger.debug("establishing connection to zookeeper");
-        logger.debug("connection established, starting to delete topics");
         for (String topic: topics) {
             if (deleteTopic(topic, doValidate)) {
                 numberOfTopicsDeleted++;
@@ -82,8 +80,9 @@ public class KafkaUtils {
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, fetching topics");
-        return scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
-
+        Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
+        zkClient.close();
+        return topics;
     }
 
     /***
@@ -94,8 +93,26 @@ public class KafkaUtils {
      * @return
      */
     public boolean deleteAllTopics(boolean doValidate) {
+        boolean success = false;
         Collection<String> kafkaTopics = getAllTopics();
-        return deleteTopics(kafkaTopics, doValidate);
+        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        for (String topic: kafkaTopics) {
+            String topicPath = ZkUtils.getTopicPath(topic);
+            logger.debug("attempting to delete topic {}", topic);
+            zkClient.deleteRecursive(topicPath);
+            if (doValidate) {
+                if (!zkClient.exists(topicPath)) {
+                    logger.info("deleted topic [}", topic);
+                    success = true;
+                } else {
+                    logger.error("failed to delete topic " + topic);
+                }
+            } else {
+                success = true;
+            }
+        }
+        zkClient.close();
+        return success;
     }
 
 }
