@@ -51,28 +51,25 @@ public class ClouderaUtils {
      * @return
      */
     public boolean startOrStopService(String serviceName, boolean isStop) {
-        ApiBulkCommandList api;
         ApiRoleState desiredRoleState;
         ApiRoleNameList rolesFullNames = new ApiRoleNameList();
         for (ApiRole currRole : servicesRes.getRolesResource(serviceName.toLowerCase()).readRoles()) {
             rolesFullNames.add(currRole.getName());
         }
         if (isStop) {
-            api = servicesRes.getRoleCommandsResource(serviceName.toLowerCase()).stopCommand(rolesFullNames);
-            logger.info("stopping the following tasks: ");
+            logger.info("stopping {} tasks", rolesFullNames.size());
             desiredRoleState = ApiRoleState.STOPPED;
         } else {
-            api = servicesRes.getRoleCommandsResource(serviceName.toLowerCase()).restartCommand(rolesFullNames);
-            logger.info("starting the following tasks: ");
+            logger.info("starting {} tasks", rolesFullNames.size());
             desiredRoleState = ApiRoleState.STARTED;
         }
         for (String role: rolesFullNames) {
-            logger.info(role);
+            logger.debug(role);
         }
         int numberOfRolesInDesiredState = 0;
         int numberOfRolesInBadHealth = 0;
         int timer = 0;
-        for (String currRoleName:rolesFullNames){
+        for (String currRoleName: rolesFullNames){
             while (timer < DEFAULT_TIMEOUT && servicesRes.getRolesResource(serviceName.toLowerCase()).
                     readRole(currRoleName).getRoleState() != desiredRoleState ) {
                 try {
