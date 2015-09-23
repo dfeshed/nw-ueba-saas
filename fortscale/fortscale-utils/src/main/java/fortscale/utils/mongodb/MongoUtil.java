@@ -115,8 +115,8 @@ public class MongoUtil implements CustomUtil {
                 logger.error("failed to drop collection " + collectionName);
                 return false;
             }
+            logger.info("dropped collection {}", collectionName);
         }
-        logger.info("dropped collection {}", collectionName);
         return true;
     }
 

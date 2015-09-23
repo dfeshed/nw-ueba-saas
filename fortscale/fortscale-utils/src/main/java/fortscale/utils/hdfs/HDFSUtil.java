@@ -98,7 +98,7 @@ public class HDFSUtil implements CustomUtil {
                 process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
                 if (process.waitFor() != 0) {
                     success = true;
-                    logger.info("deleted successfully");
+                    logger.info("{} deleted successfully", hdfsPath);
                 } else {
                     logger.error("failed to remove {}", hdfsPath);
                 }
