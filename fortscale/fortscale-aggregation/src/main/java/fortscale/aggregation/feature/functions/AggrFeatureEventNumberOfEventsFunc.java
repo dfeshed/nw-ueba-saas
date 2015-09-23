@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.functions;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.ConversionUtils;
@@ -33,21 +35,21 @@ public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction,
 	 * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
 	 */
 	@Override
-	public Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
+	public FeatureValue updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
 		if (aggregatedFeatureConf == null) {
 			return null;
 		}
 		if (aggrFeature == null) {
-			aggrFeature = new Feature(aggregatedFeatureConf.getName(), 1L);
-			return aggrFeature;
+			aggrFeature = new Feature(aggregatedFeatureConf.getName(), new FeatureNumericValue(1L));
+			return aggrFeature.getValue();
 		}
 
-		Object value = aggrFeature.getValue();
+		FeatureValue value = aggrFeature.getValue();
 		if (value == null) {
-			value = 0;
+			value = new FeatureNumericValue(0);
 			aggrFeature.setValue(value);
 		}
-		aggrFeature.setValue(ConversionUtils.convertToLong(aggrFeature.getValue())+1);
+		aggrFeature.setValue(new FeatureNumericValue(ConversionUtils.convertToLong(aggrFeature.getValue())+1));
 
 		return aggrFeature.getValue();
 	}

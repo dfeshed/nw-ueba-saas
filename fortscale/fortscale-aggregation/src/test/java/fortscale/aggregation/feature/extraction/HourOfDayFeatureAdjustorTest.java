@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.feature.FeatureNumericValue;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,8 +45,8 @@ public class HourOfDayFeatureAdjustorTest {
 		//  7/18/2015, 12:05:53
 		long timestamp = 1437210353;
 
-		int adjustedTimestamp = (int)featureAdjustor.adjust(timestamp, null);
+		FeatureNumericValue adjustedTimestamp = (FeatureNumericValue)featureAdjustor.adjust(new FeatureNumericValue(timestamp), null);
 
-		Assert.assertEquals(9, adjustedTimestamp);
+		Assert.assertEquals(9, adjustedTimestamp.getValue().intValue());
 	}
 }

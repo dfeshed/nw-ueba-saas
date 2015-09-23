@@ -2,6 +2,8 @@ package fortscale.aggregation.feature.extraction;
 
 import static fortscale.utils.ConversionUtils.convertToDouble;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.internal.core.Assert;
 
@@ -24,7 +26,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) throws Exception {
+	public FeatureValue adjust(FeatureValue value, Event event) throws Exception {
 		Double originalValue = convertToDouble(value);
 		Double denominator = convertToDouble(event.get(denominatorFieldName));
 
@@ -36,7 +38,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 			}
 		}
 
-		return dividedValue;
+		return new FeatureNumericValue(dividedValue);
 	}
 
 	public double getAdditionToDenominator() {

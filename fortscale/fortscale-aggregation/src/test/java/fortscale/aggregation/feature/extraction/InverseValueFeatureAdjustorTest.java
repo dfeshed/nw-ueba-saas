@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.extraction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
 import org.junit.Assert;
 
 
@@ -47,25 +48,25 @@ public class InverseValueFeatureAdjustorTest {
 	public void testPositiveDenominator() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(DENOMINATOR_FOR_JSON_TEST);
 
-		Double adjustedVal = (Double)featureAdjustor.adjust(4.9, null);
+		FeatureNumericValue adjustedVal = (FeatureNumericValue)featureAdjustor.adjust(new FeatureNumericValue(4.9), null);
 
-		Assert.assertEquals(0.2, adjustedVal,0.0);
+		Assert.assertEquals(0.2, adjustedVal.getValue().doubleValue(),0.0);
 	}
 
 	@Test
 	public void testZeroFeatureValue() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(DENOMINATOR_FOR_JSON_TEST);
 
-		Double adjustedVal = (Double)featureAdjustor.adjust(0, null);
+		FeatureNumericValue adjustedVal = (FeatureNumericValue)featureAdjustor.adjust(new FeatureNumericValue(0), null);
 
-		Assert.assertEquals(10, adjustedVal,0.0);
+		Assert.assertEquals(10, adjustedVal.getValue().doubleValue(),0.0);
 	}
 	
 	@Test 
 	public void testZeroDenominator() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(-0.1);
 
-		Double adjustedVal = (Double)featureAdjustor.adjust(0.1, null);
+		FeatureNumericValue adjustedVal = (FeatureNumericValue)featureAdjustor.adjust(new FeatureNumericValue(0.1), null);
 
 		Assert.assertNull(adjustedVal);
 	}

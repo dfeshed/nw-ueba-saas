@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.extraction;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -20,8 +22,8 @@ public class ConstantValueFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) {
-		return  constantValue;
+	public FeatureValue adjust(FeatureValue value, Event event) {
+		return  new FeatureStringValue(constantValue);
 	}
 
 	public String getConstantValue() {

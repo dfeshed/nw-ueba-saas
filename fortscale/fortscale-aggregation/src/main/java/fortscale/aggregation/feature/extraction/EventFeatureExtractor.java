@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.extraction;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -28,8 +30,8 @@ public class EventFeatureExtractor implements FeatureExtractor {
 	}
 
 	@Override
-	public Object extract(Event event) {
-		Object ret = null;
+	public FeatureValue extract(Event event) {
+		FeatureValue ret = null;
 
 		try {
 			ret = extractValue(event);
@@ -40,9 +42,8 @@ public class EventFeatureExtractor implements FeatureExtractor {
 		return ret;
 	}
 
-	protected Object extractValue(Event event) throws Exception {
-		Object value = event.get(fieldName);
-
+	protected FeatureValue extractValue(Event event) throws Exception {
+		FeatureValue value = new FeatureStringValue((String)event.get(fieldName));
 
 		if (featureAdjustor != null) {
 			return featureAdjustor.adjust(value, event);

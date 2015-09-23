@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.extraction;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -23,11 +25,11 @@ public class IPv4FeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) {
-		String ret = null;
+	public FeatureValue adjust(FeatureValue value, Event event) {
+		FeatureStringValue ret = new FeatureStringValue();
 
 		try {
-			String ip = (String)value;
+			String ip = ((FeatureStringValue)value).toString();
 			String classes[] = ip.split("\\.");
 			if (classes.length != 4) {
 				logger.info("wrong ip format: {}", ip);
@@ -49,7 +51,7 @@ public class IPv4FeatureAdjustor implements FeatureAdjustor {
 				}
 			}
 
-			ret = builder.toString();
+			ret.setValue(builder.toString());
 		} catch (Exception e) {
 			logger.info("wrong ip format: {}", value);
 		}

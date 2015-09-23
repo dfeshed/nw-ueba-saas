@@ -17,15 +17,6 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AbstractAggrFeat
 
     private boolean includeValues = false;
 
-    /**
-     * Create new feature by running the associated {@link IAggrFeatureFunction} that is configured in the given
-     * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
-     *
-     * @param aggrFeatureEventConf the specification of the feature to be created
-     * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
-     * @return a new feature created by the relevant function.
-     */
-
     // Getter and Setter are only for unit tests
     public boolean getIncludeValues() { return this.includeValues; }
     public void setIncludeValues(boolean includeValues) {

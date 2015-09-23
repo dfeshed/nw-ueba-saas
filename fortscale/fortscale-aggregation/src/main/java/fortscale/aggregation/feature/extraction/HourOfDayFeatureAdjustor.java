@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 @JsonTypeName(HourOfDayFeatureAdjustor.HOUR_OF_DAY_FEATURE_ADJUSTOR)
@@ -18,10 +20,10 @@ public class HourOfDayFeatureAdjustor implements FeatureAdjustor {
 	private static final int HOUR_OF_DAY_FEATURE_ADJUSTOR_TYPE_HASH_CODE = HOUR_OF_DAY_FEATURE_ADJUSTOR.hashCode();
 	private static Calendar calenderHelper = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-	@Override public Object adjust(Object value, Event event) throws InvalidQueryException {
+	@Override public FeatureValue adjust(FeatureValue value, Event event) throws InvalidQueryException {
 		long timestamp = convertToLong(value);
 		calenderHelper.setTimeInMillis(timestamp * 1000);
-		return new Integer(calenderHelper.get(Calendar.HOUR_OF_DAY));
+		return new FeatureNumericValue(new Integer(calenderHelper.get(Calendar.HOUR_OF_DAY)));
 	}
 
 	@Override

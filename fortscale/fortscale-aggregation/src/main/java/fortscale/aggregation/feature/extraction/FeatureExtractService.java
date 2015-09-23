@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -116,12 +118,15 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	private Feature extractWithException(String featureName, Event event) throws Exception {
 		FeatureExtractor featureExtractor = getFeatureExtractor(featureName);
 
-		Object value;
+		FeatureValue value = null;
 
 		if(featureExtractor != null){
 			value = featureExtractor.extract(event);
 		} else {
-			value = event.get(featureName);
+			String valueStr = (String)event.get(featureName);
+			if(valueStr!=null) {
+				value = new FeatureStringValue(valueStr);
+			}
 		}
 		return new Feature(featureName, value);
 

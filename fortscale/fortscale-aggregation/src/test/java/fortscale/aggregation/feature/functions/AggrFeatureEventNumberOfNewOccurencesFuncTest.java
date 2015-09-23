@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import net.minidev.json.JSONObject;
@@ -51,7 +52,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		histogram2.add(newOccurenceValue, 4.0);
 		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
 		bucket2FeatureMap.put("feature1", new Feature("feature1", histogram2));
-		bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
+		bucket2FeatureMap.put("feature2", new Feature("feature2", new FeatureNumericValue(42)));
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);

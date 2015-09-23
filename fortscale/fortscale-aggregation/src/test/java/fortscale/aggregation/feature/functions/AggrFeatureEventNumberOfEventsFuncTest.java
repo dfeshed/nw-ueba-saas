@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
@@ -46,8 +47,8 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 	public void testUpdateAggrFeature() {
 		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName", 1);
-		long actual1 = (long)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10));
-		Assert.assertEquals(11, (int) actual1);
+		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10));
+		Assert.assertEquals(11, (int) actual1.getValue().intValue());
 	}
 
 	@Test
@@ -55,13 +56,11 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		String aggregatedFeatureName = "aggregatedFeatureEventTestName";
 
 		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
-		Object actual1 = function.updateAggrFeature(null, new HashMap<String, Feature >(), new Feature("featureName", "featureValue"));
+		Object actual1 = function.updateAggrFeature(null, new HashMap<String, Feature>(), new Feature("featureName", "featureValue"));
 		Assert.assertNull(actual1);
 		AggregatedFeatureConf conf1 = createAggregatedFeatureConf(aggregatedFeatureName, 1);
-		Feature actual2 = (Feature)function.updateAggrFeature(conf1, new HashMap<String, Feature >(), null);
-		Assert.assertEquals(aggregatedFeatureName, actual2.getName());
-		long valueResult = (long)actual2.getValue();
-		Assert.assertEquals(1, valueResult);
+		FeatureNumericValue actual2 = (FeatureNumericValue)function.updateAggrFeature(conf1, new HashMap<String, Feature>(), null);
+		Assert.assertEquals(1, actual2.getValue().intValue());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
