@@ -34,7 +34,7 @@
     "ember-cli-mirage": "^0.1.8",
     "ember-cli-qunit": "^1.0.0",
     "ember-cli-release": "0.2.3",
-    "ember-cli-sass": "athielke/ember-cli-sass#bugfix/addon-styles",
+    "ember-cli-sass": "4.2.0",
     "ember-cli-simple-auth": "^0.8.0",
     "ember-cli-simple-auth-testing": "^0.8.0",
     "ember-cli-sri": "^1.0.3",
