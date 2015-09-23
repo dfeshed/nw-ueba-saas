@@ -3,9 +3,13 @@
 		xmlns="http://www.springframework.org/schema/beans"
 		xmlns:hdp="http://www.springframework.org/schema/hadoop"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
+						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd
+						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
+	<mongo:repositories base-package="fortscale.domain.core.dao" />
+	<mongo:repositories base-package="fortscale.ml.service.dao" />
 
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
