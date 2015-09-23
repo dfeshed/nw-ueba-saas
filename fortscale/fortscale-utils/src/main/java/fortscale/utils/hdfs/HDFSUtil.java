@@ -61,17 +61,18 @@ public class HDFSUtil implements CustomUtil {
      */
     public boolean deleteEntities(Collection<String> hdfsPaths, boolean doValidate) {
         int numberOfDeletedEntities = 0;
-        logger.debug("attempting to delete {} files from hdfs", hdfsPaths.size());
+        logger.debug("attempting to delete {} files/folders from hdfs", hdfsPaths.size());
         for (String hdfsPath: hdfsPaths) {
             if (deletePath(hdfsPath, doValidate)) {
                 numberOfDeletedEntities++;
             }
         }
         if (numberOfDeletedEntities == hdfsPaths.size()) {
-            logger.info("deleted all {} files", hdfsPaths.size());
+            logger.info("deleted all {} files/folders", hdfsPaths.size());
             return true;
         }
-        logger.error("failed to delete all {} files, deleted only {}", hdfsPaths.size(), numberOfDeletedEntities);
+        logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
+                numberOfDeletedEntities);
         return false;
     }
 
@@ -105,7 +106,7 @@ public class HDFSUtil implements CustomUtil {
                 success = true;
             }
         } catch (Exception ex) {
-            logger.error("failed to remove partition {} - {}", hdfsPath, ex.getMessage());
+            logger.error("failed to remove path {} - {}", hdfsPath, ex.getMessage());
         }
         return success;
     }

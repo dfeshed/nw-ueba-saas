@@ -106,13 +106,13 @@ public class MongoUtil implements CustomUtil {
         try {
             mongoTemplate.dropCollection(collectionName);
         } catch (Exception ex) {
-            logger.warn("failed to drop collection " + collectionName);
+            logger.error("failed to drop collection " + collectionName);
             return false;
         }
         if (doValidate) {
             //verify drop
             if (mongoTemplate.collectionExists(collectionName)) {
-                logger.warn("failed to drop collection " + collectionName);
+                logger.error("failed to drop collection " + collectionName);
                 return false;
             }
         }
