@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.minidev.json.JSONObject;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * This is the bean of EntityEvent
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityEvent extends AbstractDocument implements Serializable {
 
 
