@@ -379,9 +379,9 @@ public class CleanJob extends FortscaleJob {
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
 		if (doValidate) {
-			checkService(collectionServiceName);
-			checkService(streamingServiceName);
-			checkService(kafkaServiceName);
+			checkAndStopService(collectionServiceName);
+			checkAndStopService(streamingServiceName);
+			checkAndStopService(kafkaServiceName);
 		}
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
@@ -396,7 +396,7 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param serviceName
 	 */
-	private boolean checkService(String serviceName) {
+	private boolean checkAndStopService(String serviceName) {
 		boolean stopped = true;
 		//if service is not stopped
 		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
@@ -412,6 +412,7 @@ public class CleanJob extends FortscaleJob {
 			}
 			return success;
 		}
+		logger.info("{} is down, good!", serviceName);
 		return stopped;
 	}
 
