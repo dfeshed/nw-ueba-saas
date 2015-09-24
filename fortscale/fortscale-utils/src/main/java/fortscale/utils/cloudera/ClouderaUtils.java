@@ -58,9 +58,11 @@ public class ClouderaUtils {
         }
         if (isStop) {
             logger.info("stopping {} tasks", rolesFullNames.size());
+            servicesRes.getRoleCommandsResource(serviceName.toLowerCase()).stopCommand(rolesFullNames);
             desiredRoleState = ApiRoleState.STOPPED;
         } else {
             logger.info("starting {} tasks", rolesFullNames.size());
+            servicesRes.getRoleCommandsResource(serviceName.toLowerCase()).startCommand(rolesFullNames);
             desiredRoleState = ApiRoleState.STARTED;
         }
         for (String role: rolesFullNames) {
