@@ -155,18 +155,41 @@ public class CleanJob extends FortscaleJob {
 			} case IMPALA: {
 				success = handleImpalaDeletion(toDelete, doValidate);
 				break;
+			} case STORE: {
+				success = handleStoreDeletion(toDelete, doValidate);
+				break;
 			} case KAFKA: {
 				logger.info("deleting {} topics", toDelete.size());
 				success = kafkaUtils.deleteTopics(toDelete.keySet(), doValidate);
-				break;
-			} case STORE: {
-				logger.info("deleting {} states", toDelete.size());
-				success = storeUtils.deleteStates(toDelete.keySet(), doValidate);
 				break;
 			}
 		}
 		return success;
 	}
+
+	/***
+	 *
+	 * This method handles deletion of states from the store
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean handleStoreDeletion(Map<String, String> toDelete, boolean doValidate) {
+		boolean success;
+		Collection<String> temp = toDelete.keySet();
+		Set<String> tables = new HashSet(temp);
+		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+			if (entry.getValue().equals(prefixFlag)) {
+				tables.addAll(impalaUtils.getTablesWithPrefix(entry.getKey()));
+				tables.remove(entry.getKey());
+			}
+		}
+		logger.info("deleting {} tables", tables);
+		success = impalaUtils.dropTables(tables, doValidate);
+		return success;
+	}
+
 
 	/***
 	 *
@@ -220,16 +243,17 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean handleImpalaDeletion(Map<String, String> toDelete, boolean doValidate) {
-		boolean success;Collection<String> temp = toDelete.keySet();
-		Set<String> tables = new HashSet(temp);
+		boolean success;
+		Collection<String> temp = toDelete.keySet();
+		Set<String> states = new HashSet(temp);
 		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
 			if (entry.getValue().equals(prefixFlag)) {
-				tables.addAll(impalaUtils.getTablesWithPrefix(entry.getKey()));
-				tables.remove(entry.getKey());
+				states.addAll(storeUtils.getStatesWithPrefix(entry.getKey()));
+				states.remove(entry.getKey());
 			}
 		}
-		logger.info("deleting {} tables", tables);
-		success = impalaUtils.dropTables(tables, doValidate);
+		logger.info("deleting {} states", states);
+		success = storeUtils.deleteStates(states, doValidate);
 		return success;
 	}
 
@@ -430,15 +454,22 @@ public class CleanJob extends FortscaleJob {
 	/***
 	 *
 	 * This method builds the list of sources to delete according to the following format -
-	 * dataSource (collection name, kafka topic, etc.) DELIMITER queryField (prefix flag, partition type etc.)
+	 * dataSource (collection name, kafka topic, etc.) optional DELIMITER queryField (prefix flag, partition type etc.)
 	 *
 	 * @param dataSourcesString
 	 */
 	private void createDataSourcesMap(String dataSourcesString) {
 		dataSources = new HashMap();
 		for (String entry: dataSourcesString.split(dataSourcesDelimiter)) {
-			String dataSource = entry.split(dataSourcesFieldDelimiter)[0];
-			String queryField = entry.split(dataSourcesFieldDelimiter)[1];
+			String dataSource;
+			String queryField;
+			if (entry.contains(dataSourcesFieldDelimiter)) {
+				dataSource = entry.split(dataSourcesFieldDelimiter)[0];
+				queryField = entry.split(dataSourcesFieldDelimiter)[1];
+			} else {
+				dataSource = entry;
+				queryField = "";
+			}
 			dataSources.put(dataSource, queryField);
 		}
 	}

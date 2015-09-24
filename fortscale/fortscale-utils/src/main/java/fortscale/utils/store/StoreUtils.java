@@ -52,7 +52,7 @@ public class StoreUtils {
                 logger.debug("failed to delete state {} - {}", stateDirectory.getName(), ex);
             }
             if (doValidate) {
-                if (stateDirectory.exists()) {
+                if (!stateDirectory.exists()) {
                     logger.info("deleted state {}", stateDirectory.getName());
                     numberOfStatesDeleted++;
                 } else {
