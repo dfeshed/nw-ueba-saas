@@ -87,13 +87,21 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 	}
 
-	@RequestMapping(value="/findByAnomalyType", method = RequestMethod.GET)
+	/**
+	 * Special API for the GeoHopping report: this queries GeoHopping indicators from Mongo, and for each one retrieve its related events from Impala
+	 * @param page
+	 * @param size
+	 * @param after
+	 * @param before
+	 * @param sortDesc
+	 * @return
+	 */
+	@RequestMapping(value="/findEventsForGeoHopping", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> list(
 			@RequestParam(defaultValue="1", required=false) int page,
 			@RequestParam(defaultValue="20", required=false) int size,
-			@RequestParam(defaultValue="vpn_geo_hopping", required=true) String anomalyTypeFieldName,
 			@RequestParam(required=false, defaultValue="0") long after,
 			@RequestParam(required=false, defaultValue="0") long before,
 			@RequestParam(defaultValue="True") boolean sortDesc) {
@@ -105,20 +113,28 @@ public class ApiEvidenceController extends DataQueryController {
 		PageRequest request = new PageRequest(page, size,
 				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
 
-		List<Evidence> evidences = evidencesService.findByStartDateBetweenAndAnomalyTypeFieldName(after, before, anomalyTypeFieldName);
+		//first step: retrieve all Indicators that are related to vpn_geo_hopping
+		List<Evidence> evidences = evidencesService.findByStartDateBetweenAndAnomalyTypeFieldName(after, before, "vpn_geo_hopping");
 
+		//second step, for each geo_hopping indicator, retrieve the list of events from impala
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (Evidence evidence : evidences){
+			//the function "getListOfEvents" accesses Impala using query builder and retrieves events that are related to specific indicator
+			//each event is built as a map object with all attributes as key-value
 			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
+			//retrieve the data from the data bean so we can manipulate it:
 			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
-			for (Map<String, Object> mapObject : data){
-				Object normalizedUsername = mapObject.get("normalized_username");
+			//iterate over each event map object
+			for (Map<String, Object> eventMapObject : data){
+				Object normalizedUsername = eventMapObject.get("normalized_username");
 				if (normalizedUsername != null){
+					//needs to retrieve user id from the user name, so use the userService for that.
 					String userId = evidencesService.getUserIdByUserName(normalizedUsername.toString()).getId();
-					mapObject.put("userid",userId);
-					mapObject.put("id",userId + mapObject.get("event_time") + mapObject.get("source_ip"));
+					eventMapObject.put("userid",userId);
+					//create a unique is by concatanating userId + eventTime + sourceIp
+					eventMapObject.put("id",userId + eventMapObject.get("event_time") + eventMapObject.get("source_ip"));
 				}
-				mapObject.put("evidenceId", evidence.getId());
+				eventMapObject.put("evidenceId", evidence.getId());
 			}
 			result.addAll(data);
 		}
