@@ -2,6 +2,7 @@ package fortscale.utils.store;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -16,12 +17,12 @@ public class StoreUtils {
 
     private static Logger logger = Logger.getLogger(StoreUtils.class);
 
-    //TODO - is this correct? if so, extract this to properties file
-    private final String stateBaseFolder = "/home/cloudera/fortscale/streaming/state";
+    @Value("${fortscale.home.dir}/streaming/state")
+    private String stateBaseFolder;
 
     /***
      *
-     * This method deletes all of the states from the state folder
+     * This method deletes all of the states from the store
      *
      * @param doValidate  flag to determine should we perform validations
      * @return
@@ -45,18 +46,22 @@ public class StoreUtils {
         logger.debug("attempting to delete {} states", states.size());
         for (String state: states) {
             File stateDirectory = new File(stateBaseFolder + "/" + state);
-            try {
-                FileUtils.deleteDirectory(stateDirectory);
-            } catch (IOException ex) {
-                logger.debug("failed to delete state {} - {}", state, ex);
-            }
-            if (doValidate) {
-                if (!stateDirectory.exists()) {
-                    logger.info("deleted state {}", state);
-                    numberOfStatesDeleted++;
-                } else {
-                    logger.error("failed to delete state {}", state);
+            if (stateDirectory.exists()) {
+                try {
+                    FileUtils.deleteDirectory(stateDirectory);
+                } catch (IOException ex) {
+                    logger.debug("failed to delete state {} - {}", state, ex);
                 }
+                if (doValidate) {
+                    if (!stateDirectory.exists()) {
+                        logger.info("deleted state {}", state);
+                        numberOfStatesDeleted++;
+                    } else {
+                        logger.error("failed to delete state {}", state);
+                    }
+                }
+            } else {
+                logger.warn("state {} doesn't exist", state);
             }
         }
         if (numberOfStatesDeleted == states.size()) {
