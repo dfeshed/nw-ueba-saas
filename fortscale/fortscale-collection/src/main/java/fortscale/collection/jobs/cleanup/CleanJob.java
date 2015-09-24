@@ -8,6 +8,7 @@ import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.MongoUtil;
+import fortscale.utils.store.StoreUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -40,6 +41,8 @@ public class CleanJob extends FortscaleJob {
 	private ImpalaUtils impalaUtils;
 	@Autowired
 	private HDFSUtil hdfsUtils;
+	@Autowired
+	private StoreUtils storeUtils;
 	@Autowired
 	private ClouderaUtils clouderaUtils;
 
@@ -153,11 +156,12 @@ public class CleanJob extends FortscaleJob {
 				success = handleImpalaDeletion(toDelete, doValidate);
 				break;
 			} case KAFKA: {
-				logger.info("deleting all {} topics", toDelete.size());
+				logger.info("deleting {} topics", toDelete.size());
 				success = kafkaUtils.deleteTopics(toDelete.keySet(), doValidate);
 				break;
 			} case STORE: {
-				//TODO - implement
+				logger.info("deleting {} states", toDelete.size());
+				success = storeUtils.deleteStates(toDelete.keySet(), doValidate);
 				break;
 			}
 		}
@@ -177,7 +181,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
 		if (startTime == null && endTime == null) {
-            logger.info("deleting all {} entities", toDelete.size());
+            logger.info("deleting {} entities", toDelete.size());
             success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
         } else {
             logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
@@ -202,12 +206,6 @@ public class CleanJob extends FortscaleJob {
 			} case HDFS: {
 				success = restoreSnapshot(sources, hdfsUtils);
 				break;
-			} case IMPALA: {
-				//TODO - implement?
-				break;
-			} case STORE: {
-				//TODO - implement?
-				break;
 			}
 		}
 		return success;
@@ -226,11 +224,11 @@ public class CleanJob extends FortscaleJob {
 		Set<String> tables = new HashSet(temp);
 		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
 			if (entry.getValue().equals(prefixFlag)) {
-				tables.addAll(impalaUtils.getAllTablesWithPrefix(entry.getKey()));
+				tables.addAll(impalaUtils.getTablesWithPrefix(entry.getKey()));
 				tables.remove(entry.getKey());
 			}
 		}
-		logger.info("deleting all {} tables", tables);
+		logger.info("deleting {} tables", tables);
 		success = impalaUtils.dropTables(tables, doValidate);
 		return success;
 	}
@@ -252,7 +250,7 @@ public class CleanJob extends FortscaleJob {
 			Set<String> collections = new HashSet(temp);
 			for (Map.Entry<String, String> entry: toDelete.entrySet()) {
 				if (entry.getValue().equals(prefixFlag)) {
-					collections.addAll(mongoUtils.getAllCollectionsWithPrefix(entry.getKey()));
+					collections.addAll(mongoUtils.getCollectionsWithPrefix(entry.getKey()));
 					collections.remove(entry.getKey());
 				}
 			}
@@ -371,6 +369,18 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
+	 * This method clears the store states entirely
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean clearStore(boolean doValidate) {
+		logger.info("attempting to clear all states");
+		return storeUtils.deleteAllStates(doValidate);
+	}
+
+	/***
+	 *
 	 * This method clears the system entirely
 	 *
 	 * @param doValidate  flag to determine should we perform validations and stop services
@@ -387,7 +397,8 @@ public class CleanJob extends FortscaleJob {
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);
 		boolean kafkaSuccess = clearKafka(doValidate);
-		return mongoSuccess && impalaSuccess && hdfsSuccess && kafkaSuccess;
+		boolean storeSuccess = clearStore(doValidate);
+		return mongoSuccess && impalaSuccess && hdfsSuccess && kafkaSuccess && storeSuccess;
 	}
 
 	/***

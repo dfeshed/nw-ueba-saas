@@ -62,7 +62,7 @@ public class MongoUtil implements CustomUtil {
      * @return
      */
     public boolean dropAllCollections(boolean doValidate) {
-        Collection<String> collectionNames = getAllCollectionsWithPrefix("");
+        Collection<String> collectionNames = getCollectionsWithPrefix("");
         //system collection - ignore
         collectionNames.remove("system.indexes");
         logger.debug("found {} collections to drop", collectionNames.size());
@@ -127,8 +127,8 @@ public class MongoUtil implements CustomUtil {
      * @param prefix  run with empty prefix to get all collections
      * @return
      */
-    public Collection<String> getAllCollectionsWithPrefix(String prefix) {
-        logger.debug("getting all collections");
+    public Collection<String> getCollectionsWithPrefix(String prefix) {
+        logger.debug("getting all collections with prefix {}", prefix);
         Collection<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());
         if (prefix.isEmpty()) {

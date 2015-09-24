@@ -29,6 +29,8 @@
 
 	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtil" />
 
+	<bean id="storeUtils" class="fortscale.utils.store.StoreUtils" />
+
 	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
 		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
 		<constructor-arg name="clusterName" value="${cm_cluster_name}" />

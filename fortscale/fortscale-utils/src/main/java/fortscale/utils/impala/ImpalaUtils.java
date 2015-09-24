@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -57,8 +56,8 @@ public class ImpalaUtils {
      * @param prefix run with empty prefix to get all tables
      * @return
      */
-    public Collection<String> getAllTablesWithPrefix(String prefix) {
-        logger.debug("getting all tables");
+    public Collection<String> getTablesWithPrefix(String prefix) {
+        logger.debug("getting all tables with prefix {}", prefix);
         Collection<String> tableNames = impalaClient.getAllTables();
         logger.debug("found {} tables", tableNames.size());
         if (prefix.isEmpty()) {
@@ -84,7 +83,7 @@ public class ImpalaUtils {
      * @return
      */
     public boolean dropAllTables(boolean doValidate) {
-        Collection<String> tableNames = getAllTablesWithPrefix("");
+        Collection<String> tableNames = getTablesWithPrefix("");
         logger.debug("found {} tables to drop", tableNames.size());
         return dropTables(tableNames, doValidate);
     }
