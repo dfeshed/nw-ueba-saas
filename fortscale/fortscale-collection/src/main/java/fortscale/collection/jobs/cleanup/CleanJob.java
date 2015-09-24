@@ -159,8 +159,7 @@ public class CleanJob extends FortscaleJob {
 				success = handleStoreDeletion(toDelete, doValidate);
 				break;
 			} case KAFKA: {
-				logger.info("deleting {} topics", toDelete.size());
-				success = kafkaUtils.deleteTopics(toDelete.keySet(), doValidate);
+				success = handleKafkaDeletion(toDelete, doValidate);
 				break;
 			}
 		}
@@ -190,6 +189,29 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
+	 * This method handles deletion of kafka topics
+	 *
+	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	private boolean handleKafkaDeletion(Map<String, String> toDelete, boolean doValidate) {
+		boolean success;
+		Collection<String> temp = toDelete.keySet();
+		Set<String> topics = new HashSet(temp);
+		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+			if (entry.getValue().equals(prefixFlag)) {
+				topics.addAll(kafkaUtils.getTopicsWithPrefix(entry.getKey()));
+				topics.remove(entry.getKey());
+			}
+		}
+		logger.info("deleting {} topics", topics.size());
+		success = kafkaUtils.deleteTopics(topics, doValidate);
+		return success;
+	}
+
+	/***
+	 *
 	 * This method handles deletion of states from the store
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
@@ -206,7 +228,7 @@ public class CleanJob extends FortscaleJob {
 				tables.remove(entry.getKey());
 			}
 		}
-		logger.info("deleting {} tables", tables);
+		logger.info("deleting {} tables", tables.size());
 		success = impalaUtils.dropTables(tables, doValidate);
 		return success;
 	}
@@ -251,7 +273,7 @@ public class CleanJob extends FortscaleJob {
 				states.remove(entry.getKey());
 			}
 		}
-		logger.info("deleting {} states", states);
+		logger.info("deleting {} states", states.size());
 		success = storeUtils.deleteStates(states, doValidate);
 		return success;
 	}
@@ -277,7 +299,7 @@ public class CleanJob extends FortscaleJob {
 					collections.remove(entry.getKey());
 				}
 			}
-			logger.info("deleting all {} entities", collections);
+			logger.info("deleting {} entities", collections.size());
 			success = mongoUtils.dropCollections(collections, doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);

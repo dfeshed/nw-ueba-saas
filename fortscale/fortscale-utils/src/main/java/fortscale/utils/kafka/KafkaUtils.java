@@ -6,6 +6,7 @@ import org.I0Itec.zkclient.ZkClient;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -83,6 +84,32 @@ public class KafkaUtils {
         Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
         zkClient.close();
         return topics;
+    }
+
+    /***
+     *
+     * This method returns a list of all of the topics starting with the given prefix
+     *
+     * @param prefix run with empty prefix to get all topics
+     * @return
+     */
+    public Collection<String> getTopicsWithPrefix(String prefix) {
+        logger.debug("getting all topics with prefix {}", prefix);
+        Collection<String> topicNames = getAllTopics();
+        logger.debug("found {} topics", topicNames.size());
+        if (prefix.isEmpty()) {
+            return topicNames;
+        }
+        Iterator<String> it = topicNames.iterator();
+        logger.debug("filtering out topics not starting with {}", prefix);
+        while (it.hasNext()) {
+            String topicName = it.next();
+            if (!topicName.startsWith(prefix)) {
+                it.remove();
+            }
+        }
+        logger.info("found {} topics with prefix {}", topicNames.size(), prefix);
+        return topicNames;
     }
 
     /***

@@ -66,8 +66,8 @@ public class ImpalaUtils {
         Iterator<String> it = tableNames.iterator();
         logger.debug("filtering out tables not starting with {}", prefix);
         while (it.hasNext()) {
-            String collectionName = it.next();
-            if (!collectionName.startsWith(prefix)) {
+            String tableName = it.next();
+            if (!tableName.startsWith(prefix)) {
                 it.remove();
             }
         }
