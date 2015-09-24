@@ -169,13 +169,34 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
+	 * This method handles the restore command, determines which technology to use and executes it
+	 *
+	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @return
+	 */
+	private boolean restoreEntities(Map<String, String> sources) {
+		boolean success = false;
+		switch (technology) {
+			case MONGO: {
+				success = restoreSnapshot(sources, mongoUtils);
+				break;
+			} case HDFS: {
+				success = restoreSnapshot(sources, hdfsUtils);
+				break;
+			}
+		}
+		return success;
+	}
+
+	/***
+	 *
 	 * This method handles deletion of states from the store
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleStoreDeletion(Map<String, String> toDelete, boolean doValidate) {
+	private boolean handleImpalaDeletion(Map<String, String> toDelete, boolean doValidate) {
 		boolean success;
 		Collection<String> temp = toDelete.keySet();
 		Set<String> tables = new HashSet(temp);
@@ -189,7 +210,6 @@ public class CleanJob extends FortscaleJob {
 		success = impalaUtils.dropTables(tables, doValidate);
 		return success;
 	}
-
 
 	/***
 	 *
@@ -215,34 +235,13 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
-	 * This method handles the restore command, determines which technology to use and executes it
-	 *
-	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @return
-	 */
-	private boolean restoreEntities(Map<String, String> sources) {
-		boolean success = false;
-		switch (technology) {
-			case MONGO: {
-				success = restoreSnapshot(sources, mongoUtils);
-				break;
-			} case HDFS: {
-				success = restoreSnapshot(sources, hdfsUtils);
-				break;
-			}
-		}
-		return success;
-	}
-
-	/***
-	 *
-	 * This method handles deletion of tables from impala
+	 * This method handles deletion of states from the store
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleImpalaDeletion(Map<String, String> toDelete, boolean doValidate) {
+	private boolean handleStoreDeletion(Map<String, String> toDelete, boolean doValidate) {
 		boolean success;
 		Collection<String> temp = toDelete.keySet();
 		Set<String> states = new HashSet(temp);
