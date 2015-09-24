@@ -434,7 +434,7 @@ public class CleanJob extends FortscaleJob {
 		boolean stopped = true;
 		//if service is not stopped
 		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
-			logger.info("{} service is not stopped, attempting to stop...");
+			logger.info("{} service is not stopped, attempting to stop...", serviceName);
 			//try to stop the service
 			clouderaUtils.startOrStopService(serviceName, stopped);
 			//validate if stopping succeeded
