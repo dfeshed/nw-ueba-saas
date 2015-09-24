@@ -17,7 +17,7 @@ public class StoreUtils {
     private static Logger logger = Logger.getLogger(StoreUtils.class);
 
     //TODO - is this correct? if so, extract this to properties file
-    private final String stateFolder = "/home/cloudera/fortscale/streaming/state";
+    private final String stateBaseFolder = "/home/cloudera/fortscale/streaming/state";
 
     /***
      *
@@ -44,19 +44,18 @@ public class StoreUtils {
         int numberOfStatesDeleted = 0;
         logger.debug("attempting to delete {} states", states.size());
         for (String state: states) {
-            //TODO - concatenate base path?
-            File stateDirectory = new File(state);
+            File stateDirectory = new File(stateBaseFolder + "/" + state);
             try {
                 FileUtils.deleteDirectory(stateDirectory);
             } catch (IOException ex) {
-                logger.debug("failed to delete state {} - {}", stateDirectory.getName(), ex);
+                logger.debug("failed to delete state {} - {}", state, ex);
             }
             if (doValidate) {
                 if (!stateDirectory.exists()) {
-                    logger.info("deleted state {}", stateDirectory.getName());
+                    logger.info("deleted state {}", state);
                     numberOfStatesDeleted++;
                 } else {
-                    logger.error("failed to delete state {}", stateDirectory.getName());
+                    logger.error("failed to delete state {}", state);
                 }
             }
         }
@@ -77,7 +76,7 @@ public class StoreUtils {
      */
     public Collection<String> getStatesWithPrefix(final String prefix) {
         logger.debug("getting all states with prefix {}", prefix);
-        File file = new File(stateFolder);
+        File file = new File(stateBaseFolder);
         String[] states = file.list(new FilenameFilter() {
             @Override
             public boolean accept(File current, String name) {
