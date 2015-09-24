@@ -74,7 +74,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@PostConstruct
-	public void initMapseMap(){
+	public void initMaps(){
 		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
 		Map eventFilterMap =  ConfigurationUtils.getStringMap(eventsFilterMap);
 		eventsFilter = new FilteringPropertiesConfigurationHandler(eventFilterMap);
@@ -149,9 +149,11 @@ public class ApiEvidenceController extends DataQueryController {
 			Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
 			termsMap.add(term);
 			// Add condition for custom filtering
-			EvidenceFilter evidenceFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
-			if (evidenceFilter != null) {
-				termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, evidenceFilter));
+			if (eventsFilter != null) {
+				EvidenceFilter evidenceFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				if (evidenceFilter != null) {
+					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, evidenceFilter));
+				}
 			}
 			//add condition about time range
 			Long currentTimestamp = System.currentTimeMillis();
