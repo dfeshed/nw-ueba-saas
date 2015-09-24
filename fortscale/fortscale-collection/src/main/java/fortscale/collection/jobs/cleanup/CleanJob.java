@@ -379,15 +379,9 @@ public class CleanJob extends FortscaleJob {
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
 		if (doValidate) {
-			if (checkService(streamingServiceName)) {
-				logger.info("{} is down, good!", streamingServiceName);
-			}
-			if (checkService(collectionServiceName)) {
-				logger.info("{} is down, good!", collectionServiceName);
-			}
-			if (checkService(kafkaServiceName)) {
-				logger.info("{} is down, good!", kafkaServiceName);
-			}
+			checkService(collectionServiceName);
+			checkService(streamingServiceName);
+			checkService(kafkaServiceName);
 		}
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
@@ -411,12 +405,14 @@ public class CleanJob extends FortscaleJob {
 			clouderaUtils.startOrStopService(serviceName, stopped);
 			//validate if stopping succeeded
 			boolean success = clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped);
-			if (!success) {
-				logger.warn("{} service is not stopped, cleaning might not be performed fully");
+			if (success) {
+				logger.info("{} is down, good!", serviceName);
+			} else {
+				logger.warn("{} service is not stopped, cleaning might not be performed fully", serviceName);
 			}
 			return success;
 		}
-		return true;
+		return stopped;
 	}
 
 	/***
