@@ -1,5 +1,6 @@
 package fortscale.utils.impala;
 
+import fortscale.utils.cleanup.CustomDeletionUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,7 +10,7 @@ import java.util.Iterator;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class ImpalaUtils {
+public class ImpalaUtils implements CustomDeletionUtil {
 
     private static Logger logger = Logger.getLogger(ImpalaUtils.class);
 
@@ -24,7 +25,8 @@ public class ImpalaUtils {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean dropTables(Collection<String> tableNames, boolean doValidate) {
+    @Override
+    public boolean deleteEntities(Collection<String> tableNames, boolean doValidate) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
         for (String tableName: tableNames) {
@@ -56,7 +58,8 @@ public class ImpalaUtils {
      * @param prefix run with empty prefix to get all tables
      * @return
      */
-    public Collection<String> getTablesWithPrefix(String prefix) {
+    @Override
+    public Collection<String> getEntitiesWithPrefix(String prefix) {
         logger.debug("getting all tables with prefix {}", prefix);
         Collection<String> tableNames = impalaClient.getAllTables();
         logger.debug("found {} tables", tableNames.size());
@@ -83,9 +86,9 @@ public class ImpalaUtils {
      * @return
      */
     public boolean dropAllTables(boolean doValidate) {
-        Collection<String> tableNames = getTablesWithPrefix("");
+        Collection<String> tableNames = getEntitiesWithPrefix("");
         logger.debug("found {} tables to drop", tableNames.size());
-        return dropTables(tableNames, doValidate);
+        return deleteEntities(tableNames, doValidate);
     }
 
 }

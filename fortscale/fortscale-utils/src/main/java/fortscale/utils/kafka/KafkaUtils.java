@@ -1,5 +1,6 @@
 package fortscale.utils.kafka;
 
+import fortscale.utils.cleanup.CustomDeletionUtil;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -11,7 +12,7 @@ import java.util.Iterator;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class KafkaUtils {
+public class KafkaUtils implements CustomDeletionUtil {
 
     private static Logger logger = Logger.getLogger(KafkaUtils.class);
 
@@ -28,7 +29,8 @@ public class KafkaUtils {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteTopics(Collection<String> topics, boolean doValidate) {
+    @Override
+    public boolean deleteEntities(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         for (String topic: topics) {
             if (deleteTopic(topic, doValidate)) {
@@ -51,7 +53,7 @@ public class KafkaUtils {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteTopic(String topic, boolean doValidate) {
+    private boolean deleteTopic(String topic, boolean doValidate) {
         boolean success = false;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         String topicPath = ZkUtils.getTopicPath(topic);
@@ -93,7 +95,8 @@ public class KafkaUtils {
      * @param prefix run with empty prefix to get all topics
      * @return
      */
-    public Collection<String> getTopicsWithPrefix(String prefix) {
+    @Override
+    public Collection<String> getEntitiesWithPrefix(String prefix) {
         logger.debug("getting all topics with prefix {}", prefix);
         Collection<String> topicNames = getAllTopics();
         logger.debug("found {} topics", topicNames.size());

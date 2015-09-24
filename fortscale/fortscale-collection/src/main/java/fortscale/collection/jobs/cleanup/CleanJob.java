@@ -1,7 +1,8 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.utils.CustomUtil;
+import fortscale.utils.cleanup.CustomDeletionUtil;
+import fortscale.utils.cleanup.CustomUtil;
 import fortscale.utils.cloudera.ClouderaUtils;
 import fortscale.utils.hdfs.HDFSUtil;
 import fortscale.utils.impala.ImpalaUtils;
@@ -153,13 +154,13 @@ public class CleanJob extends FortscaleJob {
 				success = handleHDFSDeletion(toDelete, startDate, endDate, doValidate);
 				break;
 			} case IMPALA: {
-				success = handleImpalaDeletion(toDelete, doValidate);
+				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
-				success = handleStoreDeletion(toDelete, doValidate);
+				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
-				success = handleKafkaDeletion(toDelete, doValidate);
+				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}
 		}
@@ -189,48 +190,23 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
-	 * This method handles deletion of kafka topics
+	 * This method handles generic deletion
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleKafkaDeletion(Map<String, String> toDelete, boolean doValidate) {
-		boolean success;
+	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CustomDeletionUtil customUtil) {
 		Collection<String> temp = toDelete.keySet();
-		Set<String> topics = new HashSet(temp);
+		Set<String> entities = new HashSet(temp);
 		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
 			if (entry.getValue().equals(prefixFlag)) {
-				topics.addAll(kafkaUtils.getTopicsWithPrefix(entry.getKey()));
-				topics.remove(entry.getKey());
+				entities.addAll(customUtil.getEntitiesWithPrefix(entry.getKey()));
+				entities.remove(entry.getKey());
 			}
 		}
-		logger.info("deleting {} topics", topics.size());
-		success = kafkaUtils.deleteTopics(topics, doValidate);
-		return success;
-	}
-
-	/***
-	 *
-	 * This method handles deletion of states from the store
-	 *
-	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @param doValidate  flag to determine should we perform validations
-	 * @return
-	 */
-	private boolean handleImpalaDeletion(Map<String, String> toDelete, boolean doValidate) {
-		boolean success;
-		Collection<String> temp = toDelete.keySet();
-		Set<String> tables = new HashSet(temp);
-		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-			if (entry.getValue().equals(prefixFlag)) {
-				tables.addAll(impalaUtils.getTablesWithPrefix(entry.getKey()));
-				tables.remove(entry.getKey());
-			}
-		}
-		logger.info("deleting {} tables", tables.size());
-		success = impalaUtils.dropTables(tables, doValidate);
-		return success;
+		logger.info("deleting {} entities", entities.size());
+		return customUtil.deleteEntities(entities, doValidate);
 	}
 
 	/***
@@ -257,29 +233,6 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
-	 * This method handles deletion of states from the store
-	 *
-	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @param doValidate  flag to determine should we perform validations
-	 * @return
-	 */
-	private boolean handleStoreDeletion(Map<String, String> toDelete, boolean doValidate) {
-		boolean success;
-		Collection<String> temp = toDelete.keySet();
-		Set<String> states = new HashSet(temp);
-		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-			if (entry.getValue().equals(prefixFlag)) {
-				states.addAll(storeUtils.getStatesWithPrefix(entry.getKey()));
-				states.remove(entry.getKey());
-			}
-		}
-		logger.info("deleting {} states", states.size());
-		success = storeUtils.deleteStates(states, doValidate);
-		return success;
-	}
-
-	/***
-	 *
 	 * This method handles the different cases of deleting objects from mongo (with or without dates)
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
@@ -291,16 +244,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
 		if (startTime == null && endTime == null) {
-			Collection<String> temp = toDelete.keySet();
-			Set<String> collections = new HashSet(temp);
-			for (Map.Entry<String, String> entry: toDelete.entrySet()) {
-				if (entry.getValue().equals(prefixFlag)) {
-					collections.addAll(mongoUtils.getCollectionsWithPrefix(entry.getKey()));
-					collections.remove(entry.getKey());
-				}
-			}
-			logger.info("deleting {} entities", collections.size());
-			success = mongoUtils.dropCollections(collections, doValidate);
+			return handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);

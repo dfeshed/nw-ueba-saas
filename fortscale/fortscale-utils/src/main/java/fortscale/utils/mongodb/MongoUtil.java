@@ -1,7 +1,8 @@
 package fortscale.utils.mongodb;
 
 import com.mongodb.DBCollection;
-import fortscale.utils.CustomUtil;
+import fortscale.utils.cleanup.CustomDeletionUtil;
+import fortscale.utils.cleanup.CustomUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,7 +17,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class MongoUtil implements CustomUtil {
+public class MongoUtil implements CustomUtil, CustomDeletionUtil {
 
     private static Logger logger = Logger.getLogger(MongoUtil.class);
 
@@ -62,11 +63,11 @@ public class MongoUtil implements CustomUtil {
      * @return
      */
     public boolean dropAllCollections(boolean doValidate) {
-        Collection<String> collectionNames = getCollectionsWithPrefix("");
+        Collection<String> collectionNames = getEntitiesWithPrefix("");
         //system collection - ignore
         collectionNames.remove("system.indexes");
         logger.debug("found {} collections to drop", collectionNames.size());
-        return dropCollections(collectionNames, doValidate);
+        return deleteEntities(collectionNames, doValidate);
     }
 
     /***
@@ -77,7 +78,8 @@ public class MongoUtil implements CustomUtil {
      * @param doValidate      flag to determine should we perform validations
      * @return
      */
-    public boolean dropCollections(Collection<String> collectionNames, boolean doValidate) {
+    @Override
+    public boolean deleteEntities(Collection<String> collectionNames, boolean doValidate) {
         int numberOfCollectionsDropped = 0;
         logger.debug("attempting to drop {} collections from mongo", collectionNames.size());
         for (String collectionName: collectionNames) {
@@ -127,7 +129,8 @@ public class MongoUtil implements CustomUtil {
      * @param prefix  run with empty prefix to get all collections
      * @return
      */
-    public Collection<String> getCollectionsWithPrefix(String prefix) {
+    @Override
+    public Collection<String> getEntitiesWithPrefix(String prefix) {
         logger.debug("getting all collections with prefix {}", prefix);
         Collection<String> collectionNames = mongoTemplate.getCollectionNames();
         logger.debug("found {} collections", collectionNames.size());

@@ -1,5 +1,6 @@
 package fortscale.utils.store;
 
+import fortscale.utils.cleanup.CustomDeletionUtil;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,7 @@ import java.util.Collection;
 /**
  * Created by Amir Keren on 24/09/15.
  */
-public class StoreUtils {
+public class StoreUtils implements CustomDeletionUtil {
 
     private static Logger logger = Logger.getLogger(StoreUtils.class);
 
@@ -28,9 +29,9 @@ public class StoreUtils {
      * @return
      */
     public boolean deleteAllStates(boolean doValidate) {
-        Collection<String> states = getStatesWithPrefix("");
+        Collection<String> states = getEntitiesWithPrefix("");
         logger.debug("found {} states to delete", states.size());
-        return deleteStates(states, doValidate);
+        return deleteEntities(states, doValidate);
     }
 
     /***
@@ -41,7 +42,8 @@ public class StoreUtils {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteStates(Collection<String> states, boolean doValidate) {
+    @Override
+    public boolean deleteEntities(Collection<String> states, boolean doValidate) {
         int numberOfStatesDeleted = 0;
         logger.debug("attempting to delete {} states", states.size());
         for (String state: states) {
@@ -79,7 +81,8 @@ public class StoreUtils {
      * @param prefix run with empty prefix to get all states
      * @return
      */
-    public Collection<String> getStatesWithPrefix(final String prefix) {
+    @Override
+    public Collection<String> getEntitiesWithPrefix(final String prefix) {
         logger.debug("getting all states with prefix {}", prefix);
         File file = new File(stateBaseFolder);
         String[] states = file.list(new FilenameFilter() {

@@ -1,6 +1,6 @@
 package fortscale.utils.hdfs;
 
-import fortscale.utils.CustomUtil;
+import fortscale.utils.cleanup.CustomUtil;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
