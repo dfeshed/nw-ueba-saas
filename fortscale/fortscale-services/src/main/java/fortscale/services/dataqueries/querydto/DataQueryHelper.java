@@ -142,7 +142,7 @@ public class DataQueryHelper {
         return updateUserTerm;
     }
 
-    public Term createCustomTerm(EvidenceFilter filter){
+    public Term createCustomTerm(String dataEntity, EvidenceFilter filter){
 
         // Create new term
         ConditionField customTerm = new ConditionField();
@@ -157,7 +157,7 @@ public class DataQueryHelper {
         // Set the query field
         DataQueryField dataQueryField = new DataQueryField();
         dataQueryField.setId(filter.getKey());
-        dataQueryField.setEntity(filter.getKey());
+        dataQueryField.setEntity(dataEntity);
         customTerm.setField(dataQueryField);
 
         // Return the term

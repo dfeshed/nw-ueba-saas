@@ -21,7 +21,7 @@ public class EvidenceFilter {
 		return operator;
 	}
 
-	public EvidenceFilter(String key, String value, String operator) {
+	public EvidenceFilter(String key, String operator, String value) {
 		this.key = key;
 		this.value = value;
 		this.operator = operator;

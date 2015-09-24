@@ -1,18 +1,16 @@
 package fortscale.utils;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
 import java.util.Map;
 
-@ConfigurationProperties(prefix = "evidence.events")
-@Component
 public class FilteringPropertiesConfigurationHandler {
 
-	final String DELIMITER = "###";
+	final String DELIMITER = "%%%";
 
 	private Map<String, String> filtering;
+
+	public FilteringPropertiesConfigurationHandler(Map<String, String> filtering) {
+		this.filtering = filtering;
+	}
 
 	/**
 	 * Lazy get of evidence filter

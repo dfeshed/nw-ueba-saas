@@ -21,7 +21,6 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/api/evidences")
-@SpringApplicationConfiguration(classes = FilteringPropertiesConfigurationHandler.class)
 public class ApiEvidenceController extends DataQueryController {
 
 	private static final String DESC = "DESC";
@@ -70,12 +68,16 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private Map evidenceTypeMap;
 
-	@Autowired
+	@Value("${evidence.events.filtering.map}")
+	private String eventsFilterMap;
+
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@PostConstruct
-	public void initEvidenceMap(){
+	public void initMapseMap(){
 		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
+		Map eventFilterMap =  ConfigurationUtils.getStringMap(eventsFilterMap);
+		eventsFilter = new FilteringPropertiesConfigurationHandler(eventFilterMap);
 	}
 
 
@@ -149,7 +151,7 @@ public class ApiEvidenceController extends DataQueryController {
 			// Add condition for custom filtering
 			EvidenceFilter evidenceFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
 			if (evidenceFilter != null) {
-				termsMap.add(dataQueryHelper.createCustomTerm(evidenceFilter));
+				termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, evidenceFilter));
 			}
 			//add condition about time range
 			Long currentTimestamp = System.currentTimeMillis();
