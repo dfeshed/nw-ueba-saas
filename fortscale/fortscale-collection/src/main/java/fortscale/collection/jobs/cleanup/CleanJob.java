@@ -464,7 +464,11 @@ public class CleanJob extends FortscaleJob {
 			String queryField;
 			if (entry.contains(dataSourcesFieldDelimiter)) {
 				dataSource = entry.split(dataSourcesFieldDelimiter)[0];
-				queryField = entry.split(dataSourcesFieldDelimiter)[1];
+				try {
+					queryField = entry.split(dataSourcesFieldDelimiter)[1];
+				} catch (Exception ex) {
+					queryField = "";
+				}
 			} else {
 				dataSource = entry;
 				queryField = "";
