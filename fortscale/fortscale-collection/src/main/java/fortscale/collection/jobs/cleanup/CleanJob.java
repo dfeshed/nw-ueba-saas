@@ -300,11 +300,11 @@ public class CleanJob extends FortscaleJob {
             }
         }
 		if (restored != sources.size()) {
-			logger.error("failed to restore all {} collections, restored only {}", sources.size(),
+			logger.error("failed to restore all {} entities, restored only {}", sources.size(),
 					restored);
 			return false;
 		}
-		logger.info("restored all {} collections", sources.size());
+		logger.info("restored all {} entities", sources.size());
 		return true;
 	}
 
