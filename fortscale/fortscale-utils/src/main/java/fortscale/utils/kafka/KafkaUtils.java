@@ -60,7 +60,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         zkClient.deleteRecursive(topicPath);
         if (doValidate) {
             if (!zkClient.exists(topicPath)) {
-                logger.info("deleted topic [}", topic);
+                logger.info("deleted topic {}", topic);
                 success = true;
             } else {
                 logger.error("failed to delete topic " + topic);
