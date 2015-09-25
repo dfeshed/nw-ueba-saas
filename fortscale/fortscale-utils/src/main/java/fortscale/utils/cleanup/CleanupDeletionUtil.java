@@ -38,7 +38,7 @@ public abstract class CleanupDeletionUtil {
         logger.debug("filtering out entities not matching predicate {}", filter);
         while (it.hasNext()) {
             String entityName = it.next();
-            if (cleanupPredicate.apply(entityName, value, filter)) {
+            if (!cleanupPredicate.apply(entityName, value, filter)) {
                 it.remove();
             }
         }
