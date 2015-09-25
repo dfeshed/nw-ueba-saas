@@ -15,9 +15,10 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
     private static Logger logger = Logger.getLogger(KafkaUtils.class);
 
-    @Value("${zookeeper.host}:${zookepeer.port}")
+    @Value("${zookeeper.connection}")
     private String zookeeperConnection;
-    private final int zookeeperTimeout = 5000;
+    @Value("${zookeeper.timeout}")
+    private int zookeeperTimeout;
 
     /***
      *

@@ -21,6 +21,8 @@
 	  <constructor-arg ref="dataSource"/>
 	</bean>
 
+	<bean id="cleanupPredicate" class="fortscale.utils.cleanup.CleanupPredicate" />
+
 	<bean id="mongoUtils" class="fortscale.utils.mongodb.MongoUtil" />
 
 	<bean id="kafkaUtils" class="fortscale.utils.kafka.KafkaUtils" />
