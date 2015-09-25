@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.utils.cleanup.CustomDeletionUtil;
-import fortscale.utils.cleanup.CustomUtil;
+import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.cloudera.ClouderaUtils;
 import fortscale.utils.hdfs.HDFSUtil;
 import fortscale.utils.impala.ImpalaUtils;
@@ -63,8 +63,6 @@ public class CleanJob extends FortscaleJob {
 	private String dataSourcesFieldDelimiter;
 	@Value("${dates.format}")
 	private String datesFormat;
-	@Value("${prefix.flag}")
-	private String prefixFlag;
 	@Value("${kafka.service.name}")
 	private String kafkaServiceName;
 	@Value("${streaming.service.name}")
@@ -112,6 +110,7 @@ public class CleanJob extends FortscaleJob {
 			success = clearAllData(strategy == Strategy.DELETE);
 		} else {
 			switch (strategy) {
+				//for both delete and fastdelete, do
 				case DELETE:
 				case FASTDELETE: {
 					//if fast delete - no validation is performed
@@ -157,9 +156,12 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
+				checkAndStopService(kafkaServiceName);
+				checkAndStopService(streamingServiceName);
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
+				checkAndStopService(kafkaServiceName);
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}
@@ -196,14 +198,22 @@ public class CleanJob extends FortscaleJob {
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CustomDeletionUtil customUtil) {
-		Collection<String> temp = toDelete.keySet();
-		Set<String> entities = new HashSet(temp);
-		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-			if (entry.getValue().equals(prefixFlag)) {
-				entities.addAll(customUtil.getEntitiesWithPrefix(entry.getKey()));
-				entities.remove(entry.getKey());
+	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CleanupDeletionUtil customUtil) {
+		Set<String> entities;
+		//if deleting specific entities
+		if (toDelete != null) {
+			Collection<String> temp = toDelete.keySet();
+			entities = new HashSet(temp);
+			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+				String value = entry.getValue();
+				if (!value.isEmpty()) {
+					entities.addAll(customUtil.getEntitiesMatchingPredicate(entry.getKey(), value));
+					entities.remove(entry.getKey());
+				}
 			}
+		} else {
+			//deleting all
+			entities = new HashSet(customUtil.getAllEntities());
 		}
 		logger.info("deleting {} entities", entities.size());
 		return customUtil.deleteEntities(entities, doValidate);
@@ -222,12 +232,17 @@ public class CleanJob extends FortscaleJob {
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
 		if (startTime == null && endTime == null) {
-            logger.info("deleting {} entities", toDelete.size());
-            success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
-        } else {
-            logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-            success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
-        }
+			if (toDelete != null) {
+				logger.info("deleting {} entities", toDelete.size());
+				success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
+			} else {
+				logger.info("deleting all entities");
+				success = hdfsUtils.deleteAll(doValidate);
+			}
+		} else {
+			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
+			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
+		}
 		return success;
 	}
 
@@ -259,15 +274,15 @@ public class CleanJob extends FortscaleJob {
 	 * @param sources	  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param startDate   start date to filter deletion by
 	 * @param endDate	  end date to filter deletion by
-	 * @param customUtil
+	 * @param cleanupUtil
 	 * @return
 	 */
 	private boolean deleteEntityBetween(Map<String, String> sources, Date startDate, Date endDate,
-										CustomUtil customUtil) {
+										CleanupUtil cleanupUtil) {
 		int deleted = 0;
 		logger.debug("trying to delete {} entities", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-			if (customUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+			if (cleanupUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
 				deleted++;
 			}
 		}
@@ -285,17 +300,17 @@ public class CleanJob extends FortscaleJob {
 	 * it with the intended backup
 	 *
 	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @param customUtil
+	 * @param cleanupUtil
 	 * @return
 	 */
-	private boolean restoreSnapshot(Map<String, String> sources, CustomUtil customUtil) {
+	private boolean restoreSnapshot(Map<String, String> sources, CleanupUtil cleanupUtil) {
 		int restored = 0;
 		logger.debug("trying to restore {} snapshots", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
             String toRestore = dataSource.getKey();
-            String backupCollectionName = dataSource.getValue();
-			logger.debug("origin - {}, backup - {}", toRestore, backupCollectionName);
-            if (customUtil.restoreSnapshot(toRestore, backupCollectionName)) {
+            String backupName = dataSource.getValue();
+			logger.debug("origin - {}, backup - {}", toRestore, backupName);
+            if (cleanupUtil.restoreSnapshot(toRestore, backupName)) {
                 restored++;
             }
         }
@@ -372,16 +387,14 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method clears the system entirely
 	 *
-	 * @param doValidate  flag to determine should we perform validations and stop services
+	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		if (doValidate) {
-			checkAndStopService(collectionServiceName);
-			checkAndStopService(streamingServiceName);
-			checkAndStopService(kafkaServiceName);
-		}
+		checkAndStopService(collectionServiceName);
+		checkAndStopService(streamingServiceName);
+		checkAndStopService(kafkaServiceName);
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);
