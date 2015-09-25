@@ -113,7 +113,6 @@ public class CleanJob extends FortscaleJob {
 				case DELETE:
 				case FASTDELETE: {
 					//if fast delete - no validation is performed
-					logger.info("deleting {} entities", dataSources.size());
 					success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
 					break;
 				}
