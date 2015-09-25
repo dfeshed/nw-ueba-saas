@@ -257,7 +257,11 @@ public class CleanJob extends FortscaleJob {
 	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
 		if (startTime == null && endTime == null) {
-			return handleDeletion(toDelete, doValidate, mongoUtils);
+			if (toDelete != null) {
+				return handleDeletion(toDelete, doValidate, mongoUtils);
+			}
+			logger.info("deleting all entities");
+			success = mongoUtils.dropAllCollections(doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
