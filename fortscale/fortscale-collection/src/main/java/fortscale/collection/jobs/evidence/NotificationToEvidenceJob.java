@@ -100,10 +100,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		// get parameters values from the job data map
 		try {
 			if (keys.contains(startTimeParam)) {
-				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam)).getTime();
+				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam)).getTime()/1000;
 			}
 			if (keys.contains(endTimeParam)) {
-				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam)).getTime();
+				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam)).getTime()/1000;
 			}
 		} catch (ParseException ex) {
 			logger.error("Bad date format - {}", ex.getMessage());
