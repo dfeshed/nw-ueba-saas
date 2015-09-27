@@ -118,7 +118,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			workWithFetchConfiguration = true;
 		}
 		if (workWithFetchConfiguration) {
-			dateStr = new Date() + "";
+			dateStr = new Date().getTime() + "";
 			//get the last runtime from the fetchConfiguration Mongo repository
 			fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
 			if (fetchConfiguration == null) {
@@ -162,7 +162,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				streamWriter.close();
 			}
 		}
-		logger.debug("Finished running notification to evidence job at {}", dateStr);
+		logger.debug("Finished running notification to evidence job at {}", new Date());
 		if (workWithFetchConfiguration) {
 			logger.debug("Updating timestamp in Mongo");
 			fetchConfiguration.setLastFetchTime(dateStr);
