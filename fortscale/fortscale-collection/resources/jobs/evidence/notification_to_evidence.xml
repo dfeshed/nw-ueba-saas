@@ -19,14 +19,6 @@
                     <value>${dates.format}</value>
                 </entry>
                 <entry>
-                    <key>startTimeParam</key>
-                    <value>${start.time.param}</value>
-                </entry>
-                <entry>
-                    <key>endTimeParam</key>
-                    <value>${end.time.param}</value>
-                </entry>
-                <entry>
                     <key>fetchType</key>
                     <value>${collection.evidence.notification.fetch.type}</value>
                 </entry>
