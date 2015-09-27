@@ -17,6 +17,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 
 import java.text.DateFormat;
@@ -59,6 +60,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private Long startTime;
 	private Long endTime;
 
+	@Value("${start.time.param}")
+	private String startTimeParam;
+	@Value("${end.time.param}")
+	private String endTimeParam;
+
 	@Autowired
 	private NotificationsRepository notificationsRepository;
 	@Autowired
@@ -93,11 +99,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
-			if (keys.contains("startTimeParam")) {
-				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "startTimeParam")).getTime();
+			if (keys.contains(startTimeParam)) {
+				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam)).getTime();
 			}
-			if (keys.contains("endTimeParam")) {
-				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, "endTimeParam")).getTime();
+			if (keys.contains(endTimeParam)) {
+				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam)).getTime();
 			}
 		} catch (ParseException ex) {
 			logger.error("Bad date format - {}", ex.getMessage());
