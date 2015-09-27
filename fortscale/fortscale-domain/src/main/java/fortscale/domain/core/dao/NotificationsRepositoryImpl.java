@@ -44,11 +44,17 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
 	}
-	
+
 	@Override
-	public List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort) {
+	public List<Notification> findByTsBetweenExcludeComments(Long start, Long end, Sort sort) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("ts").gt(ts));
+		if (start != null && end != null) {
+			query.addCriteria(Criteria.where("ts").gte(start).lte(end));
+		} else if (start != null) {
+			query.addCriteria(Criteria.where("ts").gte(start));
+		} else {
+			query.addCriteria(Criteria.where("ts").lte(end));
+		}
 		query.with(sort);
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
