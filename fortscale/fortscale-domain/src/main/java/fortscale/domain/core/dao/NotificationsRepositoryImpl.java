@@ -52,8 +52,11 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 			query.addCriteria(Criteria.where("ts").gte(start).lte(end));
 		} else if (start != null) {
 			query.addCriteria(Criteria.where("ts").gte(start));
-		} else {
+		} else if (end != null) {
 			query.addCriteria(Criteria.where("ts").lte(end));
+		} else {
+			//must provide either start or end dates
+			return null;
 		}
 		query.with(sort);
 		query.fields().exclude("comments");
