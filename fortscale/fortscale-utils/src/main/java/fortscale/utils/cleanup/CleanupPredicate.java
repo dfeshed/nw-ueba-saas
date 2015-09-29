@@ -1,16 +1,15 @@
 package fortscale.utils.cleanup;
 
-import org.springframework.beans.factory.annotation.Value;
+import fortscale.utils.logging.Logger;
 
 /**
  * Created by Amir Keren on 25/09/15.
  */
 public class CleanupPredicate {
 
-    @Value("${prefix.flag}")
-    private String prefixFlag;
-    @Value("${contains.flag}")
-    private String containsFlag;
+    private static Logger logger = Logger.getLogger(CleanupPredicate.class);
+
+    private enum Flag { PREFIX, CONTAINS, ALL }
 
     /***
      *
@@ -22,13 +21,23 @@ public class CleanupPredicate {
      * @return
      */
     public boolean apply(String name, String value, String filter) {
-        if (filter.equals(prefixFlag)) {
-            return name.startsWith(value);
-        } else if (filter.equals(containsFlag)) {
-            return name.contains(value);
-        } else {
-            //by default, don't filter anything
-            return true;
+        Flag flag = Flag.ALL;
+        try {
+            flag = Flag.valueOf(filter.toUpperCase());
+        } catch (Exception ex) {
+            logger.warn("no filter {} found, defaulting to ALL", filter.toUpperCase());
+        }
+        switch (flag) {
+            case PREFIX: {
+                return name.startsWith(value);
+            }
+            case CONTAINS: {
+                return name.contains(value);
+            } case ALL:
+                //by default, don't filter anything
+              default : {
+                return true;
+            }
         }
     }
 

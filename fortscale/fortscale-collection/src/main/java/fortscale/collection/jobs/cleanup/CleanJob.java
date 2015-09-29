@@ -154,11 +154,12 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
-				checkAndStopService(kafkaServiceName);
 				checkAndStopService(streamingServiceName);
+				checkAndStopService(kafkaServiceName);
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
+				checkAndStopService(streamingServiceName);
 				checkAndStopService(kafkaServiceName);
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
