@@ -8,6 +8,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.SpringService;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -74,6 +75,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private DataEntitiesConfig dataEntitiesConfig;
 
 	private String supportingInformationField;
+
+	private BDPService bdpService;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -160,6 +163,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
+
+		bdpService = new BDPService();
+
 	}
 
 	@Override
@@ -282,12 +288,18 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) });
 			}
 
-			// Send evidence to output topic
-			try {
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(dataSourceConfiguration.partitionField, message), mapper.writeValueAsString(evidence)));
-			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence", inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
+			if (!bdpService.isBDPRunning()) {
+				// Send evidence to output topic
+				try {
+					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic),
+							getPartitionKey(dataSourceConfiguration.partitionField, message),
+							mapper.writeValueAsString(evidence)));
+				} catch (Exception exception) {
+					throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence",
+							inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
+				}
 			}
+
 		}
 	}
 
