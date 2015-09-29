@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.extraction;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.FeatureStringValue;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +44,15 @@ public class EventFeatureExtractor implements FeatureExtractor {
 	}
 
 	protected FeatureValue extractValue(Event event) throws Exception {
-		FeatureValue value = new FeatureStringValue((String)event.get(fieldName));
+		Object valueObj = event.get(fieldName);
+		FeatureValue value = null;
+		if(valueObj!=null) {
+			if(valueObj instanceof String) {
+				value = new FeatureStringValue((String)valueObj);
+			} else if(valueObj instanceof Number) {
+				value = new FeatureNumericValue((Number)valueObj);
+			}
+		}
 
 		if (featureAdjustor != null) {
 			return featureAdjustor.adjust(value, event);
