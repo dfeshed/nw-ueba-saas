@@ -11,7 +11,7 @@ import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
-import fortscale.utils.EvidenceFilter;
+import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -150,9 +150,9 @@ public class ApiEvidenceController extends DataQueryController {
 			termsMap.add(term);
 			// Add condition for custom filtering
 			if (eventsFilter != null) {
-				EvidenceFilter evidenceFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
-				if (evidenceFilter != null) {
-					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, evidenceFilter));
+				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				if (customedFilter != null) {
+					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
 				}
 			}
 			//add condition about time range

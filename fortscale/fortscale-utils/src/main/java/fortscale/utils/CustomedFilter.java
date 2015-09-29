@@ -3,7 +3,7 @@ package fortscale.utils;
 /**
  * Created by tomerd on 18/09/2015.
  */
-public class EvidenceFilter {
+public class CustomedFilter {
 
 	private String key;
 	private String value;
@@ -21,7 +21,7 @@ public class EvidenceFilter {
 		return operator;
 	}
 
-	public EvidenceFilter(String key, String operator, String value) {
+	public CustomedFilter(String key, String operator, String value) {
 		this.key = key;
 		this.value = value;
 		this.operator = operator;

@@ -17,7 +17,7 @@ public class FilteringPropertiesConfigurationHandler {
 	 * @param key
 	 * @return
 	 */
-	public EvidenceFilter getFilter(String key) {
+	public CustomedFilter getFilter(String key) {
 
 		// Getting raw value from config in a form of:
 		// KEY ### OPERATOR ### VALUE
@@ -34,7 +34,7 @@ public class FilteringPropertiesConfigurationHandler {
 			return null;
 		}
 
-		//Create EvidenceFilter from raw value
-		return new EvidenceFilter(filter[0], filter[1], filter[2]);
+		//Create CustomedFilter from raw value
+		return new CustomedFilter(filter[0], filter[1], filter[2]);
 	}
 }
