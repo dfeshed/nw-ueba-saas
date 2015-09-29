@@ -1,21 +1,31 @@
 package fortscale.utils.impala;
 
-import fortscale.utils.cleanup.CustomDeletionUtil;
+import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class ImpalaUtils implements CustomDeletionUtil {
+public class ImpalaUtils extends CleanupDeletionUtil {
 
     private static Logger logger = Logger.getLogger(ImpalaUtils.class);
 
     @Autowired
     private ImpalaClient impalaClient;
+
+    /***
+     *
+     * This method returns all of the tables in Impala
+     *
+     * @return
+     */
+    @Override
+    public Collection<String> getAllEntities() {
+        return impalaClient.getAllTables();
+    }
 
     /***
      *
@@ -29,9 +39,9 @@ public class ImpalaUtils implements CustomDeletionUtil {
     public boolean deleteEntities(Collection<String> tableNames, boolean doValidate) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
-        for (String tableName: tableNames) {
-            impalaClient.dropTable(tableName);
-            if (doValidate) {
+        if (doValidate) {
+            for (String tableName : tableNames) {
+                impalaClient.dropTable(tableName);
                 //verify drop
                 if (impalaClient.isTableExists(tableName)) {
                     logger.error("failed to drop table {}", tableName);
@@ -39,8 +49,11 @@ public class ImpalaUtils implements CustomDeletionUtil {
                     logger.info("dropped table {}", tableName);
                     numberOfTablesDropped++;
                 }
-            } else {
-                numberOfTablesDropped++;
+            }
+        } else {
+            boolean success = impalaClient.dropTables(tableNames);
+            if (success) {
+                numberOfTablesDropped = tableNames.size();
             }
         }
         if (numberOfTablesDropped == tableNames.size()) {
@@ -53,40 +66,13 @@ public class ImpalaUtils implements CustomDeletionUtil {
 
     /***
      *
-     * This method returns a list of all of the tables starting with the given prefix
-     *
-     * @param prefix run with empty prefix to get all tables
-     * @return
-     */
-    @Override
-    public Collection<String> getEntitiesWithPrefix(String prefix) {
-        logger.debug("getting all tables with prefix {}", prefix);
-        Collection<String> tableNames = impalaClient.getAllTables();
-        logger.debug("found {} tables", tableNames.size());
-        if (prefix.isEmpty()) {
-            return tableNames;
-        }
-        Iterator<String> it = tableNames.iterator();
-        logger.debug("filtering out tables not starting with {}", prefix);
-        while (it.hasNext()) {
-            String tableName = it.next();
-            if (!tableName.startsWith(prefix)) {
-                it.remove();
-            }
-        }
-        logger.info("found {} tables with prefix {}", tableNames.size(), prefix);
-        return tableNames;
-    }
-
-    /***
-     *
      * This method drops all of the tables from Impala
      *
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
     public boolean dropAllTables(boolean doValidate) {
-        Collection<String> tableNames = getEntitiesWithPrefix("");
+        Collection<String> tableNames = getAllEntities();
         logger.debug("found {} tables to drop", tableNames.size());
         return deleteEntities(tableNames, doValidate);
     }

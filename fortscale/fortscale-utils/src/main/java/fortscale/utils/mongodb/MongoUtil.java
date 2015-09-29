@@ -1,8 +1,8 @@
 package fortscale.utils.mongodb;
 
 import com.mongodb.DBCollection;
-import fortscale.utils.cleanup.CustomDeletionUtil;
-import fortscale.utils.cleanup.CustomUtil;
+import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -10,14 +10,13 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class MongoUtil implements CustomUtil, CustomDeletionUtil {
+public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
 
     private static Logger logger = Logger.getLogger(MongoUtil.class);
 
@@ -47,11 +46,7 @@ public class MongoUtil implements CustomUtil, CustomDeletionUtil {
             query = new Query(where(dateField).gte(startDate.getTime()).lte(endDate.getTime()));
         }
         logger.debug("query is {}", query.toString());
-        long recordsFound = mongoTemplate.count(query, collection);
-        logger.info("found {} records", recordsFound);
-        if (recordsFound > 0) {
-            mongoTemplate.remove(query, collection);
-        }
+        mongoTemplate.remove(query, collection);
         return true;
     }
 
@@ -63,11 +58,22 @@ public class MongoUtil implements CustomUtil, CustomDeletionUtil {
      * @return
      */
     public boolean dropAllCollections(boolean doValidate) {
-        Collection<String> collectionNames = getEntitiesWithPrefix("");
+        Collection<String> collectionNames = getAllEntities();
         //system collection - ignore
         collectionNames.remove("system.indexes");
         logger.debug("found {} collections to drop", collectionNames.size());
         return deleteEntities(collectionNames, doValidate);
+    }
+
+    /***
+     *
+     * This method returns all the collections in the database
+     *
+     * @return
+     */
+    @Override
+    public Collection<String> getAllEntities() {
+        return mongoTemplate.getCollectionNames();
     }
 
     /***
@@ -124,33 +130,6 @@ public class MongoUtil implements CustomUtil, CustomDeletionUtil {
 
     /***
      *
-     * This method gets all of the documents starting with the given prefix
-     *
-     * @param prefix  run with empty prefix to get all collections
-     * @return
-     */
-    @Override
-    public Collection<String> getEntitiesWithPrefix(String prefix) {
-        logger.debug("getting all collections with prefix {}", prefix);
-        Collection<String> collectionNames = mongoTemplate.getCollectionNames();
-        logger.debug("found {} collections", collectionNames.size());
-        if (prefix.isEmpty()) {
-            return collectionNames;
-        }
-        Iterator<String> it = collectionNames.iterator();
-        logger.debug("filtering out collections not starting with {}", prefix);
-        while (it.hasNext()) {
-            String collectionName = it.next();
-            if (!collectionName.startsWith(prefix)) {
-                it.remove();
-            }
-        }
-        logger.info("found {} collections with prefix {}", collectionNames.size(), prefix);
-        return collectionNames;
-    }
-
-    /***
-     *
      * This methods attempts to restore an entire collection from a backup collection
      *
      * @param collectionName        the collection to drop
@@ -159,29 +138,44 @@ public class MongoUtil implements CustomUtil, CustomDeletionUtil {
      */
     @Override
     public boolean restoreSnapshot(String collectionName, String backupCollectionName) {
+        final String TEMPSUFFIX = "_clean-job-temp-suffix";
         boolean success = false;
-        logger.debug("check if backup collection exists");
-        if (mongoTemplate.collectionExists(backupCollectionName)) {
-            DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
-            logger.debug("drop collection");
-            mongoTemplate.dropCollection(collectionName);
-            //verify drop
-            if (mongoTemplate.collectionExists(collectionName)) {
-                logger.debug("dropping failed, abort");
+        logger.debug("verify that collections exist");
+        DBCollection deleteCollection = mongoTemplate.getCollection(collectionName);
+        DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
+        if (deleteCollection == null || backupCollection == null) {
+            logger.error("no origin or backup collection found");
+            return success;
+        }
+        String tempCollectionName = collectionName + TEMPSUFFIX;
+        logger.debug("verify that destination collection temp name doesn't exist");
+        //sanity check - shouldn't be found
+        if (mongoTemplate.collectionExists(tempCollectionName)) {
+            logger.info("temp collection {} already exists, dropping...", tempCollectionName);
+            mongoTemplate.dropCollection(tempCollectionName);
+            if (mongoTemplate.collectionExists(tempCollectionName)) {
+                logger.error("failed to drop temp collection, manually drop it before continuing");
                 return success;
             }
-            logger.debug("renaming backup collection");
-            backupCollection.rename(collectionName);
-            if (mongoTemplate.collectionExists(collectionName)) {
-                //verify restore
-                logger.info("snapshot restored");
-                success = true;
-                return success;
-            } else {
-                logger.error("snapshot failed to restore - could not rename collection");
+        }
+        logger.debug("renaming origin collection {} to {}", collectionName, tempCollectionName);
+        deleteCollection.rename(tempCollectionName);
+        //verify rename
+        if (mongoTemplate.collectionExists(collectionName) || !mongoTemplate.collectionExists(tempCollectionName)) {
+            logger.error("renaming failed, abort");
+            return success;
+        }
+        logger.debug("renaming backup collection {} to {}", backupCollection, collectionName);
+        backupCollection.rename(collectionName);
+        //verify rename
+        if (mongoTemplate.collectionExists(collectionName) && !mongoTemplate.collectionExists(backupCollectionName)) {
+            logger.info("snapshot restored");
+            success = true;
+            //remove old collection
+            mongoTemplate.dropCollection(tempCollectionName);
+            if (mongoTemplate.collectionExists(tempCollectionName)) {
+                logger.warn("failed to drop old collection {} - drop manually", tempCollectionName);
             }
-        } else {
-            logger.error("snapshot failed to restore - no backup collection {} found", backupCollectionName);
             return success;
         }
         logger.error("snapshot failed to restore - manually rename backup collection");

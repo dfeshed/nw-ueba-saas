@@ -10,10 +10,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class ImpalaClient {
@@ -108,14 +105,31 @@ public class ImpalaClient {
 
 	public boolean dropTable(String tableViewName){
 		Assert.hasText(tableViewName);
-		boolean success;
+		boolean success = false;
 		String sql = String.format("DROP TABLE IF EXISTS %s", tableViewName);
 		try {
 			impalaJdbcTemplate.execute(sql);
 			success = true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			success = false;
+		}
+		return success;
+	}
+
+	public boolean dropTables(Collection<String> tableNames){
+		Assert.notNull(tableNames);
+		Assert.notEmpty(tableNames);
+		boolean success = false;
+		StringBuilder sb = new StringBuilder();
+		for (String tableName: tableNames) {
+			sb.append("DROP TABLE IF EXISTS " + tableName + ";");
+		}
+		String sql = sb.toString();
+		try {
+			impalaJdbcTemplate.execute(sql);
+			success = true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		return success;
 	}
@@ -132,8 +146,13 @@ public class ImpalaClient {
 
 	public boolean isTableExists(String tableViewName){
 		Assert.hasText(tableViewName);
-		Set<String> tableNames = getAllTables();
-		return tableNames.contains(tableViewName);
+		String sql = String.format("DESC TABLE %s", tableViewName);
+		boolean exists = false;
+		try {
+			impalaJdbcTemplate.execute(sql);
+			exists = true;
+		} catch (Exception ex) {}
+		return exists;
 	}
 	
 }

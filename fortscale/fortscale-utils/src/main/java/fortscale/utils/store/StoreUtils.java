@@ -1,6 +1,6 @@
 package fortscale.utils.store;
 
-import fortscale.utils.cleanup.CustomDeletionUtil;
+import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * Created by Amir Keren on 24/09/15.
  */
-public class StoreUtils implements CustomDeletionUtil {
+public class StoreUtils extends CleanupDeletionUtil {
 
     private static Logger logger = Logger.getLogger(StoreUtils.class);
 
@@ -29,9 +29,28 @@ public class StoreUtils implements CustomDeletionUtil {
      * @return
      */
     public boolean deleteAllStates(boolean doValidate) {
-        Collection<String> states = getEntitiesWithPrefix("");
+        Collection<String> states = getAllEntities();
         logger.debug("found {} states to delete", states.size());
         return deleteEntities(states, doValidate);
+    }
+
+    /***
+     *
+     * This method returns all of the states in the store
+     *
+     * @return
+     */
+    @Override
+    public Collection<String> getAllEntities() {
+        File file = new File(stateBaseFolder);
+        String[] states = file.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File current, String name) {
+                return new File(current, name).isDirectory();
+            }
+        });
+        logger.debug("found {} states", states.length);
+        return Arrays.asList(states);
     }
 
     /***
@@ -72,27 +91,6 @@ public class StoreUtils implements CustomDeletionUtil {
         }
         logger.error("failed to delete all {} tables, deleted only {}", states.size(), numberOfStatesDeleted);
         return false;
-    }
-
-    /***
-     *
-     * This method returns a list of all of the states starting with the given prefix
-     *
-     * @param prefix run with empty prefix to get all states
-     * @return
-     */
-    @Override
-    public Collection<String> getEntitiesWithPrefix(final String prefix) {
-        logger.debug("getting all states with prefix {}", prefix);
-        File file = new File(stateBaseFolder);
-        String[] states = file.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File current, String name) {
-                return new File(current, name).isDirectory() && name.startsWith(prefix);
-            }
-        });
-        logger.debug("found {} states", states.length);
-        return Arrays.asList(states);
     }
 
 }

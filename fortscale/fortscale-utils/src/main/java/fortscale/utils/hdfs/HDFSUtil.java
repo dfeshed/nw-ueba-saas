@@ -1,6 +1,6 @@
 package fortscale.utils.hdfs;
 
-import fortscale.utils.cleanup.CustomUtil;
+import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -8,7 +8,10 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -16,7 +19,7 @@ import java.util.Date;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class HDFSUtil implements CustomUtil {
+public class HDFSUtil implements CleanupUtil {
 
     private static Logger logger = Logger.getLogger(HDFSUtil.class);
 
@@ -95,8 +98,7 @@ public class HDFSUtil implements CustomUtil {
             if (process.waitFor() != 0) {
                 logger.error("failed to remove {}", hdfsPath);
             } else if (doValidate) {
-                process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-                if (process.waitFor() != 0) {
+                if (verifyPathNotFound(hdfsPath)) {
                     success = true;
                     logger.info("{} deleted successfully", hdfsPath);
                 } else {
@@ -113,6 +115,63 @@ public class HDFSUtil implements CustomUtil {
 
     /***
      *
+     * This method verifies that a path exists on the hdfs file system
+     *
+     * @param hdfsPath  path to the request hdfs resource
+     * @return
+     */
+    private boolean verifyPathFound(String hdfsPath) {
+        boolean verified = false;
+        try {
+            Process process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
+            if (process.waitFor() == 0) {
+                logger.debug("{} found", hdfsPath);
+                verified = true;
+            } else {
+                logger.warn("unable to verify if {} found", hdfsPath);
+            }
+        } catch (Exception ex) {
+            logger.warn("unable to verify if {} found - {}", hdfsPath, ex);
+        }
+        return verified;
+    }
+
+    /***
+     *
+     * This method verifies that a path doesn't exists on the hdfs file system
+     *
+     * @param hdfsPath  path to the request hdfs resource
+     * @return
+     */
+    private boolean verifyPathNotFound(String hdfsPath) {
+        boolean verified = false;
+        try {
+            Process process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
+            InputStream stderr = process.getErrorStream();
+            if (process.waitFor() != 0) {
+                BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));
+                String line;
+                StringBuilder sb = new StringBuilder();
+                while ((line = errReader.readLine ()) != null) {
+                    sb.append(line + "\n");
+                }
+                if (sb.toString().contains("No such file or directory")) {
+                    logger.info("{} not found", hdfsPath);
+                    verified = true;
+                } else {
+                    logger.warn("unable to verify if {} found", hdfsPath);
+                }
+            } else {
+                logger.error("{} found", hdfsPath);
+            }
+        } catch (Exception ex) {
+            logger.warn("unable to verify if {} not found - {}", hdfsPath, ex);
+        }
+        return verified;
+    }
+
+    /***
+     *
      * This method attempts to restore a file from the local file system to HDFS
      *
      * @param hdfsPath     the path to the file to be deletes on HDFS
@@ -122,35 +181,47 @@ public class HDFSUtil implements CustomUtil {
     @Override
     public boolean restoreSnapshot(String hdfsPath, String restorePath) {
         boolean success = false;
-        hdfsPath = basePath + "/" + hdfsPath;
-        logger.debug("check if backup file exists");
-        if (new File(restorePath).exists()) {
-            logger.debug("delete destination file");
-            if (!deletePath(hdfsPath, true)) {
-                logger.debug("deleting failed, abort");
-                return success;
-            }
-            logger.debug("uploading backup file");
-            try {
-                Process process = Runtime.getRuntime().exec("hdfs dfs -put " + restorePath + " " + hdfsPath);
-                if (process.waitFor() != 0) {
-                    logger.error("failed to remove {}", hdfsPath);
-                } else {
-                    process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-                    if (process.waitFor() == 0) {
-                        success = true;
-                        logger.info("snapshot restored");
-                    } else {
-                        logger.error("snapshot failed to restore - could not upload file");
-                    }
-                }
-            } catch (Exception ex) {
-                logger.error("snapshot failed to restore - manually upload backup file");
-                return success;
-            }
-        } else {
-            logger.error("snapshot failed to restore - no backup file {} found", restorePath);
+        final String TEMPSUFFIX = "_clean-job-temp-suffix";
+        if (!hdfsPath.contains(basePath)) {
+            hdfsPath = basePath + "/" + hdfsPath;
+        }
+        logger.debug("verify that resources exist");
+        if (verifyPathNotFound(hdfsPath) || !new File(restorePath).exists()) {
+            logger.error("no origin or backup resource found");
             return success;
+        }
+        String tempResourceName = hdfsPath + TEMPSUFFIX;
+        logger.debug("verify that destination resource temp name doesn't exist");
+        //sanity check - shouldn't be found
+        if (verifyPathFound(tempResourceName)) {
+            logger.info("temp resource {} already exists, deleting...", tempResourceName);
+            if (!deletePath(tempResourceName, true)) {
+                logger.error("failed to delete temp resource, manually delete it before continuing");
+                return success;
+            }
+        }
+        try {
+            logger.debug("renaming origin collection {} to {}", hdfsPath, tempResourceName);
+            Process process = Runtime.getRuntime().exec("hdfs dfs -mv " + hdfsPath + " " + tempResourceName);
+            if (process.waitFor() != 0 || verifyPathFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
+                logger.error("renaming failed, abort");
+                return success;
+            }
+            logger.debug("uploading backup file {} to {}", restorePath, hdfsPath);
+            process = Runtime.getRuntime().exec("hdfs dfs -put " + restorePath + " " + hdfsPath);
+            if (process.waitFor() != 0 || verifyPathNotFound(hdfsPath)) {
+                logger.error("failed to upload {}", hdfsPath);
+                return success;
+            }
+            logger.info("snapshot restored");
+            success = true;
+            //remove old file
+            if (!deletePath(tempResourceName, true)) {
+                logger.warn("deleting temporary file {} failed, delete manually", tempResourceName);
+            }
+            return success;
+        } catch (Exception ex) {
+            logger.error("snapshot failed to restore - {}", ex);
         }
         logger.error("snapshot failed to restore - manually upload backup file");
         return success;
@@ -168,6 +239,10 @@ public class HDFSUtil implements CustomUtil {
      */
     @Override
     public boolean deleteEntityBetween(String hdfsPath, String partitionType, Date startDate, Date endDate) {
+        if ((startDate == null && endDate != null) || (startDate != null && endDate == null)) {
+            logger.error("must provide both start and end dates to run");
+            return false;
+        }
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
         }
