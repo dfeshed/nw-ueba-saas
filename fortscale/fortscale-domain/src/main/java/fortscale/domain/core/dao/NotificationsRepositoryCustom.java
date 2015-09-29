@@ -13,7 +13,7 @@ public interface NotificationsRepositoryCustom {
 
 	List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, long before, long after);
 	
-	List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort);
+	List<Notification> findByTsBetweenExcludeComments(Long start, Long end, Sort sort);
 
 	List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages);
 

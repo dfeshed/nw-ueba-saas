@@ -17,7 +17,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -52,6 +57,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
 
+	private Long startTime;
+	private Long endTime;
+
+	@Value("${start.time.param}")
+	private String startTimeParam;
+	@Value("${end.time.param}")
+	private String endTimeParam;
+
 	@Autowired
 	private NotificationsRepository notificationsRepository;
 	@Autowired
@@ -65,6 +78,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		Set<String> keys = map.keySet();
 		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
 		fetchType = jobDataMapExtension.getJobDataMapStringValue(map, "fetchType");
 		topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicName");
@@ -82,26 +96,52 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
+		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
+		// get parameters values from the job data map
+		try {
+			if (keys.contains(startTimeParam)) {
+				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam)).getTime();
+				//convert to seconds
+				startTime /= 1000;
+			}
+			if (keys.contains(endTimeParam)) {
+				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam)).getTime();
+				//convert to seconds
+				endTime /= 1000;
+			}
+		} catch (ParseException ex) {
+			logger.error("Bad date format - {}", ex.getMessage());
+			throw new JobExecutionException(ex);
+		}
 		logger.debug("Job initialized");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running notification to evidence job");
-		Date date = new Date();
-		String dateStr = date.getTime() + "";
-		//get the last runtime from the fetchConfiguration Mongo repository
-		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
-		if (fetchConfiguration == null) {
-			//if no last runtime - create a one and save it in the collection
-			fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
-		}
+		boolean workWithFetchConfiguration = false;
+		String dateStr = null;
+		FetchConfiguration fetchConfiguration = null;
+		List<Notification> notifications;
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, SORT_FIELD));
-		long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
-		logger.debug("Getting notifications after time {}", lastFetchTime);
-		//get all notifications that occurred after the last runtime of the job
-		List<Notification> notifications = notificationsRepository.findByTsGreaterThanExcludeComments(lastFetchTime,
-				sort);
+		if (startTime == null && endTime == null) {
+			workWithFetchConfiguration = true;
+		}
+		if (workWithFetchConfiguration) {
+			dateStr = new Date().getTime() + "";
+			//get the last runtime from the fetchConfiguration Mongo repository
+			fetchConfiguration = fetchConfigurationRepository.findByType(fetchType);
+			if (fetchConfiguration == null) {
+				//if no last runtime - create a one and save it in the collection
+				fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
+			}
+			long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
+			logger.debug("Getting notifications after time {}", lastFetchTime);
+			//get all notifications that occurred after the last runtime of the job
+			notifications = notificationsRepository.findByTsBetweenExcludeComments(lastFetchTime, null, sort);
+		} else {
+			notifications = notificationsRepository.findByTsBetweenExcludeComments(startTime, endTime, sort);
+		}
 		if (notifications.size() > 0) {
 			logger.debug("Found {} notifications, starting to send", notifications.size());
 		} else {
@@ -132,9 +172,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				streamWriter.close();
 			}
 		}
-		logger.debug("Finished running notification to evidence job at {}, updating timestamp in Mongo", dateStr);
-		fetchConfiguration.setLastFetchTime(dateStr);
-		fetchConfigurationRepository.save(fetchConfiguration);
+		logger.debug("Finished running notification to evidence job at {}", new Date());
+		if (workWithFetchConfiguration) {
+			logger.debug("Updating timestamp in Mongo");
+			fetchConfiguration.setLastFetchTime(dateStr);
+			fetchConfigurationRepository.save(fetchConfiguration);
+		}
 		finishStep();
 	}
 
