@@ -11,6 +11,8 @@ import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
+import fortscale.utils.CustomedFilter;
+import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
@@ -69,10 +71,14 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private Map evidenceTypeMap;
 
+	@Autowired
+	private FilteringPropertiesConfigurationHandler eventsFilter;
+
 	@PostConstruct
-	public void initEvidenceMap(){
+	public void initMaps(){
 		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
 	}
+
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
@@ -202,6 +208,13 @@ public class ApiEvidenceController extends DataQueryController {
 			//add condition to filter user
 			Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
 			termsMap.add(term);
+			// Add condition for custom filtering
+			if (eventsFilter != null) {
+				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				if (customedFilter != null) {
+					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
+				}
+			}
 			//add condition about time range
 			Long currentTimestamp = System.currentTimeMillis();
 			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate),
@@ -413,5 +426,6 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 		return supportingInformationEntries;
 	}
-
 }
+
+

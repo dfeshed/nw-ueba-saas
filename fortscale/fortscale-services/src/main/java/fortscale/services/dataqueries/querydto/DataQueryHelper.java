@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querydto;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
+import fortscale.utils.CustomedFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -139,6 +140,28 @@ public class DataQueryHelper {
         updateUserTerm.setField(dataQueryUserField);
 
         return updateUserTerm;
+    }
+
+    public Term createCustomTerm(String dataEntity, CustomedFilter filter){
+
+        // Create new term
+        ConditionField customTerm = new ConditionField();
+
+        // Set the query operator
+        QueryOperator operator = QueryOperator.valueOf(filter.getOperator());
+        customTerm.setQueryOperator(operator);
+
+        // Set the query value
+        customTerm.setValue(filter.getValue());
+
+        // Set the query field
+        DataQueryField dataQueryField = new DataQueryField();
+        dataQueryField.setId(filter.getKey());
+        dataQueryField.setEntity(dataEntity);
+        customTerm.setField(dataQueryField);
+
+        // Return the term
+        return customTerm;
     }
 
     /**
