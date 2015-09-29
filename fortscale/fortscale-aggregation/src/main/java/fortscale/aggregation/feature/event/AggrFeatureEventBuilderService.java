@@ -162,10 +162,10 @@ public class AggrFeatureEventBuilderService {
 		
 		// Event time
 		Long creation_epochtime = creationEpochTime;
-		if(creationEpochTime==0) {
-		creation_epochtime = System.currentTimeMillis() / 1000;
+		if(creation_epochtime==0) {
+		    creation_epochtime = System.currentTimeMillis() / 1000;
 		}
-		setAggregatedFeatureCreationEpochTime(event, creationEpochTime);
+		setAggregatedFeatureCreationEpochTime(event, creation_epochtime);
 		
 		String date_time = format.format(new Date(creation_epochtime * 1000));
 		event.put(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, date_time);
