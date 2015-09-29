@@ -1,5 +1,7 @@
 package fortscale.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Map;
 
 public class FilteringPropertiesConfigurationHandler {
@@ -8,8 +10,10 @@ public class FilteringPropertiesConfigurationHandler {
 
 	private Map<String, String> filtering;
 
-	public FilteringPropertiesConfigurationHandler(Map<String, String> filtering) {
-		this.filtering = filtering;
+
+	@Autowired
+	public FilteringPropertiesConfigurationHandler(String mapFiltering) {
+		this.filtering = ConfigurationUtils.getStringMap(mapFiltering);
 	}
 
 	/**

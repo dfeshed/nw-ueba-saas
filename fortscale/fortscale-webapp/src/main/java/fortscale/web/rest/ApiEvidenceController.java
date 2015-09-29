@@ -68,16 +68,16 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private Map evidenceTypeMap;
 
-	@Value("${evidence.events.filtering.map}")
-	private String eventsFilterMap;
+/*	@Value("${evidence.events.filtering.map}")
+	private String eventsFilterMap;*/
 
+	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@PostConstruct
 	public void initMaps(){
 		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
-		Map eventFilterMap =  ConfigurationUtils.getStringMap(eventsFilterMap);
-		eventsFilter = new FilteringPropertiesConfigurationHandler(eventFilterMap);
+		//eventsFilter = new FilteringPropertiesConfigurationHandler(eventsFilterMap);
 	}
 
 
