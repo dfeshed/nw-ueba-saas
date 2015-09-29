@@ -15,5 +15,6 @@ public interface SupportingInformationData<T> {
     Map<SupportingInformationKey, T> getData();
     SupportingInformationKey getAnomalyValue();
     SupportingInformationTimeGranularity getTimeGranularity();
-    Map<SupportingInformationKey, Map> getAdditionalInformation();
+    @SuppressWarnings("rawtypes")
+	Map<SupportingInformationKey, Map> getAdditionalInformation();
 }
