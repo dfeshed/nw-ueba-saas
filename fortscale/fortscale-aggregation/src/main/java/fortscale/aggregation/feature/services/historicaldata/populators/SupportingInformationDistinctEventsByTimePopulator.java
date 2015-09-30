@@ -125,8 +125,12 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     }
 
     private String removeContextTypePrefix(String contextType) {
-        int lengthToTrim = (CONTEXT_PREFIX + DOT).length(); // e.g. context.normalized_username
-        return contextType.substring(lengthToTrim);
+        if (contextType.startsWith(CONTEXT_PREFIX + DOT)) {
+            int lengthToTrim = (CONTEXT_PREFIX + DOT).length(); // e.g. context.normalized_username
+            return contextType.substring(lengthToTrim);
+        } else {
+            return contextType;
+        }
     }
 
     @Override

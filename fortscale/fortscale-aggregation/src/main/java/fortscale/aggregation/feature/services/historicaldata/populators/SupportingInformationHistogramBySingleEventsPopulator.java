@@ -84,11 +84,9 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         logger.info("Bucket strategy name = {}", bucketStrategyName);
 
-        long bucketEndTime = calculateBucketEndTime(evidenceEndTime, bucketStrategyName);
-
         Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, bucketStartTime, bucketEndTime);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, bucketStartTime, evidenceEndTime);
 
         logger.info("Found {} relevant featureName buckets:", featureBuckets.size());
         logger.info(featureBuckets.toString());
@@ -96,26 +94,6 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         return featureBuckets;
     }
 
-    /*
-     * Bucket end time should be the evidence end time + 1 timeframe (e.g. 1 day / 1 hour) so the last bucket that the anomaly is within it will be contained in the results.
-     * This logic should exist as long as we don't take the "last bucket" events directly from Impala (bug FV-8306)
-     */
-    private long calculateBucketEndTime(long evidenceEndTime, String strategyName) {
-        long bucketEndTime;
-
-        // TODO need to use the feature bucket strategy service, currently it's in the streaming project
-        if (FIXED_DURATION_DAILY_STRATEGY.equals(strategyName)) {
-            bucketEndTime = evidenceEndTime + TimeUnit.DAYS.toMillis(1);
-        }
-        else if (FIXED_DURATION_HOURLY_STRATEGY.equals(strategyName)) {
-            bucketEndTime = evidenceEndTime + TimeUnit.HOURS.toMillis(1);
-        }
-        else {
-            throw new SupportingInformationException("Could not find bucket strategy with name " + strategyName);
-        }
-
-        return bucketEndTime;
-    }
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
 
