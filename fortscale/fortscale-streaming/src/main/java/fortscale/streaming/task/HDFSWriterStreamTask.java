@@ -234,7 +234,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 								//check if this is caused by big decimal not being able to serialize
 								for (Map.Entry entry: message.entrySet()) {
 									if (entry.getValue() instanceof BigDecimal) {
-									   entry.setValue((double)Math.round(((BigDecimal)entry.getValue()).doubleValue()));
+										message.put((String)entry.getKey(), (double)Math.
+												round(((BigDecimal)entry.getValue()).doubleValue() * 100) / 100);
 									}
 								}
 							} catch (Exception exception) {
