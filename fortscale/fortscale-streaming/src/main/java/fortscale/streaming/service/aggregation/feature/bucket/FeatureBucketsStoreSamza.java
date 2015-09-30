@@ -3,6 +3,7 @@ package fortscale.streaming.service.aggregation.feature.bucket;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -14,10 +15,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 
+import static fortscale.streaming.ConfigUtils.getConfigString;
+
 @Configurable(preConstruction=true)
 public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
-	private static final String STORE_NAME = "feature_buckets_store";
+	private static final String STORE_NAME_PROPERTY = "fortscale.feature.buckets.store.name";
 
 	private KeyValueStore<String, FeatureBucket> featureBucketStore;
 	
@@ -28,7 +31,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
 		Assert.notNull(context);
-		featureBucketStore = (KeyValueStore<String, FeatureBucket>)context.getStore(STORE_NAME);
+		Config config = context.getConfig();
+		String storeName = getConfigString(config, STORE_NAME_PROPERTY);
+		featureBucketStore = (KeyValueStore<String, FeatureBucket>)context.getStore(storeName);
 		Assert.notNull(featureBucketStore);
 	}
 	
