@@ -226,18 +226,24 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					}
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
+							String toSend;
 							try {
-								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-										outputTopic), message.toJSONString());
-								collector.send(output);
+								toSend = message.toJSONString();
 							} catch (RuntimeException ex) {
 								//check if this is caused by big decimal not being able to serialize
-								for (Map.Entry entry: message.entrySet()) {
+								for (Map.Entry entry : message.entrySet()) {
 									if (entry.getValue() instanceof BigDecimal) {
-										message.put((String)entry.getKey(), (double)Math.
-												round(((BigDecimal)entry.getValue()).doubleValue() * 100) / 100);
+										message.put((String) entry.getKey(), (double) Math.
+												round(((BigDecimal) entry.getValue()).doubleValue() * 100) / 100);
 									}
 								}
+								//retry conversion
+								toSend = message.toJSONString();
+							}
+							try {
+								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+										outputTopic), toSend);
+								collector.send(output);
 							} catch (Exception exception) {
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output topic %s after HDFS write",
