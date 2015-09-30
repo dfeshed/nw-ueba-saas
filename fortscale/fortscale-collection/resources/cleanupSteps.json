@@ -1,18 +1,1 @@
-[
-  {
-    "step": "step1",
-    "params":
-    {
-      "test1": "testA",
-      "test2": "testB"
-    }
-  },
-  {
-    "step": "step1",
-    "params":
-    {
-      "test1": "testA",
-      "test2": "testB"
-    }
-  }
-]
+{"interest":"Java","domain":"JavaCodeGeeks.com"}

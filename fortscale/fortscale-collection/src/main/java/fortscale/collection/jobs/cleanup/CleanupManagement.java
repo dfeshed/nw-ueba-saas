@@ -2,10 +2,12 @@ package fortscale.collection.jobs.cleanup;
 
 import fortscale.utils.logging.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 30/09/15.
@@ -17,7 +19,7 @@ public class CleanupManagement implements InitializingBean {
     @Value("${cleanup.steps}")
     private String cleanupStepsFile;
 
-    private CleanupSteps cleanupSteps;
+    private Map<String, CleanupStep> cleanupSteps;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -33,7 +35,7 @@ public class CleanupManagement implements InitializingBean {
             throw new Exception();
         }
         try {
-            cleanupSteps = mapper.readValue(jsonFile, CleanupSteps.class);
+            cleanupSteps = mapper.readValue(jsonFile, new TypeReference<Map<String, CleanupStep>>(){});
         } catch (Exception ex) {
             logger.error("Error mapping cleanupSteps.json file to class {}", ex);
             throw new Exception();
@@ -41,7 +43,7 @@ public class CleanupManagement implements InitializingBean {
     }
 
     public CleanupStep getCleanupStep(String stepId) {
-        return cleanupSteps.getCleanupStep(stepId);
+        return cleanupSteps.get(stepId);
     }
 
 }
