@@ -64,6 +64,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			mongoTemplate.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.CONTEXT_ID_FIELD, Direction.ASC));
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.FIRING_TIME_IN_SECONDS_FIELD, Direction.ASC));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.START_TIME_FIELD, Direction.ASC));
 		}
 
 		mongoTemplate.save(entityEventData, COLLECTION_NAME);
