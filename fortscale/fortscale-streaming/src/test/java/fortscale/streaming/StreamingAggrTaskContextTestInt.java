@@ -35,8 +35,9 @@ public class StreamingAggrTaskContextTestInt {
 	public void testContext(){
 		Map<String, String> configMap = new HashMap<String, String>();
 		configMap.put(AggregatorManager.SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH, "timestamp");
+		MapConfig mapConfig = new MapConfig(configMap);
 		@SuppressWarnings("unused")
-		AggregatorManager aggregatorManager = new AggregatorManager(new MapConfig(configMap), new ExtendedSamzaTaskContext(new TaskContextImpl()));
+		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig));
 	}
 	
 	private static class TaskContextImpl implements TaskContext{
