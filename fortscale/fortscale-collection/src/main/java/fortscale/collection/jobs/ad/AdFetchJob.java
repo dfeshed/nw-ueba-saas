@@ -190,19 +190,7 @@ public class AdFetchJob extends FortscaleJob {
                 String key = atr.getID();
                 NamingEnumeration<?> values = atr.getAll();
 				if (key.equals("member")) {
-                    boolean first = true;
-                    while (values.hasMoreElements()) {
-                        String value = (String)values.nextElement();
-						if (value.contains("\n") || value.contains("\r")) {
-							value = DatatypeConverter.printBase64Binary(value.getBytes());
-						}
-                        if (first) {
-                            first = false;
-                        } else {
-                            fileWriter.append("\n");
-                        }
-                        fileWriter.append(key + ": " + value);
-                    }
+					appendAllAttributeElements(fileWriter, key, values);
                 } else if (values.hasMoreElements()) {
                     String value;
                     if (key.equals("distinguishedName")) {
@@ -212,20 +200,35 @@ public class AdFetchJob extends FortscaleJob {
 						}
                         fileWriter.append("dn: " + value);
                         fileWriter.append("\n");
+						fileWriter.append(key + ": " + value);
                     } else if (key.equals("objectGUID") || key.equals("objectSid")) {
                         value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
+						fileWriter.append(key + ": " + value);
                     } else {
-                        value = (String)values.nextElement();
-						if (value.contains("\n") || value.contains("\r")) {
-							value = DatatypeConverter.printBase64Binary(value.getBytes());
-						}
+						appendAllAttributeElements(fileWriter, key, values);
                     }
-                    fileWriter.append(key + ": " + value);
+
                 }
                 fileWriter.append("\n");
             }
         }
 		fileWriter.append("\n");
+	}
+
+	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values) throws IOException {
+		boolean first = true;
+		while (values.hasMoreElements()) {
+            String value = (String)values.nextElement();
+            if (value.contains("\n") || value.contains("\r")) {
+                value = DatatypeConverter.printBase64Binary(value.getBytes());
+            }
+            if (first) {
+                first = false;
+            } else {
+                fileWriter.append("\n");
+            }
+            fileWriter.append(key + ": " + value);
+        }
 	}
 
 	//used to determine if an additional page of results exists

@@ -1,10 +1,7 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import org.apache.commons.lang.StringUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EntityEventDataTestStore implements EntityEventDataStore {
 	private Map<String, EntityEventData> entityEventDataMap = new HashMap<>();
@@ -24,6 +21,14 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 				listOfEntityEventData.add(value);
 			}
 		}
+
+		Collections.sort(listOfEntityEventData, new Comparator<EntityEventData>() {
+			@Override
+			public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+				return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
+			}
+		});
+
 		return listOfEntityEventData;
 	}
 
@@ -35,6 +40,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 				listOfEntityEventData.add(entityEventData);
 			}
 		}
+
 		return listOfEntityEventData;
 	}
 

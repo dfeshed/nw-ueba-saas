@@ -45,6 +45,14 @@ public interface EvidencesService {
 	void setTagEvidenceSupportingInformationData(Evidence evidence);
 
 	/**
+	 * return userId from user service
+	 * @param userName
+	 * @return
+	 */
+	User getUserIdByUserName(String userName);
+
+
+	/**
 	 * Create new evidence in Mongo
 	 * @param evidence	The evidence
 	 */
@@ -88,5 +96,14 @@ public interface EvidencesService {
 	 */
 	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
 			String evidenceType, String entityName);
+
+	/**
+	 *
+	 * @param afterDate
+	 * @param beforeDate
+	 * @param anomalyType
+	 * @return
+	 */
+	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType);
 
 }
