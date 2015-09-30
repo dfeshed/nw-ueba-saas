@@ -75,6 +75,7 @@ public class CleanJob extends FortscaleJob {
 	private Strategy strategy;
 	private Technology technology;
 
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
