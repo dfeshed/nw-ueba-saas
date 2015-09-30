@@ -30,7 +30,7 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
         if (mongoTemplate.collectionExists(collectionName)) {
             Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(TimestampUtils.convertToSeconds(startTime));
 
-            Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));
+            Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));
 
             Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 

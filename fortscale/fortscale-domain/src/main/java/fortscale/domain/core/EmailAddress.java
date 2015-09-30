@@ -20,6 +20,10 @@ public final class EmailAddress implements Serializable{
 	@JsonProperty("email")
 	private final String value;
 
+	public String getValue() {
+		return value;
+	}
+
 	/**
 	 * Creates a new {@link EmailAddress} from the given {@link String} representation.
 	 * 

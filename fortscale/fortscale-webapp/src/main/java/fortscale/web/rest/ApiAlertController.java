@@ -49,7 +49,7 @@ public class ApiAlertController extends BaseController {
 	public static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
 	private static Logger logger = Logger.getLogger(ApiAlertController.class);
 
-	private static final String TIME_STAMP_START = "ts_start";
+	private static final String TIME_STAMP_START = "startDate";
 
 	@Autowired
 	private AlertsService alertsDao;
@@ -186,6 +186,14 @@ public class ApiAlertController extends BaseController {
 				sortDir = Sort.Direction.valueOf(sortDirection);
 			}
 			sortByTSDesc = new Sort(new Sort.Order(sortDir, sortField));
+
+
+			 // If there the api get sortField, which different from TIME_STAMP_START, add
+			 // TIME_STAMP_START as secondary sort
+			 if (!TIME_STAMP_START.equals(sortField)) {
+				 Sort secondarySort = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
+				 sortByTSDesc = sortByTSDesc.and(secondarySort);
+			 }
 		} else {
 			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
 		}

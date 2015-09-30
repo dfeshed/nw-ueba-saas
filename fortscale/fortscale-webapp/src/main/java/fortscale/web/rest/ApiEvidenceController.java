@@ -11,14 +11,18 @@ import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.ConfigurationUtils;
+import fortscale.utils.CustomedFilter;
+import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +41,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String ASC = "ASC";
 	private static final String OTHERS_COLUMN = "Others";
 	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
+	private static final String TIME_STAMP = "ts";
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
@@ -44,7 +49,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * Mongo repository for fetching evidences
 	 */
 	@Autowired
-	private EvidencesService evidencesDao;
+	private EvidencesService evidencesService;
 
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
@@ -66,10 +71,14 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private Map evidenceTypeMap;
 
+	@Autowired
+	private FilteringPropertiesConfigurationHandler eventsFilter;
+
 	@PostConstruct
-	public void initEvidenceMap(){
+	public void initMaps(){
 		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
 	}
+
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
@@ -85,6 +94,63 @@ public class ApiEvidenceController extends DataQueryController {
 	}
 
 	/**
+	 * Special API for the GeoHopping report: this queries GeoHopping indicators from Mongo, and for each one retrieve its related events from Impala
+	 * @param page
+	 * @param size
+	 * @param after
+	 * @param before
+	 * @param sortDesc
+	 * @return
+	 */
+	@RequestMapping(value="/findEventsForGeoHopping", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Map<String, Object>>> list(
+			@RequestParam(defaultValue="1", required=false) int page,
+			@RequestParam(defaultValue="20", required=false) int size,
+			@RequestParam(required=false, defaultValue="0") long after,
+			@RequestParam(required=false, defaultValue="0") long before,
+			@RequestParam(defaultValue="True") boolean sortDesc) {
+
+		// calculate the page request based on the parameters given
+		if (size > 200) {
+			size = 200; //page size should not extend 200
+		}
+		PageRequest request = new PageRequest(page, size,
+				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
+
+		//first step: retrieve all Indicators that are related to vpn_geo_hopping
+		List<Evidence> evidences = evidencesService.findByStartDateBetweenAndAnomalyTypeFieldName(after, before, "vpn_geo_hopping");
+
+		//second step, for each geo_hopping indicator, retrieve the list of events from impala
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (Evidence evidence : evidences){
+			//the function "getListOfEvents" accesses Impala using query builder and retrieves events that are related to specific indicator
+			//each event is built as a map object with all attributes as key-value
+			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
+			//retrieve the data from the data bean so we can manipulate it:
+			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
+			//iterate over each event map object
+			for (Map<String, Object> eventMapObject : data){
+				Object normalizedUsername = eventMapObject.get("normalized_username");
+				if (normalizedUsername != null){
+					//needs to retrieve user id from the user name, so use the userService for that.
+					String userId = evidencesService.getUserIdByUserName(normalizedUsername.toString()).getId();
+					eventMapObject.put("userid",userId);
+					//create a unique is by concatanating userId + eventTime + sourceIp
+					eventMapObject.put("id",userId + eventMapObject.get("event_time") + eventMapObject.get("source_ip"));
+				}
+				eventMapObject.put("evidenceId", evidence.getId());
+			}
+			result.addAll(data);
+		}
+		DataBean<List<Map<String, Object>>> dataBean = new DataBean<>();
+		dataBean.setData(result);
+		return dataBean;
+	}
+
+
+	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
 	 * @param id The ID of the requested evidence
 	 */
@@ -93,7 +159,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@LogException
 	public DataBean<Evidence> getEvidence(@PathVariable String id) {
 		DataBean<Evidence> ret = new DataBean<>();
-		Evidence evidence = evidencesDao.findById(id);
+		Evidence evidence = evidencesService.findById(id);
 		updateEvidenceFields(evidence);
 		ret.setData(evidence);
 		return ret;
@@ -110,11 +176,15 @@ public class ApiEvidenceController extends DataQueryController {
 															 @RequestParam(required=false) String sort_field,
 															 @RequestParam(required=false) String sort_direction) {
 
-		Evidence evidence = evidencesDao.findById(id);
+		Evidence evidence = evidencesService.findById(id);
 		if (evidence == null || evidence.getId() == null){
 			throw new InvalidValueException("Can't get evidence of id: " + id);
 		}
 
+		return getListOfEvents(request_total, use_cache, page, size, sort_field, sort_direction, evidence);
+	}
+
+	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
 		String entityName = evidence.getEntityName();
 		List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
 		//TODO: add support to multiple dataEntitiies in a single query
@@ -138,6 +208,13 @@ public class ApiEvidenceController extends DataQueryController {
 			//add condition to filter user
 			Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
 			termsMap.add(term);
+			// Add condition for custom filtering
+			if (eventsFilter != null) {
+				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				if (customedFilter != null) {
+					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
+				}
+			}
 			//add condition about time range
 			Long currentTimestamp = System.currentTimeMillis();
 			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate),
@@ -160,8 +237,9 @@ public class ApiEvidenceController extends DataQueryController {
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
 					size);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	/**
@@ -203,7 +281,7 @@ public class ApiEvidenceController extends DataQueryController {
 		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
-		Evidence evidence = evidencesDao.findById(evidenceId);
+		Evidence evidence = evidencesService.findById(evidenceId);
 		if (evidence == null || evidence.getId() == null){
 			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
 		}
@@ -348,5 +426,6 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 		return supportingInformationEntries;
 	}
-
 }
+
+
