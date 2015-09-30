@@ -41,6 +41,8 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 
+
+
 	@Autowired
 	private AdConnections adConnections;
 
