@@ -1,1 +1,8 @@
-{"interest":"Java","domain":"JavaCodeGeeks.com"}
+{
+  "interest": {
+    "value": "temp1"
+  },
+  "domain": {
+    "value": "temp2"
+  }
+}

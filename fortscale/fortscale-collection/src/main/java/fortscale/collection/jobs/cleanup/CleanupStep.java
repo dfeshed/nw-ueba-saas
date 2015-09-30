@@ -5,6 +5,8 @@ package fortscale.collection.jobs.cleanup;
  */
 public class CleanupStep {
 
+    //TODO - add all cleanup steps properties here
+
     private String value;
 
     public String getValue() {

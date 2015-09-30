@@ -84,6 +84,15 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		if (map.containsKey(stepParam)) {
+			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
+			if (cleanupStep == null) {
+				logger.error("No step {} found", map.getString(stepParam));
+				throw new JobExecutionException();
+			}
+			//if step param passed - ignore all other parameters
+			return;
+		}
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
 		try {
@@ -102,36 +111,35 @@ public class CleanJob extends FortscaleJob {
 		if (map.containsKey(dataSourcesParam)) {
 			createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
-		if (map.containsKey(stepParam)) {
-			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
-			if (cleanupStep == null) {
-				logger.error("No step {} found", map.getString(stepParam));
-				throw new JobExecutionException();
-			}
-		}
 	}
 
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
 		boolean success = false;
-		//if command is to delete everything
-		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
-			//if fast delete - no validation is performed
-			success = clearAllData(strategy == Strategy.DELETE);
+		//bdp run
+		if (cleanupStep != null) {
+			//TODO - implement
+		//normal run
 		} else {
-			switch (strategy) {
-				//for both delete and fastdelete, do
-				case DELETE:
-				case FASTDELETE: {
-					//if fast delete - no validation is performed
-					success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
-					break;
-				}
-				case RESTORE: {
-					logger.info("restoring {} entities", dataSources.size());
-					success = restoreEntities(dataSources);
-					break;
+			//if command is to delete everything
+			if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
+				//if fast delete - no validation is performed
+				success = clearAllData(strategy == Strategy.DELETE);
+			} else {
+				switch (strategy) {
+					//for both delete and fastdelete, do
+					case DELETE:
+					case FASTDELETE: {
+						//if fast delete - no validation is performed
+						success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
+						break;
+					}
+					case RESTORE: {
+						logger.info("restoring {} entities", dataSources.size());
+						success = restoreEntities(dataSources);
+						break;
+					}
 				}
 			}
 		}
