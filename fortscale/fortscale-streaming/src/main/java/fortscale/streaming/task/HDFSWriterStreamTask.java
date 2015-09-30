@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.*;
@@ -227,8 +228,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 						for (String outputTopic : outputTopics) {
 							try {
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-									   outputTopic), message.toJSONString());
+										outputTopic), message.toJSONString());
 								collector.send(output);
+							} catch (RuntimeException ex) {
+								//check if this is caused by big decimal not being able to serialize
+								for (Map.Entry entry: message.entrySet()) {
+									if (entry.getValue() instanceof BigDecimal) {
+									   entry.setValue((double)Math.round(((BigDecimal)entry.getValue()).doubleValue()));
+									}
+								}
 							} catch (Exception exception) {
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output topic %s after HDFS write",

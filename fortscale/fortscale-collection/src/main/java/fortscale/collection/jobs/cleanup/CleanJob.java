@@ -34,6 +34,9 @@ public class CleanJob extends FortscaleJob {
 	private enum Strategy { DELETE, FASTDELETE, RESTORE }
 
 	@Autowired
+	private CleanupManagement cleanupManagement;
+
+	@Autowired
 	private MongoUtil mongoUtils;
 	@Autowired
 	private KafkaUtils kafkaUtils;
@@ -68,24 +71,26 @@ public class CleanJob extends FortscaleJob {
 	private String streamingServiceName;
 	@Value("${collection.service.name}")
 	private String collectionServiceName;
+	@Value("${step.param}")
+	private String stepParam;
 
 	private Date startTime;
 	private Date endTime;
 	private Map<String, String> dataSources;
 	private Strategy strategy;
 	private Technology technology;
+	private CleanupStep cleanupStep;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		Set<String> keys = map.keySet();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
 		try {
-			if (keys.contains(startTimeParam)) {
+			if (map.containsKey(startTimeParam)) {
 				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam));
 			}
-			if (keys.contains(endTimeParam)) {
+			if (map.containsKey(endTimeParam)) {
 				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam));
 			}
 		} catch (ParseException ex) {
@@ -94,8 +99,15 @@ public class CleanJob extends FortscaleJob {
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
-		if (keys.contains(dataSourcesParam)) {
+		if (map.containsKey(dataSourcesParam)) {
 			createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
+		}
+		if (map.containsKey(stepParam)) {
+			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
+			if (cleanupStep == null) {
+				logger.error("No step {} found", map.getString(stepParam));
+				throw new JobExecutionException();
+			}
 		}
 	}
 
