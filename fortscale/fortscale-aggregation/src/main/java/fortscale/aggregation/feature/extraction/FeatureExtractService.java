@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.FeatureStringValue;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.StringUtils;
@@ -123,9 +124,13 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 		if(featureExtractor != null){
 			value = featureExtractor.extract(event);
 		} else {
-			String valueStr = (String)event.get(featureName);
-			if(valueStr!=null) {
-				value = new FeatureStringValue(valueStr);
+			Object valueObj = event.get(featureName);
+			if(valueObj!=null) {
+				if(valueObj instanceof String) {
+					value = new FeatureStringValue((String)valueObj);
+				} else if(valueObj instanceof Number) {
+					value = new FeatureNumericValue((Number)valueObj);
+				}
 			}
 		}
 		return new Feature(featureName, value);
