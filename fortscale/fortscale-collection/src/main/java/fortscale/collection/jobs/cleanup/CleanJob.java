@@ -143,16 +143,29 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean bdpClean(CleanupStep cleanupStep, Date startTime, Date endTime) {
 		boolean success = false;
-		List<MiniStep> miniSteps = cleanupStep.getMiniSteps();
+		Map<String, String> dataSources;
+		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
 		for (int i = 0; i < miniSteps.size(); i++) {
 			MiniStep miniStep = miniSteps.get(i);
-			Map<String, String> dataSources = createDataSourcesMap(miniStep.getDataSources());
+			dataSources = createDataSourcesMap(miniStep.getDataSources());
 			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
-			if (success == false) {
-				logger.error("ministep {}: {} - failed", i, miniStep.toString());
+			if (!success) {
+				logger.error("Time based step {}: {} - failed", i, miniStep.toString());
 				return success;
 			} else {
-				logger.error("ministep {}: {} - succeeded", i, miniStep.toString());
+				logger.info("Time based step {}: {} - succeeded", i, miniStep.toString());
+			}
+		}
+		miniSteps = cleanupStep.getOtherSteps();
+		for (int i = 0; i < miniSteps.size(); i++) {
+			MiniStep miniStep = miniSteps.get(i);
+			dataSources = createDataSourcesMap(miniStep.getDataSources());
+			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
+			if (!success) {
+				logger.error("Normal step {}: {} - failed", i, miniStep.toString());
+				return success;
+			} else {
+				logger.info("Normal step {}: {} - succeeded", i, miniStep.toString());
 			}
 		}
 		return success;
@@ -246,10 +259,10 @@ public class CleanJob extends FortscaleJob {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = restoreSnapshot(sources, mongoUtils);
+				success = restoreMongo(sources);
 				break;
 			} case HDFS: {
-				success = restoreSnapshot(sources, hdfsUtils);
+				success = restoreHDFS(sources);
 				break;
 			}
 		}
@@ -272,10 +285,11 @@ public class CleanJob extends FortscaleJob {
 			Collection<String> temp = toDelete.keySet();
 			entities = new HashSet(temp);
 			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-				String value = entry.getValue();
-				if (!value.isEmpty()) {
-					entities.addAll(customUtil.getEntitiesMatchingPredicate(entry.getKey(), value));
-					entities.remove(entry.getKey());
+				String filter = entry.getValue();
+				String name = entry.getKey();
+				if (!filter.isEmpty()) {
+					entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
+					entities.remove(name);
 				}
 			}
 		} else {
@@ -298,14 +312,12 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
-		if (startDate == null && endDate == null) {
-			if (toDelete != null) {
-				logger.info("deleting {} entities", toDelete.size());
-				success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
-			} else {
-				logger.info("deleting all entities");
-				success = hdfsUtils.deleteAll(doValidate);
-			}
+		if (startTime == null && endTime == null && toDelete == null) {
+			logger.info("deleting all entities");
+			success = hdfsUtils.deleteAll(doValidate);
+		} else if (startTime == null && endTime == null) {
+			logger.info("deleting {} entities", toDelete.size());
+			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
@@ -325,12 +337,12 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate){
 		boolean success;
-		if (startTime == null && endTime == null) {
-			if (toDelete != null) {
-				return handleDeletion(toDelete, doValidate, mongoUtils);
-			}
+		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = mongoUtils.dropAllCollections(doValidate);
+		} else if (startTime == null && endTime == null) {
+			logger.info("deleting {} entities", toDelete.size());
+			success = handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
@@ -370,18 +382,17 @@ public class CleanJob extends FortscaleJob {
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
 	 * it with the intended backup
 	 *
-	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @param cleanupUtil
+	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @return
 	 */
-	private boolean restoreSnapshot(Map<String, String> sources, CleanupUtil cleanupUtil) {
+	private boolean restoreMongo(Map<String, String> sources) {
 		int restored = 0;
 		logger.debug("trying to restore {} snapshots", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
             String toRestore = dataSource.getKey();
             String backupName = dataSource.getValue();
 			logger.debug("origin - {}, backup - {}", toRestore, backupName);
-            if (cleanupUtil.restoreSnapshot(toRestore, backupName)) {
+            if (mongoUtils.restoreSnapshot(toRestore, backupName)) {
                 restored++;
             }
         }
@@ -391,6 +402,31 @@ public class CleanJob extends FortscaleJob {
 			return false;
 		}
 		logger.info("restored all {} entities", sources.size());
+		return true;
+	}
+
+	/****
+	 *
+	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
+	 * it with the intended backup
+	 *
+	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @return
+	 */
+	private boolean restoreHDFS(Map<String, String> sources) {
+		boolean success = false;
+		logger.debug("trying to restore from {} paths", sources.size());
+		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
+			String backupPath = dataSource.getKey();
+			success = hdfsUtils.restoreSnapshot(backupPath);
+			if (!success) {
+				logger.error("failed to restore from path {}", backupPath);
+				return success;
+			} else {
+				logger.info("restored successfully from path {}", backupPath);
+			}
+		}
+		logger.info("restored all", sources.size());
 		return true;
 	}
 

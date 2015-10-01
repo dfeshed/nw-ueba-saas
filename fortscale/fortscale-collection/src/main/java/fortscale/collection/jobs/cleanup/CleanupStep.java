@@ -7,14 +7,23 @@ import java.util.List;
  */
 public class CleanupStep {
 
-    private List<MiniStep> miniSteps;
+    private List<MiniStep> timeBasedSteps;
+    private List<MiniStep> otherSteps;
 
-    public List<MiniStep> getMiniSteps() {
-        return miniSteps;
+    public List<MiniStep> getTimeBasedSteps() {
+        return timeBasedSteps;
     }
 
-    public void setMiniSteps(List<MiniStep> miniSteps) {
-        this.miniSteps = miniSteps;
+    public void setTimeBasedSteps(List<MiniStep> timeBasedSteps) {
+        this.timeBasedSteps = timeBasedSteps;
+    }
+
+    public List<MiniStep> getOtherSteps() {
+        return otherSteps;
+    }
+
+    public void setOtherSteps(List<MiniStep> otherSteps) {
+        this.otherSteps = otherSteps;
     }
 
 }

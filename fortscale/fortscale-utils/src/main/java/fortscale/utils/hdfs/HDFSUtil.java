@@ -5,6 +5,7 @@ import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -172,14 +174,41 @@ public class HDFSUtil implements CleanupUtil {
 
     /***
      *
+     * This method receives a folder containing backup csv files and restores them to HDFS
+     *
+     * @param backupPath
+     * @return
+     */
+    public boolean restoreSnapshot(String backupPath) {
+        logger.info("attempting to restore snapshot");
+        File directory = new File(backupPath);
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.error("failed to find backup folder");
+            return false;
+        }
+        Iterator<File> iterator = FileUtils.iterateFiles(directory, new String[] { "csv" }, true);
+        while (iterator.hasNext()) {
+            File file = iterator.next();
+            String restorePath = file.getAbsolutePath();
+            //TODO - generalize this to cases where it's not processed data
+            String hdfsPath = processedDataPath + "/" + restorePath.replace(backupPath, "");
+            if (!restoreFile(hdfsPath, restorePath)) {
+                logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /***
+     *
      * This method attempts to restore a file from the local file system to HDFS
      *
      * @param hdfsPath     the path to the file to be deletes on HDFS
      * @param restorePath  the path to the local backup file to be uploaded instead
      * @return
      */
-    @Override
-    public boolean restoreSnapshot(String hdfsPath, String restorePath) {
+    private boolean restoreFile(String hdfsPath, String restorePath) {
         boolean success = false;
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         if (!hdfsPath.contains(basePath)) {

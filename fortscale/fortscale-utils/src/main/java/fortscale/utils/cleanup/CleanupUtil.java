@@ -7,7 +7,6 @@ import java.util.Date;
  */
 public interface CleanupUtil {
 
-    boolean restoreSnapshot(String toRestore, String backupCollectionName);
     boolean deleteEntityBetween(String toDelete, String queryField, Date startDate, Date endDate);
 
 }
