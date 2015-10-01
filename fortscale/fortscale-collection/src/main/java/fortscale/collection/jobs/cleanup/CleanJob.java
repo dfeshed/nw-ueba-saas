@@ -166,7 +166,8 @@ public class CleanJob extends FortscaleJob {
 	 * @param endTime      the ending time of entities to address
 	 * @return
 	 */
-	private boolean normalClean(Strategy strategy, Technology technology, Map<String, String> dataSources, Date startTime, Date endTime) {
+	private boolean normalClean(Strategy strategy, Technology technology, Map<String, String> dataSources,
+								Date startTime, Date endTime) {
 		boolean success = false;
 		//if command is to delete everything
 		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
@@ -178,12 +179,12 @@ public class CleanJob extends FortscaleJob {
                 case DELETE:
                 case FASTDELETE: {
                     //if fast delete - no validation is performed
-                    success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
+                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE);
                     break;
                 }
                 case RESTORE: {
                     logger.info("restoring {} entities", dataSources.size());
-                    success = restoreEntities(dataSources);
+                    success = restoreEntities(technology, dataSources);
                     break;
                 }
             }
@@ -195,13 +196,15 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method handles the delete command, determines which technology to use and executes it
 	 *
+	 * @param technology  technology to use (mongo, hdfs, etc.)
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param startDate   start date to filter deletion by
 	 * @param endDate	  end date to filter deletion by
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+	private boolean deleteEntities(Technology technology, Map<String, String> toDelete, Date startDate, Date endDate,
+								   boolean doValidate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
@@ -232,10 +235,11 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method handles the restore command, determines which technology to use and executes it
 	 *
-	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param technology  technology to use (mongo, hdfs, etc.)
+	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @return
 	 */
-	private boolean restoreEntities(Map<String, String> sources) {
+	private boolean restoreEntities(Technology technology, Map<String, String> sources) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
@@ -255,6 +259,7 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param doValidate  flag to determine should we perform validations
+	 * @param customUtil
 	 * @return
 	 */
 	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CleanupDeletionUtil customUtil) {
@@ -290,7 +295,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
-		if (startTime == null && endTime == null) {
+		if (startDate == null && endDate == null) {
 			if (toDelete != null) {
 				logger.info("deleting {} entities", toDelete.size());
 				success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
@@ -315,7 +320,7 @@ public class CleanJob extends FortscaleJob {
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate){
 		boolean success;
 		if (startTime == null && endTime == null) {
 			if (toDelete != null) {
