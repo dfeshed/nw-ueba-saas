@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import java.math.BigDecimal;
+
 @JsonTypeName(NumberDividerFeatureAdjustor.NUMBER_DIVIDER_FEATURE_ADJUSTOR)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
@@ -35,8 +37,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 				dividedValue = originalValue / denominator;
 			}
 		}
-
-		return dividedValue;
+		return (double)Math.round(dividedValue * 100) / 100;
 	}
 
 	public double getAdditionToDenominator() {
