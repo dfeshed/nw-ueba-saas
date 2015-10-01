@@ -22,7 +22,7 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
     private static Logger logger = Logger.getLogger(MongoUtil.class);
 
     private final String FILTERS_DELIMITER = "%%%";
-    private final String KEYVALUE_DELIMITER = "^^^";
+    private final String KEYVALUE_DELIMITER = ":::";
     private final String DATE_IDENTIFIER = "date";
 
     @Autowired
