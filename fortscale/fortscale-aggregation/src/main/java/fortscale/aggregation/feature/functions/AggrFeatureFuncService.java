@@ -53,7 +53,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
                 String aggrFeatureName = aggregatedFeatureConf.getName();
                 Feature aggrFeature = aggrFeatures.get(aggrFeatureName);
                 if(aggrFeature==null) {
-                    aggrFeature = new Feature(aggrFeatureName, null);
+                    aggrFeature = new Feature(aggrFeatureName);
                     aggrFeatures.put(aggrFeatureName, aggrFeature);
                 }
 

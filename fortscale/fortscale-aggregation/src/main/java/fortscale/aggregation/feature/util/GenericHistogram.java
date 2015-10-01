@@ -1,13 +1,18 @@
 package fortscale.aggregation.feature.util;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import fortscale.aggregation.feature.FeatureValue;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class GenericHistogram implements Serializable {
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
+public class GenericHistogram implements Serializable, FeatureValue {
     private static final long serialVersionUID = 1L;
+    public static final String FEATURE_VALUE_TYPE = "generic_histogram";
 
     private Map<String, Double> histogram = new HashMap<>();
     private double totalCount = 0;

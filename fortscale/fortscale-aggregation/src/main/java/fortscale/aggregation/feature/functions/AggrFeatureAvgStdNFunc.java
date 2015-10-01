@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -28,12 +30,12 @@ public class AggrFeatureAvgStdNFunc implements IAggrFeatureFunction, IAggrFeatur
      * if it's value is not of type {@link ContinuousValueAvgStdN}
      */
     @Override
-    public Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
+    public FeatureValue updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
         if (aggregatedFeatureConf == null || aggrFeature == null) {
             return null;
         }
 
-        Object value = aggrFeature.getValue();
+        FeatureValue value = aggrFeature.getValue();
         if (value == null) {
             value = new ContinuousValueAvgStdN();
             aggrFeature.setValue(value);
@@ -48,7 +50,11 @@ public class AggrFeatureAvgStdNFunc implements IAggrFeatureFunction, IAggrFeatur
             for (String featureName : featureNames) {
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                    addValue(avgStdN, feature.getValue());
+                    FeatureValue featureValue = feature.getValue();
+                    if(featureValue instanceof FeatureNumericValue) {
+                        FeatureNumericValue featureNumericValue = (FeatureNumericValue)featureValue;
+                        addValue(avgStdN, featureNumericValue.getValue().doubleValue());
+                    }
                 }
             }
         }
@@ -91,12 +97,9 @@ public class AggrFeatureAvgStdNFunc implements IAggrFeatureFunction, IAggrFeatur
         return resFeature;
     }
 
-    private void addValue(ContinuousValueAvgStdN avgStdN, Object value) {
-        try {
-            Double doubleValue = (Double)value;
-            avgStdN.add(doubleValue);
-        } catch (ClassCastException e) {
-            // Value ignored
+    private void addValue(ContinuousValueAvgStdN avgStdN, Double value) {
+        if(avgStdN!=null) {
+            avgStdN.add(value);
         }
     }
 }

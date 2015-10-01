@@ -4,16 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.samza.Partition;
+import org.apache.samza.config.Config;
 import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.task.TaskContext;
 
 public class ExtendedSamzaTaskContext implements TaskContext{
 
 	private TaskContext taskContext;
+	private Config config;
 	private Map<Class<?>, Object> beanMap = new HashMap<Class<?>, Object>();
-	
-	public ExtendedSamzaTaskContext(TaskContext taskContext){
+
+
+	public ExtendedSamzaTaskContext(TaskContext taskContext, Config config){
 		this.taskContext = taskContext;
+		this.config = config;
 	}
 	
 	public void registerBean(Class<?> beanType, Object bean){
@@ -39,6 +43,9 @@ public class ExtendedSamzaTaskContext implements TaskContext{
 	public Object getStore(String name) {
 		return taskContext.getStore(name);
 	}
-	
-	
+
+	public Config getConfig() {
+		return config;
+	}
+
 }

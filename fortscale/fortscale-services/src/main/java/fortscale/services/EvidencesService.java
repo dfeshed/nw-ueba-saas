@@ -94,8 +94,8 @@ public interface EvidencesService {
 	 * @param entityName
 	 * @return
 	 */
-	List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
-			String evidenceType, String entityName);
+	List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(long startDate,
+			long endDate, String evidenceType, String entityName);
 
 	/**
 	 *

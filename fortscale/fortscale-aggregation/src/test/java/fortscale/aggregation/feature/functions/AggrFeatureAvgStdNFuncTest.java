@@ -197,7 +197,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("feature11", new Feature("feature11", 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
         featureMap.put("feature12", new Feature("feature12", 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
 
-        Feature aggrFeature = new Feature("MyAggrFeature", null);
+        Feature aggrFeature = new Feature("MyAggrFeature");
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
@@ -345,7 +345,7 @@ public class AggrFeatureAvgStdNFuncTest {
         bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
 
         Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-        bucket2FeatureMap.put("feature1", new Feature("feature1", null));
+        bucket2FeatureMap.put("feature1", new Feature("feature1"));
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucket1FeatureMap);

@@ -142,10 +142,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.findFeatureEvidences(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
 	}
 
-	public  List<Evidence> findByStartDateAndEndDateAndEvidenceTypeAndEntityName(long startDate, long endDate,
-			String evidenceType, String entityName) {
-		return evidencesRepository.findByStartDateAndEndDateAndEvidenceTypeAndEntityName(startDate, endDate,
-				evidenceType, entityName);
+	public  List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(
+			long startDate, long endDate, String evidenceType, String entityName) {
+		return evidencesRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(startDate, endDate, evidenceType, entityName);
 	}
 
 	public List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType){

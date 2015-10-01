@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.internal.core.Assert;
 
@@ -23,7 +25,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) throws Exception {
+	public FeatureValue adjust(FeatureValue value, Event event) throws Exception {
 		Double originalValue = convertToDouble(value);
 		Double denominator = convertToDouble(event.get(denominatorFieldName));
 
@@ -34,7 +36,9 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 				dividedValue = originalValue / denominator;
 			}
 		}
-		return (double)Math.round(dividedValue * 100) / 100;
+
+		return new FeatureNumericValue((double)Math.round(dividedValue * 100) / 100);
+
 	}
 
 	public double getAdditionToDenominator() {
