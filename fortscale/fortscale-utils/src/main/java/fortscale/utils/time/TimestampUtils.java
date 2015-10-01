@@ -29,9 +29,10 @@ public final class TimestampUtils {
 	
 	public static long toStartOfDay(long timestamp) {
 		DateTime when = new DateTime(convertToMilliSeconds(timestamp));
+		//TODO: this function calculate date by local time and not UTC!!!
 		return when.withTimeAtStartOfDay().getMillis();
 	}
-	
+
 	public static boolean isFutureTimestamp(long timestamp) {
 		return isFutureTimestamp(timestamp, 0);
 	}

@@ -10,6 +10,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
         if (bucketConfig != null) {
-            logger.info("Using bucket configuration {}", bucketConfig.getName());
+            logger.debug("Using bucket configuration {}", bucketConfig.getName());
         }
         else {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
@@ -82,16 +83,30 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         String bucketStrategyName = bucketConfig.getStrategyName();
 
-        logger.info("Bucket strategy name = {}", bucketStrategyName);
+        logger.debug("Bucket strategy name = {}", bucketStrategyName);
 
         Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+        //remove one day from bucket end. replace it with data from Impala
+        Long bucketEndTime = TimestampUtils.toStartOfDay(evidenceEndTime);
+        String normalizedContextType = getNormalizedContextType(contextType);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
+        //retrieve last day data from Impala:
+        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, evidenceEndTime);
+        featureBuckets.add(lastDayBucket);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, bucketStartTime, evidenceEndTime);
-
-        logger.info("Found {} relevant featureName buckets:", featureBuckets.size());
-        logger.info(featureBuckets.toString());
+        logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
+        logger.debug(featureBuckets.toString());
 
         return featureBuckets;
+    }
+
+
+    private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long evidenceEndTime) {
+        //TODO: remove last day and create a new FeatureBucket from Impala
+        //example of query for destination_machine in authentication_score table:
+        //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
+
+        return null;
     }
 
 

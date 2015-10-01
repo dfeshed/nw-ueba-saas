@@ -59,7 +59,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 
 			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
 
-			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+			return featureBuckets;
 		}
 		else {
 			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
