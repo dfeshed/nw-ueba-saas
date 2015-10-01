@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.aggregation.feature.FeatureValue;
 
 /**
  * Created by amira on 15/06/2015.
@@ -13,5 +14,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value= PriorityContainerFeatureExtractor.class, name= PriorityContainerFeatureExtractor.PRIORITY_CONTAINER_FEATURE_EXTRACTOR_TYPE)
 })
 public interface FeatureExtractor {
-    Object extract(Event event) throws Exception;
+    FeatureValue extract(Event event) throws Exception;
 }

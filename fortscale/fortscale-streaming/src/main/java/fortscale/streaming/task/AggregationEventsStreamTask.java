@@ -43,7 +43,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 		
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context));
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 	}

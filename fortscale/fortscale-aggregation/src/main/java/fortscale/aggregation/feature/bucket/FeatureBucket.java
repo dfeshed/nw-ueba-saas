@@ -6,10 +6,14 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
@@ -129,6 +133,7 @@ public class FeatureBucket {
 				"startTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)) +
 				", endTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)) +
 				", id='" + id + '\'' +
+				", bucketId='" + bucketId + '\'' +
 				'}';
 	}
 }

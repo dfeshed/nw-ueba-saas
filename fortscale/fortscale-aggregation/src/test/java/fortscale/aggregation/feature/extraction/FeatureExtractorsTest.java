@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureStringValue;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
@@ -113,9 +115,9 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ORIGINAL_FIELD_NAME2, "82.165.195.70");
 
-		String ret = (String) featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
-		Assert.assertEquals("82.165.192.0", ret);
+		Assert.assertEquals("82.165.192.0", ret.toString());
 	}
 
 	@Test
@@ -128,9 +130,9 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("host", "m123ofXXXendingwith334");
 
-		String ret = (String) featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
-		Assert.assertEquals("mofXXXendingwith", ret);
+		Assert.assertEquals("mofXXXendingwith", ret.toString());
 	}
 
 	@Test
@@ -143,9 +145,9 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("source_ip", "82.165.195.70");
 
-		String ret = (String)featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue)featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
-		Assert.assertEquals("82.165.195.0", ret);
+		Assert.assertEquals("82.165.195.0", ret.toString());
 
 	}
 
@@ -159,9 +161,9 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("event_time_utc", "1437210353");
 
-		int ret = (int)featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureNumericValue ret = (FeatureNumericValue)featureExtractor.extract(new RawEvent(jsonObject, null, null));
 
-		Assert.assertEquals(9, ret);
+		Assert.assertEquals(9, ret.getValue().intValue());
 	}
 
 	@Test
@@ -170,9 +172,9 @@ public class FeatureExtractorsTest {
 		jsonObject.put("source_ip", "82.165.195.70");
 
 		Feature feature = featureExtractService.extract(FEATURE_NAME, new JsonObjectWrapperEvent(jsonObject));
-		String ret = (String)feature.getValue();
+		FeatureStringValue ret = (FeatureStringValue)feature.getValue();
 
-		Assert.assertEquals("82.165.195.0", ret);
+		Assert.assertEquals("82.165.195.0", ret.toString());
 	}
 
 	@Test
@@ -202,11 +204,11 @@ public class FeatureExtractorsTest {
 		Map<String, Feature> res = featureExtractService.extract(featureNames, new JsonObjectWrapperEvent(jsonObject));
 
 
-		String value1 = (String)(res.get("feature1")).getValue();
-		String value2 = (String)(res.get("feature2")).getValue();
+		FeatureStringValue value1 = (FeatureStringValue)(res.get("feature1")).getValue();
+		FeatureStringValue value2 = (FeatureStringValue)(res.get("feature2")).getValue();
 
-		Assert.assertEquals("82.165.195.0", value1);
-		Assert.assertEquals("mymachine", value2);
+		Assert.assertEquals("82.165.195.0", value1.toString());
+		Assert.assertEquals("mymachine", value2.toString());
 	}
 	
 	@Test
@@ -223,11 +225,11 @@ public class FeatureExtractorsTest {
 		Map<String, Feature> res = featureExtractService.extract(featureNames, new RawEvent(jsonObject, dataEntitiesConfigWithBlackList,"kerberos_logins" ));
 
 
-		String value1 = (String)(res.get("feature3")).getValue();
-		String value2 = (String)(res.get("normalized_username")).getValue();
+		FeatureStringValue value1 = (FeatureStringValue)(res.get("feature3")).getValue();
+		FeatureStringValue value2 = (FeatureStringValue)(res.get("normalized_username")).getValue();
 
-		Assert.assertEquals("82.165.195.0", value1);
-		Assert.assertEquals("normUser1", value2);
+		Assert.assertEquals("82.165.195.0", value1.toString());
+		Assert.assertEquals("normUser1", value2.toString());
 	}
 	
 	@Test
@@ -242,7 +244,7 @@ public class FeatureExtractorsTest {
 		String featureName = "feature3";
 		Feature res = featureExtractService.extract(featureName, new RawEvent(jsonObject, dataEntitiesConfigWithBlackList,"kerberos_logins" ));
 
-		Assert.assertEquals("82.165.195.0", res.getValue());
+		Assert.assertEquals("82.165.195.0", res.getValue().toString());
 	}
 
 }

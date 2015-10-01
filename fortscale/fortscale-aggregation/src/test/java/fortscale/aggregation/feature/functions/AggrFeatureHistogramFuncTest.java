@@ -1,6 +1,9 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -59,9 +62,9 @@ public class AggrFeatureHistogramFuncTest {
         histogram.add("2", 30.0);
 
         Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 2));
-        featureMap.put("feature2", new Feature("feature2", 2L));
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
+        featureMap.put("feature2", new Feature("feature2", new FeatureNumericValue(2L)));
+        featureMap.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2)));
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -100,11 +103,11 @@ public class AggrFeatureHistogramFuncTest {
         histogram.add(2.0, 30.0);
 
         Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", "A"));
+        featureMap1.put("feature1", new Feature("feature1", new FeatureStringValue("A")));
 
         Map<String, Feature> featureMap2 = new HashMap<>();
-        featureMap2.put("feature1", new Feature("feature1", 2L));
-        featureMap2.put("not relevant", new Feature("not relevant", 2.0));
+        featureMap2.put("feature1", new Feature("feature1", new FeatureNumericValue(2L)));
+        featureMap2.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2.0)));
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -136,21 +139,22 @@ public class AggrFeatureHistogramFuncTest {
     public void testUpdateWithNullAggrFeatureValue() {
         String s1 = "one", s2 = "two", s3 = "three";
         Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", s1));
-        featureMap.put("feature2", new Feature("feature2", s1));
-        featureMap.put("feature3", new Feature("feature3", s1));
-        featureMap.put("feature4", new Feature("feature4", s1)); // 4
-        featureMap.put("feature5", new Feature("feature5", s2));
-        featureMap.put("feature6", new Feature("feature6", s2));
-        featureMap.put("feature7", new Feature("feature7", s2));
-        featureMap.put("feature8", new Feature("feature8", s2));
-        featureMap.put("feature9", new Feature("feature9", s2)); // 5
-        featureMap.put("feature10", new Feature("feature10", s3));
-        featureMap.put("feature11", new Feature("feature11", s3));
-        featureMap.put("feature12", new Feature("feature12", s3)); // 3
-        featureMap.put("not relevant", new Feature("not relevant", 2));
+        featureMap.put("feature1", new Feature("feature1", new FeatureStringValue(s1)));
+        featureMap.put("feature2", new Feature("feature2", new FeatureStringValue(s1)));
+        featureMap.put("feature3", new Feature("feature3", new FeatureStringValue(s1)));
+        featureMap.put("feature4", new Feature("feature4", new FeatureStringValue(s1))); // 4
+        featureMap.put("feature5", new Feature("feature5", new FeatureStringValue(s2)));
+        featureMap.put("feature6", new Feature("feature6", new FeatureStringValue(s2)));
+        featureMap.put("feature7", new Feature("feature7", new FeatureStringValue(s2)));
+        featureMap.put("feature8", new Feature("feature8", new FeatureStringValue(s2)));
+        featureMap.put("feature9", new Feature("feature9", new FeatureStringValue(s2))); // 5
+        featureMap.put("feature10", new Feature("feature10", new FeatureStringValue(s3)));
+        featureMap.put("feature11", new Feature("feature11", new FeatureStringValue(s3)));
+        featureMap.put("feature12", new Feature("feature12", new FeatureStringValue(s3))); // 3
+        featureMap.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2)));
 
-        Feature aggrFeature = new Feature("MyAggrFeature", null);
+        FeatureValue nullValue = null;
+        Feature aggrFeature = new Feature("MyAggrFeature", nullValue);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
@@ -192,7 +196,7 @@ public class AggrFeatureHistogramFuncTest {
         histogram.add(2.0, 30.0);
 
         Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", 2));
+        featureMap1.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
 
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
@@ -223,7 +227,7 @@ public class AggrFeatureHistogramFuncTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateWithWrongAggrFeatureValueType() {
         Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", 2));
+        featureMap1.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         String str = "I'm a string, not histogram";
         Feature aggrFeature = new Feature("MyAggrFeature", str);
@@ -405,7 +409,8 @@ public class AggrFeatureHistogramFuncTest {
         map1.put("feature1", new Feature("feature1", hist));
 
         Map<String, Feature> map2 = new HashMap<>();
-        map2.put("feature1", new Feature("feature1", null));
+        FeatureValue nullValue = null;
+        map2.put("feature1", new Feature("feature1", nullValue));
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map1);
@@ -477,7 +482,8 @@ public class AggrFeatureHistogramFuncTest {
         Assert.assertEquals((Double)1.0, aggrValue.get("N/A"));
 
 
-        features.put("feature1", new Feature("feature1", null));
+        FeatureValue nullValue = null;
+        features.put("feature1", new Feature("feature1", nullValue));
         value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
         Assert.assertEquals((Double) 2.0,  aggrValue.get("N/A"));
 
