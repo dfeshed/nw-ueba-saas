@@ -46,12 +46,4 @@ public class CleanupManagement implements InitializingBean {
         return cleanupSteps.get(stepId);
     }
 
-    /*
-    //test json file
-    public static void main(String[] args) throws IOException {
-        File jsonFile = new File("/home/amirk/IdeaProjects/fortscale-core/fortscale/fortscale-collection/resources/cleanupSteps.json");
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, CleanupStep> cleanupSteps = mapper.readValue(jsonFile, new TypeReference<Map<String, CleanupStep>>(){});
-    }*/
-
 }

@@ -149,6 +149,7 @@ public class CleanJob extends FortscaleJob {
 		Map<String, String> dataSources;
 		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
 		totalSteps += miniSteps.size();
+		//running all time based mini steps
 		for (int i = 0; i < miniSteps.size(); i++) {
 			MiniStep miniStep = miniSteps.get(i);
 			dataSources = createDataSourcesMap(miniStep.getDataSources());
@@ -162,6 +163,7 @@ public class CleanJob extends FortscaleJob {
 		}
 		miniSteps = cleanupStep.getOtherSteps();
 		totalSteps += miniSteps.size();
+		//running all other mini steps
 		for (int i = 0; i < miniSteps.size(); i++) {
 			MiniStep miniStep = miniSteps.get(i);
 			dataSources = createDataSourcesMap(miniStep.getDataSources());
