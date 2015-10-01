@@ -122,26 +122,8 @@ public class CleanJob extends FortscaleJob {
 			//TODO - implement
 		//normal run
 		} else {
-			//if command is to delete everything
-			if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
-				//if fast delete - no validation is performed
-				success = clearAllData(strategy == Strategy.DELETE);
-			} else {
-				switch (strategy) {
-					//for both delete and fastdelete, do
-					case DELETE:
-					case FASTDELETE: {
-						//if fast delete - no validation is performed
-						success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
-						break;
-					}
-					case RESTORE: {
-						logger.info("restoring {} entities", dataSources.size());
-						success = restoreEntities(dataSources);
-						break;
-					}
-				}
-			}
+			success = doProcess(strategy, technology, dataSources, startTime, endTime);
+
 		}
 		if (success) {
 			logger.info("Clean job successful");
@@ -149,6 +131,31 @@ public class CleanJob extends FortscaleJob {
 			logger.error("Clean job failed");
 		}
 		finishStep();
+	}
+
+	private boolean doProcess(Strategy strategy, Technology technology, Map<String, String> dataSources, Date startTime, Date endTime) {
+		boolean success = false;
+		//if command is to delete everything
+		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
+            //if fast delete - no validation is performed
+            success = clearAllData(strategy == Strategy.DELETE);
+        } else {
+            switch (strategy) {
+                //for both delete and fastdelete, do
+                case DELETE:
+                case FASTDELETE: {
+                    //if fast delete - no validation is performed
+                    success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
+                    break;
+                }
+                case RESTORE: {
+                    logger.info("restoring {} entities", dataSources.size());
+                    success = restoreEntities(dataSources);
+                    break;
+                }
+            }
+        }
+		return success;
 	}
 
 	/***
