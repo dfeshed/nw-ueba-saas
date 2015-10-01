@@ -93,7 +93,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
                     machineCounter++;
             }
 
-            account.addTag(FixTag, machineCounter >= this.threshold);
+            account.addTag(FixTag, machineCounter <= this.threshold);
         }
 
 
