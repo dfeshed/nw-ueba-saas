@@ -1,8 +1,16 @@
 {
-  "technology": {
-    "value": "temp1"
-  },
-  "domain": {
-    "value": "temp2"
+  "step1": {
+    "ministeps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@startDate"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "RESTORE",
+        "dataSources": "streaming_models@@@streaming_models_backup###streaming_userscore_snapshot@@@streaming_userscore_snapshot_backup"
+      }
+    ]
   }
 }

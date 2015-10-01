@@ -1,20 +1,20 @@
 package fortscale.collection.jobs.cleanup;
 
+import java.util.List;
+
 /**
  * Created by Amir Keren on 30/09/15.
  */
 public class CleanupStep {
 
-    //TODO - add all cleanup steps properties here
+    private List<MiniStep> miniSteps;
 
-    private String value;
-
-    public String getValue() {
-        return value;
+    public List<MiniStep> getMiniSteps() {
+        return miniSteps;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setMiniSteps(List<MiniStep> miniSteps) {
+        this.miniSteps = miniSteps;
     }
 
 }

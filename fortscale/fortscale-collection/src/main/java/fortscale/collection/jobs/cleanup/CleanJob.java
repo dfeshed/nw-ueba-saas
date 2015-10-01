@@ -30,8 +30,8 @@ public class CleanJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
-	private enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
-	private enum Strategy { DELETE, FASTDELETE, RESTORE }
+	public enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
+	public enum Strategy { DELETE, FASTDELETE, RESTORE }
 
 	@Autowired
 	private CleanupManagement cleanupManagement;
@@ -84,15 +84,6 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		if (map.containsKey(stepParam)) {
-			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
-			if (cleanupStep == null) {
-				logger.error("No step {} found", map.getString(stepParam));
-				throw new JobExecutionException();
-			}
-			//if step param passed - ignore all other parameters
-			return;
-		}
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
 		try {
@@ -106,24 +97,32 @@ public class CleanJob extends FortscaleJob {
 			logger.error("Bad date format - {}", ex.getMessage());
 			throw new JobExecutionException(ex);
 		}
+		if (map.containsKey(stepParam)) {
+			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
+			if (cleanupStep == null) {
+				logger.error("No step {} found", map.getString(stepParam));
+				throw new JobExecutionException();
+			}
+			//if step param passed - ignore all other parameters
+			return;
+		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (map.containsKey(dataSourcesParam)) {
-			createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
+			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
 	}
 
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
-		boolean success = false;
+		boolean success;
 		//bdp run
 		if (cleanupStep != null) {
-			//TODO - implement
+			success = bdpClean(cleanupStep, startTime, endTime);
 		//normal run
 		} else {
-			success = doProcess(strategy, technology, dataSources, startTime, endTime);
-
+			success = normalClean(strategy, technology, dataSources, startTime, endTime);
 		}
 		if (success) {
 			logger.info("Clean job successful");
@@ -133,7 +132,41 @@ public class CleanJob extends FortscaleJob {
 		finishStep();
 	}
 
-	private boolean doProcess(Strategy strategy, Technology technology, Map<String, String> dataSources, Date startTime, Date endTime) {
+	/***
+	 *
+	 * This method runs the cleaning steps for BDP
+	 *
+	 * @param cleanupStep  the specific step to run
+	 * @param startTime    the starting time of entities to address
+	 * @param endTime      the ending time of entities to address
+	 * @return
+	 */
+	private boolean bdpClean(CleanupStep cleanupStep, Date startTime, Date endTime) {
+		boolean success = false;
+		List<MiniStep> miniSteps = cleanupStep.getMiniSteps();
+		for (MiniStep miniStep: miniSteps) {
+			Map<String, String> dataSources = createDataSourcesMap(miniStep.getDataSources());
+			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
+			if (success == false) {
+				logger.error("ministep {} failed", miniStep.toString());
+				return success;
+			}
+		}
+		return success;
+	}
+
+	/***
+	 *
+	 * This method runs the normal cleaning procedure
+	 *
+	 * @param strategy     the strategy to run (delete, restore etc.)
+	 * @param technology   the technology to run (mongo, hdfs etc.)
+	 * @param dataSources  the entities and parameters to run
+	 * @param startTime    the starting time of entities to address
+	 * @param endTime      the ending time of entities to address
+	 * @return
+	 */
+	private boolean normalClean(Strategy strategy, Technology technology, Map<String, String> dataSources, Date startTime, Date endTime) {
 		boolean success = false;
 		//if command is to delete everything
 		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
@@ -466,8 +499,8 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param dataSourcesString
 	 */
-	private void createDataSourcesMap(String dataSourcesString) {
-		dataSources = new HashMap();
+	private Map<String, String> createDataSourcesMap(String dataSourcesString) {
+		Map<String, String> dataSources = new HashMap();
 		for (String entry: dataSourcesString.split(dataSourcesDelimiter)) {
 			String dataSource;
 			String queryField;
@@ -484,6 +517,7 @@ public class CleanJob extends FortscaleJob {
 			}
 			dataSources.put(dataSource, queryField);
 		}
+		return dataSources;
 	}
 
 	@Override
