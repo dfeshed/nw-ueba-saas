@@ -8,14 +8,16 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.services.dataqueries.querydto.DataQueryHelper;
+import fortscale.services.dataqueries.querydto.Term;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract class with generic implementation for supporting information histogram populator of single events
@@ -37,6 +39,9 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
+
+	@Autowired
+	DataQueryHelper dataQueryHelper;
 
     public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -91,7 +96,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         String normalizedContextType = getNormalizedContextType(contextType);
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
         //retrieve last day data from Impala:
-        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, evidenceEndTime);
+        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, evidenceEndTime, dataEntity);
         featureBuckets.add(lastDayBucket);
 
         logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
@@ -101,13 +106,43 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     }
 
 
-    private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long evidenceEndTime) {
+	/**
+	 *
+	 * @param bucketConfig
+	 * @param normalizedContextType - The entity normalized field - i.e normalized_username
+	 * @param contextValue - The value of the normalized context field - i.e test@somebigcomapny.com
+	 * @param evidenceEndTime - The time of the anomaly
+	 * @param dataEntity - The data entity - i.e kerberos_logins
+	 * @return
+	 */
+    private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long evidenceEndTime,String dataEntity) {
         //TODO: remove last day and create a new FeatureBucket from Impala
         //example of query for destination_machine in authentication_score table:
         //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
 
+		//add conditions
+		List<Term> termsMap = new ArrayList<>();
+
+		Term term = getTheContextTerm(normalizedContextType,contextValue);
+
         return null;
     }
+
+	private Term getTheContextTerm(String normalizedContextType, String contextValue)
+	{
+		Term term = null;
+		switch (normalizedContextType)
+		{
+			case "normalized_username" :
+				term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
+				break;
+			default:
+				break;
+
+		}
+		return term;
+
+	}
 
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
