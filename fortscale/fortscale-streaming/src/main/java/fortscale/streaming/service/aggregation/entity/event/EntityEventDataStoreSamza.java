@@ -8,6 +8,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -15,9 +16,7 @@ import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
-/**
- * Created by amira on 01/10/2015.
- */
+@Configurable(preConstruction=true)
 public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     private static final String STORE_NAME_PROPERTY = "fortscale.entity.events.store.name";
     private static final String DELIMITER = "_";
