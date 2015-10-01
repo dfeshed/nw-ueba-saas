@@ -19,23 +19,21 @@ import java.util.*;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
-	
+
 	@Value("${streaming.event.field.type}")
-    private String eventTypeFieldName;
-    @Value("${streaming.event.field.type.entity_event}")
-    private String eventTypeFieldValue;
-    @Value("${streaming.entity_event.field.entity_event_type}")
-    private String entityEventTypeFieldName;
-    @Value("${impala.table.fields.epochtime}")
+	private String eventTypeFieldName;
+	@Value("${streaming.event.field.type.entity_event}")
+	private String eventTypeFieldValue;
+	@Value("${streaming.entity_event.field.entity_event_type}")
+	private String entityEventTypeFieldName;
+	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
-	
+
 	@Autowired
-    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
-	
-	
+	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
@@ -68,9 +66,10 @@ public class EntityEventBuilder {
 
 	public void fireEntityEvents(long currentTimeInSeconds, String outputTopic, MessageCollector collector) {
 		List<EntityEventData> listOfEntityEventData =
-				entityEventDataStore.getEntityEventDataWithFiringTimeLteThatWereNotFired(entityEventConf.getName(), currentTimeInSeconds);
+				entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventConf.getName(), currentTimeInSeconds - secondsToWaitBeforeFiring);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
 			createAndSendEntityEvent(entityEventData, outputTopic, collector);
+			entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 			entityEventData.setTransmitted(true);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
@@ -90,7 +89,7 @@ public class EntityEventBuilder {
 
 		EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
 		if (entityEventData == null) {
-			entityEventData = new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime, secondsToWaitBeforeFiring);
+			entityEventData = new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime);
 		}
 
 		return entityEventData;

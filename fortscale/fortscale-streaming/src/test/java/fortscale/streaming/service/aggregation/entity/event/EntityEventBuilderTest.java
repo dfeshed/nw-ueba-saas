@@ -86,7 +86,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 10, 20, 1000, 800, 900, context));
 
 		builder.updateEntityEventData(wrapper);
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
 
@@ -97,7 +97,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(String.format("%s_%s", USERNAME_CONTEXT_FIELD, username), entityEventData.getContextId());
 		Assert.assertEquals(800, entityEventData.getStartTime());
 		Assert.assertEquals(900, entityEventData.getEndTime());
-		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getNotIncludedAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents.size());
 		for (AggrEvent actualAggrFeatureEvent : allAggrFeatureEvents)
 			Assert.assertEquals(wrapper, actualAggrFeatureEvent);
@@ -121,11 +121,11 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent2", 30, 0, 2000, 800, 900, context));
 		builder.updateEntityEventData(wrapper2);
 
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
 
-		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getNotIncludedAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents = entityEventData.getIncludedAggrFeatureEvents();
 		Assert.assertEquals(2, allAggrFeatureEvents.size());
 	}
 
@@ -148,12 +148,12 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 30, 40, 2000, 800, 900, context2));
 		builder.updateEntityEventData(wrapper2);
 
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
 
-		Set<AggrEvent> allAggrFeatureEvents1 = allEntityEventData.get(0).getNotIncludedAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents1 = allEntityEventData.get(0).getIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents1.size());
-		Set<AggrEvent> allAggrFeatureEvents2 = allEntityEventData.get(1).getNotIncludedAggrFeatureEvents();
+		Set<AggrEvent> allAggrFeatureEvents2 = allEntityEventData.get(1).getIncludedAggrFeatureEvents();
 		Assert.assertEquals(1, allAggrFeatureEvents2.size());
 	}
 
@@ -181,7 +181,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"F", DEFAULT_BUCKET_CONF_NAME, DEFAULT_AGGR_FEATURE_NAME, 50, 100, 1000, 250, 750, context));
 		builder.updateEntityEventData(wrapper);
 
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(0, allEntityEventData.size());
 	}
 
@@ -198,7 +198,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent1", 50, 0, 1000, 250, 750, context));
 		builder.updateEntityEventData(wrapper1);
 
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		EntityEventData entityEventData = allEntityEventData.get(0);
 		entityEventData.setTransmitted(true);
@@ -208,9 +208,10 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 				"P", DEFAULT_BUCKET_CONF_NAME, "aggrFeatureEvent2", 100, 0, 2000, 250, 750, context));
 		builder.updateEntityEventData(wrapper2);
 
-		allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(1, allEntityEventData.size());
 		entityEventData = allEntityEventData.get(0);
+		Assert.assertEquals(1, entityEventData.getIncludedAggrFeatureEvents().size());
 		Assert.assertEquals(1, entityEventData.getNotIncludedAggrFeatureEvents().size());
 	}
 
@@ -249,7 +250,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		builder.fireEntityEvents(estimatedFiringTimeInSecondsOfEntityEvent2, outputTopic, collector);
 		verify(collector, times(2)).send(any(OutgoingMessageEnvelope.class));
 
-		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithFiringTimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
+		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
 		for (EntityEventData entityEventData : allEntityEventData)
 			Assert.assertTrue(entityEventData.isTransmitted());

@@ -32,11 +32,11 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds) {
+	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
 		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
-			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
+			query.addCriteria(where(EntityEventData.MODIFIED_AT_EPOCHTIME_FIELD).lte(modifiedAtEpochtime));
 			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
@@ -45,11 +45,11 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
+	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
 		if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
-			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
+			query.addCriteria(where(EntityEventData.MODIFIED_AT_EPOCHTIME_FIELD).lte(modifiedAtEpochtime));
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
 			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);

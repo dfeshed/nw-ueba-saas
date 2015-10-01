@@ -3,7 +3,6 @@ package fortscale.streaming.service.aggregation.entity.event;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
@@ -22,7 +21,6 @@ public class EntityEventData {
 	public static final String INCLUDED_AGGR_FEATURE_EVENTS_FIELD = "includedAggrFeatureEvents";
 	public static final String CREATED_AT_EPOCHTIME_FIELD = "createdAtEpochtime";
 	public static final String MODIFIED_AT_EPOCHTIME_FIELD = "modifiedAtEpochtime";
-	public static final String SECONDS_TO_WAIT_BEFORE_TRANSMISSION_FIELD = "secondsToWaitBeforeTransmission";
 	public static final String TRANSMISSION_EPOCHTIME_FIELD = "transmissionEpochtime";
 	public static final String TRANSMISSION_DATE_FIELD = "transmissionDate";
 	public static final String TRANSMITTED_FIELD = "transmitted";
@@ -49,24 +47,19 @@ public class EntityEventData {
 	private long createdAtEpochtime;
 	@Field(MODIFIED_AT_EPOCHTIME_FIELD)
 	private long modifiedAtEpochtime;
-	@Field(SECONDS_TO_WAIT_BEFORE_TRANSMISSION_FIELD)
-	private long secondsToWaitBeforeTransmission;
 	@Field(TRANSMISSION_EPOCHTIME_FIELD)
 	private long transmissionEpochtime;
-	// 365 * 24 * 60 * 60 = 31536000 = 1 year
-	@Indexed(unique = false, expireAfterSeconds = 31536000)
 	@Field(TRANSMISSION_DATE_FIELD)
 	private Date transmissionDate;
 	@Field(TRANSMITTED_FIELD)
 	private boolean transmitted;
 
-	public EntityEventData(String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime, long secondsToWaitBeforeTransmission) {
+	public EntityEventData(String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
 		Assert.hasText(entityEventName);
 		Assert.notEmpty(context);
 		Assert.hasText(contextId);
 		Assert.isTrue(startTime >= 0);
 		Assert.isTrue(endTime >= startTime);
-		Assert.isTrue(secondsToWaitBeforeTransmission >= 0);
 
 		this.entityEventName = entityEventName;
 		this.context = context;
@@ -75,12 +68,11 @@ public class EntityEventData {
 		this.endTime = endTime;
 		this.notIncludedAggrFeatureEvents = new HashSet<>();
 		this.includedAggrFeatureEvents = new HashSet<>();
-		this.secondsToWaitBeforeTransmission = secondsToWaitBeforeTransmission;
+		this.createdAtEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+		this.modifiedAtEpochtime = this.createdAtEpochtime;
+		this.transmissionEpochtime = -1;
+		this.transmissionDate = null;
 		this.transmitted = false;
-
-		long currentTimeMillis = System.currentTimeMillis();
-		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
-		afterModification(currentTimeMillis);
 	}
 
 	public String getEntityEventName() {
@@ -110,7 +102,7 @@ public class EntityEventData {
 			includedAggrFeatureEvents.add(aggrFeatureEvent);
 		}
 
-		afterModification(System.currentTimeMillis());
+		modifiedAtEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 	}
 
 	public Set<AggrEvent> getNotIncludedAggrFeatureEvents() {
@@ -121,10 +113,6 @@ public class EntityEventData {
 		return includedAggrFeatureEvents;
 	}
 
-	public long getCreatedAtEpochtime() {
-		return createdAtEpochtime;
-	}
-
 	public long getModifiedAtEpochtime() {
 		return modifiedAtEpochtime;
 	}
@@ -133,8 +121,9 @@ public class EntityEventData {
 		return transmissionEpochtime;
 	}
 
-	public Date getTransmissionDate() {
-		return transmissionDate;
+	public void setTransmissionEpochtime(long transmissionEpochtime) {
+		this.transmissionEpochtime = transmissionEpochtime;
+		this.transmissionDate = new Date(TimestampUtils.convertToMilliSeconds(transmissionEpochtime));
 	}
 
 	public boolean isTransmitted() {
@@ -143,14 +132,5 @@ public class EntityEventData {
 
 	public void setTransmitted(boolean transmitted) {
 		this.transmitted = transmitted;
-	}
-
-	private void afterModification(long currentTimeMillis) {
-		modifiedAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
-
-		if (!isTransmitted()) {
-			transmissionEpochtime = modifiedAtEpochtime + secondsToWaitBeforeTransmission;
-			transmissionDate = new Date(TimestampUtils.convertToMilliSeconds(transmissionEpochtime));
-		}
 	}
 }

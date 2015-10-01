@@ -12,12 +12,12 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds) {
+	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();
 			EntityEventData value = entry.getValue();
-			if (StringUtils.startsWith(key, entityEventName) && value.getTransmissionEpochtime() <= firingTimeInSeconds) {
+			if (StringUtils.startsWith(key, entityEventName) && value.getModifiedAtEpochtime() <= modifiedAtEpochtime) {
 				listOfEntityEventData.add(value);
 			}
 		}
@@ -33,9 +33,9 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
+	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
-		for (EntityEventData entityEventData : getEntityEventDataWithFiringTimeLte(entityEventName, firingTimeInSeconds)) {
+		for (EntityEventData entityEventData : getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime)) {
 			if (!entityEventData.isTransmitted()) {
 				listOfEntityEventData.add(entityEventData);
 			}
