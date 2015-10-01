@@ -64,12 +64,12 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		new EntityEventBuilder(-1, entityEventConf);
+		new EntityEventBuilder(-1, entityEventConf, entityEventDataStore);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructor_should_fail_when_entity_event_conf_is_null() {
-		new EntityEventBuilder(60, null);
+		new EntityEventBuilder(60, null, entityEventDataStore);
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 
 		String username = "user1";
 		JSONObject context = new JSONObject();
@@ -109,7 +109,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user2");
@@ -134,7 +134,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 
 		JSONObject context1 = new JSONObject();
 		context1.put(USERNAME_CONTEXT_FIELD, "user3");
@@ -162,7 +162,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 		builder.updateEntityEventData(null);
 	}
 
@@ -172,7 +172,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		contextFields.add(SRC_MACHINE_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user5");
@@ -190,7 +190,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user6");
@@ -222,7 +222,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		contextFields.add(SRC_MACHINE_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf);
+		EntityEventBuilder builder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf, entityEventDataStore);
 
 		String username = "user7";
 		JSONObject context1 = new JSONObject();

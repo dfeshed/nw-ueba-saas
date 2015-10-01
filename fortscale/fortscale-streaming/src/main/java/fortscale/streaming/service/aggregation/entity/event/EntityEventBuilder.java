@@ -29,7 +29,6 @@ public class EntityEventBuilder {
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 
-	@Autowired
 	private EntityEventDataStore entityEventDataStore;
 
 	@Autowired
@@ -39,12 +38,14 @@ public class EntityEventBuilder {
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
 
-	public EntityEventBuilder(long secondsToWaitBeforeFiring, EntityEventConf entityEventConf) {
+	public EntityEventBuilder(long secondsToWaitBeforeFiring, EntityEventConf entityEventConf, EntityEventDataStore entityEventDataStore) {
 		Assert.isTrue(secondsToWaitBeforeFiring >= 0);
 		Assert.notNull(entityEventConf);
+		Assert.notNull(entityEventDataStore);
 
 		this.secondsToWaitBeforeFiring = secondsToWaitBeforeFiring;
 		this.entityEventConf = entityEventConf;
+		this.entityEventDataStore = entityEventDataStore;
 		String jokerFunctionJson = entityEventConf.getEntityEventFunction().toJSONString();
 		try {
 			this.jokerFunction = (new ObjectMapper()).readValue(jokerFunctionJson, JokerFunction.class);

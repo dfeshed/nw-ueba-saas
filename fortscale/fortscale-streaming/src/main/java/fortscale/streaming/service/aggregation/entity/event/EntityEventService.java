@@ -8,6 +8,8 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
+
 import java.util.*;
 
 @Configurable(preConstruction = true)
@@ -28,7 +30,11 @@ public class EntityEventService {
 	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
-	public EntityEventService() {
+	private EntityEventDataStore entityEventDataStore;
+
+	public EntityEventService(EntityEventDataStore entityEventDataStore) {
+		Assert.notNull(entityEventDataStore);
+		this.entityEventDataStore = entityEventDataStore;
 		getGlobalParams();
 		lastTimeEventsWereFired = -1L;
 		createEntityEventBuilders();
@@ -82,7 +88,7 @@ public class EntityEventService {
 		// Iterate all entity event definitions
 		for (EntityEventConf entityEventConf : entityEventDefinitions) {
 			// Create new entity event builder
-			EntityEventBuilder entityEventBuilder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf);
+			EntityEventBuilder entityEventBuilder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf, entityEventDataStore);
 
 			// Add the new builder to the mapping of each aggregated feature event in the conf
 			for (String fullEventName : entityEventConf.getAllAggregatedFeatureEventNames()) {

@@ -8,9 +8,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,9 +30,20 @@ public class EntityEventServiceTest extends EntityEventTestBase{
 	@Value("${streaming.entity_event.field.entity_event_type}")
     private String entityEventTypeFieldName;
 
+	@Autowired
+	private EntityEventDataStore entityEventDataStore;
+
+
+
+	@Before
+	public void setUp() {
+		((EntityEventDataTestStore)entityEventDataStore).emptyEntityEventDataStore();
+	}
+
+
 	@Test
 	public void entity_event_service_should_process_messages_correctly_and_fire_events_on_time() throws Exception {
-		EntityEventService entityEventService = new EntityEventService();
+		EntityEventService entityEventService = new EntityEventService(entityEventDataStore);
 
 		// First group of messages is relevant only for:
 		// conf1 (context is normalized_username = user1)
