@@ -21,8 +21,8 @@ public class EntityEventData {
 	public static final String INCLUDED_AGGR_FEATURE_EVENTS_FIELD = "includedAggrFeatureEvents";
 	public static final String CREATED_AT_EPOCHTIME_FIELD = "createdAtEpochtime";
 	public static final String MODIFIED_AT_EPOCHTIME_FIELD = "modifiedAtEpochtime";
+	public static final String MODIFIED_AT_DATE_FIELD = "modifiedAtDate";
 	public static final String TRANSMISSION_EPOCHTIME_FIELD = "transmissionEpochtime";
-	public static final String TRANSMISSION_DATE_FIELD = "transmissionDate";
 	public static final String TRANSMITTED_FIELD = "transmitted";
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -47,10 +47,10 @@ public class EntityEventData {
 	private long createdAtEpochtime;
 	@Field(MODIFIED_AT_EPOCHTIME_FIELD)
 	private long modifiedAtEpochtime;
+	@Field(MODIFIED_AT_DATE_FIELD)
+	private Date modifiedAtDate;
 	@Field(TRANSMISSION_EPOCHTIME_FIELD)
 	private long transmissionEpochtime;
-	@Field(TRANSMISSION_DATE_FIELD)
-	private Date transmissionDate;
 	@Field(TRANSMITTED_FIELD)
 	private boolean transmitted;
 
@@ -66,12 +66,16 @@ public class EntityEventData {
 		this.contextId = contextId;
 		this.startTime = startTime;
 		this.endTime = endTime;
+
 		this.notIncludedAggrFeatureEvents = new HashSet<>();
 		this.includedAggrFeatureEvents = new HashSet<>();
-		this.createdAtEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+
+		long currentTimeMillis = System.currentTimeMillis();
+		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
 		this.modifiedAtEpochtime = this.createdAtEpochtime;
+		this.modifiedAtDate = new Date(currentTimeMillis);
+
 		this.transmissionEpochtime = -1;
-		this.transmissionDate = null;
 		this.transmitted = false;
 	}
 
@@ -102,7 +106,9 @@ public class EntityEventData {
 			includedAggrFeatureEvents.add(aggrFeatureEvent);
 		}
 
-		modifiedAtEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+		long currentTimeMillis = System.currentTimeMillis();
+		modifiedAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
+		modifiedAtDate = new Date(currentTimeMillis);
 	}
 
 	public Set<AggrEvent> getNotIncludedAggrFeatureEvents() {
@@ -123,7 +129,6 @@ public class EntityEventData {
 
 	public void setTransmissionEpochtime(long transmissionEpochtime) {
 		this.transmissionEpochtime = transmissionEpochtime;
-		this.transmissionDate = new Date(TimestampUtils.convertToMilliSeconds(transmissionEpochtime));
 	}
 
 	public boolean isTransmitted() {

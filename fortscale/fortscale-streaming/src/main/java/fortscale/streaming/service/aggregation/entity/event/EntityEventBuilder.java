@@ -68,9 +68,9 @@ public class EntityEventBuilder {
 		List<EntityEventData> listOfEntityEventData =
 				entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventConf.getName(), currentTimeInSeconds - secondsToWaitBeforeFiring);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
-			createAndSendEntityEvent(entityEventData, outputTopic, collector);
 			entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 			entityEventData.setTransmitted(true);
+			createAndSendEntityEvent(entityEventData, outputTopic, collector);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
 	}
