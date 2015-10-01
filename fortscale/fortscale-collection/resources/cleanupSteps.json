@@ -4,7 +4,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date$$$startDate%%%evidenceType$$$AnomalySingleEvent"
+        "dataSources": "evidences@@@date+++startDate%%%evidenceType+++AnomalySingleEvent"
       }
     ],
     "otherSteps": [
