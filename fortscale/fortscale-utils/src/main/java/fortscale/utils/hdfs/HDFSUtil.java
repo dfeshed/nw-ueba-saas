@@ -135,13 +135,13 @@ public class HDFSUtil implements CleanupUtil {
                     sb.append(line + "\n");
                 }
                 if (sb.toString().contains("No such file or directory")) {
-                    logger.info("{} not found", hdfsPath);
+                    logger.debug("{} not found", hdfsPath);
                     verified = true;
                 } else {
                     logger.warn("unable to verify if {} found", hdfsPath);
                 }
             } else {
-                logger.error("{} found", hdfsPath);
+                logger.debug("{} found", hdfsPath);
             }
         } catch (Exception ex) {
             logger.warn("unable to verify if {} not found - {}", hdfsPath, ex);
