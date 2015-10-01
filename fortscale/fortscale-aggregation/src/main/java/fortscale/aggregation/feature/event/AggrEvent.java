@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -116,17 +117,6 @@ public class AggrEvent implements Serializable {
         this.dataSources = dataSources;
         this.score = score;
     }
-
-//    public JSONObject getAsJSONObject() {
-//        JSONObject event =  buildEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo,
-//                bucketConfName, context, startTimeUnix, endTimeUnix.getTime(), dataSources, creationEpochTime);
-//        if(score!=null) {
-//            event.put(EVENT_FIELD_SCORE, score);
-//        }
-//        return event;
-//    }
-
-    
     
     public String getFeatureType() {
         return featureType;
@@ -136,10 +126,12 @@ public class AggrEvent implements Serializable {
 		return dataSource;
 	}
 
+    @JsonIgnore
 	public boolean isOfTypeF() {
         return AGGREGATED_FEATURE_TYPE_F_VALUE.equals(getFeatureType());
     }
 
+    @JsonIgnore
     public boolean isOfTypeP() {
         return AGGREGATED_FEATURE_TYPE_P_VALUE.equals(getFeatureType());
     }
