@@ -190,7 +190,7 @@ public class HDFSUtil implements CleanupUtil {
         while (iterator.hasNext()) {
             File file = iterator.next();
             String restorePath = file.getAbsolutePath();
-            String hdfsPath = restorePath.replace(backupPath, "");
+            String hdfsPath = basePath + "/" + restorePath.replace(backupPath, "");
             if (!restoreFile(hdfsPath, restorePath)) {
                 logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
                 return false;
