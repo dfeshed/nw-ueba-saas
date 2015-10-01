@@ -49,39 +49,15 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         return res;
     }
 
-    /**
-     * This method uses the super class method to retrieve the data from mongodb.
-     * @param entityEventName
-     * @param firingTimeInSeconds
-     * @return
-     */
+
     @Override
     public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds) {
         return super.getEntityEventDataWithFiringTimeLte(entityEventName, firingTimeInSeconds);
     }
 
-    /**
-     * Note that the events that were fired are removed from the samza store after being fired.
-     * @param entityEventName
-     * @param firingTimeInSeconds
-     * @return all entity event data objects which are in the samza data store and with fire time less or equal to the
-     * given @firingTimeInSeconds and that were not fired.
-     */
     @Override
     public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
-        List<EntityEventData> entityEventDataList = new ArrayList<>();
-
-        KeyValueIterator<String, EntityEventData> iterator = entityEventStore.all();
-        while (iterator.hasNext()) {
-            EntityEventData entityEventData = iterator.next().getValue();
-            if(entityEventData.getEntityEventName().equals(entityEventName)
-                    && entityEventData.getFiringTimeInSeconds() <= firingTimeInSeconds
-                    && !entityEventData.isFired()) {
-                entityEventDataList.add(entityEventData);
-            }
-        }
-
-        return entityEventDataList;
+        return super.getEntityEventDataWithFiringTimeLteThatWereNotFired(entityEventName, firingTimeInSeconds);
     }
 
     @Override

@@ -42,6 +42,10 @@ public class EntityEventData {
 	@Field(FIRED_FIELD)
 	private boolean fired;
 
+	public EntityEventData() {
+		this.aggrFeatureEvents = new HashSet<>();
+	}
+
 	public EntityEventData(long firingTimeInSeconds, String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
 		Assert.isTrue(firingTimeInSeconds >= 0);
 		Assert.isTrue(StringUtils.isNotBlank(entityEventName));
