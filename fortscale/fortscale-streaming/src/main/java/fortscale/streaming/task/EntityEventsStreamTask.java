@@ -1,5 +1,8 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.aggregation.entity.event.EntityEventDataStore;
+import fortscale.streaming.service.aggregation.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.aggregation.entity.event.EntityEventService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -16,7 +19,8 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		outputTopic = config.get("fortscale.output.topic", null);
 		Assert.notNull(outputTopic);
-		entityEventService = new EntityEventService();
+		EntityEventDataStore entityEventDataStore = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
+		entityEventService = new EntityEventService(entityEventDataStore);
 	}
 
 	@Override
