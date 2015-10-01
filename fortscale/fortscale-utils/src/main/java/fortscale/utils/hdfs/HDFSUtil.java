@@ -117,29 +117,6 @@ public class HDFSUtil implements CleanupUtil {
 
     /***
      *
-     * This method verifies that a path exists on the hdfs file system
-     *
-     * @param hdfsPath  path to the request hdfs resource
-     * @return
-     */
-    private boolean verifyPathFound(String hdfsPath) {
-        boolean verified = false;
-        try {
-            Process process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-            if (process.waitFor() == 0) {
-                logger.debug("{} found", hdfsPath);
-                verified = true;
-            } else {
-                logger.warn("unable to verify if {} found", hdfsPath);
-            }
-        } catch (Exception ex) {
-            logger.warn("unable to verify if {} found - {}", hdfsPath, ex);
-        }
-        return verified;
-    }
-
-    /***
-     *
      * This method verifies that a path doesn't exists on the hdfs file system
      *
      * @param hdfsPath  path to the request hdfs resource
@@ -221,7 +198,7 @@ public class HDFSUtil implements CleanupUtil {
         String tempResourceName = hdfsPath + TEMPSUFFIX;
         logger.debug("verify that destination resource temp name doesn't exist");
         //sanity check - shouldn't be found
-        if (verifyPathFound(tempResourceName)) {
+        if (!verifyPathNotFound(tempResourceName)) {
             logger.info("temp resource {} already exists, deleting...", tempResourceName);
             if (!deletePath(tempResourceName, true)) {
                 logger.error("failed to delete temp resource, manually delete it before continuing");
@@ -231,7 +208,7 @@ public class HDFSUtil implements CleanupUtil {
         try {
             logger.debug("renaming origin collection {} to {}", hdfsPath, tempResourceName);
             Process process = Runtime.getRuntime().exec("hdfs dfs -mv " + hdfsPath + " " + tempResourceName);
-            if (process.waitFor() != 0 || verifyPathFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
+            if (process.waitFor() != 0 || !verifyPathNotFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
                 logger.error("renaming failed, abort");
                 return success;
             }
