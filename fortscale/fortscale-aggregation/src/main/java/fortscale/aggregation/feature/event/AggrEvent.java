@@ -14,7 +14,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -117,7 +117,7 @@ public class AggrEvent implements Serializable {
         this.dataSources = dataSources;
         this.score = score;
     }
-    
+
     public String getFeatureType() {
         return featureType;
     }
@@ -126,12 +126,10 @@ public class AggrEvent implements Serializable {
 		return dataSource;
 	}
 
-    @JsonIgnore
 	public boolean isOfTypeF() {
         return AGGREGATED_FEATURE_TYPE_F_VALUE.equals(getFeatureType());
     }
 
-    @JsonIgnore
     public boolean isOfTypeP() {
         return AGGREGATED_FEATURE_TYPE_P_VALUE.equals(getFeatureType());
     }
