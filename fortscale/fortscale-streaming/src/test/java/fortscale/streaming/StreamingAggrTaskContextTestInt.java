@@ -35,6 +35,7 @@ public class StreamingAggrTaskContextTestInt {
 	public void testContext(){
 		Map<String, String> configMap = new HashMap<String, String>();
 		configMap.put(AggregatorManager.SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH, "timestamp");
+		configMap.put("fortscale.feature.buckets.store.name", "feature_buckets_store");
 		MapConfig mapConfig = new MapConfig(configMap);
 		@SuppressWarnings("unused")
 		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig));
