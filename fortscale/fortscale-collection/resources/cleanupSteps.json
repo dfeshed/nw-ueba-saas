@@ -1,6 +1,6 @@
 {
   "step1": {
-    "ministeps": [
+    "miniSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
