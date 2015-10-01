@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.ConversionUtils;
@@ -27,7 +29,7 @@ public class AggrFeatureMaxIntegerFunc implements IAggrFeatureFunction, IAggrFea
 	
 
 	@Override
-	public Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
+	public FeatureValue updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
 		if (aggregatedFeatureConf == null || aggrFeature == null) {
 			return null;
 		}
@@ -36,7 +38,7 @@ public class AggrFeatureMaxIntegerFunc implements IAggrFeatureFunction, IAggrFea
 
 		List<String> featureNames = aggregatedFeatureConf.getFeatureNamesMap().get(UPDATE_AGGR_COMPARED_VALUE_FIELD_NAME);
 		Feature featureForComparison = features.get(featureNames.get(0));
-		Integer comparedValue = (Integer)featureForComparison.getValue();
+		Integer comparedValue = ((FeatureNumericValue)(featureForComparison.getValue())).getValue().intValue();
 		if (aggrFeatureMaxValue == null || comparedValue > aggrFeatureMaxValue.getComparedValue()) {
 			aggrFeatureMaxValue = createAggrFeatureMaxValue(aggrFeatureMaxValue, aggregatedFeatureConf, features, comparedValue);
 			aggrFeature.setValue(aggrFeatureMaxValue);

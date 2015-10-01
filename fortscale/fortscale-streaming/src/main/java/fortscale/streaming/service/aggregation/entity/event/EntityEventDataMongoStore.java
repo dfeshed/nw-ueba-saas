@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -36,6 +37,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
 			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
+			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
 
@@ -49,6 +51,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			query.addCriteria(where(EntityEventData.ENTITY_EVENT_NAME_FIELD).is(entityEventName));
 			query.addCriteria(where(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD).lte(firingTimeInSeconds));
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
+			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, COLLECTION_NAME);
 		}
 
@@ -61,6 +64,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			mongoTemplate.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.CONTEXT_ID_FIELD, Direction.ASC));
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.TRANSMISSION_EPOCHTIME_FIELD, Direction.ASC));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(EntityEventData.START_TIME_FIELD, Direction.ASC));
 		}
 
 		mongoTemplate.save(entityEventData, COLLECTION_NAME);

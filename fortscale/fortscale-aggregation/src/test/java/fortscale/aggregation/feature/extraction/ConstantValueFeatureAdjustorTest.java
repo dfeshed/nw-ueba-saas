@@ -3,6 +3,9 @@ package fortscale.aggregation.feature.extraction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.junit.Assert;
 
 
@@ -47,8 +50,8 @@ public class ConstantValueFeatureAdjustorTest {
 	public void testReturnedConstantValue() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(CONSTANT_VALUE_FOR_JSON_TEST);
 		
-		Object adjustedFeature = featureAdjustor.adjust(20D, null);
+		FeatureStringValue adjustedFeature = (FeatureStringValue)featureAdjustor.adjust(new FeatureNumericValue(20D), null);
 		
-		Assert.assertEquals(CONSTANT_VALUE_FOR_JSON_TEST, adjustedFeature);
+		Assert.assertEquals(CONSTANT_VALUE_FOR_JSON_TEST, adjustedFeature.toString());
 	}
 }

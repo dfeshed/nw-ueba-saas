@@ -31,6 +31,7 @@ import fortscale.aggregation.feature.extraction.RawEvent;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
+import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStoreSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.utils.ConversionUtils;
@@ -50,7 +51,7 @@ public class AggregatorManager {
 	private FortscaleStringValueResolver fortscaleStringValueResolver;
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
+
 	private FeatureBucketsStore featureBucketsStore;
 	@Autowired
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -73,6 +74,7 @@ public class AggregatorManager {
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
 		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
+		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
 		featureEventService = new AggrFeatureEventService(aggregatedFeatureEventsConfService, featureBucketStrategyService, featureBucketsService);

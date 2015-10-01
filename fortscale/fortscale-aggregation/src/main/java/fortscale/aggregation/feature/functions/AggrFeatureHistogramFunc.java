@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -33,12 +35,12 @@ public class AggrFeatureHistogramFunc implements IAggrFeatureFunction, IAggrFeat
      * if it's value is not of type {@link GenericHistogram}
      */
     @Override
-    public Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
+    public FeatureValue updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
         if (aggregatedFeatureConf == null || aggrFeature == null) {
             return null;
         }
 
-        Object value = aggrFeature.getValue();
+        FeatureValue value = aggrFeature.getValue();
         if (value == null) {
             value = new GenericHistogram();
             aggrFeature.setValue(value);
@@ -53,9 +55,9 @@ public class AggrFeatureHistogramFunc implements IAggrFeatureFunction, IAggrFeat
             for (String featureName : featureNames) {
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                    Object featureValue = feature.getValue();
-                    if(featureValue==null || (featureValue instanceof String && StringUtils.isBlank((String)featureValue))) {
-                        featureValue = "N/A";
+                    FeatureValue featureValue = feature.getValue();
+                    if(featureValue==null || (featureValue instanceof FeatureStringValue && StringUtils.isBlank((String)((FeatureStringValue) featureValue).getValue()))) {
+                        featureValue = new FeatureStringValue("N/A");
                     }
                 	histogram.add(featureValue.toString(), 1.0);
                 }

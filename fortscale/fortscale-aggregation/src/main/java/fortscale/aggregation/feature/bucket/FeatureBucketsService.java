@@ -100,7 +100,7 @@ public abstract class FeatureBucketsService {
 	}
 	
 	
-	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
+	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception{
 		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
 	}
 

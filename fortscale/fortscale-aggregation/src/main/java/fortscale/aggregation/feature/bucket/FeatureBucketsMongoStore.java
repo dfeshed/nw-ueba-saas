@@ -53,7 +53,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
 
 			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 
@@ -83,7 +83,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 		return null;
 	}
 	
-	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String collectionName = getCollectionName(featureBucketConf);
 		if (!isCollectionExist(collectionName)) {
 			mongoTemplate.createCollection(collectionName);
@@ -91,7 +91,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(FeatureBucket.STRATEGY_ID_FIELD,Direction.DESC));
 			collectionNames.add(collectionName);
 		}
-		mongoTemplate.save(featureBucket, collectionName);
+		try {
+			mongoTemplate.save(featureBucket, collectionName);
+		} catch (Exception e) {
+			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
+		}
 	}
 	
 	private boolean isCollectionExist(String collectionName){

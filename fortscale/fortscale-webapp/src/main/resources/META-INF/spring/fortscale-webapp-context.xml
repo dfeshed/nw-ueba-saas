@@ -81,4 +81,8 @@
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
+	<bean id="eventsFilter" class="fortscale.utils.FilteringPropertiesConfigurationHandler" scope="singleton">
+		<constructor-arg name="mapFiltering" value="${evidence.events.filtering.map}" />
+	</bean>
+
 </beans>

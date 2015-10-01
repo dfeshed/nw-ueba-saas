@@ -13,6 +13,7 @@
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
+	<bean id="aggregatedEventQueryService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService"/>
 
 	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype">
 		<property name="aggregatedEventQueryService" ref="aggregatedEventQueryService"/>

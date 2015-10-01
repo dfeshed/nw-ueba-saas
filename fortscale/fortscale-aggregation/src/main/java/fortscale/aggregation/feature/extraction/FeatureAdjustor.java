@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.aggregation.feature.FeatureValue;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME,include=JsonTypeInfo.As.PROPERTY,property="type")
 @JsonSubTypes({
@@ -14,5 +15,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value=HourOfDayFeatureAdjustor.class, name=HourOfDayFeatureAdjustor.HOUR_OF_DAY_FEATURE_ADJUSTOR)
 })
 public interface FeatureAdjustor {
-	Object adjust(Object value, Event event) throws Exception;
+	FeatureValue adjust(FeatureValue value, Event event) throws Exception;
 }
