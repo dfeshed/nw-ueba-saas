@@ -27,7 +27,7 @@
 
 	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService"/>
 	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
-	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataMongoStore"/>
+	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataStoreSamza"/>
 
     <context:annotation-config />
     <context:spring-configured />

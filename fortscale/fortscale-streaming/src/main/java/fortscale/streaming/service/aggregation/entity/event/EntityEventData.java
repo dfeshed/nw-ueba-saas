@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.aggregation.feature.event.AggrEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class EntityEventData {
 	public static final String ENTITY_EVENT_NAME_FIELD = "entityEventName";
 	public static final String CONTEXT_FIELD = "context";
@@ -96,5 +98,9 @@ public class EntityEventData {
 
 	public void setFired(boolean fired) {
 		this.fired = fired;
+	}
+
+	public String getId() {
+		return id;
 	}
 }
