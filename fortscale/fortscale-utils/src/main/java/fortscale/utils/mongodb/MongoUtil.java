@@ -6,6 +6,7 @@ import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Collection;
@@ -20,6 +21,10 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
 
     private static Logger logger = Logger.getLogger(MongoUtil.class);
 
+    private final String FILTERS_DELIMITER = "%%%";
+    private final String KEYVALUE_DELIMITER = ":::";
+    private final String DATE_IDENTIFIER = "date";
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -28,26 +33,54 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      * This method deletes documents according to their date
      *
      * @param collection collection name to delete from
-     * @param dateField  date field that will be used for the filter query
+     * @param filters    filters including dateField and any other key=value combination
      * @param startDate  documents after that date will be deleted
      * @param endDate    documents before that date will be deleted
      * @return
      */
     @Override
-    public boolean deleteEntityBetween(String collection, String dateField, Date startDate, Date endDate) {
+    public boolean deleteEntityBetween(String collection, String filters, Date startDate, Date endDate) {
         logger.info("attempting to delete from collection {}", collection);
-        Query query;
-        //TODO - generalize this in the case where dateField is not in unix time
-        if (startDate != null && endDate == null) {
-            query = new Query(where(dateField).gte(startDate.getTime()));
-        } else if (startDate == null && endDate != null) {
-            query = new Query(where(dateField).lte(endDate.getTime()));
+        Query query = new Query();
+        boolean hasCriteria = false;
+        String dateField = null;
+        if (filters.contains(FILTERS_DELIMITER)) {
+            for (String filter: filters.split(FILTERS_DELIMITER)) {
+                String field = filter.split(KEYVALUE_DELIMITER)[0];
+                String value = filter.split(KEYVALUE_DELIMITER)[1];
+                if (field.equals(DATE_IDENTIFIER)) {
+                    dateField = value;
+                } else {
+                    query.addCriteria(where(field).is(value));
+                    hasCriteria = true;
+                }
+            }
         } else {
-            query = new Query(where(dateField).gte(startDate.getTime()).lte(endDate.getTime()));
+            dateField = filters;
         }
-        logger.debug("query is {}", query.toString());
-        mongoTemplate.remove(query, collection);
-        return true;
+        if (dateField != null) {
+            //TODO - generalize this in the case where dateField is not in unix time
+            if (startDate != null && endDate == null) {
+                query.addCriteria(where(dateField).gte(startDate.getTime()));
+                hasCriteria = true;
+            } else if (startDate == null && endDate != null) {
+                query.addCriteria(where(dateField).lte(endDate.getTime()));
+                hasCriteria = true;
+            } else if (startDate != null && endDate != null) {
+                query.addCriteria(where(dateField).gte(startDate.getTime()).lte(endDate.getTime()));
+                hasCriteria = true;
+            } else {
+                logger.error("Must provide either start or end date");
+                return false;
+            }
+        }
+        if (hasCriteria) {
+            logger.debug("query is {}", query.toString());
+            mongoTemplate.remove(query, collection);
+            return true;
+        }
+        logger.error("Bad parameters");
+        return false;
     }
 
     /***
@@ -136,17 +169,16 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      * @param backupCollectionName  the backup collection name to rename back
      * @return
      */
-    @Override
     public boolean restoreSnapshot(String collectionName, String backupCollectionName) {
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         boolean success = false;
         logger.debug("verify that collections exist");
-        DBCollection deleteCollection = mongoTemplate.getCollection(collectionName);
-        DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
-        if (deleteCollection == null || backupCollection == null) {
+        if (!mongoTemplate.collectionExists(collectionName) ||!mongoTemplate.collectionExists(backupCollectionName)) {
             logger.error("no origin or backup collection found");
             return success;
         }
+        DBCollection deleteCollection = mongoTemplate.getCollection(collectionName);
+        DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
         String tempCollectionName = collectionName + TEMPSUFFIX;
         logger.debug("verify that destination collection temp name doesn't exist");
         //sanity check - shouldn't be found

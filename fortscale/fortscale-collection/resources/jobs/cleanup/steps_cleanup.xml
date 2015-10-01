@@ -7,9 +7,9 @@
 
     <schedule>
         <job>
-            <name>Clean</name>
-            <group>StepsCleanup</group>
-            <description>Cleans indicators from mongo after a given point in time</description>
+            <name>CleanJob</name>
+            <group>Cleanup</group>
+            <description>Cleans job to delete data from the system</description>
             <job-class>fortscale.collection.jobs.cleanup.CleanJob</job-class>
             <durability>true</durability>
             <recover>true</recover>

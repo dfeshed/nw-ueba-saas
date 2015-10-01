@@ -5,6 +5,7 @@ import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -115,29 +117,6 @@ public class HDFSUtil implements CleanupUtil {
 
     /***
      *
-     * This method verifies that a path exists on the hdfs file system
-     *
-     * @param hdfsPath  path to the request hdfs resource
-     * @return
-     */
-    private boolean verifyPathFound(String hdfsPath) {
-        boolean verified = false;
-        try {
-            Process process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-            if (process.waitFor() == 0) {
-                logger.debug("{} found", hdfsPath);
-                verified = true;
-            } else {
-                logger.warn("unable to verify if {} found", hdfsPath);
-            }
-        } catch (Exception ex) {
-            logger.warn("unable to verify if {} found - {}", hdfsPath, ex);
-        }
-        return verified;
-    }
-
-    /***
-     *
      * This method verifies that a path doesn't exists on the hdfs file system
      *
      * @param hdfsPath  path to the request hdfs resource
@@ -156,18 +135,45 @@ public class HDFSUtil implements CleanupUtil {
                     sb.append(line + "\n");
                 }
                 if (sb.toString().contains("No such file or directory")) {
-                    logger.info("{} not found", hdfsPath);
+                    logger.debug("{} not found", hdfsPath);
                     verified = true;
                 } else {
                     logger.warn("unable to verify if {} found", hdfsPath);
                 }
             } else {
-                logger.error("{} found", hdfsPath);
+                logger.debug("{} found", hdfsPath);
             }
         } catch (Exception ex) {
             logger.warn("unable to verify if {} not found - {}", hdfsPath, ex);
         }
         return verified;
+    }
+
+    /***
+     *
+     * This method receives a folder containing backup csv files and restores them to HDFS
+     *
+     * @param backupPath
+     * @return
+     */
+    public boolean restoreSnapshot(String backupPath) {
+        logger.info("attempting to restore snapshot");
+        File directory = new File(backupPath);
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.error("failed to find backup folder");
+            return false;
+        }
+        Iterator<File> iterator = FileUtils.iterateFiles(directory, new String[] { "csv" }, true);
+        while (iterator.hasNext()) {
+            File file = iterator.next();
+            String restorePath = file.getAbsolutePath();
+            String hdfsPath = restorePath.replace(backupPath, "");
+            if (!restoreFile(hdfsPath, restorePath)) {
+                logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+                return false;
+            }
+        }
+        return true;
     }
 
     /***
@@ -178,8 +184,7 @@ public class HDFSUtil implements CleanupUtil {
      * @param restorePath  the path to the local backup file to be uploaded instead
      * @return
      */
-    @Override
-    public boolean restoreSnapshot(String hdfsPath, String restorePath) {
+    private boolean restoreFile(String hdfsPath, String restorePath) {
         boolean success = false;
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         if (!hdfsPath.contains(basePath)) {
@@ -193,7 +198,7 @@ public class HDFSUtil implements CleanupUtil {
         String tempResourceName = hdfsPath + TEMPSUFFIX;
         logger.debug("verify that destination resource temp name doesn't exist");
         //sanity check - shouldn't be found
-        if (verifyPathFound(tempResourceName)) {
+        if (!verifyPathNotFound(tempResourceName)) {
             logger.info("temp resource {} already exists, deleting...", tempResourceName);
             if (!deletePath(tempResourceName, true)) {
                 logger.error("failed to delete temp resource, manually delete it before continuing");
@@ -203,7 +208,7 @@ public class HDFSUtil implements CleanupUtil {
         try {
             logger.debug("renaming origin collection {} to {}", hdfsPath, tempResourceName);
             Process process = Runtime.getRuntime().exec("hdfs dfs -mv " + hdfsPath + " " + tempResourceName);
-            if (process.waitFor() != 0 || verifyPathFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
+            if (process.waitFor() != 0 || !verifyPathNotFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
                 logger.error("renaming failed, abort");
                 return success;
             }

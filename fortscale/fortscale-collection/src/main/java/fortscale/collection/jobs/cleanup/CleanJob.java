@@ -30,8 +30,11 @@ public class CleanJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(CleanJob.class);
 
-	private enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
-	private enum Strategy { DELETE, FASTDELETE, RESTORE }
+	public enum Technology { MONGO, HDFS, KAFKA, STORE, IMPALA, ALL }
+	public enum Strategy { DELETE, FASTDELETE, RESTORE }
+
+	@Autowired
+	private CleanupManagement cleanupManagement;
 
 	@Autowired
 	private MongoUtil mongoUtils;
@@ -68,60 +71,60 @@ public class CleanJob extends FortscaleJob {
 	private String streamingServiceName;
 	@Value("${collection.service.name}")
 	private String collectionServiceName;
+	@Value("${step.param}")
+	private String stepParam;
 
 	private Date startTime;
 	private Date endTime;
 	private Map<String, String> dataSources;
 	private Strategy strategy;
 	private Technology technology;
+	private CleanupStep cleanupStep;
+	private String cleanupStepId;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		Set<String> keys = map.keySet();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		// get parameters values from the job data map
 		try {
-			if (keys.contains(startTimeParam)) {
+			if (map.containsKey(startTimeParam)) {
 				startTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, startTimeParam));
 			}
-			if (keys.contains(endTimeParam)) {
+			if (map.containsKey(endTimeParam)) {
 				endTime = sdf.parse(jobDataMapExtension.getJobDataMapStringValue(map, endTimeParam));
 			}
 		} catch (ParseException ex) {
 			logger.error("Bad date format - {}", ex.getMessage());
 			throw new JobExecutionException(ex);
 		}
+		if (map.containsKey(stepParam)) {
+			cleanupStepId = map.getString(stepParam);
+			cleanupStep = cleanupManagement.getCleanupStep(cleanupStepId);
+			if (cleanupStep == null) {
+				logger.error("No step {} found", map.getString(stepParam));
+				throw new JobExecutionException();
+			}
+			//if step param passed - ignore all other parameters
+			return;
+		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
-		if (keys.contains(dataSourcesParam)) {
-			createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
+		if (map.containsKey(dataSourcesParam)) {
+			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
 	}
 
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
-		boolean success = false;
-		//if command is to delete everything
-		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
-			//if fast delete - no validation is performed
-			success = clearAllData(strategy == Strategy.DELETE);
+		boolean success;
+		//bdp run
+		if (cleanupStep != null) {
+			success = bdpClean(cleanupStep, startTime, endTime);
+		//normal run
 		} else {
-			switch (strategy) {
-				//for both delete and fastdelete, do
-				case DELETE:
-				case FASTDELETE: {
-					//if fast delete - no validation is performed
-					success = deleteEntities(dataSources, startTime, endTime, strategy == Strategy.DELETE);
-					break;
-				}
-				case RESTORE: {
-					logger.info("restoring {} entities", dataSources.size());
-					success = restoreEntities(dataSources);
-					break;
-				}
-			}
+			success = normalClean(strategy, technology, dataSources, startTime, endTime);
 		}
 		if (success) {
 			logger.info("Clean job successful");
@@ -133,15 +136,105 @@ public class CleanJob extends FortscaleJob {
 
 	/***
 	 *
+	 * This method runs the cleaning steps for BDP
+	 *
+	 * @param cleanupStep  the specific step to run
+	 * @param startTime    the starting time of entities to address
+	 * @param endTime      the ending time of entities to address
+	 * @return
+	 */
+	private boolean bdpClean(CleanupStep cleanupStep, Date startTime, Date endTime) {
+		boolean success = false;
+		int successfulSteps = 0, totalSteps = 0;
+		Map<String, String> dataSources;
+		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
+		totalSteps += miniSteps.size();
+		//running all time based mini steps
+		for (int i = 0; i < miniSteps.size(); i++) {
+			MiniStep miniStep = miniSteps.get(i);
+			dataSources = createDataSourcesMap(miniStep.getDataSources());
+			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
+			if (!success) {
+				logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
+			} else {
+				logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
+				successfulSteps++;
+			}
+		}
+		miniSteps = cleanupStep.getOtherSteps();
+		totalSteps += miniSteps.size();
+		//running all other mini steps
+		for (int i = 0; i < miniSteps.size(); i++) {
+			MiniStep miniStep = miniSteps.get(i);
+			dataSources = createDataSourcesMap(miniStep.getDataSources());
+			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
+			if (!success) {
+				logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
+			} else {
+				logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
+				successfulSteps++;
+			}
+		}
+		logger.info("Finished cleaning {} out of {} mini steps", successfulSteps, totalSteps);
+		if (successfulSteps == totalSteps) {
+			logger.info("Cleanup step {} completed successfully", cleanupStepId);
+			success = true;
+		} else {
+			logger.error("Cleanup step {} failed to complete", cleanupStepId);
+		}
+		return success;
+	}
+
+	/***
+	 *
+	 * This method runs the normal cleaning procedure
+	 *
+	 * @param strategy     the strategy to run (delete, restore etc.)
+	 * @param technology   the technology to run (mongo, hdfs etc.)
+	 * @param dataSources  the entities and parameters to run
+	 * @param startTime    the starting time of entities to address
+	 * @param endTime      the ending time of entities to address
+	 * @return
+	 */
+	private boolean normalClean(Strategy strategy, Technology technology, Map<String, String> dataSources,
+								Date startTime, Date endTime) {
+		boolean success = false;
+		//if command is to delete everything
+		if ((strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) && technology == Technology.ALL) {
+            //if fast delete - no validation is performed
+            success = clearAllData(strategy == Strategy.DELETE);
+        } else {
+            switch (strategy) {
+                //for both delete and fastdelete, do
+                case DELETE:
+                case FASTDELETE: {
+                    //if fast delete - no validation is performed
+                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE);
+                    break;
+                }
+                case RESTORE: {
+                    logger.info("restoring {} entities", dataSources.size());
+                    success = restoreEntities(technology, dataSources);
+                    break;
+                }
+            }
+        }
+		return success;
+	}
+
+	/***
+	 *
 	 * This method handles the delete command, determines which technology to use and executes it
 	 *
+	 * @param technology  technology to use (mongo, hdfs, etc.)
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param startDate   start date to filter deletion by
 	 * @param endDate	  end date to filter deletion by
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean deleteEntities(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+	private boolean deleteEntities(Technology technology, Map<String, String> toDelete, Date startDate, Date endDate,
+								   boolean doValidate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
@@ -172,17 +265,18 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method handles the restore command, determines which technology to use and executes it
 	 *
-	 * @param sources   collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param technology  technology to use (mongo, hdfs, etc.)
+	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @return
 	 */
-	private boolean restoreEntities(Map<String, String> sources) {
+	private boolean restoreEntities(Technology technology, Map<String, String> sources) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
-				success = restoreSnapshot(sources, mongoUtils);
+				success = restoreMongo(sources);
 				break;
 			} case HDFS: {
-				success = restoreSnapshot(sources, hdfsUtils);
+				success = restoreHDFS(sources);
 				break;
 			}
 		}
@@ -195,6 +289,7 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param toDelete    collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @param doValidate  flag to determine should we perform validations
+	 * @param customUtil
 	 * @return
 	 */
 	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CleanupDeletionUtil customUtil) {
@@ -204,10 +299,11 @@ public class CleanJob extends FortscaleJob {
 			Collection<String> temp = toDelete.keySet();
 			entities = new HashSet(temp);
 			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-				String value = entry.getValue();
-				if (!value.isEmpty()) {
-					entities.addAll(customUtil.getEntitiesMatchingPredicate(entry.getKey(), value));
-					entities.remove(entry.getKey());
+				String filter = entry.getValue();
+				String name = entry.getKey();
+				if (!filter.isEmpty()) {
+					entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
+					entities.remove(name);
 				}
 			}
 		} else {
@@ -230,14 +326,12 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
-		if (startTime == null && endTime == null) {
-			if (toDelete != null) {
-				logger.info("deleting {} entities", toDelete.size());
-				success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
-			} else {
-				logger.info("deleting all entities");
-				success = hdfsUtils.deleteAll(doValidate);
-			}
+		if (startTime == null && endTime == null && toDelete == null) {
+			logger.info("deleting all entities");
+			success = hdfsUtils.deleteAll(doValidate);
+		} else if (startTime == null && endTime == null) {
+			logger.info("deleting {} entities", toDelete.size());
+			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
@@ -255,14 +349,14 @@ public class CleanJob extends FortscaleJob {
 	 * @param doValidate  flag to determine should we perform validations
 	 * @return
 	 */
-	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
+	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate){
 		boolean success;
-		if (startTime == null && endTime == null) {
-			if (toDelete != null) {
-				return handleDeletion(toDelete, doValidate, mongoUtils);
-			}
+		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = mongoUtils.dropAllCollections(doValidate);
+		} else if (startTime == null && endTime == null) {
+			logger.info("deleting {} entities", toDelete.size());
+			success = handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
 			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
@@ -302,18 +396,17 @@ public class CleanJob extends FortscaleJob {
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
 	 * it with the intended backup
 	 *
-	 * @param sources     collection of key,value (keys are collection/tables/topic/hdfs paths etc)
-	 * @param cleanupUtil
+	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
 	 * @return
 	 */
-	private boolean restoreSnapshot(Map<String, String> sources, CleanupUtil cleanupUtil) {
+	private boolean restoreMongo(Map<String, String> sources) {
 		int restored = 0;
 		logger.debug("trying to restore {} snapshots", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
             String toRestore = dataSource.getKey();
             String backupName = dataSource.getValue();
 			logger.debug("origin - {}, backup - {}", toRestore, backupName);
-            if (cleanupUtil.restoreSnapshot(toRestore, backupName)) {
+            if (mongoUtils.restoreSnapshot(toRestore, backupName)) {
                 restored++;
             }
         }
@@ -323,6 +416,31 @@ public class CleanJob extends FortscaleJob {
 			return false;
 		}
 		logger.info("restored all {} entities", sources.size());
+		return true;
+	}
+
+	/****
+	 *
+	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
+	 * it with the intended backup
+	 *
+	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @return
+	 */
+	private boolean restoreHDFS(Map<String, String> sources) {
+		boolean success = false;
+		logger.debug("trying to restore from {} paths", sources.size());
+		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
+			String backupPath = dataSource.getKey();
+			success = hdfsUtils.restoreSnapshot(backupPath);
+			if (!success) {
+				logger.error("failed to restore from path {}", backupPath);
+				return success;
+			} else {
+				logger.info("restored successfully from path {}", backupPath);
+			}
+		}
+		logger.info("restored all", sources.size());
 		return true;
 	}
 
@@ -439,8 +557,8 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param dataSourcesString
 	 */
-	private void createDataSourcesMap(String dataSourcesString) {
-		dataSources = new HashMap();
+	private Map<String, String> createDataSourcesMap(String dataSourcesString) {
+		Map<String, String> dataSources = new HashMap();
 		for (String entry: dataSourcesString.split(dataSourcesDelimiter)) {
 			String dataSource;
 			String queryField;
@@ -457,6 +575,7 @@ public class CleanJob extends FortscaleJob {
 			}
 			dataSources.put(dataSource, queryField);
 		}
+		return dataSources;
 	}
 
 	@Override
