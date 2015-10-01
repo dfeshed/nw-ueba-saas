@@ -80,6 +80,7 @@ public class CleanJob extends FortscaleJob {
 	private Strategy strategy;
 	private Technology technology;
 	private CleanupStep cleanupStep;
+	private String cleanupStepId;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -98,7 +99,8 @@ public class CleanJob extends FortscaleJob {
 			throw new JobExecutionException(ex);
 		}
 		if (map.containsKey(stepParam)) {
-			cleanupStep = cleanupManagement.getCleanupStep(map.getString(stepParam));
+			cleanupStepId = map.getString(stepParam);
+			cleanupStep = cleanupManagement.getCleanupStep(cleanupStepId);
 			if (cleanupStep == null) {
 				logger.error("No step {} found", map.getString(stepParam));
 				throw new JobExecutionException();
@@ -143,30 +145,40 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean bdpClean(CleanupStep cleanupStep, Date startTime, Date endTime) {
 		boolean success = false;
+		int successfulSteps = 0, totalSteps = 0;
 		Map<String, String> dataSources;
 		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
+		totalSteps += miniSteps.size();
 		for (int i = 0; i < miniSteps.size(); i++) {
 			MiniStep miniStep = miniSteps.get(i);
 			dataSources = createDataSourcesMap(miniStep.getDataSources());
 			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
 			if (!success) {
-				logger.error("Time based step {}: {} - failed", i, miniStep.toString());
-				return success;
+				logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
 			} else {
-				logger.info("Time based step {}: {} - succeeded", i, miniStep.toString());
+				logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
+				successfulSteps++;
 			}
 		}
 		miniSteps = cleanupStep.getOtherSteps();
+		totalSteps += miniSteps.size();
 		for (int i = 0; i < miniSteps.size(); i++) {
 			MiniStep miniStep = miniSteps.get(i);
 			dataSources = createDataSourcesMap(miniStep.getDataSources());
 			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
 			if (!success) {
-				logger.error("Normal step {}: {} - failed", i, miniStep.toString());
-				return success;
+				logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
 			} else {
-				logger.info("Normal step {}: {} - succeeded", i, miniStep.toString());
+				logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
+				successfulSteps++;
 			}
+		}
+		logger.info("Finished cleaning {} out of {} mini steps", successfulSteps, totalSteps);
+		if (successfulSteps == totalSteps) {
+			logger.info("Cleanup step {} completed successfully", cleanupStepId);
+			success = true;
+		} else {
+			logger.error("Cleanup step {} failed to complete", cleanupStepId);
 		}
 		return success;
 	}
