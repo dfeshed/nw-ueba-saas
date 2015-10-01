@@ -141,12 +141,12 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         boolean success = false;
         logger.debug("verify that collections exist");
-        DBCollection deleteCollection = mongoTemplate.getCollection(collectionName);
-        DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
-        if (deleteCollection == null || backupCollection == null) {
+        if (!mongoTemplate.collectionExists(collectionName) ||!mongoTemplate.collectionExists(backupCollectionName)) {
             logger.error("no origin or backup collection found");
             return success;
         }
+        DBCollection deleteCollection = mongoTemplate.getCollection(collectionName);
+        DBCollection backupCollection = mongoTemplate.getCollection(backupCollectionName);
         String tempCollectionName = collectionName + TEMPSUFFIX;
         logger.debug("verify that destination collection temp name doesn't exist");
         //sanity check - shouldn't be found

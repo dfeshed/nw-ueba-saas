@@ -144,12 +144,15 @@ public class CleanJob extends FortscaleJob {
 	private boolean bdpClean(CleanupStep cleanupStep, Date startTime, Date endTime) {
 		boolean success = false;
 		List<MiniStep> miniSteps = cleanupStep.getMiniSteps();
-		for (MiniStep miniStep: miniSteps) {
+		for (int i = 0; i < miniSteps.size(); i++) {
+			MiniStep miniStep = miniSteps.get(i);
 			Map<String, String> dataSources = createDataSourcesMap(miniStep.getDataSources());
 			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
 			if (success == false) {
-				logger.error("ministep {} failed", miniStep.toString());
+				logger.error("ministep {}: {} - failed", i, miniStep.toString());
 				return success;
+			} else {
+				logger.error("ministep {}: {} - succeeded", i, miniStep.toString());
 			}
 		}
 		return success;
