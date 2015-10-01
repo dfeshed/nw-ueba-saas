@@ -7,7 +7,7 @@ public class SamzaSpringContextTest {
 
 	@Test
 	public void resolvingTypeTest(){
-		ExtendedSamzaTaskContext context = new ExtendedSamzaTaskContext(null);
+		ExtendedSamzaTaskContext context = new ExtendedSamzaTaskContext(null, null);
 		StringBuilder builder = new StringBuilder();
 		builder.append("testing SamzaSpringContext type resolving");
 		context.registerBean(StringBuilder.class, builder);

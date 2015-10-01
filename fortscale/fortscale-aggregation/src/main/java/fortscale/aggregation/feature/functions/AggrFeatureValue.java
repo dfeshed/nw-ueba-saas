@@ -3,14 +3,16 @@ package fortscale.aggregation.feature.functions;
 import java.util.HashMap;
 import java.util.Map;
 
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureValue {
+public class AggrFeatureValue implements FeatureValue {
 	protected final static String AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS = "total";
-	
+	public static final String FEATURE_VALUE_TYPE = "aggr_feature_value";
+
 	private Object value;
 	private Map<String, Object> additionalInformationMap;
 	

@@ -135,7 +135,7 @@ public class AggrFeatureEventBuilderService {
     
     public JSONObject getAggrFeatureEventAsJsonObject(AggrEvent aggrEvent){
     	JSONObject jsonObject = buildEvent(aggrEvent.getDataSource(), aggrEvent.getFeatureType(), aggrEvent.getAggregatedFeatureName(), aggrEvent.getAggregatedFeatureValue(), aggrEvent.getAggregatedFeatureInfo(), 
-    			aggrEvent.getBucketConfName(), aggrEvent.getContext(), aggrEvent.getStartTimeUnix(), aggrEvent.getStartTimeUnix(), aggrEvent.getDataSources(), aggrEvent.getCreationEpochTime());
+    			aggrEvent.getBucketConfName(), aggrEvent.getContext(), aggrEvent.getStartTimeUnix(), aggrEvent.getEndTimeUnix(), aggrEvent.getDataSources(), aggrEvent.getCreationEpochTime());
     	
     	jsonObject.put(AggrEvent.EVENT_FIELD_SCORE, aggrEvent.getScore());
     	

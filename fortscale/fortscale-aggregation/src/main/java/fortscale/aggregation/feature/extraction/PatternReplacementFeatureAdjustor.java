@@ -4,6 +4,8 @@ import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.regex.Matcher;
 
+import fortscale.aggregation.feature.FeatureStringValue;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -26,14 +28,14 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) {
+	public FeatureValue adjust(FeatureValue value, Event event) {
 		String originalFieldValue = convertToString(value);
 		if (StringUtils.isNotEmpty(originalFieldValue) && StringUtils.isNotEmpty(pattern)) {
 			// strip numbers from the hostname
 			originalFieldValue = originalFieldValue.replaceAll(Matcher.quoteReplacement(pattern), Matcher.quoteReplacement(replacement));
 		}
 
-		return originalFieldValue;
+		return new FeatureStringValue(originalFieldValue);
 	}
 
 	public String getPattern() {

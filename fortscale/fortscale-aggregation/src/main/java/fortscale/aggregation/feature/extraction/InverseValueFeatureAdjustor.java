@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.FeatureValue;
 
 @JsonTypeName(InverseValueFeatureAdjustor.INVERSE_VALUE_FEATURE_ADJUSTOR_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -20,12 +22,12 @@ public class InverseValueFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, Event event) {
+	public FeatureValue adjust(FeatureValue value, Event event) {
 		Double originalFieldValue = convertToDouble(value);
 
 		Double invOriginalFieldValue = (originalFieldValue == null || originalFieldValue + denominator == 0) ? null : 1.0 / (originalFieldValue + denominator);
 
-		return  invOriginalFieldValue;
+		return  invOriginalFieldValue==null?null:new FeatureNumericValue(invOriginalFieldValue);
 	}
 
 	public double getDenominator() {

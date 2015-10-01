@@ -18,7 +18,8 @@
 	<mockito:mock id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService"/>
 	<mockito:mock id="featureBucketsService" class="fortscale.aggregation.feature.bucket.FeatureBucketsService"/>
 	<mockito:mock id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyService"/>
-	
+    <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
+
     <bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
     <bean id="aggrFeatureEventBuilderTestHelper" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderTestHelper"/>
 

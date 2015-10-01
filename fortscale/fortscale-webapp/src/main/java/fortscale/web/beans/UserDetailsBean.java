@@ -74,15 +74,6 @@ public class UserDetailsBean implements Serializable{
 	public List<String> getTags(){
 		List<String> userTags = new ArrayList<>();
 		userTags.addAll(user.getTags());
-		if(user.getAdministratorAccount()){
-			userTags.add("adminAccount");
-		}
-		if(user.getExecutiveAccount()){
-			userTags.add("executiveAccount");
-		}
-		if(user.getUserServiceAccount()){
-			userTags.add("serviceAccount");
-		}
 		return userTags;
 	}
 	

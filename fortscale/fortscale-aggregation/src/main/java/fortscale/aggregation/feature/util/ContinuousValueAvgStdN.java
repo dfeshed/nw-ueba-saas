@@ -1,12 +1,15 @@
 package fortscale.aggregation.feature.util;
 
+import fortscale.aggregation.feature.FeatureValue;
+
 import java.io.Serializable;
 
 /**
  * Created by amira on 17/06/2015.
  */
-public class ContinuousValueAvgStdN implements Serializable{
+public class ContinuousValueAvgStdN implements Serializable, FeatureValue{
     private static final long serialVersionUID = 1L;
+    public static final String FEATURE_VALUE_TYPE = "continuous_value_avg_std_n";
 
     private Long N = 0L;
     private Double std = 0.0;
