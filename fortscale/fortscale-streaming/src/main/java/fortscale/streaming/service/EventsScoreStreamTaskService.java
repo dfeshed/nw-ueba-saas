@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.streaming.ConfigUtils.*;
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction=true)
@@ -70,6 +71,7 @@ public class EventsScoreStreamTaskService {
 		} else {
 			outputTopic = config.get("fortscale.output.topic", "");
 		}
+
 		fillScoreConfig(config, featureExtractionService);
 		
 		// create counter metric for processed messages
