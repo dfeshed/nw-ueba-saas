@@ -125,8 +125,7 @@ public class AdFetchJob extends FortscaleJob {
 				logger.debug("Trying to connect to domain controller at {}", dcAddress);
 				connected = true;
 
-				//Todo - Need to export port into configuration under adConnections.json
-				dcAddress = "ldap://" + dcAddress + ":389";
+				dcAddress = "ldap://" + dcAddress;
 
 
 				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();

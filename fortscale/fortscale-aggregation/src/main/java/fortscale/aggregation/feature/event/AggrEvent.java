@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-/**
- * Created by amira on 23/08/2015.
- */
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -118,17 +118,6 @@ public class AggrEvent implements Serializable {
         this.score = score;
     }
 
-//    public JSONObject getAsJSONObject() {
-//        JSONObject event =  buildEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo,
-//                bucketConfName, context, startTimeUnix, endTimeUnix.getTime(), dataSources, creationEpochTime);
-//        if(score!=null) {
-//            event.put(EVENT_FIELD_SCORE, score);
-//        }
-//        return event;
-//    }
-
-    
-    
     public String getFeatureType() {
         return featureType;
     }
