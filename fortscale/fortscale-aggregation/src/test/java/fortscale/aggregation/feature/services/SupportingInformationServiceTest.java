@@ -9,6 +9,8 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
+import fortscale.services.dataqueries.querydto.DataQueryHelper;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -18,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath*:META-INF/spring/supporting-information-service-context-test.xml" })
 public class SupportingInformationServiceTest {
+
+    @Autowired
+    @ReplaceWithMock
+    DataQueryHelper dataQueryHelper;
 
     @Autowired
     SupportingInformationService supportingInformationService;
