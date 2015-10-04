@@ -80,19 +80,27 @@ public class MongoToKafkaJob extends FortscaleJob {
 		while (cursor.hasNext()) {
             String message = cursor.next().toString();
             logger.debug("forwarding message - {}", message);
-            //TODO - throttling
-            /*for (KafkaEventsWriter streamWriter: streamWriters) {
-                streamWriter.send("index", message);
-            }*/
+            forwardMessage(message);
 		}
 		cursor.close();
-        for (KafkaEventsWriter streamWriter: streamWriters) {
-            streamWriter.close();
-        }
+        for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
 
-	/***
+    /***
+     *
+     * This method sends the given message while making sure no kafka messages are dropped
+     *
+     * @param message
+     */
+    private void forwardMessage(String message) {
+        //TODO - throttling
+        for (KafkaEventsWriter streamWriter: streamWriters) {
+            streamWriter.send("index", message);
+        }
+    }
+
+    /***
 	 *
 	 * This method builds the query that will filter the specific Mongo documents to forward
 	 *
