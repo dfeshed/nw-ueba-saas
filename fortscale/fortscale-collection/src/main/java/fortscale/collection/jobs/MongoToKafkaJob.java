@@ -42,7 +42,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	private ZkClient zkClient;
 	private String topicPath;
-	private Object mongoClass;
+	private Object mongoEntity;
 	private String mongoFilters;
 
 	@Override
@@ -53,14 +53,18 @@ public class MongoToKafkaJob extends FortscaleJob {
 		topicPath = ZkUtils.getTopicPath(topicName);
 		zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
 		if (!zkClient.exists(topicPath)) {
-			logger.error("No topicPath {} found", topicName);
+			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
 		String className = jobDataMapExtension.getJobDataMapStringValue(map, "className");
 		mongoFilters = jobDataMapExtension.getJobDataMapStringValue(map, "mongoFilters");
 		String contextPath = "classpath*:META-INF/spring/collection-context.xml";
 		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
-		mongoClass = context.getBean(className);
+		mongoEntity = context.getBean(className);
+		if (mongoEntity == null) {
+			logger.error("No mongo entity {} found", mongoEntity);
+			throw new JobExecutionException();
+		}
 		logger.debug("Job initialized");
 	}
 
@@ -68,7 +72,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
 		Query query = buildQuery(mongoFilters);
-		List mongoItems = mongoTemplate.find(query, mongoClass.getClass());
+		List mongoItems = mongoTemplate.find(query, mongoEntity.getClass());
 		ObjectMapper mapper = new ObjectMapper();
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
 			@Override
