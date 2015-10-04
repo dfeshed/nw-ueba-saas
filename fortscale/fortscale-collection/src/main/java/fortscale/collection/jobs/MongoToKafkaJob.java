@@ -10,8 +10,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -49,6 +47,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+		mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
 		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topic");
 		topicPath = ZkUtils.getTopicPath(topicName);
 		zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
@@ -57,12 +56,10 @@ public class MongoToKafkaJob extends FortscaleJob {
 			throw new JobExecutionException();
 		}
 		String className = jobDataMapExtension.getJobDataMapStringValue(map, "mongo");
-		mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
-		String contextPath = "classpath*:META-INF/spring/collection-context.xml";
-		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
-		mongoEntity = context.getBean(className);
-		if (mongoEntity == null) {
-			logger.error("No mongo entity {} found", mongoEntity);
+		try {
+			mongoEntity = Class.forName(className);
+		} catch (ClassNotFoundException ex) {
+			logger.error("No mongo entity {} found - {}", mongoEntity, ex);
 			throw new JobExecutionException();
 		}
 		logger.debug("Job initialized");
@@ -71,7 +68,6 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-
 		List mongoItems = mongoTemplate.find(mongoQuery, mongoEntity.getClass());
 		ObjectMapper mapper = new ObjectMapper();
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
