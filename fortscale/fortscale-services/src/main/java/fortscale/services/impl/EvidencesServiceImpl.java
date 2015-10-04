@@ -6,6 +6,7 @@ import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.UserSupportingInformationService;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,21 +149,13 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				evidenceType, entityName);
 	}
 
-	public List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType){
-		return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);
-	}
-
-	public List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(Long afterDate, Long beforeDate, String anomalyType, String entityName){
-		return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(TimestampUtils.normalizeTimestamp(afterDate),
-							TimestampUtils.normalizeTimestamp(beforeDate), anomalyType,entityName);
-	}
-
 	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName){
-		if (entityName == null){
-			return findByStartDateBetweenAndAnomalyTypeFieldName(afterDate,beforeDate, anomalyType);
+		if (StringUtils.isBlank(entityName)){
+			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);
 		} else {
-			return findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(afterDate, beforeDate, anomalyType,
-					entityName);
+			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(TimestampUtils.normalizeTimestamp(afterDate),
+					TimestampUtils.normalizeTimestamp(beforeDate), anomalyType, entityName);
+
 		}
 	}
 
