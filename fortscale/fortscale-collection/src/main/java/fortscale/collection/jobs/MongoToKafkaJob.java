@@ -43,7 +43,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private ZkClient zkClient;
 	private String topicPath;
 	private Object mongoEntity;
-	private String mongoFilters;
+	private Query mongoQuery;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -57,7 +57,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 			throw new JobExecutionException();
 		}
 		String className = jobDataMapExtension.getJobDataMapStringValue(map, "mongo");
-		mongoFilters = jobDataMapExtension.getJobDataMapStringValue(map, "filters");
+		mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
 		String contextPath = "classpath*:META-INF/spring/collection-context.xml";
 		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
 		mongoEntity = context.getBean(className);
@@ -71,8 +71,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-		Query query = buildQuery(mongoFilters);
-		List mongoItems = mongoTemplate.find(query, mongoEntity.getClass());
+
+		List mongoItems = mongoTemplate.find(mongoQuery, mongoEntity.getClass());
 		ObjectMapper mapper = new ObjectMapper();
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
 			@Override
