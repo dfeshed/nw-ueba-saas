@@ -49,15 +49,15 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topicPath");
+		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topic");
 		topicPath = ZkUtils.getTopicPath(topicName);
 		zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
 		if (!zkClient.exists(topicPath)) {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
-		String className = jobDataMapExtension.getJobDataMapStringValue(map, "className");
-		mongoFilters = jobDataMapExtension.getJobDataMapStringValue(map, "mongoFilters");
+		String className = jobDataMapExtension.getJobDataMapStringValue(map, "mongo");
+		mongoFilters = jobDataMapExtension.getJobDataMapStringValue(map, "filters");
 		String contextPath = "classpath*:META-INF/spring/collection-context.xml";
 		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
 		mongoEntity = context.getBean(className);
