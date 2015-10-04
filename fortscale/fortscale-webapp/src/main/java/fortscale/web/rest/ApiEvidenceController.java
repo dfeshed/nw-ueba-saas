@@ -234,7 +234,7 @@ public class ApiEvidenceController extends DataQueryController {
 			//sort according to event times for continues forwarding
 			List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
 
-			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
+			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, null, querySortList,
 					size);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 		} else {

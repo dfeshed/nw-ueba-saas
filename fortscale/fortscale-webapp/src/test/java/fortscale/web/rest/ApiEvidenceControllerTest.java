@@ -120,7 +120,7 @@ public class ApiEvidenceControllerTest {
 		evidence.setStartDate(System.currentTimeMillis());
 		evidence.setEndDate(System.currentTimeMillis());
 		when(repository.findById(EVIDENCE_ID)).thenReturn(evidence);
-		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt())).
+		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), null, anyList(), anyInt())).
 				thenReturn(new DataQueryDTO());
 		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))

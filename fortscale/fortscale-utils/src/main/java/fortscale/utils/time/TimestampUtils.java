@@ -3,6 +3,8 @@ package fortscale.utils.time;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.TimeZone;
+
 /**
  * Utility class to handle timestamp conversions
  */
@@ -28,8 +30,7 @@ public final class TimestampUtils {
 	}
 	
 	public static long toStartOfDay(long timestamp) {
-		DateTime when = new DateTime(convertToMilliSeconds(timestamp));
-		//TODO: this function calculate date by local time and not UTC!!!
+		DateTime when = new DateTime(convertToMilliSeconds(timestamp), DateTimeZone.forTimeZone(TimeZone.getDefault()));
 		return when.withTimeAtStartOfDay().getMillis();
 	}
 

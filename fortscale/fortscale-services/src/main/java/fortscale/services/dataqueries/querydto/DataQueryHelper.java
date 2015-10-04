@@ -42,7 +42,7 @@ public class DataQueryHelper {
      * @param dataEntityLimit
      * @return
      */
-    public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<QuerySort> querySortList, int dataEntityLimit){
+    public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<DataQueryField> groupBy, List<QuerySort> querySortList, int dataEntityLimit){
         //entity to forward
         DataQueryDTO dataQueryDTO = new DataQueryDTO();
             String[] entities = { dataEntityId };
@@ -55,6 +55,11 @@ public class DataQueryHelper {
             //conditions on event time and score - not overflowing the client
             ConditionTerm conditionTerm = createDataQueryConditions(termsList);
             dataQueryDTO.setConditions(conditionTerm);
+
+            //set group by
+            if (groupBy != null ){
+                dataQueryDTO.setGroupBy(groupBy);
+            }
 
             //sort according to event times for continues forwarding
             dataQueryDTO.setSort(querySortList);
