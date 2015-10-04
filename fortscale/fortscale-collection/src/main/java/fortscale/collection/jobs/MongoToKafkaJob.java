@@ -3,7 +3,6 @@ package fortscale.collection.jobs;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.IZkDataListener;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
- * Created by Amir Keren on 26/07/2015.
+ * Created by Amir Keren on 04/10/2015.
  *
  * This task runs on demand, forwarding data from Mongo collections to Kafka topics
  *
@@ -42,7 +41,6 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private DBCollection mongoCollection;
 	private String message;
 	private Object lock;
-	private KafkaEventsWriter streamWriter;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -56,7 +54,6 @@ public class MongoToKafkaJob extends FortscaleJob {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
-		streamWriter = new KafkaEventsWriter(topicName);
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
 			logger.error("No collection {} found", collection);
@@ -89,12 +86,12 @@ public class MongoToKafkaJob extends FortscaleJob {
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
 			message = cursor.next().toString();
-			streamWriter.send("index???", message);
 			synchronized (lock) {
+				zkClient.writeData(topicPath, message);
 				lock.wait();
 			}
 		}
-		streamWriter.close();
+		cursor.close();
 		zkClient.close();
 		finishStep();
 	}
