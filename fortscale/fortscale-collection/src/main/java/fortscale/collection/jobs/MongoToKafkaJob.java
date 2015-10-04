@@ -3,6 +3,7 @@ package fortscale.collection.jobs;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.IZkDataListener;
@@ -38,9 +39,10 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private ZkClient zkClient;
 	private String topicPath;
 	private BasicDBObject mongoQuery;
-	private String collection;
+	private DBCollection mongoCollection;
 	private String message;
 	private Object lock;
+	private KafkaEventsWriter streamWriter;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -54,11 +56,13 @@ public class MongoToKafkaJob extends FortscaleJob {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
-		collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
+		streamWriter = new KafkaEventsWriter(topicName);
+		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
 			logger.error("No collection {} found", collection);
 			throw new JobExecutionException();
 		}
+		mongoCollection = mongoTemplate.getCollection(collection);
 		lock = new Object();
 		logger.debug("Job initialized");
 	}
@@ -82,15 +86,16 @@ public class MongoToKafkaJob extends FortscaleJob {
 				}
 			}
 		});
-		DBCollection mongoCollection = mongoTemplate.getCollection(collection);
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
 			message = cursor.next().toString();
-			zkClient.writeData(topicPath, message);
+			//zkClient.writeData(topicPath, message);
+			streamWriter.send("index???", message);
 			synchronized (lock) {
 				lock.wait();
 			}
 		}
+		streamWriter.close();
 		zkClient.close();
 		finishStep();
 	}
