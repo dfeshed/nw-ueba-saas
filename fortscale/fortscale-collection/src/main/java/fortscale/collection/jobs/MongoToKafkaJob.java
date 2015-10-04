@@ -39,6 +39,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private String topicPath;
 	private BasicDBObject mongoQuery;
 	private String collection;
+	private String message;
+	private Object lock;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -57,6 +59,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 			logger.error("No collection {} found", collection);
 			throw new JobExecutionException();
 		}
+		lock = new Object();
 		logger.debug("Job initialized");
 	}
 
@@ -66,23 +69,26 @@ public class MongoToKafkaJob extends FortscaleJob {
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
 			@Override
 			public void handleDataDeleted(String dataPath) throws Exception {
-				//TODO - what?
-				System.out.println(dataPath);
+				logger.error("too much data entered, Kafka dropped records - stopping process");
+				throw new JobExecutionException();
 			}
 
 			@Override
 			public void handleDataChange(String dataPath, Object data) throws Exception {
-				//TODO - what?
-				System.out.println(dataPath + " - " + data.toString());
+				if (data.equals(message)) {
+					synchronized (lock) {
+						lock.notify();
+					}
+				}
 			}
 		});
 		DBCollection mongoCollection = mongoTemplate.getCollection(collection);
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
-			zkClient.writeData(topicPath, cursor.next().toString());
-			//TODO - throttling
-			while (true) {
-				Thread.sleep(1000);
+			message = cursor.next().toString();
+			zkClient.writeData(topicPath, message);
+			synchronized (lock) {
+				lock.wait();
 			}
 		}
 		zkClient.close();
