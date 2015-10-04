@@ -25,9 +25,9 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
 
-	private final String FILTERS_DELIMITER = "%%%";
-	private final String KEYVALUE_DELIMITER = ":::";
-    private final String DATE_DELIMITER = "###";
+	private final String FILTERS_DELIMITER = "###";
+	private final String KEYVALUE_DELIMITER = "@@@";
+    private final String DATE_DELIMITER = ":::";
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -90,8 +90,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 		for (String filter: filters.split(FILTERS_DELIMITER)) {
             if (filter.contains(DATE_DELIMITER)) {
                 String field = filter.split(DATE_DELIMITER)[0];
-                String operator = filter.split(DATE_DELIMITER)[0].split(KEYVALUE_DELIMITER)[0];
-                String value = filter.split(DATE_DELIMITER)[0].split(KEYVALUE_DELIMITER)[1];
+                String operator = filter.split(DATE_DELIMITER)[1];
+                String value = filter.split(DATE_DELIMITER)[2];
                 searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
             } else {
                 String field = filter.split(KEYVALUE_DELIMITER)[0];
