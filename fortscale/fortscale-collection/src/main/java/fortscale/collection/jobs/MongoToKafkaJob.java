@@ -66,6 +66,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
 			@Override
 			public void handleDataDeleted(String dataPath) throws Exception {
+				//TODO - what?
+				System.out.println(dataPath);
 			}
 
 			@Override
