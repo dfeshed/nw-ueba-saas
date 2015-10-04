@@ -1,21 +1,18 @@
 package fortscale.collection.jobs;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-
-import java.util.List;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -40,8 +37,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	private ZkClient zkClient;
 	private String topicPath;
-	private Object mongoEntity;
-	private Query mongoQuery;
+	private BasicDBObject mongoQuery;
+	private String collection;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -55,11 +52,9 @@ public class MongoToKafkaJob extends FortscaleJob {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
-		String className = jobDataMapExtension.getJobDataMapStringValue(map, "mongo");
-		try {
-			mongoEntity = Class.forName(className);
-		} catch (ClassNotFoundException ex) {
-			logger.error("No mongo entity {} found - {}", mongoEntity, ex);
+		collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
+		if (!mongoTemplate.collectionExists(collection)) {
+			logger.error("No collection {} found", collection);
 			throw new JobExecutionException();
 		}
 		logger.debug("Job initialized");
@@ -68,11 +63,10 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-		List mongoItems = mongoTemplate.find(mongoQuery, mongoEntity.getClass());
-		ObjectMapper mapper = new ObjectMapper();
 		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
 			@Override
-			public void handleDataDeleted(String dataPath) throws Exception {}
+			public void handleDataDeleted(String dataPath) throws Exception {
+			}
 
 			@Override
 			public void handleDataChange(String dataPath, Object data) throws Exception {
@@ -80,8 +74,10 @@ public class MongoToKafkaJob extends FortscaleJob {
 				System.out.println(dataPath + " - " + data.toString());
 			}
 		});
-		for (Object mongoItem: mongoItems) {
-			zkClient.writeData(topicPath, mapper.writeValueAsString(mongoItem));
+		DBCollection mongoCollection = mongoTemplate.getCollection(collection);
+		DBCursor cursor = mongoCollection.find(mongoQuery);
+		while (cursor.hasNext()) {
+			zkClient.writeData(topicPath, cursor.next().toString());
 			//TODO - throttling
 			while (true) {
 				Thread.sleep(1000);
@@ -98,14 +94,14 @@ public class MongoToKafkaJob extends FortscaleJob {
 	 * @param filters  A list of key,value pairs separated by delimiters
 	 * @return
 	 */
-	private Query buildQuery(String filters) {
-		Query query = new Query();
+	private BasicDBObject buildQuery(String filters) {
+		BasicDBObject searchQuery = new BasicDBObject();
 		for (String filter: filters.split(FILTERS_DELIMITER)) {
 			String field = filter.split(KEYVALUE_DELIMITER)[0];
 			String value = filter.split(KEYVALUE_DELIMITER)[1];
-			query.addCriteria(where(field).is(value));
+			searchQuery.put(field, value);
 		}
-		return query;
+		return searchQuery;
 	}
 
 	@Override
