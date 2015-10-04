@@ -47,4 +47,6 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String>, E
 			String evidenceType, String entityName);
 
 	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType);
+
+	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(Long afterDate, Long beforeDate, String anomalyType, String entityName);
 }

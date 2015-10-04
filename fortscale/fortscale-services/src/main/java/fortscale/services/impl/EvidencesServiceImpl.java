@@ -152,6 +152,20 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);
 	}
 
+	public List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(Long afterDate, Long beforeDate, String anomalyType, String entityName){
+		return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(TimestampUtils.normalizeTimestamp(afterDate),
+							TimestampUtils.normalizeTimestamp(beforeDate), anomalyType,entityName);
+	}
+
+	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName){
+		if (entityName == null){
+			return findByStartDateBetweenAndAnomalyTypeFieldName(afterDate,beforeDate, anomalyType);
+		} else {
+			return findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(afterDate, beforeDate, anomalyType,
+					entityName);
+		}
+	}
+
 	/**
 	 * Saves evidence in Mongo
 	 * @param evidence the evidence to save
