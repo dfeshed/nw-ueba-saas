@@ -49,15 +49,14 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         return res;
     }
 
-
     @Override
-    public List<EntityEventData> getEntityEventDataWithFiringTimeLte(String entityEventName, long firingTimeInSeconds) {
-        return super.getEntityEventDataWithFiringTimeLte(entityEventName, firingTimeInSeconds);
+    public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
+        return super.getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime);
     }
 
     @Override
-    public List<EntityEventData> getEntityEventDataWithFiringTimeLteThatWereNotFired(String entityEventName, long firingTimeInSeconds) {
-        return super.getEntityEventDataWithFiringTimeLteThatWereNotFired(entityEventName, firingTimeInSeconds);
+    public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
+        return super.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventName, modifiedAtEpochtime);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
             // Fetching the entity data from mongo so the id will be updated
             entityEventData = super.getEntityEventData(entityEventData.getEntityEventName(), entityEventData.getContextId(), entityEventData.getStartTime(), entityEventData.getEndTime());
             entityEventStore.put(getEntityEventDataKey(entityEventData), entityEventData);
-        } else if(entityEventData.isFired()) { // Any update after the event is fired will be stored only in mongo
+        } else if(entityEventData.isTransmitted()) { // Any update after the event is fired will be stored only in mongo
             super.storeEntityEventData(entityEventData);
             entityEventStore.delete(getEntityEventDataKey(entityEventData));
         } else { // Updating
