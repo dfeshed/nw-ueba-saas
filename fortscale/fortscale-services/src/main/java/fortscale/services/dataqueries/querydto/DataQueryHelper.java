@@ -3,12 +3,14 @@ package fortscale.services.dataqueries.querydto;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
+import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.utils.CustomedFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +44,7 @@ public class DataQueryHelper {
      * @param dataEntityLimit
      * @return
      */
+    //TODO - Enable to create DataQueryDTO without sort order
     public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<QuerySort> querySortList, int dataEntityLimit){
         //entity to forward
         DataQueryDTO dataQueryDTO = new DataQueryDTO();
@@ -62,6 +65,9 @@ public class DataQueryHelper {
             //no limit when getting the data
             dataEntityLimit = (dataEntityLimit == -1) ? Integer.MAX_VALUE : dataEntityLimit;
             dataQueryDTO.setLimit(dataEntityLimit);
+
+
+
         return dataQueryDTO;
     }
 
@@ -194,6 +200,51 @@ public class DataQueryHelper {
         dataQueryUpdateTimestampField.setId(getDateFieldName(dataEntityId));
         updateTimestampTerm.setField(dataQueryUpdateTimestampField);
         return updateTimestampTerm;
+    }
+
+    /**
+     * This method will get fields as CSV and generate the groupBy DTO for the group by clause
+     * @param groupByFieldAsCSV - the fields in CSV
+     * @param dataEntity - the data entity
+     * @return
+     */
+    public List<DataQueryField> createGrouByClause (String groupByFieldAsCSV,String dataEntity)
+    {
+
+        return createQueryFields(groupByFieldAsCSV,dataEntity);
+
+    }
+
+    /**
+     * This method will generate a count filed for a query
+     * @param fieldAlias
+     * @param countParams
+     * @return
+     */
+    public DataQueryField createCountFunc (String fieldAlias,HashMap<String, String> countParams){
+
+         // Create the count(*) field:
+         DataQueryField countField = new DataQueryField();
+         countField.setAlias(fieldAlias);
+         FieldFunction countFunction = new FieldFunction();
+         countFunction.setName(QueryFieldFunction.count);
+         countFunction.setParams(countParams);
+         countField.setFunc(countFunction);
+
+        return countField;
+
+    }
+
+    public void  setGroupByClause(List<DataQueryField> groupByFields,DataQueryDTO dataQuery){
+
+        dataQuery.setGroupBy(groupByFields);
+
+    }
+
+    public void setFuncFieldToQuery(DataQueryField funcField , DataQueryDTO dataQueryDTO){
+
+        dataQueryDTO.getFields().add(funcField);
+
     }
 
 

@@ -8,14 +8,18 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
-import fortscale.services.dataqueries.querydto.DataQueryHelper;
-import fortscale.services.dataqueries.querydto.Term;
+import fortscale.services.dataentity.QueryFieldFunction;
+import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,8 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
 	@Autowired
 	DataQueryHelper dataQueryHelper;
+
+
 
     public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -120,16 +126,51 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         //example of query for destination_machine in authentication_score table:
         //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
 
+
+
+
 		//add conditions
 		List<Term> termsMap = new ArrayList<>();
 
-		Term term = getTheContextTerm(normalizedContextType,contextValue);
+        String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
+
+        //Create the context term (i.e noramlized_username = 'test@domain.com')
+		Term contextTerm = getTheContextTerm(normalizedContextType,contextValue);
+        termsMap.add(contextTerm);
+
+        //Create the date range term (From start of the day till the anomaly time include)
+        Term dateRangeTerm = getDateTerm(evidenceEndTime, dataEntity);
+        termsMap.add(dateRangeTerm);
+
+        //TODO - Create the partiotion Term (i.e yearmonthday=2015923)
+
+
+        //Create order by
+        //set sort order
+        String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
+        SortDirection sortDir = SortDirection.DESC;
+        String sortFieldStr = timestampField;
+        //sort according to event times for continues forwarding
+        List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
+
+
+        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, querySortList,-1);
+
+        //Create the Group By clause
+        List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity);
+        dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
+
+        // Create the count(*) field:
+        HashMap<String, String> countParams = new HashMap<>();
+        countParams.put("all", "true");
+        DataQueryField countField = dataQueryHelper.createCountFunc ("countField",countParams);
+        dataQueryHelper.setFuncFieldToQuery(countField,dataQueryObject);
+
 
         return null;
     }
 
-	private Term getTheContextTerm(String normalizedContextType, String contextValue)
-	{
+	private Term getTheContextTerm(String normalizedContextType, String contextValue){
 		Term term = null;
 		switch (normalizedContextType)
 		{
@@ -143,6 +184,15 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 		return term;
 
 	}
+
+
+    private Term getDateTerm(long evidenceEndTime, String dataEntity){
+        long starDaytOfTheAnomalyEvent = TimestampUtils.toStartOfDay(evidenceEndTime);
+
+       return dataQueryHelper.createDateRangeTerm(dataEntity,starDaytOfTheAnomalyEvent,evidenceEndTime);
+
+
+    }
 
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
