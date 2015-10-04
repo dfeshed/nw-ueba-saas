@@ -3,9 +3,9 @@ package fortscale.collection.jobs;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
-import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -35,64 +35,44 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
 
-	private ZkClient zkClient;
 	private String topicPath;
 	private BasicDBObject mongoQuery;
 	private DBCollection mongoCollection;
-	private String message;
-	private Object lock;
+	private KafkaEventsWriter streamWriter;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing MongoToKafka job - getting job parameters");
+		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
 		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topic");
 		topicPath = ZkUtils.getTopicPath(topicName);
-		zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
 		if (!zkClient.exists(topicPath)) {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
 		}
+        zkClient.close();
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
 			logger.error("No collection {} found", collection);
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
-		lock = new Object();
+        streamWriter = new KafkaEventsWriter(topicName);
 		logger.debug("Job initialized");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-		zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
-			@Override
-			public void handleDataDeleted(String dataPath) throws Exception {
-				logger.error("too much data entered, Kafka dropped records - stopping process");
-				throw new JobExecutionException();
-			}
-
-			@Override
-			public void handleDataChange(String dataPath, Object data) throws Exception {
-				if (data.equals(message)) {
-					synchronized (lock) {
-						lock.notify();
-					}
-				}
-			}
-		});
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
-			message = cursor.next().toString();
-			synchronized (lock) {
-				zkClient.writeData(topicPath, message);
-				lock.wait();
-			}
+            //TODO - index?
+            streamWriter.send("index???", cursor.next().toString());
+			//TODO - throttling
 		}
 		cursor.close();
-		zkClient.close();
 		finishStep();
 	}
 
