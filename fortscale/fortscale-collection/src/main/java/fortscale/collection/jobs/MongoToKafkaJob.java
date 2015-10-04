@@ -46,10 +46,15 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
+        try {
+            mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
+        } catch (Exception ex) {
+            logger.error("Bad filters format");
+            throw new JobExecutionException();
+        }
 		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topic");
-		topicPath = ZkUtils.getTopicPath(topicName);
 		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        topicPath = ZkUtils.getTopicPath(topicName);
 		if (!zkClient.exists(topicPath)) {
 			logger.error("No topic {} found", topicName);
 			throw new JobExecutionException();
@@ -70,10 +75,13 @@ public class MongoToKafkaJob extends FortscaleJob {
 		logger.debug("Running Mongo to Kafka job");
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
-            streamWriter.send("index", cursor.next().toString());
-			//TODO - throttling
+            String message = cursor.next().toString();
+            logger.debug("forwarding message - {}", message);
+            //TODO - throttling
+            //streamWriter.send("index", message);
 		}
 		cursor.close();
+        streamWriter.close();
 		finishStep();
 	}
 
