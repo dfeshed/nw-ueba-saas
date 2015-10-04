@@ -48,11 +48,16 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-        try {
-            mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
-        } catch (Exception ex) {
-            logger.error("Bad filters format");
-            throw new JobExecutionException();
+        //filters is not mandatory, if not passed all documents in the provided collection will be forwarded
+        if (map.containsKey("filters")) {
+            try {
+                mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
+            } catch (Exception ex) {
+                logger.error("Bad filters format");
+                throw new JobExecutionException();
+            }
+        } else {
+            mongoQuery = new BasicDBObject();
         }
         try {
             streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
