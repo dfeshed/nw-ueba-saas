@@ -1,6 +1,7 @@
 package fortscale.collection.jobs;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import fortscale.utils.kafka.KafkaEventsWriter;
@@ -26,6 +27,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	private final String FILTERS_DELIMITER = "%%%";
 	private final String KEYVALUE_DELIMITER = ":::";
+    private final String DATE_DELIMITER = "###";
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -68,8 +70,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 		logger.debug("Running Mongo to Kafka job");
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
-            //TODO - index?
-            streamWriter.send("index???", cursor.next().toString());
+            streamWriter.send("index", cursor.next().toString());
 			//TODO - throttling
 		}
 		cursor.close();
@@ -80,15 +81,23 @@ public class MongoToKafkaJob extends FortscaleJob {
 	 *
 	 * This method builds the query that will filter the specific Mongo documents to forward
 	 *
-	 * @param filters  A list of key,value pairs separated by delimiters
+	 * @param filters  A list of key,value pairs separated by delimiters or special date case where another delimiter
+     *                 is provided to determine operator in addition to key and value
 	 * @return
 	 */
 	private BasicDBObject buildQuery(String filters) {
 		BasicDBObject searchQuery = new BasicDBObject();
 		for (String filter: filters.split(FILTERS_DELIMITER)) {
-			String field = filter.split(KEYVALUE_DELIMITER)[0];
-			String value = filter.split(KEYVALUE_DELIMITER)[1];
-			searchQuery.put(field, value);
+            if (filter.contains(DATE_DELIMITER)) {
+                String field = filter.split(DATE_DELIMITER)[0];
+                String operator = filter.split(DATE_DELIMITER)[0].split(KEYVALUE_DELIMITER)[0];
+                String value = filter.split(DATE_DELIMITER)[0].split(KEYVALUE_DELIMITER)[1];
+                searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
+            } else {
+                String field = filter.split(KEYVALUE_DELIMITER)[0];
+                String value = filter.split(KEYVALUE_DELIMITER)[1];
+                searchQuery.put(field, value);
+            }
 		}
 		return searchQuery;
 	}
