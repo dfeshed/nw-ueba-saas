@@ -1,6 +1,5 @@
 package fortscale.collection.jobs;
 
-import fortscale.streaming.service.SpringService;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.IZkDataListener;
@@ -11,6 +10,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -58,8 +59,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 		String className = jobDataMapExtension.getJobDataMapStringValue(map, "className");
 		mongoFilters = jobDataMapExtension.getJobDataMapStringValue(map, "mongoFilters");
 		String contextPath = "classpath*:META-INF/spring/collection-context.xml";
-		SpringService.init(contextPath);
-		mongoClass = SpringService.getInstance().resolve(className);
+		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
+		mongoClass = context.getBean(className);
 		logger.debug("Job initialized");
 	}
 
