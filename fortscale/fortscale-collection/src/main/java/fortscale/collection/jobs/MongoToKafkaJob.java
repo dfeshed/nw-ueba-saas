@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Amir Keren on 04/10/2015.
  *
@@ -25,7 +28,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
 
-	private final String FILTERS_DELIMITER = "###";
+	private final String GENERAL_DELIMITER = "###";
 	private final String KEYVALUE_DELIMITER = "@@@";
     private final String DATE_DELIMITER = ":::";
 
@@ -37,10 +40,9 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
 
-	private String topicPath;
 	private BasicDBObject mongoQuery;
 	private DBCollection mongoCollection;
-	private KafkaEventsWriter streamWriter;
+	private List<KafkaEventsWriter> streamWriters;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -52,21 +54,22 @@ public class MongoToKafkaJob extends FortscaleJob {
             logger.error("Bad filters format");
             throw new JobExecutionException();
         }
-		String topicName = jobDataMapExtension.getJobDataMapStringValue(map, "topic");
-		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        topicPath = ZkUtils.getTopicPath(topicName);
-		if (!zkClient.exists(topicPath)) {
-			logger.error("No topic {} found", topicName);
-			throw new JobExecutionException();
-		}
-        zkClient.close();
+        try {
+            streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
+        } catch (Exception ex) {
+            logger.error("Bad topics format");
+            throw new JobExecutionException();
+        }
+        if (streamWriters.isEmpty()) {
+            logger.error("No Kafka topics found");
+            throw new JobExecutionException();
+        }
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
-			logger.error("No collection {} found", collection);
+			logger.error("No Mongo collection {} found", collection);
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
-        streamWriter = new KafkaEventsWriter(topicName);
 		logger.debug("Job initialized");
 	}
 
@@ -78,10 +81,14 @@ public class MongoToKafkaJob extends FortscaleJob {
             String message = cursor.next().toString();
             logger.debug("forwarding message - {}", message);
             //TODO - throttling
-            //streamWriter.send("index", message);
+            /*for (KafkaEventsWriter streamWriter: streamWriters) {
+                streamWriter.send("index", message);
+            }*/
 		}
 		cursor.close();
-        streamWriter.close();
+        for (KafkaEventsWriter streamWriter: streamWriters) {
+            streamWriter.close();
+        }
 		finishStep();
 	}
 
@@ -95,7 +102,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	 */
 	private BasicDBObject buildQuery(String filters) {
 		BasicDBObject searchQuery = new BasicDBObject();
-		for (String filter: filters.split(FILTERS_DELIMITER)) {
+		for (String filter: filters.split(GENERAL_DELIMITER)) {
             if (filter.contains(DATE_DELIMITER)) {
                 String field = filter.split(DATE_DELIMITER)[0];
                 String operator = filter.split(DATE_DELIMITER)[1];
@@ -109,6 +116,29 @@ public class MongoToKafkaJob extends FortscaleJob {
 		}
 		return searchQuery;
 	}
+
+    /***
+     *
+     * This method builds the list of Kafka topic streamwriters
+     *
+     * @param topics  string of delimiter separated topic names
+     * @return
+     * @throws JobExecutionException
+     */
+    private List<KafkaEventsWriter> buildTopicsList(String topics) throws JobExecutionException {
+        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        List<KafkaEventsWriter> streamWriters = new ArrayList();
+        for (String topicName: topics.split(GENERAL_DELIMITER)) {
+            String topicPath = ZkUtils.getTopicPath(topicName);
+            if (!zkClient.exists(topicPath)) {
+                logger.error("No Kafka topic {} found", topicName);
+                throw new JobExecutionException();
+            }
+            streamWriters.add(new KafkaEventsWriter(topicName));
+        }
+        zkClient.close();
+        return streamWriters;
+    }
 
 	@Override
 	protected int getTotalNumOfSteps() { return 1; }
