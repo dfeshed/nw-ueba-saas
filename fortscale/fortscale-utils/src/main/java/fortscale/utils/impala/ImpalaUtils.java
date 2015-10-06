@@ -49,6 +49,8 @@ public class ImpalaUtils extends CleanupDeletionUtil {
                     logger.info("dropped table {}", tableName);
                     numberOfTablesDropped++;
                 }
+            } else {
+                numberOfTablesDropped++;
             }
         }
         if (numberOfTablesDropped == tableNames.size()) {

@@ -80,6 +80,8 @@ public class StoreUtils extends CleanupDeletionUtil {
                     } else {
                         logger.error("failed to delete state {}", state);
                     }
+                } else {
+                    numberOfStatesDeleted++;
                 }
             } else {
                 logger.warn("state {} doesn't exist", state);
@@ -89,7 +91,7 @@ public class StoreUtils extends CleanupDeletionUtil {
             logger.info("deleted all {} states", states.size());
             return true;
         }
-        logger.error("failed to delete all {} tables, deleted only {}", states.size(), numberOfStatesDeleted);
+        logger.error("failed to delete all {} states, deleted only {}", states.size(), numberOfStatesDeleted);
         return false;
     }
 
