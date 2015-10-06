@@ -256,7 +256,7 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
             logger.error("failed to restore all {} collections, restored only {}", toRestore, restored);
             return false;
         }
-        logger.info("all collections successfully restored / deleted");
+        logger.info("all {} collections successfully restored / deleted", toRestore);
         return true;
     }
 
