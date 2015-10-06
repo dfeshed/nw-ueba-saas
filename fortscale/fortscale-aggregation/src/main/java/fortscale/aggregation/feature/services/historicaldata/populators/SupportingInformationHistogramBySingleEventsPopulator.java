@@ -102,11 +102,6 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         Long bucketEndTime = TimestampUtils.toStartOfDay(evidenceEndTime);
         String normalizedContextType = getNormalizedContextType(contextType);
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
-        //retrieve last day data from Impala:
-//        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, bucketEndTime, evidenceEndTime, dataEntity, featureBuckets.get(featureBuckets.size()-1));
-//        if (lastDayBucket != null) {
-//            featureBuckets.add(lastDayBucket);
-//        }
 
         logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
         logger.debug(featureBuckets.toString());
@@ -115,66 +110,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     }
 
 
-    /*private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long startTime, long endTime, String dataEntity, FeatureBucket featureBucket_in) {
-        //TODO: remove last day and create a new FeatureBucket from Impala
-        //example of query for destination_machine in authentication_score table:
-        //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
 
-        FeatureBucket featureBucket = new FeatureBucket();
-
-        String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
-
-		//add conditions
-		List<Term> termsMap = new ArrayList<>();
-		Term contextTerm = getTheContextTerm(normalizedContextType,contextValue);
-        if (contextTerm != null) {
-            termsMap.add(contextTerm);
-        }
-        Term dateRangeTerm = getDateRangeTerm(startTime, endTime);
-        if (dateRangeTerm != null) {
-            termsMap.add(dateRangeTerm);
-        }
-
-        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
-
-        //Create the Group By clause
-        List<DataQueryField > groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity);
-        dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
-
-        // Create the count(*) field:
-        HashMap<String, String> countParams = new HashMap<>();
-        countParams.put("all", "true");
-        DataQueryField countField = dataQueryHelper.createCountFunc ("countField",countParams);
-        dataQueryHelper.setFuncFieldToQuery(countField,dataQueryObject);
-
-        List<Map<String, Object>> queryList;
-        try {
-            DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
-            // Generates query
-            String query = dataQueryRunner.generateQuery(dataQueryObject);
-            logger.info("Running the query: {}", query);
-            // execute Query
-            queryList = dataQueryRunner.executeQuery(query);
-            logger.info(queryList.toString());
-            return buildFeatureBucket(queryList, bucketConfig, normalizedContextType, contextValue, startTime, endTime, dataEntity, featureBucket_in);
-        } catch (InvalidQueryException e) {
-            logger.error(e.getMessage());
-        }
-        return null;
-    }*/
-
-   /* private FeatureBucket buildFeatureBucket(List<Map<String, Object>> queryList, FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long startTime, long endTime, String dataEntity, FeatureBucket featureBucket_in) {
-        FeatureBucket featureBucket = new FeatureBucket();
-        for (Map<String, Object> event : queryList){
-
-        }
-        featureBucket.setFeatureBucketConfName(bucketConfig.getName());
-        featureBucket.setStartTime(startTime);
-        featureBucket.setEndTime(endTime);
-        featureBucket.setStrategyId(bucketConfigurationService.getBucketConf(bucketConfig.getName()).getStrategyName() + "_" + TimestampUtils.convertToSeconds(startTime));
-        featureBucket.setBucketId(featureBucket.getStrategyId() + "_" + normalizedContextType + "_" + contextValue);
-        return featureBucket;
-    }*/
 
     private Term getDateRangeTerm(long startTime, long endTime) {
         return dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startTime), TimestampUtils.convertToSeconds(endTime));
