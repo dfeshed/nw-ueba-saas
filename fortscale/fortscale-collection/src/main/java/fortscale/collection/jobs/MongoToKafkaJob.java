@@ -48,7 +48,6 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-        //filters is not mandatory, if not passed all documents in the provided collection will be forwarded
         if (map.containsKey("filters")) {
             try {
                 mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
@@ -56,19 +55,11 @@ public class MongoToKafkaJob extends FortscaleJob {
                 logger.error("Bad filters format");
                 throw new JobExecutionException();
             }
+        //filters is not mandatory, if not passed all documents in the provided collection will be forwarded
         } else {
             mongoQuery = new BasicDBObject();
         }
-        try {
-            streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
-        } catch (Exception ex) {
-            logger.error("Bad topics format");
-            throw new JobExecutionException();
-        }
-        if (streamWriters.isEmpty()) {
-            logger.error("No Kafka topics found");
-            throw new JobExecutionException();
-        }
+        streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
 			logger.error("No Mongo collection {} found", collection);
@@ -101,7 +92,8 @@ public class MongoToKafkaJob extends FortscaleJob {
     private void forwardMessage(String message) {
         //TODO - throttling
         for (KafkaEventsWriter streamWriter: streamWriters) {
-            streamWriter.send("index", message);
+            //TODO - partition index
+            streamWriter.send(null, message);
         }
     }
 
@@ -132,7 +124,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
     /***
      *
-     * This method builds the list of Kafka topic streamwriters
+     * This method builds the list of Kafka topic stream writers
      *
      * @param topics  string of delimiter separated topic names
      * @return
@@ -141,15 +133,21 @@ public class MongoToKafkaJob extends FortscaleJob {
     private List<KafkaEventsWriter> buildTopicsList(String topics) throws JobExecutionException {
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         List<KafkaEventsWriter> streamWriters = new ArrayList();
-        for (String topicName: topics.split(GENERAL_DELIMITER)) {
-            String topicPath = ZkUtils.getTopicPath(topicName);
-            if (!zkClient.exists(topicPath)) {
-                logger.error("No Kafka topic {} found", topicName);
-                throw new JobExecutionException();
+        try {
+            for (String topicName : topics.split(GENERAL_DELIMITER)) {
+                String topicPath = ZkUtils.getTopicPath(topicName);
+                if (!zkClient.exists(topicPath)) {
+                    logger.error("No Kafka topic {} found", topicName);
+                    throw new JobExecutionException();
+                }
+                streamWriters.add(new KafkaEventsWriter(topicName));
             }
-            streamWriters.add(new KafkaEventsWriter(topicName));
+        } catch (Exception ex) {
+            logger.error("Bad topics format - {}", ex);
+            throw new JobExecutionException();
+        } finally {
+            zkClient.close();
         }
-        zkClient.close();
         return streamWriters;
     }
 

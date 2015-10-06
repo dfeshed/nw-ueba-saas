@@ -1,6 +1,8 @@
 package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import fortscale.domain.core.*;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
@@ -22,6 +24,7 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.joda.time.Duration;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -298,6 +301,16 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					throw new KafkaPublisherException(String.format("failed to send event from input topic %s, output topic %s after evidence creation for evidence",
 							inputTopic, outputTopic, mapper.writeValueAsString(evidence)), exception);
 				}
+			} else {
+				MongoTemplate mongoTemplate = SpringService.getInstance().resolve(MongoTemplate.class);
+				//creates the collection if it doesn't exist
+				DBCollection dbCollection = mongoTemplate.getCollection("evidencesForTopic");
+				BasicDBObject dbObject = new BasicDBObject();
+				dbObject.put("message", message);
+				dbObject.put("type", dataSourceConfiguration.evidenceType);
+				dbObject.put("startDate", startTimestamp);
+				dbObject.put("endDate", endTimestamp);
+				dbCollection.insert(dbObject);
 			}
 
 		}
