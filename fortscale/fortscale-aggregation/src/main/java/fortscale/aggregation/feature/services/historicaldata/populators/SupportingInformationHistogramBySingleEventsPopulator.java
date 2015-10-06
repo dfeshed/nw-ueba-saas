@@ -12,7 +12,7 @@ import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -47,7 +47,8 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 	@Autowired
 	DataQueryHelper dataQueryHelper;
 
-
+    @Autowired
+    protected DataQueryRunnerFactory dataQueryRunnerFactory;
 
     public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -102,8 +103,10 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         String normalizedContextType = getNormalizedContextType(contextType);
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
         //retrieve last day data from Impala:
-        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, evidenceEndTime, dataEntity);
-        featureBuckets.add(lastDayBucket);
+//        FeatureBucket lastDayBucket = createLastDayBucket(bucketConfig, normalizedContextType, contextValue, bucketEndTime, evidenceEndTime, dataEntity, featureBuckets.get(featureBuckets.size()-1));
+//        if (lastDayBucket != null) {
+//            featureBuckets.add(lastDayBucket);
+//        }
 
         logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
         logger.debug(featureBuckets.toString());
@@ -112,52 +115,30 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     }
 
 
-	/**
-	 *
-	 * @param bucketConfig
-	 * @param normalizedContextType - The entity normalized field - i.e normalized_username
-	 * @param contextValue - The value of the normalized context field - i.e test@somebigcomapny.com
-	 * @param evidenceEndTime - The time of the anomaly
-	 * @param dataEntity - The data entity - i.e kerberos_logins
-	 * @return
-	 */
-    private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long evidenceEndTime,String dataEntity) {
+    /*private FeatureBucket createLastDayBucket(FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long startTime, long endTime, String dataEntity, FeatureBucket featureBucket_in) {
         //TODO: remove last day and create a new FeatureBucket from Impala
         //example of query for destination_machine in authentication_score table:
         //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
 
-
-
-
-		//add conditions
-		List<Term> termsMap = new ArrayList<>();
+        FeatureBucket featureBucket = new FeatureBucket();
 
         String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
 
-        //Create the context term (i.e noramlized_username = 'test@domain.com')
+		//add conditions
+		List<Term> termsMap = new ArrayList<>();
 		Term contextTerm = getTheContextTerm(normalizedContextType,contextValue);
-        termsMap.add(contextTerm);
+        if (contextTerm != null) {
+            termsMap.add(contextTerm);
+        }
+        Term dateRangeTerm = getDateRangeTerm(startTime, endTime);
+        if (dateRangeTerm != null) {
+            termsMap.add(dateRangeTerm);
+        }
 
-        //Create the date range term (From start of the day till the anomaly time include)
-        Term dateRangeTerm = getDateTerm(evidenceEndTime, dataEntity);
-        termsMap.add(dateRangeTerm);
-
-        //TODO - Create the partiotion Term (i.e yearmonthday=2015923)
-
-
-        //Create order by
-        //set sort order
-        String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
-        SortDirection sortDir = SortDirection.DESC;
-        String sortFieldStr = timestampField;
-        //sort according to event times for continues forwarding
-        List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
-
-
-        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, querySortList,-1);
+        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
 
         //Create the Group By clause
-        List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity);
+        List<DataQueryField > groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity);
         dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
 
         // Create the count(*) field:
@@ -166,33 +147,54 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         DataQueryField countField = dataQueryHelper.createCountFunc ("countField",countParams);
         dataQueryHelper.setFuncFieldToQuery(countField,dataQueryObject);
 
-
+        List<Map<String, Object>> queryList;
+        try {
+            DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+            // Generates query
+            String query = dataQueryRunner.generateQuery(dataQueryObject);
+            logger.info("Running the query: {}", query);
+            // execute Query
+            queryList = dataQueryRunner.executeQuery(query);
+            logger.info(queryList.toString());
+            return buildFeatureBucket(queryList, bucketConfig, normalizedContextType, contextValue, startTime, endTime, dataEntity, featureBucket_in);
+        } catch (InvalidQueryException e) {
+            logger.error(e.getMessage());
+        }
         return null;
+    }*/
+
+   /* private FeatureBucket buildFeatureBucket(List<Map<String, Object>> queryList, FeatureBucketConf bucketConfig, String normalizedContextType, String contextValue, long startTime, long endTime, String dataEntity, FeatureBucket featureBucket_in) {
+        FeatureBucket featureBucket = new FeatureBucket();
+        for (Map<String, Object> event : queryList){
+
+        }
+        featureBucket.setFeatureBucketConfName(bucketConfig.getName());
+        featureBucket.setStartTime(startTime);
+        featureBucket.setEndTime(endTime);
+        featureBucket.setStrategyId(bucketConfigurationService.getBucketConf(bucketConfig.getName()).getStrategyName() + "_" + TimestampUtils.convertToSeconds(startTime));
+        featureBucket.setBucketId(featureBucket.getStrategyId() + "_" + normalizedContextType + "_" + contextValue);
+        return featureBucket;
+    }*/
+
+    private Term getDateRangeTerm(long startTime, long endTime) {
+        return dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startTime), TimestampUtils.convertToSeconds(endTime));
     }
 
-	private Term getTheContextTerm(String normalizedContextType, String contextValue){
+    private Term getTheContextTerm(String normalizedContextType, String contextValue)
+	{
 		Term term = null;
-		switch (normalizedContextType)
-		{
-			case "normalized_username" :
+//		switch (normalizedContextType)
+//		{
+//			case "normalized_username" :
 				term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
-				break;
-			default:
-				break;
-
-		}
+//				break;
+//			default:
+//				break;
+//
+//		}
 		return term;
 
 	}
-
-
-    private Term getDateTerm(long evidenceEndTime, String dataEntity){
-        long starDaytOfTheAnomalyEvent = TimestampUtils.toStartOfDay(evidenceEndTime);
-
-       return dataQueryHelper.createDateRangeTerm(dataEntity,starDaytOfTheAnomalyEvent,evidenceEndTime);
-
-
-    }
 
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {

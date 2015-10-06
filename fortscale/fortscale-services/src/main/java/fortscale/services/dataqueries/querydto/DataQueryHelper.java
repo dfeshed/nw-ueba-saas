@@ -65,9 +65,6 @@ public class DataQueryHelper {
             //no limit when getting the data
             dataEntityLimit = (dataEntityLimit == -1) ? Integer.MAX_VALUE : dataEntityLimit;
             dataQueryDTO.setLimit(dataEntityLimit);
-
-
-
         return dataQueryDTO;
     }
 
@@ -179,7 +176,7 @@ public class DataQueryHelper {
         DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
         DataEntityField dataEntityField = dataEntity.getField(field);
         if (dataEntityField!=null && dataEntityField.getName()!=null)
-            return dataEntityField.getName();
+        return dataEntityField.getName().replaceAll(" ", "_");
         else
             return field;
 
