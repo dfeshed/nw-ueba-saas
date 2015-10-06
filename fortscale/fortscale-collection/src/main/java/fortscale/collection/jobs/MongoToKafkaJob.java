@@ -75,6 +75,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 		DBCursor cursor = mongoCollection.find(mongoQuery);
 		while (cursor.hasNext()) {
             String message = cursor.next().toString();
+            message = manipulateMessage(mongoCollection.getObjectClass(), message);
             logger.debug("forwarding message - {}", message);
             forwardMessage(message);
 		}
@@ -82,6 +83,20 @@ public class MongoToKafkaJob extends FortscaleJob {
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
+
+    /***
+     *
+     * This method changes the message according to the class type to fit the designated Kafka topic
+     *
+     * @param objectClass  the type of class of the message
+     * @param message      the message to be altered
+     * @return
+     */
+    private String manipulateMessage(Class objectClass, String message) {
+        logger.debug("class is {}, message is {}", objectClass.getSimpleName(), message);
+        //TODO - process according to class?
+        return message;
+    }
 
     /***
      *
