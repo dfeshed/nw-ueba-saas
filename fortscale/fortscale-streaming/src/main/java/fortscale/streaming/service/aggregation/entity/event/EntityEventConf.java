@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ public class EntityEventConf implements Serializable {
 	private Set<String> allAggregatedFeatureEventNames;
 	private JSONObject entityEventFunction;
 
+	@JsonCreator
 	public EntityEventConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("contextFields") List<String> contextFields,
@@ -56,18 +58,6 @@ public class EntityEventConf implements Serializable {
 		this.contextFields = contextFields;
 		this.aggregatedFeatureEventNamesMap = aggregatedFeatureEventNamesMap;
 		this.entityEventFunction = entityEventFunction;
-	}
-
-	public EntityEventConf(
-			@JsonProperty("name") String name,
-			@JsonProperty("daysToRetainDocument") int daysToRetainDocument,
-			@JsonProperty("contextFields") List<String> contextFields,
-			@JsonProperty("aggregatedFeatureEventNamesMap") Map<String, List<String>> aggregatedFeatureEventNamesMap,
-			@JsonProperty("entityEventFunction") JSONObject entityEventFunction) {
-
-		this(name, contextFields, aggregatedFeatureEventNamesMap, entityEventFunction);
-		Assert.isTrue(daysToRetainDocument > 0);
-		this.daysToRetainDocument = daysToRetainDocument;
 	}
 
 	public String getName() {
