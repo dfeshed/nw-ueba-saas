@@ -15,7 +15,7 @@ public class EntityEventConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private int daysToRetainDocument;
+	private Integer daysToRetainDocument;
 	private List<String> contextFields;
 	private Map<String, List<String>> aggregatedFeatureEventNamesMap;
 	private Set<String> allAggregatedFeatureEventNames;
@@ -23,16 +23,12 @@ public class EntityEventConf implements Serializable {
 
 	public EntityEventConf(
 			@JsonProperty("name") String name,
-			@JsonProperty("daysToRetainDocument") int daysToRetainDocument,
 			@JsonProperty("contextFields") List<String> contextFields,
 			@JsonProperty("aggregatedFeatureEventNamesMap") Map<String, List<String>> aggregatedFeatureEventNamesMap,
 			@JsonProperty("entityEventFunction") JSONObject entityEventFunction) {
 
 		// Validate name
 		Assert.isTrue(StringUtils.isNotBlank(name));
-
-		// Validate daysToRetainDocument
-		Assert.isTrue(daysToRetainDocument > 0);
 
 		// Validate contextFields
 		Assert.notEmpty(contextFields);
@@ -56,17 +52,29 @@ public class EntityEventConf implements Serializable {
 		Assert.notEmpty(entityEventFunction);
 
 		this.name = name;
-		this.daysToRetainDocument = daysToRetainDocument;
+		this.daysToRetainDocument = null;
 		this.contextFields = contextFields;
 		this.aggregatedFeatureEventNamesMap = aggregatedFeatureEventNamesMap;
 		this.entityEventFunction = entityEventFunction;
+	}
+
+	public EntityEventConf(
+			@JsonProperty("name") String name,
+			@JsonProperty("daysToRetainDocument") int daysToRetainDocument,
+			@JsonProperty("contextFields") List<String> contextFields,
+			@JsonProperty("aggregatedFeatureEventNamesMap") Map<String, List<String>> aggregatedFeatureEventNamesMap,
+			@JsonProperty("entityEventFunction") JSONObject entityEventFunction) {
+
+		this(name, contextFields, aggregatedFeatureEventNamesMap, entityEventFunction);
+		Assert.isTrue(daysToRetainDocument > 0);
+		this.daysToRetainDocument = daysToRetainDocument;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public int getDaysToRetainDocument() {
+	public Integer getDaysToRetainDocument() {
 		return daysToRetainDocument;
 	}
 
