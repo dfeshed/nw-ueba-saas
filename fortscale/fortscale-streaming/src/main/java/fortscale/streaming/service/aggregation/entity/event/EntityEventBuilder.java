@@ -19,22 +19,20 @@ import java.util.*;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
-	
+
 	@Value("${streaming.event.field.type}")
-    private String eventTypeFieldName;
-    @Value("${streaming.event.field.type.entity_event}")
-    private String eventTypeFieldValue;
-    @Value("${streaming.entity_event.field.entity_event_type}")
-    private String entityEventTypeFieldName;
-    @Value("${impala.table.fields.epochtime}")
+	private String eventTypeFieldName;
+	@Value("${streaming.event.field.type.entity_event}")
+	private String eventTypeFieldValue;
+	@Value("${streaming.entity_event.field.entity_event_type}")
+	private String entityEventTypeFieldName;
+	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 
 	private EntityEventDataStore entityEventDataStore;
-	
+
 	@Autowired
-    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
-	
-	
+	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
@@ -61,7 +59,7 @@ public class EntityEventBuilder {
 	public void updateEntityEventData(AggrEvent aggrFeatureEvent) {
 		Assert.notNull(aggrFeatureEvent);
 		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
-		if (entityEventData != null && !entityEventData.isFired()) {
+		if (entityEventData != null) {
 			entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
@@ -69,10 +67,11 @@ public class EntityEventBuilder {
 
 	public void fireEntityEvents(long currentTimeInSeconds, String outputTopic, MessageCollector collector) {
 		List<EntityEventData> listOfEntityEventData =
-				entityEventDataStore.getEntityEventDataWithFiringTimeLteThatWereNotFired(entityEventConf.getName(), currentTimeInSeconds);
+				entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventConf.getName(), currentTimeInSeconds - secondsToWaitBeforeFiring);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
+			entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
+			entityEventData.setTransmitted(true);
 			createAndSendEntityEvent(entityEventData, outputTopic, collector);
-			entityEventData.setFired(true);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
 	}
@@ -91,8 +90,7 @@ public class EntityEventBuilder {
 
 		EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
 		if (entityEventData == null) {
-			long firingTimeInSeconds = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
-			entityEventData = new EntityEventData(firingTimeInSeconds, entityEventConf.getName(), context, contextId, startTime, endTime);
+			entityEventData = new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime);
 		}
 
 		return entityEventData;
@@ -118,12 +116,9 @@ public class EntityEventBuilder {
 	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
 		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
-		for (AggrEvent aggrFeatureEvent : entityEventData.getAggrFeatureEvents()) {
-			aggrFeatureEventsMap.put(
-					String.format("%s.%s",
-							aggrFeatureEvent.getBucketConfName(),
-							aggrFeatureEvent.getAggregatedFeatureName()),
-					aggrFeatureEvent);
+		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
+			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
+			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}
 
@@ -135,7 +130,7 @@ public class EntityEventBuilder {
 		int tmp = (int) (entityEventValue*1000);
 		double entityEventValue3DigitPrecision = tmp/1000d;
 		entityEvent.put("entity_event_value", entityEventValue3DigitPrecision);
-		entityEvent.put("creation_epochtime", entityEventData.getFiringTimeInSeconds());
+		entityEvent.put("creation_epochtime", entityEventData.getTransmissionEpochtime());
 		entityEvent.put("start_time_unix", entityEventData.getStartTime());
 		entityEvent.put("end_time_unix", entityEventData.getEndTime());
 		// time of the event to be compared against other events from different types (raw events, entity event...)
