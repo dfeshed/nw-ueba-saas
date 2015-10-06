@@ -111,6 +111,7 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 
 			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
 					.expire(daysToRetainDocument, TimeUnit.DAYS)
+					.named(EntityEventData.MODIFIED_AT_DATE_FIELD)
 					.on(EntityEventData.MODIFIED_AT_DATE_FIELD, Direction.ASC));
 		}
 
