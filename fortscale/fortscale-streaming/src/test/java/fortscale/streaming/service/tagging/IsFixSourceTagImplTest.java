@@ -33,7 +33,7 @@ public class IsFixSourceTagImplTest {
         //Case 1 - turn on the is fixed tag
         IsFixSourceTagImpl ifsi = new IsFixSourceTagImpl();
 
-        ifsi.setThreshold(3.0);
+        ifsi.setThreshold(5.0);
         ifsi.setDayBack(0l);
         ifsi.setIsFixSourceRegExpMachines("");
 
@@ -43,9 +43,8 @@ public class IsFixSourceTagImplTest {
 
 
         //Case 2 - turn off tag
-        accountToTagg.getSources().remove("testHost1");
-        accountToTagg.getSources().remove("testHost2");
-        accountToTagg.getSources().remove("testHost3");
+		accountToTagg.addSource("testHost6", new Date().getTime(), ComputerUsageType.Desktop);
+
 
         ifsi.tag(accountToTagg);
 
@@ -60,7 +59,7 @@ public class IsFixSourceTagImplTest {
 
         ifsi.tag(accountToTagg2);
 
-        assertTrue(!accountToTagg2.getTags().get("Fixed Source") && accountToTagg.getIsDirty());
+        assertTrue(accountToTagg2.getTags().get("Fixed Source") && accountToTagg2.getIsDirty());
 
 
         //Case 4 - reg exp test
