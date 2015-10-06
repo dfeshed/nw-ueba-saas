@@ -15,6 +15,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -394,28 +395,24 @@ public class CleanJob extends FortscaleJob {
 	/****
 	 *
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
-	 * it with the intended backup
+	 * it with the intended backup if one exists or dropping the collection if backup not found
 	 *
-	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param sources  collection of key and empty values - keys are the prefixes of the collections
 	 * @return
 	 */
 	private boolean restoreMongo(Map<String, String> sources) {
-		int restored = 0;
-		logger.debug("trying to restore {} snapshots", sources.size());
+		boolean success;
+		logger.debug("trying to restore from {} prefixes", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-            String toRestore = dataSource.getKey();
-            String backupName = dataSource.getValue();
-			logger.debug("origin - {}, backup - {}", toRestore, backupName);
-            if (mongoUtils.restoreSnapshot(toRestore, backupName)) {
-                restored++;
-            }
-        }
-		if (restored != sources.size()) {
-			logger.error("failed to restore all {} entities, restored only {}", sources.size(),
-					restored);
-			return false;
+			String prefix = dataSource.getKey();
+			success = mongoUtils.restoreSnapshot(prefix);
+			if (!success) {
+				logger.error("failed to restore from prefix {}", prefix);
+				return success;
+			} else {
+				logger.info("restored successfully from prefix {}", prefix);
+			}
 		}
-		logger.info("restored all {} entities", sources.size());
 		return true;
 	}
 
@@ -424,11 +421,11 @@ public class CleanJob extends FortscaleJob {
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
 	 * it with the intended backup
 	 *
-	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param sources  collection of key and empty values - keys are the backup paths
 	 * @return
 	 */
 	private boolean restoreHDFS(Map<String, String> sources) {
-		boolean success = false;
+		boolean success;
 		logger.debug("trying to restore from {} paths", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
 			String backupPath = dataSource.getKey();
@@ -440,7 +437,6 @@ public class CleanJob extends FortscaleJob {
 				logger.info("restored successfully from path {}", backupPath);
 			}
 		}
-		logger.info("restored all", sources.size());
 		return true;
 	}
 
@@ -508,14 +504,16 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * This method clears the system entirely
 	 *
-	 * @param doValidate  flag to determine should we perform validations
+	 * @param doValidate  flag to determine should we perform validations and whether or not to stop services
 	 * @return
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		checkAndStopService(collectionServiceName);
-		checkAndStopService(streamingServiceName);
-		checkAndStopService(kafkaServiceName);
+		if (doValidate) {
+			checkAndStopService(collectionServiceName);
+			checkAndStopService(streamingServiceName);
+			checkAndStopService(kafkaServiceName);
+		}
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);

@@ -4,8 +4,11 @@ import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -19,6 +22,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     private String zookeeperConnection;
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
+    @Value("${kafka.data.folder}")
+    private String kafkaDataFolder;
 
     /***
      *
@@ -68,7 +73,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
         } else {
             success = true;
         }
-        return success;
+        boolean cleanFolderSuccess = cleanKafakDataFolder(topic, doValidate);
+        return success && cleanFolderSuccess;
     }
 
     /***
@@ -96,7 +102,72 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteAllTopics(boolean doValidate) {
         Collection<String> topics = getAllEntities();
         logger.debug("found {} topics to delete", topics.size());
-        return deleteEntities(topics, doValidate);
+        boolean foldersSuccess = cleanKafakDataFolders(doValidate);
+        boolean topicSuccess = deleteEntities(topics, doValidate);
+        return topicSuccess && foldersSuccess;
+    }
+
+    /***
+     *
+     * This method clears the entire kafka data folder
+     *
+     * @param validate  flag to determine should we perform validations
+     * @return
+     */
+    private boolean cleanKafakDataFolders(boolean validate) {
+        File directory = new File(kafkaDataFolder);
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.error("no kafka data folder {} found", kafkaDataFolder);
+            return false;
+        }
+        try {
+            FileUtils.cleanDirectory(directory);
+        } catch (IOException ex) {
+            logger.error("failed to clean folder {} - {}", directory.getAbsolutePath(), ex);
+            return false;
+        }
+        if (validate) {
+            String[] files = directory.list();
+            if (files.length > 0) {
+                logger.error("failed to clean kafka data folder");
+                return false;
+            }
+        }
+        logger.info("all kafka data folders deleted");
+        return true;
+    }
+
+    /***
+     *
+     * This method clears a specific kafka data folder starting with the given prefix
+     *
+     * @param prefix    prefix of the kafka data folder to delete
+     * @param validate  flag to determine should we perform validations
+     * @return
+     */
+    private boolean cleanKafakDataFolder(String prefix, boolean validate) {
+        File directory = new File(kafkaDataFolder);
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.error("no kafka data folder {} found", kafkaDataFolder);
+            return false;
+        }
+        String[] folders = directory.list();
+        for(String folderName : folders) {
+            File folder = new File(kafkaDataFolder + "/" + folderName);
+            if (folderName.startsWith(prefix) && folder.isDirectory()) {
+                try {
+                    FileUtils.deleteDirectory(folder);
+                } catch (IOException ex) {
+                    logger.error("failed to delete kafak data folder {} - {}", folder.getAbsolutePath(), ex);
+                    return false;
+                }
+                if (validate && folder.exists()) {
+                    logger.error("failed to delete kafak data folder {}", folder.getAbsolutePath());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
