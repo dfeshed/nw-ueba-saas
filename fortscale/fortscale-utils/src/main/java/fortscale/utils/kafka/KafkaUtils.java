@@ -99,7 +99,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteAllTopics(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> topics = getAllEntities();
         logger.debug("found {} topics to delete", topics.size());
         boolean foldersSuccess = cleanKafakDataFolders(doValidate);

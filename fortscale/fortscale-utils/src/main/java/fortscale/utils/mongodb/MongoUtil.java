@@ -90,7 +90,8 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean dropAllCollections(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> collectionNames = getAllEntities();
         //system collection - ignore
         collectionNames.remove("system.indexes");

@@ -28,7 +28,8 @@ public class StoreUtils extends CleanupDeletionUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteAllStates(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> states = getAllEntities();
         logger.debug("found {} states to delete", states.size());
         return deleteEntities(states, doValidate);

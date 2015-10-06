@@ -317,12 +317,13 @@ public class CleanJob extends FortscaleJob {
 					entities.remove(name);
 				}
 			}
+			logger.info("deleting {} entities", entities.size());
+			return customUtil.deleteEntities(entities, doValidate);
 		} else {
 			//deleting all
-			entities = new HashSet(customUtil.getAllEntities());
+			logger.info("deleting all entities");
+			return customUtil.deleteAllEntities(doValidate);
 		}
-		logger.info("deleting {} entities", entities.size());
-		return customUtil.deleteEntities(entities, doValidate);
 	}
 
 	/***
@@ -339,7 +340,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = hdfsUtils.deleteAll(doValidate);
+			success = hdfsUtils.deleteAllEntities(doValidate);
 		} else if (startTime == null && endTime == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
@@ -364,7 +365,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = mongoUtils.dropAllCollections(doValidate);
+			success = mongoUtils.deleteAllEntities(doValidate);
 		} else if (startTime == null && endTime == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = handleDeletion(toDelete, doValidate, mongoUtils);
@@ -459,7 +460,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearMongo(boolean doValidate) {
 		logger.info("attempting to clear all mongo collections");
-		return mongoUtils.dropAllCollections(doValidate);
+		return mongoUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -471,7 +472,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearImpala(boolean doValidate) {
 		logger.info("attempting to clear all impala tables");
-		return impalaUtils.dropAllTables(doValidate);
+		return impalaUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -483,7 +484,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearHDFS(boolean doValidate) {
 		logger.info("attempting to clear all hdfs partitions");
-		return hdfsUtils.deleteAll(doValidate);
+		return hdfsUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -495,7 +496,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaUtils.deleteAllTopics(doValidate);
+		return kafkaUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -507,7 +508,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearStore(boolean doValidate) {
 		logger.info("attempting to clear all states");
-		return storeUtils.deleteAllStates(doValidate);
+		return storeUtils.deleteAllEntities(doValidate);
 	}
 
 	/***

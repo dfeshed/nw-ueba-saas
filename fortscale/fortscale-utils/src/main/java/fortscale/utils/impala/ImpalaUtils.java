@@ -68,7 +68,8 @@ public class ImpalaUtils extends CleanupDeletionUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean dropAllTables(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> tableNames = getAllEntities();
         logger.debug("found {} tables to drop", tableNames.size());
         return deleteEntities(tableNames, doValidate);
