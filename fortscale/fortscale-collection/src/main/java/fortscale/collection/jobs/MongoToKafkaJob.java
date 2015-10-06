@@ -87,7 +87,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
     /***
      *
-     * This method changes the message according to the class type to fit the designated Kafka topic
+     * This method changes the message according to the collection name to fit the designated Kafka topic
      *
      * @param collection  the collection name
      * @param message     the message to be altered
