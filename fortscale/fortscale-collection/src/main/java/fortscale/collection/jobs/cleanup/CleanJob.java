@@ -248,18 +248,22 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
-				checkAndStopService(streamingServiceName);
-				checkAndStopService(kafkaServiceName);
+				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
-				checkAndStopService(streamingServiceName);
-				checkAndStopService(kafkaServiceName);
+				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}
 		}
 		return success;
+	}
+
+	private void checkAndStopAllRelevantServices() {
+		checkAndStopService(collectionServiceName);
+		checkAndStopService(streamingServiceName);
+		checkAndStopService(kafkaServiceName);
 	}
 
 	/***
@@ -510,9 +514,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
 		if (doValidate) {
-			checkAndStopService(collectionServiceName);
-			checkAndStopService(streamingServiceName);
-			checkAndStopService(kafkaServiceName);
+			checkAndStopAllRelevantServices();
 		}
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
