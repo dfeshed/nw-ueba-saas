@@ -260,10 +260,16 @@ public class CleanJob extends FortscaleJob {
 		return success;
 	}
 
-	private void checkAndStopAllRelevantServices() {
-		checkAndStopService(collectionServiceName);
-		checkAndStopService(streamingServiceName);
-		checkAndStopService(kafkaServiceName);
+	/***
+	 *
+	 * This method attempts to stop all of the services below
+	 *
+	 */
+	private boolean checkAndStopAllRelevantServices() {
+		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName);
+		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName);
+		boolean kafkaServiceStoppedSuccess = checkAndStopService(kafkaServiceName);
+		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStoppedSuccess;
 	}
 
 	/***
@@ -513,9 +519,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		if (doValidate) {
-			checkAndStopAllRelevantServices();
-		}
+		if (doValidate) checkAndStopAllRelevantServices();
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);
