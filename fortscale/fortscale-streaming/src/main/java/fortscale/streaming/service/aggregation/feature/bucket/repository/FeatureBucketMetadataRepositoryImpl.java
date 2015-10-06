@@ -16,10 +16,10 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public void updateFeatureBucketsEndTime(String bucketName, String strategyId, long newCloseTime){
+	public void updateFeatureBucketsEndTime(String featureBucketConfName, String strategyId, long newCloseTime){
 		Update update = new Update();
 		update.set(FeatureBucketMetadata.END_TIME_FIELD, newCloseTime);
-		Query query = new Query(Criteria.where(FeatureBucketMetadata.STRATEGY_ID_FIELD).is(strategyId).and(FeatureBucketMetadata.FEATURE_BUCKET_CONF_NAME_FIELD).is(bucketName));
+		Query query = new Query(Criteria.where(FeatureBucketMetadata.STRATEGY_ID_FIELD).is(strategyId).and(FeatureBucketMetadata.FEATURE_BUCKET_CONF_NAME_FIELD).is(featureBucketConfName));
 		
 		mongoTemplate.updateMulti(query, update, FeatureBucketMetadata.class, FeatureBucketMetadata.COLLECTION_NAME);
 	}
