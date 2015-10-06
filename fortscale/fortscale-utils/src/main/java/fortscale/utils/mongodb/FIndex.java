@@ -19,7 +19,7 @@ public class FIndex extends Index {
 	public DBObject getIndexOptions() {
 		DBObject dbo = super.getIndexOptions();
 
-		if (expire >= 0) {
+		if (dbo != null && expire >= 0) {
 			dbo.put("expireAfterSeconds", expire);
 		}
 
