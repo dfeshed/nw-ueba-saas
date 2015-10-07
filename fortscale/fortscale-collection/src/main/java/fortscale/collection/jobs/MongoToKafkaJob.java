@@ -1,9 +1,6 @@
 package fortscale.collection.jobs;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
+import com.mongodb.*;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
@@ -43,6 +40,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private BasicDBObject mongoQuery;
 	private DBCollection mongoCollection;
 	private List<KafkaEventsWriter> streamWriters;
+    private int batchSize;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -72,15 +70,18 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-		DBCursor cursor = mongoCollection.find(mongoQuery);
         String collectionName = mongoCollection.getName();
-		while (cursor.hasNext()) {
-            String message = cursor.next().toString();
-            message = manipulateMessage(collectionName, message);
-            logger.debug("forwarding message - {}", message);
-            forwardMessage(message);
-		}
-		cursor.close();
+        long totalItems = mongoCollection.count(mongoQuery);
+        int counter = 0;
+        while (counter < totalItems) {
+            List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
+            for (DBObject result: results) {
+                String message = result.toString();
+                message = manipulateMessage(collectionName, message);
+                logger.debug("forwarding message - {}", message);
+                forwardMessage(message);
+            }
+        }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
