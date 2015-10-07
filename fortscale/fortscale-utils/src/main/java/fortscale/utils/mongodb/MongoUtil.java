@@ -93,8 +93,12 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
     @Override
     public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> collectionNames = getAllEntities();
-        //system collection - ignore
+        //ignore the following collections
         collectionNames.remove("system.indexes");
+        collectionNames.remove("systemConfiguration");
+        collectionNames.remove("analyst");
+        collectionNames.remove("analystAuth");
+        collectionNames.remove("geoIp");
         logger.debug("found {} collections to drop", collectionNames.size());
         return deleteEntities(collectionNames, doValidate);
     }
