@@ -18,6 +18,9 @@
 
 	<bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
 	<bean id="aggregatedEventPersistencyHandler" class="fortscale.streaming.service.event.AggregatedEventPersistencyHandler"/>
+	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
+	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 
     <context:annotation-config />	
 

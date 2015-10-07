@@ -26,7 +26,7 @@ public class EntityEventConfService implements InitializingBean {
 	private String entityEventDefinitionsJsonFilePath;
 
 	private Map<String, Object> globalParams;
-	private List<EntityEventConf> entityEventDefinitions;
+	private Map<String, EntityEventConf> entityEventDefinitions;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -38,7 +38,15 @@ public class EntityEventConfService implements InitializingBean {
 	}
 
 	public List<EntityEventConf> getEntityEventDefinitions() {
-		return entityEventDefinitions;
+		List<EntityEventConf> list = new ArrayList<>();
+		for(EntityEventConf entityEventConf: entityEventDefinitions.values()) {
+			list.add(entityEventConf);
+		}
+		return list;
+	}
+
+	public EntityEventConf getEntityEventConf(String name) {
+		return entityEventDefinitions.get(name);
 	}
 
 	private void loadEntityEventsJsonFile() {
@@ -88,12 +96,12 @@ public class EntityEventConfService implements InitializingBean {
 		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		this.entityEventDefinitions = new ArrayList<>();
+		this.entityEventDefinitions = new HashMap<>();
 		for (Object definition : entityEventDefinitions) {
 			String definitionAsString = ((JSONObject)definition).toJSONString();
 			try {
 				EntityEventConf entityEventConf = objectMapper.readValue(definitionAsString, EntityEventConf.class);
-				this.entityEventDefinitions.add(entityEventConf);
+				this.entityEventDefinitions.put(entityEventConf.getName(), entityEventConf);
 			} catch (Exception e) {
 				errorMsg = String.format("Failed to deserialize JSON %s", definitionAsString);
 				logger.error(errorMsg, e);

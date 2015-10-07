@@ -58,11 +58,9 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_AGGREGATED_FEATURE_INFO)
     Map<String, Object> aggregatedFeatureInfo;
 
-    @Indexed
     @Field(EVENT_FIELD_BUCKET_CONF_NAME)
     String bucketConfName;
 
-    @Indexed
     @Field(EVENT_FIELD_CONTEXT)
     Map<String, String> context;
 
@@ -75,12 +73,9 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_START_TIME)
     Date startTime;
 
-    @Indexed
     @Field(EVENT_FIELD_START_TIME_UNIX)
     Long startTimeUnix;
 
-  //The ttl for each document is 1 year and 3 months
-    @Indexed(unique = false, expireAfterSeconds=60*60*24*30*15)
     @Field(EVENT_FIELD_END_TIME)
     Date endTime;
 

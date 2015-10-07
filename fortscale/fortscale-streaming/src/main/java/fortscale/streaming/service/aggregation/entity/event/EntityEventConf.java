@@ -15,6 +15,7 @@ public class EntityEventConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
+	private Integer daysToRetainDocument;
 	private List<String> contextFields;
 	private Map<String, List<String>> aggregatedFeatureEventNamesMap;
 	private Set<String> allAggregatedFeatureEventNames;
@@ -58,6 +59,11 @@ public class EntityEventConf implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+
+	public Integer getDaysToRetainDocument() {
+		return daysToRetainDocument;
 	}
 
 	public List<String> getContextFields() {
