@@ -1,7 +1,11 @@
 package fortscale.collection.jobs;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -28,6 +32,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private final String GENERAL_DELIMITER = "###";
 	private final String KEYVALUE_DELIMITER = "@@@";
     private final String DATE_DELIMITER = ":::";
+    //TODO - change that
+    private final int DEFAULT_BATCH_SIZE = 1;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -36,6 +42,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private String zookeeperConnection;
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
+    @Value("${zookeeper.group}")
+    private String zookeeperGroup;
 
 	private BasicDBObject mongoQuery;
 	private DBCollection mongoCollection;
@@ -46,6 +54,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+        batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch_size", DEFAULT_BATCH_SIZE);
         if (map.containsKey("filters")) {
             try {
                 mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
@@ -53,7 +62,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                 logger.error("Bad filters format");
                 throw new JobExecutionException();
             }
-        //filters is not mandatory, if not passed all documents in the provided collection will be forwarded
+        //filters are not mandatory, if not passed all documents in the provided collection will be forwarded
         } else {
             mongoQuery = new BasicDBObject();
         }
@@ -73,15 +82,29 @@ public class MongoToKafkaJob extends FortscaleJob {
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         int counter = 0;
+        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
         while (counter < totalItems) {
             List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
-            for (DBObject result: results) {
-                String message = result.toString();
-                message = manipulateMessage(collectionName, message);
+            String lastMessageTime = "";
+            for (int i = 0; i < results.size(); i++) {
+                DBObject result = results.get(i);
+                if (i == results.size() - 1) {
+                    lastMessageTime = (String)result.get("date_time_unix");
+                }
+                String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);
-                forwardMessage(message);
+                //TODO - partition index
+                for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
             }
-            //TODO - throttling
+            while (true) {
+                //TODO - test this
+                String time = topicConsumer.readSamzaMetric("alert-generator-task",
+                        "fortscale.streaming.task.AlertGeneratorTask", "date_time_unix");
+                if (time.equals(lastMessageTime)) {
+                    break;
+                }
+                Thread.sleep(1000 * 60);
+            }
             counter += batchSize;
         }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
@@ -96,23 +119,9 @@ public class MongoToKafkaJob extends FortscaleJob {
      * @param message     the message to be altered
      * @return
      */
-    private String manipulateMessage(String collection, String message) {
-        logger.debug("collection is {}, message is {}", collection, message);
+    private String manipulateMessage(String collection, DBObject message) {
         //TODO - manipulate according to collection name?
-        return message;
-    }
-
-    /***
-     *
-     * This method sends the given message to all topics
-     *
-     * @param message
-     */
-    private void forwardMessage(String message) {
-        for (KafkaEventsWriter streamWriter: streamWriters) {
-            //TODO - partition index
-            streamWriter.send(null, message);
-        }
+        return message.toString();
     }
 
     /***
