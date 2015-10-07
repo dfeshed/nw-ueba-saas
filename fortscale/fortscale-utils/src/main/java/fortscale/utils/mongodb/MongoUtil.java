@@ -99,6 +99,7 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
         collectionNames.remove("analyst");
         collectionNames.remove("analystAuth");
         collectionNames.remove("geoIp");
+        collectionNames.remove("fortscale_configuration");
         logger.debug("found {} collections to drop", collectionNames.size());
         return deleteEntities(collectionNames, doValidate);
     }
