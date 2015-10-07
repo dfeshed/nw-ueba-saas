@@ -96,9 +96,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.STRATEGY_ID_FIELD, Direction.DESC));
 
-			// Compound index - Context field name to value map & start time
+			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD, Direction.ASC)
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
 			collectionNames.add(collectionName);
