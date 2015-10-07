@@ -81,6 +81,8 @@ public class MongoToKafkaJob extends FortscaleJob {
                 logger.debug("forwarding message - {}", message);
                 forwardMessage(message);
             }
+            //TODO - throttling
+            counter += batchSize;
         }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
@@ -102,12 +104,11 @@ public class MongoToKafkaJob extends FortscaleJob {
 
     /***
      *
-     * This method sends the given message while making sure no kafka messages are dropped
+     * This method sends the given message to all topics
      *
      * @param message
      */
     private void forwardMessage(String message) {
-        //TODO - throttling
         for (KafkaEventsWriter streamWriter: streamWriters) {
             //TODO - partition index
             streamWriter.send(null, message);
