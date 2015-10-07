@@ -1,8 +1,10 @@
 package fortscale.utils.store;
 
 import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -20,6 +22,9 @@ public class StoreUtils extends CleanupDeletionUtil {
 
     @Value("${fortscale.home.dir}/streaming/state")
     private String stateBaseFolder;
+
+    @Autowired
+    private KafkaUtils kafkaUtils;
 
     /***
      *
@@ -74,8 +79,9 @@ public class StoreUtils extends CleanupDeletionUtil {
                 } catch (IOException ex) {
                     logger.debug("failed to delete state {} - {}", state, ex);
                 }
+                boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
                 if (doValidate) {
-                    if (!stateDirectory.exists()) {
+                    if (!stateDirectory.exists() && deleteSuccess) {
                         logger.info("deleted state {}", state);
                         numberOfStatesDeleted++;
                     } else {
