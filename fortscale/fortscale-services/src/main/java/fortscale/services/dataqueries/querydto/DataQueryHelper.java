@@ -176,7 +176,7 @@ public class DataQueryHelper {
         DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
         DataEntityField dataEntityField = dataEntity.getField(field);
         if (dataEntityField!=null && dataEntityField.getName()!=null)
-        return dataEntityField.getName().replaceAll(" ", "_");
+        return dataEntityField.getName();
         else
             return field;
 
@@ -205,12 +205,36 @@ public class DataQueryHelper {
      * @param dataEntity - the data entity
      * @return
      */
-    public List<DataQueryField> createGrouByClause (String groupByFieldAsCSV,String dataEntity)
+    public List<DataQueryField> createGrouByClause (String groupByFieldAsCSV,String dataEntity,boolean withAlias)
     {
 
-        return createQueryFields(groupByFieldAsCSV,dataEntity);
+		if(!withAlias)
+        	return createQueryFieldsForGroupBy(groupByFieldAsCSV,dataEntity);
+		return createQueryFields(groupByFieldAsCSV,dataEntity);
 
     }
+
+	/**
+	 * Generate the list of fields for adding to the group by clause
+	 * The Group can be on the field id and not the alias (also for joins cause in case of
+	 * @param defaultFieldsString a CSV list of fields to return. if '*' is passed, then return all fields
+	 * @param dataEntity the Data Entity to query
+	 * @return
+	 */
+	private List<DataQueryField> createQueryFieldsForGroupBy(String defaultFieldsString, String dataEntity){
+		List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
+		String[] defaultFields = defaultFieldsString.split(",");
+		for (String field : defaultFields) {
+
+			DataQueryField dataQueryField = new DataQueryField();
+
+			dataQueryField.setId(field);
+
+			defaultFieldsList.add(dataQueryField);
+
+		}
+		return defaultFieldsList;
+	}
 
     /**
      * This method will generate a count filed for a query

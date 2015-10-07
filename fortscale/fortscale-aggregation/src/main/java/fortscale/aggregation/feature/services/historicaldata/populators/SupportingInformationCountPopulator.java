@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.services.historicaldata.populators;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
@@ -123,8 +122,8 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 
         DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
 
-        //Create the Group By clause
-        List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity);
+        //Create the Group By clause without alias
+        List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity,false);
         dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
 
         // Create the count(*) field:
@@ -152,7 +151,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
     private Map<SupportingInformationKey, Double> buildLastDayMap(List<Map<String, Object>> queryList) {
         Map<SupportingInformationKey, Double> lastDayMap = new HashMap<>();
         for (Map<String, Object> bucketMap : queryList){
-            lastDayMap.put(new SupportingInformationSingleKey(""), (Double)bucketMap.get("value"));
+            lastDayMap.put(new SupportingInformationSingleKey(""), ((Long)bucketMap.get("countField")).doubleValue());
         }
         return lastDayMap;
     }
@@ -164,15 +163,15 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
     private Term getTheContextTerm(String normalizedContextType, String contextValue)
     {
         Term term = null;
-//		switch (normalizedContextType)
-//		{
-//			case "normalized_username" :
-        term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
-//				break;
-//			default:
-//				break;
-//
-//		}
+		switch (normalizedContextType)
+		{
+			case "normalized_username" :
+      			term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
+				break;
+			default:
+				break;
+
+		}
         return term;
 
     }
