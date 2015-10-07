@@ -15,6 +15,7 @@ public abstract class CleanupDeletionUtil {
 
     abstract public Collection<String> getAllEntities();
     abstract public boolean deleteEntities(Collection<String> entities, boolean doValidate);
+    abstract public boolean deleteAllEntities(boolean doValidate);
 
     @Autowired
     private CleanupPredicate cleanupPredicate;

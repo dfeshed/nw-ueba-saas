@@ -39,9 +39,9 @@ public class ImpalaUtils extends CleanupDeletionUtil {
     public boolean deleteEntities(Collection<String> tableNames, boolean doValidate) {
         int numberOfTablesDropped = 0;
         logger.debug("attempting to drop {} tables from impala", tableNames.size());
-        if (doValidate) {
-            for (String tableName : tableNames) {
-                impalaClient.dropTable(tableName);
+        for (String tableName : tableNames) {
+            impalaClient.dropTable(tableName);
+            if (doValidate) {
                 //verify drop
                 if (impalaClient.isTableExists(tableName)) {
                     logger.error("failed to drop table {}", tableName);
@@ -49,11 +49,8 @@ public class ImpalaUtils extends CleanupDeletionUtil {
                     logger.info("dropped table {}", tableName);
                     numberOfTablesDropped++;
                 }
-            }
-        } else {
-            boolean success = impalaClient.dropTables(tableNames);
-            if (success) {
-                numberOfTablesDropped = tableNames.size();
+            } else {
+                numberOfTablesDropped++;
             }
         }
         if (numberOfTablesDropped == tableNames.size()) {
@@ -71,7 +68,8 @@ public class ImpalaUtils extends CleanupDeletionUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean dropAllTables(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> tableNames = getAllEntities();
         logger.debug("found {} tables to drop", tableNames.size());
         return deleteEntities(tableNames, doValidate);

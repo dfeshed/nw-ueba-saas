@@ -103,28 +103,10 @@ public class ImpalaClient {
 		impalaJdbcTemplate.execute(sql);
 	}
 
-	public boolean dropTable(String tableViewName){
+	public boolean dropTable(String tableViewName) {
 		Assert.hasText(tableViewName);
 		boolean success = false;
 		String sql = String.format("DROP TABLE IF EXISTS %s", tableViewName);
-		try {
-			impalaJdbcTemplate.execute(sql);
-			success = true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return success;
-	}
-
-	public boolean dropTables(Collection<String> tableNames){
-		Assert.notNull(tableNames);
-		Assert.notEmpty(tableNames);
-		boolean success = false;
-		StringBuilder sb = new StringBuilder();
-		for (String tableName: tableNames) {
-			sb.append("DROP TABLE IF EXISTS " + tableName + ";");
-		}
-		String sql = sb.toString();
 		try {
 			impalaJdbcTemplate.execute(sql);
 			success = true;
@@ -144,7 +126,7 @@ public class ImpalaClient {
 		return tableNames;
 	}
 
-	public boolean isTableExists(String tableViewName){
+	public boolean isTableExists(String tableViewName) {
 		Assert.hasText(tableViewName);
 		String sql = String.format("DESC TABLE %s", tableViewName);
 		boolean exists = false;

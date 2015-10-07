@@ -1,8 +1,10 @@
 package fortscale.utils.store;
 
 import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -21,6 +23,9 @@ public class StoreUtils extends CleanupDeletionUtil {
     @Value("${fortscale.home.dir}/streaming/state")
     private String stateBaseFolder;
 
+    @Autowired
+    private KafkaUtils kafkaUtils;
+
     /***
      *
      * This method deletes all of the states from the store
@@ -28,7 +33,8 @@ public class StoreUtils extends CleanupDeletionUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteAllStates(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> states = getAllEntities();
         logger.debug("found {} states to delete", states.size());
         return deleteEntities(states, doValidate);
@@ -73,13 +79,16 @@ public class StoreUtils extends CleanupDeletionUtil {
                 } catch (IOException ex) {
                     logger.debug("failed to delete state {} - {}", state, ex);
                 }
+                boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
                 if (doValidate) {
-                    if (!stateDirectory.exists()) {
+                    if (!stateDirectory.exists() && deleteSuccess) {
                         logger.info("deleted state {}", state);
                         numberOfStatesDeleted++;
                     } else {
                         logger.error("failed to delete state {}", state);
                     }
+                } else {
+                    numberOfStatesDeleted++;
                 }
             } else {
                 logger.warn("state {} doesn't exist", state);
@@ -89,7 +98,7 @@ public class StoreUtils extends CleanupDeletionUtil {
             logger.info("deleted all {} states", states.size());
             return true;
         }
-        logger.error("failed to delete all {} tables, deleted only {}", states.size(), numberOfStatesDeleted);
+        logger.error("failed to delete all {} states, deleted only {}", states.size(), numberOfStatesDeleted);
         return false;
     }
 
