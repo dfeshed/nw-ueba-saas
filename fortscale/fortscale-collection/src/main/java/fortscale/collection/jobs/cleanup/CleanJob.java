@@ -15,6 +15,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -247,18 +248,28 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
-				checkAndStopService(streamingServiceName);
-				checkAndStopService(kafkaServiceName);
+				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
-				checkAndStopService(streamingServiceName);
-				checkAndStopService(kafkaServiceName);
+				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}
 		}
 		return success;
+	}
+
+	/***
+	 *
+	 * This method attempts to stop all of the services below
+	 *
+	 */
+	private boolean checkAndStopAllRelevantServices() {
+		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName);
+		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName);
+		boolean kafkaServiceStoppedSuccess = checkAndStopService(kafkaServiceName);
+		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStoppedSuccess;
 	}
 
 	/***
@@ -306,12 +317,13 @@ public class CleanJob extends FortscaleJob {
 					entities.remove(name);
 				}
 			}
+			logger.info("deleting {} entities", entities.size());
+			return customUtil.deleteEntities(entities, doValidate);
 		} else {
 			//deleting all
-			entities = new HashSet(customUtil.getAllEntities());
+			logger.info("deleting all entities");
+			return customUtil.deleteAllEntities(doValidate);
 		}
-		logger.info("deleting {} entities", entities.size());
-		return customUtil.deleteEntities(entities, doValidate);
 	}
 
 	/***
@@ -328,7 +340,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = hdfsUtils.deleteAll(doValidate);
+			success = hdfsUtils.deleteAllEntities(doValidate);
 		} else if (startTime == null && endTime == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
@@ -353,7 +365,7 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startTime == null && endTime == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = mongoUtils.dropAllCollections(doValidate);
+			success = mongoUtils.deleteAllEntities(doValidate);
 		} else if (startTime == null && endTime == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = handleDeletion(toDelete, doValidate, mongoUtils);
@@ -394,28 +406,24 @@ public class CleanJob extends FortscaleJob {
 	/****
 	 *
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
-	 * it with the intended backup
+	 * it with the intended backup if one exists or dropping the collection if backup not found
 	 *
-	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param sources  collection of key and empty values - keys are the prefixes of the collections
 	 * @return
 	 */
 	private boolean restoreMongo(Map<String, String> sources) {
-		int restored = 0;
-		logger.debug("trying to restore {} snapshots", sources.size());
+		boolean success;
+		logger.debug("trying to restore from {} prefixes", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-            String toRestore = dataSource.getKey();
-            String backupName = dataSource.getValue();
-			logger.debug("origin - {}, backup - {}", toRestore, backupName);
-            if (mongoUtils.restoreSnapshot(toRestore, backupName)) {
-                restored++;
-            }
-        }
-		if (restored != sources.size()) {
-			logger.error("failed to restore all {} entities, restored only {}", sources.size(),
-					restored);
-			return false;
+			String prefix = dataSource.getKey();
+			success = mongoUtils.restoreSnapshot(prefix);
+			if (!success) {
+				logger.error("failed to restore from prefix {}", prefix);
+				return success;
+			} else {
+				logger.info("restored successfully from prefix {}", prefix);
+			}
 		}
-		logger.info("restored all {} entities", sources.size());
 		return true;
 	}
 
@@ -424,11 +432,11 @@ public class CleanJob extends FortscaleJob {
 	 * This method attempts to restore a previously created snapshot by removing the active data and replacing
 	 * it with the intended backup
 	 *
-	 * @param sources  collection of key,value (keys are collection/tables/topic/hdfs paths etc)
+	 * @param sources  collection of key and empty values - keys are the backup paths
 	 * @return
 	 */
 	private boolean restoreHDFS(Map<String, String> sources) {
-		boolean success = false;
+		boolean success;
 		logger.debug("trying to restore from {} paths", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
 			String backupPath = dataSource.getKey();
@@ -440,7 +448,6 @@ public class CleanJob extends FortscaleJob {
 				logger.info("restored successfully from path {}", backupPath);
 			}
 		}
-		logger.info("restored all", sources.size());
 		return true;
 	}
 
@@ -453,7 +460,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearMongo(boolean doValidate) {
 		logger.info("attempting to clear all mongo collections");
-		return mongoUtils.dropAllCollections(doValidate);
+		return mongoUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -465,7 +472,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearImpala(boolean doValidate) {
 		logger.info("attempting to clear all impala tables");
-		return impalaUtils.dropAllTables(doValidate);
+		return impalaUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -477,7 +484,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearHDFS(boolean doValidate) {
 		logger.info("attempting to clear all hdfs partitions");
-		return hdfsUtils.deleteAll(doValidate);
+		return hdfsUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -489,7 +496,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaUtils.deleteAllTopics(doValidate);
+		return kafkaUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -501,21 +508,19 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearStore(boolean doValidate) {
 		logger.info("attempting to clear all states");
-		return storeUtils.deleteAllStates(doValidate);
+		return storeUtils.deleteAllEntities(doValidate);
 	}
 
 	/***
 	 *
 	 * This method clears the system entirely
 	 *
-	 * @param doValidate  flag to determine should we perform validations
+	 * @param doValidate  flag to determine should we perform validations and whether or not to stop services
 	 * @return
 	 */
 	private boolean clearAllData(boolean doValidate) {
 		logger.info("attempting to clear system");
-		checkAndStopService(collectionServiceName);
-		checkAndStopService(streamingServiceName);
-		checkAndStopService(kafkaServiceName);
+		if (doValidate) checkAndStopAllRelevantServices();
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);

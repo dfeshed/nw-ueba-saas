@@ -1,25 +1,33 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.aggregation.feature.event.AggrEvent;
-import org.apache.commons.lang3.StringUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class EntityEventData {
 	public static final String ENTITY_EVENT_NAME_FIELD = "entityEventName";
 	public static final String CONTEXT_FIELD = "context";
 	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
-	public static final String AGGR_FEATURE_EVENTS_FIELD = "aggrFeatureEvents";
-	public static final String FIRING_TIME_IN_SECONDS_FIELD = "firingTimeInSeconds";
-	public static final String FIRED_FIELD = "fired";
+	public static final String NOT_INCLUDED_AGGR_FEATURE_EVENTS_FIELD = "notIncludedAggrFeatureEvents";
+	public static final String INCLUDED_AGGR_FEATURE_EVENTS_FIELD = "includedAggrFeatureEvents";
+	public static final String CREATED_AT_EPOCHTIME_FIELD = "createdAtEpochtime";
+	public static final String MODIFIED_AT_EPOCHTIME_FIELD = "modifiedAtEpochtime";
+	public static final String MODIFIED_AT_DATE_FIELD = "modifiedAtDate";
+	public static final String TRANSMISSION_EPOCHTIME_FIELD = "transmissionEpochtime";
+	public static final String TRANSMITTED_FIELD = "transmitted";
 
+	@SuppressWarnings("UnusedDeclaration")
 	@Id
 	private String id;
 
@@ -33,18 +41,37 @@ public class EntityEventData {
 	private long startTime;
 	@Field(END_TIME_FIELD)
 	private long endTime;
-	@Field(AGGR_FEATURE_EVENTS_FIELD)
-	private Set<AggrEvent> aggrFeatureEvents;
-	@Field(FIRING_TIME_IN_SECONDS_FIELD)
-	private long firingTimeInSeconds;
-	@Field(FIRED_FIELD)
-	private boolean fired;
+	@Field(NOT_INCLUDED_AGGR_FEATURE_EVENTS_FIELD)
+	private Set<AggrEvent> notIncludedAggrFeatureEvents;
+	@Field(INCLUDED_AGGR_FEATURE_EVENTS_FIELD)
+	private Set<AggrEvent> includedAggrFeatureEvents;
+	@Field(CREATED_AT_EPOCHTIME_FIELD)
+	private long createdAtEpochtime;
+	@Field(MODIFIED_AT_EPOCHTIME_FIELD)
+	private long modifiedAtEpochtime;
+	@Field(MODIFIED_AT_DATE_FIELD)
+	private Date modifiedAtDate;
+	@Field(TRANSMISSION_EPOCHTIME_FIELD)
+	private long transmissionEpochtime;
+	@Field(TRANSMITTED_FIELD)
+	private boolean transmitted;
 
-	public EntityEventData(long firingTimeInSeconds, String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
-		Assert.isTrue(firingTimeInSeconds >= 0);
-		Assert.isTrue(StringUtils.isNotBlank(entityEventName));
+	public EntityEventData() {
+		this.notIncludedAggrFeatureEvents = new HashSet<>();
+		this.includedAggrFeatureEvents = new HashSet<>();
+		long currentTimeMillis = System.currentTimeMillis();
+		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
+		this.modifiedAtEpochtime = this.createdAtEpochtime;
+		this.modifiedAtDate = new Date(currentTimeMillis);
+
+		this.transmissionEpochtime = -1;
+		this.transmitted = false;
+	}
+	
+	public EntityEventData(String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
+		Assert.hasText(entityEventName);
 		Assert.notEmpty(context);
-		Assert.isTrue(StringUtils.isNotBlank(contextId));
+		Assert.hasText(contextId);
 		Assert.isTrue(startTime >= 0);
 		Assert.isTrue(endTime >= startTime);
 
@@ -53,9 +80,17 @@ public class EntityEventData {
 		this.contextId = contextId;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.aggrFeatureEvents = new HashSet<>();
-		this.firingTimeInSeconds = firingTimeInSeconds;
-		this.fired = false;
+
+		this.notIncludedAggrFeatureEvents = new HashSet<>();
+		this.includedAggrFeatureEvents = new HashSet<>();
+
+		long currentTimeMillis = System.currentTimeMillis();
+		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
+		this.modifiedAtEpochtime = this.createdAtEpochtime;
+		this.modifiedAtDate = new Date(currentTimeMillis);
+
+		this.transmissionEpochtime = -1;
+		this.transmitted = false;
 	}
 
 	public String getEntityEventName() {
@@ -79,22 +114,46 @@ public class EntityEventData {
 	}
 
 	public void addAggrFeatureEvent(AggrEvent aggrFeatureEvent) {
-		aggrFeatureEvents.add(aggrFeatureEvent);
+		if (isTransmitted()) {
+			notIncludedAggrFeatureEvents.add(aggrFeatureEvent);
+		} else {
+			includedAggrFeatureEvents.add(aggrFeatureEvent);
+		}
+
+		long currentTimeMillis = System.currentTimeMillis();
+		modifiedAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
+		modifiedAtDate = new Date(currentTimeMillis);
 	}
 
-	public Set<AggrEvent> getAggrFeatureEvents() {
-		return aggrFeatureEvents;
+	public Set<AggrEvent> getNotIncludedAggrFeatureEvents() {
+		return notIncludedAggrFeatureEvents;
 	}
 
-	public long getFiringTimeInSeconds() {
-		return firingTimeInSeconds;
+	public Set<AggrEvent> getIncludedAggrFeatureEvents() {
+		return includedAggrFeatureEvents;
 	}
 
-	public boolean isFired() {
-		return fired;
+	public long getModifiedAtEpochtime() {
+		return modifiedAtEpochtime;
 	}
 
-	public void setFired(boolean fired) {
-		this.fired = fired;
+	public long getTransmissionEpochtime() {
+		return transmissionEpochtime;
+	}
+
+	public void setTransmissionEpochtime(long transmissionEpochtime) {
+		this.transmissionEpochtime = transmissionEpochtime;
+	}
+
+	public boolean isTransmitted() {
+		return transmitted;
+	}
+
+	public void setTransmitted(boolean transmitted) {
+		this.transmitted = transmitted;
+	}
+
+	public String getId() {
+		return id;
 	}
 }

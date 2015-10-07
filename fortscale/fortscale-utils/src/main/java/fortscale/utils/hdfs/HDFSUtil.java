@@ -47,7 +47,7 @@ public class HDFSUtil implements CleanupUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean deleteAll(boolean doValidate) {
+    public boolean deleteAllEntities(boolean doValidate) {
         logger.info("attempting to delete all HDFS folders");
         boolean dataSuccess = deletePath(dataPath, doValidate);
         boolean rawDataSuccess = deletePath(rawDataPath, doValidate);

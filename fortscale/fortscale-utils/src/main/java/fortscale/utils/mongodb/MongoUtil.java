@@ -6,7 +6,6 @@ import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Collection;
@@ -24,6 +23,7 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
     private final String FILTERS_DELIMITER = "%%%";
     private final String KEYVALUE_DELIMITER = ":::";
     private final String DATE_IDENTIFIER = "date";
+    private final String BACKUP_SUFFIX = "_backup";
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -90,7 +90,8 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    public boolean dropAllCollections(boolean doValidate) {
+    @Override
+    public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> collectionNames = getAllEntities();
         //system collection - ignore
         collectionNames.remove("system.indexes");
@@ -169,11 +170,12 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      * @param backupCollectionName  the backup collection name to rename back
      * @return
      */
-    public boolean restoreSnapshot(String collectionName, String backupCollectionName) {
+    private boolean restoreCollection(String collectionName, String backupCollectionName) {
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         boolean success = false;
+        //sanity check
         logger.debug("verify that collections exist");
-        if (!mongoTemplate.collectionExists(collectionName) ||!mongoTemplate.collectionExists(backupCollectionName)) {
+        if (!mongoTemplate.collectionExists(collectionName) || !mongoTemplate.collectionExists(backupCollectionName)) {
             logger.error("no origin or backup collection found");
             return success;
         }
@@ -212,6 +214,51 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
         }
         logger.error("snapshot failed to restore - manually rename backup collection");
         return success;
+    }
+
+    /***
+     *
+     * This method searches for all collections starting with prefix and restores / deletes them
+     *
+     * @param prefix
+     * @return
+     */
+    public boolean restoreSnapshot(String prefix) {
+        logger.info("trying to restore mongo to snapshot");
+        int restored = 0, toRestore = 0;
+        Collection<String> collectionNames = getAllEntities();
+        for (String collectionName: collectionNames) {
+            if (collectionName.startsWith(prefix)) {
+                logger.debug("target collection found - {}", collectionName);
+                toRestore++;
+                String backupCollectionName = collectionName + BACKUP_SUFFIX;
+                logger.debug("looking for backup collection {}", backupCollectionName);
+                if (mongoTemplate.collectionExists(backupCollectionName)) {
+                    logger.debug("backup collection found, attempting to restore");
+                    if (restoreCollection(collectionName, backupCollectionName)) {
+                        logger.debug("restore successful");
+                        restored++;
+                    } else {
+                        logger.warn("failed to restore {} to {}", collectionName, backupCollectionName);
+                    }
+                } else {
+                    logger.debug("backup collection not found, attempting to delete {}", collectionName);
+                    mongoTemplate.dropCollection(collectionName);
+                    if (!mongoTemplate.collectionExists(collectionName)) {
+                        logger.debug("delete successful");
+                        restored++;
+                    } else {
+                        logger.warn("failed to delete {}", collectionName);
+                    }
+                }
+            }
+        }
+        if (restored != toRestore) {
+            logger.error("failed to restore all {} collections, restored only {}", toRestore, restored);
+            return false;
+        }
+        logger.info("all {} collections successfully restored / deleted", toRestore);
+        return true;
     }
 
 }
