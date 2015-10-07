@@ -127,12 +127,9 @@ public class KafkaUtils extends CleanupDeletionUtil {
             logger.error("failed to clean folder {} - {}", directory.getAbsolutePath(), ex);
             return false;
         }
-        if (validate) {
-            String[] files = directory.list();
-            if (files.length > 0) {
-                logger.error("failed to clean kafka data folder");
-                return false;
-            }
+        if (validate && directory.list().length > 0) {
+            logger.error("failed to clean kafka data folder");
+            return false;
         }
         logger.info("all kafka data folders deleted");
         return true;

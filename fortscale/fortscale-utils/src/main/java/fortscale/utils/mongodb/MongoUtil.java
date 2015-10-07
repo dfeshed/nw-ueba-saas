@@ -175,7 +175,7 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
         boolean success = false;
         //sanity check
         logger.debug("verify that collections exist");
-        if (!mongoTemplate.collectionExists(collectionName) ||!mongoTemplate.collectionExists(backupCollectionName)) {
+        if (!mongoTemplate.collectionExists(collectionName) || !mongoTemplate.collectionExists(backupCollectionName)) {
             logger.error("no origin or backup collection found");
             return success;
         }
