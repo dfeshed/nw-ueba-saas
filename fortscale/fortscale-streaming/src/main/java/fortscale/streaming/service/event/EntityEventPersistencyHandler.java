@@ -51,7 +51,7 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 			Integer retentionTimeInDays = entityEventConf.getDaysToRetainDocument();
 
 			mongoTemplate.createCollection(collectionName);
-			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS).on(EntityEvent.ENTITY_EVENT_TYPE_FILED_NAME, Sort.Direction.DESC));
+			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS).on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, Sort.Direction.DESC));
 			collectionNames.add(collectionName);
 		}
 

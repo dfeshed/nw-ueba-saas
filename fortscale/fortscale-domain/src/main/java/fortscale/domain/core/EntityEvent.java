@@ -20,12 +20,13 @@ import java.util.Map;
  * This is the bean of EntityEvent
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.NONE, getterVisibility= JsonAutoDetect.Visibility.ANY, setterVisibility= JsonAutoDetect.Visibility.ANY, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class EntityEvent extends AbstractDocument implements Serializable {
 
 	public static final String ENTITY_EVENT_START_TIME_UNIX_FILED_NAME = "start_time_unix";
 	public static final String ENTITY_EVENT_VALUE_FILED_NAME = "entity_event_value";
 	public static final String ENTITY_EVENT_SCORE_FILED_NAME = "score";
+	public static final String ENTITY_EVENT_BASE_SCORE_FILED_NAME = "base_score";
 	public static final String ENTITY_EVENT_CONTEXT_FILED_NAME = "context";
 	public static final String ENTITY_EVENT_CONTEXT_ID_FILED_NAME = "contextId";
 	public static final String ENTITY_EVENT_END_TIME_UNIX_FILED_NAME = "end_time_unix";
@@ -42,6 +43,8 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private double entity_event_value;
 	@Field(ENTITY_EVENT_SCORE_FILED_NAME)
 	private double score;
+	@Field(ENTITY_EVENT_BASE_SCORE_FILED_NAME)
+	private double base_score;
 	@Field(ENTITY_EVENT_CONTEXT_FILED_NAME)
 	private Map<String, String> context;
 	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
@@ -101,6 +104,14 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.score = score;
 	}
 
+	public double getBase_score() {
+		return base_score;
+	}
+
+	public void setBase_score(double base_score) {
+		this.base_score = base_score;
+	}
+
 	public Map<String, String> getContext() {
 		return context;
 	}
@@ -110,11 +121,11 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	}
 
 	public long getEnd_time_unix() {
-		return TimestampUtils.convertToMilliSeconds(end_time_unix.getTime());
+		return TimestampUtils.convertToSeconds(end_time_unix.getTime());
 	}
 
-	public void setEnd_time_unix(long end_time_unix) {
-		this.end_time_unix = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix));
+	public void setEnd_time_unix(long end_time_unix_sec) {
+		this.end_time_unix = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix_sec));
 	}
 
 	public long getCreation_epochtime() {

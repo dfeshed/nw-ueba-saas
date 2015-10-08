@@ -61,7 +61,7 @@ public class AggregatedEventPersistencyHandler implements EventPersistencyHandle
             mongoTemplate.createCollection(collectionName);
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_START_TIME_UNIX, Sort.Direction.DESC));
-            mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInSeconds, TimeUnit.SECONDS).on(AggrEvent.EVENT_FIELD_END_TIME_UNIX, Sort.Direction.DESC));
+            mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInSeconds, TimeUnit.SECONDS).on(AggrEvent.EVENT_FIELD_END_TIME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_CONTEXT, Sort.Direction.DESC));
             collectionNames.add(collectionName);
         }
