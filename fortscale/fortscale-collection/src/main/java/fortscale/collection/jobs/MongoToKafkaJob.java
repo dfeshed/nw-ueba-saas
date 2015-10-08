@@ -85,11 +85,11 @@ public class MongoToKafkaJob extends FortscaleJob {
         TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
         while (counter < totalItems) {
             List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
-            String lastMessageTime = "";
+            long lastMessageTime = 0;
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
                 if (i == results.size() - 1) {
-                    lastMessageTime = (String)result.get("startDate");
+                    lastMessageTime = (long)result.get("startDate");
                 }
                 String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);
@@ -100,7 +100,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                 //TODO - test this
                 String time = topicConsumer.readSamzaMetric("alert-generator-task",
                         "fortscale.streaming.task.AlertGeneratorTask", "date_time_unix");
-                if (time.equals(lastMessageTime)) {
+                if (time.equals(lastMessageTime + "")) {
                     break;
                 }
                 Thread.sleep(1000 * 60);
