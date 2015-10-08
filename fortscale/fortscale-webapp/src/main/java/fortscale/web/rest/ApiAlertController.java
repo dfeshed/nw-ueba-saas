@@ -13,6 +13,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
+import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import org.apache.commons.lang.StringUtils;
@@ -251,46 +252,23 @@ public class ApiAlertController extends BaseController {
 			@RequestParam(required=false, defaultValue = "7", value = "alert_start_range") String timeRange)
 	{
 
-
-
-		String[] timeRangeAsStr;
-		if (timeRange.contains(",")){
-			timeRangeAsStr = timeRange.split(",");
-		}  else {
-			timeRangeAsStr = new String[1];
-			timeRangeAsStr[0] = timeRange;
-		}
+		String[] timeRangeAsStr = ApiUtils.splitToArrayOfStrings(timeRange);
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 		for (String timeRangeStr : timeRangeAsStr){
 			int lastXDays = Integer.parseInt(timeRangeStr.trim());
 
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(new Date());
-			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+			long fromTime = ApiUtils.getStartOfBeforeXDays(lastXDays).getTime();
 
-			cal.add(Calendar.DAY_OF_MONTH, -1 * lastXDays);
-			Date afterDate = cal.getTime();
-			afterDate = DateUtils.truncate(afterDate, Calendar.DATE); //Use start of date
-			long fromTime = afterDate.getTime();
-
+			//Add statuses
 			Map<String,Integer> statusCounts = alertsDao.groupCount("status",fromTime);
 			results.addAlertStatus(statusCounts, lastXDays);
 
+			//Add severities
 			Map<String,Integer> severityCounts = alertsDao.groupCount("severity",fromTime);
 			results.addAlertSeverityMap(severityCounts, lastXDays);
 
 		}
-
-
-//		PageRequest pageRequest = new PageRequest(0, 1);
-//
-//		int count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-//				entityTags, entityId);
-
-//		alertsDao.groupCount("status", 1443657600000L);
-
-
 
 		DataBean<AlertStatisticsEntity> toReturn = new DataBean<AlertStatisticsEntity>();
 		toReturn.setData(results);

@@ -110,5 +110,12 @@ public interface EvidencesService {
 	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName);
 
 
+	/**
+	 * Count all evidences by filter.
+	 * Currently the filter contain the fromTime only.
+	 * Might be expand when needed
+	 * @param fromTime - the time which the evidence start time should be greated or equals to
+	 * @return
+	 */
 	public long count(long fromTime);
 }

@@ -25,5 +25,12 @@ public interface EvidencesRepositoryCustom {
 	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
 			String dataEntities, String featureName);
 
+	/**
+	 * Count all evidences by filter.
+	 * Currently the filter contain the fromTime only.
+	 * Might be expand when needed
+	 * @param fromTime - the time which the evidence start time should be greated or equals to
+	 * @return
+	 */
 	long countWithParameters(long fromTime);
 }

@@ -19,6 +19,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.OverviewPageStatistics;
 import fortscale.web.rest.entities.SupportingInformationEntry;
@@ -328,26 +329,13 @@ public class ApiEvidenceController extends DataQueryController {
 			@RequestParam(required=false, defaultValue = "7", value = "indicator_start_range") String timeRange)
 	{
 
-		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity(		);
-		String[] timeRangeAsStr;
-		if (timeRange.contains(",")){
-			timeRangeAsStr = timeRange.split(",");
-		}  else {
-			timeRangeAsStr = new String[1];
-			timeRangeAsStr[0] = timeRange;
-		}
+		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity();
+		String[] timeRangeAsStr = ApiUtils.splitToArrayOfStrings(timeRange);
 
 		for (String timeRangeStr : timeRangeAsStr){
 			int lastXDays = Integer.parseInt(timeRangeStr.trim());
 
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(new Date());
-			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-			cal.add(Calendar.DAY_OF_MONTH, -1 * lastXDays);
-			Date afterDate = cal.getTime();
-			afterDate = DateUtils.truncate(afterDate, Calendar.DATE); //Use start of date
-			long fromTime = afterDate.getTime();
+			long fromTime = ApiUtils.getStartOfBeforeXDays(lastXDays).getTime();
 
 			long indicatorsCount = evidencesService.count(fromTime);
 			results.addIndicatorCount(indicatorsCount, lastXDays);
