@@ -100,8 +100,8 @@ public class TopicConsumer {
                 //extract the relevant data from the metrics json
                 currValue = innerJSON.getJSONObject(header).get(metricsToExtract);
                 metricaData.put(metricsToExtract, currValue);
-            } catch(JSONException je) {
-                logger.error(je.getMessage());
+            } catch(JSONException ex) {
+                logger.error(ex.getMessage());
             }
         }
 		return metricaData;

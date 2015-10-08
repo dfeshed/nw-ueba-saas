@@ -50,6 +50,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private List<KafkaEventsWriter> streamWriters;
     private String jobToMonitor;
     private String jobClassToMonitor;
+    private String dateField;
     private int batchSize;
 
 	@Override
@@ -62,6 +63,8 @@ public class MongoToKafkaJob extends FortscaleJob {
         jobToMonitor = "alert-generator-task";
         //jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         jobClassToMonitor = "fortscale.streaming.task.AlertGeneratorTask";
+        //dateField = jobDataMapExtension.getJobDataMapStringValue(map, "datefield");
+        dateField = "endDate";
         if (map.containsKey("filters")) {
             try {
                 mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
@@ -91,12 +94,11 @@ public class MongoToKafkaJob extends FortscaleJob {
         int counter = 0;
         while (counter < totalItems) {
             List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
-            String lastMessageTime = "";
+            long lastMessageTime = 0;
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
                 if (i == results.size() - 1) {
-                    //TODO - generalize this
-                    lastMessageTime = result.get("startDate").toString();
+                    lastMessageTime = Long.parseLong(result.get(dateField).toString());
                 }
                 String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);
@@ -108,8 +110,10 @@ public class MongoToKafkaJob extends FortscaleJob {
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor));
-                if (time != null && time.equals(lastMessageTime + "")) {
-                    break;
+                if (time != null) {
+                    if ((long)time == lastMessageTime) {
+                        break;
+                    }
                 }
                 Thread.sleep(1000 * 60);
             }
