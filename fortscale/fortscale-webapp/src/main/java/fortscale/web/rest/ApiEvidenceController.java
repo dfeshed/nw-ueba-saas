@@ -339,10 +339,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 			long indicatorsCount = evidencesService.count(fromTime);
 			results.addIndicatorCount(indicatorsCount, lastXDays);
-
-
 		}
-
 
 		DataBean<IndicatorStatisticsEntity> toReturn = new DataBean<IndicatorStatisticsEntity>();
 		toReturn.setData(results);

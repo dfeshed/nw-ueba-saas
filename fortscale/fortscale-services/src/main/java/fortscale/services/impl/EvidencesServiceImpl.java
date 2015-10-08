@@ -168,9 +168,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.save(evidence);
 	}
 
-	/**
-	 *
-	 */
+
 	public long count(long fromTime){
 		return  evidencesRepository.countWithParameters(fromTime);
 	}

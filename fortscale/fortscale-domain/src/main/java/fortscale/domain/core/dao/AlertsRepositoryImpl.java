@@ -114,23 +114,24 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	public Map<String, Integer> groupCount(String fieldName, long afterDate){
 
+		//Create aggregation on fieldName, for all alerts which started after "afterDate").
 		Aggregation agg = Aggregation.newAggregation(
 				match(Criteria.where("startDate").gte(afterDate)),
 				group(fieldName).count().as("total"),
-				project("total").and(fieldName).as("countedValue"),
-				sort(Sort.Direction.DESC, fieldName)
-
+				project("total").and(fieldName).previousOperation()
 		);
 
-		//Convert the aggregation result into a List
+
 		AggregationResults<BasicDBObject> groupResults
 				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
 
+		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
 		Map<String, Integer> results = new HashMap<>();
 		for (BasicDBObject item:  groupResults.getMappedResults()) {
 			String fieldValue = item.get("_id").toString();
-			int count;
 			String countAsString = item.get("total").toString();
+
+			int count;
 			if (StringUtils.isBlank(countAsString)){
 				count = 0;
 			} else {
@@ -139,6 +140,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			results.put(fieldValue,count);
 		}
 
+		//Return the map
 		return results;
 	}
 
@@ -246,27 +248,4 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return query;
 	}
 
-//
-//	public static class StatusCount {
-//
-//		private String countedValue;
-//
-//		private long total;
-//
-//		public String getCountedValue() {
-//			return countedValue;
-//		}
-//
-//		public void setCountedValue(String countedValue) {
-//			this.countedValue = countedValue;
-//		}
-//
-//		public long getTotal() {
-//			return total;
-//		}
-//
-//		public void setTotal(long total) {
-//			this.total = total;
-//		}
-//	}
 }

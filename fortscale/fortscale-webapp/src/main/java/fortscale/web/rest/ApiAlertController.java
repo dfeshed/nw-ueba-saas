@@ -256,8 +256,9 @@ public class ApiAlertController extends BaseController {
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 		for (String timeRangeStr : timeRangeAsStr){
-			int lastXDays = Integer.parseInt(timeRangeStr.trim());
 
+			//Calculate start of range time
+			int lastXDays = Integer.parseInt(timeRangeStr.trim());
 			long fromTime = ApiUtils.getStartOfBeforeXDays(lastXDays).getTime();
 
 			//Add statuses
