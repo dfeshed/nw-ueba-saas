@@ -50,10 +50,6 @@ public class SupportingInformationServiceTest {
     @ReplaceWithMock
     DataQueryHelper dataQueryHelper;
 
-	@Autowired
-	@ReplaceWithMock
-	DataQueryRunnerFactory dataQueryRunnerFactory;
-
     @Autowired
     @ReplaceWithMock
     DataQueryRunnerFactory dataQueryRunnerFactory;
