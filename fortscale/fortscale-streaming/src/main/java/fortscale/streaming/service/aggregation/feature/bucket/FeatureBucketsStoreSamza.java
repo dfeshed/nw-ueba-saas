@@ -7,18 +7,25 @@ import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadata;
+import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.utils.logging.Logger;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 @Configurable(preConstruction=true)
 public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
+	
+	private static final Logger logger = Logger.getLogger(FeatureBucketsStoreSamza.class);
 	
 	private static final String STORE_NAME_PROPERTY = "fortscale.feature.buckets.store.name";
 
@@ -27,6 +34,27 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	@Autowired
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
 	
+	@Autowired
+	private FeatureBucketMetadataRepository featureBucketMetadataRepository;
+	
+	@Autowired
+	private BucketConfigurationService bucketConfigurationService;
+	
+	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.event.seconds}")
+	private long levelDbRetentionInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.system.seconds}")
+	private long levelDbRetentionInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.window.in.system.seconds}")
+	private long levelDbRetentionWindowUpdateInSystemSeconds;
+	
+	private long lastLevelDbCleanupSystemEpochTime = 0;
+	
+	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
+	private long storeSyncThresholdInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.store.sync.window.in.system.seconds}")
+	private long storeSyncUpdateWindowInSystemSeconds;
+	
+	private long lastSyncSystemEpochTime = 0;
 	
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
@@ -37,12 +65,50 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		Assert.notNull(featureBucketStore);
 	}
 	
+	public void cleanup() throws Exception{
+		syncAll();
+		levelDbCleanup();
+	}
 	
-	public void sync(FeatureBucketConf featureBucketConf, String bucketId) throws Exception{
+	private void levelDbCleanup(){
+		if(lastLevelDbCleanupSystemEpochTime == 0 || lastLevelDbCleanupSystemEpochTime + levelDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
+			lastLevelDbCleanupSystemEpochTime = System.currentTimeMillis();
+			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
+			//remove from level db those buckets that contains old enough (configured) events and that was synced with mongo before enough (configured) time.
+			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(lastEventEpochTime - levelDbRetentionInEventSeconds, lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds);
+			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
+				featureBucketStore.delete(getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));
+				featureBucketMetadataRepository.delete(featureBucketMetadata);
+			}
+		}
+	}
+	
+	private void syncAll() throws Exception{
+		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
+			lastSyncSystemEpochTime = System.currentTimeMillis();
+			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
+			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(lastEventEpochTime - storeSyncThresholdInEventSeconds);
+			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
+				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketMetadata.getFeatureBucketConfName());
+				boolean isSynced = sync(featureBucketConf, featureBucketMetadata.getBucketId());
+				if(!isSynced){
+					logger.error("failed to sync bucktConfName {}, bucketId {}", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+				}
+				featureBucketMetadata.setSynced(true);
+				featureBucketMetadata.setSyncTime(lastSyncSystemEpochTime);
+				featureBucketMetadataRepository.save(featureBucketMetadata);
+			}
+		}
+	}
+	
+	private boolean sync(FeatureBucketConf featureBucketConf, String bucketId) throws Exception{
+		boolean ret = false;
 		FeatureBucket featureBucket = featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
 		if(featureBucket != null){
 			storeFeatureBucket(featureBucketConf, featureBucket);
+			ret = true;
 		}
+		return ret;
 	}
 
 
@@ -53,48 +119,68 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			return superRet;
 		}
 		
+		featureBucketMetadataRepository.updateFeatureBucketsEndTime(featureBucketConf.getName(), strategyId, newCloseTime);
+		
 		List<FeatureBucket> ret = new ArrayList<>();
 		for(FeatureBucket featureBucket: superRet){
 			FeatureBucket featureBucketSamza = featureBucketStore.get(getBucketKey(featureBucket));
 			featureBucketSamza.setEndTime(newCloseTime);
 			featureBucketStore.put(getBucketKey(featureBucket), featureBucketSamza);
 			ret.add(featureBucketSamza);
-			FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(this, featureBucketConf, featureBucketSamza.getBucketId());
-			dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(featureBucketConf.getDataSources(), featureBucket.getEndTime()+1, featureBucketsTimerListener);
 		}
 		return ret;
 	}
 
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf, String bucketId) {
-		return featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
+		FeatureBucket ret = featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
+		if(ret == null){
+			ret = super.getFeatureBucket(featureBucketConf, bucketId);
+		}
+		
+		return ret;
 	}
 
 	@Override
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String id = featureBucket.getId();
-		String bucketId = featureBucket.getBucketId();
-
-		// Storing the bucket at the first time when it is created (id==null) and after endTime is passed
-		if(id == null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
-			if(id == null){
-				FeatureBucketsTimerListener featureBucketsTimerListener = new FeatureBucketsTimerListener(this, featureBucketConf, bucketId);
-				dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(featureBucketConf.getDataSources(), featureBucket.getEndTime()+1, featureBucketsTimerListener);
-			}
-			super.storeFeatureBucket(featureBucketConf, featureBucket);
-
+		
+		if(id == null){
+			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
+		} else if(featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
+			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
+		} else{
+			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);
 		}
-
-		if(id==null) {
-			// At the first time the bucket is stored in mongo it gets an id, so we
-			// need to get the updated bucket with the id otherwise when coming to save
-			// the bucket in mongo next time it will throw com.mongodb.MongoException$DuplicateKey exception
-			featureBucket = super.getFeatureBucket(featureBucketConf, bucketId);
-		}
-
+	}
+	
+	private void storeFeatureBucketForTheFirstTime(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
+		FeatureBucketMetadata featureBucketMetadata = new FeatureBucketMetadata(featureBucket);
+		featureBucketMetadataRepository.save(featureBucketMetadata);
+		super.storeFeatureBucket(featureBucketConf, featureBucket);
+		// At the first time the bucket is stored in mongo it gets an id, so we
+		// need to get the updated bucket with the id otherwise when coming to save
+		// the bucket in mongo next time it will throw com.mongodb.MongoException$DuplicateKey exception
+		featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
 	}
+	
+	private void updateFeatureBucketBeforeEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
+		String key = getBucketKey(featureBucket);
+		featureBucketStore.put(key, featureBucket);
+	}
+	
+	private void updateFeatureBucketAfterEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
+		super.storeFeatureBucket(featureBucketConf, featureBucket);
+		String key = getBucketKey(featureBucket);
+		FeatureBucket old = featureBucketStore.get(key);
+		if(old != null){
+			featureBucketStore.put(key, featureBucket);
+		}
+	}
+	
+	
 
 	private String getBucketKey(FeatureBucket featureBucket) {
 		return getBucketKey(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId());

@@ -3,12 +3,14 @@ package fortscale.services.dataqueries.querydto;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
+import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.utils.CustomedFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +44,7 @@ public class DataQueryHelper {
      * @param dataEntityLimit
      * @return
      */
+    //TODO - Enable to create DataQueryDTO without sort order
     public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<QuerySort> querySortList, int dataEntityLimit){
         //entity to forward
         DataQueryDTO dataQueryDTO = new DataQueryDTO();
@@ -72,6 +75,10 @@ public class DataQueryHelper {
      * @return
      */
     private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity){
+        return createQueryFields(defaultFieldsString, dataEntity, true);
+    }
+
+    private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity, boolean setAlias){
         List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
         String[] defaultFields = defaultFieldsString.split(",");
         for (String field : defaultFields) {
@@ -82,7 +89,9 @@ public class DataQueryHelper {
                 dataQueryField.setEntity(dataEntity);
             } else {
                 dataQueryField.setId(field);
-                dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+                if (setAlias) {
+                    dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+                }
             }
 
             defaultFieldsList.add(dataQueryField);
@@ -164,6 +173,8 @@ public class DataQueryHelper {
         return customTerm;
     }
 
+
+
     /**
      * Get the field name in an entity and return the display name for it.
      */
@@ -173,7 +184,7 @@ public class DataQueryHelper {
         DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
         DataEntityField dataEntityField = dataEntity.getField(field);
         if (dataEntityField!=null && dataEntityField.getName()!=null)
-            return dataEntityField.getName();
+        return dataEntityField.getName();
         else
             return field;
 
@@ -195,6 +206,70 @@ public class DataQueryHelper {
         updateTimestampTerm.setField(dataQueryUpdateTimestampField);
         return updateTimestampTerm;
     }
+
+    /**
+     * This method will get fields as CSV and generate the groupBy DTO for the group by clause
+     * @param groupByFieldAsCSV - the fields in CSV
+     * @param dataEntity - the data entity
+     * @return
+     */
+    public List<DataQueryField> createGrouByClause (String groupByFieldAsCSV,String dataEntity,boolean withAlias)
+    {
+        return createQueryFields(groupByFieldAsCSV, dataEntity, withAlias);
+    }
+
+
+
+    /**
+     * This method will generate a count filed for a query
+     * @param fieldAlias
+     * @param countParams
+     * @return
+     */
+    public DataQueryField createCountFunc (String fieldAlias,HashMap<String, String> countParams){
+
+         // Create the count(*) field:
+         DataQueryField countField = new DataQueryField();
+         countField.setAlias(fieldAlias);
+         FieldFunction countFunction = new FieldFunction();
+         countFunction.setName(QueryFieldFunction.count);
+         countFunction.setParams(countParams);
+         countField.setFunc(countFunction);
+
+        return countField;
+
+    }
+
+
+	/**
+	 * This method will set group by clause to a given data query DTO
+	 * @param groupByFields
+	 * @param dataQuery
+	 */
+    public void  setGroupByClause(List<DataQueryField> groupByFields,DataQueryDTO dataQuery){
+
+        dataQuery.setGroupBy(groupByFields);
+
+    }
+
+	/**
+	 * This method will set aggregate function  to a given data query DTO
+	 * @param funcField
+	 * @param dataQueryDTO
+	 */
+    public void setFuncFieldToQuery(DataQueryField funcField , DataQueryDTO dataQueryDTO){
+
+        dataQueryDTO.getFields().add(funcField);
+
+    }
+
+	public void removeAlias(DataQueryDTO dataQueryDTO)
+	{
+		for (DataQueryField field : dataQueryDTO.getFields())
+		{
+			field.setAlias(null);
+		}
+	}
 
 
 
