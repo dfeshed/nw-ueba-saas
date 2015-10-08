@@ -2,7 +2,6 @@ package fortscale.streaming.service.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-import fortscale.entity.event.EntityEventBuilder;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataStore;

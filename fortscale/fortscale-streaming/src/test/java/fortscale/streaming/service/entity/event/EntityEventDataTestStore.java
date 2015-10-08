@@ -1,5 +1,7 @@
-package fortscale.entity.event;
+package fortscale.streaming.service.entity.event;
 
+import fortscale.entity.event.EntityEventData;
+import fortscale.entity.event.EntityEventDataStore;
 import org.apache.commons.lang.StringUtils;
 import java.util.*;
 
