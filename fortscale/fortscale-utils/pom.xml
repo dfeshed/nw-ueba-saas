@@ -70,6 +70,7 @@
 		<perf4j.version>0.9.7</perf4j.version>
 		<commons-jexl.version>1.1</commons-jexl.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
+		<org-json.version>20140107</org-json.version>
 		<!-- maven plugins -->
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
@@ -120,6 +121,11 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>${commons-pool.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${org-json.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.splunk</groupId>

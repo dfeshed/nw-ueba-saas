@@ -3,8 +3,6 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -19,7 +17,6 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventService;
@@ -35,6 +32,7 @@ import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStor
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.utils.ConversionUtils;
+import net.minidev.json.JSONObject;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -52,7 +50,7 @@ public class AggregatorManager {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 
-	private FeatureBucketsStore featureBucketsStore;
+	private FeatureBucketsStoreSamza featureBucketsStore;
 	@Autowired
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
 	@Autowired
@@ -122,6 +120,7 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
+		featureBucketsStore.cleanup();
 	}
 
 	public void close() throws Exception {
