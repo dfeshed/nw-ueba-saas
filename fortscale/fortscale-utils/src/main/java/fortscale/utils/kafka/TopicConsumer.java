@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.*;
 
 /**
  * this class handles all the topic consumptions from kafka - e.g. read metrics topic.
@@ -52,7 +51,7 @@ public class TopicConsumer {
 	 * @throws Exception
      *
 	 */
-	public boolean run(String jobToCheck, String headerToCheck, String metricsToExtract,int timeoutInSeconds,
+	/*public boolean run(String jobToCheck, String headerToCheck, String metricsToExtract,int timeoutInSeconds,
 					   int successIterationsUntilStabilize)throws Exception {
         boolean ok = false;
 		ExecutorService exService = Executors.newSingleThreadExecutor();
@@ -73,7 +72,7 @@ public class TopicConsumer {
 			exService.shutdownNow();
 		}
 		return ok;
-	}
+	}*/
 
 	/**
      *
@@ -81,7 +80,7 @@ public class TopicConsumer {
 	 * this is because if there is an error on the topic, the consumer will wait endlessly.
      *
 	 */
-	private class SamzaMetricsReader implements Callable {
+	/*private class SamzaMetricsReader implements Callable {
 
 		String jobToCheck;
 		String headerToCheck;
@@ -99,7 +98,7 @@ public class TopicConsumer {
 		public Boolean call()throws Exception {
 			return readSamzaMetrics(jobToCheck, headerToCheck, metricsToExtract, successIterationsUntilStabilize);
 		}
-	}
+	}*/
 
     /**
      * Consume messages from samza 'metrics' topic. get the relevant metrics, and wait for them to stabilize.
@@ -110,7 +109,7 @@ public class TopicConsumer {
      * @param metricsToExtract
      * @return true if the metrics have stabilized.
      */
-    public String readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
+    public Object readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
         int topicCount = 1;
         Map<String, Integer> topicCountMap = new HashMap();
         topicCountMap.put(topic, new Integer(topicCount));
@@ -131,16 +130,7 @@ public class TopicConsumer {
         return "";
     }
 
-	/**
-	 * Consume messages from samza 'metrics' topic. get the relevant metrics, and wait for them to stabilize.
-	 * wait to stabilize - when we get two consecutive identical metricsToExtract, means we are done -
-     * all messages have been read. this is a bit naive approach, but satisfy.
-	 * @param jobToCheck
-	 * @param headerToCheck
-	 * @param metricsToExtract
-	 * @return true if the metrics have stabilized.
-	 */
-	private boolean readSamzaMetrics(String jobToCheck, String headerToCheck, String metricsToExtract,
+	/*private boolean readSamzaMetrics(String jobToCheck, String headerToCheck, String metricsToExtract,
                                      int successIterationsUntilStabilize) {
 
 		int topicCount = 1;
@@ -175,7 +165,7 @@ public class TopicConsumer {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	private static ConsumerConfig createConsumerConfig(String a_zookeeper, String a_groupId) {
 		Properties props = new Properties();
@@ -195,7 +185,7 @@ public class TopicConsumer {
 	 * @return data
 	 */
 	public static Map <String, String> getMetricData(String metric, String header,String metricsToExtract){
-		Map <String, String> metricaData = new HashMap<String, String>();
+		Map <String, String> metricaData = new HashMap();
         if (metric.contains(header)) { // otherwise, irrelevant metric
             String currValue;
             try {
