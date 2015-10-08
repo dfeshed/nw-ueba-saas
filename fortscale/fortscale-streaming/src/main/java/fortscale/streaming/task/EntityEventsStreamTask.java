@@ -2,8 +2,8 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.entity.event.EntityEventDataStore;
-import fortscale.entity.event.EntityEventDataStoreSamza;
-import fortscale.entity.event.EntityEventService;
+import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
+import fortscale.streaming.service.entity.event.EntityEventService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
