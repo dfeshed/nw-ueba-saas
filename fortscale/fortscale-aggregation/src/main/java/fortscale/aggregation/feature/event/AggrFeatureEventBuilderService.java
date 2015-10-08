@@ -209,28 +209,28 @@ public class AggrFeatureEventBuilderService {
     private void setAggregatedFeatureDataSource(JSONObject event, String dataSource){
     	event.put(dataSourceFieldName, dataSource);
     }
-    private String getAggregatedFeatureDataSource(JSONObject event){
+    public String getAggregatedFeatureDataSource(JSONObject event){
     	return event.getAsString(dataSourceFieldName);
     }
     
     private void setAggregatedFeatureType(JSONObject event, String aggregatedFeatureType){
     	event.put(AggrEvent.EVENT_FIELD_FEATURE_TYPE, aggregatedFeatureType);
     }
-    private String getAggregatedFeatureType(JSONObject event){
+    public String getAggregatedFeatureType(JSONObject event){
     	return event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_TYPE);
     }
     
     private void setAggregatedFeatureName(JSONObject event, String aggregatedFeatureName){
     	event.put(aggrFeatureNameFieldName, aggregatedFeatureName);
     }
-    private String getAggregatedFeatureName(JSONObject event){
+    public String getAggregatedFeatureName(JSONObject event){
     	return event.getAsString(aggrFeatureNameFieldName);
     }
     
     private void setAggregatedFeatureValue(JSONObject event, Double aggregatedFeatureValue){
     	event.put(aggrFeatureValueFieldName, aggregatedFeatureValue);
     }
-    private Double getAggregatedFeatureValue(JSONObject event){
+    public Double getAggregatedFeatureValue(JSONObject event){
     	return ConversionUtils.convertToDouble(event.get(aggrFeatureValueFieldName));
     }
     
@@ -247,7 +247,7 @@ public class AggrFeatureEventBuilderService {
     private void setAggregatedFeatureBucketConfName(JSONObject event, String bucketConfName){
     	event.put(bucketConfNameFieldName, bucketConfName);
     }
-    private String getAggregatedFeatureBucketConfName(JSONObject event){
+    public String getAggregatedFeatureBucketConfName(JSONObject event){
     	return event.getAsString(bucketConfNameFieldName);
     }
     
@@ -255,28 +255,28 @@ public class AggrFeatureEventBuilderService {
     	event.put(contextFieldName, context);
     }
     @SuppressWarnings("unchecked")
-	private Map<String, String> getAggregatedFeatureContext(JSONObject event){
+    public Map<String, String> getAggregatedFeatureContext(JSONObject event){
     	return (Map<String, String>)event.get(contextFieldName);
     }
     
     private void setAggregatedFeatureCreationEpochTime(JSONObject event, Long creationEpochTime){
     	event.put(AggrEvent.EVENT_FIELD_CREATION_EPOCHTIME, creationEpochTime);
     }
-    private Long getAggregatedFeatureCreationEpochTime(JSONObject event){
+    public Long getAggregatedFeatureCreationEpochTime(JSONObject event){
     	return event.getAsNumber(AggrEvent.EVENT_FIELD_CREATION_EPOCHTIME).longValue();
     }
     
     private void setAggregatedFeatureStartTimeUnix(JSONObject event, Long startTimeUnix){
     	event.put(AggrEvent.EVENT_FIELD_START_TIME_UNIX, startTimeUnix);
     }
-    private Long getAggregatedFeatureStartTimeUnix(JSONObject event){
+    public Long getAggregatedFeatureStartTimeUnix(JSONObject event){
     	return event.getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue();
     }
     
     private void setAggregatedFeatureEndTimeUnix(JSONObject event, Long endTimeUnix){
     	event.put(AggrEvent.EVENT_FIELD_END_TIME_UNIX, endTimeUnix);
     }
-    private Long getAggregatedFeatureEndTimeUnix(JSONObject event){
+    public Long getAggregatedFeatureEndTimeUnix(JSONObject event){
     	return event.getAsNumber(AggrEvent.EVENT_FIELD_END_TIME_UNIX).longValue();
     }
     
@@ -286,14 +286,14 @@ public class AggrFeatureEventBuilderService {
 		event.put(AggrEvent.EVENT_FIELD_DATA_SOURCES, dataSourcesJsonArray);
     }
     @SuppressWarnings("unchecked")
-	private List<String> getAggregatedFeatureDataSources(JSONObject event){
+    public List<String> getAggregatedFeatureDataSources(JSONObject event){
     	return (List<String>) event.get(AggrEvent.EVENT_FIELD_DATA_SOURCES);
     }
     
     public void setAggregatedFeatureScore(JSONObject event, Double aggregatedFeatureScore){
     	event.put(AggrEvent.EVENT_FIELD_SCORE, aggregatedFeatureScore);
     }
-    private Double getAggregatedFeatureScore(JSONObject event){
+    public Double getAggregatedFeatureScore(JSONObject event){
     	return ConversionUtils.convertToDouble(event.get(AggrEvent.EVENT_FIELD_SCORE));
     }
     
