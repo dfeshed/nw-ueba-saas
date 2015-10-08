@@ -48,13 +48,20 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private BasicDBObject mongoQuery;
 	private DBCollection mongoCollection;
 	private List<KafkaEventsWriter> streamWriters;
+    private String jobToMonitor;
+    private String jobClassToMonitor;
     private int batchSize;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-        batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch_size", DEFAULT_BATCH_SIZE);
+        batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch", DEFAULT_BATCH_SIZE);
+        //TODO - remove the constants after testing
+        //jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
+        jobToMonitor = "alert-generator-task";
+        //jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
+        jobClassToMonitor = "fortscale.streaming.task.AlertGeneratorTask";
         if (map.containsKey("filters")) {
             try {
                 mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
@@ -82,24 +89,25 @@ public class MongoToKafkaJob extends FortscaleJob {
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         int counter = 0;
-        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
         while (counter < totalItems) {
             List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
-            long lastMessageTime = 0;
+            String lastMessageTime = "";
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
                 if (i == results.size() - 1) {
-                    lastMessageTime = (long)result.get("startDate");
+                    //TODO - generalize this
+                    lastMessageTime = result.get("startDate").toString();
                 }
                 String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
                 for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
             }
+            //throttling
             while (true) {
-                //TODO - test this
-                Object time = topicConsumer.readSamzaMetric("hdfs-events-writer-task",
-                        "fortscale.streaming.task.HDFSWriterStreamTask", "sshscores-events-skip-count");
+                TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+                //TODO - generalize this
+                Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor, "date_time_unix");
                 if (time.equals(lastMessageTime + "")) {
                     break;
                 }

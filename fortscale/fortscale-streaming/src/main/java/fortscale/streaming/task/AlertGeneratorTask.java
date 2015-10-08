@@ -11,7 +11,10 @@ import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
 import fortscale.streaming.service.SpringService;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -26,6 +29,7 @@ import java.io.File;
 import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.*;
+import static fortscale.utils.ConversionUtils.convertToLong;
 
 /**
  * Created by danal on 16/06/2015.
@@ -49,6 +53,8 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	 */
 	protected ObjectMapper mapper = new ObjectMapper();
 
+	private Counter lastTimestampCount;
+
 	@Override protected void wrappedInit(Config config, TaskContext context) {
 
 		// creating the esper configuration
@@ -60,8 +66,12 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 		createEsperConfiguration(config);
-		createInputTopicMapping(config,context);
+		createInputTopicMapping(config, context);
 		updateEsperFromCache();
+
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				String.format("%s-%s-last-message-epochtime", "alert", "generator"));
+
 	}
 
 
@@ -82,6 +92,13 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 					KeyValueStore keyValueStore = inputTopicMapping.get(inputTopic).getKeyValueStore();
 					keyValueStore.put(info.toString(), info);
 				}
+
+				// parse the message into json
+				String messageText = (String) envelope.getMessage();
+				JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+				Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).
+						getTimeStampField()));
+				lastTimestampCount.set(endTimestampSeconds);
 			}
 		}
 		else{
@@ -156,6 +173,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 			String inputTopic = getConfigString(config, String.format("fortscale.input.info.topic.%s", inputInfo));
 			Class clazz = null;
+			String timeStampField = null;
 			EventWrapper eventWrapper = null;
 			KeyValueStore keyValueStore = null;
 			List<String> dynamicStatements = null;
@@ -185,7 +203,10 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			if (isConfigContainKey(config, String.format("fortscale.input.info.dynamic-statements.%s", inputInfo))) {
 				dynamicStatements = getConfigStringList(config, String.format("fortscale.input.info.dynamic-statements.%s", inputInfo));
 			}
-			inputTopicMapping.put(inputTopic, new TopicConfiguration(clazz, eventWrapper, keyValueStore, dynamicStatements));
+			if (isConfigContainKey(config, String.format("fortscale.input.info.timestampfield.%s", inputInfo))) {
+				timeStampField = getConfigString(config, String.format("fortscale.input.info.timestampfield.%s", inputInfo));
+			}
+			inputTopicMapping.put(inputTopic, new TopicConfiguration(clazz, eventWrapper, keyValueStore, dynamicStatements, timeStampField));
 		}
 	}
 
@@ -260,11 +281,15 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 		private List<String> dynamicStatements;
 
-		public TopicConfiguration(Class clazz, EventWrapper eventWrapper, KeyValueStore keyValueStore, List<String> dynamicStatements) {
+		private String timeStampField;
+
+		public TopicConfiguration(Class clazz, EventWrapper eventWrapper, KeyValueStore keyValueStore,
+								  List<String> dynamicStatements, String timeStampField) {
 			this.clazz = clazz;
 			this.eventWrapper = eventWrapper;
 			this.keyValueStore = keyValueStore;
 			this.dynamicStatements = dynamicStatements;
+			this.timeStampField = timeStampField;
 		}
 
 		public Class getClazz() {
@@ -297,6 +322,14 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 		public void setDynamicStatements(List<String> dynamicStatements) {
 			this.dynamicStatements = dynamicStatements;
+		}
+
+		public String getTimeStampField() {
+			return timeStampField;
+		}
+
+		public void setTimeStampField(String timeStampField) {
+			this.timeStampField = timeStampField;
 		}
 	}
 
