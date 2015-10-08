@@ -21,8 +21,8 @@ public class EntityEventTest {
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getBase_score()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getEntity_event_value()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getScore() ));
-        Date endTime = new Date(1435179599000L);
-        Assert.assertEquals(endTime, entityEvent.getEnd_time());
+        Date creationTime = new Date(1444297230000L);
+        Assert.assertEquals(creationTime, entityEvent.getCreation_time());
         Map<String, String> context = new HashMap<>();
         context.put("normalized_username", "normalized_username_14060866");
         Assert.assertEquals(context, entityEvent.getContext());
