@@ -110,29 +110,6 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     }
 
 
-
-
-    private Term getDateRangeTerm(long startTime, long endTime) {
-        return dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startTime), TimestampUtils.convertToSeconds(endTime));
-    }
-
-    private Term getTheContextTerm(String normalizedContextType, String contextValue)
-	{
-		Term term = null;
-//		switch (normalizedContextType)
-//		{
-//			case "normalized_username" :
-				term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
-//				break;
-//			default:
-//				break;
-//
-//		}
-		return term;
-
-	}
-
-
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
 
         boolean contextAndFeatureMatch = isContextAndFeatureMatch(evidence, featureName);

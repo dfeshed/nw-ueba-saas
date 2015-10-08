@@ -9,8 +9,10 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -49,6 +51,14 @@ public class SupportingInformationServiceTest {
     DataQueryHelper dataQueryHelper;
 
     @Autowired
+    @ReplaceWithMock
+    DataQueryRunnerFactory dataQueryRunnerFactory;
+
+    @Autowired
+    @ReplaceWithMock
+    MySqlQueryRunner mySqlQueryRunner;
+
+    @Autowired
     SupportingInformationService supportingInformationService;
 
     @Mock
@@ -61,6 +71,7 @@ public class SupportingInformationServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(mySqlQueryRunner);
     }
 
     @Test

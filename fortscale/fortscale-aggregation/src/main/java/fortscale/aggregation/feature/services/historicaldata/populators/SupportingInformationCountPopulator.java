@@ -101,11 +101,6 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
      * @return
      */
     private Map<SupportingInformationKey, Double> createLastDayBucket(String normalizedContextType, String contextValue, long endTime, String dataEntity) {
-        //TODO: remove last day and create a new FeatureBucket from Impala
-        //example of query for destination_machine in authentication_score table:
-        //select normalized_username, normalized_dst_machine, count( normalized_dst_machine)  from authenticationscores where normalized_username = 'mac83a@somebigcompany.com' group by normalized_dst_machine,normalized_username;
-
-//        FeatureBucket featureBucket = new FeatureBucket();
 
         String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
 
