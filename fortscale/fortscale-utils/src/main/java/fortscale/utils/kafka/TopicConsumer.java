@@ -184,7 +184,7 @@ public class TopicConsumer {
 	 * @param metricsToExtract requested data
 	 * @return data
 	 */
-	public static Map <String, String> getMetricData(String metric, String header,String metricsToExtract){
+	public static Map <String, String> getMetricData(String metric, String header, String metricsToExtract) {
 		Map <String, String> metricaData = new HashMap();
         if (metric.contains(header)) { // otherwise, irrelevant metric
             String currValue;
@@ -194,9 +194,8 @@ public class TopicConsumer {
                 //mark which job's metrics we've just read (it's in the header of each metric)
                 metricaData.put("job-name", bigJSON.getJSONObject(headerString).getString("job-name"));
                 //extract the relevant data from the metrics json
-                    //find the relevant container
-                    currValue = innerJSON.getJSONObject(header).getString(metricsToExtract);
-                    metricaData.put(metricsToExtract, currValue);
+                currValue = innerJSON.getJSONObject(header).getString(metricsToExtract);
+                metricaData.put(metricsToExtract, currValue);
             } catch(JSONException je) {
                 logger.error(je.getMessage());
             }
