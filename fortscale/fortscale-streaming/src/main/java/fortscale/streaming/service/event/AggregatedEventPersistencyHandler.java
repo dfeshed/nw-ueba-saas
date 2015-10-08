@@ -59,11 +59,9 @@ public class AggregatedEventPersistencyHandler implements EventPersistencyHandle
             long retentionTimeInSeconds = retentionStrategy.getRetentionInSeconds();
 
             mongoTemplate.createCollection(collectionName);
-            mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_START_TIME_UNIX, Sort.Direction.DESC));
-            mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_END_TIME_UNIX, Sort.Direction.DESC));
-            mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInSeconds, TimeUnit.SECONDS).named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME).on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(AggrEvent.EVENT_FIELD_CONTEXT, Sort.Direction.DESC));
+            mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInSeconds, TimeUnit.SECONDS).named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME).on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
             collectionNames.add(collectionName);
         }
 
