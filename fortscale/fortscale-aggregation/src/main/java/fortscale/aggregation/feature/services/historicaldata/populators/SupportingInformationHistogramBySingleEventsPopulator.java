@@ -8,13 +8,20 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
+import fortscale.services.dataentity.QueryFieldFunction;
+import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract class with generic implementation for supporting information histogram populator of single events
@@ -36,6 +43,12 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
     @Autowired
     protected FeatureBucketsStore featureBucketsStore;
+
+	@Autowired
+	DataQueryHelper dataQueryHelper;
+
+    @Autowired
+    protected DataQueryRunnerFactory dataQueryRunnerFactory;
 
     public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
@@ -74,7 +87,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
         if (bucketConfig != null) {
-            logger.info("Using bucket configuration {}", bucketConfig.getName());
+            logger.debug("Using bucket configuration {}", bucketConfig.getName());
         }
         else {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
@@ -82,14 +95,16 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         String bucketStrategyName = bucketConfig.getStrategyName();
 
-        logger.info("Bucket strategy name = {}", bucketStrategyName);
+        logger.debug("Bucket strategy name = {}", bucketStrategyName);
 
         Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
+        //remove one day from bucket end. replace it with data from Impala
+        Long bucketEndTime = TimestampUtils.toStartOfDay(evidenceEndTime);
+        String normalizedContextType = getNormalizedContextType(contextType);
+        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
 
-        List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, getNormalizedContextType(contextType), contextValue, bucketStartTime, evidenceEndTime);
-
-        logger.info("Found {} relevant featureName buckets:", featureBuckets.size());
-        logger.info(featureBuckets.toString());
+        logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
+        logger.debug(featureBuckets.toString());
 
         return featureBuckets;
     }
