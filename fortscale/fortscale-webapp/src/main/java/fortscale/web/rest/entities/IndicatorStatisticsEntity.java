@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class IndicatorStatisticsEntity {
 
-    private String TIME_RANGE = "timeRange";
+    private String TIME_RANGE = "time_range";
     private String COUNT = "count";
     private List<Map<String,Long>> indicatorCount = new ArrayList<>();
 

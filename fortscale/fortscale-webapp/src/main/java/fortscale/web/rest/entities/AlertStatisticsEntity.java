@@ -19,7 +19,7 @@ public class AlertStatisticsEntity {
 
     private final static String OPENED = "Open";
     private final static String CLOSED = "Closed";
-    private String TIME_RANGE = "timeRange";
+    private String TIME_RANGE = "time_range";
 
     private List<Map<String,Integer>> alertStatus = new ArrayList<>();
     private List<Map<String,Integer>> alertOpenSeverity = new ArrayList<>();

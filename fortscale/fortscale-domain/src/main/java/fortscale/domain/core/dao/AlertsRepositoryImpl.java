@@ -41,6 +41,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	@Autowired private MongoTemplate mongoTemplate;
 
 	private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
+	private static  String TOTAL_FIELD_NAME = "total";
 
 	/**
 	 * returns all alerts in the collection in a json object represented by @Alerts
@@ -117,8 +118,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		//Create aggregation on fieldName, for all alerts which started after "afterDate").
 		Aggregation agg = Aggregation.newAggregation(
 				match(Criteria.where("startDate").gte(afterDate)),
-				group(fieldName).count().as("total"),
-				project("total").and(fieldName).previousOperation()
+				group(fieldName).count().as(TOTAL_FIELD_NAME),
+				project(TOTAL_FIELD_NAME).and(fieldName).previousOperation()
 		);
 
 
@@ -128,8 +129,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
 		Map<String, Integer> results = new HashMap<>();
 		for (BasicDBObject item:  groupResults.getMappedResults()) {
-			String fieldValue = item.get("_id").toString();
-			String countAsString = item.get("total").toString();
+			String fieldValue = item.get(fieldName).toString();
+			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
 
 			int count;
 			if (StringUtils.isBlank(countAsString)){
