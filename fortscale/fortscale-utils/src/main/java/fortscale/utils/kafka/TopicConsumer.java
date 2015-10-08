@@ -109,7 +109,7 @@ public class TopicConsumer {
      * @param metricsToExtract
      * @return true if the metrics have stabilized.
      */
-    public Object readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
+    public String readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
         int topicCount = 1;
         Map<String, Integer> topicCountMap = new HashMap();
         topicCountMap.put(topic, new Integer(topicCount));
