@@ -34,7 +34,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private final String DATE_DELIMITER = ":::";
     //TODO - change that
     private final int DEFAULT_BATCH_SIZE = 1;
-    private final int METRIC_CHECK_RETRIES = 15;
+    private final int CHECK_RETRIES = 15;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -93,8 +93,10 @@ public class MongoToKafkaJob extends FortscaleJob {
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         int counter = 0;
+        //fields to ignore
         DBObject removeProjection = new BasicDBObject("_id", 0);
         removeProjection.put("_class", 0);
+        removeProjection.put("retentionDate", 0);
         while (counter < totalItems) {
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).toArray();
@@ -111,7 +113,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
             //throttling
             int currentTry = 0;
-            while (currentTry < METRIC_CHECK_RETRIES) {
+            while (currentTry < CHECK_RETRIES) {
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor));
