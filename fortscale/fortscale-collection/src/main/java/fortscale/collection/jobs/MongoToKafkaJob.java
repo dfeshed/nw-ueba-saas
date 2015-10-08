@@ -92,8 +92,11 @@ public class MongoToKafkaJob extends FortscaleJob {
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         int counter = 0;
+        DBObject removeIdProjection = new BasicDBObject("_id", 0);
+        //DBObject removeClassProjection = new BasicDBObject("_class", 0);
         while (counter < totalItems) {
-            List<DBObject> results = mongoCollection.find(mongoQuery).skip(counter).limit(batchSize).toArray();
+            List<DBObject> results = mongoCollection.find(mongoQuery, removeIdProjection).skip(counter).
+                    limit(batchSize).toArray();
             long lastMessageTime = 0;
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
@@ -132,8 +135,6 @@ public class MongoToKafkaJob extends FortscaleJob {
      * @return
      */
     private String manipulateMessage(String collection, DBObject message) {
-        Object _message = message.removeField("_id");
-        message.removeField("_class");
         //TODO - manipulate according to collection name?
         return message.toString();
     }
@@ -162,8 +163,6 @@ public class MongoToKafkaJob extends FortscaleJob {
                 }
             }
         }
-        searchQuery.put("_id", 0);
-        searchQuery.put("_class", 0);
 		return searchQuery;
 	}
 
