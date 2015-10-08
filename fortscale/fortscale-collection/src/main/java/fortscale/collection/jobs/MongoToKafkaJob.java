@@ -35,6 +35,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     //TODO - change that
     private final int DEFAULT_BATCH_SIZE = 1;
     private final int CHECK_RETRIES = 15;
+    private final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -92,12 +93,14 @@ public class MongoToKafkaJob extends FortscaleJob {
 		logger.debug("Running Mongo to Kafka job");
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
+        logger.debug("forwarding {} documents", totalItems);
         int counter = 0;
         //fields to ignore
         DBObject removeProjection = new BasicDBObject("_id", 0);
         removeProjection.put("_class", 0);
         removeProjection.put("retentionDate", 0);
         while (counter < totalItems) {
+            logger.debug("handling items {} to {}", counter, batchSize + counter);
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).toArray();
             long lastMessageTime = 0;
@@ -114,16 +117,20 @@ public class MongoToKafkaJob extends FortscaleJob {
             //throttling
             int currentTry = 0;
             while (currentTry < CHECK_RETRIES) {
+                logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor));
                 if (time != null && (long)time == lastMessageTime) {
+                    logger.debug("last message in batch processed, moving to next batch");
                     break;
                 }
-                Thread.sleep(1000 * 60);
+                logger.debug("last message not yet processed, waiting {} milliseconds...");
+                Thread.sleep(MILLISECONDS_TO_WAIT);
             }
             counter += batchSize;
         }
+        logger.debug("shutting down");
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
