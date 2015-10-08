@@ -30,6 +30,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public static final String ENTITY_EVENT_CONTEXT_FILED_NAME = "context";
 	public static final String ENTITY_EVENT_CONTEXT_ID_FILED_NAME = "contextId";
 	public static final String ENTITY_EVENT_END_TIME_UNIX_FILED_NAME = "end_time_unix";
+	public static final String ENTITY_EVENT_END_TIME_FILED_NAME = "end_time";
 	public static final String ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME = "creation_epochtime";
 	public static final String ENTITY_EVENT_TYPE_FILED_NAME = "entity_event_type";
 	public static final String ENTITY_EVENT_DATE_TIME_UNIX_FILED_NAME = "date_time_unix";
@@ -50,7 +51,9 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
 	private String contextId;
 	@Field(ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
-	private Date end_time_unix;
+	private long  end_time_unix;
+	@Field(ENTITY_EVENT_END_TIME_FILED_NAME)
+	private Date end_time;
 	@Field(ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME)
 	private long creation_epochtime;
 	@Field(ENTITY_EVENT_TYPE_FILED_NAME)
@@ -69,7 +72,8 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.score = score;
 		this.context = context;
 		this.contextId = contextId;
-		this.end_time_unix = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix));
+		this.end_time_unix = end_time_unix;
+		this.end_time = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix));
 		this.creation_epochtime = creation_epochtime;
 		this.entity_event_type = entity_event_type;
 		this.date_time_unix = date_time_unix;
@@ -120,12 +124,17 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.context = context;
 	}
 
-	public long getEnd_time_unix() {
-		return TimestampUtils.convertToSeconds(end_time_unix.getTime());
+	public Date getEnd_time() {
+		return end_time;
 	}
 
-	public void setEnd_time_unix(long end_time_unix_sec) {
-		this.end_time_unix = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix_sec));
+	public long getEnd_time_unix() {
+		return end_time_unix;
+	}
+
+	public void setEnd_time_unix(long end_time_unix) {
+		this.end_time_unix = end_time_unix;
+		this.end_time = new Date(TimestampUtils.convertToMilliSeconds(end_time_unix));
 	}
 
 	public long getCreation_epochtime() {

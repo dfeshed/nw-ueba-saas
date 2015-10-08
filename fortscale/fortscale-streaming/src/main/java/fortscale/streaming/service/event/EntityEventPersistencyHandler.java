@@ -5,6 +5,7 @@ import fortscale.streaming.service.aggregation.entity.event.EntityEventConf;
 import fortscale.streaming.service.aggregation.entity.event.EntityEventConfService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -51,12 +53,14 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 			Integer retentionTimeInDays = entityEventConf.getDaysToRetainDocument();
 
 			mongoTemplate.createCollection(collectionName);
-			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS).on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, Sort.Direction.DESC));
+			mongoTemplate.indexOps(collectionName).ensureIndex(
+					new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS)
+							.named(EntityEvent.ENTITY_EVENT_END_TIME_FILED_NAME)
+							.on(EntityEvent.ENTITY_EVENT_END_TIME_FILED_NAME, Sort.Direction.DESC));
 			collectionNames.add(collectionName);
 		}
 
-		EntityEvent entityEvent = null;
-		entityEvent = EntityEvent.buildEntityEvent(event);
+		EntityEvent entityEvent = EntityEvent.buildEntityEvent(event);
 		mongoTemplate.save(entityEvent, collectionName);
 	}
 

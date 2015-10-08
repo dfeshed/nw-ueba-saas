@@ -5,6 +5,7 @@ import net.minidev.json.JSONValue;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +16,13 @@ public class EntityEventTest {
     public void test_deserialization() throws Exception{
         JSONObject entityEventJsonObj = (JSONObject)JSONValue.parse(ENTITY_EVENT_JSON);
         EntityEvent entityEvent = EntityEvent.buildEntityEvent(entityEventJsonObj);
-        System.out.println(entityEvent);
         Assert.assertEquals(1435176000, entityEvent.getStart_time_unix());
         Assert.assertEquals("normalized_username_normalized_username_14060866", entityEvent.getContextId());
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getBase_score()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getEntity_event_value()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getScore() ));
+        Date endTime = new Date(1435179599000L);
+        Assert.assertEquals(endTime, entityEvent.getEnd_time());
         Map<String, String> context = new HashMap<>();
         context.put("normalized_username", "normalized_username_14060866");
         Assert.assertEquals(context, entityEvent.getContext());
