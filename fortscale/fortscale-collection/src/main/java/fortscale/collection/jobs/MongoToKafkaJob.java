@@ -34,6 +34,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private final String DATE_DELIMITER = ":::";
     //TODO - change that
     private final int DEFAULT_BATCH_SIZE = 1;
+    private final int METRIC_CHECK_RETRIES = 15;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -109,14 +110,13 @@ public class MongoToKafkaJob extends FortscaleJob {
                 for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
             }
             //throttling
-            while (true) {
+            int currentTry = 0;
+            while (currentTry < METRIC_CHECK_RETRIES) {
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor));
-                if (time != null) {
-                    if ((long)time == lastMessageTime) {
-                        break;
-                    }
+                if (time != null && (long)time == lastMessageTime) {
+                    break;
                 }
                 Thread.sleep(1000 * 60);
             }
