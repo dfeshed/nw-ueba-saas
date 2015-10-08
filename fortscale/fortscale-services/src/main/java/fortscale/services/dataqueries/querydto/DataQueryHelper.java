@@ -94,6 +94,34 @@ public class DataQueryHelper {
         return defaultFieldsList;
     }
 
+	/**
+	 * Generate the list of fields without alias
+	 * The Group can be on the field id and not the alias (also for joins cause in case of
+	 * @param defaultFieldsString a CSV list of fields to return. if '*' is passed, then return all fields
+	 * @param dataEntity the Data Entity to query
+	 * @return
+	 */
+	private List<DataQueryField> createQueryFieldsWithNoAlias(String defaultFieldsString, String dataEntity){
+		List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
+		String[] defaultFields = defaultFieldsString.split(",");
+		for (String field : defaultFields) {
+
+			DataQueryField dataQueryField = new DataQueryField();
+			if (field.equals("*")){
+				dataQueryField.setAllFields(true);
+				dataQueryField.setEntity(dataEntity);
+			}
+			else {
+
+				dataQueryField.setId(field);
+			}
+
+			defaultFieldsList.add(dataQueryField);
+
+		}
+		return defaultFieldsList;
+	}
+
     /**
      * Creates a Sort object for the Data Query object
      * @param sortField
@@ -167,6 +195,8 @@ public class DataQueryHelper {
         return customTerm;
     }
 
+
+
     /**
      * Get the field name in an entity and return the display name for it.
      */
@@ -209,32 +239,12 @@ public class DataQueryHelper {
     {
 
 		if(!withAlias)
-        	return createQueryFieldsForGroupBy(groupByFieldAsCSV,dataEntity);
+        	return createQueryFieldsWithNoAlias(groupByFieldAsCSV,dataEntity);
 		return createQueryFields(groupByFieldAsCSV,dataEntity);
 
     }
 
-	/**
-	 * Generate the list of fields for adding to the group by clause
-	 * The Group can be on the field id and not the alias (also for joins cause in case of
-	 * @param defaultFieldsString a CSV list of fields to return. if '*' is passed, then return all fields
-	 * @param dataEntity the Data Entity to query
-	 * @return
-	 */
-	private List<DataQueryField> createQueryFieldsForGroupBy(String defaultFieldsString, String dataEntity){
-		List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
-		String[] defaultFields = defaultFieldsString.split(",");
-		for (String field : defaultFields) {
 
-			DataQueryField dataQueryField = new DataQueryField();
-
-			dataQueryField.setId(field);
-
-			defaultFieldsList.add(dataQueryField);
-
-		}
-		return defaultFieldsList;
-	}
 
     /**
      * This method will generate a count filed for a query
@@ -256,17 +266,36 @@ public class DataQueryHelper {
 
     }
 
+
+	/**
+	 * This method will set group by clause to a given data query DTO
+	 * @param groupByFields
+	 * @param dataQuery
+	 */
     public void  setGroupByClause(List<DataQueryField> groupByFields,DataQueryDTO dataQuery){
 
         dataQuery.setGroupBy(groupByFields);
 
     }
 
+	/**
+	 * This method will set aggregate function  to a given data query DTO
+	 * @param funcField
+	 * @param dataQuery
+	 */
     public void setFuncFieldToQuery(DataQueryField funcField , DataQueryDTO dataQueryDTO){
 
         dataQueryDTO.getFields().add(funcField);
 
     }
+
+	public void removeAlias(DataQueryDTO dataQueryDTO)
+	{
+		for (DataQueryField field : dataQueryDTO.getFields())
+		{
+			field.setAlias(null);
+		}
+	}
 
 
 

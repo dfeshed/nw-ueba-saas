@@ -12,6 +12,7 @@ import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.Term;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.context.annotation.Scope;
@@ -122,6 +123,9 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 
         DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
 
+		//Remove the alias from the query fields so the context types and values will match the query result (match to field id and not field display name )
+		dataQueryHelper.removeAlias(dataQueryObject);
+
         //Create the Group By clause without alias
         List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV,dataEntity,false);
         dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
@@ -151,7 +155,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
     private Map<SupportingInformationKey, Double> buildLastDayMap(List<Map<String, Object>> queryList) {
         Map<SupportingInformationKey, Double> lastDayMap = new HashMap<>();
         for (Map<String, Object> bucketMap : queryList){
-            lastDayMap.put(new SupportingInformationSingleKey(""), ((Long)bucketMap.get("countField")).doubleValue());
+            lastDayMap.put(new SupportingInformationSingleKey((String)bucketMap.get(featureName)), ((Long)bucketMap.get("countField")).doubleValue());
         }
         return lastDayMap;
     }
@@ -169,6 +173,8 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
       			term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
 				break;
 			default:
+				CustomedFilter filter = new CustomedFilter(normalizedContextType,"equals",contextValue);
+				term = dataQueryHelper.createCustomTerm(dataEntity, filter);
 				break;
 
 		}
