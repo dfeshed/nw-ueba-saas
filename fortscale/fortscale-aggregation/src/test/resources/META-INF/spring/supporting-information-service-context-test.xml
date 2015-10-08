@@ -23,5 +23,6 @@
     </bean>
 
     <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
+    <bean id="dataQueryRunnerFactory" class="fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory"/>
 
 </beans>
