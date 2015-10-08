@@ -78,7 +78,6 @@
 		<commons-net.version>3.3</commons-net.version>
 		<minimal-json.version>0.9.1</minimal-json.version>
 		<syslog-client.version>1.0.6</syslog-client.version>
-		<org-json.version>20150729</org-json.version>
 		<!-- maven plugins versions -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
@@ -136,11 +135,7 @@
   			<artifactId>json-smart</artifactId>
   			<version>${json-smart.version}</version>
  		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>${org-json.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
