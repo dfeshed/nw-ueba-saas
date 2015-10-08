@@ -1,6 +1,7 @@
 package fortscale.entity.event;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
@@ -12,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class EntityEventData {
 	public static final String ENTITY_EVENT_NAME_FIELD = "entityEventName";
 	public static final String CONTEXT_FIELD = "context";
@@ -49,6 +50,7 @@ public class EntityEventData {
 	private long createdAtEpochtime;
 	@Field(MODIFIED_AT_EPOCHTIME_FIELD)
 	private long modifiedAtEpochtime;
+	@SuppressWarnings("unused")
 	@Field(MODIFIED_AT_DATE_FIELD)
 	private Date modifiedAtDate;
 	@Field(TRANSMISSION_EPOCHTIME_FIELD)
@@ -59,6 +61,7 @@ public class EntityEventData {
 	public EntityEventData() {
 		this.notIncludedAggrFeatureEvents = new HashSet<>();
 		this.includedAggrFeatureEvents = new HashSet<>();
+
 		long currentTimeMillis = System.currentTimeMillis();
 		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
 		this.modifiedAtEpochtime = this.createdAtEpochtime;
@@ -67,8 +70,10 @@ public class EntityEventData {
 		this.transmissionEpochtime = -1;
 		this.transmitted = false;
 	}
-	
+
 	public EntityEventData(String entityEventName, Map<String, String> context, String contextId, long startTime, long endTime) {
+		this();
+
 		Assert.hasText(entityEventName);
 		Assert.notEmpty(context);
 		Assert.hasText(contextId);
@@ -80,17 +85,6 @@ public class EntityEventData {
 		this.contextId = contextId;
 		this.startTime = startTime;
 		this.endTime = endTime;
-
-		this.notIncludedAggrFeatureEvents = new HashSet<>();
-		this.includedAggrFeatureEvents = new HashSet<>();
-
-		long currentTimeMillis = System.currentTimeMillis();
-		this.createdAtEpochtime = TimestampUtils.convertToSeconds(currentTimeMillis);
-		this.modifiedAtEpochtime = this.createdAtEpochtime;
-		this.modifiedAtDate = new Date(currentTimeMillis);
-
-		this.transmissionEpochtime = -1;
-		this.transmitted = false;
 	}
 
 	public String getEntityEventName() {
