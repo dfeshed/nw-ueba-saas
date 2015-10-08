@@ -74,7 +74,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
         //filters are not mandatory, if not passed all documents in the provided collection will be forwarded
         } else {
-            mongoQuery = buildQuery("");
+            mongoQuery = new BasicDBObject();
         }
         streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
@@ -92,10 +92,10 @@ public class MongoToKafkaJob extends FortscaleJob {
         String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         int counter = 0;
-        DBObject removeIdProjection = new BasicDBObject("_id", 0);
-        //DBObject removeClassProjection = new BasicDBObject("_class", 0);
+        DBObject removeProjection = new BasicDBObject("_id", 0);
+        removeProjection.put("_class", 0);
         while (counter < totalItems) {
-            List<DBObject> results = mongoCollection.find(mongoQuery, removeIdProjection).skip(counter).
+            List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).toArray();
             long lastMessageTime = 0;
             for (int i = 0; i < results.size(); i++) {
@@ -149,18 +149,16 @@ public class MongoToKafkaJob extends FortscaleJob {
 	 */
 	private BasicDBObject buildQuery(String filters) {
 		BasicDBObject searchQuery = new BasicDBObject();
-        if (!filters.isEmpty()) {
-            for (String filter : filters.split(GENERAL_DELIMITER)) {
-                if (filter.contains(DATE_DELIMITER)) {
-                    String field = filter.split(DATE_DELIMITER)[0];
-                    String operator = filter.split(DATE_DELIMITER)[1];
-                    String value = filter.split(DATE_DELIMITER)[2];
-                    searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
-                } else {
-                    String field = filter.split(KEYVALUE_DELIMITER)[0];
-                    String value = filter.split(KEYVALUE_DELIMITER)[1];
-                    searchQuery.put(field, value);
-                }
+        for (String filter : filters.split(GENERAL_DELIMITER)) {
+            if (filter.contains(DATE_DELIMITER)) {
+                String field = filter.split(DATE_DELIMITER)[0];
+                String operator = filter.split(DATE_DELIMITER)[1];
+                String value = filter.split(DATE_DELIMITER)[2];
+                searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
+            } else {
+                String field = filter.split(KEYVALUE_DELIMITER)[0];
+                String value = filter.split(KEYVALUE_DELIMITER)[1];
+                searchQuery.put(field, value);
             }
         }
 		return searchQuery;
