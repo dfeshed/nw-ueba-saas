@@ -70,7 +70,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		updateEsperFromCache();
 
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
-				String.format("%s-%s-last-message-epochtime", "alert", "generator"));
+				String.format("%s-last-message-epochtime", config.get("job.name")));
 
 	}
 
