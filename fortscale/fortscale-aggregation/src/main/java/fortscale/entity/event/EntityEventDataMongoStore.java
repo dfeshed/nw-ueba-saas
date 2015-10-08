@@ -1,4 +1,4 @@
-package fortscale.streaming.service.aggregation.entity.event;
+package fortscale.entity.event;
 
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;

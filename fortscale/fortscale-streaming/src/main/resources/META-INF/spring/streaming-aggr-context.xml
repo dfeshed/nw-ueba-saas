@@ -26,8 +26,8 @@
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 
 	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService"/>
-	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
-	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataMongoStore"/>
+	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
+	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore"/>
 
     <context:annotation-config />
     <context:spring-configured />

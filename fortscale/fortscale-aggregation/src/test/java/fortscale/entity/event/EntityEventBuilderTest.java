@@ -1,4 +1,4 @@
-package fortscale.streaming.service.aggregation.entity.event;
+package fortscale.entity.event;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;

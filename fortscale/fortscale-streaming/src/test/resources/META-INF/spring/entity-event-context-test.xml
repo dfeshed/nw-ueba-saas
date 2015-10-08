@@ -7,8 +7,8 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
-	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataTestStore"/>
+	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
+	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataTestStore"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
 
