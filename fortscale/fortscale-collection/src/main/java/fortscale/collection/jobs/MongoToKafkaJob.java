@@ -47,6 +47,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private String zookeeperGroup;
 
 	private BasicDBObject mongoQuery;
+    private BasicDBObject sortQuery;
 	private DBCollection mongoCollection;
 	private List<KafkaEventsWriter> streamWriters;
     private String jobToMonitor;
@@ -73,6 +74,17 @@ public class MongoToKafkaJob extends FortscaleJob {
         } else {
             mongoQuery = new BasicDBObject();
         }
+        sortQuery = new BasicDBObject();
+        if (map.containsKey("sort")) {
+            String sort = jobDataMapExtension.getJobDataMapStringValue(map, "sort");
+            String field = sort.split(GENERAL_DELIMITER)[0];
+            String direction = sort.split(GENERAL_DELIMITER)[1];
+            if (direction.equalsIgnoreCase("desc")) {
+                sortQuery.put(field, -1);
+            } else {
+                sortQuery.put(field, 1);
+            }
+        }
         streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
@@ -94,7 +106,7 @@ public class MongoToKafkaJob extends FortscaleJob {
         while (counter < totalItems) {
             logger.debug("handling items {} to {}", counter, batchSize + counter);
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
-                    limit(batchSize).toArray();
+                    limit(batchSize).sort(sortQuery).toArray();
             long lastMessageTime = 0;
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
