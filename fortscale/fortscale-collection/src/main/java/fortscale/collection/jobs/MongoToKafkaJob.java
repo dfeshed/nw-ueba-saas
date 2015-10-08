@@ -98,7 +98,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
             while (true) {
                 //TODO - test this
-                String time = topicConsumer.readSamzaMetric("hdfs-events-writer-task",
+                Object time = topicConsumer.readSamzaMetric("hdfs-events-writer-task",
                         "fortscale.streaming.task.HDFSWriterStreamTask", "sshscores-events-skip-count");
                 if (time.equals(lastMessageTime + "")) {
                     break;

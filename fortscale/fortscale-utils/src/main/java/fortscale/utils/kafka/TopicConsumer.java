@@ -109,13 +109,13 @@ public class TopicConsumer {
      * @param metricsToExtract
      * @return true if the metrics have stabilized.
      */
-    public String readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
+    public Object readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
         int topicCount = 1;
         Map<String, Integer> topicCountMap = new HashMap();
         topicCountMap.put(topic, new Integer(topicCount));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         List<KafkaStream<byte[], byte[]>> streams = consumerMap.get(topic);
-        Map <String, String> metricData;
+        Map <String, Object> metricData;
         for (final KafkaStream stream : streams) {
             String currMetric;
             ConsumerIterator<byte[], byte[]> it = stream.iterator();
@@ -184,17 +184,17 @@ public class TopicConsumer {
 	 * @param metricsToExtract requested data
 	 * @return data
 	 */
-	public static Map <String, String> getMetricData(String metric, String header, String metricsToExtract) {
-		Map <String, String> metricaData = new HashMap();
+	public static Map <String, Object> getMetricData(String metric, String header, String metricsToExtract) {
+		Map <String, Object> metricaData = new HashMap();
         if (metric.contains(header)) { // otherwise, irrelevant metric
-            String currValue;
+            Object currValue;
             try {
                 JSONObject bigJSON = new JSONObject(metric);
                 JSONObject innerJSON =  bigJSON.getJSONObject("metrics");
                 //mark which job's metrics we've just read (it's in the header of each metric)
                 metricaData.put("job-name", bigJSON.getJSONObject(headerString).getString("job-name"));
                 //extract the relevant data from the metrics json
-                currValue = innerJSON.getJSONObject(header).getString(metricsToExtract);
+                currValue = innerJSON.getJSONObject(header).get(metricsToExtract);
                 metricaData.put(metricsToExtract, currValue);
             } catch(JSONException je) {
                 logger.error(je.getMessage());
