@@ -106,10 +106,9 @@ public class MongoToKafkaJob extends FortscaleJob {
             //throttling
             while (true) {
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                //TODO - generalize this
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor));
-                if (time.equals(lastMessageTime + "")) {
+                if (time != null && time.equals(lastMessageTime + "")) {
                     break;
                 }
                 Thread.sleep(1000 * 60);
