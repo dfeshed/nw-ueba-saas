@@ -13,6 +13,8 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
+import fortscale.web.rest.entities.AlertStatisticsEntity;
+import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,6 +239,24 @@ public class ApiAlertController extends BaseController {
 		return entities;
 	}
 
+
+	/**
+	 * Statistics about system alerts
+	 * @return
+	 */
+	@RequestMapping(value="/statistics", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<AlertStatisticsEntity> getStatistics()
+	{
+		AlertStatisticsEntity results = new AlertStatisticsEntity(	1,2,3,4,5,6,7,8,9,10,11,12	);
+
+
+		DataBean<AlertStatisticsEntity> toReturn = new DataBean<AlertStatisticsEntity>();
+		toReturn.setData(results);
+
+		return toReturn;
+	}
 
 	private void updateEvidenceFields(Alert alert){
 		if(alert != null && alert.getEvidences() != null) {

@@ -19,6 +19,8 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.entities.IndicatorStatisticsEntity;
+import fortscale.web.rest.entities.OverviewPageStatistics;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -311,6 +313,25 @@ public class ApiEvidenceController extends DataQueryController {
 
 		supportingInformationBean.setData(rearrangedEntries);
 		return supportingInformationBean;
+	}
+
+	/**
+	 * This api return statistics about the indicators in the system.
+	 * @return
+	 */
+	@RequestMapping(value="/statistics", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<IndicatorStatisticsEntity> getStatistics()
+	{
+		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity(		);
+		results.setIndicatorCountLast7Days(10);
+		results.setIndicatorCountLastDay(5);
+
+		DataBean<IndicatorStatisticsEntity> toReturn = new DataBean<IndicatorStatisticsEntity>();
+		toReturn.setData(results);
+
+		return toReturn;
 	}
 
 	/*
