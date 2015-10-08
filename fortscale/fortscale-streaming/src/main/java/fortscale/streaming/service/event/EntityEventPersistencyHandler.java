@@ -1,8 +1,5 @@
 package fortscale.streaming.service.event;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import fortscale.aggregation.feature.event.*;
 import fortscale.domain.core.EntityEvent;
 import fortscale.streaming.service.aggregation.entity.event.EntityEventConf;
 import fortscale.streaming.service.aggregation.entity.event.EntityEventConfService;
@@ -14,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.Index;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -60,7 +56,7 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 		}
 
 		EntityEvent entityEvent = null;
-		entityEvent = EntityEvent.builcEntityEvent(event);
+		entityEvent = EntityEvent.buildEntityEvent(event);
 		mongoTemplate.save(entityEvent, collectionName);
 	}
 

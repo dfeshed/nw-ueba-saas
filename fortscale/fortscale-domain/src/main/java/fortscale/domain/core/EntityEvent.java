@@ -73,7 +73,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.aggregated_feature_events = aggregated_feature_events;
 	}
 
-	public static EntityEvent builcEntityEvent(JSONObject event) throws IOException, JsonParseException, JsonMappingException {
+	public static EntityEvent buildEntityEvent(JSONObject event) throws IOException, JsonParseException, JsonMappingException {
 		return new ObjectMapper().readValue(event.toJSONString(), EntityEvent.class);
 	}
 
