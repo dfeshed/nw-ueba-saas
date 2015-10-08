@@ -32,8 +32,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private final String GENERAL_DELIMITER = "###";
 	private final String KEYVALUE_DELIMITER = "@@@";
     private final String DATE_DELIMITER = ":::";
-    //TODO - change that
-    private final int DEFAULT_BATCH_SIZE = 1;
+    private final int DEFAULT_BATCH_SIZE = 50;
     private final int CHECK_RETRIES = 15;
     private final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
@@ -60,13 +59,9 @@ public class MongoToKafkaJob extends FortscaleJob {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch", DEFAULT_BATCH_SIZE);
-        //TODO - remove the constants after testing
-        //jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
-        jobToMonitor = "alert-generator-task";
-        //jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-        jobClassToMonitor = "fortscale.streaming.task.AlertGeneratorTask";
-        //dateField = jobDataMapExtension.getJobDataMapStringValue(map, "datefield");
-        dateField = "endDate";
+        jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
+        jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
+        dateField = jobDataMapExtension.getJobDataMapStringValue(map, "datefield");
         if (map.containsKey("filters")) {
             try {
                 mongoQuery = buildQuery(jobDataMapExtension.getJobDataMapStringValue(map, "filters"));
@@ -95,10 +90,7 @@ public class MongoToKafkaJob extends FortscaleJob {
         long totalItems = mongoCollection.count(mongoQuery);
         logger.debug("forwarding {} documents", totalItems);
         int counter = 0;
-        //fields to ignore
-        DBObject removeProjection = new BasicDBObject("_id", 0);
-        removeProjection.put("_class", 0);
-        removeProjection.put("retentionDate", 0);
+        DBObject removeProjection = ignoreFields();
         while (counter < totalItems) {
             logger.debug("handling items {} to {}", counter, batchSize + counter);
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
@@ -134,6 +126,20 @@ public class MongoToKafkaJob extends FortscaleJob {
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
+
+    /***
+     *
+     * This method adds all fields to ignore in a Mongo document
+     *
+     * @return
+     */
+    private DBObject ignoreFields() {
+        //fields to ignore
+        DBObject removeProjection = new BasicDBObject("_id", 0);
+        removeProjection.put("_class", 0);
+        removeProjection.put("retentionDate", 0);
+        return removeProjection;
+    }
 
     /***
      *
