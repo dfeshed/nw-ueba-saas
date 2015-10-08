@@ -132,6 +132,8 @@ public class MongoToKafkaJob extends FortscaleJob {
      * @return
      */
     private String manipulateMessage(String collection, DBObject message) {
+        Object _message = message.removeField("_id");
+        message.removeField("_class");
         //TODO - manipulate according to collection name?
         return message.toString();
     }
@@ -158,6 +160,8 @@ public class MongoToKafkaJob extends FortscaleJob {
                 searchQuery.put(field, value);
             }
 		}
+        searchQuery.put("_id", 0);
+        searchQuery.put("_class", 0);
 		return searchQuery;
 	}
 
