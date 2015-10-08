@@ -121,6 +121,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Convert to miliseconds
 
+
 		startTime = TimestampUtils.convertToMilliSeconds(startTime);
 		endTime =TimestampUtils.convertToMilliSeconds(endTime);
 
