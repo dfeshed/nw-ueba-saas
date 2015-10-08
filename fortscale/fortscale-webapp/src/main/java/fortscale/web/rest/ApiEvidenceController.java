@@ -21,9 +21,7 @@ import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
-import fortscale.web.rest.entities.OverviewPageStatistics;
 import fortscale.web.rest.entities.SupportingInformationEntry;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -319,27 +317,24 @@ public class ApiEvidenceController extends DataQueryController {
 
 	/**
 	 * This api return statistics about the indicators in the system.
-	 * @param  timeRange - Number of days. Can be array of string in CSV format
+	 * @param  timeRange - from,to
 	 * @return count the evidences from today-timeRange until now.
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<IndicatorStatisticsEntity> getStatistics(
-			@RequestParam(required=false, defaultValue = "7", value = "indicator_start_range") String timeRange)
+			@RequestParam(required=true, value = "start_range") String timeRange)
 	{
 
 		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity();
-		String[] timeRangeAsStr = ApiUtils.splitToArrayOfStrings(timeRange);
+		List<Long> timeRangeList = ApiUtils.splitTo2Longs(timeRange);
 
-		for (String timeRangeStr : timeRangeAsStr){
-			int lastXDays = Integer.parseInt(timeRangeStr.trim());
 
-			long fromTime = ApiUtils.getStartOfBeforeXDays(lastXDays).getTime();
 
-			long indicatorsCount = evidencesService.count(fromTime);
-			results.addIndicatorCount(indicatorsCount, lastXDays);
-		}
+		long indicatorsCount = evidencesService.count(timeRangeList.get(0)*1000,timeRangeList.get(1)*1000);
+		results.setCount(indicatorsCount);
+
 
 		DataBean<IndicatorStatisticsEntity> toReturn = new DataBean<IndicatorStatisticsEntity>();
 		toReturn.setData(results);

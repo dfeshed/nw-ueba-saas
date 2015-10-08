@@ -35,9 +35,8 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		return mongoTemplate.find(query, Evidence.class);
 	}
 
-	public long countWithParameters(long fromTime){
-		Query query = new Query(where(Evidence.startDateField).gte(fromTime));
-
+	public long countWithParameters(long fromTime, long toTime){
+		Query query = new Query(where(Evidence.startDateField).gte(fromTime).lte(toTime));
 		Long count = mongoTemplate.count(query, Evidence.class);
 		return count;
 	}

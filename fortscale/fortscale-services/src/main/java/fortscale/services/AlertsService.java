@@ -77,9 +77,10 @@ public interface AlertsService {
 	 * This method "select count group by " query for alert table.
 	 *
 	 * @param fieldName - the filed which we like to group by
-	 * @param afterDate - the date which all the alerts start time should be greated then
+	 * @param fromDate - the date which all the alerts start time should be greated then
+	 * @param toDate - the date which all the alerts start time should be smaller then
 	 * @return map from value (from the field) and count of the instances of value
 	 */
-	public Map<String, Integer> groupCount(String fieldName, long afterDate);
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate);
 
 }

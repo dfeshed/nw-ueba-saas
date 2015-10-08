@@ -13,26 +13,17 @@ import java.util.Map;
  */
 public class IndicatorStatisticsEntity {
 
-    private String TIME_RANGE = "time_range";
-    private String COUNT = "count";
-    private List<Map<String,Long>> indicatorCount = new ArrayList<>();
+    private long count;
 
-
-    public void addIndicatorCount(long count, int timeRange){
-
-        Map<String, Long> map = new HashMap<>();
-        map.put(COUNT,count);
-        map.put(TIME_RANGE,(long)timeRange);
-        indicatorCount.add(map);
-
+    @JsonProperty("count")
+    public long getCount() {
+        return count;
     }
 
-    @JsonProperty("indicator_count")
-    public List<Map<String, Long>> getIndicatorCount() {
-        return indicatorCount;
-    }
-
-    public void setIndicatorCount(List<Map<String, Long>> indicatorCount) {
-        this.indicatorCount = indicatorCount;
+    public void setCount(long count) {
+        this.count = count;
     }
 }
+
+
+

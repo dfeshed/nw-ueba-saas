@@ -19,57 +19,28 @@ public class AlertStatisticsEntity {
 
     private final static String OPENED = "Open";
     private final static String CLOSED = "Closed";
-    private String TIME_RANGE = "time_range";
-
-    private List<Map<String,Integer>> alertStatus = new ArrayList<>();
-    private List<Map<String,Integer>> alertOpenSeverity = new ArrayList<>();
 
 
-    /**
-     * Add new statuses per time range.
-     * @param statusMap
-     * @param timeRange
-     * @return
-     */
-    public Map<String,Integer> addAlertStatus(Map<String,Integer> statusMap, int timeRange){
-        statusMap.put(TIME_RANGE, timeRange);
-        statusMap = updateKeysToLowerCase(statusMap);
-
-        alertStatus.add(statusMap);
-        return  statusMap;
-    }
-
-    /**
-     * Add new sevirities per time range
-     * @param sevirityMap
-     * @param timeRange
-     * @return
-     */
-    public Map<String,Integer> addAlertSeverityMap(Map<String,Integer> sevirityMap, int timeRange){
+    private Map<String,Integer> alertStatus;
+    private Map<String,Integer> alertOpenSeverity;
 
 
-        sevirityMap.put(TIME_RANGE, timeRange);
-
-        sevirityMap = updateKeysToLowerCase(sevirityMap);
-        alertOpenSeverity.add(sevirityMap);
-        return sevirityMap;
-    }
-
+    
     @JsonProperty("alert_status")
-    public List<Map<String, Integer>> getAlertStatus() {
+    public Map<String, Integer> getAlertStatus() {
         return alertStatus;
     }
 
-    public void setAlertStatus(List<Map<String, Integer>> alertStatus) {
+    public void setAlertStatus(Map<String, Integer> alertStatus) {
         this.alertStatus = alertStatus;
     }
 
     @JsonProperty("alert_open_severity")
-    public List<Map<String, Integer>> getAlertOpenSeverity() {
+    public Map<String, Integer> getAlertOpenSeverity() {
         return alertOpenSeverity;
     }
 
-    public void setAlertOpenSeverity(List<Map<String, Integer>> alertOpenSeverity) {
+    public void setAlertOpenSeverity(Map<String, Integer> alertOpenSeverity) {
         this.alertOpenSeverity = alertOpenSeverity;
     }
 

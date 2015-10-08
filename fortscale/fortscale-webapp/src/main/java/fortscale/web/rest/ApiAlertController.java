@@ -15,9 +15,6 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
-import fortscale.web.rest.entities.IndicatorStatisticsEntity;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,27 +246,23 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	@LogException
 	public DataBean<AlertStatisticsEntity> getStatistics(
-			@RequestParam(required=false, defaultValue = "7", value = "alert_start_range") String timeRange)
+			@RequestParam(required=false, value = "start_range") String timeRange)
 	{
 
-		String[] timeRangeAsStr = ApiUtils.splitToArrayOfStrings(timeRange);
+		List<Long> timeRangeFromTo = ApiUtils.splitTo2Longs(timeRange);
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
-		for (String timeRangeStr : timeRangeAsStr){
 
-			//Calculate start of range time
-			int lastXDays = Integer.parseInt(timeRangeStr.trim());
-			long fromTime = ApiUtils.getStartOfBeforeXDays(lastXDays).getTime();
+		//Add statuses
+		Map<String,Integer> statusCounts = alertsDao.groupCount("status", timeRangeFromTo.get(0) *1000,
+						timeRangeFromTo.get(1)*1000);
+		results.setAlertStatus(statusCounts);
 
-			//Add statuses
-			Map<String,Integer> statusCounts = alertsDao.groupCount("status",fromTime);
-			results.addAlertStatus(statusCounts, lastXDays);
+		//Add severities
+		Map<String,Integer> severityCounts = alertsDao.groupCount("severity",timeRangeFromTo.get(0)*1000,
+				timeRangeFromTo.get(1)*1000);
+		results.setAlertOpenSeverity(severityCounts);
 
-			//Add severities
-			Map<String,Integer> severityCounts = alertsDao.groupCount("severity",fromTime);
-			results.addAlertSeverityMap(severityCounts, lastXDays);
-
-		}
 
 		DataBean<AlertStatisticsEntity> toReturn = new DataBean<AlertStatisticsEntity>();
 		toReturn.setData(results);

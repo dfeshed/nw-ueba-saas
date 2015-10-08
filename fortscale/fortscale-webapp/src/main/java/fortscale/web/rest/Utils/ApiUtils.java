@@ -2,9 +2,7 @@ package fortscale.web.rest.Utils;
 
 import org.apache.commons.lang.time.DateUtils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Created by shays on 08/10/2015.
@@ -22,15 +20,23 @@ public class ApiUtils {
 
     }
 
-    public static String[] splitToArrayOfStrings(String string){
-        String[] stringArr;
+    public static List<Long> splitTo2Longs(String string){
+
         if (string.contains(",")){
-            stringArr = string.split(",");
+            String[] stringArr = string.split(",");
+            if (stringArr.length!=2) {
+                throw new RuntimeException("Expected to value sepereated with ,");
+            } else {
+                List<Long> list = new ArrayList<>();
+                list.add(Long.parseLong(stringArr[0].trim()));
+                list.add(Long.parseLong(stringArr[1].trim()));
+                return  list;
+            }
+
         }  else {
-            stringArr = new String[1];
-            stringArr[0] = string;
+            throw new RuntimeException("Expected to value sepereated with ,");
         }
 
-        return stringArr;
+
     }
 }

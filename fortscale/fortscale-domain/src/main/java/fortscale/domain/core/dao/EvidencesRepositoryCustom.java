@@ -30,7 +30,8 @@ public interface EvidencesRepositoryCustom {
 	 * Currently the filter contain the fromTime only.
 	 * Might be expand when needed
 	 * @param fromTime - the time which the evidence start time should be greated or equals to
+	 * @param toTime the time which the evidence start time should be smaller or equals to
 	 * @return
 	 */
-	long countWithParameters(long fromTime);
+	long countWithParameters(long fromTime, long toTime);
 }
