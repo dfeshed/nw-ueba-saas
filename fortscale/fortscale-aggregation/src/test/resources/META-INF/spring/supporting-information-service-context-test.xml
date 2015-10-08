@@ -21,4 +21,9 @@
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="localOverride" value="true"/>
     </bean>
+
+    <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
+    <bean id="dataQueryRunnerFactory" class="fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory"/>
+    <bean id="mySqlQueryRunner" class="fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner"/>
+
 </beans>
