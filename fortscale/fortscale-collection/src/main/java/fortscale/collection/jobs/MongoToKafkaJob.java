@@ -74,7 +74,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
         //filters are not mandatory, if not passed all documents in the provided collection will be forwarded
         } else {
-            mongoQuery = new BasicDBObject();
+            mongoQuery = buildQuery("");
         }
         streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
@@ -148,18 +148,20 @@ public class MongoToKafkaJob extends FortscaleJob {
 	 */
 	private BasicDBObject buildQuery(String filters) {
 		BasicDBObject searchQuery = new BasicDBObject();
-		for (String filter: filters.split(GENERAL_DELIMITER)) {
-            if (filter.contains(DATE_DELIMITER)) {
-                String field = filter.split(DATE_DELIMITER)[0];
-                String operator = filter.split(DATE_DELIMITER)[1];
-                String value = filter.split(DATE_DELIMITER)[2];
-                searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
-            } else {
-                String field = filter.split(KEYVALUE_DELIMITER)[0];
-                String value = filter.split(KEYVALUE_DELIMITER)[1];
-                searchQuery.put(field, value);
+        if (!filters.isEmpty()) {
+            for (String filter : filters.split(GENERAL_DELIMITER)) {
+                if (filter.contains(DATE_DELIMITER)) {
+                    String field = filter.split(DATE_DELIMITER)[0];
+                    String operator = filter.split(DATE_DELIMITER)[1];
+                    String value = filter.split(DATE_DELIMITER)[2];
+                    searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
+                } else {
+                    String field = filter.split(KEYVALUE_DELIMITER)[0];
+                    String value = filter.split(KEYVALUE_DELIMITER)[1];
+                    searchQuery.put(field, value);
+                }
             }
-		}
+        }
         searchQuery.put("_id", 0);
         searchQuery.put("_class", 0);
 		return searchQuery;
