@@ -11,6 +11,7 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.utils.time.TimestampUtils;
@@ -22,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,10 @@ public class SupportingInformationServiceTest {
     @ReplaceWithMock
     DataQueryHelper dataQueryHelper;
 
+	@Autowired
+	@ReplaceWithMock
+	DataQueryRunnerFactory dataQueryRunnerFactory;
+
     @Autowired
     @ReplaceWithMock
     DataQueryRunnerFactory dataQueryRunnerFactory;
@@ -63,6 +67,9 @@ public class SupportingInformationServiceTest {
 
     @Mock
     Evidence mockEvidence;
+
+	@Mock
+	DataQueryRunner dataQueryRunner;
 
     @Autowired
     @ReplaceWithMock
@@ -82,6 +89,17 @@ public class SupportingInformationServiceTest {
         String contextType = "normalized_username";
         String contextValue = "mosheb@somebigcompany.com";
         String evidenceAnomalyValue = "SERVER_5";
+
+
+
+		try {
+			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+		}
+		catch (Exception e)
+		{
+			return;
+		}
+
 
         int timePeriodInDays = 90;
 
