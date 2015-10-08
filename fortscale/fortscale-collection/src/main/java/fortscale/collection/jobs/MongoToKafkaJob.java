@@ -108,6 +108,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             counter += batchSize;
         }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
+        topicConsumer.shutdown();
 		finishStep();
 	}
 
