@@ -111,6 +111,7 @@ public class TopicConsumer {
      */
     public Object readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
         int topicCount = 1;
+        Object result = null;
         Map<String, Integer> topicCountMap = new HashMap();
         topicCountMap.put(topic, new Integer(topicCount));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
@@ -123,11 +124,13 @@ public class TopicConsumer {
                 currMetric = new String(it.next().message());
                 metricData = getMetricData(currMetric, headerToCheck, metricsToExtract);
                 if (metricData.containsKey("job-name") && metricData.get("job-name").equals(jobToCheck)) {
-                    return metricData.get(metricsToExtract);
+                    result = metricData.get(metricsToExtract);
+                    break;
                 }
             }
         }
-        return "";
+        shutdown();
+        return result;
     }
 
 	/*private boolean readSamzaMetrics(String jobToCheck, String headerToCheck, String metricsToExtract,
