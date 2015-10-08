@@ -89,7 +89,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             for (int i = 0; i < results.size(); i++) {
                 DBObject result = results.get(i);
                 if (i == results.size() - 1) {
-                    lastMessageTime = (String)result.get("date_time_unix");
+                    lastMessageTime = (String)result.get("startDate");
                 }
                 String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);

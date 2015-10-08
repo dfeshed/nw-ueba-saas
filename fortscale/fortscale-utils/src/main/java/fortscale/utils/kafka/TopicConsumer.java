@@ -112,7 +112,7 @@ public class TopicConsumer {
      */
     public String readSamzaMetric(String jobToCheck, String headerToCheck, String metricsToExtract) {
         int topicCount = 1;
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        Map<String, Integer> topicCountMap = new HashMap();
         topicCountMap.put(topic, new Integer(topicCount));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         List<KafkaStream<byte[], byte[]>> streams = consumerMap.get(topic);
