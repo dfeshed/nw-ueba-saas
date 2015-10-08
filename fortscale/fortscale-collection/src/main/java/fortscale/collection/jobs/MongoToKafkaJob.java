@@ -32,8 +32,8 @@ public class MongoToKafkaJob extends FortscaleJob {
 	private final String GENERAL_DELIMITER = "###";
 	private final String KEYVALUE_DELIMITER = "@@@";
     private final String DATE_DELIMITER = ":::";
-    private final int DEFAULT_BATCH_SIZE = 50;
-    private final int CHECK_RETRIES = 15;
+    private final int DEFAULT_BATCH_SIZE = 100;
+    private final int DEFAULT_CHECK_RETRIES = 60;
     private final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
 	@Autowired
@@ -54,12 +54,14 @@ public class MongoToKafkaJob extends FortscaleJob {
     private String jobClassToMonitor;
     private String dateField;
     private int batchSize;
+    private int checkRetries;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch", DEFAULT_BATCH_SIZE);
+        checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         dateField = jobDataMapExtension.getJobDataMapStringValue(map, "datefield");
@@ -120,7 +122,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
             //throttling
             int currentTry = 0;
-            while (currentTry < CHECK_RETRIES) {
+            while (currentTry < checkRetries) {
                 logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                 Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
@@ -132,9 +134,17 @@ public class MongoToKafkaJob extends FortscaleJob {
                 logger.debug("last message not yet processed, waiting {} milliseconds...");
                 Thread.sleep(MILLISECONDS_TO_WAIT);
             }
+            if (currentTry >= checkRetries) {
+                logger.error("did not receive last message time {} in task {} - breaking",lastMessageTime,jobToMonitor);
+                break;
+            }
             counter += batchSize;
         }
-        logger.debug("shutting down");
+        if (counter < totalItems) {
+            logger.error("failed to forward all {} documents, forwarded only {}", counter, totalItems);
+        } else {
+            logger.debug("forwarded all {} documents", totalItems);
+        }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
 		finishStep();
 	}
