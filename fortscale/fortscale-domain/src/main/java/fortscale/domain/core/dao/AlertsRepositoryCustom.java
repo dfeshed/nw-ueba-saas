@@ -4,6 +4,8 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface AlertsRepositoryCustom {
@@ -67,5 +69,8 @@ public interface AlertsRepositoryCustom {
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
 							  Set<String> entitiesIds);
+
+
+	public Map<String, Integer> groupCount(String fieldName, long afterDate);
 
 }

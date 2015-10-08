@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -31,5 +33,12 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		);
 
 		return mongoTemplate.find(query, Evidence.class);
+	}
+
+	public long countWithParameters(long fromTime){
+		Query query = new Query(where(Evidence.startDateField).gte(fromTime));
+
+		Long count = mongoTemplate.count(query, Evidence.class);
+		return count;
 	}
 }

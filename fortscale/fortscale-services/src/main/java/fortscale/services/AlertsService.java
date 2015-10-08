@@ -2,8 +2,12 @@ package fortscale.services;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
+import fortscale.domain.core.dao.AlertsRepositoryImpl;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 
 /**
@@ -68,5 +72,7 @@ public interface AlertsService {
 	 * @return
 	 */
 	Alert getAlertById(String id);
+
+	public Map<String, Integer> groupCount(String fieldName, long afterDate);
 
 }

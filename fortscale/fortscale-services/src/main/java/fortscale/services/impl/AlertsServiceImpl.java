@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
+import fortscale.domain.core.dao.AlertsRepositoryImpl;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
@@ -12,10 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Services for managing the alerts
@@ -142,4 +140,8 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		return alertsRepository.getAlertById(id);
 	}
 
+	@Override
+	public Map<String, Integer> groupCount(String fieldName, long afterDate){
+		return alertsRepository.groupCount(fieldName,afterDate);
+	}
 }

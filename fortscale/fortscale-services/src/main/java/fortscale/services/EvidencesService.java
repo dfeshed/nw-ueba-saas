@@ -4,6 +4,7 @@ import fortscale.domain.core.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Date: 6/23/2015.
@@ -107,4 +108,7 @@ public interface EvidencesService {
 	 * @return
 	 */
 	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName);
+
+
+	public long count(long fromTime);
 }

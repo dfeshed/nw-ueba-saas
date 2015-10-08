@@ -1,21 +1,37 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.Field;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+
+
+//imports as static
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+
+
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 
 /**
  * Created by rans on 21/06/15.
@@ -94,6 +110,36 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
 				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
 		return mongoTemplate.count(query, Alert.class);
+	}
+
+	public Map<String, Integer> groupCount(String fieldName, long afterDate){
+
+		Aggregation agg = Aggregation.newAggregation(
+				match(Criteria.where("startDate").gte(afterDate)),
+				group(fieldName).count().as("total"),
+				project("total").and(fieldName).as("countedValue"),
+				sort(Sort.Direction.DESC, fieldName)
+
+		);
+
+		//Convert the aggregation result into a List
+		AggregationResults<BasicDBObject> groupResults
+				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
+
+		Map<String, Integer> results = new HashMap<>();
+		for (BasicDBObject item:  groupResults.getMappedResults()) {
+			String fieldValue = item.get("_id").toString();
+			int count;
+			String countAsString = item.get("total").toString();
+			if (StringUtils.isBlank(countAsString)){
+				count = 0;
+			} else {
+				count = Integer.parseInt(countAsString);
+			}
+			results.put(fieldValue,count);
+		}
+
+		return results;
 	}
 
 	/**
@@ -200,4 +246,27 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return query;
 	}
 
+//
+//	public static class StatusCount {
+//
+//		private String countedValue;
+//
+//		private long total;
+//
+//		public String getCountedValue() {
+//			return countedValue;
+//		}
+//
+//		public void setCountedValue(String countedValue) {
+//			this.countedValue = countedValue;
+//		}
+//
+//		public long getTotal() {
+//			return total;
+//		}
+//
+//		public void setTotal(long total) {
+//			this.total = total;
+//		}
+//	}
 }

@@ -2,29 +2,37 @@ package fortscale.web.rest.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by shays on 08/10/2015.
+ * This class return list count-timeRange pairs
  */
 public class IndicatorStatisticsEntity {
 
-    private int indicatorCountLast7Days;
-    private int indicatorCountLastDay;
+    private String TIME_RANGE = "timeRange";
+    private String COUNT = "count";
+    private List<Map<String,Long>> indicatorCount = new ArrayList<>();
 
-    @JsonProperty("indicator_count_last_7_days")
-    public int getIndicatorCountLast7Days() {
-        return indicatorCountLast7Days;
+
+    public void addIndicatorCount(long count, int timeRange){
+
+        Map<String, Long> map = new HashMap<>();
+        map.put(COUNT,count);
+        map.put(TIME_RANGE,(long)timeRange);
+        indicatorCount.add(map);
+
     }
 
-    public void setIndicatorCountLast7Days(int indicatorCountLast7Days) {
-        this.indicatorCountLast7Days = indicatorCountLast7Days;
+    @JsonProperty("indicator_count")
+    public List<Map<String, Long>> getIndicatorCount() {
+        return indicatorCount;
     }
 
-    @JsonProperty("indicator_count_last_day")
-    public int getIndicatorCountLastDay() {
-        return indicatorCountLastDay;
-    }
-
-    public void setIndicatorCountLastDay(int indicatorCountLastDay) {
-        this.indicatorCountLastDay = indicatorCountLastDay;
+    public void setIndicatorCount(List<Map<String, Long>> indicatorCount) {
+        this.indicatorCount = indicatorCount;
     }
 }

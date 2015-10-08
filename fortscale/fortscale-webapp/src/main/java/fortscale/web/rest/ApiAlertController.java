@@ -15,6 +15,8 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -242,14 +241,55 @@ public class ApiAlertController extends BaseController {
 
 	/**
 	 * Statistics about system alerts
+	 * @param  timeRange  - return alert from the timeRange last days
 	 * @return
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<AlertStatisticsEntity> getStatistics()
+	public DataBean<AlertStatisticsEntity> getStatistics(
+			@RequestParam(required=false, defaultValue = "7", value = "alert_start_range") String timeRange)
 	{
-		AlertStatisticsEntity results = new AlertStatisticsEntity(	1,2,3,4,5,6,7,8,9,10,11,12	);
+
+
+
+		String[] timeRangeAsStr;
+		if (timeRange.contains(",")){
+			timeRangeAsStr = timeRange.split(",");
+		}  else {
+			timeRangeAsStr = new String[1];
+			timeRangeAsStr[0] = timeRange;
+		}
+
+		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
+		for (String timeRangeStr : timeRangeAsStr){
+			int lastXDays = Integer.parseInt(timeRangeStr.trim());
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+			cal.add(Calendar.DAY_OF_MONTH, -1 * lastXDays);
+			Date afterDate = cal.getTime();
+			afterDate = DateUtils.truncate(afterDate, Calendar.DATE); //Use start of date
+			long fromTime = afterDate.getTime();
+
+			Map<String,Integer> statusCounts = alertsDao.groupCount("status",fromTime);
+			results.addAlertStatus(statusCounts, lastXDays);
+
+			Map<String,Integer> severityCounts = alertsDao.groupCount("severity",fromTime);
+			results.addAlertSeverityMap(severityCounts, lastXDays);
+
+		}
+
+
+//		PageRequest pageRequest = new PageRequest(0, 1);
+//
+//		int count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
+//				entityTags, entityId);
+
+//		alertsDao.groupCount("status", 1443657600000L);
+
 
 
 		DataBean<AlertStatisticsEntity> toReturn = new DataBean<AlertStatisticsEntity>();

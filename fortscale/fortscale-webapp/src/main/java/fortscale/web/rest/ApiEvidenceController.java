@@ -22,6 +22,7 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.OverviewPageStatistics;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -317,16 +318,43 @@ public class ApiEvidenceController extends DataQueryController {
 
 	/**
 	 * This api return statistics about the indicators in the system.
-	 * @return
+	 * @param  timeRange - Number of days. Can be array of string in CSV format
+	 * @return count the evidences from today-timeRange until now.
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<IndicatorStatisticsEntity> getStatistics()
+	public DataBean<IndicatorStatisticsEntity> getStatistics(
+			@RequestParam(required=false, defaultValue = "7", value = "indicator_start_range") String timeRange)
 	{
+
 		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity(		);
-		results.setIndicatorCountLast7Days(10);
-		results.setIndicatorCountLastDay(5);
+		String[] timeRangeAsStr;
+		if (timeRange.contains(",")){
+			timeRangeAsStr = timeRange.split(",");
+		}  else {
+			timeRangeAsStr = new String[1];
+			timeRangeAsStr[0] = timeRange;
+		}
+
+		for (String timeRangeStr : timeRangeAsStr){
+			int lastXDays = Integer.parseInt(timeRangeStr.trim());
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+			cal.add(Calendar.DAY_OF_MONTH, -1 * lastXDays);
+			Date afterDate = cal.getTime();
+			afterDate = DateUtils.truncate(afterDate, Calendar.DATE); //Use start of date
+			long fromTime = afterDate.getTime();
+
+			long indicatorsCount = evidencesService.count(fromTime);
+			results.addIndicatorCount(indicatorsCount, lastXDays);
+
+
+		}
+
 
 		DataBean<IndicatorStatisticsEntity> toReturn = new DataBean<IndicatorStatisticsEntity>();
 		toReturn.setData(results);
