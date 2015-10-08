@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.feature.bucket;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.samza.config.Config;
@@ -103,29 +104,35 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	private boolean sync(FeatureBucketConf featureBucketConf, String bucketId) throws Exception{
 		boolean ret = false;
-		FeatureBucket featureBucket = featureBucketStore.get(getBucketKey(featureBucketConf.getName(), bucketId));
+		String key = getBucketKey(featureBucketConf.getName(), bucketId);
+		FeatureBucket featureBucket = featureBucketStore.get(key);
 		if(featureBucket != null){
-			storeFeatureBucket(featureBucketConf, featureBucket);
 			ret = true;
+			super.storeFeatureBucket(featureBucketConf, featureBucket);
+			if(featureBucket.getId() == null){
+				// At the first time the bucket is stored in mongo it gets an id, so we
+				// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
+				featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
+				featureBucketStore.put(key, featureBucket);
+			}
 		}
 		return ret;
 	}
 
 
 	@Override
-	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
-		List<FeatureBucket> superRet = super.updateFeatureBucketsEndTime(featureBucketConf, strategyId, newCloseTime);
-		if(superRet.isEmpty()){
-			return superRet;
+	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {		
+		List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.updateFeatureBucketsEndTime(featureBucketConf.getName(), strategyId, newCloseTime);
+		if(featureBucketMetadataList.isEmpty()){
+			return Collections.emptyList();
 		}
 		
-		featureBucketMetadataRepository.updateFeatureBucketsEndTime(featureBucketConf.getName(), strategyId, newCloseTime);
-		
 		List<FeatureBucket> ret = new ArrayList<>();
-		for(FeatureBucket featureBucket: superRet){
-			FeatureBucket featureBucketSamza = featureBucketStore.get(getBucketKey(featureBucket));
+		for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
+			String key = getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+			FeatureBucket featureBucketSamza = featureBucketStore.get(key);
 			featureBucketSamza.setEndTime(newCloseTime);
-			featureBucketStore.put(getBucketKey(featureBucket), featureBucketSamza);
+			featureBucketStore.put(key, featureBucketSamza);
 			ret.add(featureBucketSamza);
 		}
 		return ret;
@@ -143,9 +150,10 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	@Override
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
-		String id = featureBucket.getId();
+		String key = getBucketKey(featureBucket);
+		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(id == null){
+		if(oldFeatureBucket == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
 		} else if(featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
 			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
@@ -157,11 +165,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private void storeFeatureBucketForTheFirstTime(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		FeatureBucketMetadata featureBucketMetadata = new FeatureBucketMetadata(featureBucket);
 		featureBucketMetadataRepository.save(featureBucketMetadata);
-		super.storeFeatureBucket(featureBucketConf, featureBucket);
-		// At the first time the bucket is stored in mongo it gets an id, so we
-		// need to get the updated bucket with the id otherwise when coming to save
-		// the bucket in mongo next time it will throw com.mongodb.MongoException$DuplicateKey exception
-		featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
+		
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
 	}
@@ -173,14 +177,17 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	private void updateFeatureBucketAfterEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		super.storeFeatureBucket(featureBucketConf, featureBucket);
+		if(featureBucket.getId() == null){
+			// At the first time the bucket is stored in mongo it gets an id, so we
+			// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
+			featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
+		}
 		String key = getBucketKey(featureBucket);
 		FeatureBucket old = featureBucketStore.get(key);
 		if(old != null){
 			featureBucketStore.put(key, featureBucket);
 		}
 	}
-	
-	
 
 	private String getBucketKey(FeatureBucket featureBucket) {
 		return getBucketKey(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId());
