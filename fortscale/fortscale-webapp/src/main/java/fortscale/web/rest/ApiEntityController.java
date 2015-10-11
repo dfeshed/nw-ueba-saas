@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class ApiEntityController extends DataQueryController{
 
 	private static Logger logger = Logger.getLogger(ApiEntityController.class);
 	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static Map<String, String> replacementMap;
 
 	/**
 	 * DB repository for fetching users information
@@ -40,10 +42,10 @@ public class ApiEntityController extends DataQueryController{
 	@LogException
 	public @ResponseBody
 	DataBean<List<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-											@RequestParam(required=false, value = "entity_name") String entityName,
-											@RequestParam(required=false, value = "entity_id") String entityId,
-											@RequestParam(required=false, value = "page") Integer fromPage,
-											@RequestParam(required=false, value = "size")  Integer size) {
+			@RequestParam(required=false, value = "entity_name") String entityName,
+			@RequestParam(required=false, value = "entity_id") String entityId,
+			@RequestParam(required=false, value = "page") Integer fromPage,
+			@RequestParam(required=false, value = "size")  Integer size) {
 
 		DataBean<List<Map<String, String>>> entities = new DataBean<>();
 
@@ -71,12 +73,50 @@ public class ApiEntityController extends DataQueryController{
 
 		// Read users
 		if (entityName != null) {
+			entityName = stringReplacement(entityName);
+			entityName = entityName.replace("*", "\\*");
 			entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
 		} else if (entityId != null) {
 			entities.setData(usersDao.getUsersByIds(entityId, pageRequest));
 		}
 
 		return  entities;
+	}
+
+	/**
+	 * Surround special regax chars with '\\'
+	 * @param entityName
+	 * @return
+	 */
+	private String stringReplacement(String entityName) {
+		initMap();
+
+		for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+			entityName.replace(entry.getKey(), entry.getValue());
+		}
+
+		return entityName;
+	}
+
+	/**
+	 * Initialize the replacement map with special regax characters
+	 */
+	private void initMap(){
+		if (replacementMap != null) {
+			return;
+		}
+		replacementMap = new HashMap<>();
+		replacementMap.put("^", "\\^");
+		replacementMap.put("$", "\\$");
+		replacementMap.put(".", "\\.");
+		replacementMap.put("|", "\\|");
+		replacementMap.put("?", "\\?");
+		replacementMap.put("*", "\\*");
+		replacementMap.put("+", "\\+");
+		replacementMap.put("(", "\\(");
+		replacementMap.put(")", "\\)");
+		replacementMap.put("[", "\\[");
+		replacementMap.put("{", "\\{");
 	}
 
 }
