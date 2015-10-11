@@ -38,6 +38,14 @@
 					<key>impalaTablePartitionType</key>
 					<value>${impala.score.ldapauth.table.partition.type}</value>
 				</entry>
+                <entry>
+                    <key>jobmonitor</key>
+                    <value>aggregation-events-streaming</value>
+                </entry>
+                <entry>
+                    <key>classmonitor</key>
+                    <value>fortscale.streaming.task.AggregationEventsStreamTask</value>
+                </entry>
             </job-data-map>
 
         </job>
