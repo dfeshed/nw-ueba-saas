@@ -11,6 +11,7 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+	<bean id="mongoDbUtils" class="fortscale.aggregation.util.MongoDbUtils" />
 
 	<!-- supporting information beans-->
 	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
