@@ -8,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.Utils.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,6 @@ public class ApiEntityController extends DataQueryController{
 
 	private static Logger logger = Logger.getLogger(ApiEntityController.class);
 	private static final int DEFAULT_PAGE_SIZE = 10;
-	private static Map<String, String> replacementMap;
 
 	/**
 	 * DB repository for fetching users information
@@ -73,7 +73,7 @@ public class ApiEntityController extends DataQueryController{
 
 		// Read users
 		if (entityName != null) {
-			entityName = stringReplacement(entityName);
+			entityName = ApiUtils.stringReplacement(entityName);
 			entityName = entityName.replace("*", "\\*");
 			entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
 		} else if (entityId != null) {
@@ -81,42 +81,6 @@ public class ApiEntityController extends DataQueryController{
 		}
 
 		return  entities;
-	}
-
-	/**
-	 * Surround special regax chars with '\\'
-	 * @param entityName
-	 * @return
-	 */
-	private String stringReplacement(String entityName) {
-		initMap();
-
-		for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-			entityName.replace(entry.getKey(), entry.getValue());
-		}
-
-		return entityName;
-	}
-
-	/**
-	 * Initialize the replacement map with special regax characters
-	 */
-	private void initMap(){
-		if (replacementMap != null) {
-			return;
-		}
-		replacementMap = new HashMap<>();
-		replacementMap.put("^", "\\^");
-		replacementMap.put("$", "\\$");
-		replacementMap.put(".", "\\.");
-		replacementMap.put("|", "\\|");
-		replacementMap.put("?", "\\?");
-		replacementMap.put("*", "\\*");
-		replacementMap.put("+", "\\+");
-		replacementMap.put("(", "\\(");
-		replacementMap.put(")", "\\)");
-		replacementMap.put("[", "\\[");
-		replacementMap.put("{", "\\{");
 	}
 
 }
