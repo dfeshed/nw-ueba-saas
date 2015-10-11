@@ -19,6 +19,8 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.Utils.ApiUtils;
+import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -311,6 +313,31 @@ public class ApiEvidenceController extends DataQueryController {
 
 		supportingInformationBean.setData(rearrangedEntries);
 		return supportingInformationBean;
+	}
+
+	/**
+	 * This api return statistics about the indicators in the system.
+	 * @param  timeRange - from,to
+	 * @return count the evidences from today-timeRange until now.
+	 */
+	@RequestMapping(value="/statistics", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<IndicatorStatisticsEntity> getStatistics(
+			@RequestParam(required=true, value = "start_range") String timeRange)
+	{
+
+		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity();
+		List<Long> timeRangeList = ApiUtils.splitTimeRangeToFromAndToMiliseconds(timeRange);
+
+		long indicatorsCount = evidencesService.count(timeRangeList.get(0), timeRangeList.get(1));
+		results.setCount(indicatorsCount);
+
+
+		DataBean<IndicatorStatisticsEntity> toReturn = new DataBean<IndicatorStatisticsEntity>();
+		toReturn.setData(results);
+
+		return toReturn;
 	}
 
 	/*

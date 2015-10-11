@@ -29,6 +29,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private String type;
 	private String outputBucketStrategy = null;
 	private boolean fireEventsAlsoForEmptyBucketTicks = false;
+	private String retentionStrategyName;
 
 	@JsonCreator
 	public AggregatedFeatureEventConf(
@@ -160,6 +161,10 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public boolean getFireEventsAlsoForEmptyBucketTicks() {
 		return fireEventsAlsoForEmptyBucketTicks;
+	}
+
+	public String getRetentionStrategyName() {
+		return retentionStrategyName;
 	}
 
 	public void setName(String name) {

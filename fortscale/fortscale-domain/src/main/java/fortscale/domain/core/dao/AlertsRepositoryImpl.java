@@ -1,21 +1,37 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.Field;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+
+
+//imports as static
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+
+
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 
 /**
  * Created by rans on 21/06/15.
@@ -25,6 +41,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	@Autowired private MongoTemplate mongoTemplate;
 
 	private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
+	private static  String TOTAL_FIELD_NAME = "total";
 
 	/**
 	 * returns all alerts in the collection in a json object represented by @Alerts
@@ -94,6 +111,43 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
 				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
 		return mongoTemplate.count(query, Alert.class);
+	}
+
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status){
+
+
+		Criteria criteria= Criteria.where(Alert.startDateField).gte(fromDate).lte((toDate));
+		if (StringUtils.isNotBlank(status)){
+			criteria.and(Alert.statusField).is(status);
+		}
+		//Create aggregation on fieldName, for all alerts which started after "afterDate").
+		Aggregation agg = Aggregation.newAggregation(
+				match(criteria),
+				group(fieldName).count().as(TOTAL_FIELD_NAME),
+				project(TOTAL_FIELD_NAME).and(fieldName).previousOperation()
+		);
+
+
+		AggregationResults<BasicDBObject> groupResults
+				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
+
+		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
+		Map<String, Integer> results = new HashMap<>();
+		for (BasicDBObject item:  groupResults.getMappedResults()) {
+			String fieldValue = item.get(fieldName).toString();
+			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
+
+			int count;
+			if (StringUtils.isBlank(countAsString)){
+				count = 0;
+			} else {
+				count = Integer.parseInt(countAsString);
+			}
+			results.put(fieldValue,count);
+		}
+
+		//Return the map
+		return results;
 	}
 
 	/**

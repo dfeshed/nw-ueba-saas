@@ -1,5 +1,17 @@
 {
   "AggregatedFeatureEvents": {
+
+    "RetentionStrategies": [
+      {
+        "name": "hourly_feature_retention_strategy",
+        "retentionInSeconds": 2592000
+      },
+      {
+        "name": "daily_feature_retention_strategy",
+        "retentionInSeconds":38880000
+      }
+    ],
+
     "Events": [
       {
         "name": "distinct_number_of_src_machines_kerberos",
@@ -18,7 +30,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_src_machines_kerberos_hourly",
@@ -37,7 +50,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_dst_machines_kerberos",
@@ -56,7 +70,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_dst_machines_kerberos_hourly",
@@ -75,7 +90,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "number_of_kerberos_events",
@@ -93,7 +109,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "number_of_kerberos_events_hourly",
@@ -111,7 +128,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "number_of_failed_kerberos_events",
@@ -129,7 +147,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "number_of_failed_kerberos_events_hourly",
@@ -147,7 +166,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
 
       {
@@ -167,7 +187,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_src_machines_ssh_hourly",
@@ -186,7 +207,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_dst_machines_ssh",
@@ -205,7 +227,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_dst_machines_ssh_hourly",
@@ -224,7 +247,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "number_of_ssh_events",
@@ -242,7 +266,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "number_of_ssh_events_hourly",
@@ -260,7 +285,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "number_of_failed_ssh_events",
@@ -278,7 +304,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "number_of_failed_ssh_events_hourly",
@@ -296,7 +323,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
 
       {
@@ -315,7 +343,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "number_of_failed_vpn_events_hourly",
@@ -333,7 +362,8 @@
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_events_func"
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_src_machines_vpn",
@@ -352,7 +382,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_src_machines_vpn_hourly",
@@ -371,7 +402,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_countries_vpn",
@@ -390,7 +422,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
         "name": "distinct_number_of_countries_vpn_hourly",
@@ -409,7 +442,8 @@
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
           "includeValues": false
-        }
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
 
 

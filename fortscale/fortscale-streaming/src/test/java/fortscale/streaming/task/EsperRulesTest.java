@@ -85,7 +85,7 @@ public class EsperRulesTest {
 
 		// Alert with notification and tag
 
-		EntityEvent entityEventLow =   new EntityEvent(eventStartData,99,"event_type",60,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +2,eventStartData +2,"entity_event_type",eventStartData +2,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =   new EntityEvent(eventStartData,99,60,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +2,eventStartData +2,"entity_event_type",eventStartData +2,new ArrayList<JSONObject>());
 		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
 
 		List<String> userTags = new ArrayList<>();
@@ -157,7 +157,7 @@ public class EsperRulesTest {
 		//create events for testing
 		//each of these event should satisfy one rule exactly
 		//1441694790L == 2014/09/08:09:46:29
-		EntityEvent entityEventLow =      new EntityEvent(eventStartData,99,"event_type",62,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =      new EntityEvent(eventStartData,99,62,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 
 
@@ -174,7 +174,7 @@ public class EsperRulesTest {
 
 		//---test the rule without the notification Medium
 
-		EntityEvent entityEventMedium =   new EntityEvent(eventStartData,99,"event_type",72,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventMedium =   new EntityEvent(eventStartData,99,72,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 		epService.getEPRuntime().sendEvent(entityEventMedium);
 		result = listener.assertOneGetNewAndReset();
@@ -184,7 +184,7 @@ public class EsperRulesTest {
 		//---test the rule without the notification High
 
 
-		EntityEvent entityEventHigh =     new EntityEvent(eventStartData,99,"event_type",88,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventHigh =     new EntityEvent(eventStartData,99,88,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 		epService.getEPRuntime().sendEvent(entityEventHigh);
 		result = listener.assertOneGetNewAndReset();
@@ -194,7 +194,7 @@ public class EsperRulesTest {
 		//---test the rule without the notification Critical
 
 
-		EntityEvent entityEventCritical = new EntityEvent(eventStartData,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventCritical = new EntityEvent(eventStartData,99,99,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 		epService.getEPRuntime().sendEvent(entityEventCritical);
 		result = listener.assertOneGetNewAndReset();
@@ -205,8 +205,8 @@ public class EsperRulesTest {
 
 
 		//these events should not satisfy any rule
-		EntityEvent entityEventTooLow = new   EntityEvent(eventStartData,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com", eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
-		EntityEvent entityEventNotAdmin = new EntityEvent(eventStartData,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user10@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventTooLow = new   EntityEvent(eventStartData,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com", eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
+		EntityEvent entityEventNotAdmin = new EntityEvent(eventStartData,99,98,new HashMap<String,String>(),"normalized_username_user10@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1,new ArrayList<JSONObject>());
 
 
 		epService.getEPRuntime().sendEvent(entityEventTooLow);
@@ -233,14 +233,14 @@ public class EsperRulesTest {
 
 		stmt.addListener(listener);
 
-		EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",65,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,"event_type",75,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,"event_type",90,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventCritical = new EntityEvent(1234L,99,"event_type",99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =      new EntityEvent(1234L,99,65,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventMedium =   new EntityEvent(1234L,99,75,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventHigh =     new EntityEvent(1234L,99,90,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventCritical = new EntityEvent(1234L,99,99,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 		//these events should not satisfy any rule
-		EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
-		EntityEvent entityEventIsAdmin = new EntityEvent(1234L,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user2@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventIsAdmin = new EntityEvent(1234L,99,98,new HashMap<String,String>(),"normalized_username_user2@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 
 		List<String> userTags = new ArrayList<>();
@@ -282,12 +282,12 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventLow = new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventLow = new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
 
 
         //these events should not satisfy any rule
-        EntityEvent entityEventTooLow = new EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow = new EntityEvent(1234L,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 
 
@@ -319,12 +319,12 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventMedium =      new EntityEvent(1234L,99,"event_type",65,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventMedium =      new EntityEvent(1234L,99,65,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),75,Severity.Medium,3,EvidenceTimeframe.Hourly);
 
 
         //these events should not satisfy any rule
-        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 
         epService.getEPRuntime().sendEvent(notification);
@@ -350,12 +350,12 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventMedium =      new EntityEvent(1234L,99,"event_type",83,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventMedium =      new EntityEvent(1234L,99,83,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),80,Severity.High,3,EvidenceTimeframe.Hourly);
 
 
         //these events should not satisfy any rule
-        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 
         epService.getEPRuntime().sendEvent(notification);
@@ -381,12 +381,12 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventCritical =      new EntityEvent(1234L,99,"event_type",93,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventCritical =      new EntityEvent(1234L,99,93,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L-5 ,12345L +5,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),96,Severity.Critical,3,EvidenceTimeframe.Daily);
 
 
         //these events should not satisfy any rule
-        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,"event_type",40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow =  new EntityEvent(1234L,99,40,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 
         epService.getEPRuntime().sendEvent(notification);
@@ -414,7 +414,7 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventTooLow =      new EntityEvent(1234L,55,"event_type",45,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow =      new EntityEvent(1234L,55,45,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L-5 ,12345L +5,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),55,Severity.Low,3,EvidenceTimeframe.Daily);
 
 
@@ -445,7 +445,7 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventTooLow =      new EntityEvent(1234L,55,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventTooLow =      new EntityEvent(1234L,55,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L-5 ,12345L +5,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),55,Severity.Low,3,EvidenceTimeframe.Daily);
 
         List<String> userTags = new ArrayList<>();
@@ -478,7 +478,7 @@ public class EsperRulesTest {
 
 		stmt.addListener(listener);
 
-		EntityEvent entityEventLow =  new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
 
 
@@ -507,7 +507,7 @@ public class EsperRulesTest {
 
 		stmt.addListener(listener);
 
-		EntityEvent entityEventLow =  new EntityEvent(1234L,99,"event_type",98,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =  new EntityEvent(1234L,99,98,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 
 		epService.getEPRuntime().sendEvent(entityEventLow);
 		EventBean result = listener.assertOneGetNewAndReset();
@@ -533,7 +533,7 @@ public class EsperRulesTest {
 
 		stmt.addListener(listener);
 
-		EntityEvent entityEventLow =  new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+		EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
 		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user2@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
 
 
@@ -568,7 +568,7 @@ public class EsperRulesTest {
 
         stmt.addListener(listener);
 
-        EntityEvent entityEventLow =      new EntityEvent(1234L,99,"event_type",55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
+        EntityEvent entityEventLow =      new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>());
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
 
 

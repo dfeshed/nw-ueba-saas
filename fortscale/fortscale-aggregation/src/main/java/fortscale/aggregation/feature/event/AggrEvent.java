@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
+import fortscale.utils.time.TimestampUtils;
 
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrEvent implements Serializable {
@@ -58,11 +59,9 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_AGGREGATED_FEATURE_INFO)
     Map<String, Object> aggregatedFeatureInfo;
 
-    @Indexed
     @Field(EVENT_FIELD_BUCKET_CONF_NAME)
     String bucketConfName;
 
-    @Indexed
     @Field(EVENT_FIELD_CONTEXT)
     Map<String, String> context;
 
@@ -75,12 +74,9 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_START_TIME)
     Date startTime;
 
-    @Indexed
     @Field(EVENT_FIELD_START_TIME_UNIX)
     Long startTimeUnix;
 
-  //The ttl for each document is 1 year and 3 months
-    @Indexed(unique = false, expireAfterSeconds=60*60*24*30*15)
     @Field(EVENT_FIELD_END_TIME)
     Date endTime;
 
