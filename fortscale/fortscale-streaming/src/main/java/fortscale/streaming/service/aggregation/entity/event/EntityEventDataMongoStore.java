@@ -101,7 +101,7 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 
 			// Modified at date (TTL)
 			int daysToRetainDocument = EXPIRE_AFTER_DAYS_DEFAULT;
-			EntityEventConf entityEventConf = entityEventConfService.getEntityEventDefinition(entityEventName);
+			EntityEventConf entityEventConf = entityEventConfService.getEntityEventConf(entityEventName);
 			if (entityEventConf != null) {
 				Integer daysToRetainDocumentInConf = entityEventConf.getDaysToRetainDocument();
 				if (daysToRetainDocumentInConf != null) {
