@@ -9,17 +9,12 @@ import java.util.*;
  */
 public class ApiUtils {
 
-    public static Date getStartOfBeforeXDays(int numberOfDays){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        cal.add(Calendar.DAY_OF_MONTH, -1 * numberOfDays);
-        Date date = cal.getTime();
-        return date;
-
-    }
-
+    /**
+     * Convert
+     * @param string to numbers splited by ","
+     * @return
+     * @throws RuntimeException if the string is not 2 numbers splitted by ","
+     */
     public static List<Long> splitTo2Longs(String string){
 
         if (string.contains(",")){

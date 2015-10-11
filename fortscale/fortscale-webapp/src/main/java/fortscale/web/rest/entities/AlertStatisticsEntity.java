@@ -44,19 +44,6 @@ public class AlertStatisticsEntity {
         this.alertOpenSeverity = alertOpenSeverity;
     }
 
-    /**
-     * This methos transofrm all the key to be lower case
-     * @param originalMap
-     * @return
-     */
-    private Map<String, Integer> updateKeysToLowerCase(Map<String, Integer> originalMap){
-        Map<String, Integer> newMap = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : originalMap.entrySet() ){
-            newMap.put(entry.getKey().toLowerCase(), entry.getValue());
-        }
-        return newMap;
-
-    }
 
 
 
