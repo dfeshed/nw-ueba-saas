@@ -53,7 +53,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 
-		dateFieldName = config.get("fortscale.data.source.field");
+		dateFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 
 	}
 	
