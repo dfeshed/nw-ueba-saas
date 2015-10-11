@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +127,7 @@ public class EventsScoreStreamTaskService {
 		lastTimestampCount.set(timestamp);
 	}
 	
-	private void saveEvent(JSONObject event){
+	private void saveEvent(JSONObject event) throws IOException {
 		String eventTypeValue = (String) event.get(eventTypeFieldName);
 		if(StringUtils.isBlank(eventTypeValue)){
 			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.

@@ -9,6 +9,11 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryHelper;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -42,10 +47,25 @@ import static org.mockito.Mockito.when;
 public class SupportingInformationServiceTest {
 
     @Autowired
+    @ReplaceWithMock
+    DataQueryHelper dataQueryHelper;
+
+    @Autowired
+    @ReplaceWithMock
+    DataQueryRunnerFactory dataQueryRunnerFactory;
+
+    @Autowired
+    @ReplaceWithMock
+    MySqlQueryRunner mySqlQueryRunner;
+
+    @Autowired
     SupportingInformationService supportingInformationService;
 
     @Mock
     Evidence mockEvidence;
+
+	@Mock
+	DataQueryRunner dataQueryRunner;
 
     @Autowired
     @ReplaceWithMock
@@ -54,6 +74,7 @@ public class SupportingInformationServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(mySqlQueryRunner);
     }
 
     @Test
@@ -64,6 +85,17 @@ public class SupportingInformationServiceTest {
         String contextType = "normalized_username";
         String contextValue = "mosheb@somebigcompany.com";
         String evidenceAnomalyValue = "SERVER_5";
+
+
+
+		try {
+			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+		}
+		catch (Exception e)
+		{
+			return;
+		}
+
 
         int timePeriodInDays = 90;
 
