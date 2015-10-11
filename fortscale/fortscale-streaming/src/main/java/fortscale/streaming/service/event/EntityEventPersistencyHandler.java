@@ -1,9 +1,8 @@
 package fortscale.streaming.service.event;
 
 import fortscale.domain.core.EntityEvent;
-import fortscale.streaming.service.aggregation.entity.event.EntityEventConf;
-import fortscale.streaming.service.aggregation.entity.event.EntityEventConfService;
-import fortscale.utils.logging.Logger;
+import fortscale.entity.event.EntityEventConf;
+import fortscale.entity.event.EntityEventConfService;
 import fortscale.utils.mongodb.FIndex;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,8 +17,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class EntityEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
-	private static final Logger logger = Logger.getLogger(EntityEventPersistencyHandler.class);
-	private static final String COLLECTION_NAME_SEPERATOR = "__";
+	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
 	@Autowired
 	private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
@@ -42,8 +40,8 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 	@Override
 	public void saveEvent(JSONObject event, String collectionPrefix) throws IOException {
 		String entityEventType = (String) event.get(entityEventTypeFieldName);
-		String collectionName = new StringBuilder(collectionPrefix).append(COLLECTION_NAME_SEPERATOR)
-				.append(eventTypeFieldValue).append(COLLECTION_NAME_SEPERATOR)
+		String collectionName = new StringBuilder(collectionPrefix).append(COLLECTION_NAME_SEPARATOR)
+				.append(eventTypeFieldValue).append(COLLECTION_NAME_SEPARATOR)
 				.append(entityEventType).toString();
 
 		if (!isCollectionExist(collectionName)) {
