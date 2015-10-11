@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.entity.event;
 
+import fortscale.aggregation.util.MongoDbUtils;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class EntityEventDataMongoStore implements InitializingBean, EntityEventDataStore {
+public class EntityEventDataMongoStore implements EntityEventDataStore {
 	private static final String COLLECTION_NAME_PREFIX = "entity_event_";
 	private static final int EXPIRE_AFTER_DAYS_DEFAULT = 90;
 
@@ -23,18 +24,13 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private EntityEventConfService entityEventConfService;
-
-	private Set<String> collectionNames;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
-	}
+	@Autowired
+	private MongoDbUtils mongoDbUtils;
 
 	@Override
 	public EntityEventData getEntityEventData(String entityEventName, String contextId, long startTime, long endTime) {
 		String collectionName = getCollectionName(entityEventName);
-		if (collectionExists(collectionName)) {
+		if (mongoDbUtils.collectionExists(collectionName)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
 			query.addCriteria(where(EntityEventData.START_TIME_FIELD).is(startTime));
@@ -56,7 +52,7 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 	@Override
 	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
 		String collectionName = getCollectionName(entityEventName);
-		if (collectionExists(collectionName)) {
+		if (mongoDbUtils.collectionExists(collectionName)) {
 			Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		}
@@ -67,7 +63,7 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 	@Override
 	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
 		String collectionName = getCollectionName(entityEventName);
-		if (collectionExists(collectionName)) {
+		if (mongoDbUtils.collectionExists(collectionName)) {
 			Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
@@ -81,9 +77,8 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 		String entityEventName = entityEventData.getEntityEventName();
 		String collectionName = getCollectionName(entityEventName);
 
-		if (!collectionExists(collectionName)) {
-			mongoTemplate.createCollection(collectionName);
-			collectionNames.add(collectionName);
+		if (!mongoDbUtils.collectionExists(collectionName)) {
+			mongoDbUtils.createCollection(collectionName);
 
 			// Context ID + start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
@@ -118,9 +113,6 @@ public class EntityEventDataMongoStore implements InitializingBean, EntityEventD
 		mongoTemplate.save(entityEventData, collectionName);
 	}
 
-	private boolean collectionExists(String collectionName) {
-		return collectionNames.contains(collectionName);
-	}
 
 	private static String getCollectionName(String entityEventName) {
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, entityEventName);

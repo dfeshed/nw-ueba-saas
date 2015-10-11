@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
+import fortscale.aggregation.util.MongoDbUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +16,19 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.util.*;
 
 
-public class FeatureBucketsMongoStore implements FeatureBucketsStore, InitializingBean{
+public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
-	
-	
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
-	private Set<String> collectionNames;
+	@Autowired
+	private MongoDbUtils mongoDbUtils;
 
-	
 	@Override
 	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
+		if (mongoDbUtils.collectionExists(collectionName)) {
 			Update update = new Update();
 			update.set(FeatureBucket.END_TIME_FIELD, newCloseTime);
 			Query query = new Query(Criteria.where(FeatureBucket.STRATEGY_ID_FIELD).is(strategyId));
@@ -76,7 +75,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
 		String collectionName = getCollectionName(featureBucketConf);
-		if (isCollectionExist(collectionName)) {
+		if (mongoDbUtils.collectionExists(collectionName)) {
 			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 			
 			return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
@@ -86,8 +85,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String collectionName = getCollectionName(featureBucketConf);
-		if (!isCollectionExist(collectionName)) {
-			mongoTemplate.createCollection(collectionName);
+		if (!mongoDbUtils.collectionExists(collectionName)) {
+			mongoDbUtils.createCollection(collectionName);
 
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
@@ -101,7 +100,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
-			collectionNames.add(collectionName);
 		}
 		try {
 			mongoTemplate.save(featureBucket, collectionName);
@@ -109,17 +107,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore, Initializi
 			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
 		}
 	}
-	
-	private boolean isCollectionExist(String collectionName){
-		return collectionNames.contains(collectionName);
-	}
-	
+
 	private String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
-	}
 }
