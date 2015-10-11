@@ -8,7 +8,7 @@
     <schedule>
         <job>
             <name>Notification_ETL</name>
-            <group>EVIDENCE</group>
+            <group>Forwarding</group>
             <description>Run Notifications to Evidence DAILY</description>
             <job-class>fortscale.collection.jobs.evidence.NotificationToEvidenceJob</job-class>
             <durability>true</durability>
@@ -81,9 +81,9 @@
         <trigger>
             <cron>
                 <name>notification_to_evidence_every_15min_trigger</name>
-                <group>EVIDENCE</group>
+                <group>Forwarding</group>
                 <job-name>Notification_ETL</job-name>
-                <job-group>EVIDENCE</job-group>
+                <job-group>Forwarding</job-group>
                 <cron-expression>0 1/15 * * * ?</cron-expression>
             </cron>
         </trigger>
