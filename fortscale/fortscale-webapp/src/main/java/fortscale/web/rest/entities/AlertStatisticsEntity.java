@@ -17,10 +17,6 @@ import java.util.Map;
 public class AlertStatisticsEntity {
 
 
-    private final static String OPENED = "Open";
-    private final static String CLOSED = "Closed";
-
-
     private Map<String,Integer> alertStatus;
     private Map<String,Integer> alertOpenSeverity;
 

@@ -1,5 +1,6 @@
 package fortscale.web.rest.Utils;
 
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.util.*;
@@ -12,24 +13,32 @@ public class ApiUtils {
     /**
      * Convert
      * @param string to numbers splited by ","
-     * @return
+     * @return array which the first item is the "from date" in miliseconds,
+     *          and the second is the "to date" in miliseconds
      * @throws RuntimeException if the string is not 2 numbers splitted by ","
      */
-    public static List<Long> splitTo2Longs(String string){
+    public static List<Long> splitTimeRangeToFromAndToMiliseconds(String string){
 
         if (string.contains(",")){
             String[] stringArr = string.split(",");
             if (stringArr.length!=2) {
-                throw new RuntimeException("Expected to value sepereated with ,");
+                throw new IllegalArgumentException ("Expected to value to be long numbers splitted by ,");
             } else {
                 List<Long> list = new ArrayList<>();
-                list.add(Long.parseLong(stringArr[0].trim()));
-                list.add(Long.parseLong(stringArr[1].trim()));
+
+                long fromTime = TimestampUtils.convertToMilliSeconds(Long.parseLong(stringArr[0].trim()));
+                long toTime = TimestampUtils.convertToMilliSeconds(Long.parseLong(stringArr[1].trim()));
+
+                fromTime = TimestampUtils.convertToMilliSeconds(fromTime);
+                 toTime = TimestampUtils.convertToMilliSeconds(toTime);
+
+                list.add(fromTime);
+                list.add(toTime);
                 return  list;
             }
 
         }  else {
-            throw new RuntimeException("Expected to value sepereated with ,");
+            throw new IllegalArgumentException ("Expected to value to be long numbers splitted by ,");
         }
 
 

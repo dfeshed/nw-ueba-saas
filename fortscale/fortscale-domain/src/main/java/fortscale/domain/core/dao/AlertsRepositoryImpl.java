@@ -113,11 +113,16 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return mongoTemplate.count(query, Alert.class);
 	}
 
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate){
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status){
 
+
+		Criteria criteria= Criteria.where(Alert.startDateField).gte(fromDate).lte((toDate));
+		if (StringUtils.isNotBlank(status)){
+			criteria.and(Alert.statusField).is(status);
+		}
 		//Create aggregation on fieldName, for all alerts which started after "afterDate").
 		Aggregation agg = Aggregation.newAggregation(
-				match(Criteria.where(Evidence.startDateField).gte(fromDate).lte((toDate))),
+				match(criteria),
 				group(fieldName).count().as(TOTAL_FIELD_NAME),
 				project(TOTAL_FIELD_NAME).and(fieldName).previousOperation()
 		);

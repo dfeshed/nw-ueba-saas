@@ -328,11 +328,9 @@ public class ApiEvidenceController extends DataQueryController {
 	{
 
 		IndicatorStatisticsEntity results = new IndicatorStatisticsEntity();
-		List<Long> timeRangeList = ApiUtils.splitTo2Longs(timeRange);
+		List<Long> timeRangeList = ApiUtils.splitTimeRangeToFromAndToMiliseconds(timeRange);
 
-
-
-		long indicatorsCount = evidencesService.count(timeRangeList.get(0)*1000,timeRangeList.get(1)*1000);
+		long indicatorsCount = evidencesService.count(timeRangeList.get(0), timeRangeList.get(1));
 		results.setCount(indicatorsCount);
 
 

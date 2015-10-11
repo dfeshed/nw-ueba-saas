@@ -141,7 +141,7 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	}
 
 	@Override
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate){
-		return alertsRepository.groupCount(fieldName,fromDate, toDate);
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status){
+		return alertsRepository.groupCount(fieldName,fromDate, toDate, status);
 	}
 }

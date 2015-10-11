@@ -77,8 +77,9 @@ public interface AlertsRepositoryCustom {
 	 * @param fieldName - the filed which we like to group by
 	 * @param fromDate - the date which all the alerts start time should be greated then
 	 * @param toDate - the date which all the alerts start time should be smaller then
+	 * @param status - optional parameter. The status to filter.
 	 * @return map from value (from the field) and count of the instances of value
 	 */
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate);
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status);
 
 }
