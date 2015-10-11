@@ -74,7 +74,6 @@ public class ApiEntityController extends DataQueryController{
 		// Read users
 		if (entityName != null) {
 			entityName = ApiUtils.stringReplacement(entityName);
-			entityName = entityName.replace("*", "\\*");
 			entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
 		} else if (entityId != null) {
 			entities.setData(usersDao.getUsersByIds(entityId, pageRequest));
