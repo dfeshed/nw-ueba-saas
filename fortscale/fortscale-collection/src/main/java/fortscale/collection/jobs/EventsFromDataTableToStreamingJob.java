@@ -239,6 +239,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         } catch (InterruptedException e) {
                         }
                     }
+                //metric based throttling
                 } else if (resultsMap.size() > 0 && jobToMonitor != null) {
                     int currentTry = 0;
                     while (currentTry < checkRetries) {
