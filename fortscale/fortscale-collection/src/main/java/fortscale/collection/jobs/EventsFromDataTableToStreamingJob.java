@@ -246,9 +246,10 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     while (currentTry < checkRetries) {
                         logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
                         TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                        Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                                String.format("%s-last-message-epochtime", jobToMonitor));
-                        if (time != null && convertToLong(time) == latestEpochTimeSent) {
+                        Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
+                                String.format("%s-last-message-epochtime", jobToMonitor)));
+                        time = null;
+                        if (time == latestEpochTimeSent) {
                             logger.debug("last message in batch processed, moving to next batch");
                             break;
                         }
