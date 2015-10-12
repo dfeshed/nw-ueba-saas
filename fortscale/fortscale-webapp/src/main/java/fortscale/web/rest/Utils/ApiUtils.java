@@ -10,6 +10,8 @@ import java.util.*;
  */
 public class ApiUtils {
 
+    private static Map<String, String> replacementMap;
+
     /**
      * Convert
      * @param string to numbers splited by ","
@@ -42,5 +44,42 @@ public class ApiUtils {
         }
 
 
+    }
+
+
+    /**
+     * Surround special regax chars with '\\'
+     * @param entityName
+     * @return
+     */
+    public static String stringReplacement(String entityName) {
+        initMap();
+
+        for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+            entityName.replace(entry.getKey(), entry.getValue());
+        }
+
+        return entityName;
+    }
+
+    /**
+     * Initialize the replacement map with special regax characters
+     */
+    private static void initMap(){
+        if (replacementMap != null) {
+            return;
+        }
+        replacementMap = new HashMap<>();
+        replacementMap.put("^", "\\^");
+        replacementMap.put("$", "\\$");
+        replacementMap.put(".", "\\.");
+        replacementMap.put("|", "\\|");
+        replacementMap.put("?", "\\?");
+        replacementMap.put("*", "\\*");
+        replacementMap.put("+", "\\+");
+        replacementMap.put("(", "\\(");
+        replacementMap.put(")", "\\)");
+        replacementMap.put("[", "\\[");
+        replacementMap.put("{", "\\{");
     }
 }
