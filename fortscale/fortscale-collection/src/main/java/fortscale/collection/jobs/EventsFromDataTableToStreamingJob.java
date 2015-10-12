@@ -2,7 +2,6 @@ package fortscale.collection.jobs;
 
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
