@@ -16,7 +16,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
 	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
-	
+
 	<bean id="featureBucketStrategyStore" class="fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyMongoStore"/>
 	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
 	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
@@ -24,6 +24,7 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
 
 	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService"/>
 	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fortscale.aggregation.util.MongoDbUtilService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,8 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private MongoDbUtilService mongoDbUtilService;
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
@@ -39,8 +42,8 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if (!mongoTemplate.collectionExists(COLLECTION_NAME)) {
-			mongoTemplate.createCollection(COLLECTION_NAME);
+		if (!mongoDbUtilService.collectionExists(COLLECTION_NAME)) {
+			mongoDbUtilService.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC));
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC).on(FeatureBucketStrategyData.START_TIME_FIELD,Direction.DESC));
 		}
