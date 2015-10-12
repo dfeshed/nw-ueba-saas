@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
 @DisallowConcurrentExecution
@@ -216,7 +217,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
-                    long currentEpochTimeField = ConversionUtils.convertToLong(result.get(epochtimeField));
+                    long currentEpochTimeField = convertToLong(result.get(epochtimeField));
                     if (latestEpochTimeSent < currentEpochTimeField) {
                         latestEpochTimeSent = currentEpochTimeField;
                     }
@@ -247,7 +248,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                         Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
                                 String.format("%s-last-message-epochtime", jobToMonitor));
-                        if (time != null && (long)time == latestEpochTimeSent) {
+                        if (time != null && convertToLong(time) == latestEpochTimeSent) {
                             logger.debug("last message in batch processed, moving to next batch");
                             break;
                         }
@@ -312,7 +313,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         if (latestEpochTimeField == null) {
             return timestampCursor;
         }
-        destinationTableLatestTime = ConversionUtils.convertToLong(latestEpochTimeField);
+        destinationTableLatestTime = convertToLong(latestEpochTimeField);
         return timestampCursor - destinationTableLatestTime;
     }
 
