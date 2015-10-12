@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class MongoDbUtils implements InitializingBean {
+public class MongoDbUtilService implements InitializingBean {
     @Autowired
     private MongoTemplate mongoTemplate;
 

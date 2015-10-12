@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.util.MongoDbUtils;
+import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -24,13 +24,13 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private MongoDbUtils mongoDbUtils;
+    private MongoDbUtilService mongoDbUtilService;
 
     @Override
     public List<AggrEvent> getAggregatedEventsByContextAndTimeRange(String featureName, String contextType, String ContextName, Long startTime, Long endTime) {
         String collectionName = SCORED_AGGR_EVENT_COLLECTION_PREFIX + featureName;
 
-        if (mongoDbUtils.collectionExists(collectionName)) {
+        if (mongoDbUtilService.collectionExists(collectionName)) {
             Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(TimestampUtils.convertToSeconds(startTime));
 
             Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));

@@ -1,9 +1,8 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-import fortscale.aggregation.util.MongoDbUtils;
+import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,13 +21,13 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
-	private MongoDbUtils mongoDbUtils;
+	private MongoDbUtilService mongoDbUtilService;
 
 	@Override
 	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		if (mongoDbUtils.collectionExists(collectionName)) {
+		if (mongoDbUtilService.collectionExists(collectionName)) {
 			Update update = new Update();
 			update.set(FeatureBucket.END_TIME_FIELD, newCloseTime);
 			Query query = new Query(Criteria.where(FeatureBucket.STRATEGY_ID_FIELD).is(strategyId));
@@ -75,7 +74,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
 		String collectionName = getCollectionName(featureBucketConf);
-		if (mongoDbUtils.collectionExists(collectionName)) {
+		if (mongoDbUtilService.collectionExists(collectionName)) {
 			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 			
 			return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
@@ -85,8 +84,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String collectionName = getCollectionName(featureBucketConf);
-		if (!mongoDbUtils.collectionExists(collectionName)) {
-			mongoDbUtils.createCollection(collectionName);
+		if (!mongoDbUtilService.collectionExists(collectionName)) {
+			mongoDbUtilService.createCollection(collectionName);
 
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
