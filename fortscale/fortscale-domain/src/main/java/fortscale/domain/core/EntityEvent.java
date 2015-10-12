@@ -26,7 +26,6 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public static final String ENTITY_EVENT_START_TIME_UNIX_FILED_NAME = "start_time_unix";
 	public static final String ENTITY_EVENT_VALUE_FILED_NAME = "entity_event_value";
 	public static final String ENTITY_EVENT_SCORE_FILED_NAME = "score";
-	public static final String ENTITY_EVENT_BASE_SCORE_FILED_NAME = "base_score";
 	public static final String ENTITY_EVENT_CONTEXT_FILED_NAME = "context";
 	public static final String ENTITY_EVENT_CONTEXT_ID_FILED_NAME = "contextId";
 	public static final String ENTITY_EVENT_END_TIME_UNIX_FILED_NAME = "end_time_unix";
@@ -44,8 +43,6 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private double entity_event_value;
 	@Field(ENTITY_EVENT_SCORE_FILED_NAME)
 	private double score;
-	@Field(ENTITY_EVENT_BASE_SCORE_FILED_NAME)
-	private double base_score;
 	@Field(ENTITY_EVENT_CONTEXT_FILED_NAME)
 	private Map<String, String> context;
 	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
@@ -106,14 +103,6 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 
 	public void setScore(double score) {
 		this.score = score;
-	}
-
-	public double getBase_score() {
-		return base_score;
-	}
-
-	public void setBase_score(double base_score) {
-		this.base_score = base_score;
 	}
 
 	public Map<String, String> getContext() {
