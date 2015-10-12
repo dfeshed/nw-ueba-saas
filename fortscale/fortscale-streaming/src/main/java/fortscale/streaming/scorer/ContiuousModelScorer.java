@@ -15,7 +15,7 @@ public class ContiuousModelScorer extends ModelScorer{
 	
 	public static final boolean DEFAULT_IS_SCORE_FOR_LARGE_VALUES = true;
 	public static final boolean DEFAULT_IS_SCORE_FOR_SMALL_VALUES = true;
-	private static final double DEFAULT_SENSITIVITY_VALUE = 1.0;
+	public static final double DEFAULT_SENSITIVITY_VALUE = 1.0;
 
 	private QuadPolyCalibrationForContModel calibration;
 	
