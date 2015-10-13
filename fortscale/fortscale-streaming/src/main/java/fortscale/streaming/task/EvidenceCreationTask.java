@@ -220,7 +220,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmountOfEvents);
 		}
 
-		Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.startTimestampField, true));
+		Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField, true));
 		lastTimestampCount.set(startTimestampSeconds);
 
 	}
