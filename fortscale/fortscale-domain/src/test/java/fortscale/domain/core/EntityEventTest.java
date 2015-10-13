@@ -18,7 +18,6 @@ public class EntityEventTest {
         EntityEvent entityEvent = EntityEvent.buildEntityEvent(entityEventJsonObj);
         Assert.assertEquals(1435176000, entityEvent.getStart_time_unix());
         Assert.assertEquals("normalized_username_normalized_username_14060866", entityEvent.getContextId());
-        Assert.assertEquals(0, Double.compare(0.0, entityEvent.getBase_score()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getEntity_event_value()));
         Assert.assertEquals(0, Double.compare(0.0, entityEvent.getScore() ));
         Date creationTime = new Date(1444297230000L);
