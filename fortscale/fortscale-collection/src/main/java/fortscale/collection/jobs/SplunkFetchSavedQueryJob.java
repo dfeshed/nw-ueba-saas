@@ -169,9 +169,8 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 			}
 
 			// update mongo with current fetch progress
-			if  (fetchIntervalInSeconds != -1 ) {
-				updateMongoWithCurrentFetchProgress();
-			}
+
+			updateMongoWithCurrentFetchProgress();
 		//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while(keepFetching);
 
@@ -218,9 +217,8 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") && jobDataMapExtension.isJobDataMapContainKey(map,"latest")){
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
-			earliestDate = new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
-			latestDate = new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		}
 		else{
 			//calculate query run times from mongo in the case not provided as job params
