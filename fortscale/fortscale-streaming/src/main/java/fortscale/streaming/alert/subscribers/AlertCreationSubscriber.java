@@ -84,8 +84,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 								Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tag);
 						evidences.add(tagEvidence);
 					}
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore,
-							severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, evidences.size(),
+							roundScore,	severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 					//Save alert to mongoDB
 					alertsService.saveAlertInRepository(alert);
 				} catch (RuntimeException ex) {

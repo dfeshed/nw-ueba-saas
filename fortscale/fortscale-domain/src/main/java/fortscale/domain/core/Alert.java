@@ -16,12 +16,8 @@ import java.util.UUID;
  * See https://fortscale.atlassian.net/wiki/display/FSC/Alert+Collection+in+MongoDB
  */
 @Document(collection = Alert.COLLECTION_NAME)
-@CompoundIndexes({
-	@CompoundIndex(name="entity_type_entity_name_desc", def = "{'entityType': 1, 'entityName': -1}"),
-})
+@CompoundIndexes({ @CompoundIndex(name = "entity_type_entity_name_desc", def = "{'entityType': 1, 'entityName': -1}"), })
 public class Alert extends AbstractDocument implements Serializable {
-
-
 
 	private static final long serialVersionUID = -8514041678913795872L;
 	public static final String COLLECTION_NAME = "alerts";
@@ -35,6 +31,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String entityIdField = "entityId";
 	public static final String ruleField = "rule";
 	public static final String evidencesField = "evidences";
+	public static final String evidencesSizeField = "indicatorsNum";
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 	public static final String statusField = "status";
@@ -42,51 +39,37 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String commentField = "comment";
 
 	//document's fields
-	@Field(nameField)
-	private String name;
+	@Field(nameField) private String name;
 
-	@Indexed(unique=false)
-	@Field(startDateField)
-	private long startDate;
+	@Indexed(unique = false) @Field(startDateField) private long startDate;
 
-	@Indexed(unique=false)
-	@Field(endDateField)
-	private long endDate;
-	@Field(entityTypeField)
-	private EntityType entityType;
-	@Field(entityNameField)
-	private String entityName;
-	@Field(entityIdField)
-	private String entityId;
+	@Indexed(unique = false) @Field(endDateField) private long endDate;
+	@Field(entityTypeField) private EntityType entityType;
+	@Field(entityNameField) private String entityName;
+	@Field(entityIdField) private String entityId;
 	@Field(evidencesField)
 	//this annotation makes mongo to save only reference to evidences, not the evidences themselves.
-	@DBRef
-	private List<Evidence> evidences;
-	@Field(scoreField)
-	private Integer score;
-	@Indexed(unique=false)
-	@Field(severityField)
-	private Severity severity;
-	@Indexed(unique=false)
-	@Field(statusField)
-	private AlertStatus status;
-	@Indexed(unique=false)
-	@Field(feedbackField)
-	private AlertFeedback feedback;
-	@Field(commentField)
-	private String comment;
+	@DBRef private List<Evidence> evidences;
+	@Field(evidencesSizeField) private Integer evidenceSize;
+	@Field(scoreField) private Integer score;
+	@Indexed(unique = false) @Field(severityField) private Severity severity;
+	@Indexed(unique = false) @Field(statusField) private AlertStatus status;
+	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
+	@Field(commentField) private String comment;
 
-	public Alert() {}
+	public Alert() {
+	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
-				 String comment, String entityId) {
+			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
+			String comment, String entityId) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.evidences = evidences;
+		this.evidenceSize = evidencesSize;
 		this.score = score;
 		this.severity = severity;
 		this.status = status;
@@ -134,6 +117,14 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setEvidences(List<Evidence> evidences) {
 		this.evidences = evidences;
+	}
+
+	public Integer getEvidenceSize() {
+		return evidenceSize;
+	}
+
+	public void setEvidenceSize(Integer evidenceSize) {
+		this.evidenceSize = evidenceSize;
 	}
 
 	public Integer getScore() {

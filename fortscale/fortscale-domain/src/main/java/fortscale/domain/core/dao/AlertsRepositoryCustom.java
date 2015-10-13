@@ -4,6 +4,8 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface AlertsRepositoryCustom {
@@ -67,5 +69,17 @@ public interface AlertsRepositoryCustom {
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
 							  Set<String> entitiesIds);
+
+
+	/**
+	 * This method "select count group by " query for alert table.
+	 *
+	 * @param fieldName - the filed which we like to group by
+	 * @param fromDate - the date which all the alerts start time should be greated then
+	 * @param toDate - the date which all the alerts start time should be smaller then
+	 * @param status - optional parameter. The status to filter.
+	 * @return map from value (from the field) and count of the instances of value
+	 */
+	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status);
 
 }

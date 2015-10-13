@@ -31,6 +31,7 @@ import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServ
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStoreSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
+import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 
@@ -68,6 +69,8 @@ public class AggregatorManager {
     private String eventTypeFieldName;
     @Value("${streaming.event.field.type.aggr_event}")
     private String aggrEventType;
+    
+    private AggregationMetricsService aggregationMetricsService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
@@ -76,6 +79,7 @@ public class AggregatorManager {
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
 		featureEventService = new AggrFeatureEventService(aggregatedFeatureEventsConfService, featureBucketStrategyService, featureBucketsService);
+		aggregationMetricsService = new AggregationMetricsService(context);
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
@@ -119,6 +123,7 @@ public class AggregatorManager {
 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
+		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
 	}

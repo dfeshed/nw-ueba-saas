@@ -156,6 +156,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 					TimestampUtils.normalizeTimestamp(beforeDate), anomalyType, entityName);
 
 		}
+
 	}
 
 	/**
@@ -165,6 +166,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 */
 	private Evidence saveEvidence(Evidence evidence){
 		return evidencesRepository.save(evidence);
+	}
+
+
+	public long count(long fromTime, long toTime){
+		return  evidencesRepository.countWithParameters(fromTime, toTime);
 	}
 
 }

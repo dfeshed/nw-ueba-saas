@@ -1,13 +1,10 @@
-package fortscale.streaming.service.aggregation.entity.event;
+package fortscale.streaming.service.entity.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.entity.event.EntityEventData;
+import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 

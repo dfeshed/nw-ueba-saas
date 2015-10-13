@@ -76,20 +76,41 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
                 Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
 
                 for (Map.Entry<String, Double> histogramEntry : histogramMap.entrySet()) {
-                    Double currValue = histogramEntry.getValue();
-
                     SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(histogramEntry.getKey());
-
-                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null ? histogramKeyObjectMap.get(supportingInformationKey) : 0);
-
-                    histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
+                    updateHistoricalDataEntry(histogramKeyObjectMap, supportingInformationKey ,histogramEntry.getValue());
                 }
             } else {
                 logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
-        histogramKeyObjectMap.putAll(lastDayMap);
+
+        //Merge last days map into histogramKeyObjectMap
+        if (lastDayMap !=null ){
+            for (Map.Entry<SupportingInformationKey, Double> lastDayEntry: lastDayMap.entrySet()){
+                updateHistoricalDataEntry(histogramKeyObjectMap, lastDayEntry.getKey() ,lastDayEntry.getValue());
+            }
+        }
+
         return histogramKeyObjectMap;
+    }
+
+    /**
+     * Check if key exists.
+     * If key exists, add current value to old value.
+     * If not - add new entry with the current value
+     *
+     * @param histogramKeyObjectMap
+     * @param supportingInformationKey
+     * @param currValue
+     */
+    private void updateHistoricalDataEntry(Map<SupportingInformationKey, Double> histogramKeyObjectMap, SupportingInformationKey supportingInformationKey, Double currValue){
+
+        Double currHistogramValue = histogramKeyObjectMap.get(supportingInformationKey);
+        if (currHistogramValue == null){
+            currHistogramValue = new Double(0);
+        }
+
+        histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
     }
 
     /**

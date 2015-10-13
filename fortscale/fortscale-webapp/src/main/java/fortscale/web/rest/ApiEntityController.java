@@ -8,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.Utils.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +42,10 @@ public class ApiEntityController extends DataQueryController{
 	@LogException
 	public @ResponseBody
 	DataBean<List<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-											@RequestParam(required=false, value = "entity_name") String entityName,
-											@RequestParam(required=false, value = "entity_id") String entityId,
-											@RequestParam(required=false, value = "page") Integer fromPage,
-											@RequestParam(required=false, value = "size")  Integer size) {
+			@RequestParam(required=false, value = "entity_name") String entityName,
+			@RequestParam(required=false, value = "entity_id") String entityId,
+			@RequestParam(required=false, value = "page") Integer fromPage,
+			@RequestParam(required=false, value = "size")  Integer size) {
 
 		DataBean<List<Map<String, String>>> entities = new DataBean<>();
 
@@ -71,6 +73,7 @@ public class ApiEntityController extends DataQueryController{
 
 		// Read users
 		if (entityName != null) {
+			entityName = ApiUtils.stringReplacement(entityName);
 			entities.setData(usersDao.getUsersByPrefix(entityName, pageRequest));
 		} else if (entityId != null) {
 			entities.setData(usersDao.getUsersByIds(entityId, pageRequest));

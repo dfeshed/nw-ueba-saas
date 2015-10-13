@@ -206,8 +206,8 @@ public class CleanJob extends FortscaleJob {
             success = clearAllData(strategy == Strategy.DELETE);
         } else {
             switch (strategy) {
-                //for both delete and fastdelete, do
                 case DELETE:
+					checkAndStopAllRelevantServices();
                 case FASTDELETE: {
                     //if fast delete - no validation is performed
                     success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE);
@@ -248,11 +248,9 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, impalaUtils);
 				break;
 			} case STORE: {
-				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
-				if (doValidate) checkAndStopAllRelevantServices();
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}

@@ -19,6 +19,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fortscale.utils.ConversionUtils.convertToLong;
+
 /**
  * Created by Amir Keren on 04/10/2015.
  *
@@ -125,9 +127,9 @@ public class MongoToKafkaJob extends FortscaleJob {
             while (currentTry < checkRetries) {
                 logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
                 TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                Object time = topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                        String.format("%s-last-message-epochtime", jobToMonitor));
-                if (time != null && (long)time == lastMessageTime) {
+                Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
+                        String.format("%s-last-message-epochtime", jobToMonitor)));
+                if (time != null && time == lastMessageTime) {
                     logger.debug("last message in batch processed, moving to next batch");
                     break;
                 }
