@@ -37,9 +37,9 @@ test("login form submit", function(assert) {
     invalidateSession();
     visit("/login");
     andThen(function() {
-        fillIn(".js-test-fillin-username", "admin");
-        fillIn(".js-test-fillin-password", "netwitness");
-        click(".js-test-click-login");
+        fillIn(".js-test-username-input", "admin");
+        fillIn(".js-test-password-input", "netwitness");
+        click(".js-test-login-btn");
     });
 });
 

@@ -6,9 +6,6 @@
 ##
 ##############################################################################
 
-# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS=""
-
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
@@ -64,6 +61,10 @@ SAVED="`pwd`"
 cd "`dirname \"$PRG\"`/" >&-
 APP_HOME="`pwd -P`"
 cd "$SAVED" >&-
+
+# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+DEFAULT_JVM_OPTS="-Djavax.net.ssl.trustStore=$APP_HOME/gradle/gradle-trust-store.jks -Djavax.net.ssl.trustStorePassword=changeit"
+
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 

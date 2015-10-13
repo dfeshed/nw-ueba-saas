@@ -1,0 +1,10 @@
+.#{$ns}menlo-park {
+    .#{$ns}card {
+        > section {
+            border-color: rgb(211,208,209);
+            border-width: 1px 0;
+            border-style: solid;
+            background-color: rgb(255,255,255);
+        }
+    }
+}

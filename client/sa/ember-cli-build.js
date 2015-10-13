@@ -24,6 +24,16 @@ module.exports = function(defaults) {
     app.import(app.bowerDirectory + "/sockjs/sockjs.js");
     app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
 
+    // Crossfilter library (for filtering, aggregating & sorting).
+    app.import(app.bowerDirectory + "/crossfilter/crossfilter.js");
+
+    // Date format library: moment
+    app.import(app.bowerDirectory + "/moment/moment.js");
+
+    // Dropdown libraries: tether & drop (drop depends on tether)
+    app.import(app.bowerDirectory + "/tether/dist/js/tether.js");
+    app.import(app.bowerDirectory + "/tether-drop/dist/js/drop.js");
+
     // Mock websocket library: MockSocket (only imported with mirage)
     (function(){
         function _mirageIsEnabled(){
@@ -35,7 +45,7 @@ module.exports = function(defaults) {
             app.import(app.bowerDirectory + "/mock-socket/dist/mock-socket.js");
 
             //Load the JSON file with incidents
-            app.import("vendor/incidents.json")
+            app.import("vendor/incidents.json");
         }
     })();
     return app.toTree();

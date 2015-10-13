@@ -19,7 +19,7 @@ test("visiting /do/explore and check DOM", function(assert) {
 
     andThen(function() {
         assert.equal(currentPath(), "protected.explore");
-        assert.equal(find(".js-test-find-explore").length, 1, "Could not find the route DOM.");
+        assert.equal(find(".js-test-explore-root").length, 1, "Could not find the route DOM.");
     });
 
 });

@@ -1,11 +1,10 @@
 ext {
-    nginxLocation = "/etc/nginx"
-    nginxConfLocation = "${project.nginxLocation}/conf.d"
-    nginxHtmlLocation = "/usr/share/nginx/html"
-
     createRPM = true
-    rpmName = "${rootProject.name}-client"
-    htmlRootLocation = "/opt/rsa/${rootProject.name}/html"
+}
+
+task emberGenerateShim(type: NodeTask, dependsOn: [":client:sa:lib/dashboard:emberBuild"]) {
+    script = ember
+    args = ["build", "generate", "ember-cli-es5-shim", "--silent"]
 }
 
 task emberFixturedBuild(type: NodeTask, dependsOn: ["test"]) {
@@ -22,33 +21,26 @@ task fixtured(type: Zip, dependsOn: ["emberFixturedBuild"]) {
     }
 }
 
-task nginxConf(type: Copy) {
-    from(fileTree("rpm/nginx"))
-    into "build/rpm/nginx"
-    expand project.properties
-}
-
 afterEvaluate {
     rpm {
-        dependsOn("nginxConf")
+        dependsOn("emberBuild")
 
-        packageName project.rpmName
-        packageDescription "This RPM contains RSA Security Analytics User Interface."
+        packageName "sa-ui-client"
 
         requires("nginx")
 
-        postInstall file("${project.rpmScriptsDir}/postInstall.sh")
+        postInstall file("${projectDir}/rpm/scripts/postInstall.sh")
 
-        from(fileTree("build/rpm/nginx")) {
+        from(fileTree("rpm/nginx")) {
             fileType CONFIG
-            into project.nginxLocation
+            into "/etc/nginx"
         }
 
         from(fileTree("dist/production")) {
-            into project.htmlRootLocation
+            into "/opt/rsa/sa-ui/html"
         }
     }
 }
 
-test.dependsOn(":client:sa:lib/dashboard:build")
-build.dependsOn("fixtured", ":client:sa:lib/dashboard:build")
+test.dependsOn(["emberGenerateShim"])
+emberBuild.dependsOn("fixtured", ":client:sa:lib/dashboard:emberBuild")

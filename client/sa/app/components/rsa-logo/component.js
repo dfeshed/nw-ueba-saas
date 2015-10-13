@@ -5,7 +5,7 @@
  * The root DOM node can be resized via CSS; the SVG will automatically scale.
  */
 
-import Ember from 'ember';
+import Ember from "ember";
 
 /**
  * The HTML attribute used in the component markup to specify the animation delay for a DOM node.

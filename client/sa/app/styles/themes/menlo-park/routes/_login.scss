@@ -1,0 +1,16 @@
+
+.#{$ns}login {
+    background-color: $menlo-park-app-body-bg;
+
+    .#{$ns}logo {
+        margin: $base-padding-y * 2 0;
+    }
+    input {
+        @include menlo-park-light-textbox;
+        margin: $base-padding-y 0;
+    }
+    button {
+        @include menlo-park-light-on-dark-btn(false, false);
+        margin: $base-padding-y * 2 0;
+    }
+}

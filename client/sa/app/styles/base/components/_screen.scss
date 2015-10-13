@@ -1,0 +1,34 @@
+/**
+ * @file Screen component
+ * An element that is meant to fill its parent, which is typically <body> or some near descendant thereof.
+ */
+.#{$ns}{
+    &screen {
+
+        /* Statically positioned. */
+        &.#{$ns}-static {
+            position: static;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Absolutely positioned. */
+        &.#{$ns}-abs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* Fixed positioned. */
+        &.#{$ns}-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+}
+

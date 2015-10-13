@@ -1,9 +1,3 @@
-buildscript {
-    dependencies {
-        classpath "com.moowork.gradle:gradle-node-plugin:0.10"
-    }
-}
-
 subprojects {
 
     apply plugin: "com.moowork.node"
@@ -13,22 +7,32 @@ subprojects {
         ember = file("node_modules/ember-cli/bin/ember")
     }
 
+    idea {
+        module {
+            excludeDirs += file("node_modules")
+            excludeDirs += file("bower_components")
+            excludeDirs += file("dist")
+            excludeDirs += file("tmp")
+        }
+    }
+
     node {
         version = "0.12.4"
         download = true
     }
 
-    task clean(type: Delete) {
+    task emberClean(type: Delete) {
         delete "build", "node_modules", "bower_components", "dist", "tmp"
     }
+    clean.dependsOn("emberClean")
 
     task bowerInstall(type: NodeTask, dependsOn: ["npmInstall"]) {
         script = bower
         args = ["install"]
 
         project.afterEvaluate {
-            getInputs().file(new File(node.nodeModulesDir, "bower.json"))
-            getOutputs().dir(new File(node.nodeModulesDir, "bower_components"))
+            getInputs().file("${node.nodeModulesDir}/bower.json")
+            getOutputs().dir("${node.nodeModulesDir}/bower_components")
         }
     }
 
@@ -36,12 +40,12 @@ subprojects {
         script = ember
         args = ["test", "--silent"]
 
-        def testDir = new File(project.buildDir, "test-results")
+        def testDir = file("${buildDir}/test-results")
         if (!testDir.exists()) {
             testDir.mkdirs()
         }
 
-        def dest = new File(testDir, "TEST-ember.xml")
+        def dest = file("${testDir}/TEST-ember.xml")
         execOverrides {
             it.standardOutput = new FileOutputStream(dest)
         }
@@ -52,7 +56,7 @@ subprojects {
         args = ["build", "-e", "production", "-o", "dist/production", "--silent"]
     }
 
-    task build(type: Zip, dependsOn: ["emberProductionBuild"]) {
+    task emberBuild(type: Zip, dependsOn: ["emberProductionBuild"]) {
         destinationDir file(project.buildDir)
         archiveName "sa-ui.zip"
 
