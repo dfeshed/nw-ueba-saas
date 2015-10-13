@@ -1,4 +1,4 @@
-package fortscale.streaming.service.aggregation.entity.event;
+package fortscale.streaming.service.entity.event;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.entity.event.EntityEventConf;
+import fortscale.entity.event.EntityEventData;
+import fortscale.entity.event.EntityEventDataStore;
 import net.minidev.json.JSONObject;
 
 import org.apache.samza.system.OutgoingMessageEnvelope;

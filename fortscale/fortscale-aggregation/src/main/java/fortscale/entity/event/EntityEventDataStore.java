@@ -1,4 +1,4 @@
-package fortscale.streaming.service.aggregation.entity.event;
+package fortscale.entity.event;
 
 import java.util.List;
 

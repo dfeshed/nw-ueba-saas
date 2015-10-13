@@ -10,9 +10,12 @@ import fortscale.services.AlertsService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.time.TimestampUtils;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
+import fortscale.web.rest.Utils.ApiUtils;
+import fortscale.web.rest.entities.AlertStatisticsEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -49,6 +49,8 @@ public class ApiAlertController extends BaseController {
 	public static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
 	private static Logger logger = Logger.getLogger(ApiAlertController.class);
 
+
+	public static final String OPEN_STATUS = "Open";
 	private static final String TIME_STAMP_START = "startDate";
 
 	@Autowired
@@ -237,6 +239,39 @@ public class ApiAlertController extends BaseController {
 		return entities;
 	}
 
+
+	/**
+	 * Statistics about system alerts
+	 * @param  timeRange  - return alert from the timeRange last days
+	 * @return
+	 */
+	@RequestMapping(value="/statistics", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<AlertStatisticsEntity> getStatistics(
+			@RequestParam(required=true, value = "start_range") String timeRange)
+	{
+
+		List<Long> timeRangeList = ApiUtils.splitTimeRangeToFromAndToMiliseconds(timeRange);
+
+		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
+
+		//Add statuses
+		Map<String,Integer> statusCounts = alertsDao.groupCount("status", timeRangeList.get(0),
+														timeRangeList.get(1), null);
+		results.setAlertStatus(statusCounts);
+
+		//Add severities
+		Map<String,Integer> severityCounts = alertsDao.groupCount("severity",timeRangeList.get(0),
+											timeRangeList.get(1), OPEN_STATUS);
+		results.setAlertOpenSeverity(severityCounts);
+
+
+		DataBean<AlertStatisticsEntity> toReturn = new DataBean<AlertStatisticsEntity>();
+		toReturn.setData(results);
+
+		return toReturn;
+	}
 
 	private void updateEvidenceFields(Alert alert){
 		if(alert != null && alert.getEvidences() != null) {

@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
+	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 
 	<context:spring-configured />
 	<context:annotation-config />

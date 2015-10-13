@@ -20,12 +20,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AggregatedFeatureEventsConfService implements InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
 	private static final String AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME = "AggregatedFeatureEvents";
 	private static final String ARRAY_OF_EVENTS_JSON_FIELD_NAME = "Events";
+	private static final String ARRAY_OF_RETENTION_STRATEGIES_JSON_FIELD_NAME = "RetentionStrategies";
 
 	@Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
 	private String aggregatedFeatureEventConfJsonFilePath;
@@ -40,9 +43,11 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 
 	// List of aggregated feature event configurations
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList;
+	private Map<String, AggrFeatureRetentionStrategy> aggrFeatureRetentionStrategies;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		loadAggregatedFeatureRetentionStrategies();
 		loadAggregatedFeatureEventDefinitions();
 		fillBucketConfs();
 		createOutputBuckets();
@@ -84,6 +89,51 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		}
 
 		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy);
+	}
+
+	private void loadAggregatedFeatureRetentionStrategies() {
+		JSONObject retentionStrategies;
+		JSONArray arrayOfStrategies;
+		String errorMsg;
+
+		try {
+			JSONObject jsonObject;
+
+			Resource bucketsJsonResource = applicationContext.getResource(aggregatedFeatureEventConfJsonFilePath);
+			jsonObject = (JSONObject) JSONValue.parseWithException(bucketsJsonResource.getInputStream());
+
+			retentionStrategies = (JSONObject)jsonObject.get(AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME);
+		} catch (Exception e) {
+			errorMsg = String.format("Failed to parse JSON file %s", aggregatedFeatureEventConfJsonFilePath);
+			logger.error(errorMsg, e);
+			throw new RuntimeException(errorMsg, e);
+		}
+
+		if (retentionStrategies == null) {
+			errorMsg = String.format("JSON file %s does not contain field %s", aggregatedFeatureEventConfJsonFilePath, AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME);
+			logger.error(errorMsg);
+			throw new RuntimeException(errorMsg);
+		}
+
+		arrayOfStrategies = (JSONArray)retentionStrategies.get(ARRAY_OF_RETENTION_STRATEGIES_JSON_FIELD_NAME);
+		if (arrayOfStrategies == null) {
+			errorMsg = String.format("JSON file %s does not contain array %s", aggregatedFeatureEventConfJsonFilePath, ARRAY_OF_RETENTION_STRATEGIES_JSON_FIELD_NAME);
+			logger.error(errorMsg);
+			throw new RuntimeException(errorMsg);
+		}
+
+		aggrFeatureRetentionStrategies = new HashMap();
+		for (Object strategy : arrayOfStrategies) {
+			String confAsString = ((JSONObject)strategy).toJSONString();
+			try {
+				AggrFeatureRetentionStrategy aggrFeatureRetentionStrategy = (new ObjectMapper()).readValue(confAsString, AggrFeatureRetentionStrategy.class);
+				aggrFeatureRetentionStrategies.put(aggrFeatureRetentionStrategy.getName(), aggrFeatureRetentionStrategy);
+			} catch (Exception e) {
+				errorMsg = String.format("Failed to deserialize JSON %s", confAsString);
+				logger.error(errorMsg, e);
+				throw new RuntimeException(errorMsg, e);
+			}
+		}
 	}
 
 	private void loadAggregatedFeatureEventDefinitions() {
@@ -181,5 +231,9 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
+		return aggrFeatureRetentionStrategies.get(strategyName);
 	}
 }

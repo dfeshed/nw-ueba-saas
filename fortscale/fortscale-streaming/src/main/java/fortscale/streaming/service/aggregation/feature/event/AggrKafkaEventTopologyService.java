@@ -30,6 +30,7 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
     @Value("${fortscale.aggregation.event_topology_service.event_topology_json:}")
     String eventTopologyJsonFileName;
     private MessageCollector messageCollector;
+    private AggregationMetricsService aggregationMetricsService;
 
 
     @Override
@@ -65,6 +66,7 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
         if (outputTopic!=null && StringUtils.isNotEmpty(outputTopic)){
             try{
                 messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), event.toJSONString()));
+                aggregationMetricsService.sentEvent(event);
             } catch(Exception exception){
                 String errMsg = String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString());
                 logger.error(errMsg, exception);
@@ -87,4 +89,8 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
     public void setMessageCollector(MessageCollector messageCollector) {
         this.messageCollector = messageCollector;
     }
+
+	public void setAggregationMetricsService(AggregationMetricsService aggregationMetricsService) {
+		this.aggregationMetricsService = aggregationMetricsService;
+	}
 }
