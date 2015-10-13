@@ -19,6 +19,7 @@ public class ContinuousValuesModelTest {
 	private static int maxNumOfHistogramElements = 100;
 	private static double a2 = 100.0/3;
 	private static double a1 = 35.0/3;
+	private static double sensitivity = 1.0;
 	private static double largestPValue = 0.2;
 	
 	private ContinuousValuesModel createContinuousValuesModel(double roundNumber){
@@ -47,7 +48,7 @@ public class ContinuousValuesModelTest {
 			continuousValuesModel.add(value.doubleValue());
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		for(Long value: valueToScoreMap.keySet()){
 			double score = calculateScore(continuousValuesModel, value.doubleValue(), calibrationForContModel);
@@ -55,7 +56,7 @@ public class ContinuousValuesModelTest {
 		}
 	}
 	private double calculateScore(ContinuousValuesModel continuousValuesModel, double value){
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		return calculateScore(continuousValuesModel, value, calibrationForContModel);
 	}
 	
@@ -90,7 +91,7 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		double score = calculateScore(continuousValuesModel, startVal, calibrationForContModel);
 		Assert.assertEquals(21.0,score,0.1);
@@ -119,7 +120,7 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		//adding the outlier
 		double outlierVal = startVal*2;
@@ -153,7 +154,7 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		//adding the outlier
 		double outlierVal = startVal+1100;
@@ -206,7 +207,7 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		//adding the outlier
 		double outlierVal = startVal+1.1;
@@ -259,7 +260,7 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
 		
 		//adding the outlier
 		double outlierVal = startVal/2;

@@ -4,13 +4,15 @@ public class QuadPolyCalibrationForContModel {
 
 	private double a2;
 	private double a1;
+	private double sensitivity;
 	private double largestPValue;
 	private boolean isScoreForLargeValues;
 	private boolean isScoreForSmallValues;
 	
-	public QuadPolyCalibrationForContModel(double a2, double a1, double largestPValue, boolean isScoreForLargeValues, boolean isScoreForSmallValues){
+	public QuadPolyCalibrationForContModel(double a2, double a1, double sensitivity, double largestPValue, boolean isScoreForLargeValues, boolean isScoreForSmallValues){
 		this.a1 = a1;
 		this.a2 = a2;
+		this.sensitivity = sensitivity;
 		this.largestPValue = largestPValue;
 		this.isScoreForLargeValues = isScoreForLargeValues;
 		this.isScoreForSmallValues = isScoreForSmallValues;
@@ -23,6 +25,7 @@ public class QuadPolyCalibrationForContModel {
 		
 		if(p < largestPValue && 
 				((modelScore > 0 && isScoreForLargeValues) || (modelScore < 0 && isScoreForSmallValues)) ){
+			p = Math.min(p*sensitivity, 1);
 			score = Math.max(a2*Math.pow(p, 2) - a1*p + 1, 0);
 			score = Math.round(score*100);
 		}
