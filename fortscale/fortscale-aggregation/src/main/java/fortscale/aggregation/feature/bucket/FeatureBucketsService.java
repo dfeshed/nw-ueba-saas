@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
@@ -118,6 +119,7 @@ public abstract class FeatureBucketsService {
 		ret.setDataSources(featureBucketConf.getDataSources());
 		ret.setStartTime(strategyData.getStartTime());
 		ret.setEndTime(strategyData.getEndTime());
+		ret.setCreatedAt(new DateTime());
 
 		for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
 			String contextValue = (String)event.get(contextFieldName);
