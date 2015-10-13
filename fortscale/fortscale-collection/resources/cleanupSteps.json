@@ -62,7 +62,7 @@
       }
     ]
   },
-  "AlertCreation": {
+  "AlertGeneration": {
     "timeBasedSteps": [
       {
         "technology": "MONGO",
