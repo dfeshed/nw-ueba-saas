@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.bucket;
 import fortscale.aggregation.feature.Feature;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
+
+import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -23,6 +25,7 @@ public class FeatureBucket {
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 	public static final String BUCKET_ID_FIELD = "bucketId";
+	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 
 	@Id
 	private String id;
@@ -43,6 +46,8 @@ public class FeatureBucket {
 	private Map<String, String> contextFieldNameToValueMap = new HashMap<>();
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
+	
+	private DateTime createdAt;
 
 	// TODO should use 'Feature' instead of 'Object'
 	private Map<String, Feature> aggregatedFeatures = new HashMap<>();
@@ -113,6 +118,14 @@ public class FeatureBucket {
 
 	public void setBucketId(String bucketId) {
 		this.bucketId = bucketId;
+	}
+
+	public DateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(DateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public Map<String, Feature> getAggregatedFeatures() {
