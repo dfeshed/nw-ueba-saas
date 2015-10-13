@@ -1,7 +1,6 @@
 package fortscale.streaming.serialization;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.streaming.service.aggregation.entity.event.EntityEventData;
+import fortscale.entity.event.EntityEventData;
 import org.apache.samza.config.Config;
 import org.apache.samza.serializers.Serde;
 import org.apache.samza.serializers.SerdeFactory;
