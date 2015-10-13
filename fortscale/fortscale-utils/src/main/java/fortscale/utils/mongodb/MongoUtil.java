@@ -55,6 +55,15 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
                     hasCriteria = true;
                 }
             }
+        } else if (filters.contains(KEYVALUE_DELIMITER)) {
+            String field = filters.split(KEYVALUE_DELIMITER)[0];
+            String value = filters.split(KEYVALUE_DELIMITER)[1];
+            if (field.equals(DATE_IDENTIFIER)) {
+                dateField = value;
+            } else {
+                query.addCriteria(where(field).is(value));
+                hasCriteria = true;
+            }
         } else {
             dateField = filters;
         }
