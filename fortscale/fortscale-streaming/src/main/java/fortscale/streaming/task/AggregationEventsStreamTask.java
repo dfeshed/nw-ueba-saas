@@ -20,20 +20,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
-	
+	private String dateFieldName;
+
 	private Counter processedMessageCount;
+	private Counter lastTimestampCount;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
 		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-		
-		
+
+
 		Config fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
 			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
@@ -46,6 +49,12 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
+
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				String.format("%s-last-message-epochtime", config.get("job.name")));
+
+		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
+
 	}
 	
 	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
@@ -68,6 +77,10 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		}
 
 		aggregatorManager.processEvent(event, collector);
+
+		Long endTimestampSeconds = convertToLong(event.get(dateFieldName));
+		lastTimestampCount.set(endTimestampSeconds);
+
 	}
 
 	@Override
