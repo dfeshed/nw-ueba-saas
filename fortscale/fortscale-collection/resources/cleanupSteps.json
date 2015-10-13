@@ -29,5 +29,53 @@
         "dataSources": "/home/cloudera/bdpbackup/"
       }
     ]
+  },
+  "ScoredDataToSingleEventIndicator": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalySingleEvent"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write"
+      }
+    ]
+  },
+  "NotificationsToIndicators": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Notification"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-notification-event-score"
+      }
+    ]
+  },
+  "AlertCreation": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "alerts@@@date:::startDate"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-evidences###fortscale-entity-event-score"
+      }
+    ]
   }
 }
