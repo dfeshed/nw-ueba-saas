@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -142,7 +141,7 @@ public class AggrFeatureEventBuilderTest {
         featureBucket.setStartTime(startTime);
         featureBucket.setFeatureBucketConfName("bc1");
         featureBucket.setStrategyId("strategyId");
-        featureBucket.setCreatedAt(new DateTime());
+        featureBucket.setCreatedAt(new Date());
 
         return featureBucket;
     }

@@ -1,19 +1,19 @@
 package fortscale.aggregation.feature.bucket;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import fortscale.aggregation.feature.Feature;
+import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
@@ -47,7 +47,7 @@ public class FeatureBucket {
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
 	
-	private DateTime createdAt;
+	private Date createdAt;
 
 	// TODO should use 'Feature' instead of 'Object'
 	private Map<String, Feature> aggregatedFeatures = new HashMap<>();
@@ -120,11 +120,11 @@ public class FeatureBucket {
 		this.bucketId = bucketId;
 	}
 
-	public DateTime getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(DateTime createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
