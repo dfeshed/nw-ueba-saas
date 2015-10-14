@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.*;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class AggregatedFeatureEventConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 

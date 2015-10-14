@@ -90,7 +90,7 @@
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_kerberos_logins_events_daily",
+        "name": "number_of_kerberos_logins_daily",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -108,7 +108,7 @@
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "number_of_kerberos_logins_events_hourly",
+        "name": "number_of_kerberos_logins_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -239,7 +239,7 @@
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_ssh_events_daily",
+        "name": "number_of_ssh_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -275,7 +275,7 @@
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_failed_ssh_events_daily",
+        "name": "number_of_failed_ssh_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -312,7 +312,7 @@
       },
 
       {
-        "name": "number_of_failed_vpn_events_daily",
+        "name": "number_of_failed_vpn_daily",
         "type": "F",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
