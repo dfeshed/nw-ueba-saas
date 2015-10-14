@@ -16,12 +16,10 @@ import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
-import static org.mockito.Matchers.anyString;
-
 /**
  * Created by orend on 26/07/2015.
  */
-public class AggrFeatureEventNumberOfEventsFuncTest {
+public class AggrFeatureEventsCounterFuncTest {
 
 	private AggregatedFeatureConf createAggregatedFeatureConf(String name, int num) {
 		List<String> list = new ArrayList<>();
@@ -29,7 +27,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 			list.add(String.format("feature%d", i));
 		}
 		Map<String, List<String>> map = new HashMap<>();
-		map.put(AggrFeatureEventNumberOfEventsFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
+		map.put(AggrFeatureEventsCounterFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
 		return new AggregatedFeatureConf(name, map, new JSONObject());
 	}
 
@@ -39,13 +37,13 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 			list.add(String.format("feature%d", i));
 		}
 		Map<String, List<String>> map = new HashMap<>();
-		map.put(AggrFeatureEventNumberOfEventsFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE",  map, new JSONObject());
+		map.put(AggrFeatureEventsCounterFunc.AGGREGATED_FEATURE_NAME_TO_SUM, list);
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE",  map, new JSONObject());
 	}
 
 	@Test
 	public void testUpdateAggrFeature() {
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName", 1);
 		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10));
 		Assert.assertEquals(11, (int) actual1.getValue().intValue());
@@ -55,7 +53,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 	public void testUpdateAggrFeatureWithNulls() {
 		String aggregatedFeatureName = "aggregatedFeatureEventTestName";
 
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		Object actual1 = function.updateAggrFeature(null, new HashMap<String, Feature>(), new Feature("featureName", "featureValue"));
 		Assert.assertNull(actual1);
 		AggregatedFeatureConf conf1 = createAggregatedFeatureConf(aggregatedFeatureName, 1);
@@ -66,7 +64,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateAggrFeatureWrongFeatureValueType() {
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("", 1);
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		@SuppressWarnings("unused")
 		Object actual1 = function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("featureName", "NOT_INTEGER_VALUE"));
 	}
@@ -89,7 +87,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		listOfFeatureMaps.add(bucket2FeatureMap);
 
 		AggregatedFeatureEventConf conf = createAggregatedFeatureEventConf(featureNameToCount, 1);
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
 		Assert.assertEquals(featureNameToCount, actual1.getName());
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
@@ -112,7 +110,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		listOfFeatureMaps.add(bucket2FeatureMap);
 
 		AggregatedFeatureEventConf conf = createAggregatedFeatureEventConf("NonExistingFeature", 1);
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
 		Assert.assertEquals(0L, aggrFeatureValue.getValue());
@@ -131,7 +129,7 @@ public class AggrFeatureEventNumberOfEventsFuncTest {
 		listOfFeatureMaps.add(bucket1FeatureMap);
 
 		AggregatedFeatureEventConf conf = createAggregatedFeatureEventConf("feature1", 1);
-		AggrFeatureEventNumberOfEventsFunc function = new AggrFeatureEventNumberOfEventsFunc();
+		AggrFeatureEventsCounterFunc function = new AggrFeatureEventsCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
 		Assert.assertEquals(0, aggrFeatureValue.getValue());
