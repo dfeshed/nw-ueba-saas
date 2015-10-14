@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 
 /**
  * Service that handles Alerts and stores them in MongoDB
@@ -75,13 +76,18 @@ public interface AlertsService {
 
 	/**
 	 * This method "select count group by " query for alert table.
-	 *
-	 * @param fieldName - the filed which we like to group by
-	 * @param fromDate - the date which all the alerts start time should be greated then
-	 * @param toDate - the date which all the alerts start time should be smaller then
-	 * @param status - Optional. Filter according to specific status
-	 * @return map from value (from the field) and count of the instances of value
+	 * @param fieldName - the "group by" field
+	 * @param severityArrayFilter - filter alerts by severity
+	 * @param statusArrayFilter - filter alerts by status
+	 * @param feedbackArrayFilter  - filter alerts by feedback
+	 * @param dateRangeFilter -  - filter alerts by date range
+	 * @param entityName - filter alerts by entity name
+	 * @param entityTags
+	 * @param entityId -
+	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status);
+	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
+										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+										   String entityTags, String entityId);
 
 }
