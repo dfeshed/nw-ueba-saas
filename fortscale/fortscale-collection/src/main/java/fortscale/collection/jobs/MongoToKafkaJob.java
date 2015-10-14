@@ -192,7 +192,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             if (filter.contains(DATE_DELIMITER)) {
                 String field = filter.split(DATE_DELIMITER)[0];
                 String operator = filter.split(DATE_DELIMITER)[1];
-                String value = filter.split(DATE_DELIMITER)[2];
+                Long value = Long.parseLong(filter.split(DATE_DELIMITER)[2]);
                 searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
             } else {
                 String field = filter.split(KEYVALUE_DELIMITER)[0];
