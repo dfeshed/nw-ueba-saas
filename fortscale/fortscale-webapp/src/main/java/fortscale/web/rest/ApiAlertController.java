@@ -5,6 +5,7 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.utils.ConfigurationUtils;
@@ -96,7 +97,8 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
-								  @RequestParam(required=false, value = "entity_id") String entityId
+								  @RequestParam(required=false, value = "entity_id") String entityId,
+								  @RequestParam(required=false, value = "total_severity_count") String totalSeverityCount
 
 	)  throws  Exception{
 
@@ -113,7 +115,7 @@ public class ApiAlertController extends BaseController {
 		int pageSize = 0; //Fetch all rows.
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
 												fromPage, severity,	status, feedback, alertStartRange,entityName,
-												entityTags, entityId);
+												entityTags, entityId, totalSeverityCount);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -179,7 +181,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 										  @RequestParam(required=false, value = "entity_name") String entityName,
 										  @RequestParam(required=false, value = "entity_tags") String entityTags,
-										  @RequestParam(required=false, value = "entity_id") String entityId) {
+										  @RequestParam(required=false, value = "entity_id") String entityId,
+										  @RequestParam(required=false, value = "total_severity_count") String totalSeverityCount) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -213,6 +216,9 @@ public class ApiAlertController extends BaseController {
 
 		Alerts alerts;
 		Long count;
+		Map<Severity, Long> severitiesCount;
+		severitiesCount = null;
+
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		//if no filter, call findAll()
 		if (severity == null && status == null  && feedback == null &&  alertStartRange == null && entityName == null && entityTags == null && entityId == null) {
@@ -236,7 +242,36 @@ public class ApiAlertController extends BaseController {
 
 		entities.setTotal(count.intValue());
 		entities.setOffset(pageForMongo * size);
+
+		if (totalSeverityCount != null) {
+			Map<String, Object> info = new HashMap<>();
+			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
+					entityName, entityTags, entityId));
+			entities.setInfo(info);
+		}
 		return entities;
+	}
+
+
+	private Map<Severity, Long> countSeverities (PageRequest pageRequest, String severity, String status,
+												 String feedback, String alertStartRange, String entityName,
+												 String entityTags, String entityId) {
+		Map<Severity, Long> severitiesCount = new HashMap<>();
+
+		long noCount;
+		noCount = 0;
+
+		for (Severity iSeverity : Severity.values()) {
+			if (severity == null || severity.isEmpty() ||
+					severity.toUpperCase().contains(iSeverity.name().toUpperCase())) {
+				severitiesCount.put(iSeverity, alertsDao.countAlertsByFilters(pageRequest, iSeverity.name(), status,
+						feedback, alertStartRange, entityName, entityTags, entityId));
+			} else {
+				severitiesCount.put(iSeverity, noCount);
+			}
+		}
+
+		return severitiesCount;
 	}
 
 
