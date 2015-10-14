@@ -166,9 +166,10 @@ public class ApiUserController extends BaseController{
 			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
 		}
 		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-		
+
 		for(User user: users){
-			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);
+
+			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, true);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
