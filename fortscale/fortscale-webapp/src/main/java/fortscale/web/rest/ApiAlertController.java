@@ -257,9 +257,9 @@ public class ApiAlertController extends BaseController {
 												 String feedback, String alertStartRange, String entityName,
 												 String entityTags, String entityId) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
-		Map<String, Integer> statusCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME,severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME,severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
 		for (Severity iSeverity : Severity.values()) {
-			Integer statusCount = statusCountResult.get(iSeverity.name());
+			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
 				statusCount = 0;
 			}
@@ -281,8 +281,6 @@ public class ApiAlertController extends BaseController {
 	public DataBean<AlertStatisticsEntity> getStatistics(
 			@RequestParam(required=true, value = "start_range") String timeRange)
 	{
-
-		List<Long> timeRangeList = ApiUtils.splitTimeRangeToFromAndToMiliseconds(timeRange);
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 

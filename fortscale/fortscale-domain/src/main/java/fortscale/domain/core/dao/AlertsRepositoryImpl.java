@@ -108,7 +108,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
 				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
-
 		return mongoTemplate.count(query, Alert.class);
 	}
 
@@ -141,49 +140,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return results;
 	}
 
-	/**
-	 * Execute the aggregation query, and build the results map
-	 * @param fieldName
-	 * @param agg
-	 * @return
-	 */
-	private Map<String, Integer> getAggregationResultMap(String fieldName, Aggregation agg) {
-		AggregationResults<BasicDBObject> groupResults
-				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
-
-		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
-		Map<String, Integer> results = new HashMap<>();
-		for (BasicDBObject item:  groupResults.getMappedResults()) {
-			String fieldValue = item.get(fieldName).toString();
-			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
-
-			int count;
-			if (StringUtils.isBlank(countAsString)){
-				count = 0;
-			} else {
-				count = Integer.parseInt(countAsString);
-			}
-			results.put(fieldValue,count);
-		}
-		return results;
-	}
-
-	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
-		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
-				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
-				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds );
-
-		Criteria criteria = null;
-
-		if (criteriaList.size() > 0){
-			criteria= criteriaList.get(0);
-			for (int i=1; i<criteriaList.size(); i++){
-				criteria.andOperator(criteriaList.get(i));
-
-			}
-		}
-		return criteria;
-	}
 
 	/**
 	 * Build a query to be used by mongo API
@@ -322,6 +278,48 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return criteriaList;
 	}
 
+	/**
+	 * Execute the aggregation query, and build the results map
+	 * @param fieldName
+	 * @param agg
+	 * @return
+	 */
+	private Map<String, Integer> getAggregationResultMap(String fieldName, Aggregation agg) {
+		AggregationResults<BasicDBObject> groupResults
+				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
 
+		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
+		Map<String, Integer> results = new HashMap<>();
+		for (BasicDBObject item:  groupResults.getMappedResults()) {
+			String fieldValue = item.get(fieldName).toString();
+			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
+
+			int count;
+			if (StringUtils.isBlank(countAsString)){
+				count = 0;
+			} else {
+				count = Integer.parseInt(countAsString);
+			}
+			results.put(fieldValue,count);
+		}
+		return results;
+	}
+
+	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
+				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds );
+
+		Criteria criteria = null;
+
+		if (criteriaList.size() > 0){
+			criteria= criteriaList.get(0);
+			for (int i=1; i<criteriaList.size(); i++){
+				criteria.andOperator(criteriaList.get(i));
+
+			}
+		}
+		return criteria;
+	}
 
 }
