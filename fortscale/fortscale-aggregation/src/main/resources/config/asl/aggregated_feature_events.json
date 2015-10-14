@@ -14,13 +14,12 @@
 
     "Events": [
       {
-        "name": "distinct_number_of_src_machines_kerberos",
+        "name": "distinct_number_of_src_machines_kerberos_logins_daily",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_kerberos",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -28,19 +27,18 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_src_machines_kerberos_hourly",
+        "name": "distinct_number_of_src_machines_kerberos_logins_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_kerberos_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -48,19 +46,18 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_dst_machines_kerberos",
+        "name": "distinct_number_of_dst_machines_kerberos_logins_daily",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_dst_machines_kerberos",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -68,19 +65,18 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_dst_machines_kerberos_hourly",
+        "name": "distinct_number_of_dst_machines_kerberos_logins_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_dst_machines_kerberos_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -88,46 +84,44 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_kerberos_events",
+        "name": "number_of_kerberos_logins_events_daily",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_kerberos_events",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "number_of_kerberos_events_hourly",
+        "name": "number_of_kerberos_logins_events_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_kerberos_events_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -138,15 +132,14 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_kerberos_events",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -157,27 +150,25 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_kerberos_events_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
 
       {
-        "name": "distinct_number_of_src_machines_ssh",
+        "name": "distinct_number_of_src_machines_ssh_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_ssh",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -185,7 +176,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
@@ -197,7 +188,6 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_ssh_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -205,19 +195,18 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_dst_machines_ssh",
+        "name": "distinct_number_of_dst_machines_ssh_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_dst_machines_ssh",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -225,7 +214,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
@@ -237,7 +226,6 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_dst_machines_ssh_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -245,27 +233,26 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_ssh_events",
+        "name": "number_of_ssh_events_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_vpn_events",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -276,34 +263,32 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_vpn_events_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_events"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_failed_ssh_events",
+        "name": "number_of_failed_ssh_events_daily",
         "type": "F",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_kerberos_events",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -314,35 +299,33 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_kerberos_events_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
 
       {
-        "name": "number_of_failed_vpn_events",
+        "name": "number_of_failed_vpn_events_daily",
         "type": "F",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_kerberos_events",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -353,26 +336,24 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "number_of_failed_kerberos_events_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_failed_events"
+            "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_src_machines_vpn",
+        "name": "distinct_number_of_src_machines_vpn_daily",
         "type": "F",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_vpn",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -380,7 +361,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
@@ -392,7 +373,6 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_src_machines_vpn_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -400,19 +380,18 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "distinct_number_of_countries_vpn",
+        "name": "distinct_number_of_countries_vpn_daily",
         "type": "F",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_countries_vpn",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -420,7 +399,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
@@ -432,7 +411,6 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "distinct_number_of_countries_vpn_hourly",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -440,7 +418,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": false
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
@@ -449,7 +427,7 @@
 
 
       {
-        "name": "has_high_score_date_time_events_kerberos_logins",
+        "name": "has_high_score_date_time_events_kerberos_logins_daily",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -459,7 +437,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -477,7 +455,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -499,12 +477,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_kerberos_hourly",
+        "name": "distinct_number_of_src_machines_with_high_score_kerberos_logins_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -518,12 +496,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_dst_machines_with_high_score_kerberos",
+        "name": "distinct_number_of_dst_machines_with_high_score_kerberos_logins_daily",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -537,12 +515,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_dst_machines_with_high_score_kerberos_hourly",
+        "name": "distinct_number_of_dst_machines_with_high_score_kerberos_logins_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -556,12 +534,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_failure_code_with_high_score_kerberos",
+        "name": "distinct_number_of_failure_code_with_high_score_kerberos_logins_daily",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -575,12 +553,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_failure_code_with_high_score_kerberos_hourly",
+        "name": "distinct_number_of_failure_code_with_high_score_kerberos_logins_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -594,13 +572,13 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
 
       {
-        "name": "has_high_score_date_time_events_ssh",
+        "name": "has_high_score_date_time_events_ssh_daily",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -610,7 +588,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -628,7 +606,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -636,7 +614,7 @@
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_ssh",
+        "name": "distinct_number_of_src_machines_with_high_score_ssh_daily",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -650,12 +628,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_ssh_hourly",
+        "name": "distinct_number_of_src_machines_with_high_score_ssh_daily_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_hourly",
         "numberOfBuckets": 1,
@@ -669,12 +647,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_dst_machines_with_high_score_ssh",
+        "name": "distinct_number_of_dst_machines_with_high_score_ssh_daily",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -688,7 +666,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
@@ -707,7 +685,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
@@ -722,7 +700,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_auth_method_events"
+            "high_score_auth_method_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -740,7 +718,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_auth_method_events"
+            "high_score_auth_method_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -749,7 +727,7 @@
       },
 
       {
-        "name": "has_high_score_date_time_events_vpn",
+        "name": "has_high_score_date_time_events_vpn_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
@@ -759,7 +737,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -777,7 +755,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events"
+            "high_score_date_time_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -785,7 +763,7 @@
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_vpn",
+        "name": "distinct_number_of_src_machines_with_high_score_vpn_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
@@ -799,7 +777,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
@@ -818,12 +796,12 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_country_with_high_score_vpn",
+        "name": "distinct_number_of_country_with_high_score_vpn_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
@@ -837,7 +815,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
@@ -856,13 +834,13 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_distinct_values_func",
+          "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
       },
 
       {
-        "name": "number_of_high_score_rate_vpnsession",
+        "name": "high_score_rate_vpn_session_counter",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_daily",
         "numberOfBuckets": 1,
@@ -872,15 +850,15 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_high_score_rate_vpnsession"
+            "high_score_rate_vpn_session_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         }
       },
       {
-        "name": "number_of_high_score_rate_vpnsession_hourly",
+        "name": "number_of_high_score_rate_vpn_session_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_hourly",
         "numberOfBuckets": 1,
@@ -890,11 +868,11 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "number_of_high_score_rate_vpnsession"
+            "high_score_rate_vpn_session_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_number_of_events_func"
+          "type": "aggr_feature_events_counter_func"
         }
       }
     ]

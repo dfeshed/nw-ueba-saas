@@ -76,6 +76,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
 		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
+		Assert.assertEquals(ANOMALY_TYPE, actual.getAnomalyType());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());

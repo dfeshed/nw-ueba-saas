@@ -57,24 +57,24 @@
           "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
@@ -139,24 +139,24 @@
           "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
@@ -213,33 +213,33 @@
           "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events",
+          "name": "high_score_auth_method_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
         }
       ]
@@ -293,33 +293,33 @@
           "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events",
+          "name": "high_score_auth_method_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
         }
       ]
@@ -350,27 +350,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
@@ -417,27 +417,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
@@ -471,9 +471,9 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpnsession",
+          "name": "number_of_high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
@@ -490,9 +490,9 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpnsession",
+          "name": "number_of_high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
