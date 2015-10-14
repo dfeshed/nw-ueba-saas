@@ -23,14 +23,12 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
 
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private MongoDbUtilService mongoDbUtilService;
 
     @Override
     public List<AggrEvent> getAggregatedEventsByContextAndTimeRange(String featureName, String contextType, String ContextName, Long startTime, Long endTime) {
         String collectionName = SCORED_AGGR_EVENT_COLLECTION_PREFIX + featureName;
 
-        if (mongoDbUtilService.collectionExists(collectionName)) {
+        if (mongoTemplate.collectionExists(collectionName)) {
             Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(TimestampUtils.convertToSeconds(startTime));
 
             Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));
