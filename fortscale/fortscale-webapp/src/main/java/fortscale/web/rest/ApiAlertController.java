@@ -233,11 +233,6 @@ public class ApiAlertController extends BaseController {
 					entityTags, entityId);
 		}
 
-		if (totalSeverityCount != null) {
-			severitiesCount = countSeverities(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId);
-		}
-
 		for (Alert alert : alerts.getAlerts()) {
 			updateEvidenceFields(alert);
 		}
@@ -250,7 +245,8 @@ public class ApiAlertController extends BaseController {
 
 		if (totalSeverityCount != null) {
 			Map<String, Object> info = new HashMap<>();
-			info.put("total_severity_count", severitiesCount);
+			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
+					entityName, entityTags, entityId));
 			entities.setInfo(info);
 		}
 		return entities;
