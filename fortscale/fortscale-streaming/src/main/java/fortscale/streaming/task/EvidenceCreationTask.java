@@ -14,6 +14,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -77,6 +78,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private String supportingInformationField;
 
 	private BDPService bdpService;
+
+	private Counter lastTimestampCount;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -164,6 +167,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
 
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				String.format("%s-last-message-epochtime", config.get("job.name")));
+
 		bdpService = new BDPService();
 
 	}
@@ -213,6 +219,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			String anomalyField = convertToString(validateFieldExistsAndGetValue(message, dataSourceConfiguration.anomalyTypeField,true));
 			createEvidence(dataSourceConfiguration, collector, inputTopic, message, dataEntitiesIds, dataSourceConfiguration.scoreField, dataSourceConfiguration.anomalyValueField, anomalyField,totalAmountOfEvents);
 		}
+
+		Long startTimestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, dataSourceConfiguration.endTimestampField, true));
+		lastTimestampCount.set(startTimestampSeconds);
+
 	}
 
 
