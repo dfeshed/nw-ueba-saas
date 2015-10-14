@@ -2,6 +2,7 @@
   "BucketConfs": [
     {
       "name": "normalized_username_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -83,6 +84,7 @@
     },
     {
       "name": "normalized_username_kerberos_logins_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -164,6 +166,7 @@
     },
     {
       "name": "normalized_username_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -243,6 +246,7 @@
     },
     {
       "name": "normalized_username_ssh_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -322,6 +326,7 @@
     },
     {
       "name": "normalized_username_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -388,6 +393,7 @@
     },
     {
       "name": "normalized_username_vpn_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -455,6 +461,7 @@
 
     {
       "name": "normalized_username_vpn_session_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -473,6 +480,7 @@
     },
     {
       "name": "normalized_username_vpn_session_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -494,6 +502,7 @@
 
     {
       "name": "source_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -513,6 +522,7 @@
     },
     {
       "name": "destination_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -533,6 +543,7 @@
 
     {
       "name": "source_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -552,6 +563,7 @@
     },
     {
       "name": "destination_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -571,6 +583,7 @@
     },
     {
       "name": "source_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -590,6 +603,7 @@
     },
     {
       "name": "destination_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -609,6 +623,7 @@
     },
     {
       "name": "country_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "country"
       ],
