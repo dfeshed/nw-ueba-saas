@@ -96,6 +96,10 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				// parse the message into json
 				String messageText = (String) envelope.getMessage();
 				JSONObject message = (JSONObject) JSONValue.parse(messageText);
+				String timeStampField = inputTopicMapping.get(inputTopic).getTimeStampField();
+				if (!message.containsKey(timeStampField)) {
+					throw new Exception("Missing date field " + timeStampField + " in message");
+				}
 				Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).
 						getTimeStampField()));
 				lastTimestampCount.set(endTimestampSeconds);
