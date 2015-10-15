@@ -70,6 +70,13 @@ public class AggregatorManager {
     @Value("${streaming.event.field.type.aggr_event}")
     private String aggrEventType;
     
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfFieldName;
+    
     private AggregationMetricsService aggregationMetricsService;
 
 
@@ -114,7 +121,7 @@ public class AggregatorManager {
 	private Event createEvent(JSONObject eventMessage){
 		String eventType = (String) eventMessage.get(eventTypeFieldName);
 		if(aggrEventType.equals(eventType)){
-			return new AggrEvent(eventMessage);
+			return new AggrEvent(eventMessage, aggrFeatureNameFieldName, aggrFeatureValueFieldName, bucketConfFieldName);
 		} else{
 			String dataSource = eventMessage.getAsString(dataSourceFieldName);
 			return new RawEvent(eventMessage, dataEntitiesConfigWithBlackList, dataSource);
