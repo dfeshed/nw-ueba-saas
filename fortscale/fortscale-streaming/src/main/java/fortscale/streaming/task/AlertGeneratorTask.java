@@ -95,7 +95,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 				// parse the message into json
 				String messageText = (String) envelope.getMessage();
-				JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+				JSONObject message = (JSONObject) JSONValue.parse(messageText);
 				Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).
 						getTimeStampField()));
 				lastTimestampCount.set(endTimestampSeconds);
