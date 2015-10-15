@@ -34,6 +34,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public static final String ENTITY_EVENT_TYPE_FILED_NAME = "entity_event_type";
 	public static final String ENTITY_EVENT_DATE_TIME_UNIX_FILED_NAME = "date_time_unix";
 	public static final String ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME = "aggregated_feature_events";
+	public static final String ENTITY_EVENT_NAME_FILED_NAME = "entity_event_name";
 
 	private static final long serialVersionUID = -8514041678913795872L;
 
@@ -59,11 +60,14 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private long date_time_unix;
 	@Field(ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME)
 	private List<JSONObject> aggregated_feature_events;
-
+	//distinguish between hourly and daily entityEvents
+	@Field(ENTITY_EVENT_NAME_FILED_NAME)
+	private String entity_event_name;
 
 	public EntityEvent() {}
 
-	public EntityEvent(long start_time_unix, double entity_event_value, double score, Map<String, String> context, String contextId, long end_time_unix, long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events) {
+	public EntityEvent(long start_time_unix, double entity_event_value, double score, Map<String, String> context, String contextId, long end_time_unix,
+			long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events, String entity_event_name) {
 		this.start_time_unix = start_time_unix;
 		this.entity_event_value = entity_event_value;
 		this.score = score;
@@ -75,6 +79,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.entity_event_type = entity_event_type;
 		this.date_time_unix = date_time_unix;
 		this.aggregated_feature_events = aggregated_feature_events;
+		this.entity_event_name = entity_event_name;
 	}
 
 	public static EntityEvent buildEntityEvent(JSONObject event) throws IOException, JsonParseException, JsonMappingException {
@@ -166,5 +171,12 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.contextId = contextId;
 	}
 
+	public String getEntity_event_name() {
+		return entity_event_name;
+	}
+
+	public void setEntity_event_name(String entity_event_name) {
+		this.entity_event_name = entity_event_name;
+	}
 
 }
