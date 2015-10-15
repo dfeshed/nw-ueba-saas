@@ -276,7 +276,7 @@ public class HDFSUtil implements CleanupUtil {
         calendar.setTime(startDate);
         //creating list of files by advancing the date one unit at a time (according to strategy) from start to end
         while (calendar.getTimeInMillis() < endDate.getTime()) {
-            sb.append(hdfsBasePath + partitionStrategy.getImpalaPartitionName(calendar.getTimeInMillis()) + " ");
+            sb.append(hdfsBasePath + "/" + partitionStrategy.getImpalaPartitionName(calendar.getTimeInMillis()) + " ");
             if (partitionStrategy instanceof MonthlyPartitionStrategy) {
                 calendar.add(Calendar.MONTH, 1);
             } else {

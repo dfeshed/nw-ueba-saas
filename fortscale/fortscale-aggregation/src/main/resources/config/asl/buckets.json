@@ -2,6 +2,7 @@
   "BucketConfs": [
     {
       "name": "normalized_username_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -56,24 +57,24 @@
           "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
@@ -83,6 +84,7 @@
     },
     {
       "name": "normalized_username_kerberos_logins_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -137,24 +139,24 @@
           "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
@@ -164,6 +166,7 @@
     },
     {
       "name": "normalized_username_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -210,39 +213,40 @@
           "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events",
+          "name": "high_score_auth_method_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
         }
       ]
     },
     {
       "name": "normalized_username_ssh_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -289,39 +293,40 @@
           "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events",
+          "name": "high_score_auth_method_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
         }
       ]
     },
     {
       "name": "normalized_username_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -345,27 +350,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
@@ -388,6 +393,7 @@
     },
     {
       "name": "normalized_username_vpn_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -411,27 +417,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "number_of_failed_events",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
-          "name": "number_of_events",
+          "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
-          "name": "hourly_histogram_of_events",
+          "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": ["hour"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events",
+          "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
@@ -455,6 +461,7 @@
 
     {
       "name": "normalized_username_vpn_session_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -464,15 +471,16 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpnsession",
+          "name": "number_of_high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
     },
     {
       "name": "normalized_username_vpn_session_hourly",
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -482,9 +490,9 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpnsession",
+          "name": "number_of_high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_number_of_events_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
@@ -494,6 +502,7 @@
 
     {
       "name": "source_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -513,6 +522,7 @@
     },
     {
       "name": "destination_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -533,6 +543,7 @@
 
     {
       "name": "source_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -552,6 +563,7 @@
     },
     {
       "name": "destination_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -571,6 +583,7 @@
     },
     {
       "name": "source_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
       ],
@@ -590,6 +603,7 @@
     },
     {
       "name": "destination_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "destination_machine"
       ],
@@ -609,6 +623,7 @@
     },
     {
       "name": "country_vpn_daily",
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "country"
       ],
