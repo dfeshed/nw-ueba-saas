@@ -2,11 +2,8 @@ package fortscale.aggregation.feature.extraction;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import net.minidev.json.JSONObject;
 
-@Configurable(preConstruction = true)
 public class AggrEvent implements Event{
 	private JSONObject jsonObject;
     private String aggrFeatureNameFieldName;
