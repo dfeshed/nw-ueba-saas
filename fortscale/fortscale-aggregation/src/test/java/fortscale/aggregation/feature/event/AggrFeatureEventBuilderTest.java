@@ -1,17 +1,17 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.DataSourcesSyncTimerListener;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.bucket.strategy.*;
-import fortscale.aggregation.feature.util.GenericHistogram;
-import fortscale.utils.ConversionUtils;
-import junitparams.JUnitParamsRunner;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,13 +21,22 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.DataSourcesSyncTimerListener;
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
+import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
+import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.utils.ConversionUtils;
+import junitparams.JUnitParamsRunner;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
 @RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventBuilderTest {
@@ -66,10 +75,10 @@ public class AggrFeatureEventBuilderTest {
         aggrFeatureNames.add("letters");
         parameters2featuresListMap.put("groupBy", aggrFeatureNames);
         JSONObject funcJSONObj = new JSONObject();
-        funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
+        funcJSONObj.put("type", "aggr_feature_distinct_values_counter_func");
         funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets, bucketLeap, 0, "AnomalyAggregatedEvent", "HighestScore", parameters2featuresListMap, funcJSONObj);
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets, bucketLeap, 0, "HighestScore", parameters2featuresListMap, funcJSONObj);
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
         List<String> dataSources = new ArrayList<>();
         dataSources.add("ssh");
@@ -132,6 +141,7 @@ public class AggrFeatureEventBuilderTest {
         featureBucket.setStartTime(startTime);
         featureBucket.setFeatureBucketConfName("bc1");
         featureBucket.setStrategyId("strategyId");
+        featureBucket.setCreatedAt(new Date());
 
         return featureBucket;
     }

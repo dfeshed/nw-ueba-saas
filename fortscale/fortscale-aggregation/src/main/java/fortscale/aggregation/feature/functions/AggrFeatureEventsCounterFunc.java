@@ -16,10 +16,10 @@ import java.util.Map;
 /**
  * Created by orend on 23/07/2015.
  */
-@JsonTypeName(AggrFeatureEventNumberOfEventsFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureEventsCounterFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureEventNumberOfEventsFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
-	public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_events_func";
+public class AggrFeatureEventsCounterFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
+	public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_events_counter_func";
 	public final static String AGGREGATED_FEATURE_NAME_TO_SUM = "aggregated_feature_name_to_sum";
 
 	/**

@@ -56,7 +56,7 @@ public class ApiUtils {
         initMap();
 
         for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-            entityName.replace(entry.getKey(), entry.getValue());
+            entityName = entityName.replace(entry.getKey(), entry.getValue());
         }
 
         return entityName;
@@ -70,16 +70,16 @@ public class ApiUtils {
             return;
         }
         replacementMap = new HashMap<>();
-        replacementMap.put("^", "\\^");
-        replacementMap.put("$", "\\$");
-        replacementMap.put(".", "\\.");
-        replacementMap.put("|", "\\|");
-        replacementMap.put("?", "\\?");
-        replacementMap.put("*", "\\*");
-        replacementMap.put("+", "\\+");
-        replacementMap.put("(", "\\(");
-        replacementMap.put(")", "\\)");
-        replacementMap.put("[", "\\[");
-        replacementMap.put("{", "\\{");
+        replacementMap.put("^", "\\\\^");
+        replacementMap.put("$", "\\\\$");
+        replacementMap.put(".", "\\\\.");
+        replacementMap.put("|", "\\\\|");
+        replacementMap.put("?", "\\\\?");
+        replacementMap.put("*", "\\\\*");
+        replacementMap.put("+", "\\\\+");
+        replacementMap.put("(", "\\\\(");
+        replacementMap.put(")", "\\\\)");
+        replacementMap.put("[", "\\\\[");
+        replacementMap.put("{", "\\\\{");
     }
 }
