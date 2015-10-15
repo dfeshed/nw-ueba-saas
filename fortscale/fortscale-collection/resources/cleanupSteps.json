@@ -40,6 +40,11 @@
     ],
     "otherSteps": [
       {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "aggr_@@@prefix###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store"
+      },
+      {
         "technology": "MONGO",
         "strategy": "RESTORE",
         "dataSources": "aggr_###scored___###streaming_models"
