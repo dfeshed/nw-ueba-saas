@@ -1,8 +1,11 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.mongodb.WriteResult;
-import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.utils.time.TimestampUtils;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,11 +15,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
+import com.mongodb.WriteResult;
+
+import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.time.TimestampUtils;
 
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	private static final int EXPIRE_AFTER_SECONDS_DEFAULT = 90*24*3600;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -99,6 +107,13 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
+			// TTL on CreatedAt
+			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
+			
+			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
+					.expire(expireAfterSeconds, TimeUnit.SECONDS)
+					.named(FeatureBucket.CREATED_AT_FIELD_NAME)
+					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
 		}
 		try {
 			mongoTemplate.save(featureBucket, collectionName);

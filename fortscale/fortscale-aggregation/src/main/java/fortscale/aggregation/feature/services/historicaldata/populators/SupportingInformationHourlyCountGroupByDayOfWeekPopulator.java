@@ -31,7 +31,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
     private static Logger logger = Logger.getLogger(SupportingInformationHourlyCountGroupByDayOfWeekPopulator.class);
 
-    private static final String HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME = "hourly_histogram_of_events";
+    private static final String NUMBER_OF_EVENTS_PER_HOUR_HISTOGRAM_FEATURE_NAME = "number_of_events_per_hour_histogram";
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -144,7 +144,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
     @Override
     String getNormalizedFeatureName(String featureName) {
-        return HOURLY_HISTOGRAM_OF_EVENTS_FEATURE_NAME;
+        return NUMBER_OF_EVENTS_PER_HOUR_HISTOGRAM_FEATURE_NAME;
     }
 
     @Override
