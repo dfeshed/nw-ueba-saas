@@ -75,10 +75,10 @@ public class AggrFeatureEventBuilderTest {
         aggrFeatureNames.add("letters");
         parameters2featuresListMap.put("groupBy", aggrFeatureNames);
         JSONObject funcJSONObj = new JSONObject();
-        funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
+        funcJSONObj.put("type", "aggr_feature_distinct_values_counter_func");
         funcJSONObj.put("includeValues", true);
 
-        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets, bucketLeap, 0, "AnomalyAggregatedEvent", "HighestScore", parameters2featuresListMap, funcJSONObj);
+        AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "F", "bc1", numberOfBuckets, bucketLeap, 0, "HighestScore", parameters2featuresListMap, funcJSONObj);
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
         List<String> dataSources = new ArrayList<>();
         dataSources.add("ssh");

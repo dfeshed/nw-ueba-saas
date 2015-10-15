@@ -3,16 +3,15 @@ package fortscale.aggregation.feature.functions;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 
 /**
  * Created by amira on 20/07/2015.
  */
-@JsonTypeName(AggrFeatureEventNumberOfDistinctValuesFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureDistinctValuesCounterFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureEventNumberOfDistinctValuesFunc extends AbstractAggrFeatureEventHistogram {
-    public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
+public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEventHistogram {
+    public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_distinct_values_counter_func";
     private static final String FEATURE_DISTINCT_VALUES = "distinct_values";
 
     private boolean includeValues = false;

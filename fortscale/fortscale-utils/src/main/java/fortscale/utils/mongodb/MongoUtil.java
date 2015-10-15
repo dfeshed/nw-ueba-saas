@@ -1,13 +1,18 @@
 package fortscale.utils.mongodb;
 
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -40,6 +45,10 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
      */
     @Override
     public boolean deleteEntityBetween(String collection, String filters, Date startDate, Date endDate) {
+        if (!mongoTemplate.collectionExists(collection)) {
+            logger.error("collection {} not found!", collection);
+            return false;
+        }
         logger.info("attempting to delete from collection {}", collection);
         Query query = new Query();
         boolean hasCriteria = false;
@@ -59,15 +68,27 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
             dateField = filters;
         }
         if (dateField != null) {
+            DBCollection dbCollection = mongoTemplate.getCollection(collection);
+            DBObject dbObject = dbCollection.findOne();
+            if (dbObject == null) {
+                logger.debug("collection empty - nothing to remove");
+                return true;
+            }
+            if (!dbObject.containsField(dateField)) {
+                logger.error("date field {} not found in collection {}", dateField, collection);
+                return false;
+            }
+            long mongoTime = ConversionUtils.convertToLong(dbObject.get(dateField));
             //TODO - generalize this in the case where dateField is not in unix time
             if (startDate != null && endDate == null) {
-                query.addCriteria(where(dateField).gte(startDate.getTime()));
+                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
                 hasCriteria = true;
             } else if (startDate == null && endDate != null) {
-                query.addCriteria(where(dateField).lte(endDate.getTime()));
+                query.addCriteria(where(dateField).lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
                 hasCriteria = true;
             } else if (startDate != null && endDate != null) {
-                query.addCriteria(where(dateField).gte(startDate.getTime()).lte(endDate.getTime()));
+                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())).
+                                                   lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
                 hasCriteria = true;
             } else {
                 logger.error("Must provide either start or end date");
@@ -81,6 +102,21 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
         }
         logger.error("Bad parameters");
         return false;
+    }
+
+    /***
+     *
+     * This method helps us determine if we should perform the search in milliseconds or seconds
+     *
+     * @param mongoTime   sample time of an existing document in mongo
+     * @param searchTime  the time we want to search by
+     * @return
+     */
+    private long convertToSecondsIfNeeded(long mongoTime, long searchTime) {
+        if (TimestampUtils.isTimestampInSeconds(mongoTime)) {
+            return TimestampUtils.convertToSeconds(searchTime);
+        }
+        return searchTime;
     }
 
     /***

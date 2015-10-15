@@ -21,7 +21,7 @@ public class AggrFeatureEventHasEventsFunc extends AbstractAggrFeatureEvent
 
 	@Override
 	protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList){
-		long eventsCounter = AggrFeatureEventNumberOfEventsFunc.calculateNumberOfEventsFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+		long eventsCounter = AggrFeatureEventsCounterFunc.calculateNumberOfEventsFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
 		if (eventsCounter > 0) {
 			return new AggrFeatureValue(1, eventsCounter);
 		} else {

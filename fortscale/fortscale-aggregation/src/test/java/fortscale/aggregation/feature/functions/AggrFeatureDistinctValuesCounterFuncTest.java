@@ -10,12 +10,10 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.mockito.Matchers.anyString;
-
 /**
  * Created by orend on 23/07/2015.
  */
-public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
+public class AggrFeatureDistinctValuesCounterFuncTest {
 
 	private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
 		List<String> list = new ArrayList<>();
@@ -24,7 +22,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "AnomalyAggregatedEvent", "HIGHEST_SCORE", map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE", map, new JSONObject());
 	}
 
 	@Test
@@ -57,7 +55,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 		listOfFeatureMaps.add(bucket1FeatureMap);
 		listOfFeatureMaps.add(bucket2FeatureMap);
 
-		AggrFeatureEventNumberOfDistinctValuesFunc function = new AggrFeatureEventNumberOfDistinctValuesFunc();
+		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
@@ -80,7 +78,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFuncTest {
 
 	@Test
 	public void testCalculateAggrFeatureWhenConfigIsNull() {
-		AggrFeatureEventNumberOfDistinctValuesFunc function = new AggrFeatureEventNumberOfDistinctValuesFunc();
+		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
 		Assert.assertNull(function.calculateAggrFeature(null, new ArrayList<Map<String, Feature>>()));
 	}
 }
