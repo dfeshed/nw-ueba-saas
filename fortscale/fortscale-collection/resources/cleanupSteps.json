@@ -1,5 +1,5 @@
 {
-  "step1": {
+  "EnrichedDataToSingleEventIndicator": {
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -16,17 +16,91 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats-changelog###4769-user-score-changelog###__samza_checkpoint_4769-events-filter_1###__samza_checkpoint_4769-prevalence-stats_1###__samza_checkpoint_4769-user-score_1###__samza_checkpoint_amt-prevalence-stats_1###__samza_checkpoint_amt-sessionize_1###__samza_checkpoint_amt-sessions-user-score_1###__samza_checkpoint_amt-user-score_1###__samza_checkpoint_amtsessions-prevalence-stats_1###__samza_checkpoint_ssh-prevalence-stats_1###__samza_checkpoint_ssh-user-score_1###__samza_checkpoint_vpn-events-filter_1###__samza_checkpoint_vpn-prevalence-stats_1###__samza_checkpoint_vpn-user-score_1###__samza_checkpoint_vpnsession-events-filter_1###__samza_checkpoint_vpnsession-prevalence-stats_1###amt-prevalence-stats-changelog###amt-user-score-changelog###amtsession-user-score-changelog###amtsessions-prevalence-stats-changelog###fortscale-4769-event-filtered###fortscale-4769-event-score###fortscale-4769-event-score-after-write###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score###fortscale-amt-event-score-after-write###fortscale-amt-event-score-from-hdfs###fortscale-amt-sessionized###fortscale-amtsessions-event-score###fortscale-amtsessions-event-score-after-write###fortscale-ssh-event-score###fortscale-ssh-event-score-after-write###fortscale-ssh-event-score-from-hdfs###fortscale-vpn-event-filtered###fortscale-vpn-event-score###fortscale-vpn-event-score-after-write###fortscale-vpn-event-score-from-hdfs###fortscale-vpnsession-event-filtered###fortscale-vpnsession-event-score###fortscale-vpnsession-event-score-after-write###fortscale-vpnsession-event-score-from-hdfs###hdfs-write-amtscores-changelog###hdfs-write-amtscores_top-changelog###hdfs-write-amtsessiondata-changelog###hdfs-write-authenticationscores-changelog###hdfs-write-###authenticationscores_top-changelog###hdfs-write-sshscores-changelog###hdfs-write-sshscores_top-changelog###hdfs-write-vpndatares-changelog###hdfs-write-vpndatares_top-changelog###hdfs-write-vpnsessiondatares-changelog###hdfs-write-vpnsessiondatares_top-changelog###sessionize-amt-changelog###ssh-prevalence-stats-changelog###ssh-user-score-changelog###vpn-prevalence-stats-changelog###vpn-user-score-changelog###vpnsession-prevalence-stats-changelog"
+        "dataSources": "4769-prevalence-stats-changelog###4769-user-score-changelog###__samza_checkpoint_4769-events-filter_1###__samza_checkpoint_4769-prevalence-stats_1###__samza_checkpoint_4769-user-score_1###__samza_checkpoint_amt-prevalence-stats_1###__samza_checkpoint_amt-sessionize_1###__samza_checkpoint_amt-sessions-user-score_1###__samza_checkpoint_amt-user-score_1###__samza_checkpoint_amtsessions-prevalence-stats_1###__samza_checkpoint_ssh-prevalence-stats_1###__samza_checkpoint_ssh-user-score_1###__samza_checkpoint_vpn-events-filter_1###__samza_checkpoint_vpn-prevalence-stats_1###__samza_checkpoint_vpn-user-score_1###__samza_checkpoint_vpnsession-events-filter_1###__samza_checkpoint_vpnsession-prevalence-stats_1###amt-prevalence-stats-changelog###amt-user-score-changelog###amtsession-user-score-changelog###amtsessions-prevalence-stats-changelog###fortscale-4769-event-filtered###fortscale-4769-event-score###fortscale-4769-event-score-after-write###fortscale-amt-event-score###fortscale-amt-event-score-after-write###fortscale-amt-sessionized###fortscale-amtsessions-event-score###fortscale-amtsessions-event-score-after-write###fortscale-ssh-event-score###fortscale-ssh-event-score-after-write###fortscale-vpn-event-filtered###fortscale-vpn-event-score###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-filtered###fortscale-vpnsession-event-score###fortscale-vpnsession-event-score-after-write###hdfs-write-amtscores-changelog###hdfs-write-amtscores_top-changelog###hdfs-write-amtsessiondata-changelog###hdfs-write-authenticationscores-changelog###hdfs-write-###authenticationscores_top-changelog###hdfs-write-sshscores-changelog###hdfs-write-sshscores_top-changelog###hdfs-write-vpndatares-changelog###hdfs-write-vpndatares_top-changelog###hdfs-write-vpnsessiondatares-changelog###hdfs-write-vpnsessiondatares_top-changelog###sessionize-amt-changelog###ssh-prevalence-stats-changelog###ssh-user-score-changelog###vpn-prevalence-stats-changelog###vpn-user-score-changelog###vpnsession-prevalence-stats-changelog"
       },
       {
         "technology": "MONGO",
         "strategy": "RESTORE",
-        "dataSources": "streaming_models@@@streaming_models_backup###streaming_userscore_snapshot@@@streaming_userscore_snapshot_backup###user@@@user_backup"
+        "dataSources": "streaming_models###streaming_userscore_snapshot###user"
       },
       {
         "technology": "HDFS",
         "strategy": "RESTORE",
         "dataSources": "/home/cloudera/bdpbackup/"
+      }
+    ]
+  },
+  "ScoredDataToSMARTEvents": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###entity_event_normalized_username_daily@@@date:::startTime###entity_event_normalized_username_hourly@@@date:::startTime"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "aggr_@@@prefix###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "RESTORE",
+        "dataSources": "aggr_###scored___###streaming_models"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-entity-event###fortscale-aggr-feature-events-score"
+      }
+    ]
+  },
+  "ScoredDataToSingleEventIndicator": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalySingleEvent"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write"
+      }
+    ]
+  },
+  "NotificationsToIndicators": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Notification"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-notification-event-score"
+      }
+    ]
+  },
+  "AlertGeneration": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag###evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-evidences###fortscale-entity-event-score"
       }
     ]
   }
