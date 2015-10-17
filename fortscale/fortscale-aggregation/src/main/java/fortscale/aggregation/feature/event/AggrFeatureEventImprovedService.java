@@ -100,7 +100,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     
     public void sendEvents(long curEventTime){
     	//moving feature bucket to sending queue
-    	long curTime = System.currentTimeMillis();
+    	long curTime = System.currentTimeMillis()/1000;
     	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(curEventTime+fetchDataCycleInSeconds)){
     		FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(aggrMetadata.getFeatureBucketConfName(), aggrMetadata.getBucketId(), curTime);
     		featureBucketAggrSendingQueueRepository.save(featureBucketAggrSendingQueue);
@@ -108,7 +108,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	}
     	
     	//creating and sending feature aggregated events
-    	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime+waitingTimeBeforeNotification)){
+    	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification)){
     		FeatureBucket bucket = null;
     		List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
     		for(AggregatedFeatureEventConf conf: bucketConfName2FeatureEventConfMap.get(featureBucketAggrSendingQueue.getFeatureBucketConfName())){
@@ -124,6 +124,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 
                 // Sending the event
                 sendEvent(event);
+                featureBucketAggrSendingQueueRepository.delete(featureBucketAggrSendingQueue);
     		}
     	}
     }
