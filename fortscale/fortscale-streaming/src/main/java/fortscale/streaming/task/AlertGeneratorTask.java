@@ -93,12 +93,16 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 					keyValueStore.put(info.toString(), info);
 				}
 
-				// parse the message into json
 				String messageText = (String) envelope.getMessage();
-				JSONObject message = (JSONObject) JSONValue.parse(messageText);
-				Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).
-						getTimeStampField()));
-				lastTimestampCount.set(endTimestampSeconds);
+				try {
+					// parse the message into json
+					JSONObject message = (JSONObject) JSONValue.parse(messageText);
+					Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).
+							getTimeStampField()));
+					lastTimestampCount.set(endTimestampSeconds);
+				} catch (Exception ex) {
+					logger.error("Failed to extract timestamp from message - {}, error is - {}", messageText, ex);
+				}
 			}
 		}
 		else{
