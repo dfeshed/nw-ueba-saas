@@ -18,6 +18,8 @@ public class EventResolvingConfig {
 	private boolean dropWhenFail;
     private String partitionField;
     private boolean overrideIPWithHostname;
+    private boolean resolveOnlyReservedIp;
+    private String reservedIpAddress;
 
     /**
      * Builder for EventResolvingConfig, used as a utility function to simplify creation
@@ -25,7 +27,8 @@ public class EventResolvingConfig {
     public static EventResolvingConfig build(String inputTopic, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
                                              boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName,
-                                             String partitionField, boolean overrideIPWithHostname) {
+                                             String partitionField, boolean overrideIPWithHostname,
+                                             boolean resolveOnlyReservedIp, String reservedIpAddress) {
         EventResolvingConfig config = new EventResolvingConfig();
         config.setHostFieldName(hostFieldName);
         config.setInputTopic(inputTopic);
@@ -38,6 +41,8 @@ public class EventResolvingConfig {
         config.setTimestampFieldName(timestampFieldName);
         config.setPartitionField(partitionField);
         config.setOverrideIPWithHostname(overrideIPWithHostname);
+        config.setResolveOnlyReservedIp(resolveOnlyReservedIp);
+        config.setReservedIpAddress(reservedIpAddress);
         return config;
     }
 
@@ -123,5 +128,21 @@ public class EventResolvingConfig {
 
     public void setOverrideIPWithHostname(boolean overrideIPWithHostname) {
         this.overrideIPWithHostname = overrideIPWithHostname;
+    }
+
+    public boolean isResolveOnlyReservedIp() {
+        return resolveOnlyReservedIp;
+    }
+
+    public void setResolveOnlyReservedIp(boolean resolveOnlyReservedIp) {
+        this.resolveOnlyReservedIp = resolveOnlyReservedIp;
+    }
+
+    public String getReservedIpAddress() {
+        return reservedIpAddress;
+    }
+
+    public void setReservedIpAddress(String reservedIpAddress) {
+        this.reservedIpAddress = reservedIpAddress;
     }
 }
