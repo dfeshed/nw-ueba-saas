@@ -174,9 +174,10 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         Map<SupportingInformationKey, Double> lastDayMap = new HashMap<>();
         for (Map<String, Object> bucketMap : queryList){
 			Timestamp eventTime = (Timestamp)bucketMap.get("event_time");
-			Long epochTime = eventTime.getTime();
-			Integer dayOfWeek = TimeUtils.getOrdinalDayOfWeek(TimestampUtils.convertToMilliSeconds(epochTime));
-			int hour = eventTime.getHours();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(eventTime);
+			Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);;
+			int hour = calendar.get(Calendar.HOUR_OF_DAY);
             lastDayMap.put(new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), Integer.toString(hour)), ((Long) bucketMap.get("countField")).doubleValue());
         }
         return lastDayMap;
