@@ -79,9 +79,11 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
      */
     public void newFeatureBuckets(List<FeatureBucket> buckets) {
     	List<FeatureBucketAggrMetadata> featureBucketAggrMetadataList = new ArrayList<>();
-        for(FeatureBucket bucket : buckets) {
-        	FeatureBucketAggrMetadata featureBucketAggrMetadata = new FeatureBucketAggrMetadata(bucket);
-        	featureBucketAggrMetadataList.add(featureBucketAggrMetadata);
+        for(FeatureBucket featureBucket : buckets) {
+        	if(bucketConfName2FeatureEventConfMap.get(featureBucket.getFeatureBucketConfName()) != null){
+	        	FeatureBucketAggrMetadata featureBucketAggrMetadata = new FeatureBucketAggrMetadata(featureBucket);
+	        	featureBucketAggrMetadataList.add(featureBucketAggrMetadata);
+        	}
         }
         
         featureBucketAggrMetadataRepository.save(featureBucketAggrMetadataList);
@@ -93,8 +95,11 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
         if(updatedFeatureBucketsWithNewEndTime==null) {
             return;
         }
+        
         for(FeatureBucket featureBucket : updatedFeatureBucketsWithNewEndTime) {
-            featureBucketAggrMetadataRepository.updateFeatureBucketsEndTime(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId(), featureBucket.getEndTime());
+        	if(bucketConfName2FeatureEventConfMap.get(featureBucket.getFeatureBucketConfName()) != null){
+        		featureBucketAggrMetadataRepository.updateFeatureBucketsEndTime(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId(), featureBucket.getEndTime());
+        	}
         }
     }
     
@@ -111,20 +116,24 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification)){
     		FeatureBucket bucket = null;
     		List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
-    		for(AggregatedFeatureEventConf conf: bucketConfName2FeatureEventConfMap.get(featureBucketAggrSendingQueue.getFeatureBucketConfName())){
-    			if(bucket == null){
-    				bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
-    				bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
-    			}
-    			// Calculating the new feature
-                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
-
-                // Building the event
-                JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
-
-                // Sending the event
-                sendEvent(event);
-                featureBucketAggrSendingQueueRepository.delete(featureBucketAggrSendingQueue);
+    		
+    		List<AggregatedFeatureEventConf> featureEventConfList = bucketConfName2FeatureEventConfMap.get(featureBucketAggrSendingQueue.getFeatureBucketConfName());
+    		if(featureEventConfList != null){
+	    		for(AggregatedFeatureEventConf conf: featureEventConfList){
+	    			if(bucket == null){
+	    				bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
+	    				bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
+	    			}
+	    			// Calculating the new feature
+	                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
+	
+	                // Building the event
+	                JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
+	
+	                // Sending the event
+	                sendEvent(event);
+	                featureBucketAggrSendingQueueRepository.delete(featureBucketAggrSendingQueue);
+	    		}
     		}
     	}
     }
