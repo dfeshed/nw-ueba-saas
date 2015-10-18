@@ -122,6 +122,11 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	    		for(AggregatedFeatureEventConf conf: featureEventConfList){
 	    			if(bucket == null){
 	    				bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
+	    				if(bucket == null){
+	    					String message = String.format("Couldn't send the aggregation event since the bucket was not found. conf name: %s bucketId: %s", featureBucketAggrSendingQueue.getFeatureBucketConfName(), featureBucketAggrSendingQueue.getBucketId());
+	    					logger.error(message);
+	    					throw new RuntimeException(message);
+	    				}
 	    				bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
 	    			}
 	    			// Calculating the new feature
