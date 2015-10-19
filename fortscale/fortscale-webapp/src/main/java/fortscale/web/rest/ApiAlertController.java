@@ -98,7 +98,7 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
 								  @RequestParam(required=false, value = "entity_id") String entityId,
-								  @RequestParam(required=false, value = "total_severity_count") String totalSeverityCount
+								  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount
 
 	)  throws  Exception{
 
@@ -182,7 +182,7 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "entity_name") String entityName,
 										  @RequestParam(required=false, value = "entity_tags") String entityTags,
 										  @RequestParam(required=false, value = "entity_id") String entityId,
-										  @RequestParam(required=false, value = "total_severity_count") String totalSeverityCount) {
+										  @RequestParam(required=false,  value = "total_severity_count") boolean totalSeverityCount) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -243,7 +243,7 @@ public class ApiAlertController extends BaseController {
 		entities.setTotal(count.intValue());
 		entities.setOffset(pageForMongo * size);
 
-		if (totalSeverityCount != null) {
+		if (totalSeverityCount) {
 			Map<String, Object> info = new HashMap<>();
 			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
 					entityName, entityTags, entityId));
@@ -253,22 +253,17 @@ public class ApiAlertController extends BaseController {
 	}
 
 
-	private Map<Severity, Long> countSeverities (PageRequest pageRequest, String severity, String status,
+	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, String severity, String status,
 												 String feedback, String alertStartRange, String entityName,
 												 String entityTags, String entityId) {
-		Map<Severity, Long> severitiesCount = new HashMap<>();
-
-		long noCount;
-		noCount = 0;
-
+		Map<Severity, Integer> severitiesCount = new HashMap<>();
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME,severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
 		for (Severity iSeverity : Severity.values()) {
-			if (severity == null || severity.isEmpty() ||
-					severity.toUpperCase().contains(iSeverity.name().toUpperCase())) {
-				severitiesCount.put(iSeverity, alertsDao.countAlertsByFilters(pageRequest, iSeverity.name(), status,
-						feedback, alertStartRange, entityName, entityTags, entityId));
-			} else {
-				severitiesCount.put(iSeverity, noCount);
+			Integer statusCount = severitiesCountResult.get(iSeverity.name());
+			if (statusCount == null){
+				statusCount = 0;
 			}
+			severitiesCount.put(iSeverity, statusCount);
 		}
 
 		return severitiesCount;
@@ -287,18 +282,15 @@ public class ApiAlertController extends BaseController {
 			@RequestParam(required=true, value = "start_range") String timeRange)
 	{
 
-		List<Long> timeRangeList = ApiUtils.splitTimeRangeToFromAndToMiliseconds(timeRange);
-
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsDao.groupCount("status", timeRangeList.get(0),
-														timeRangeList.get(1), null);
+		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME, null, null, null, timeRange,null, null,null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsDao.groupCount("severity",timeRangeList.get(0),
-											timeRangeList.get(1), OPEN_STATUS);
+		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME, null, null, null, timeRange,null, null, null);
+
 		results.setAlertOpenSeverity(severityCounts);
 
 

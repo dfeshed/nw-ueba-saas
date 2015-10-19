@@ -141,7 +141,12 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	}
 
 	@Override
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status){
-		return alertsRepository.groupCount(fieldName,fromDate, toDate, status);
+	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
+										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+										   String entityTags, String entityId){
+
+		Set<String> ids = getUserIds(entityTags, entityId);
+		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
+						dateRangeFilter, entityName, ids);
 	}
 }
