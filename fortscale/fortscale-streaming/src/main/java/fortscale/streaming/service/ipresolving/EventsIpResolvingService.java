@@ -111,11 +111,6 @@ public class EventsIpResolvingService {
             if (StringUtils.isNotBlank(ipAddressesAsString)) {
                 String[] ipAddresses = ipAddressesAsString.split(",");
                 for (String ipAddress : ipAddresses){
-//                    String IP_ADDRESS_REG_EXP = ".+\\..+\\..+\\..+";
-//                    if (!ipAddress.matches(IP_ADDRESS_REG_EXP)){
-//                        throw new InvalidValueException(ipAddress + " is not IN IP address format");
-//                    }
-
                     ipAddress = ipAddress.trim();
                     tempReservedFsIpAddressContainers.add(FsIpAddressUtils.getIpAddressContainer(ipAddress));
                 }
