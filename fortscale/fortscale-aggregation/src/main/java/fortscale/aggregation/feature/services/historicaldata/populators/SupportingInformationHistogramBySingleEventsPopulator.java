@@ -13,6 +13,7 @@ import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -109,6 +110,84 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         return featureBuckets;
     }
 
+    /**
+     *
+     * @param normalizedContextType - The entity normalized field - i.e normalized_username
+     * @param contextValue - The value of the normalized context field - i.e test@somebigcomapny.com
+     * @param endTime - The time of the anomaly
+     * @param dataEntity - The data entity - i.e kerberos_logins
+     * @return
+     */
+    protected Map<SupportingInformationKey, Double> createLastDayBucket(String normalizedContextType, String contextValue, long endTime, String dataEntity) {
+
+        String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
+
+        //add conditions
+        List<Term> termsMap = new ArrayList<>();
+        Term contextTerm = getTheContextTerm(normalizedContextType,contextValue);
+        if (contextTerm != null) {
+            termsMap.add(contextTerm);
+        }
+        Term dateRangeTerm = getDateRangeTerm(TimestampUtils.toStartOfDay(endTime), endTime);
+        if (dateRangeTerm != null) {
+            termsMap.add(dateRangeTerm);
+        }
+
+
+        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
+
+        //Remove the alias from the query fields so the context types and values will match the query result (match to field id and not field display name )
+        dataQueryHelper.removeAlias(dataQueryObject);
+
+        //Create the Group By clause without alias
+        List<DataQueryField> groupByFields = dataQueryHelper.createGrouByClause(QueryFieldsAsCSV, dataEntity, false);
+        dataQueryHelper.setGroupByClause(groupByFields,dataQueryObject);
+
+        // Create the count(*) field:
+        HashMap<String, String> countParams = new HashMap<>();
+        countParams.put("all", "true");
+        DataQueryField countField = dataQueryHelper.createCountFunc("countField", countParams);
+        dataQueryHelper.setFuncFieldToQuery(countField, dataQueryObject);
+
+        List<Map<String, Object>> queryList;
+        try {
+            DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+            // Generates query
+            String query = dataQueryRunner.generateQuery(dataQueryObject);
+            logger.debug("Running the query: {}", query);
+            // execute Query
+            queryList = dataQueryRunner.executeQuery(query);
+            logger.debug(queryList.toString());
+            return buildLastDayMap(queryList);
+        } catch (InvalidQueryException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+
+    private Term getDateRangeTerm(long startTime, long endTime) {
+        return dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startTime), TimestampUtils.convertToSeconds(endTime));
+    }
+
+    private Term getTheContextTerm(String normalizedContextType, String contextValue)
+    {
+        Term term = null;
+        switch (normalizedContextType)
+        {
+        case "normalized_username" :
+            term = dataQueryHelper.createUserTerm(dataEntity, contextValue);
+            break;
+        default:
+            CustomedFilter filter = new CustomedFilter(normalizedContextType,"equals",contextValue);
+            term = dataQueryHelper.createCustomTerm(dataEntity, filter);
+            break;
+
+        }
+        return term;
+
+    }
+
 
     protected String extractAnomalyValue(Evidence evidence, String featureName) {
 
@@ -135,4 +214,6 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     protected String getBucketConfigurationName(String contextType, String dataEntity) {
         return String.format("%s_%s_%s", contextType, dataEntity, BUCKET_CONF_DAILY_STRATEGY_SUFFIX);
     }
+
+    abstract protected Map<SupportingInformationKey, Double> buildLastDayMap(List<Map<String, Object>> queryList);
 }

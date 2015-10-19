@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Field;
-import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.domain.Sort;
@@ -113,42 +111,35 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return mongoTemplate.count(query, Alert.class);
 	}
 
-	public Map<String, Integer> groupCount(String fieldName, long fromDate, long toDate, String status){
+	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
+										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+										   Set<String> entitiesIds){
 
 
-		Criteria criteria= Criteria.where(Alert.startDateField).gte(fromDate).lte((toDate));
-		if (StringUtils.isNotBlank(status)){
-			criteria.and(Alert.statusField).is(status);
+		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds);
+
+
+		Aggregation agg;
+		if (criteria!=null){
+			//Create aggregation on fieldName, for all alerts according to filter
+			agg = Aggregation.newAggregation(
+					match(criteria),
+					group(fieldName).count().as(TOTAL_FIELD_NAME),
+					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
+		} else {
+			//Create aggregation on fieldName, for all alerts without filter
+			agg = Aggregation.newAggregation(
+					group(fieldName).count().as(TOTAL_FIELD_NAME),
+					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
 		}
-		//Create aggregation on fieldName, for all alerts which started after "afterDate").
-		Aggregation agg = Aggregation.newAggregation(
-				match(criteria),
-				group(fieldName).count().as(TOTAL_FIELD_NAME),
-				project(TOTAL_FIELD_NAME).and(fieldName).previousOperation()
-		);
 
 
-		AggregationResults<BasicDBObject> groupResults
-				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
-
-		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
-		Map<String, Integer> results = new HashMap<>();
-		for (BasicDBObject item:  groupResults.getMappedResults()) {
-			String fieldValue = item.get(fieldName).toString();
-			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
-
-			int count;
-			if (StringUtils.isBlank(countAsString)){
-				count = 0;
-			} else {
-				count = Integer.parseInt(countAsString);
-			}
-			results.put(fieldValue,count);
-		}
+		Map<String, Integer> results = getAggregationResultMap(fieldName, agg);
 
 		//Return the map
 		return results;
 	}
+
 
 	/**
 	 * Build a query to be used by mongo API
@@ -168,7 +159,45 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
 							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
 							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable) {
+
 		Query query = new Query().with(pageRequest.getSort());
+
+		//Get list of criteria
+		List<Criteria> criteriaList = getCriteriaList(severityFieldName, statusFieldName, feedbackFieldName, startDateFieldName, entityFieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityFilter, users);
+
+		//Add the criterias to the query
+		for (Criteria criteria : criteriaList){
+			query.addCriteria(criteria);
+		}
+
+		int pageSize = pageRequest.getPageSize();
+		int pageNum = pageRequest.getPageNumber();
+		query.limit(pageSize);
+		query.skip(pageNum * pageSize);
+		if (pageable != null) {
+			query.with(pageable);
+		}
+		return query;
+	}
+
+	/**
+	 * Translate alert filter to list of Criteria
+	 * @param severityFieldName
+	 * @param statusFieldName
+	 * @param feedbackFieldName
+	 * @param startDateFieldName
+	 * @param entityFieldName
+	 * @param severityArrayFilter
+	 * @param statusArrayFilter
+	 * @param feedbackArrayFilter
+	 * @param dateRangeFilter
+	 * @param entityFilter
+	 * @param users
+	 * @return
+	 */
+	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users) {
+
+		List<Criteria> criteriaList = new ArrayList<>();
 		//build severity filter
 		if (severityArrayFilter != null) {
 			String[] severityFilterVals = severityArrayFilter.split(",");
@@ -182,7 +211,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			//If filter includes all severity entries, ignore the filter as it is the same as without filter
 			if (severityList.size() != Severity.values().length) {
 				Criteria severityCriteria = where(severityFieldName).in(severityList);
-				query.addCriteria(severityCriteria);
+				criteriaList.add(severityCriteria);
 			}
 		}
 		//build status filter
@@ -198,7 +227,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			//If filter includes all status entries, ignore the filter as it is the same as without filter
 			if (statusList.size() != AlertStatus.values().length) {
 				Criteria statusCriteria = where(statusFieldName).in(statusList);
-				query.addCriteria(statusCriteria);
+				criteriaList.add(statusCriteria);
 			}
 		}
 		//build feedback filter
@@ -214,19 +243,20 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			//If filter includes all feedback entries, ignore the filter as it is the same as without filter
 			if (feedbackList.size() != AlertFeedback.values().length) {
 				Criteria feedbackCriteria = where(feedbackFieldName).in(feedbackList);
-				query.addCriteria(feedbackCriteria);
+				criteriaList.add(feedbackCriteria);
 			}
 		}
-		//build dateRange filter
+        //build dateRange filter
 		if (dateRangeFilter != null) {
 			String[] dateRangeFilterVals = dateRangeFilter.split(",");
 			if (dateRangeFilterVals.length == 2) {
 				try {
 					Long startDate = Long.parseLong(dateRangeFilterVals[0]);
+					startDate = TimestampUtils.convertToMilliSeconds(startDate);
 					Long endDate = Long.parseLong(dateRangeFilterVals[1]);
-					Criteria startDateCriteria = where(startDateFieldName).gte(startDate);
-					Criteria endDateCriteria = where(startDateFieldName).lte(endDate);
-					query.addCriteria(new Criteria().andOperator(startDateCriteria, endDateCriteria));
+					endDate = TimestampUtils.convertToMilliSeconds(endDate);
+					Criteria criteria= Criteria.where(startDateFieldName).gte(startDate).lte((endDate));
+
 				} catch (NumberFormatException ex) {
 
 					logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
@@ -237,21 +267,59 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		if (entityFilter != null) {
 			String[] entityNameFilterVals = entityFilter.split(",");
 			Criteria entityCriteria = where(entityFieldName).in(entityNameFilterVals);
-			query.addCriteria(entityCriteria);
+			criteriaList.add(entityCriteria);
 		}
 		//build tags filter
 		if (users != null) {
 			Criteria evidenceCriteria = where(Alert.entityIdField).in(users);
-			query.addCriteria(evidenceCriteria);
+			criteriaList.add(evidenceCriteria);
 		}
-		int pageSize = pageRequest.getPageSize();
-		int pageNum = pageRequest.getPageNumber();
-		query.limit(pageSize);
-		query.skip(pageNum * pageSize);
-		if (pageable != null) {
-			query.with(pageable);
+
+		return criteriaList;
+	}
+
+	/**
+	 * Execute the aggregation query, and build the results map
+	 * @param fieldName
+	 * @param agg
+	 * @return
+	 */
+	private Map<String, Integer> getAggregationResultMap(String fieldName, Aggregation agg) {
+		AggregationResults<BasicDBObject> groupResults
+				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
+
+		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
+		Map<String, Integer> results = new HashMap<>();
+		for (BasicDBObject item:  groupResults.getMappedResults()) {
+			String fieldValue = item.get(fieldName).toString();
+			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
+
+			int count;
+			if (StringUtils.isBlank(countAsString)){
+				count = 0;
+			} else {
+				count = Integer.parseInt(countAsString);
+			}
+			results.put(fieldValue,count);
 		}
-		return query;
+		return results;
+	}
+
+	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
+				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds );
+
+		Criteria criteria = null;
+
+		if (criteriaList.size() > 0){
+			criteria= criteriaList.get(0);
+			for (int i=1; i<criteriaList.size(); i++){
+				criteria.andOperator(criteriaList.get(i));
+
+			}
+		}
+		return criteria;
 	}
 
 }

@@ -14,7 +14,7 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.utils.logging.Logger;
 
-public class AggrFeatureEventService {
+public class AggrFeatureEventService implements IAggrFeatureEventService{
     private static final Logger logger = Logger.getLogger(AggrFeatureEventService.class);
     private static final String INFO_MSG_NO_EVENT_CONFS = "No aggregated feature event definitions were received.";
 
@@ -84,6 +84,7 @@ public class AggrFeatureEventService {
      * Handling new feature buckets.
      * The assumption is that new buckets are coming in order.
      */
+    @Override
     public void newFeatureBuckets(List<FeatureBucket> buckets) {
         if(buckets!=null) {
             for(FeatureBucket bucket : buckets) {
@@ -98,7 +99,7 @@ public class AggrFeatureEventService {
     }
 
 
-
+    @Override
     public void featureBucketsEndTimeUpdate(List<FeatureBucket> updatedFeatureBucketsWithNewEndTime) {
         if(updatedFeatureBucketsWithNewEndTime==null) {
             return;

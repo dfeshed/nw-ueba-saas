@@ -142,6 +142,8 @@ public class EntityEventBuilder {
 		entityEvent.put("context", entityEventData.getContext());
 		entityEvent.put("contextId", entityEventData.getContextId());
 		entityEvent.put("aggregated_feature_events", aggrFeatureEvents);
+		entityEvent.put("entity_event_name", entityEventData.getEntityEventName());
+
 
 		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), entityEvent.toJSONString()));
 	}

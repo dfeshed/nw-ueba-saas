@@ -91,6 +91,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // get spring environment to resolve properties values using configuration files
             Environment env = SpringService.getInstance().resolve(Environment.class);
 
+            boolean defaultResolveOnlyReservedIp = config.getBoolean("fortscale.events.resolveOnlyReserved");
+            String reservedIpAddress = getConfigString(config, "fortscale.events.reservedIpAddress");
+
             // build EventResolvingConfig instances from streaming task configuration file
             List<EventResolvingConfig> resolvingConfigList = new LinkedList<>();
             Config fieldsSubset = config.subset("fortscale.events.");
@@ -109,11 +112,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 				boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.%s.dropWhenFail", eventType));
                 String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
                 boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.%s.overrideIPWithHostname", eventType));
+                boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.%s.resolveOnlyReserved", eventType),defaultResolveOnlyReservedIp);
+
+
 
                 // build EventResolvingConfig for the event type
                 resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
-                        restrictToADName, shortName, isRemoveLastDot,dropWhenFail, timestampField, partitionField,
-                        overrideIPWithHostname));
+                        restrictToADName, shortName, isRemoveLastDot, dropWhenFail, timestampField, partitionField,
+                        overrideIPWithHostname,eventTypeResolveOnlyReservedIp, reservedIpAddress));
             }
 
             // construct the resolving service
