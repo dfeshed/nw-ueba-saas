@@ -47,7 +47,7 @@
       {
         "technology": "MONGO",
         "strategy": "RESTORE",
-        "dataSources": "aggr_###scored___###streaming_models"
+        "dataSources": "aggr_###scored___###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue"
       },
       {
         "technology": "KAFKA",

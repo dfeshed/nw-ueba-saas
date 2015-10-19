@@ -14,6 +14,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -46,7 +47,9 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
         }
 
-        return createSupportingInformationHistogram(featureBuckets);
+        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity);
+
+        return createSupportingInformationHistogram(featureBuckets, lastDayMap);
     }
 
     /**
@@ -54,7 +57,8 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
      * Day value is extracted from the bucket itself and the events distribution in the feature values of the bucket.
      * Assuming hour range is positive integer in the range [0..23].
      */
-    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets) {
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(List<FeatureBucket> featureBuckets,
+            Map<SupportingInformationKey, Double> lastDayMap) {
         Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 
         for (FeatureBucket featureBucket : featureBuckets) {
@@ -97,7 +101,34 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
                 logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
             }
         }
+
+        //Merge last days map into histogramKeyObjectMap
+        if (lastDayMap !=null ){
+            for (Map.Entry<SupportingInformationKey, Double> lastDayEntry: lastDayMap.entrySet()){
+                updateHistoricalDataEntry(histogramKeyObjectMap, lastDayEntry.getKey() ,lastDayEntry.getValue());
+            }
+        }
+
         return histogramKeyObjectMap;
+    }
+
+    /**
+     * Check if key exists.
+     * If key exists, add current value to old value.
+     * If not - add new entry with the current value
+     *
+     * @param histogramKeyObjectMap
+     * @param supportingInformationKey
+     * @param currValue
+     */
+    private void updateHistoricalDataEntry(Map<SupportingInformationKey, Double> histogramKeyObjectMap, SupportingInformationKey supportingInformationKey, Double currValue){
+
+        Double currHistogramValue = histogramKeyObjectMap.get(supportingInformationKey);
+        if (currHistogramValue == null){
+            currHistogramValue = new Double(0);
+        }
+
+        histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
     }
 
     @Override
@@ -135,6 +166,21 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
             return null;
         }
+    }
+
+
+
+    protected Map<SupportingInformationKey, Double> buildLastDayMap(List<Map<String, Object>> queryList) {
+        Map<SupportingInformationKey, Double> lastDayMap = new HashMap<>();
+        for (Map<String, Object> bucketMap : queryList){
+			Timestamp eventTime = (Timestamp)bucketMap.get("event_time");
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(eventTime);
+			Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);;
+			int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            lastDayMap.put(new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), Integer.toString(hour)), ((Long) bucketMap.get("countField")).doubleValue());
+        }
+        return lastDayMap;
     }
 
     @Override
