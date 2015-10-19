@@ -217,8 +217,15 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
+		// If exists, get the output path from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"path")){
+			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
+		}
+
 		// get parameters values from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") && jobDataMapExtension.isJobDataMapContainKey(map,"latest")){
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"type")){
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
