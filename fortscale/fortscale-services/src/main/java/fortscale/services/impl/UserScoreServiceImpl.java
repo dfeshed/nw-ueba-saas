@@ -20,9 +20,7 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.IFeature;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserScoreService;
@@ -38,15 +36,10 @@ public class UserScoreServiceImpl implements UserScoreService{
 	
 	@Autowired
 	private UserRepository userRepository;
-		
-	@Autowired
-	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-	
+
 	@Autowired
 	private ClassifierService classifierService;
-			
-	
-	
+
 	@Value("${vpn.status.success.value.regex:SUCCESS}")
 	private String vpnStatusSuccessValueRegex;
 	
@@ -54,9 +47,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 	private String sshStatusSuccessValueRegex;
 	
 	
-	
-	
-	
+
 	@Override
 	public List<IUserScore> getUserScores(String uid) {
 		User user = userRepository.findOne(uid);
@@ -211,51 +202,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 		return ret;
 	}
 
-	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction, Integer minScore) {
-		Classifier.validateClassifierId(classifierId);
-//		Long timestampepoch = timestamp/1000;
-		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByClassifierIdAndUserIdAndTimestamp(classifierId, uid, new Date(timestamp));
-		if(ufe == null || ufe.getAttributes() == null){
-			return Collections.emptyList();
-		}
-		List<IFeature> ret = new ArrayList<>();
-
-		if (minScore != null) {
-			// filter attributes by minimum feature score
-			for (IFeature attribute : ufe.getAttributes()) {
-				if (attribute.getFeatureScore() >= minScore) {
-					ret.add(attribute);
-				}
-			}
-		} else {
-			// use all attributes
-			ret.addAll(ufe.getAttributes());
-		}
-
-		Collections.sort(ret, getUserFeatureComparator(orderBy, direction));
-
-		return ret;
-	}
-	
-	@Override
-	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction){
-		List<User> users = userRepository.findByFollowed(true);
-		Map<String, User> userMap = new HashMap<>();
-		for(User user: users){
-			userMap.put(user.getId(), user);
-		}
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndUserIds(classifierId, new Date(timestamp), userMap.keySet());
-		
-		Map<User,List<IFeature>> ret = new HashMap<>();
-		for(AdUserFeaturesExtraction ufe: adUserFeaturesExtractions){
-			Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
-			ret.put(userMap.get(ufe.getUserId()), ufe.getAttributes());
-		}
-		
-		return ret;
-	}
-	
 	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
 		if(direction == null){
 			direction = Direction.DESC;
@@ -292,27 +238,8 @@ public class UserScoreServiceImpl implements UserScoreService{
 		if(direction == null){
 			direction = Direction.DESC;
 		}
+		orderBy = "featureScore";
 
-		if(orderBy == null){
-			orderBy = "featureScore";
-		}
-		
-		switch(orderBy){
-		case "featureScore":
-			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
-			break;
-		case "featureUniqueName":
-			orderBy = AdUserFeaturesExtraction.getFeatureUniqueNameField();
-			break;
-		case "explanation.featureCount":
-			orderBy = AdUserFeaturesExtraction.getExplanationFeatureCountField();
-			break;
-		case "explanation.featureDistribution":
-			orderBy = AdUserFeaturesExtraction.getExplanationFeatureDistributionField();
-			break;
-		default:
-			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
-		}
 		Sort sort = new Sort(direction, orderBy);
 		return sort;
 	}
