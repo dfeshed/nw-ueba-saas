@@ -202,37 +202,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 		return ret;
 	}
 
-	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
-		if(direction == null){
-			direction = Direction.DESC;
-		}
-		Comparator<IFeature> ret = null;
-		if(orderBy == null){
-			orderBy = "featureScore";
-		}
-		switch(orderBy){
-		case "featureScore":
-			ret = new IFeature.OrderByFeatureScore(direction);
-			break;
-		case "featureUniqueName":
-			ret = new IFeature.OrderByFeatureUniqueName(direction);
-			break;
-		case "explanation.featureCount":
-			ret = new IFeature.OrderByFeatureExplanationCount(direction);
-			break;
-		case "explanation.featureDistribution":
-			ret = new IFeature.OrderByFeatureExplanationDistribution(direction);
-			break;
-		case "explanation.featureDescription":
-			ret = new IFeature.OrderByFeatureDescription(direction);
-			break;
-		default:
-			ret = new IFeature.OrderByFeatureScore(direction);
-		}
-		
-		return ret;
-	}
-	
 	@SuppressWarnings("unused")
 	private Sort processOrderBy(String orderBy, Direction direction){
 		if(direction == null){
@@ -243,9 +212,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 		Sort sort = new Sort(direction, orderBy);
 		return sort;
 	}
-	
-	
-	
+
 	@Override
 	public boolean isOnSameDay(Date date1, Date date2){
 		return isOnSameDay(date1, date2, 0, 0);
