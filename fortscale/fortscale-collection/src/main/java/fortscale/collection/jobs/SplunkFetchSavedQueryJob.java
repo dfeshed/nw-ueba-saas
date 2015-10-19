@@ -169,9 +169,8 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 			}
 
 			// update mongo with current fetch progress
-			if  (fetchIntervalInSeconds != -1 ) {
-				updateMongoWithCurrentFetchProgress();
-			}
+
+			updateMongoWithCurrentFetchProgress();
 		//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while(keepFetching);
 
@@ -197,8 +196,11 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 			fetchConfiguration.setLastFetchTime(latest);
 		}
 		fetchConfigurationRepository.save(fetchConfiguration);
-		if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)){
-			keepFetching = false;
+		
+		if (earliestDate != null && latestDate != null) {
+			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
+				keepFetching = false;
+			}
 		}
 	}
 
@@ -215,10 +217,18 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
+		// If exists, get the output path from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"path")){
+			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
+		}
+
 		// get parameters values from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") && jobDataMapExtension.isJobDataMapContainKey(map,"latest")){
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"type")){
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		}
 		else{
 			//calculate query run times from mongo in the case not provided as job params
