@@ -93,7 +93,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketMetadata.getFeatureBucketConfName());
 				boolean isSynced = sync(featureBucketConf, featureBucketMetadata.getBucketId());
 				if(!isSynced){
-					logger.error("failed to sync bucktConfName {}, bucketId {}", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+					String errorMsg = String.format("failed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+					logger.error(errorMsg);
+					throw new RuntimeException(errorMsg);
 				}
 				featureBucketMetadata.setSynced(true);
 				featureBucketMetadata.setSyncTime(lastSyncSystemEpochTime);

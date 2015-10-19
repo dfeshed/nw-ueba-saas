@@ -19,7 +19,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.aggregation.feature.event.AggrFeatureEventService;
+import fortscale.aggregation.feature.event.AggrFeatureEventImprovedService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.extraction.AggrEvent;
 import fortscale.aggregation.feature.extraction.DataEntitiesConfigWithBlackList;
@@ -43,7 +43,7 @@ public class AggregatorManager {
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;
 	private FeatureBucketsService featureBucketsService;
-	private AggrFeatureEventService featureEventService;
+	private AggrFeatureEventImprovedService featureEventService;
 
 
 	@Autowired
@@ -70,6 +70,13 @@ public class AggregatorManager {
     @Value("${streaming.event.field.type.aggr_event}")
     private String aggrEventType;
     
+    @Value("${streaming.aggr_event.field.aggregated_feature_name}")
+    private String aggrFeatureNameFieldName;
+    @Value("${streaming.aggr_event.field.aggregated_feature_value}")
+    private String aggrFeatureValueFieldName;
+    @Value("${streaming.aggr_event.field.bucket_conf_name}")
+    private String bucketConfFieldName;
+    
     private AggregationMetricsService aggregationMetricsService;
 
 
@@ -78,7 +85,7 @@ public class AggregatorManager {
 		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
-		featureEventService = new AggrFeatureEventService(aggregatedFeatureEventsConfService, featureBucketStrategyService, featureBucketsService);
+		featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		aggregationMetricsService = new AggregationMetricsService(context);
 	}
 
@@ -114,7 +121,7 @@ public class AggregatorManager {
 	private Event createEvent(JSONObject eventMessage){
 		String eventType = (String) eventMessage.get(eventTypeFieldName);
 		if(aggrEventType.equals(eventType)){
-			return new AggrEvent(eventMessage);
+			return new AggrEvent(eventMessage, aggrFeatureNameFieldName, aggrFeatureValueFieldName, bucketConfFieldName);
 		} else{
 			String dataSource = eventMessage.getAsString(dataSourceFieldName);
 			return new RawEvent(eventMessage, dataEntitiesConfigWithBlackList, dataSource);
@@ -124,6 +131,8 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
+		
+		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
 	}
