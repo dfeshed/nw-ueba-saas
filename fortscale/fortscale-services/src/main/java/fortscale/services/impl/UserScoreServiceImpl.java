@@ -202,17 +202,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 		return ret;
 	}
 
-	@SuppressWarnings("unused")
-	private Sort processOrderBy(String orderBy, Direction direction){
-		if(direction == null){
-			direction = Direction.DESC;
-		}
-		orderBy = "featureScore";
-
-		Sort sort = new Sort(direction, orderBy);
-		return sort;
-	}
-
 	@Override
 	public boolean isOnSameDay(Date date1, Date date2){
 		return isOnSameDay(date1, date2, 0, 0);
