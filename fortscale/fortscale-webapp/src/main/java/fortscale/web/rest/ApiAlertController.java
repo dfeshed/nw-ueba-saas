@@ -111,6 +111,9 @@ public class ApiAlertController extends BaseController {
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
+		if (sortField != null && sortField.equals(Alert.severityField)) {
+			sortField = Alert.severityCodeField;
+		}
 
 		int pageSize = 0; //Fetch all rows.
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
@@ -187,6 +190,11 @@ public class ApiAlertController extends BaseController {
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
 		if (sortField != null) {
+
+			if (sortField.equals(Alert.severityField)) {
+				sortField = Alert.severityCodeField;
+			}
+
 			if (sortDirection != null){
 				sortDir = Sort.Direction.valueOf(sortDirection);
 			}
