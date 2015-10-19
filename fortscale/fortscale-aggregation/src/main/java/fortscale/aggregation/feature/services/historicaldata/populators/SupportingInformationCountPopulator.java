@@ -8,6 +8,9 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +25,9 @@ import java.util.Map;
  *         Date: 05/08/2015
  */
 
-@Component @Scope("prototype") public class SupportingInformationCountPopulator
-		extends SupportingInformationHistogramBySingleEventsPopulator {
+@Component
+@Scope("prototype")
+public class SupportingInformationCountPopulator extends SupportingInformationHistogramBySingleEventsPopulator {
 
 	private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
@@ -39,14 +43,15 @@ import java.util.Map;
 			long evidenceEndTime, Integer timePeriodInDays) {
 		List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
-		if (featureBuckets.isEmpty()) {
-			throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
-		}
+        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity);
 
-		Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity);
+        if ((CollectionUtils.isEmpty(featureBuckets)) && (MapUtils.isEmpty(lastDayMap))) {
+            throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
+        }
 
-		return createSupportingInformationHistogram(featureBuckets, lastDayMap);
-	}
+        return createSupportingInformationHistogram(featureBuckets, lastDayMap);
+
+    }
 
 	protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(
 			List<FeatureBucket> featureBuckets, Map<SupportingInformationKey, Double> lastDayMap) {
