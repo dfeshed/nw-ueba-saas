@@ -68,10 +68,9 @@ public final class TimestampUtils {
 
 		// Else, it's in splunk time format
 		// Convert it to unix time
-		String timeUnit = timestamp.replaceAll("[0-9]+", "");
-		// remove the sign
-		timeUnit.substring(1);
-		int timeValue = Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
+		String timeUnit = getTimeUnit(timestamp);
+
+		int timeValue = getTimeValue(timestamp);
 
 		Calendar c = convertSplunkTime(timeUnit, timeValue);
 		return String.valueOf(c.getTimeInMillis());
@@ -82,10 +81,9 @@ public final class TimestampUtils {
 		if (timeModifier.length != 2) {
 			throw new IllegalArgumentException("Illegal snap to time format");
 		}
-		String timeUnit = timeModifier[0].replaceAll("[0-9]+", "");
-		// remove the sign
-		timeUnit.substring(1);
-		int timeValue = Integer.valueOf(timeModifier[0].replaceAll("[A-Za-z]+", ""));
+		String timeUnit = getTimeUnit(timeModifier[0]);
+		int timeValue = getTimeValue(timeModifier[0]);
+
 		Calendar c = convertSplunkTime(timeUnit, timeValue);
 
 		int ceilingValue;
@@ -165,5 +163,17 @@ public final class TimestampUtils {
 		}
 
 		return c;
+	}
+
+	private static String getTimeUnit(String timestamp) {
+		timestamp = timestamp.replaceAll("[0-9]+", "");
+		// remove the sign
+		timestamp = timestamp.substring(1);
+
+		return  timestamp;
+	}
+
+	private static int getTimeValue (String timestamp){
+		return Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
 	}
 }
