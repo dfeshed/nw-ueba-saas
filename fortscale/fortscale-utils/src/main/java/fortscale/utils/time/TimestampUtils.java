@@ -61,12 +61,13 @@ public final class TimestampUtils {
 		}
 
 		// Check if it is a "snap to" timestamp
+		// "Snap to" format example: -7d@d
 		if (timestamp.contains("@")) {
 			return convertSnapToUnix(timestamp);
 		}
 
 
-		// Else, it's in splunk time format
+		// Else, it's in normal splunk time format
 		// Convert it to unix time
 		String timeUnit = getTimeUnit(timestamp);
 
@@ -76,6 +77,11 @@ public final class TimestampUtils {
 		return String.valueOf(c.getTimeInMillis());
 	}
 
+	/**
+	 * Support 'snap to' time format
+	 * @param timestamp
+	 * @return
+	 */
 	private static String convertSnapToUnix(String timestamp) {
 		String[] timeModifier = timestamp.split("@");
 		if (timeModifier.length != 2) {
@@ -109,6 +115,12 @@ public final class TimestampUtils {
 		return String.valueOf(c.getTimeInMillis());
 	}
 
+	/**
+	 * Create calendar object from time modifiers params
+	 * @param timeUnit
+	 * @param timeValue
+	 * @return
+	 */
 	private static Calendar convertSplunkTime(String timeUnit, int timeValue){
 		Calendar c = Calendar.getInstance();
 		switch (timeUnit) {
@@ -165,6 +177,11 @@ public final class TimestampUtils {
 		return c;
 	}
 
+	/**
+	 * Get the time unit out of the time modifier
+	 * @param timestamp
+	 * @return
+	 */
 	private static String getTimeUnit(String timestamp) {
 		timestamp = timestamp.replaceAll("[0-9]+", "");
 		// remove the sign
@@ -173,6 +190,11 @@ public final class TimestampUtils {
 		return  timestamp;
 	}
 
+	/**
+	 * Get the time value out of the time modifier
+	 * @param timestamp
+	 * @return
+	 */
 	private static int getTimeValue (String timestamp){
 		return Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
 	}
