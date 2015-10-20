@@ -147,7 +147,7 @@ public class EventsPrevalenceModelStreamTaskService {
 			// get the context, so that we can get the model from store
 			String context = getModelContext(modelName, message);
 			if (StringUtils.isBlank(context)) {
-				logger.warn("message {} does not contains context in one of the fields {}", messageText, StringUtils.join(modelToContextFieldNameMap.get(modelName),','));
+				logger.debug("message {} does not contains context in one of the fields {}", messageText, StringUtils.join(modelToContextFieldNameMap.get(modelName),','));
 				continue;
 			}
 			
