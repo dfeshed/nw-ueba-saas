@@ -3,7 +3,6 @@ package fortscale.collection.morphlines;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.junit.SpringAware;
 import fortscale.utils.properties.PropertiesResolver;
-import junitparams.JUnitParamsRunner;
 import org.junit.*;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
@@ -11,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -19,11 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junitparams.JUnitParamsRunner.$;
-
 @RunWith(Parameterized.class)
 @ContextConfiguration(loader = SpringockitoContextLoader.class,
-		initializers = PropertyMockingApplicationContextInitializer.class,
+		initializers = PropertyMockingLocalTimezoneApplicationContextInitializer.class,
 		locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

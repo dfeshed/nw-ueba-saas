@@ -18,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, initializers = PropertyMockingApplicationContextInitializer.class,locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
+@ContextConfiguration(loader = SpringockitoContextLoader.class,
+		initializers = PropertyMockingLocalTimezoneApplicationContextInitializer.class,
+		locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SecEventsSyslog4768LocalTimezoneTest {

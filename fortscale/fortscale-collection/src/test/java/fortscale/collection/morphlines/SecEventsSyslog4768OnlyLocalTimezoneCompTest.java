@@ -1,15 +1,11 @@
 package fortscale.collection.morphlines;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,10 +13,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import static junitparams.JUnitParamsRunner.$;
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, initializers = PropertyMockingApplicationContextInitializer.class,locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
+@ContextConfiguration(loader = SpringockitoContextLoader.class,
+		initializers = PropertyMockingLocalTimezoneApplicationContextInitializer.class,
+		locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SecEventsSyslog4768OnlyLocalTimezoneCompTest {

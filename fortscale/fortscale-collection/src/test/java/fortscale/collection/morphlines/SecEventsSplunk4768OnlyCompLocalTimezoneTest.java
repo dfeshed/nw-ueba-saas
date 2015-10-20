@@ -1,6 +1,5 @@
 package fortscale.collection.morphlines;
 
-import com.typesafe.config.Config;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +16,9 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, initializers = PropertyMockingApplicationContextInitializer.class,locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
+@ContextConfiguration(loader = SpringockitoContextLoader.class,
+		initializers = PropertyMockingLocalTimezoneApplicationContextInitializer.class,
+		locations = {"classpath*:META-INF/spring/collection-context-test-light-local-timezone.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SecEventsSplunk4768OnlyCompLocalTimezoneTest {
