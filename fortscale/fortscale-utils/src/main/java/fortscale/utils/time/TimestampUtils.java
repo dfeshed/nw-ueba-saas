@@ -1,5 +1,7 @@
 package fortscale.utils.time;
 
+import org.apache.commons.httpclient.util.DateUtil;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -58,14 +60,59 @@ public final class TimestampUtils {
 			return timestamp;
 		}
 
+		// Check if it is a "snap to" timestamp
+		if (timestamp.contains("@")) {
+			return convertSnapToUnix(timestamp);
+		}
+
+
 		// Else, it's in splunk time format
 		// Convert it to unix time
-		Calendar c = Calendar.getInstance();
 		String timeUnit = timestamp.replaceAll("[0-9]+", "");
 		// remove the sign
 		timeUnit.substring(1);
 		int timeValue = Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
 
+		Calendar c = convertSplunkTime(timeUnit, timeValue);
+		return String.valueOf(c.getTimeInMillis());
+	}
+
+	private static String convertSnapToUnix(String timestamp) {
+		String[] timeModifier = timestamp.split("@");
+		if (timeModifier.length != 2) {
+			throw new IllegalArgumentException("Illegal snap to time format");
+		}
+		String timeUnit = timeModifier[0].replaceAll("[0-9]+", "");
+		// remove the sign
+		timeUnit.substring(1);
+		int timeValue = Integer.valueOf(timeModifier[0].replaceAll("[A-Za-z]+", ""));
+		Calendar c = convertSplunkTime(timeUnit, timeValue);
+
+		int ceilingValue;
+		switch (timeModifier[1]) {
+		case "m":
+			ceilingValue = Calendar.MONTH;
+			break;
+		case "h":
+			ceilingValue = Calendar.HOUR;
+			break;
+		case "d":
+			ceilingValue = Calendar.DATE;
+			break;
+		case "y":
+			ceilingValue = Calendar.YEAR;
+			break;
+		default:
+			ceilingValue = Calendar.DATE;
+		}
+
+		DateUtils.ceiling(c, ceilingValue);
+
+		return String.valueOf(c.getTimeInMillis());
+	}
+
+	private static Calendar convertSplunkTime(String timeUnit, int timeValue){
+		Calendar c = Calendar.getInstance();
 		switch (timeUnit) {
 		case "s":
 		case "sec":
@@ -117,6 +164,6 @@ public final class TimestampUtils {
 			break;
 		}
 
-		return String.valueOf(c.getTimeInMillis());
+		return c;
 	}
 }
