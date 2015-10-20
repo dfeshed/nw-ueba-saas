@@ -840,7 +840,7 @@
       },
 
       {
-        "name": "high_score_rate_vpn_session_counter",
+        "name": "number_of_high_score_rate_vpn_session_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_daily",
         "numberOfBuckets": 1,
