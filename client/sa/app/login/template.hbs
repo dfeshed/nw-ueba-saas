@@ -18,6 +18,14 @@
                     placeholder=(t "login.passwordPrompt")
                     value=password}}
             </div>
+            {{#if errorMessage}}
+                <div class="rsa-login-error">
+                    <span class="rsa-login-error-message">
+                        {{t errorMessage}}
+                    </span>
+                </div>
+            {{/if}}
+
         </section>
         <footer>
             <button class="js-test-login-btn"
