@@ -186,6 +186,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     protected void runSteps() throws Exception {
         KafkaEventsWriter streamWriter = null;
 
+        int i = 0;
+        long startTime = System.currentTimeMillis();
         try {
             String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(impalaTableFields);
             streamWriter = new KafkaEventsWriter(streamingTopic);
@@ -264,10 +266,15 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 timestampCursor = nextTimestampCursor;
 
                 if (sleepField != null) {
-                    try {
-                        Thread.sleep(sleepField*1000);
-                    } catch (InterruptedException e) {
-                    }
+                	i++;
+                	long nextRoundTime = startTime + i * sleepField*1000;
+                	long sleepTime = nextRoundTime - System.currentTimeMillis();
+                	if(sleepTime > 0){
+	                    try {
+	                        Thread.sleep(sleepTime);
+	                    } catch (InterruptedException e) {
+	                    }
+                	}
                 }
             }
         } finally {
