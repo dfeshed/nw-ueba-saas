@@ -125,7 +125,6 @@ public class FieldFilterTest {
     public void test_valueExistInTheListIsFiltered2() throws Exception {    
     	when(config.getString("listFile")).thenReturn("file:src/test/resources/blacklist.txt");
         when(config.getString("fieldName")).thenReturn("${field.blacklist.filter.name}");
-        String fieldName = "${field.blacklist.filter.name}";
         command = getCommand();
         
         Record record = new Record();
