@@ -104,7 +104,7 @@ public final class TimestampUtils {
 			ceilingValue = Calendar.DATE;
 		}
 
-		DateUtils.ceiling(c, ceilingValue);
+		c = DateUtils.ceiling(c, ceilingValue);
 
 		return String.valueOf(c.getTimeInMillis());
 	}
