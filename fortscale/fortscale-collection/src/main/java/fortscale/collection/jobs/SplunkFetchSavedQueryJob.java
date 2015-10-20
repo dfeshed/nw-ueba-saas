@@ -189,6 +189,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 
 	private void updateMongoWithCurrentFetchProgress(){
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
 		if(fetchConfiguration == null){
 			fetchConfiguration = new FetchConfiguration(type, latest);
 		}
