@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
@@ -32,6 +34,8 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     private long fetchDataCycleInSeconds;
     @Value("${fortscale.aggregation.sync.timer.waiting.time.before.notification}")
 	private long waitingTimeBeforeNotification;
+    @Value("${fortscale.aggregation.sender.use.end.time.sort:false}")
+	private boolean useEndTimeSort;
     
     @Autowired
     private FeatureBucketAggrMetadataRepository featureBucketAggrMetadataRepository;
@@ -107,13 +111,19 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	//moving feature bucket to sending queue
     	long curTime = System.currentTimeMillis()/1000;
     	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(curEventTime+fetchDataCycleInSeconds)){
-    		FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(aggrMetadata.getFeatureBucketConfName(), aggrMetadata.getBucketId(), curTime);
+    		FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(aggrMetadata.getFeatureBucketConfName(), aggrMetadata.getBucketId(), curTime, aggrMetadata.getEndTime());
     		featureBucketAggrSendingQueueRepository.save(featureBucketAggrSendingQueue);
     		featureBucketAggrMetadataRepository.delete(aggrMetadata);
     	}
     	
     	//creating and sending feature aggregated events
-    	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification)){
+    	List<FeatureBucketAggrSendingQueue> featureBucketAggrSendingQueueList = null;
+    	if(useEndTimeSort){
+    		featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification, new Sort(Direction.ASC, FeatureBucketAggrSendingQueue.END_TIME_FIELD));
+		} else{
+			featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification);
+		}
+    	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueList){
     		FeatureBucket bucket = null;
     		List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
     		
