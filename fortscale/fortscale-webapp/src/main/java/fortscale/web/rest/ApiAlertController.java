@@ -265,7 +265,7 @@ public class ApiAlertController extends BaseController {
 												 String feedback, String alertStartRange, String entityName,
 												 String entityTags, String entityId) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
-		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME,severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
@@ -293,11 +293,11 @@ public class ApiAlertController extends BaseController {
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME, null, null, null, timeRange,null, null,null);
+		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME, null, null, null, timeRange,null, null, null);
+		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
