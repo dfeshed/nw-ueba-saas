@@ -256,7 +256,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 					Long endDate = Long.parseLong(dateRangeFilterVals[1]);
 					endDate = TimestampUtils.convertToMilliSeconds(endDate);
 					Criteria criteria= Criteria.where(startDateFieldName).gte(startDate).lte((endDate));
-
+					criteriaList.add(criteria);
 				} catch (NumberFormatException ex) {
 
 					logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
