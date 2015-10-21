@@ -252,45 +252,6 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=true) String latestDate,
-			@RequestParam(required=false) String orderBy,
-			@RequestParam(defaultValue="0") Integer page,
-			@RequestParam(defaultValue="-1") Integer size,
-			@RequestParam(defaultValue="DESC") String orderByDirection,
-			@RequestParam(required=false) Integer minScore,
-			Model model){
-		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
-		Direction direction = convertStringToDirection(orderByDirection);
-		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(latestDate), orderBy, direction, minScore);
-		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
-		ret.setData(features);
-		ret.setTotal(attrs.size());
-		return ret;
-	}
-
-	private List<FeatureBean> getFeatureBeanList(List<IFeature> attrs, int page, int size){
-		List<FeatureBean> features = new ArrayList<FeatureBean>();
-		if(size > 0){
-			int fromIndex = page * size;
-			if(fromIndex >= attrs.size()){
-				attrs = Collections.emptyList();
-			} else{
-				int toIndex = fromIndex + size;
-				if(toIndex > attrs.size()){
-					toIndex = attrs.size();
-				}
-				attrs = attrs.subList(fromIndex, toIndex);
-			}
-		}
-		for(IFeature feature: attrs){
-			features.add(new FeatureBean(feature));
-		}
-		return features;
-	}
 	
 	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)
 	@ResponseBody

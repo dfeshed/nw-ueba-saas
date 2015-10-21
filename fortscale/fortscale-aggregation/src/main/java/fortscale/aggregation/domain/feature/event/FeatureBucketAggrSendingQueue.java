@@ -18,6 +18,7 @@ public class FeatureBucketAggrSendingQueue {
 	public static final String FIRE_TIME_FIELD = "fireTime";
 	public static final String BUCKET_ID_FIELD = "bucketId";
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
+	public static final String END_TIME_FIELD = "endTime";
 	
 	@Id
 	private String id;
@@ -30,14 +31,16 @@ public class FeatureBucketAggrSendingQueue {
 	private String bucketId;
 	@Field(FEATURE_BUCKET_CONF_NAME_FIELD)
 	private String featureBucketConfName;
-	
+	@Field(END_TIME_FIELD)
+	private Long endTime;
 
 	public FeatureBucketAggrSendingQueue(){}
 	
-	public FeatureBucketAggrSendingQueue(String featureBucketConfName, String bucketId, Long fireTime) {
+	public FeatureBucketAggrSendingQueue(String featureBucketConfName, String bucketId, Long fireTime, Long endTime) {
 		this.fireTime = fireTime;
 		this.bucketId = bucketId;
 		this.featureBucketConfName = featureBucketConfName;
+		this.endTime = endTime;
 	}
 
 
@@ -75,11 +78,20 @@ public class FeatureBucketAggrSendingQueue {
 	public void setFeatureBucketConfName(String featureBucketConfName) {
 		this.featureBucketConfName = featureBucketConfName;
 	}
+	
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
+	}
 
 	
 	@Override
 	public String toString() {
 		return "FeatureBucketAggrSendingQueue{" +
+				", endTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)) +
 				", fireTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(fireTime)) +
 				", id='" + id + '\'' +
 				", bucketId='" + bucketId + '\'' +

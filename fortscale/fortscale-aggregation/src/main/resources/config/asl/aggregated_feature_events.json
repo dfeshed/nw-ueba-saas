@@ -126,7 +126,7 @@
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "number_of_failed_kerberos_events",
+        "name": "number_of_failed_kerberos_logins_daily",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -144,7 +144,7 @@
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "number_of_failed_kerberos_events_hourly",
+        "name": "number_of_failed_kerberos_logins_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -769,7 +769,7 @@
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "destination_machine",
+        "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "groupBy": [
@@ -840,7 +840,7 @@
       },
 
       {
-        "name": "high_score_rate_vpn_session_counter",
+        "name": "number_of_high_score_rate_vpn_session_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_daily",
         "numberOfBuckets": 1,

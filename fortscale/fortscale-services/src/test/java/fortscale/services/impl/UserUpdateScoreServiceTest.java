@@ -22,7 +22,6 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
@@ -39,10 +38,7 @@ public class UserUpdateScoreServiceTest {
 	
 	@Mock
 	private UserScoreService userScoreService;
-				
-	@Mock
-	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-					
+
 	@Mock
 	private ImpalaWriterFactory impalaWriterFactory;
 	
