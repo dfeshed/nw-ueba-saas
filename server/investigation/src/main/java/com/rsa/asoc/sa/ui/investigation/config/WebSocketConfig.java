@@ -1,6 +1,8 @@
 package com.rsa.asoc.sa.ui.investigation.config;
 
 import com.rsa.asoc.sa.ui.common.config.BaseWebSocketConfig;
+import com.rsa.asoc.sa.ui.common.config.EndpointBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,8 +14,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class WebSocketConfig extends BaseWebSocketConfig {
 
+    @Bean
     @Override
-    protected String getEndpointPrefix() {
-        return "/investigation";
+    protected EndpointBuilder getEndpointBuilder() {
+        return new EndpointBuilder("/investigation");
     }
 }

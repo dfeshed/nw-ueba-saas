@@ -78,11 +78,13 @@ export default Ember.Service.extend({
      * an error occurs.
      */
     connect: function(headers) {
+        headers = headers || {};
         if (!_connectionPromise) {
             _connectionPromise = new Ember.RSVP.Promise(function(resolve, reject){
                 _stompClient = Stomp.over(new SockJS(config.socketURL, {}, { protocols_whitelist: ['websocket'] }));
                 _stompClient.debug = config.socketDebug ? (console.debug || console.info).bind(console) : null;
-                _stompClient.connect(headers || {}, resolve, reject);
+                headers['X-CSRF-TOKEN'] = localStorage.getItem("rsa-x-csrf-token");
+                _stompClient.connect(headers, resolve, reject);
             });
         }
         return _connectionPromise;

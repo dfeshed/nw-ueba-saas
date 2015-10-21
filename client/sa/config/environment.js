@@ -37,7 +37,11 @@ module.exports = function(environment) {
         defaultTheme: "menlo-park"
     },
     'simple-auth': {
-        authenticate: 'authenticator:sa-authenticator'
+        authenticate: 'authenticator:sa-authenticator',
+        authorizer: 'authorizer:sa-authorizer',
+        store: 'simple-auth-session-store:local-storage',
+        /* Local storage key that holds the CSRF token returned by the server */
+        csrfLocalstorageKey: "rsa-x-csrf-token"
     },
     contentSecurityPolicy: {
 
@@ -53,10 +57,6 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV['simple-auth'] = {
-        authenticate: 'authenticator:sa-authenticator',
-        store: 'simple-auth-session-store:local-storage'
-    };
     ENV.socketDebug = true;
   }
 
@@ -74,10 +74,8 @@ module.exports = function(environment) {
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
 
-    ENV['simple-auth'] = {
-        authenticate: 'authenticator:sa-authenticator',
-        store: 'simple-auth-session-store:ephemeral'
-    };
+    ENV['simple-auth'].store = 'simple-auth-session-store:ephemeral';
+
     ENV['ember-cli-mirage'].enabled = true;
     ENV['ember-cli-mock-socket'].enabled = true;
   }

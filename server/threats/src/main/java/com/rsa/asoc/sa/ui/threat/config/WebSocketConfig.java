@@ -1,6 +1,8 @@
 package com.rsa.asoc.sa.ui.threat.config;
 
 import com.rsa.asoc.sa.ui.common.config.BaseWebSocketConfig;
+import com.rsa.asoc.sa.ui.common.config.EndpointBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,8 +14,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class WebSocketConfig extends BaseWebSocketConfig {
 
+    @Bean
     @Override
-    protected String getEndpointPrefix() {
-        return "/threats";
+    protected EndpointBuilder getEndpointBuilder() {
+        return new EndpointBuilder("/threats");
     }
 }
