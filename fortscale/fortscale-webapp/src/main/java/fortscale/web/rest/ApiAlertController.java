@@ -16,6 +16,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ApiUtils;
+import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -365,6 +366,9 @@ public class ApiAlertController extends BaseController {
 	public DataBean<Alert> getAlertsById(@PathVariable String id)
 	{
 		Alert alert = alertsDao.getAlertById(id);
+		if (alert == null || alert.getId() == null) {
+			throw new ResourceNotFoundException("Can't get alert of id: " + id);
+		}
 		updateEvidenceFields(alert);
 		DataBean<Alert> toReturn = new DataBean<Alert>();
 		toReturn.setData(alert);

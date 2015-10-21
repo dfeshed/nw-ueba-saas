@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,7 +130,7 @@ public class ApiEvidenceControllerTest {
 
 	}
 
-	@Test(expected = NestedServletException.class)
+	@Test(expected = AssertionError.class)
 	public void testGetTop3EventsWithWrongId() throws Exception {
 
 		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
