@@ -20,6 +20,7 @@ import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.rest.Utils.ApiUtils;
+import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.data.domain.Sort.Direction;
@@ -187,7 +188,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		Evidence evidence = evidencesService.findById(id);
 		if (evidence == null || evidence.getId() == null){
-			throw new InvalidValueException("Can't get evidence of id: " + id);
+			throw new ResourceNotFoundException("Can't get evidence of id: " + id);
 		}
 
 		return getListOfEvents(request_total, use_cache, page, size, sort_field, sort_direction, evidence);
@@ -292,7 +293,7 @@ public class ApiEvidenceController extends DataQueryController {
 		//get the evidence from mongo according to ID
 		Evidence evidence = evidencesService.findById(evidenceId);
 		if (evidence == null || evidence.getId() == null){
-			throw new InvalidValueException("Can't get evidence of id: " + evidenceId);
+			throw new ResourceNotFoundException("Can't get evidence of id: " + evidenceId);
 		}
 
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
