@@ -30,11 +30,7 @@ subprojects {
         archiveName = "sa-ui-${project.name}.jar"
     }
 
-    startScripts.enabled = false
-    distZip.enabled = false
-    distTar.enabled = false
-
-    run {
+    bootRun {
         systemProperties = System.properties
 
         // When running locally, skip all findbugs and checkstyle tasks for improved startup time

@@ -7,7 +7,6 @@ springBoot {
 }
 
 bootRepackage {
-    mainClassName = ""
     enabled = false
 }
 
