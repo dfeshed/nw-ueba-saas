@@ -74,5 +74,14 @@ public interface UserRepositoryCustom {
 	public Set<String> getUserTags(String normalizedUsername);
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
+
+	/**
+	 * count how many
+	 * @param fieldName  -the field name to count
+	 * @param fieldValues  - the values to filter according.
+	 *
+	 * @return for each value in fieldValues, how many time it apears in the column fieldName
+	 */
+	public Map<String, Integer> groupCount(String fieldName, Set<String> fieldValues);
 }
 

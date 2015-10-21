@@ -1,6 +1,7 @@
 
 package fortscale.domain.core.dao;
 
+
 import com.mongodb.BasicDBObjectBuilder;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
@@ -41,6 +42,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	
 	@Autowired
 	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
+
+
+	final public static String DISPLAY_ID = "id";
+	final public static String NORMALIZED_USER_NAME = "normalizedUserName";
 
 	@Override
 	public User findLastActiveUser(LogEventsEnum eventId) {
@@ -514,7 +519,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	private  List<Map<String, String>> getUsersByCriteria(Criteria criteria, Pageable pageable) {
 		List<Map<String, String>> res = new ArrayList<>();
 
-		String displayId = "id";
+
 
 		try {
 			Query query = new Query().with(pageable);
@@ -523,11 +528,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 			query.fields().include(User.ID_FIELD);
 			query.fields().include(User.displayNameField);
+			query.fields().include(User.usernameField);
 
 			for (DisplayNameWrapper displayname : mongoTemplate.find(query, DisplayNameWrapper.class, User.collectionName)) {
 				Map<String, String> entry = new HashMap<String, String>();
 				entry.put(User.usernameField, displayname.getDisplayName());
-				entry.put(displayId, displayname.getId());
+				entry.put(DISPLAY_ID, displayname.getId());
+				entry.put(NORMALIZED_USER_NAME, displayname.getUsername());
 
 				res.add(entry);
 			}
@@ -539,6 +546,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return res;
 	}
 
+	public Map<String, Integer> groupCount(String fieldName, Set<String> fieldValues){
+
+		Criteria criteria = where(fieldName).in(fieldValues);
+
+
+		Map<String, Integer> results = mongoDbRepositoryUtil.groupCount(fieldName, criteria, User.collectionName);
+
+		//Return the map
+		return results;
+	}
+
+
+
+
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		Criteria criteria = where(User.searchFieldName).regex(prefix);
 		return getUsersByCriteria(criteria, pageable);
@@ -549,6 +570,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Criteria criteria = where(User.ID_FIELD).in(idsSet);
 		return getUsersByCriteria(criteria, pageable);
 	}
+
+
 
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
@@ -597,6 +620,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	static class DisplayNameWrapper {
 		private String id;
 		private String displayName;
+		private String username;
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
 
 		public String getId() {
 			return id;

@@ -2,15 +2,13 @@
 package fortscale.domain.core.dao;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import com.mongodb.BasicDBObject;
+import fortscale.domain.core.Alert;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,12 +16,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 
 @Component("mongoDbRepositoryUtil")
 public class MongoDbRepositoryUtil {
+
+	public static  String TOTAL_FIELD_NAME = "total";
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -76,5 +77,70 @@ public class MongoDbRepositoryUtil {
 			return new PageImpl<>(content);
 		}
 	}
-	
+
+	/**
+	 * Execute the aggregation query, and build the results map
+	 * @param fieldName
+	 * @param agg
+	 * @return
+	 */
+	private Map<String, Integer> getAggregationResultMap(String fieldName, Aggregation agg,
+														String collection) {
+		AggregationResults<BasicDBObject> groupResults
+				= mongoTemplate.aggregate(agg, collection, BasicDBObject.class);
+
+		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
+		Map<String, Integer> results = new HashMap<>();
+		for (BasicDBObject item:  groupResults.getMappedResults()) {
+			String fieldValue = item.get(fieldName).toString();
+			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
+
+			int count;
+			if (StringUtils.isBlank(countAsString)){
+				count = 0;
+			} else {
+				count = Integer.parseInt(countAsString);
+			}
+			results.put(fieldValue,count);
+		}
+		return results;
+	}
+
+	/**
+	 * "Select count by" on collection, according to given field name
+	 * @param fieldName
+	 * @param collectionName
+	 * @return map of the field value to how many instances this value aprears in the collection
+	 */
+	public Map<String, Integer> groupCount(String fieldName,  String collectionName){
+		return groupCount(fieldName, null, collectionName);
+	}
+
+	/**
+	 * "Select count by" on collection, according to given criteria and field name
+	 * @param fieldName
+	 * @param criteria
+	 * @param collectionName
+	 * @return map of the field value to how many instances this value aprears in the collection
+	 */
+	public Map<String, Integer> groupCount(String fieldName, Criteria criteria, String collectionName){
+
+		Aggregation agg;
+		if (criteria!=null){
+			//Create aggregation on fieldName, for all alerts according to filter
+			agg = Aggregation.newAggregation(
+					match(criteria),
+					group(fieldName).count().as(TOTAL_FIELD_NAME),
+					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
+		} else {
+			//Create aggregation on fieldName, for all alerts without filter
+			agg = Aggregation.newAggregation(
+					group(fieldName).count().as(TOTAL_FIELD_NAME),
+					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
+		}
+
+		Map<String, Integer> results = this.getAggregationResultMap(fieldName, agg, collectionName);
+		//Return the map
+		return results;
+	}
 }

@@ -1,10 +1,9 @@
 package fortscale.domain.core.dao;
 
-import com.mongodb.BasicDBObject;
+
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +13,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.domain.Sort;
+
 
 
 
 //imports as static
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+
 
 
 import java.util.*;
@@ -38,8 +37,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Autowired private MongoTemplate mongoTemplate;
 
+	@Autowired MongoDbRepositoryUtil mongoDbRepositoryUtil;
+
 	private static Logger logger = LoggerFactory.getLogger(AlertsRepositoryImpl.class);
-	private static  String TOTAL_FIELD_NAME = "total";
+
 
 	/**
 	 * returns all alerts in the collection in a json object represented by @Alerts
@@ -114,30 +115,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
 										   Set<String> entitiesIds){
-
-
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds);
+		return mongoDbRepositoryUtil.groupCount(fieldName,criteria, "alerts");
 
 
-		Aggregation agg;
-		if (criteria!=null){
-			//Create aggregation on fieldName, for all alerts according to filter
-			agg = Aggregation.newAggregation(
-					match(criteria),
-					group(fieldName).count().as(TOTAL_FIELD_NAME),
-					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
-		} else {
-			//Create aggregation on fieldName, for all alerts without filter
-			agg = Aggregation.newAggregation(
-					group(fieldName).count().as(TOTAL_FIELD_NAME),
-					project(TOTAL_FIELD_NAME).and(fieldName).previousOperation());
-		}
-
-
-		Map<String, Integer> results = getAggregationResultMap(fieldName, agg);
-
-		//Return the map
-		return results;
 	}
 
 
@@ -278,32 +259,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return criteriaList;
 	}
 
-	/**
-	 * Execute the aggregation query, and build the results map
-	 * @param fieldName
-	 * @param agg
-	 * @return
-	 */
-	private Map<String, Integer> getAggregationResultMap(String fieldName, Aggregation agg) {
-		AggregationResults<BasicDBObject> groupResults
-				= mongoTemplate.aggregate(agg, "alerts" , BasicDBObject.class);
 
-		//Convert the aggregation result into a map of "key = fieldValue, value= field count"
-		Map<String, Integer> results = new HashMap<>();
-		for (BasicDBObject item:  groupResults.getMappedResults()) {
-			String fieldValue = item.get(fieldName).toString();
-			String countAsString = item.get(TOTAL_FIELD_NAME).toString();
-
-			int count;
-			if (StringUtils.isBlank(countAsString)){
-				count = 0;
-			} else {
-				count = Integer.parseInt(countAsString);
-			}
-			results.put(fieldValue,count);
-		}
-		return results;
-	}
 
 	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
