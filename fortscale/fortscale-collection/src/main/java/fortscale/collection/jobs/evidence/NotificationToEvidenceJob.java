@@ -76,7 +76,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing NotificationToEvidence job - getting job parameters");
+		logger.info("Initializing NotificationToEvidence job - getting job parameters");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		Set<String> keys = map.keySet();
 		notificationsToIgnore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationsToIgnore");
@@ -113,12 +113,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			logger.error("Bad date format - {}", ex.getMessage());
 			throw new JobExecutionException(ex);
 		}
-		logger.debug("Job initialized");
+		logger.info("Job initialized");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
-		logger.debug("Running notification to evidence job");
+		logger.info("Running notification to evidence job");
 		boolean workWithFetchConfiguration = false;
 		String dateStr = null;
 		FetchConfiguration fetchConfiguration = null;
@@ -136,16 +136,16 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				fetchConfiguration = new FetchConfiguration(fetchType, new Date(0L).getTime() + "");
 			}
 			long lastFetchTime = Long.parseLong(fetchConfiguration.getLastFetchTime());
-			logger.debug("Getting notifications after time {}", lastFetchTime);
+			logger.info("Getting notifications after time {}", lastFetchTime);
 			//get all notifications that occurred after the last runtime of the job
 			notifications = notificationsRepository.findByTsBetweenExcludeComments(lastFetchTime, null, sort);
 		} else {
 			notifications = notificationsRepository.findByTsBetweenExcludeComments(startTime, endTime, sort);
 		}
 		if (notifications.size() > 0) {
-			logger.debug("Found {} notifications, starting to send", notifications.size());
+			logger.info("Found {} notifications, starting to send", notifications.size());
 		} else {
-			logger.debug("No new notifications found");
+			logger.info("No new notifications found");
 		}
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
 		try{
@@ -164,7 +164,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
-				logger.debug("Writing to topic evidence - {}", messageToWrite);
+				logger.info("Writing to topic evidence - {}", messageToWrite);
 				streamWriter.send(notification.getIndex(), messageToWrite);
 			}
 		} finally{
@@ -172,9 +172,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				streamWriter.close();
 			}
 		}
-		logger.debug("Finished running notification to evidence job at {}", new Date());
+		logger.info("Finished running notification to evidence job at {}", new Date());
 		if (workWithFetchConfiguration) {
-			logger.debug("Updating timestamp in Mongo");
+			logger.info("Updating timestamp in Mongo");
 			fetchConfiguration.setLastFetchTime(dateStr);
 			fetchConfigurationRepository.save(fetchConfiguration);
 		}
