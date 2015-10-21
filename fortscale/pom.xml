@@ -108,6 +108,7 @@
 		<json-smart.version>2.1.1</json-smart.version>
 		<net.minidev.asm.version>1.0.2</net.minidev.asm.version>
 		<esper-version>5.2.0</esper-version>
+        <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
@@ -417,6 +418,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
+                <version>${org.codehaus.mojo.version}</version>
 				<configuration>
 					<mainClass>fortscale.web.StartFortscaleWebApplication</mainClass>
 					<classpathScope>test</classpathScope>
