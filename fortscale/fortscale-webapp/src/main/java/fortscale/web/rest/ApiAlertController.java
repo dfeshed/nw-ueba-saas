@@ -289,7 +289,7 @@ public class ApiAlertController extends BaseController {
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null, null);
+		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
