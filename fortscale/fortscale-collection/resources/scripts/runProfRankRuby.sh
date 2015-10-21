@@ -19,6 +19,5 @@ run_prof_rank_ruby=(
     "${prof_rank_dir}/lib/runner.sh"
     "${server}"
     "ad_user"
-    "ad_user_features_extraction"
 )
 run_array_cmd_stdout_to_syslog "${run_prof_rank_ruby[@]}"

@@ -17,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.AccessDAO;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.EventResultRepository;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.services.analyst.ConfigurationService;
@@ -26,9 +25,7 @@ import fortscale.services.fe.impl.ScoreDistribution;
 import fortscale.services.impl.SeverityElement;
 
 public class ClassifierServiceTest{
-	@Mock
-	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-	
+
 	@Mock
 	private UserRepository userRepository;
 	
