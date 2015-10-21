@@ -312,12 +312,12 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 		Criteria criteria = null;
 
-		if (criteriaList.size() > 0){
-			criteria= criteriaList.get(0);
-			for (int i=1; i<criteriaList.size(); i++){
-				criteria.andOperator(criteriaList.get(i));
+		criteria= criteriaList.get(0);
 
-			}
+		if (criteriaList.size() > 1) {
+			//Concate all other criterias
+			criteriaList.remove(0);
+			criteria.andOperator(criteriaList.toArray(new Criteria[0]));
 		}
 		return criteria;
 	}
