@@ -1,8 +1,10 @@
 package fortscale.utils.time;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Calendar;
 import java.util.TimeZone;
 
 /**
@@ -43,5 +45,156 @@ public final class TimestampUtils {
 		now = now.plusHours(gapInHours);
 		return now.isBefore(convertToMilliSeconds(timestamp));
 	}
-	
+
+	/**
+	 * Convert splunk time stamp to UNIX time.
+	 * Splunk time range reference:
+	 * http://docs.splunk.com/Documentation/Splunk/6.2.0/Search/Specifytimemodifiersinyoursearch
+	 * @param timestamp
+	 * @return
+	 */
+	public static String convertSplunkTimeToUnix(String timestamp) {
+		// If the timestamp contains only number, it's already in unix time
+		if (timestamp.matches("[0-9]+")){
+			return timestamp;
+		}
+
+		// Check if it is a "snap to" timestamp
+		// "Snap to" format example: -7d@d
+		if (timestamp.contains("@")) {
+			return convertSnapToUnix(timestamp);
+		}
+
+
+		// Else, it's in normal splunk time format
+		// Convert it to unix time
+		String timeUnit = getTimeUnit(timestamp);
+
+		int timeValue = getTimeValue(timestamp);
+
+		Calendar c = convertSplunkTime(timeUnit, timeValue);
+		return String.valueOf(c.getTimeInMillis());
+	}
+
+	/**
+	 * Support 'snap to' time format
+	 * @param timestamp
+	 * @return
+	 */
+	private static String convertSnapToUnix(String timestamp) {
+		String[] timeModifier = timestamp.split("@");
+		if (timeModifier.length != 2) {
+			throw new IllegalArgumentException("Illegal snap to time format");
+		}
+		String timeUnit = getTimeUnit(timeModifier[0]);
+		int timeValue = getTimeValue(timeModifier[0]);
+
+		Calendar c = convertSplunkTime(timeUnit, timeValue);
+
+		int ceilingValue;
+		switch (timeModifier[1]) {
+		case "m":
+			ceilingValue = Calendar.MONTH;
+			break;
+		case "h":
+			ceilingValue = Calendar.HOUR;
+			break;
+		case "d":
+			ceilingValue = Calendar.DATE;
+			break;
+		case "y":
+			ceilingValue = Calendar.YEAR;
+			break;
+		default:
+			ceilingValue = Calendar.DATE;
+		}
+
+		c = DateUtils.ceiling(c, ceilingValue);
+
+		return String.valueOf(c.getTimeInMillis());
+	}
+
+	/**
+	 * Create calendar object from time modifiers params
+	 * @param timeUnit
+	 * @param timeValue
+	 * @return
+	 */
+	private static Calendar convertSplunkTime(String timeUnit, int timeValue){
+		Calendar c = Calendar.getInstance();
+		switch (timeUnit) {
+		case "s":
+		case "sec":
+		case "secs":
+		case "second":
+		case "seconds":
+			c.add(Calendar.SECOND, timeValue);
+			break;
+		case "m":
+		case "min":
+		case "minute":
+		case "minutes":
+			c.add(Calendar.MINUTE, timeValue);
+			break;
+		case "h":
+		case "hr":
+		case "hrs":
+		case "hour":
+		case "hours":
+			c.add(Calendar.HOUR, timeValue);
+			break;
+		case "d":
+		case "day":
+		case "days":
+			c.add(Calendar.DATE, timeValue);
+			break;
+		case "w":
+		case "week":
+		case "weeks":
+			c.add(Calendar.WEEK_OF_YEAR, timeValue);
+			break;
+		case "mon":
+		case "month":
+		case "months":
+			c.add(Calendar.MONTH, timeValue);
+			break;
+		case "y":
+		case "yr":
+		case "yrs":
+		case "year":
+		case "years":
+			c.add(Calendar.YEAR, timeValue);
+			break;
+		case "now":
+			// do nothing;
+			break;
+		default:
+			// do nothing
+			break;
+		}
+
+		return c;
+	}
+
+	/**
+	 * Get the time unit out of the time modifier
+	 * @param timestamp
+	 * @return
+	 */
+	private static String getTimeUnit(String timestamp) {
+		timestamp = timestamp.replaceAll("[0-9]+", "");
+		// remove the sign
+		timestamp = timestamp.substring(1);
+
+		return  timestamp;
+	}
+
+	/**
+	 * Get the time value out of the time modifier
+	 * @param timestamp
+	 * @return
+	 */
+	private static int getTimeValue (String timestamp){
+		return Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
+	}
 }
