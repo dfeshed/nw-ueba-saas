@@ -93,7 +93,7 @@ public class BatchScheduler {
 		startJob(jobName, group, params);
 	}
 	
-	private void startSchedulerAndPauseAllJobs() throws Exception{
+	public void startSchedulerAndPauseAllJobs() throws Exception{
 		if (scheduler==null)
 			loadScheduler();
 		
@@ -138,7 +138,7 @@ public class BatchScheduler {
 		startJob("Export", "USER", params);
 	}
 	
-	private void startJob(String jobName, String group, String... params) throws Exception {
+	public void startJob(String jobName, String group, String... params) throws Exception {
 		
 		JobKey jobKey = new JobKey(jobName, group);
 		
