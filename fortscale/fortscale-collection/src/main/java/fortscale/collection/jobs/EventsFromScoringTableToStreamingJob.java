@@ -87,7 +87,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         for (String securityDataSource: securityDataSources.split(",")) {
             Map<String, String> parameterMap = new HashMap();
             parameterMap.put(IMPALA_TABLE_NAME_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    IMPALA_TABLE_NAME_JOB_PARAMETER + "  -" + securityDataSource));
+                    IMPALA_TABLE_NAME_JOB_PARAMETER + "-" + securityDataSource));
             parameterMap.put(IMPALA_TABLE_FIELDS_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
                     IMPALA_TABLE_FIELDS_JOB_PARAMETER + "-" + securityDataSource));
             parameterMap.put(EPOCH_TIME_FIELD_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
