@@ -170,7 +170,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         return 1;
     }
 
-    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
+    public static void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
         PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
         String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
         String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
@@ -204,15 +204,12 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     query.andWhere(lte(epochtimeField, Long.toString(nextTimestampCursor)));
                 else
                     query.andWhere(lt(epochtimeField, Long.toString(nextTimestampCursor)));
-                logger.debug("query is {}", query.toSQL());
                 int limit = impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
                 query.select("*");
                 query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.ASC, epochtimeField)));
 
                 List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
                 long latestEpochTimeSent = 0;
-
-                logger.debug("found {} records", resultsMap.size());
 
                 for (Map<String, Object> result : resultsMap) {
                     JSONObject json = new JSONObject();
@@ -230,9 +227,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
 
                 if (throttlingSleepField != null && throttlingSleepField > 0 && impalaDestinationTable != null && resultsMap.size() > 0) {
-
-                    logger.debug("throttling by impala tables");
-
                     long timeGap;
                     while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
                         long currentTimeMillis = TimestampUtils.convertToSeconds(System.currentTimeMillis());
@@ -249,9 +243,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     }
                 //metric based throttling
                 } else if (resultsMap.size() > 0 && jobToMonitor != null) {
-
-                    logger.debug("throttling by last message metrics");
-
                     int currentTry = 0;
                     while (currentTry < checkRetries) {
                         logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);

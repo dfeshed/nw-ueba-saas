@@ -9,11 +9,144 @@
         <job>
             <name>ScoringToAggregation</name>
             <group>Forwarding</group>
-            <description>Forwards all given data sources from scoring table to aggregation topic</description>
+            <description>Sending events from scored table to specified kafka topic</description>
             <job-class>fortscale.collection.jobs.EventsFromScoringTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>impalaTableName-VPN</key>
+                    <value>${impala.score.vpn.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-VPN</key>
+                    <value>${impala.score.vpn.table.field.date_time_unix}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic-VPN</key>
+                    <value>fortscale-vpn-event-score-from-hdfs</value>
+                </entry>
+                <entry>
+                    <key>streamingTopicPartitionKey-VPN</key>
+                    <value>${impala.score.vpn.table.field.normalized_username}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-VPN</key>
+                    <value>${impala.score.vpn.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-VPN</key>
+                    <value>${impala.score.vpn.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName-VPN_SESSION</key>
+                    <value>${impala.score.vpn.session.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-VPN_SESSION</key>
+                    <value>${impala.score.vpn.table.field.date_time_unix}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic-VPN_SESSION</key>
+                    <value>fortscale-vpnsession-event-score-from-hdfs</value>
+                </entry>
+                <entry>
+                    <key>streamingTopicPartitionKey-VPN_SESSION</key>
+                    <value>${impala.score.vpn.table.field.normalized_username}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-VPN_SESSION</key>
+                    <value>${impala.score.vpn.session.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-VPN_SESSION</key>
+                    <value>${impala.score.vpn.session.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName-SSH</key>
+                    <value>${impala.score.ssh.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-SSH</key>
+                    <value>${impala.score.ssh.table.field.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic-SSH</key>
+                    <value>fortscale-ssh-event-score-from-hdfs</value>
+                </entry>
+                <entry>
+                    <key>streamingTopicPartitionKey-SSH</key>
+                    <value>${impala.score.ssh.table.fields.normalized_username}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-SSH</key>
+                    <value>${impala.score.ssh.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-SSH</key>
+                    <value>${impala.score.ssh.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName-SecurityEvents</key>
+                    <value>${impala.score.ldapauth.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-SecurityEvents</key>
+                    <value>${impala.score.ldapauth.table.fields.date_time_unix}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic-SecurityEvents</key>
+                    <value>fortscale-4769-event-score-from-hdfs</value>
+                </entry>
+                <entry>
+                    <key>streamingTopicPartitionKey-SecurityEvents</key>
+                    <value>${impala.score.ldapauth.table.fields.normalized_username}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-SecurityEvents</key>
+                    <value>${impala.score.ldapauth.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-SecurityEvents</key>
+                    <value>${impala.score.ldapauth.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName-AMT</key>
+                    <value>${impala.score.amt.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-AMT</key>
+                    <value>${impala.score.amt.table.field.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic-AMT</key>
+                    <value>fortscale-amt-event-score-from-hdfs</value>
+                </entry>
+                <entry>
+                    <key>streamingTopicPartitionKey-AMT</key>
+                    <value>${impala.score.amt.table.field.normalized_username}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-AMT</key>
+                    <value>${impala.score.amt.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-AMT</key>
+                    <value>${impala.score.amt.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>jobmonitor</key>
+                    <value>aggregation-events-streaming</value>
+                </entry>
+                <entry>
+                    <key>classmonitor</key>
+                    <value>fortscale.streaming.task.AggregationEventsStreamTask</value>
+                </entry>
+            </job-data-map>
+
         </job>
+
     </schedule>
+
 
 </job-scheduling-data>
