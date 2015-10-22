@@ -56,7 +56,7 @@
       }
     ]
   },
-  "ScoredDataToSingleEventIndicator": {
+  "ScoredEventsToIndicators": {
     "timeBasedSteps": [
       {
         "technology": "MONGO",
