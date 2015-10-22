@@ -1,5 +1,7 @@
 package fortscale.collection.jobs;
 
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
@@ -28,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fortscale.collection.jobs.EventsFromDataTableToStreamingJob.FieldRegexMatcherConverter;
-import static fortscale.collection.jobs.EventsFromDataTableToStreamingJob.addPartitionFilterToQuery;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
@@ -227,6 +228,18 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             if (streamWriter != null) {
                 streamWriter.close();
             }
+        }
+    }
+
+    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
+        PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
+        String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
+        String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
+        if (earliestValue.equals(latestValue)) {
+            query.where(equalsTo(partitionStrategy.getImpalaPartitionFieldName(), earliestValue));
+        } else {
+            query.where(gte(partitionStrategy.getImpalaPartitionFieldName(), earliestValue));
+            query.where(lte(partitionStrategy.getImpalaPartitionFieldName(), latestValue));
         }
     }
 

@@ -170,7 +170,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         return 1;
     }
 
-    public static void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
+    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
         PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
         String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
         String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
