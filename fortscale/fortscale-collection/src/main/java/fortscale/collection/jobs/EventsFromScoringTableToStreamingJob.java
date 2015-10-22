@@ -44,7 +44,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 60; // 1 hour
     private static final int DEFAULT_CHECK_RETRIES = 60;
-    private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
+    private static final int MILLISECONDS_TO_WAIT = 1000 * 30;
 
     //define how much time to subtract from now to get the last event time to send to streaming job
     //default of 3 hours - 60 * 60 * 3
@@ -180,14 +180,10 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                     }
                     streamWriter.send(result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).
                             toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
-                    long currentEpochTimeField = convertToLong(result.get(dataSourceParams.
+                    latestEpochTimeSent = convertToLong(result.get(dataSourceParams.
                             get(EPOCH_TIME_FIELD_JOB_PARAMETER)));
-                    if (latestEpochTimeSent < currentEpochTimeField) {
-                        latestEpochTimeSent = currentEpochTimeField;
-                    }
                 }
-                if (resultsMap.size() > 0) {
-                    monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
+                if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics");
                     int currentTry = 0;
                     while (currentTry < checkRetries) {
