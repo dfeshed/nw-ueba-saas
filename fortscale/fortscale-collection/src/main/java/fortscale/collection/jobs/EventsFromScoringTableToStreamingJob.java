@@ -145,6 +145,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             args.add(deltaInSec);
             args.add("fetchEventsStepInMinutes=" + batchSizeInMinutes);
             for (String securityDataSource: securityDataSources.split(",")) {
+                logger.info("running - {}, {}", securityDataSource, args);
                 runStep(securityDataSource);
             }
             startTime = startTime.plusHours(1);
