@@ -8,7 +8,6 @@ import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +23,6 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +52,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     protected long latestEventsTimeDiffFromNowInSec;
 
     //define how much time to subtract from the latest event time - this way to get the first event time to send
-    @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
+    @Value("${batch.sendTo.kafka.events.delta.time.sec:3599}")
     protected long eventsDeltaTimeInSec;
 
     @Value("${zookeeper.connection}")
@@ -68,7 +66,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private JdbcOperations impalaJdbcTemplate;
 
     private String whereCriteria;
-    private long latestEventTime;
     private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap();
@@ -78,7 +75,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private Map<String, Map<String, String>> dataSourceToParameters;
 
     private int hoursToRun;
-    private String batchSizeInMinutes;
     private String securityDataSources;
     private DateTime startTime;
 
@@ -108,22 +104,16 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-
         hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun");
-        batchSizeInMinutes = jobDataMapExtension.getJobDataMapStringValue(map, "batchSizeInMinutes");
         securityDataSources = jobDataMapExtension.getJobDataMapStringValue(map, "securityDataSources");
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
-
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, "where", null);
-        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, "latestEventTime",
-                (TimestampUtils.convertToSeconds(System.currentTimeMillis()) - latestEventsTimeDiffFromNowInSec));
         deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, "deltaTimeInSec", eventsDeltaTimeInSec);
         fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, "fetchEventsStepInMinutes",
                 FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-
         populateDataSourceToParametersMap(map, securityDataSources);
 
     }
@@ -138,22 +128,17 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         //run the forwarding job for every hour and for every data source
         for (int hour = 0; hour < hoursToRun; hour++) {
             DateTime endTime = startTime.plusHours(1).minusSeconds(1);
-            String latestEventTime = "latestEventTime=" + (endTime.getMillis() / 1000);
-            String deltaInSec = "deltaTimeInSec=3599";
-            List<String> args = new ArrayList();
-            args.add(latestEventTime);
-            args.add(deltaInSec);
-            args.add("fetchEventsStepInMinutes=" + batchSizeInMinutes);
+            long latestEventTime = endTime.getMillis() / 1000;
             for (String securityDataSource: securityDataSources.split(",")) {
-                logger.info("running - {}, {}", securityDataSource, args);
-                runStep(securityDataSource);
+                logger.info("running - {}, {}", securityDataSource, latestEventTime);
+                runStep(securityDataSource, latestEventTime);
             }
             startTime = startTime.plusHours(1);
         }
         finishStep();
     }
 
-    private void runStep(String securityDataSource) throws Exception {
+    private void runStep(String securityDataSource, long latestEventTime) throws Exception {
         KafkaEventsWriter streamWriter = null;
         Map<String, String> dataSourceParams = dataSourceToParameters.get(securityDataSource);
         try {
