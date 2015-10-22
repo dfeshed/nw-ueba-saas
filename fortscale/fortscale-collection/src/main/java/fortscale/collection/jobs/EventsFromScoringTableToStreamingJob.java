@@ -73,7 +73,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private String jobToMonitor;
     private String jobClassToMonitor;
     private Map<String, Map<String, String>> dataSourceToParameters;
-
+    private TopicConsumer topicConsumer;
     private int hoursToRun;
     private String securityDataSources;
     private DateTime startTime;
@@ -115,7 +115,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         populateDataSourceToParametersMap(map, securityDataSources);
-
+        topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
     }
 
     @Override
@@ -184,24 +184,15 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                             get(EPOCH_TIME_FIELD_JOB_PARAMETER)));
                 }
                 if (latestEpochTimeSent > 0) {
-                    logger.info("throttling by last message metrics");
-                    int currentTry = 0;
-                    while (currentTry < checkRetries) {
-                        logger.info("try number {}, checking task {}", currentTry, jobToMonitor);
-                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                        Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                                String.format("%s-last-message-epochtime", jobToMonitor)));
-                        if (time != null && time == latestEpochTimeSent) {
-                            logger.info("last message in batch processed, moving to next batch");
-                            break;
-                        }
-                        logger.info("last message not yet processed, waiting {} milliseconds...", MILLISECONDS_TO_WAIT);
-                        Thread.sleep(MILLISECONDS_TO_WAIT);
-                    }
-                    if (currentTry >= checkRetries) {
-                        logger.error("did not receive last message time {} in task {} - breaking", latestEpochTimeSent,
-                                jobToMonitor);
+                    logger.info("throttling by last message metrics on job {}", jobToMonitor);
+                    if (topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+                            jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
+                            MILLISECONDS_TO_WAIT)) {
+                        logger.info("last message in batch processed, moving to next batch");
                         break;
+                    } else {
+                        logger.error("last message not yet processed - timed out!");
+                        throw new JobExecutionException();
                     }
                 }
                 timestampCursor = nextTimestampCursor;
@@ -210,6 +201,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             if (streamWriter != null) {
                 streamWriter.close();
             }
+            topicConsumer.shutdown();
         }
     }
 
