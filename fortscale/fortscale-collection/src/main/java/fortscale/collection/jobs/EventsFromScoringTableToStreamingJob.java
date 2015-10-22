@@ -73,7 +73,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private String jobToMonitor;
     private String jobClassToMonitor;
     private Map<String, Map<String, String>> dataSourceToParameters;
-    private TopicConsumer topicConsumer;
     private int hoursToRun;
     private String securityDataSources;
     private DateTime startTime;
@@ -115,7 +114,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         populateDataSourceToParametersMap(map, securityDataSources);
-        topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
     }
 
     @Override
@@ -185,12 +183,15 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 }
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    if (topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+                    TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+                    boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
                             jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                            MILLISECONDS_TO_WAIT)) {
+                            MILLISECONDS_TO_WAIT);
+                    topicConsumer.shutdown();
+                    if (result == true) {
                         logger.info("last message in batch processed, moving to next batch");
                     } else {
-                        logger.error("last message not yet processed - timed out!");
+                        logger.error("last message not processed - timed out!");
                         throw new JobExecutionException();
                     }
                 }
@@ -200,7 +201,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             if (streamWriter != null) {
                 streamWriter.close();
             }
-            topicConsumer.shutdown();
         }
     }
 
