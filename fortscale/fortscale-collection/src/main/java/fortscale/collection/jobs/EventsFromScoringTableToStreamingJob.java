@@ -64,8 +64,11 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
         scheduler = (Scheduler)context.getBean("jobScheduler");
         scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(scheduler, context));
+        scheduler.start();
+        scheduler.pauseAll();
         runJobs();
         context.close();
+        scheduler.shutdown();
         finishStep();
     }
 
