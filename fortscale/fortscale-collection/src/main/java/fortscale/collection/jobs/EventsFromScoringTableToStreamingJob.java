@@ -189,7 +189,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                             jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
                             MILLISECONDS_TO_WAIT)) {
                         logger.info("last message in batch processed, moving to next batch");
-                        break;
                     } else {
                         logger.error("last message not yet processed - timed out!");
                         throw new JobExecutionException();

@@ -57,6 +57,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private String dateField;
     private int batchSize;
     private int checkRetries;
+    private TopicConsumer topicConsumer;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -96,6 +97,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
+        topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
 		logger.debug("Job initialized");
 	}
 
@@ -123,22 +125,14 @@ public class MongoToKafkaJob extends FortscaleJob {
                 for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
             }
             //throttling
-            int currentTry = 0;
-            while (currentTry < checkRetries) {
-                logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
-                TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                        String.format("%s-last-message-epochtime", jobToMonitor)));
-                if (time != null && time == lastMessageTime) {
-                    logger.debug("last message in batch processed, moving to next batch");
-                    break;
-                }
-                logger.debug("last message not yet processed, waiting {} milliseconds...");
-                Thread.sleep(MILLISECONDS_TO_WAIT);
-            }
-            if (currentTry >= checkRetries) {
-                logger.error("did not receive last message time {} in task {} - breaking",lastMessageTime,jobToMonitor);
-                break;
+            logger.info("throttling by last message metrics on job {}", jobToMonitor);
+            if (topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+                            jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, lastMessageTime,
+                    MILLISECONDS_TO_WAIT)) {
+                logger.info("last message in batch processed, moving to next batch");
+            } else {
+                logger.error("last message not yet processed - timed out!");
+                throw new JobExecutionException();
             }
             counter += batchSize;
         }
@@ -148,6 +142,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             logger.debug("forwarded all {} documents", totalItems);
         }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
+        topicConsumer.shutdown();
 		finishStep();
 	}
 
