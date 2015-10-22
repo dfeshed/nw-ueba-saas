@@ -65,7 +65,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         scheduler = (Scheduler)context.getBean("jobScheduler");
         scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(scheduler, context));
         runJobs();
-        context.close();
     }
 
     private void startJob(String jobName, String group, String... params) throws Exception {
