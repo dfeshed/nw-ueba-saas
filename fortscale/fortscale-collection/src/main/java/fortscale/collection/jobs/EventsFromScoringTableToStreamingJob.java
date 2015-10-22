@@ -199,25 +199,27 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                         latestEpochTimeSent = currentEpochTimeField;
                     }
                 }
-                monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
-                logger.debug("throttling by last message metrics");
-                int currentTry = 0;
-                while (currentTry < checkRetries) {
-                    logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
-                    TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                    Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                            String.format("%s-last-message-epochtime", jobToMonitor)));
-                    if (time != null && time == latestEpochTimeSent) {
-                        logger.debug("last message in batch processed, moving to next batch");
+                if (resultsMap.size() > 0) {
+                    monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
+                    logger.debug("throttling by last message metrics");
+                    int currentTry = 0;
+                    while (currentTry < checkRetries) {
+                        logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
+                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+                        Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
+                                String.format("%s-last-message-epochtime", jobToMonitor)));
+                        if (time != null && time == latestEpochTimeSent) {
+                            logger.debug("last message in batch processed, moving to next batch");
+                            break;
+                        }
+                        logger.debug("last message not yet processed, waiting {} milliseconds...");
+                        Thread.sleep(MILLISECONDS_TO_WAIT);
+                    }
+                    if (currentTry >= checkRetries) {
+                        logger.error("did not receive last message time {} in task {} - breaking", latestEpochTimeSent,
+                                jobToMonitor);
                         break;
                     }
-                    logger.debug("last message not yet processed, waiting {} milliseconds...");
-                    Thread.sleep(MILLISECONDS_TO_WAIT);
-                }
-                if (currentTry >= checkRetries) {
-                    logger.error("did not receive last message time {} in task {} - breaking", latestEpochTimeSent,
-                            jobToMonitor);
-                    break;
                 }
                 timestampCursor = nextTimestampCursor;
             }
