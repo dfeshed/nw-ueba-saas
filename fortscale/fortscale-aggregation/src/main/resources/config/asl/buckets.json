@@ -471,7 +471,7 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpn_session_counter",
+          "name": "high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
@@ -490,7 +490,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_high_score_rate_vpn_session_counter",
+          "name": "high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
