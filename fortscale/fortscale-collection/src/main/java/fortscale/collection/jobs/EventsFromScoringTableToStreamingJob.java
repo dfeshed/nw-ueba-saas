@@ -2,20 +2,14 @@ package fortscale.collection.jobs;
 
 import fortscale.collection.BatchScheduler;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeUtils;
 import org.joda.time.DateTime;
-import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@DisallowConcurrentExecution
 public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(EventsFromScoringTableToStreamingJob.class);
