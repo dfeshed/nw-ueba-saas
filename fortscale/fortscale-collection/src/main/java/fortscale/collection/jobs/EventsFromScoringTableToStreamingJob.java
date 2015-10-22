@@ -67,7 +67,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         runJobs();
         context.close();
         finishStep();
-        System.exit(0);
     }
 
     private void startJob(String jobName, String group, String... params) throws Exception {
