@@ -50,7 +50,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             List<String> args = new ArrayList();
             args.add(latestEventTime);
             args.add(deltaInSec);
-            args.add(batchSizeInMinutes);
+            args.add("fetchEventsStepInMinutes=" + batchSizeInMinutes);
             for (String securityDataSource: securityDataSources.split(",")) {
                 startJob("ScoringToAggregation", securityDataSource, args.toArray(new String[args.size()]));
             }
