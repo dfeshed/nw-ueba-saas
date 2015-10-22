@@ -1257,6 +1257,10 @@ public class UserServiceImpl implements UserService{
 		return userRepository.findByUsername(username);
 	}
 
+	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames){
+		return  userRepository.groupCount(User.displayNameField, displayNames);
+	}
+
 	@Override public String getUserId(String username) {
 		return usernameService.getUserId(username, null);
 	}
