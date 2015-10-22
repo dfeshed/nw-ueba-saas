@@ -47,7 +47,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     }
 
     private void runJobs() throws Exception {
-        batch.startSchedulerAndPauseAllJobs();
         //run the forwarding job for every hour and for every data source
         for (int hour = 0; hour < hoursToRun; hour++) {
             DateTime endTime = startTime.plusHours(1).minusSeconds(1);

@@ -93,14 +93,14 @@ public class BatchScheduler {
 		startJob(jobName, group, params);
 	}
 	
-	public void startSchedulerAndPauseAllJobs() throws Exception{
+	private void startSchedulerAndPauseAllJobs() throws Exception{
 		if (scheduler==null)
 			loadScheduler();
 		
 		scheduler.start();
 		scheduler.pauseAll();
 	}
-	
+
 	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
 		
