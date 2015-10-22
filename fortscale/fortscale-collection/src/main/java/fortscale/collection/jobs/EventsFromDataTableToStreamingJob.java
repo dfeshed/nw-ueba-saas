@@ -2,13 +2,13 @@ package fortscale.collection.jobs;
 
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
 @DisallowConcurrentExecution
@@ -45,7 +46,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
     private static final long LOGGER_MAX_FREQUENCY = 20 * 60;
     private static final long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
-
+    private static final int DEFAULT_CHECK_RETRIES = 60;
+    private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
     private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
     private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
     private static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
@@ -62,6 +64,9 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static final String IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaDestinationTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
     private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
+    private static final String JOB_MONITOR_PARAMETER = "jobmonitor";
+    private static final String CLASS_MONITOR_PARAMETER = "classmonitor";
+    private static final String RETRIES_PARAMETER = "retries";
 
     //define how much time to subtract from now to get the last event time to send to streaming job
     //default of 3 hours - 60 * 60 * 3
@@ -71,6 +76,13 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     //define how much time to subtract from the latest event time - this way to get the first event time to send
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
     protected long eventsDeltaTimeInSec;
+
+    @Value("${zookeeper.connection}")
+    private String zookeeperConnection;
+    @Value("${zookeeper.timeout}")
+    private int zookeeperTimeout;
+    @Value("${zookeeper.group}")
+    private String zookeeperGroup;
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -95,6 +107,9 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private long latestLoggerWriteTime = 0;
     private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
     private int sleepingCounter = 0;
+    private int checkRetries;
+    private String jobToMonitor;
+    private String jobClassToMonitor;
 
     protected String getTableName() {
         return impalaTableName;
@@ -120,6 +135,11 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         impalaDestinationTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
         maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT);
+        checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
+        if (map.containsKey(JOB_MONITOR_PARAMETER)) {
+            jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
+            jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER);
+        }
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
@@ -198,7 +218,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
-                    long currentEpochTimeField = ConversionUtils.convertToLong(result.get(epochtimeField));
+                    long currentEpochTimeField = convertToLong(result.get(epochtimeField));
                     if (latestEpochTimeSent < currentEpochTimeField) {
                         latestEpochTimeSent = currentEpochTimeField;
                     }
@@ -220,6 +240,26 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                             sleepingCounter++;
                         } catch (InterruptedException e) {
                         }
+                    }
+                //metric based throttling
+                } else if (resultsMap.size() > 0 && jobToMonitor != null) {
+                    int currentTry = 0;
+                    while (currentTry < checkRetries) {
+                        logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
+                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+                        Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
+                                String.format("%s-last-message-epochtime", jobToMonitor)));
+                        if (time != null && time == latestEpochTimeSent) {
+                            logger.debug("last message in batch processed, moving to next batch");
+                            break;
+                        }
+                        logger.debug("last message not yet processed, waiting {} milliseconds...");
+                        Thread.sleep(MILLISECONDS_TO_WAIT);
+                    }
+                    if (currentTry >= checkRetries) {
+                        logger.error("did not receive last message time {} in task {} - breaking", latestEpochTimeSent,
+                                jobToMonitor);
+                        break;
                     }
                 }
 
@@ -279,7 +319,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         if (latestEpochTimeField == null) {
             return timestampCursor;
         }
-        destinationTableLatestTime = ConversionUtils.convertToLong(latestEpochTimeField);
+        destinationTableLatestTime = convertToLong(latestEpochTimeField);
         return timestampCursor - destinationTableLatestTime;
     }
 

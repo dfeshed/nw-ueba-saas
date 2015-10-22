@@ -36,7 +36,7 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 			}
 		}
 
-		return dividedValue;
+		return (double)Math.round(dividedValue * 100) / 100;
 	}
 
 	public double getAdditionToDenominator() {

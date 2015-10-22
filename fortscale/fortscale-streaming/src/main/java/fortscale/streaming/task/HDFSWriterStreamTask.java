@@ -2,14 +2,12 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
-import fortscale.streaming.service.BarrierService;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.HdfsService;
-import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.*;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -22,15 +20,19 @@ import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.streaming.ConfigUtils.*;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
@@ -52,6 +54,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	 */
 	protected Map<String, List<WriterConfiguration>> topicToWriterConfigurationMap = new HashMap<>();
 
+	private BDPService bdpService;
+
 	/**
 	 * Private class for configuration of specific writer (specific topic, specific HDFS file)
 	 */
@@ -70,11 +74,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		public BarrierService barrier;
 		public List<MessageFilter> filters = new LinkedList<>();
 		public PartitionStrategy partitionStrategy;
-
+		public List<String> outputTopics;
+		public List<String> bdpOutputTopics;
 		public FeatureExtractionService featureExtractionService;
 
 	}
-
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -97,6 +101,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				topicToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
 			}
 			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
+
+			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
+				writerConfiguration.outputTopics = getConfigStringList(config,
+						String.format("fortscale.%s.output.topics", eventType));
+			}
+			if (isConfigContainKey(config, String.format("fortscale.%s.bdp.output.topics", eventType))) {
+				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
+						String.format("fortscale.%s.bdp.output.topics", eventType));
+			}
 
 			// read configuration properties
 
@@ -143,6 +156,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
 
 		}
+
+		bdpService = new BDPService();
+
 	}
 
 	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
@@ -200,6 +216,26 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					String eventLine = buildEventLine(message, writerConfiguration);
 					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp.longValue());
 					writerConfiguration.processedMessageCount.inc();
+					// send to output topics
+					List<String> outputTopics;
+					if (!bdpService.isBDPRunning()) {
+						outputTopics = writerConfiguration.outputTopics;
+					} else {
+						outputTopics = writerConfiguration.bdpOutputTopics;
+					}
+					if (outputTopics != null) {
+						for (String outputTopic : outputTopics) {
+							try {
+								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+									   outputTopic), message.toJSONString());
+								collector.send(output);
+							} catch (Exception exception) {
+								throw new KafkaPublisherException(String.
+								  format("failed to send event from input topic %s to output topic %s after HDFS write",
+										  topic, outputTopic), exception);
+							}
+						}
+					}
 				}
 				// update barrier
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);

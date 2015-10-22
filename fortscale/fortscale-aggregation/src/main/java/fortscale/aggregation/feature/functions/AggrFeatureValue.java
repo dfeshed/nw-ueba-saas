@@ -1,12 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureValue implements FeatureValue {

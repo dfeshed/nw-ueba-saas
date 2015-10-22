@@ -21,4 +21,23 @@
 	  <constructor-arg ref="dataSource"/>
 	</bean>
 
+	<bean id="cleanupPredicate" class="fortscale.utils.cleanup.CleanupPredicate" />
+
+	<bean id="mongoUtils" class="fortscale.utils.mongodb.MongoUtil" />
+
+	<bean id="kafkaUtils" class="fortscale.utils.kafka.KafkaUtils" />
+
+	<bean id="impalaUtils" class="fortscale.utils.impala.ImpalaUtils" />
+
+	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtil" />
+
+	<bean id="storeUtils" class="fortscale.utils.store.StoreUtils" />
+
+	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
+		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
+		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
+		<constructor-arg name="cmAdminUser" value="${cm_user}" />
+		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
+	</bean>
+
 </beans>

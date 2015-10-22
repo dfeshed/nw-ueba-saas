@@ -58,7 +58,7 @@ public class ApiNotificationsControllerTest {
 		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "c", "c", "c", false, 0));
 		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "d", "d", "d", false, 0));
 		
-		when(notificationRepository.findByTsGreaterThanExcludeComments(anyInt(), any(Sort.class))).thenReturn(notifications);
+		when(notificationRepository.findByTsBetweenExcludeComments(anyLong(), anyLong(), any(Sort.class))).thenReturn(notifications);
 		
 		// set up notification resource repository mocked behavior
 		NotificationResource res = new NotificationResource("x", "x", "x");

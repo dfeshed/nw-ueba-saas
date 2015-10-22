@@ -1,16 +1,15 @@
 package fortscale.aggregation.feature.extraction;
 
-import static fortscale.utils.ConversionUtils.convertToDouble;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.internal.core.Assert;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import static fortscale.utils.ConversionUtils.convertToDouble;
 
 @JsonTypeName(NumberDividerFeatureAdjustor.NUMBER_DIVIDER_FEATURE_ADJUSTOR)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -38,7 +37,8 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 			}
 		}
 
-		return new FeatureNumericValue(dividedValue);
+		return new FeatureNumericValue((double)Math.round(dividedValue * 100) / 100);
+
 	}
 
 	public double getAdditionToDenominator() {

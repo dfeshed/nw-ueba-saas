@@ -52,6 +52,9 @@ public class EventsScoreStreamTaskService {
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
 
+	@Value("${fortscale.bdp.run}")
+	private boolean isBDPRunning;
+
 	@Value("${streaming.event.field.type}")
 	private String eventTypeFieldName;
 
@@ -64,8 +67,12 @@ public class EventsScoreStreamTaskService {
 		sourceType = getConfigString(config, "fortscale.source.type");
 		entityType = getConfigString(config, "fortscale.entity.type");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		outputTopic = config.get("fortscale.output.topic", "");
-		
+		if (isBDPRunning && config.containsKey("fortscale.bdp.output.topic")) {
+			outputTopic = config.get("fortscale.bdp.output.topic", "");
+		} else {
+			outputTopic = config.get("fortscale.output.topic", "");
+		}
+
 		fillScoreConfig(config, featureExtractionService);
 		
 		// create counter metric for processed messages

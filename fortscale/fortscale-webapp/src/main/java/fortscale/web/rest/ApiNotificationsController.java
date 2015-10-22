@@ -169,7 +169,7 @@ public class ApiNotificationsController extends BaseController {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
 		
 		// pass the time stamp and paging to the repository to perform the query
-		Iterable<Notification> notifications = notificationsRepository.findByTsGreaterThanExcludeComments(ts, sort);
+		Iterable<Notification> notifications = notificationsRepository.findByTsBetweenExcludeComments(ts, null, sort);
 		return notificationsDataSingle(notifications,Optional.<Long>absent());
 	}
 	
