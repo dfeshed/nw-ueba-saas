@@ -1,11 +1,11 @@
 package fortscale.collection.jobs;
 
-import fortscale.collection.BatchScheduler;
+import fortscale.collection.NotifyJobFinishListener;
+import fortscale.collection.SchedulerShutdownListener;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,9 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(EventsFromScoringTableToStreamingJob.class);
 
-    private BatchScheduler batch;
+    private ClassPathXmlApplicationContext context;
+    private Scheduler scheduler;
+
     private int hoursToRun;
     private String batchSizeInMinutes;
     private String securityDataSources;
@@ -22,7 +24,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        batch = new BatchScheduler();
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun");
         batchSizeInMinutes = jobDataMapExtension.getJobDataMapStringValue(map, "batchSizeInMinutes");
@@ -51,7 +52,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             args.add(deltaInSec);
             args.add(batchSizeInMinutes);
             for (String securityDataSource: securityDataSources.split(",")) {
-                batch.startJob("ScoringToAggregation", securityDataSource, args.toArray(new String[args.size()]));
+                startJob("ScoringToAggregation", securityDataSource, args.toArray(new String[args.size()]));
             }
             startTime = startTime.plusHours(1);
         }
@@ -59,13 +60,37 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     @Override
     protected void runSteps() throws Exception {
-        try {
-            BatchScheduler batch = new BatchScheduler();
-            batch.loadScheduler();
-            runJobs();
-            batch.shutdown();
-        } catch (Exception ex) {
-            logger.error("error in scheduling collection jobs", ex);
+        System.setProperty("org.quartz.properties", "resources/jobs/quartz.properties");
+        context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
+        scheduler = (Scheduler)context.getBean("jobScheduler");
+        scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(scheduler, context));
+        runJobs();
+        scheduler.shutdown();
+        context.close();
+    }
+
+    private void startJob(String jobName, String group, String... params) throws Exception {
+        JobKey jobKey = new JobKey(jobName, group);
+        // register job listener to close the scheduler after job completion
+        NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
+        // check if job exists
+        if (scheduler.checkExists(jobKey)) {
+            // build job data map if given
+            JobDataMap dataMap = new JobDataMap();
+            if (params != null && params.length > 0) {
+                for (String param : params) {
+                    String[] entry = param.split("=", 2);
+                    dataMap.put(entry[0], entry[1]);
+                }
+            }
+            if (!dataMap.isEmpty())
+                scheduler.triggerJob(jobKey, dataMap);
+            else
+                scheduler.triggerJob(jobKey);
+            // wait for job completion
+            monitor.doWait();
+        } else {
+            System.out.println(String.format("job %s %s does not exist", jobName, group));
         }
     }
 

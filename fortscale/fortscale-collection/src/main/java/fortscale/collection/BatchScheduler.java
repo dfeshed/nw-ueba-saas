@@ -138,7 +138,7 @@ public class BatchScheduler {
 		startJob("Export", "USER", params);
 	}
 	
-	public void startJob(String jobName, String group, String... params) throws Exception {
+	private void startJob(String jobName, String group, String... params) throws Exception {
 		
 		JobKey jobKey = new JobKey(jobName, group);
 		
