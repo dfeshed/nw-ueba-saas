@@ -195,7 +195,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                             logger.info("last message in batch processed, moving to next batch");
                             break;
                         }
-                        logger.info("last message not yet processed, waiting {} milliseconds...");
+                        logger.info("last message not yet processed, waiting {} milliseconds...", MILLISECONDS_TO_WAIT);
                         Thread.sleep(MILLISECONDS_TO_WAIT);
                     }
                     if (currentTry >= checkRetries) {

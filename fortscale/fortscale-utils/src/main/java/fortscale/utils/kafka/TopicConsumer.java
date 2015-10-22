@@ -46,6 +46,7 @@ public class TopicConsumer {
 
 	private void shutdown() {
 		if (consumer != null) consumer.shutdown();
+        logger.info("topic consumer shut down");
 	}
 
     /**
