@@ -19,7 +19,7 @@ public class TopicReader {
                     .addFetch("metrics", 0, offset, 100000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
-            for (MessageAndOffset msg : messages.messageSet("metrics", 1)) {
+            for (MessageAndOffset msg : messages.messageSet("metrics", 0)) {
                 System.out.println("consumed: " + String.valueOf(msg.offset()) + ": " +
                         new String(msg.message().payload().array(), Charset.forName("UTF-8")));
                 // advance the offset after consuming each message
