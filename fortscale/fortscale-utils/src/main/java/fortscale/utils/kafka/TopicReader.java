@@ -53,7 +53,7 @@ public class TopicReader {
             for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
                 long currentOffset = msg.offset();
                 if (currentOffset < offset) {
-                    logger.debug("Found an old offset: " + currentOffset + " Expecting: " + offset);
+                    logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
                     continue;
                 }
                 String message = new String(msg.message().payload().array(), Charset.forName("UTF-8"));
