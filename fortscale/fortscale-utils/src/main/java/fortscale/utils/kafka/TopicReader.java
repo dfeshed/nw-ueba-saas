@@ -18,7 +18,6 @@ public class TopicReader {
 
     private static Logger logger = LoggerFactory.getLogger(TopicReader.class);
 
-    private static final int waitTimeBetweenMetricsChecks = 60;
     private static final String HEADER = "header";
     private static final String JOB_NAME = "job-name";
     private static final String TOPIC = "metrics";
@@ -36,7 +35,8 @@ public class TopicReader {
      * @return
      */
     public boolean listenToMetricsTopic(String zookeeper, int port, String headerToCheck, String jobToCheck,
-                                        String metricsToExtract, String lastMessageTime) {
+                                        String metricsToExtract, String lastMessageTime,
+                                        int waitTimeBetweenMetricsChecks) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientId");
         int partition = 0;
         long offset = 0, lastoffset;
@@ -65,7 +65,7 @@ public class TopicReader {
             if (offset == lastoffset) {
                 try {
                     logger.info("waiting for metrics topic to refresh");
-                    Thread.sleep(waitTimeBetweenMetricsChecks * 1000);
+                    Thread.sleep(waitTimeBetweenMetricsChecks);
                 } catch (InterruptedException e) {
                     logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
                     return false;
