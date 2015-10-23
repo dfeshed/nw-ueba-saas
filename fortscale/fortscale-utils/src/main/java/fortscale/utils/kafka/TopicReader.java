@@ -39,15 +39,15 @@ public class TopicReader {
                         return true;
                     }
                 }
-                lastoffset = offset;
                 offset = msg.nextOffset();
-                if (offset == lastoffset) {
-                    try {
-                        Thread.sleep(waitTimeBetweenMetricsChecks * 1000L);
-                    } catch (InterruptedException e) {
-                        logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
-                        return false;
-                    }
+            }
+            lastoffset = offset;
+            if (offset == lastoffset) {
+                try {
+                    Thread.sleep(waitTimeBetweenMetricsChecks * 1000L);
+                } catch (InterruptedException e) {
+                    logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                    return false;
                 }
             }
         }
