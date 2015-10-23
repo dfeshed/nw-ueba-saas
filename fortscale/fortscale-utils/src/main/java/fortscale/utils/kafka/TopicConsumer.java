@@ -56,7 +56,7 @@ public class TopicConsumer {
                        int waitTimeBetweenMetricsChecks )throws Exception {
 
         Boolean ok = false;
-        /*ExecutorService exService = Executors.newSingleThreadExecutor();
+        ExecutorService exService = Executors.newSingleThreadExecutor();
         Future<Boolean> futureOk = exService.submit(new SamzaMetricsReader(jobToCheck,headerToCheck,metricsToExtract,
                 lastMessageTime,waitTimeBetweenMetricsChecks));
         try {
@@ -74,11 +74,7 @@ public class TopicConsumer {
         }
         finally {
             exService.shutdownNow();
-        }*/
-
-        SamzaMetricsReader samzaMetricsReader = new SamzaMetricsReader(jobToCheck,headerToCheck,metricsToExtract,
-                lastMessageTime,waitTimeBetweenMetricsChecks);
-        samzaMetricsReader.call();
+        }
 
         return ok;
 
@@ -124,32 +120,33 @@ public class TopicConsumer {
     private boolean readSamzaMetrics(String jobToCheck, String headerToCheck, String metricsToExtract ,
                                      long lastMessageTime, int waitTimeBetweenMetricsChecks){
 
-        Map<String, Integer> topicCountMap = new HashMap();
-        topicCountMap.put(topic, new Integer(1));
+        int topicCount = 1;
+        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        topicCountMap.put(topic, new Integer(topicCount));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         List<KafkaStream<byte[], byte[]>> streams = consumerMap.get(topic);
         Map <String, String> metricData;
 
-
+        for (final KafkaStream stream : streams) {
             String currMetric;
-            ConsumerIterator<byte[], byte[]> it = streams.get(0).iterator();
+            ConsumerIterator<byte[], byte[]> it = stream.iterator();
 
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 currMetric = new String(it.next().message());
 
-                metricData = getMetricData(currMetric,headerToCheck,metricsToExtract);
+                metricData = getMetricData(currMetric, headerToCheck, metricsToExtract);
 
                 //check if the metrics stabilize. if stable - log the data and return true.
                 // else - it should keep running and eventually will be terminated from outside (due to timeout).
-                if (metricData.containsKey("job-name") && metricData.get("job-name").equals(jobToCheck)){
+                if (metricData.containsKey("job-name") && metricData.get("job-name").equals(jobToCheck)) {
 
                     if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
                         logger.info(metricsToExtract + ":" + metricData.get(metricsToExtract) + " reached ");
                         return true;
                     } else {
                         try {
-                            Thread.sleep(waitTimeBetweenMetricsChecks* 1000L);
-                        } catch (InterruptedException e){
+                            Thread.sleep(waitTimeBetweenMetricsChecks * 1000L);
+                        } catch (InterruptedException e) {
                             logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
                             return false;
                         }
@@ -157,7 +154,7 @@ public class TopicConsumer {
 
                 }
             }
-        
+        }
         return false;
     }
 
