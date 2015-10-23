@@ -87,12 +87,12 @@ public class TopicReader {
             String currValue;
             try {
                 JSONObject bigJSON = new JSONObject(metric);
-                JSONObject innerJSON =  bigJSON.getJSONObject(topic);
+                JSONObject innerJSON = bigJSON.getJSONObject(topic);
                 metricaData.put(JOB_NAME, bigJSON.getJSONObject(HEADER).getString(JOB_NAME));
                 currValue = innerJSON.getJSONObject(header).getString(metricsToExtract);
                 metricaData.put(metricsToExtract, currValue);
-            } catch(JSONException je) {
-                logger.error(je.getMessage());
+            } catch (JSONException ex) {
+                logger.error(ex.getMessage());
             }
         }
         return metricaData;
