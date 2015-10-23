@@ -6,13 +6,10 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.KafkaUtils;
+import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.logging.Logger;
-import kafka.utils.ZkUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
-import org.I0Itec.zkclient.IZkDataListener;
-import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -26,7 +23,6 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +54,8 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private String zookeeperConnection;
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
+    @Value("${zookeeper.group}")
+    private String zookeeperGroup;
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -180,29 +178,17 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 }
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-                    String topicPath = ZkUtils.getTopicPath("metrics");
-                    Date time = new Date();
-                    zkClient.subscribeDataChanges(topicPath, new IZkDataListener() {
-                        @Override
-                        public void handleDataDeleted(String dataPath) throws Exception {}
-
-                        @Override
-                        public void handleDataChange(String dataPath, Object data) throws Exception {
-                            if (dataPath.contains("last-message")) {
-                                System.out.println(dataPath);
-                            }
-                        }
-                    });
-                    Thread.sleep(1000 * 60 * 10);
-                    zkClient.unsubscribeAll();
-                    zkClient.close();
-                    /*if (result != null) {
+                    TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+                    boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+                                    jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
+                            MILLISECONDS_TO_WAIT);
+                    topicConsumer.shutdown();
+                    if (result == true) {
                         logger.info("last message in batch processed, moving to next batch");
                     } else {
                         logger.error("last message not processed - timed out!");
                         throw new JobExecutionException();
-                    }*/
+                    }
                 }
                 timestampCursor = nextTimestampCursor;
             }

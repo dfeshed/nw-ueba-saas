@@ -56,7 +56,7 @@ public class TopicConsumer {
                        int waitTimeBetweenMetricsChecks )throws Exception {
 
         Boolean ok = false;
-        ExecutorService exService = Executors.newSingleThreadExecutor();
+        /*ExecutorService exService = Executors.newSingleThreadExecutor();
         Future<Boolean> futureOk = exService.submit(new SamzaMetricsReader(jobToCheck,headerToCheck,metricsToExtract,
                 lastMessageTime,waitTimeBetweenMetricsChecks));
         try {
@@ -74,7 +74,11 @@ public class TopicConsumer {
         }
         finally {
             exService.shutdownNow();
-        }
+        }*/
+
+        SamzaMetricsReader samzaMetricsReader = new SamzaMetricsReader(jobToCheck,headerToCheck,metricsToExtract,
+                lastMessageTime,waitTimeBetweenMetricsChecks);
+        samzaMetricsReader.call();
 
         return ok;
 
