@@ -44,7 +44,7 @@ public class TopicReader {
                         }
                     }*/
                 }
-                offset = msg.offset();
+                offset = msg.nextOffset();
             }
         }
     }
