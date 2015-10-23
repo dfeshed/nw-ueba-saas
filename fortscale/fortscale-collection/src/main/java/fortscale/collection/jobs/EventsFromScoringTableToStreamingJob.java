@@ -6,7 +6,6 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.kafka.TopicReader;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -179,15 +178,9 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 }
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    /*TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                    boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
-                                    jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                            MILLISECONDS_TO_WAIT);
-                    topicConsumer.shutdown();*/
-                    new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
+                    boolean result = new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
                             Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobClassToMonitor,
                             String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent + "");
-                    boolean result = true;
                     if (result == true) {
                         logger.info("last message in batch processed, moving to next batch");
                     } else {
