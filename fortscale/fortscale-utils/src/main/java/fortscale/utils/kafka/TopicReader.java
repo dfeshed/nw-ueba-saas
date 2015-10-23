@@ -18,10 +18,12 @@ public class TopicReader {
 
     private static Logger logger = LoggerFactory.getLogger(TopicReader.class);
 
+    private static final int waitTimeBetweenMetricsChecks = 60;
+
     public boolean listenToMetricsTopic(String headerToCheck, String jobToCheck, String metricsToExtract,
                                         String lastMessageTime) {
         SimpleConsumer consumer = new SimpleConsumer("localhost", 9092, 10000, 1024000, "clientId");
-        long offset = 0;
+        long offset = 0, lastoffset;
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientName")
@@ -35,16 +37,18 @@ public class TopicReader {
                     if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
                         logger.info(metricsToExtract + ":" + metricData.get(metricsToExtract) + " reached ");
                         return true;
-                    }/* else {
-                        try {
-                            Thread.sleep(waitTimeBetweenMetricsChecks * 1000L);
-                        } catch (InterruptedException e) {
-                            logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
-                            return false;
-                        }
-                    }*/
+                    }
                 }
+                lastoffset = offset;
                 offset = msg.nextOffset();
+                if (offset == lastoffset) {
+                    try {
+                        Thread.sleep(waitTimeBetweenMetricsChecks * 1000L);
+                    } catch (InterruptedException e) {
+                        logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                        return false;
+                    }
+                }
             }
         }
     }
