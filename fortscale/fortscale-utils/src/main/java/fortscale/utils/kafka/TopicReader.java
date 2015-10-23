@@ -37,12 +37,12 @@ public class TopicReader {
     public boolean listenToMetricsTopic(String zookeeper, int port, String headerToCheck, String jobToCheck,
                                         String metricsToExtract, String lastMessageTime,
                                         int waitTimeBetweenMetricsChecks) {
-        SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientId");
+        SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
         int partition = 0;
-        long offset = 0, lastoffset;
+        long offset = 0, lastoffset = -1;
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
-                    .clientId("clientName")
+                    .clientId("clientId")
                     .addFetch(TOPIC, partition, offset, 100000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
@@ -51,6 +51,11 @@ public class TopicReader {
                 return false;
             }
             for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
+                long currentOffset = msg.offset();
+                if (currentOffset < offset) {
+                    logger.debug("Found an old offset: " + currentOffset + " Expecting: " + offset);
+                    continue;
+                }
                 String message = new String(msg.message().payload().array(), Charset.forName("UTF-8"));
                 Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
@@ -61,7 +66,6 @@ public class TopicReader {
                 }
                 offset = msg.nextOffset();
             }
-            lastoffset = offset;
             if (offset == lastoffset) {
                 try {
                     logger.info("waiting for metrics topic to refresh");
@@ -71,6 +75,7 @@ public class TopicReader {
                     return false;
                 }
             }
+            lastoffset = offset;
         }
     }
 
