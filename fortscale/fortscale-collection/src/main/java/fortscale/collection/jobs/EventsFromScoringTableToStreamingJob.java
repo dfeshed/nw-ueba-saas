@@ -50,12 +50,8 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3599}")
     protected long eventsDeltaTimeInSec;
 
-    @Value("${zookeeper.connection}")
+    @Value("${broker.list}")
     private String zookeeperConnection;
-    @Value("${zookeeper.timeout}")
-    private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -178,11 +174,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 }
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    /*TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                    boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
-                                    jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                            MILLISECONDS_TO_WAIT);
-                    topicConsumer.shutdown();*/
                     boolean result = new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
                             Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobClassToMonitor,
                             String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent + "",
