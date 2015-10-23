@@ -20,8 +20,10 @@ public class TopicReader {
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             for (MessageAndOffset msg : messages.messageSet("metrics", 0)) {
-                System.out.println("consumed: " + String.valueOf(msg.offset()) + ": " +
-                        new String(msg.message().payload().array(), Charset.forName("UTF-8")));
+                String message = new String(msg.message().payload().array(), Charset.forName("UTF-8"));
+                if (message.contains("last-message")) {
+                    System.out.println(message);
+                }
                 // advance the offset after consuming each message
                 offset = msg.offset();
             }
