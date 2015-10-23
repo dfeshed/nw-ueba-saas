@@ -124,16 +124,15 @@ public class TopicConsumer {
     private boolean readSamzaMetrics(String jobToCheck, String headerToCheck, String metricsToExtract ,
                                      long lastMessageTime, int waitTimeBetweenMetricsChecks){
 
-        int topicCount = 1;
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-        topicCountMap.put(topic, new Integer(topicCount));
+        Map<String, Integer> topicCountMap = new HashMap();
+        topicCountMap.put(topic, new Integer(1));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         List<KafkaStream<byte[], byte[]>> streams = consumerMap.get(topic);
         Map <String, String> metricData;
 
-        for (final KafkaStream stream : streams) {
+
             String currMetric;
-            ConsumerIterator<byte[], byte[]> it = stream.iterator();
+            ConsumerIterator<byte[], byte[]> it = streams.get(0).iterator();
 
             while (it.hasNext()){
                 currMetric = new String(it.next().message());
@@ -158,7 +157,7 @@ public class TopicConsumer {
 
                 }
             }
-        }
+        
         return false;
     }
 
