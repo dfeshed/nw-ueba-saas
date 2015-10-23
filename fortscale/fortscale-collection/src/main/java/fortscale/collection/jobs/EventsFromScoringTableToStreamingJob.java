@@ -6,7 +6,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
+import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -44,23 +44,14 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 60; // 1 hour
     private static final int DEFAULT_CHECK_RETRIES = 60;
-    private static final int MILLISECONDS_TO_WAIT = 1000 * 30;
-
-    //define how much time to subtract from now to get the last event time to send to streaming job
-    //default of 3 hours - 60 * 60 * 3
-    @Value("${batch.sendTo.kafka.latest.events.time.diff.sec:10800}")
-    protected long latestEventsTimeDiffFromNowInSec;
+    private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
     //define how much time to subtract from the latest event time - this way to get the first event time to send
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3599}")
     protected long eventsDeltaTimeInSec;
 
-    @Value("${zookeeper.connection}")
-    private String zookeeperConnection;
-    @Value("${zookeeper.timeout}")
-    private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
+    @Autowired
+    private KafkaUtils kafkaUtils;
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -183,12 +174,8 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 }
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                    boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
-                            jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                            MILLISECONDS_TO_WAIT);
-                    topicConsumer.shutdown();
-                    if (result == true) {
+                    Object result = kafkaUtils.readFromTopic("metrics");
+                    if (result != null) {
                         logger.info("last message in batch processed, moving to next batch");
                     } else {
                         logger.error("last message not processed - timed out!");

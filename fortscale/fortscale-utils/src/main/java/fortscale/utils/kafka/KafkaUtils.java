@@ -79,6 +79,22 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
     /***
      *
+     * This method reads from a topic
+     *
+     * @param topic       topic to delete
+     * @return
+     */
+    public Object readFromTopic(String topic) {
+        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        String topicPath = ZkUtils.getTopicPath(topic);
+        logger.debug("attempting to read from topic {}", topic);
+        Object result = zkClient.readData(topicPath, true);
+        zkClient.close();
+        return result;
+    }
+
+    /***
+     *
      * This method returns all of the topics in Kafka
      *
      * @return
