@@ -57,7 +57,6 @@ public class MongoToKafkaJob extends FortscaleJob {
     private String dateField;
     private int batchSize;
     private int checkRetries;
-    private TopicConsumer topicConsumer;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -97,7 +96,6 @@ public class MongoToKafkaJob extends FortscaleJob {
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
-        topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
 		logger.debug("Job initialized");
 	}
 
@@ -126,9 +124,12 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
             //throttling
             logger.info("throttling by last message metrics on job {}", jobToMonitor);
-            if (topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+            TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
+            boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
                             jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, lastMessageTime,
-                    MILLISECONDS_TO_WAIT)) {
+                    MILLISECONDS_TO_WAIT);
+            topicConsumer.shutdown();
+            if (result == true) {
                 logger.info("last message in batch processed, moving to next batch");
             } else {
                 logger.error("last message not yet processed - timed out!");
@@ -142,7 +143,6 @@ public class MongoToKafkaJob extends FortscaleJob {
             logger.debug("forwarded all {} documents", totalItems);
         }
         for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
-        topicConsumer.shutdown();
 		finishStep();
 	}
 

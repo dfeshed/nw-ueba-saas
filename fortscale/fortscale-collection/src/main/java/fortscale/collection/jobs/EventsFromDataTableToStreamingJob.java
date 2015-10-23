@@ -110,7 +110,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private int checkRetries;
     private String jobToMonitor;
     private String jobClassToMonitor;
-    private TopicConsumer topicConsumer;
 
     protected String getTableName() {
         return impalaTableName;
@@ -140,7 +139,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         if (map.containsKey(JOB_MONITOR_PARAMETER)) {
             jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
             jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER);
-            topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
         }
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
@@ -246,10 +244,13 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 //metric based throttling
                 } else if (resultsMap.size() > 0 && jobToMonitor != null) {
                     if (latestEpochTimeSent > 0) {
+                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
                         logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                        if (topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
+                        boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
                                         jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                                MILLISECONDS_TO_WAIT)) {
+                                MILLISECONDS_TO_WAIT);
+                        topicConsumer.shutdown();
+                        if (result == true) {
                             logger.info("last message in batch processed, moving to next batch");
                         } else {
                             logger.error("last message not yet processed - timed out!");
@@ -275,9 +276,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         } finally {
             if (streamWriter != null) {
                 streamWriter.close();
-            }
-            if (topicConsumer != null) {
-                topicConsumer.shutdown();
             }
         }
     }
