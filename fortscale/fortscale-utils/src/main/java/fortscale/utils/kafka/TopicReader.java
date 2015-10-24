@@ -43,7 +43,7 @@ public class TopicReader {
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(TOPIC, partition, offset, 100000)
+                    .addFetch(TOPIC, partition, offset, 10000000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
