@@ -175,7 +175,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                 if (latestEpochTimeSent > 0) {
                     logger.info("throttling by last message metrics on job {}", jobToMonitor);
                     boolean result = new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
-                            Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobClassToMonitor,
+                            Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
                             String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
                             MILLISECONDS_TO_WAIT, checkRetries);
                     if (result == true) {

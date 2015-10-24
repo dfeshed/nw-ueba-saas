@@ -73,13 +73,13 @@ public class TopicReader {
                 try {
                     logger.info("waiting for metrics topic to refresh");
                     Thread.sleep(waitTimeBetweenMetricsChecks);
+                    checkRetries++;
                 } catch (InterruptedException e) {
                     logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
                     return false;
                 }
             }
             lastoffset = offset;
-            checkRetries++;
         }
         logger.error("failed to get metrics data in {} retries", checkRetries);
         return false;
