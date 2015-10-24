@@ -43,7 +43,7 @@ public class TopicReader {
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(TOPIC, partition, offset, 10000000)
+                    .addFetch(TOPIC, partition, offset, 1000000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
@@ -59,13 +59,19 @@ public class TopicReader {
                 String message = new String(msg.message().payload().array(), Charset.forName("UTF-8"));
                 logger.info("====== offset {}, message: ======", offset);
                 logger.info(message);
-                Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
+                if (message.contains(headerToCheck)) {
+                    int index = message.indexOf(metricsToExtract);
+                    if (index > -1) {
+                        logger.info(message.substring(index, 30));
+                    }
+                }
+                /*Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
                     if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
                         logger.info(metricsToExtract + ":" + metricData.get(metricsToExtract) + " reached");
                         return true;
                     }
-                }
+                }*/
                 offset = msg.nextOffset();
             }
             if (offset == lastoffset) {
