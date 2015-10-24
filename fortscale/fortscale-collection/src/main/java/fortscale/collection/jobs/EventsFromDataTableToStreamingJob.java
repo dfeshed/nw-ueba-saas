@@ -8,7 +8,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
+import fortscale.utils.kafka.TopicReader;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -77,12 +77,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
     protected long eventsDeltaTimeInSec;
 
-    @Value("${zookeeper.connection}")
+    @Value("${broker.list}")
     private String zookeeperConnection;
-    @Value("${zookeeper.timeout}")
-    private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -244,12 +240,10 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 //metric based throttling
                 } else if (resultsMap.size() > 0 && jobToMonitor != null) {
                     if (latestEpochTimeSent > 0) {
-                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                        logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                        boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
-                                        jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, latestEpochTimeSent,
-                                MILLISECONDS_TO_WAIT);
-                        topicConsumer.shutdown();
+                        boolean result = new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
+                                Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                                String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
+                                MILLISECONDS_TO_WAIT, checkRetries);
                         if (result == true) {
                             logger.info("last message in batch processed, moving to next batch");
                         } else {

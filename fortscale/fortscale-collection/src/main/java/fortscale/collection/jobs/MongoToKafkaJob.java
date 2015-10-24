@@ -5,7 +5,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
+import fortscale.utils.kafka.TopicReader;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -18,8 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static fortscale.utils.ConversionUtils.convertToLong;
 
 /**
  * Created by Amir Keren on 04/10/2015.
@@ -41,12 +39,12 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+    @Value("${broker.list}")
+    private String brokerConnection;
 	@Value("${zookeeper.connection}")
 	private String zookeeperConnection;
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
 
 	private BasicDBObject mongoQuery;
     private BasicDBObject sortQuery;
@@ -124,11 +122,10 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
             //throttling
             logger.info("throttling by last message metrics on job {}", jobToMonitor);
-            TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-            boolean result = topicConsumer.run(jobToMonitor, jobClassToMonitor, String.format("%s-last-message-epochtime",
-                            jobToMonitor), MILLISECONDS_TO_WAIT * checkRetries / 1000, lastMessageTime,
-                    MILLISECONDS_TO_WAIT);
-            topicConsumer.shutdown();
+            boolean result = new TopicReader().listenToMetricsTopic(brokerConnection.split(":")[0],
+                    Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                    String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
+                    MILLISECONDS_TO_WAIT, checkRetries);
             if (result == true) {
                 logger.info("last message in batch processed, moving to next batch");
             } else {
