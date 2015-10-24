@@ -14,6 +14,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static fortscale.utils.ConversionUtils.convertToLong;
+
 public class TopicReader {
 
     private static Logger logger = LoggerFactory.getLogger(TopicReader.class);
@@ -35,12 +37,12 @@ public class TopicReader {
      * @return
      */
     public boolean listenToMetricsTopic(String zookeeper, int port, String headerToCheck, String jobToCheck,
-                                        String metricsToExtract, String lastMessageTime,
-                                        int waitTimeBetweenMetricsChecks) {
+                                        String metricsToExtract, long lastMessageTime,
+                                        int waitTimeBetweenMetricsChecks, int checkRetries) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
-        long offset = 0, lastoffset = -1;
+        long offset = 0, lastoffset = -1, currentTry = 0;
         int partition = 0;
-        while (true) {
+        while (currentTry < checkRetries) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
                     .addFetch(TOPIC, partition, offset, 1000000)
@@ -57,10 +59,11 @@ public class TopicReader {
                     continue;
                 }
                 String message = convertPayloadToString(msg);
-                Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
+                Map<String, Object> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
-                    if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
-                        logger.info(metricsToExtract + ":" + metricData.get(metricsToExtract) + " reached");
+                    Long time = convertToLong(metricData.get(metricsToExtract));
+                    if (time != null && time == lastMessageTime) {
+                        logger.info(metricsToExtract + ":" + time + " reached");
                         return true;
                     }
                 }
@@ -76,7 +79,10 @@ public class TopicReader {
                 }
             }
             lastoffset = offset;
+            checkRetries++;
         }
+        logger.error("failed to get metrics data in {} retries", checkRetries);
+        return false;
     }
 
     /***
@@ -101,15 +107,15 @@ public class TopicReader {
      * @param metricsToExtract  requested data
      * @return data
      */
-    private Map <String, String> getMetricData(String topic, String metric, String header, String metricsToExtract) {
-        Map <String, String> metricaData = new HashMap();
+    private Map <String, Object> getMetricData(String topic, String metric, String header, String metricsToExtract) {
+        Map <String, Object> metricaData = new HashMap();
         if (metric.contains(header)) {
-            String currValue;
+            Object currValue;
             try {
                 JSONObject bigJSON = new JSONObject(metric);
                 JSONObject innerJSON = bigJSON.getJSONObject(topic);
                 metricaData.put(JOB_NAME, bigJSON.getJSONObject(HEADER).getString(JOB_NAME));
-                currValue = innerJSON.getJSONObject(header).getString(metricsToExtract);
+                currValue = innerJSON.getJSONObject(header).get(metricsToExtract);
                 metricaData.put(metricsToExtract, currValue);
             } catch (JSONException ex) {
                 logger.error(ex.getMessage());
