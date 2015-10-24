@@ -4,12 +4,14 @@ import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
+import kafka.message.MessageAndMetadata;
 import kafka.message.MessageAndOffset;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +41,10 @@ public class TopicReader {
                                         int waitTimeBetweenMetricsChecks) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
         int partition = 0;
-        long offset = 0, lastoffset = -1;
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(TOPIC, partition, offset, 1000000)
+                    .addFetch(TOPIC, partition, 0, 1000000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
@@ -51,40 +52,39 @@ public class TopicReader {
                 return false;
             }
             for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
-                long currentOffset = msg.offset();
-                if (currentOffset < offset) {
-                    logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
-                    continue;
-                }
-                String message = new String(msg.message().payload().array(), Charset.forName("UTF-8"));
-                logger.info("====== offset {}, message: ======", offset);
+                String message = convertPayloadToString(msg);
                 logger.info(message);
-                if (message.contains(headerToCheck)) {
-                    int index = message.indexOf(metricsToExtract);
-                    if (index > -1) {
-                        logger.info(message.substring(index, 30));
-                    }
-                }
-                /*Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
+                Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
                     if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
                         logger.info(metricsToExtract + ":" + metricData.get(metricsToExtract) + " reached");
                         return true;
                     }
-                }*/
-                offset = msg.nextOffset();
-            }
-            if (offset == lastoffset) {
-                try {
-                    logger.info("waiting for metrics topic to refresh");
-                    Thread.sleep(waitTimeBetweenMetricsChecks);
-                } catch (InterruptedException e) {
-                    logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
-                    return false;
                 }
             }
-            lastoffset = offset;
+            try {
+                logger.info("waiting for metrics topic to refresh");
+                Thread.sleep(waitTimeBetweenMetricsChecks);
+            } catch (InterruptedException e) {
+                logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                return false;
+            }
         }
+    }
+
+    /***
+     *
+     * This method converts the kafka message to string
+     *
+     * @param rawMsg  raw kafka message
+     * @return
+     */
+    private String convertPayloadToString(MessageAndOffset rawMsg) {
+        ByteBuffer buf = rawMsg.message().payload();
+        byte[] dst = new byte[buf.limit()];
+        buf.get(dst);
+        String str = new String(dst);
+        return str;
     }
 
     /**
