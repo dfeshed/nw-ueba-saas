@@ -4,7 +4,6 @@ import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
-import kafka.message.MessageAndMetadata;
 import kafka.message.MessageAndOffset;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +38,12 @@ public class TopicReader {
                                         String metricsToExtract, String lastMessageTime,
                                         int waitTimeBetweenMetricsChecks) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
+        long offset = 0, lastoffset = -1;
         int partition = 0;
         while (true) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(TOPIC, partition, 0, 1000000)
+                    .addFetch(TOPIC, partition, offset, 1000000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
@@ -52,6 +51,11 @@ public class TopicReader {
                 return false;
             }
             for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
+                long currentOffset = msg.offset();
+                if (currentOffset < offset) {
+                    logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
+                    continue;
+                }
                 String message = convertPayloadToString(msg);
                 logger.info(message);
                 Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
@@ -61,14 +65,18 @@ public class TopicReader {
                         return true;
                     }
                 }
+                offset = msg.nextOffset();
             }
-            try {
-                logger.info("waiting for metrics topic to refresh");
-                Thread.sleep(waitTimeBetweenMetricsChecks);
-            } catch (InterruptedException e) {
-                logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
-                return false;
+            if (offset == lastoffset) {
+                try {
+                    logger.info("waiting for metrics topic to refresh");
+                    Thread.sleep(waitTimeBetweenMetricsChecks);
+                } catch (InterruptedException e) {
+                    logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                    return false;
+                }
             }
+            lastoffset = offset;
         }
     }
 
