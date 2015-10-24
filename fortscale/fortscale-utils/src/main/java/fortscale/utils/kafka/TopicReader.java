@@ -73,7 +73,7 @@ public class TopicReader {
                 try {
                     logger.info("waiting for metrics topic to refresh");
                     Thread.sleep(waitTimeBetweenMetricsChecks);
-                    checkRetries++;
+                    currentTry++;
                 } catch (InterruptedException e) {
                     logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
                     return false;
