@@ -36,9 +36,9 @@ public class TopicReader {
      * @param lastMessageTime   message time to compare
      * @return
      */
-    public boolean listenToMetricsTopic(String zookeeper, int port, String headerToCheck, String jobToCheck,
-                                        String metricsToExtract, long lastMessageTime,
-                                        int waitTimeBetweenMetricsChecks, int checkRetries) {
+    public boolean waitForMetrics(String zookeeper, int port, String headerToCheck, String jobToCheck,
+                                  String metricsToExtract, long lastMessageTime,
+                                  int waitTimeBetweenMetricsChecks, int checkRetries) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
         long offset = 0, lastoffset = -1, currentTry = 0;
         int partition = 0;

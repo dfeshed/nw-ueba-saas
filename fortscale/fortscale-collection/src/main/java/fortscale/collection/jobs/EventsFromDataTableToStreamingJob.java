@@ -240,7 +240,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 //metric based throttling
                 } else if (resultsMap.size() > 0 && jobToMonitor != null) {
                     if (latestEpochTimeSent > 0) {
-                        boolean result = new TopicReader().listenToMetricsTopic(zookeeperConnection.split(":")[0],
+                        boolean result = new TopicReader().waitForMetrics(zookeeperConnection.split(":")[0],
                                 Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
                                 String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
                                 MILLISECONDS_TO_WAIT, checkRetries);
