@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 60; // 1 hour
     private static final int DEFAULT_CHECK_RETRIES = 60;
+    private static final int DEFAULT_BATCH_SIZE = 1000;
+
     private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
     //define how much time to subtract from the latest event time - this way to get the first event time to send
@@ -67,6 +70,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private int hoursToRun;
     private String securityDataSources;
     private DateTime startTime;
+    private BatchToSend batchToSend;
 
     private void populateDataSourceToParametersMap(JobDataMap map, String securityDataSources)
             throws JobExecutionException {
@@ -105,6 +109,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         populateDataSourceToParametersMap(map, securityDataSources);
+        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
     }
 
     @Override
@@ -124,6 +129,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             }
             startTime = startTime.plusHours(1);
         }
+        batchToSend.flushMessages();
         finishStep();
     }
 
@@ -159,7 +165,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                         dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(),
                         new ColumnMapRowMapper());
-                long latestEpochTimeSent = 0;
                 logger.debug("found {} records", resultsMap.size());
                 for (Map<String, Object> result : resultsMap) {
                     JSONObject json = new JSONObject();
@@ -167,23 +172,10 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    streamWriter.send(result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).
-                            toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
-                    latestEpochTimeSent = convertToLong(result.get(dataSourceParams.
-                            get(EPOCH_TIME_FIELD_JOB_PARAMETER)));
-                }
-                if (latestEpochTimeSent > 0) {
-                    logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                    boolean result = new TopicReader().waitForMetrics(zookeeperConnection.split(":")[0],
-                            Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                            String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
-                            MILLISECONDS_TO_WAIT, checkRetries);
-                    if (result == true) {
-                        logger.info("last message in batch processed, moving to next batch");
-                    } else {
-                        logger.error("last message not processed - timed out!");
-                        throw new JobExecutionException();
-                    }
+                    batchToSend.send(streamWriter,
+                            result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
+                            json.toJSONString(JSONStyle.NO_COMPRESS),
+                            convertToLong(result.get(EPOCH_TIME_FIELD_JOB_PARAMETER)));
                 }
                 timestampCursor = nextTimestampCursor;
             }
@@ -230,6 +222,81 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     @Override
     protected boolean shouldReportDataReceived() {
         return true;
+    }
+
+    private class BatchToSend {
+
+        private List<Message> messages;
+        private int maxSize;
+
+        public BatchToSend(int maxSize) {
+            messages = new ArrayList();
+            this.maxSize = maxSize;
+        }
+
+        public void flushMessages() throws JobExecutionException {
+            long latestEpochTimeSent = 0;
+            for (Message message: messages) {
+                latestEpochTimeSent = message.getEpochTime();
+                message.getStreamWriter().send(message.getPartitionKey(), message.getMessageString());
+            }
+            if (latestEpochTimeSent > 0) {
+                logger.info("throttling by last message metrics on job {}", jobToMonitor);
+                boolean result = new TopicReader().waitForMetrics(zookeeperConnection.split(":")[0],
+                        Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                        String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
+                        MILLISECONDS_TO_WAIT, checkRetries);
+                if (result == true) {
+                    logger.info("last message in batch processed, moving to next batch");
+                } else {
+                    logger.error("last message not processed - timed out!");
+                    throw new JobExecutionException();
+                }
+                messages.clear();
+            }
+        }
+
+        public void send(KafkaEventsWriter streamWriter, String partitionKey, String messageStr, long epochTime)
+                throws JobExecutionException {
+            if (messages.size() < maxSize) {
+                messages.add(new Message(streamWriter, messageStr, partitionKey, epochTime));
+                return;
+            }
+            flushMessages();
+        }
+
+        private class Message {
+
+            private KafkaEventsWriter streamWriter;
+            private String messageString;
+            private String partitionKey;
+            private long epochTime;
+
+            private Message(KafkaEventsWriter streamWriter, String messageString, String partitionKey, long epochTime) {
+                this.streamWriter = streamWriter;
+                this.messageString = messageString;
+                this.partitionKey = partitionKey;
+                this.epochTime = epochTime;
+            }
+
+            public KafkaEventsWriter getStreamWriter() {
+                return streamWriter;
+            }
+
+            public String getMessageString() {
+                return messageString;
+            }
+
+            public String getPartitionKey() {
+                return partitionKey;
+            }
+
+            public long getEpochTime() {
+                return epochTime;
+            }
+
+        }
+
     }
 
 }
