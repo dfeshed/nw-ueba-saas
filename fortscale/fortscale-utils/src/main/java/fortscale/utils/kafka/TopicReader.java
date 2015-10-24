@@ -57,7 +57,6 @@ public class TopicReader {
                     continue;
                 }
                 String message = convertPayloadToString(msg);
-                logger.info(message);
                 Map<String, String> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
                     if (metricData.get(metricsToExtract).equals(lastMessageTime)) {
