@@ -118,19 +118,23 @@ public class MongoToKafkaJob extends FortscaleJob {
                 String message = manipulateMessage(collectionName, results.get(i));
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
-                for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
+                for (KafkaEventsWriter streamWriter: streamWriters) {
+                    streamWriter.send(null, message);
+                }
             }
-            //throttling
-            logger.info("throttling by last message metrics on job {}", jobToMonitor);
-            boolean result = new TopicReader().waitForMetrics(brokerConnection.split(":")[0],
-                    Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                    String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
-                    MILLISECONDS_TO_WAIT, checkRetries);
-            if (result == true) {
-                logger.info("last message in batch processed, moving to next batch");
-            } else {
-                logger.error("last message not yet processed - timed out!");
-                throw new JobExecutionException();
+            if (lastMessageTime > 0) {
+                //throttling
+                logger.info("throttling by last message metrics on job {}", jobToMonitor);
+                boolean result = new TopicReader().waitForMetrics(brokerConnection.split(":")[0],
+                        Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                        String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
+                        MILLISECONDS_TO_WAIT, checkRetries);
+                if (result == true) {
+                    logger.info("last message in batch processed, moving to next batch");
+                } else {
+                    logger.error("last message not yet processed - timed out!");
+                    throw new JobExecutionException();
+                }
             }
             counter += batchSize;
         }
@@ -139,7 +143,9 @@ public class MongoToKafkaJob extends FortscaleJob {
         } else {
             logger.debug("forwarded all {} documents", totalItems);
         }
-        for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
+        for (KafkaEventsWriter streamWriter: streamWriters) {
+            streamWriter.close();
+        }
 		finishStep();
 	}
 

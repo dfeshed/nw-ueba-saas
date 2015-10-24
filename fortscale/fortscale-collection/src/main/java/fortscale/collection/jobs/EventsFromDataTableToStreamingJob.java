@@ -238,18 +238,16 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         }
                     }
                 //metric based throttling
-                } else if (resultsMap.size() > 0 && jobToMonitor != null) {
-                    if (latestEpochTimeSent > 0) {
-                        boolean result = new TopicReader().waitForMetrics(zookeeperConnection.split(":")[0],
-                                Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                                String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
-                                MILLISECONDS_TO_WAIT, checkRetries);
-                        if (result == true) {
-                            logger.info("last message in batch processed, moving to next batch");
-                        } else {
-                            logger.error("last message not yet processed - timed out!");
-                            throw new JobExecutionException();
-                        }
+                } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
+                    boolean result = new TopicReader().waitForMetrics(zookeeperConnection.split(":")[0],
+                            Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                            String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
+                            MILLISECONDS_TO_WAIT, checkRetries);
+                    if (result == true) {
+                        logger.info("last message in batch processed, moving to next batch");
+                    } else {
+                        logger.error("last message not yet processed - timed out!");
+                        throw new JobExecutionException();
                     }
                 }
 
