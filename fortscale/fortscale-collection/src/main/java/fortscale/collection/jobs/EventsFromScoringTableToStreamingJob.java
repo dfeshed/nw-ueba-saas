@@ -175,7 +175,7 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                     batchToSend.send(streamWriter,
                             result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
                             json.toJSONString(JSONStyle.NO_COMPRESS),
-                            convertToLong(result.get(EPOCH_TIME_FIELD_JOB_PARAMETER)));
+                            convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
                 timestampCursor = nextTimestampCursor;
             }
