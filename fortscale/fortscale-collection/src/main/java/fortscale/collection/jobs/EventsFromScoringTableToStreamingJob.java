@@ -23,10 +23,7 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fortscale.collection.jobs.EventsFromDataTableToStreamingJob.FieldRegexMatcherConverter;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -226,11 +223,11 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
     private class BatchToSend {
 
-        private List<Message> messages;
+        private Queue<Message> messages;
         private int maxSize;
 
         public BatchToSend(int maxSize) {
-            messages = new ArrayList();
+            messages = new LinkedList();
             this.maxSize = maxSize;
         }
 
