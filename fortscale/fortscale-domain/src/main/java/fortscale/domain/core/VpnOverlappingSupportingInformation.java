@@ -23,6 +23,8 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
         return rawEvents;
     }
 
+    public VpnOverlappingSupportingInformation(){}
+
     public void setRawEvents(String json) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

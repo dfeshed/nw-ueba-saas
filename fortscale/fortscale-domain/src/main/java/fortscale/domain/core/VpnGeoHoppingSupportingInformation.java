@@ -23,6 +23,8 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	private List<VpnSession> rawEvents;
 
+	public VpnGeoHoppingSupportingInformation(){}
+
 	@Override
 	public void setData(Evidence evidence, String json) {
 
