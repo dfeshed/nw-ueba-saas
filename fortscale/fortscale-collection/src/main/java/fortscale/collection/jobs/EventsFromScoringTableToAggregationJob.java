@@ -159,7 +159,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    batchToSend.send(dataSourceParams.get(STREAMING_TOPIC_FIELD_JOB_PARAMETER),
+                    batchToSend.send(securityDataSource,
                             result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
                             json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
