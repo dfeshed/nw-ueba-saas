@@ -1,23 +1,17 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertFeedback;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.Severity;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
-import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.time.TimestampUtils;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
-import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+import fortscale.web.spring.SpringPropertiesUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -55,29 +48,16 @@ public class ApiAlertController extends BaseController {
 	public static final String OPEN_STATUS = "Open";
 	private static final String TIME_STAMP_START = "startDate";
 
+	private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
+
 	@Autowired
 	private AlertsService alertsDao;
-
-
-	@Value("${fortscale.evidence.type.map}")
-	private String evidenceTypeProperty;
-
-	@Value("${fortscale.evidence.name.text}")
-	private String evidenceNameText;
 
 	/**
 	 *  The format of the dates in the exported file
 	 */
 	@Value("${export.data.date.format:MMM dd yyyy HH:mm:ss 'GMT'Z}")
 	private String exportDateFormat;
-
-
-	private Map evidenceTypeMap;
-
-	@PostConstruct
-	public void initEvidenceMap(){
-		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
-	}
 
 
 	/**
@@ -305,12 +285,10 @@ public class ApiAlertController extends BaseController {
 		if(alert != null && alert.getEvidences() != null) {
 			for (Evidence evidence : alert.getEvidences()) {
 				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
-					Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
+					Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
 					String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 					evidence.setAnomalyType(anomalyType);
-					String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().
-							toLowerCase(), evidence.getEntityName(), anomalyType);
-					evidence.setName(evidenceName);
+					evidence.setName(anomalyType);
 				}
 			}
 		}

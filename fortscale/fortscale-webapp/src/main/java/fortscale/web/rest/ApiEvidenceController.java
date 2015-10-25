@@ -23,6 +23,7 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import fortscale.web.spring.SpringPropertiesUtil;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,8 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
+	private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
+
 	/**
 	 * Mongo repository for fetching evidences
 	 */
@@ -60,39 +63,23 @@ public class ApiEvidenceController extends DataQueryController {
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
 
-	@Value("${fortscale.evidence.name.text}")
-	private String evidenceNameText;
-
 	@Autowired
 	private SupportingInformationService supportingInformationService;
 
 	@Autowired
 	DataQueryHelper dataQueryHelper;
 
-	@Value("${fortscale.evidence.type.map}")
-	private String evidenceTypeProperty;
-
-	private Map evidenceTypeMap;
-
 	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
-
-	@PostConstruct
-	public void initMaps(){
-		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
-	}
-
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
-			Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
-			String anomalyType = (name!=null ? name.toString(): "ANOMALY NAME IS NOT MAPPED");
+			Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
+			String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 
 			evidence.setAnomalyType(anomalyType);
-			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(),
-					evidence.getEntityName(), anomalyType);
-			evidence.setName(evidenceName);
+			evidence.setName(anomalyType);
 		}
 	}
 
