@@ -241,6 +241,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             long latestEpochTimeSent = 0;
             int messagesSent = 0;
             for (Message message: messages) {
+                logger.info("sending message {} - {}", messagesSent, message.messageString);
                 streamWriter = new KafkaEventsWriter(message.topic);
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
