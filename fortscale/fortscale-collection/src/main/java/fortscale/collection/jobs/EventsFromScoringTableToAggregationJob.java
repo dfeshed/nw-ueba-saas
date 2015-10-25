@@ -205,6 +205,11 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
     }
 
     @Override
+    public String getStepName() {
+        return "EventsFromScoringTableToAggregation";
+    }
+
+    @Override
     protected boolean shouldReportDataReceived() {
         return true;
     }
@@ -214,8 +219,10 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         private Queue<Message> messages;
         private int maxSize;
         private Map<String, KafkaEventsWriter> writersMap;
+        private Map<String, Map<String, String>> dataSourceToParameters;
 
         public BatchToSend(int maxSize, Map<String, Map<String, String>> dataSourceToParameters) {
+            this.dataSourceToParameters = dataSourceToParameters;
             messages = new LinkedList();
             this.maxSize = maxSize;
             writersMap = new HashMap();
@@ -243,8 +250,22 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             long latestEpochTimeSent = 0;
             int messagesSent = 0;
             for (Message message: messages) {
-                KafkaEventsWriter streamWriter = writersMap.get(message.securityDataSource);
-                streamWriter.send(message.partitionKey, message.messageString);
+                String securityDataSource = message.securityDataSource;
+                KafkaEventsWriter streamWriter = writersMap.get(securityDataSource);
+                try {
+                    streamWriter.send(message.partitionKey, message.messageString);
+                } catch (Exception ex) {
+                    //if topic was shutdown - re-open
+                    streamWriter = new KafkaEventsWriter(dataSourceToParameters.get(securityDataSource).
+                            get(STREAMING_TOPIC_FIELD_JOB_PARAMETER));
+                    //and re-send
+                    try {
+                        streamWriter.send(message.partitionKey, message.messageString);
+                    } catch (Exception e) {
+                        throw new JobExecutionException(e);
+                    }
+                    writersMap.put(securityDataSource, streamWriter);
+                }
                 logger.info("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
             }
