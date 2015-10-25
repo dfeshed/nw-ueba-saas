@@ -14,7 +14,7 @@ public class NotificationSupportingInformationFactory {
 
         case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
 
-        case VPN_GEO_HOPPING: return null;
+        case VPN_GEO_HOPPING: return new VpnGeoHoppingSupportingInformation();
 
         default: break;
 

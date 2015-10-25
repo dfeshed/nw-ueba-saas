@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +16,8 @@ import java.util.List;
  *
  * Supporting information for Geo hopping indicator - it's open and close vpn events.
  */
-public class VpnGepoHoppingSupportingInformation extends NotificationSupportingInformation {
+@JsonTypeName("vpnGeoHoppingSupportingInformation")
+public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 	private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
 
