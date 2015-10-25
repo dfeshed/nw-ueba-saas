@@ -115,7 +115,12 @@ public class MongoToKafkaJob extends FortscaleJob {
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
                 for (KafkaEventsWriter streamWriter: streamWriters) {
-                    streamWriter.send(null, message);
+                    try {
+                        streamWriter.send(null, message);
+                    } catch (Exception ex) {
+                        logger.error("failed to send message to topic");
+                        throw new JobExecutionException(ex);
+                    }
                 }
                 lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }

@@ -145,14 +145,14 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 else
                     query.andWhere(lt(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER),
                             Long.toString(nextTimestampCursor)));
-                logger.info("query is {}", query.toSQL());
+                logger.debug("query is {}", query.toSQL());
                 int limit = impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
                 query.select("*");
                 query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Sort.Direction.ASC,
                         dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(),
                         new ColumnMapRowMapper());
-                logger.info("found {} records", resultsMap.size());
+                logger.debug("found {} records", resultsMap.size());
                 for (Map<String, Object> result : resultsMap) {
                     JSONObject json = new JSONObject();
                     for (String fieldName : fieldsName) {
@@ -227,15 +227,17 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             this.maxSize = maxSize;
             writersMap = new HashMap();
             for (Map.Entry<String, Map<String, String>> entry: dataSourceToParameters.entrySet()) {
-                KafkaEventsWriter streamWriter = new KafkaEventsWriter(entry.getValue().
-                        get(STREAMING_TOPIC_FIELD_JOB_PARAMETER));
+                String topicName = entry.getValue().get(STREAMING_TOPIC_FIELD_JOB_PARAMETER);
+                KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
                 writersMap.put(entry.getKey(), streamWriter);
             }
         }
 
         public void shutDown() {
             for (KafkaEventsWriter streamWriter: writersMap.values()) {
-                streamWriter.close();
+                try {
+                    streamWriter.close();
+                } catch (Exception ex) {}
             }
         }
 
@@ -255,13 +257,16 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
                 } catch (Exception ex) {
+                    logger.warn("failed to send message, trying to reopen kafka topic writer");
                     //if topic was shutdown - re-open
-                    streamWriter = new KafkaEventsWriter(dataSourceToParameters.get(securityDataSource).
-                            get(STREAMING_TOPIC_FIELD_JOB_PARAMETER));
+                    String topicName = dataSourceToParameters.get(securityDataSource).
+                            get(STREAMING_TOPIC_FIELD_JOB_PARAMETER);
+                    streamWriter = new KafkaEventsWriter(topicName);
                     //and re-send
                     try {
                         streamWriter.send(message.partitionKey, message.messageString);
                     } catch (Exception e) {
+                        logger.error("failed to forward message {} to topic {}", messagesSent, topicName);
                         throw new JobExecutionException(e);
                     }
                     writersMap.put(securityDataSource, streamWriter);
