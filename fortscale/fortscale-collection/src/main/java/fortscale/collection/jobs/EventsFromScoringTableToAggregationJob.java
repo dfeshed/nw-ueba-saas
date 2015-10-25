@@ -59,30 +59,30 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
     private String jobClassToMonitor;
     private Map<String, Map<String, String>> dataSourceToParameters;
     private int hoursToRun;
-    private String securityDataSources;
+    private String dataSources;
     private DateTime startTime;
     private BatchToSend batchToSend;
 
     private void populateDataSourceToParametersMap(JobDataMap map, String securityDataSources)
             throws JobExecutionException {
         dataSourceToParameters = new HashMap();
-        for (String securityDataSource: securityDataSources.split(",")) {
+        for (String dataSource: securityDataSources.split(",")) {
             Map<String, String> parameterMap = new HashMap();
             parameterMap.put(IMPALA_TABLE_NAME_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    IMPALA_TABLE_NAME_JOB_PARAMETER + "-" + securityDataSource));
+                    IMPALA_TABLE_NAME_JOB_PARAMETER + "-" + dataSource));
             parameterMap.put(IMPALA_TABLE_FIELDS_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    IMPALA_TABLE_FIELDS_JOB_PARAMETER + "-" + securityDataSource));
+                    IMPALA_TABLE_FIELDS_JOB_PARAMETER + "-" + dataSource));
             parameterMap.put(EPOCH_TIME_FIELD_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    EPOCH_TIME_FIELD_JOB_PARAMETER + "-" + securityDataSource));
+                    EPOCH_TIME_FIELD_JOB_PARAMETER + "-" + dataSource));
             parameterMap.put(STREAMING_TOPIC_FIELD_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    STREAMING_TOPIC_FIELD_JOB_PARAMETER + "-" + securityDataSource));
+                    STREAMING_TOPIC_FIELD_JOB_PARAMETER + "-" + dataSource));
             parameterMap.put(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER, jobDataMapExtension.
                     getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER + "-" +
-                            securityDataSource));
+                            dataSource));
             parameterMap.put(IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, jobDataMapExtension.
-                    getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER + "-" + securityDataSource,
+                    getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER + "-" + dataSource,
                             "daily"));
-            dataSourceToParameters.put(securityDataSource, parameterMap);
+            dataSourceToParameters.put(dataSource, parameterMap);
         }
     }
 
@@ -90,13 +90,13 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun");
-        securityDataSources = jobDataMapExtension.getJobDataMapStringValue(map, "securityDataSources");
+        dataSources = jobDataMapExtension.getJobDataMapStringValue(map, "securityDataSources");
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, "where", null);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-        populateDataSourceToParametersMap(map, securityDataSources);
+        populateDataSourceToParametersMap(map, dataSources);
         batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
     }
 
@@ -111,9 +111,9 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         for (int hour = 0; hour < hoursToRun; hour++) {
             DateTime endTime = startTime.plusHours(1).minusSeconds(1);
             long latestEventTime = endTime.getMillis() / 1000;
-            for (String securityDataSource: securityDataSources.split(",")) {
-                logger.info("running - {}, {}", securityDataSource, latestEventTime);
-                runStep(securityDataSource, latestEventTime);
+            for (String dataSource: dataSources.split(",")) {
+                logger.info("running - {}, {}", dataSource, latestEventTime);
+                runStep(dataSource, latestEventTime);
             }
             startTime = startTime.plusHours(1);
         }
@@ -121,8 +121,8 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         finishStep();
     }
 
-    private void runStep(String securityDataSource, long latestEventTime) throws Exception {
-        Map<String, String> dataSourceParams = dataSourceToParameters.get(securityDataSource);
+    private void runStep(String dataSource, long latestEventTime) throws Exception {
+        Map<String, String> dataSourceParams = dataSourceToParameters.get(dataSource);
         try {
             String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceParams.
                     get(IMPALA_TABLE_FIELDS_JOB_PARAMETER));
