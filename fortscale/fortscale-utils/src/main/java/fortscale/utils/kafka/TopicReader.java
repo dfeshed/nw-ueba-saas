@@ -36,7 +36,7 @@ public class TopicReader {
      * @param lastMessageTime   message time to compare
      * @return
      */
-    public boolean waitForMetrics(String zookeeper, int port, String headerToCheck, String jobToCheck,
+    public static boolean waitForMetrics(String zookeeper, int port, String headerToCheck, String jobToCheck,
                                   String metricsToExtract, long lastMessageTime,
                                   int waitTimeBetweenMetricsChecks, int checkRetries) {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
@@ -50,12 +50,14 @@ public class TopicReader {
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
                 logger.error("failed to read from metrics topic - {}", messages.errorCode(TOPIC, partition));
+                consumer.close();
                 return false;
             }
             for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
                 long currentOffset = msg.offset();
                 if (currentOffset < offset) {
                     logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
+                    consumer.close();
                     continue;
                 }
                 String message = convertPayloadToString(msg);
@@ -64,6 +66,7 @@ public class TopicReader {
                     Long time = convertToLong(metricData.get(metricsToExtract));
                     if (time != null && time == lastMessageTime) {
                         logger.info(metricsToExtract + ":" + time + " reached");
+                        consumer.close();
                         return true;
                     }
                 }
@@ -76,12 +79,14 @@ public class TopicReader {
                     currentTry++;
                 } catch (InterruptedException e) {
                     logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                    consumer.close();
                     return false;
                 }
             }
             lastoffset = offset;
         }
         logger.error("failed to get metrics data in {} retries", checkRetries);
+        consumer.close();
         return false;
     }
 
@@ -92,7 +97,7 @@ public class TopicReader {
      * @param rawMsg  raw kafka message
      * @return
      */
-    private String convertPayloadToString(MessageAndOffset rawMsg) {
+    private static String convertPayloadToString(MessageAndOffset rawMsg) {
         ByteBuffer buf = rawMsg.message().payload();
         byte[] dst = new byte[buf.limit()];
         buf.get(dst);
@@ -107,7 +112,8 @@ public class TopicReader {
      * @param metricsToExtract  requested data
      * @return data
      */
-    private Map <String, Object> getMetricData(String topic, String metric, String header, String metricsToExtract) {
+    private static Map <String, Object> getMetricData(String topic, String metric, String header,
+                                                      String metricsToExtract) {
         Map <String, Object> metricaData = new HashMap();
         if (metric.contains(header)) {
             Object currValue;

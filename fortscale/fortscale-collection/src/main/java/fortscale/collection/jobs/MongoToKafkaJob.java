@@ -125,7 +125,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             if (lastMessageTime > 0) {
                 //throttling
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                boolean result = new TopicReader().waitForMetrics(brokerConnection.split(":")[0],
+                boolean result = TopicReader.waitForMetrics(brokerConnection.split(":")[0],
                         Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
                         MILLISECONDS_TO_WAIT, checkRetries);
