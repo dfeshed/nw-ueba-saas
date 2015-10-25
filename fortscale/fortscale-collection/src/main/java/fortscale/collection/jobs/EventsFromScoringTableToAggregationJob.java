@@ -245,16 +245,8 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
                 } catch (Exception ex) {
-                    logger.warn("failed to send message, trying to reopen kafka topic writer - {}", ex);
-                    //if topic was shutdown - re-open
-                    streamWriter = new KafkaEventsWriter(message.topic);
-                    //and re-send
-                    try {
-                        streamWriter.send(message.partitionKey, message.messageString);
-                    } catch (Exception e) {
-                        logger.error("failed to forward message {} to topic {}", messagesSent, message.topic);
-                        throw new JobExecutionException(e);
-                    }
+                    logger.error("failed to send message to topic {}", message.topic);
+                    throw new JobExecutionException(ex);
                 }
                 logger.info("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
