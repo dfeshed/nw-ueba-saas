@@ -75,10 +75,10 @@ public class MetricsReader {
             }
             if (offset == lastoffset) {
                 try {
-                    logger.info("waiting for metrics topic to refresh");
                     if (time != null) {
                         logger.info("last message time is {}", time);
                     }
+                    logger.info("waiting for metrics topic to refresh");
                     Thread.sleep(waitTimeBetweenMetricsChecks);
                     currentTry++;
                 } catch (InterruptedException e) {
