@@ -97,8 +97,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
         populateDataSourceToParametersMap(map, securityDataSources);
-        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
-                dataSourceToParameters);
+        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
     }
 
     @Override
@@ -159,7 +158,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    batchToSend.send(securityDataSource,
+                    batchToSend.send(dataSourceParams.get(STREAMING_TOPIC_FIELD_JOB_PARAMETER),
                             result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
                             json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
@@ -171,7 +170,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         }
     }
 
-    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
+    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType){
         PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
         String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
         String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
@@ -218,27 +217,17 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
         private Queue<Message> messages;
         private int maxSize;
-        private Map<String, KafkaEventsWriter> writersMap;
-        private Map<String, Map<String, String>> dataSourceToParameters;
+        private KafkaEventsWriter streamWriter;
 
-        public BatchToSend(int maxSize, Map<String, Map<String, String>> dataSourceToParameters) {
-            this.dataSourceToParameters = dataSourceToParameters;
+        public BatchToSend(int maxSize) {
             messages = new LinkedList();
             this.maxSize = maxSize;
-            writersMap = new HashMap();
-            for (Map.Entry<String, Map<String, String>> entry: dataSourceToParameters.entrySet()) {
-                String topicName = entry.getValue().get(STREAMING_TOPIC_FIELD_JOB_PARAMETER);
-                KafkaEventsWriter streamWriter = new KafkaEventsWriter(topicName);
-                writersMap.put(entry.getKey(), streamWriter);
-            }
         }
 
         public void shutDown() {
-            for (KafkaEventsWriter streamWriter: writersMap.values()) {
-                try {
-                    streamWriter.close();
-                } catch (Exception ex) {}
-            }
+            try {
+                streamWriter.close();
+            } catch (Exception ex) {}
         }
 
         /***
@@ -252,24 +241,20 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             long latestEpochTimeSent = 0;
             int messagesSent = 0;
             for (Message message: messages) {
-                String securityDataSource = message.securityDataSource;
-                KafkaEventsWriter streamWriter = writersMap.get(securityDataSource);
+                streamWriter = new KafkaEventsWriter(message.topic);
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
                 } catch (Exception ex) {
-                    logger.warn("failed to send message, trying to reopen kafka topic writer");
+                    logger.warn("failed to send message, trying to reopen kafka topic writer - {}", ex);
                     //if topic was shutdown - re-open
-                    String topicName = dataSourceToParameters.get(securityDataSource).
-                            get(STREAMING_TOPIC_FIELD_JOB_PARAMETER);
-                    streamWriter = new KafkaEventsWriter(topicName);
+                    streamWriter = new KafkaEventsWriter(message.topic);
                     //and re-send
                     try {
                         streamWriter.send(message.partitionKey, message.messageString);
                     } catch (Exception e) {
-                        logger.error("failed to forward message {} to topic {}", messagesSent, topicName);
+                        logger.error("failed to forward message {} to topic {}", messagesSent, message.topic);
                         throw new JobExecutionException(e);
                     }
-                    writersMap.put(securityDataSource, streamWriter);
                 }
                 logger.info("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
@@ -296,15 +281,15 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
          *
          * This method adds the messages to the send queue
          *
-         * @param securityDataSource  message data source
-         * @param partitionKey        message partition key
-         * @param messageStr          the message itself in json format
-         * @param epochTime           time of event of message
+         * @param topic         topic to send
+         * @param partitionKey  message partition key
+         * @param messageStr    the message itself in json format
+         * @param epochTime     time of event of message
          * @throws JobExecutionException
          */
-        public void send(String securityDataSource, String partitionKey, String messageStr, long epochTime)
+        public void send(String topic, String partitionKey, String messageStr, long epochTime)
                 throws JobExecutionException {
-            messages.add(new Message(securityDataSource, messageStr, partitionKey, epochTime));
+            messages.add(new Message(topic, messageStr, partitionKey, epochTime));
             if (messages.size() < maxSize) {
                 return;
             }
@@ -313,13 +298,13 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
         private class Message {
 
-            private String securityDataSource;
+            private String topic;
             private String messageString;
             private String partitionKey;
             private long epochTime;
 
-            private Message(String securityDataSource, String messageString, String partitionKey, long epochTime) {
-                this.securityDataSource = securityDataSource;
+            private Message(String topic, String messageString, String partitionKey, long epochTime) {
+                this.topic = topic;
                 this.messageString = messageString;
                 this.partitionKey = partitionKey;
                 this.epochTime = epochTime;
