@@ -241,9 +241,11 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         public void flushMessages() throws JobExecutionException {
             logger.info("flushing {} messages", messages.size());
             long latestEpochTimeSent = 0;
+            int messagesSent = 0;
             for (Message message: messages) {
                 KafkaEventsWriter streamWriter = writersMap.get(message.securityDataSource);
                 streamWriter.send(message.partitionKey, message.messageString);
+                logger.info("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
             }
             logger.info("messages sent, waiting for arrival");
