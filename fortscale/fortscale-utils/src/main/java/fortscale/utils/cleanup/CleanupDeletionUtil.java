@@ -4,7 +4,9 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by Amir Keren on 24/09/15.
@@ -30,7 +32,8 @@ public abstract class CleanupDeletionUtil {
      */
     public Collection<String> getEntitiesMatchingPredicate(String value, String filter) {
         logger.debug("getting all entities matching value [} with predicate {}", value, filter);
-        Collection<String> entitiesNames = getAllEntities();
+        Collection<String> tempEntitiesNames = getAllEntities();
+        Set<String> entitiesNames = new HashSet(tempEntitiesNames);
         logger.debug("found {} entities", entitiesNames.size());
         if (value.isEmpty()) {
             return entitiesNames;
