@@ -110,17 +110,14 @@ public class MongoToKafkaJob extends FortscaleJob {
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).sort(sortQuery).toArray();
             long lastMessageTime = 0;
-            for (int i = 0; i < results.size(); i++) {
-                DBObject result = results.get(i);
-                if (i == results.size() - 1) {
-                    lastMessageTime = Long.parseLong(result.get(dateField).toString());
-                }
-                String message = manipulateMessage(collectionName, results.get(i));
+            for (DBObject result: results) {
+                String message = manipulateMessage(collectionName, result);
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
                 for (KafkaEventsWriter streamWriter: streamWriters) {
                     streamWriter.send(null, message);
                 }
+                lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }
             if (lastMessageTime > 0) {
                 //throttling
