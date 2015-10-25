@@ -146,8 +146,8 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                 logger.info("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
             }
-            logger.info("messages sent, waiting for arrival");
             if (latestEpochTimeSent > 0) {
+                logger.info("messages sent, waiting for last message time {}", latestEpochTimeSent);
                 listenToMetrics(latestEpochTimeSent);
             }
             logger.info("finished flushing, clearing queue");

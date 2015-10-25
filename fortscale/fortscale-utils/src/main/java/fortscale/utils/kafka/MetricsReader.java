@@ -42,6 +42,7 @@ public class MetricsReader {
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
         long offset = 0, lastoffset = -1, currentTry = 0;
         int partition = 0;
+        Long time = null;
         while (currentTry < checkRetries) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
@@ -63,7 +64,7 @@ public class MetricsReader {
                 String message = convertPayloadToString(msg);
                 Map<String, Object> metricData = getMetricData(message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
-                    Long time = convertToLong(metricData.get(metricsToExtract));
+                    time = convertToLong(metricData.get(metricsToExtract));
                     if (time != null && time == lastMessageTime) {
                         logger.info(metricsToExtract + ":" + time + " reached");
                         consumer.close();
@@ -75,6 +76,9 @@ public class MetricsReader {
             if (offset == lastoffset) {
                 try {
                     logger.info("waiting for metrics topic to refresh");
+                    if (time != null) {
+                        logger.info("last message time is {}", time);
+                    }
                     Thread.sleep(waitTimeBetweenMetricsChecks);
                     currentTry++;
                 } catch (InterruptedException e) {
