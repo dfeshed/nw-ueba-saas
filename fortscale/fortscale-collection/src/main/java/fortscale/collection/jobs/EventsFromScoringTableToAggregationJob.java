@@ -96,8 +96,9 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
         populateDataSourceToParametersMap(map, securityDataSources);
+        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
+                dataSourceToParameters);
     }
 
     @Override
@@ -165,9 +166,8 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 }
                 timestampCursor = nextTimestampCursor;
             }
-        } catch (Exception ex) {
-            logger.error("failed to forward messages - {}", ex);
-            throw new JobExecutionException();
+        } finally {
+            batchToSend.shutDown();
         }
     }
 
@@ -213,10 +213,23 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
         private Queue<Message> messages;
         private int maxSize;
+        private Map<String, KafkaEventsWriter> writersMap;
 
-        public BatchToSend(int maxSize) {
+        public BatchToSend(int maxSize, Map<String, Map<String, String>> dataSourceToParameters) {
             messages = new LinkedList();
             this.maxSize = maxSize;
+            writersMap = new HashMap();
+            for (Map.Entry<String, Map<String, String>> entry: dataSourceToParameters.entrySet()) {
+                KafkaEventsWriter streamWriter = new KafkaEventsWriter(entry.getValue().
+                        get(STREAMING_TOPIC_FIELD_JOB_PARAMETER));
+                writersMap.put(entry.getKey(), streamWriter);
+            }
+        }
+
+        public void shutDown() {
+            for (KafkaEventsWriter streamWriter: writersMap.values()) {
+                streamWriter.close();
+            }
         }
 
         /***
@@ -228,11 +241,9 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
         public void flushMessages() throws JobExecutionException {
             logger.info("flushing {} messages", messages.size());
             long latestEpochTimeSent = 0;
-            KafkaEventsWriter streamWriter;
             for (Message message: messages) {
-                streamWriter = new KafkaEventsWriter(message.topic);
+                KafkaEventsWriter streamWriter = writersMap.get(message.securityDataSource);
                 streamWriter.send(message.partitionKey, message.messageString);
-                streamWriter.close();
                 latestEpochTimeSent = message.epochTime;
             }
             logger.info("messages sent, waiting for arrival");
@@ -257,15 +268,15 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
          *
          * This method adds the messages to the send queue
          *
-         * @param topic         topic to send the message to
-         * @param partitionKey  message partition key
-         * @param messageStr    the message itself in json format
-         * @param epochTime     time of event of message
+         * @param securityDataSource  message data source
+         * @param partitionKey        message partition key
+         * @param messageStr          the message itself in json format
+         * @param epochTime           time of event of message
          * @throws JobExecutionException
          */
-        public void send(String topic, String partitionKey, String messageStr, long epochTime)
+        public void send(String securityDataSource, String partitionKey, String messageStr, long epochTime)
                 throws JobExecutionException {
-            messages.add(new Message(topic, messageStr, partitionKey, epochTime));
+            messages.add(new Message(securityDataSource, messageStr, partitionKey, epochTime));
             if (messages.size() < maxSize) {
                 return;
             }
@@ -274,13 +285,13 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
         private class Message {
 
-            private String topic;
+            private String securityDataSource;
             private String messageString;
             private String partitionKey;
             private long epochTime;
 
-            private Message(String topic, String messageString, String partitionKey, long epochTime) {
-                this.topic = topic;
+            private Message(String securityDataSource, String messageString, String partitionKey, long epochTime) {
+                this.securityDataSource = securityDataSource;
                 this.messageString = messageString;
                 this.partitionKey = partitionKey;
                 this.epochTime = epochTime;
