@@ -144,14 +144,14 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 else
                     query.andWhere(lt(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER),
                             Long.toString(nextTimestampCursor)));
-                logger.debug("query is {}", query.toSQL());
+                logger.info("query is {}", query.toSQL());
                 int limit = impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
                 query.select("*");
                 query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Sort.Direction.ASC,
                         dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(),
                         new ColumnMapRowMapper());
-                logger.debug("found {} records", resultsMap.size());
+                logger.info("found {} records", resultsMap.size());
                 for (Map<String, Object> result : resultsMap) {
                     JSONObject json = new JSONObject();
                     for (String fieldName : fieldsName) {
@@ -226,6 +226,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
          * @throws JobExecutionException
          */
         public void flushMessages() throws JobExecutionException {
+            logger.info("flushing {} messages", messages.size());
             long latestEpochTimeSent = 0;
             KafkaEventsWriter streamWriter;
             for (Message message: messages) {
@@ -234,6 +235,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 streamWriter.close();
                 latestEpochTimeSent = message.epochTime;
             }
+            logger.info("messages sent, waiting for arrival");
             if (latestEpochTimeSent > 0) {
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
                 boolean result = MetricsReader.waitForMetrics(zookeeperConnection.split(":")[0],
@@ -247,6 +249,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                     throw new JobExecutionException();
                 }
             }
+            logger.info("finished flushing, clearing queue");
             messages.clear();
         }
 
