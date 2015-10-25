@@ -131,12 +131,10 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     }
 
     private void runStep(String securityDataSource, long latestEventTime) throws Exception {
-        KafkaEventsWriter streamWriter = null;
         Map<String, String> dataSourceParams = dataSourceToParameters.get(securityDataSource);
         try {
             String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceParams.
                     get(IMPALA_TABLE_FIELDS_JOB_PARAMETER));
-            streamWriter = new KafkaEventsWriter(dataSourceParams.get(STREAMING_TOPIC_FIELD_JOB_PARAMETER));
             long timestampCursor = latestEventTime - deltaTimeInSec;
             while (timestampCursor < latestEventTime) {
                 long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes *
@@ -169,17 +167,16 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    batchToSend.send(streamWriter,
+                    batchToSend.send(dataSourceParams.get(STREAMING_TOPIC_FIELD_JOB_PARAMETER),
                             result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
                             json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
                 timestampCursor = nextTimestampCursor;
             }
-        } finally {
-            if (streamWriter != null) {
-                streamWriter.close();
-            }
+        } catch (Exception ex) {
+            logger.error("failed to forward messages - {}", ex);
+            throw new JobExecutionException();
         }
     }
 
@@ -231,11 +228,20 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             this.maxSize = maxSize;
         }
 
+        /***
+         *
+         * This method sends the messages in the queue to their designated topics
+         *
+         * @throws JobExecutionException
+         */
         public void flushMessages() throws JobExecutionException {
             long latestEpochTimeSent = 0;
+            KafkaEventsWriter streamWriter;
             for (Message message: messages) {
-                latestEpochTimeSent = message.getEpochTime();
-                message.getStreamWriter().send(message.getPartitionKey(), message.getMessageString());
+                latestEpochTimeSent = message.epochTime;
+                streamWriter = new KafkaEventsWriter(message.topic);
+                streamWriter.send(message.partitionKey, message.messageString);
+                streamWriter.close();
             }
             if (latestEpochTimeSent > 0) {
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
@@ -253,10 +259,20 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             }
         }
 
-        public void send(KafkaEventsWriter streamWriter, String partitionKey, String messageStr, long epochTime)
+        /***
+         *
+         * This method adds the messages to the send queue
+         *
+         * @param topic         topic to send the message to
+         * @param partitionKey  message partition key
+         * @param messageStr    the message itself in json format
+         * @param epochTime     time of event of message
+         * @throws JobExecutionException
+         */
+        public void send(String topic, String partitionKey, String messageStr, long epochTime)
                 throws JobExecutionException {
+            messages.add(new Message(topic, messageStr, partitionKey, epochTime));
             if (messages.size() < maxSize) {
-                messages.add(new Message(streamWriter, messageStr, partitionKey, epochTime));
                 return;
             }
             flushMessages();
@@ -264,32 +280,16 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
 
         private class Message {
 
-            private KafkaEventsWriter streamWriter;
+            private String topic;
             private String messageString;
             private String partitionKey;
             private long epochTime;
 
-            private Message(KafkaEventsWriter streamWriter, String messageString, String partitionKey, long epochTime) {
-                this.streamWriter = streamWriter;
+            private Message(String topic, String messageString, String partitionKey, long epochTime) {
+                this.topic = topic;
                 this.messageString = messageString;
                 this.partitionKey = partitionKey;
                 this.epochTime = epochTime;
-            }
-
-            public KafkaEventsWriter getStreamWriter() {
-                return streamWriter;
-            }
-
-            public String getMessageString() {
-                return messageString;
-            }
-
-            public String getPartitionKey() {
-                return partitionKey;
-            }
-
-            public long getEpochTime() {
-                return epochTime;
             }
 
         }
