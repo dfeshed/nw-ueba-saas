@@ -6,11 +6,18 @@ package fortscale.domain.core;
 public class NotificationSupportingInformationFactory {
 
     private final static String VPN_OVERLAPPING = "VPN_user_creds_share";
+    private final static String VPN_GEO_HOPPING = "vpn_geo_hopping";
 
     public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence) {
-        //TODO - add additional types of notifications here
-        if (evidence.getAnomalyTypeFieldName().equalsIgnoreCase(VPN_OVERLAPPING)) {
-            return new VpnOverlappingSupportingInformation();
+
+        switch (evidence.getAnomalyTypeFieldName().toLowerCase()){
+
+        case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
+
+        case VPN_GEO_HOPPING: return null;
+
+        default: break;
+
         }
         return null;
     }
