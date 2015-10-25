@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 
 @JsonTypeName("notificationSupportingInformation")
+@JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT,property="type")
 @JsonSubTypes({@JsonSubTypes.Type(value = VpnGeoHoppingSupportingInformation.class,name="vpnGeoHoppingSupportingInformation"),
         @JsonSubTypes.Type(value = VpnOverlappingSupportingInformation.class,name="vpnOverlappingSupportingInformation")})
 public class NotificationSupportingInformation extends EntitySupportingInformation {
