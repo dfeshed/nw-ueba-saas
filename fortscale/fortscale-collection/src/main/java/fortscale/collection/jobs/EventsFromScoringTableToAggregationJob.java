@@ -143,11 +143,11 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                     logger.error("failed to send message to topic {}", message.topic);
                     throw new JobExecutionException(ex);
                 }
-                logger.info("{} messages sent", messagesSent++);
+                logger.debug("{} messages sent", messagesSent++);
                 latestEpochTimeSent = message.epochTime;
             }
             if (latestEpochTimeSent > 0) {
-                logger.info("messages sent, waiting for last message time {}", latestEpochTimeSent);
+                logger.info("{} messages sent, waiting for last message time {}", messagesSent, latestEpochTimeSent);
                 listenToMetrics(latestEpochTimeSent);
             }
             logger.info("finished flushing, clearing queue");
