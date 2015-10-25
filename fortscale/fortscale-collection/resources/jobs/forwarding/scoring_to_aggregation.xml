@@ -10,7 +10,7 @@
             <name>ScoringToAggregation</name>
             <group>Forwarding</group>
             <description>Sending events from scored table to specified kafka topic</description>
-            <job-class>fortscale.collection.jobs.EventsFromScoringTableToStreamingJob</job-class>
+            <job-class>fortscale.collection.jobs.EventsFromScoringTableToAggregationJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>

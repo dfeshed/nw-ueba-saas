@@ -29,9 +29,9 @@ import static fortscale.collection.jobs.EventsFromDataTableToStreamingJob.FieldR
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
-public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
+public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
-    private static Logger logger = Logger.getLogger(EventsFromScoringTableToStreamingJob.class);
+    private static Logger logger = Logger.getLogger(EventsFromScoringTableToAggregationJob.class);
 
     private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
     private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
@@ -40,15 +40,11 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private static final String STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER = "streamingTopicPartitionKey";
     private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
 
-    private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 60; // 1 hour
     private static final int DEFAULT_CHECK_RETRIES = 60;
     private static final int DEFAULT_BATCH_SIZE = 1000;
-
     private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
-
-    //define how much time to subtract from the latest event time - this way to get the first event time to send
-    @Value("${batch.sendTo.kafka.events.delta.time.sec:3599}")
-    protected long eventsDeltaTimeInSec;
+    private static final int FETCH_EVENTS_STEP_IN_MINUTES = 60; // 1 hour
+    private static final long DELTA_TIME_IN_SECONDS = 3599; // 59 minutes and 59 seconds
 
     @Value("${broker.list}")
     private String zookeeperConnection;
@@ -57,8 +53,6 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
     private JdbcOperations impalaJdbcTemplate;
 
     private String whereCriteria;
-    private long deltaTimeInSec;
-    private int fetchEventsStepInMinutes;
     private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap();
     private int checkRetries;
     private String jobToMonitor;
@@ -99,14 +93,11 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         securityDataSources = jobDataMapExtension.getJobDataMapStringValue(map, "securityDataSources");
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, "where", null);
-        deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, "deltaTimeInSec", eventsDeltaTimeInSec);
-        fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, "fetchEventsStepInMinutes",
-                FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
         jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-        populateDataSourceToParametersMap(map, securityDataSources);
         batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
+        populateDataSourceToParametersMap(map, securityDataSources);
     }
 
     @Override
@@ -135,9 +126,9 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
         try {
             String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceParams.
                     get(IMPALA_TABLE_FIELDS_JOB_PARAMETER));
-            long timestampCursor = latestEventTime - deltaTimeInSec;
+            long timestampCursor = latestEventTime - DELTA_TIME_IN_SECONDS;
             while (timestampCursor < latestEventTime) {
-                long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes *
+                long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + FETCH_EVENTS_STEP_IN_MINUTES *
                         DateTimeConstants.SECONDS_PER_MINUTE);
                 ImpalaQuery query = new ImpalaQuery();
                 query.select("count(*)").from(dataSourceParams.get(IMPALA_TABLE_NAME_JOB_PARAMETER));
