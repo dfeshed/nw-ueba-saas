@@ -118,6 +118,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             startTime = startTime.plusHours(1);
         }
         batchToSend.flushMessages();
+        batchToSend.shutDown();
         finishStep();
     }
 
@@ -165,8 +166,9 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
                 }
                 timestampCursor = nextTimestampCursor;
             }
-        } finally {
-            batchToSend.shutDown();
+        } catch (Exception ex) {
+            logger.error("failed to retrieve data from impala - {}", ex);
+            throw new JobExecutionException();
         }
     }
 
@@ -242,7 +244,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             long latestEpochTimeSent = 0;
             int messagesSent = 0;
             for (Message message: messages) {
-                logger.info("sending message {} to topic {} - {} ", messagesSent, message.topic, message.messageString);
+                logger.debug("sending message {} to topic {} - {} ", messagesSent, message.topic,message.messageString);
                 streamWriter.setTopic(message.topic);
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
