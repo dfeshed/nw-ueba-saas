@@ -5,7 +5,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicReader;
+import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -122,7 +122,7 @@ public class MongoToKafkaJob extends FortscaleJob {
             if (lastMessageTime > 0) {
                 //throttling
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                boolean result = TopicReader.waitForMetrics(brokerConnection.split(":")[0],
+                boolean result = MetricsReader.waitForMetrics(brokerConnection.split(":")[0],
                         Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
                         String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
                         MILLISECONDS_TO_WAIT, checkRetries);

@@ -16,13 +16,13 @@ import java.util.Map;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
 
-public class TopicReader {
+public class MetricsReader {
 
-    private static Logger logger = LoggerFactory.getLogger(TopicReader.class);
+    private static Logger logger = LoggerFactory.getLogger(MetricsReader.class);
 
     private static final String HEADER = "header";
     private static final String JOB_NAME = "job-name";
-    private static final String TOPIC = "metrics";
+    private static final String METRICS_TOPIC = "metrics";
 
     /***
      *
@@ -45,15 +45,15 @@ public class TopicReader {
         while (currentTry < checkRetries) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(TOPIC, partition, offset, 1000000)
+                    .addFetch(METRICS_TOPIC, partition, offset, 1000000)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
-                logger.error("failed to read from metrics topic - {}", messages.errorCode(TOPIC, partition));
+                logger.error("failed to read from metrics topic - {}", messages.errorCode(METRICS_TOPIC, partition));
                 consumer.close();
                 return false;
             }
-            for (MessageAndOffset msg : messages.messageSet(TOPIC, partition)) {
+            for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
                 long currentOffset = msg.offset();
                 if (currentOffset < offset) {
                     logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
@@ -61,7 +61,7 @@ public class TopicReader {
                     continue;
                 }
                 String message = convertPayloadToString(msg);
-                Map<String, Object> metricData = getMetricData(TOPIC, message, headerToCheck, metricsToExtract);
+                Map<String, Object> metricData = getMetricData(message, headerToCheck, metricsToExtract);
                 if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
                     Long time = convertToLong(metricData.get(metricsToExtract));
                     if (time != null && time == lastMessageTime) {
@@ -78,7 +78,7 @@ public class TopicReader {
                     Thread.sleep(waitTimeBetweenMetricsChecks);
                     currentTry++;
                 } catch (InterruptedException e) {
-                    logger.info("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                    logger.error("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
                     consumer.close();
                     return false;
                 }
@@ -112,14 +112,13 @@ public class TopicReader {
      * @param metricsToExtract  requested data
      * @return data
      */
-    private static Map <String, Object> getMetricData(String topic, String metric, String header,
-                                                      String metricsToExtract) {
+    private static Map <String, Object> getMetricData(String metric, String header, String metricsToExtract) {
         Map <String, Object> metricaData = new HashMap();
         if (metric.contains(header)) {
             Object currValue;
             try {
                 JSONObject bigJSON = new JSONObject(metric);
-                JSONObject innerJSON = bigJSON.getJSONObject(topic);
+                JSONObject innerJSON = bigJSON.getJSONObject(METRICS_TOPIC);
                 metricaData.put(JOB_NAME, bigJSON.getJSONObject(HEADER).getString(JOB_NAME));
                 currValue = innerJSON.getJSONObject(header).get(metricsToExtract);
                 metricaData.put(metricsToExtract, currValue);
