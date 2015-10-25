@@ -221,6 +221,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
 
         public BatchToSend(int maxSize) {
             messages = new LinkedList();
+            streamWriter = new KafkaEventsWriter("");
             this.maxSize = maxSize;
         }
 
@@ -242,7 +243,7 @@ public class EventsFromScoringTableToAggregationJob extends FortscaleJob {
             int messagesSent = 0;
             for (Message message: messages) {
                 logger.info("sending message {} to topic {} - {} ", messagesSent, message.topic, message.messageString);
-                streamWriter = new KafkaEventsWriter(message.topic);
+                streamWriter.setTopic(message.topic);
                 try {
                     streamWriter.send(message.partitionKey, message.messageString);
                 } catch (Exception ex) {
