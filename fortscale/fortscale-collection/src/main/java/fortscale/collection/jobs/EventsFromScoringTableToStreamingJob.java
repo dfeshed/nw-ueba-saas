@@ -238,10 +238,10 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
             long latestEpochTimeSent = 0;
             KafkaEventsWriter streamWriter;
             for (Message message: messages) {
-                latestEpochTimeSent = message.epochTime;
                 streamWriter = new KafkaEventsWriter(message.topic);
                 streamWriter.send(message.partitionKey, message.messageString);
                 streamWriter.close();
+                latestEpochTimeSent = message.epochTime;
             }
             if (latestEpochTimeSent > 0) {
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
@@ -255,8 +255,8 @@ public class EventsFromScoringTableToStreamingJob extends FortscaleJob {
                     logger.error("last message not processed - timed out!");
                     throw new JobExecutionException();
                 }
-                messages.clear();
             }
+            messages.clear();
         }
 
         /***
