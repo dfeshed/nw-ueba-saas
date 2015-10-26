@@ -76,11 +76,13 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			lastLevelDbCleanupSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			//remove from level db those buckets that contains old enough (configured) events and that was synced with mongo before enough (configured) time.
-			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(lastEventEpochTime - levelDbRetentionInEventSeconds, lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds);
+			long endTime = lastEventEpochTime - levelDbRetentionInEventSeconds;
+			long syncTime = lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds;
+			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(endTime, syncTime);
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
 				featureBucketStore.delete(getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));
-				featureBucketMetadataRepository.delete(featureBucketMetadata);
 			}
+			featureBucketMetadataRepository.deleteByEndTimeLessThanAndSyncTimeLessThan(endTime, syncTime);
 		}
 	}
 	

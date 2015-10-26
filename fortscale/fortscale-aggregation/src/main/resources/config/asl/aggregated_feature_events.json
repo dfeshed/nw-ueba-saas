@@ -463,7 +463,7 @@
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_kerberos",
+        "name": "distinct_number_of_src_machines_with_high_score_kerberos_logins_daily",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -633,7 +633,7 @@
         }
       },
       {
-        "name": "distinct_number_of_src_machines_with_high_score_ssh_daily_hourly",
+        "name": "distinct_number_of_src_machines_with_high_score_ssh_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_hourly",
         "numberOfBuckets": 1,

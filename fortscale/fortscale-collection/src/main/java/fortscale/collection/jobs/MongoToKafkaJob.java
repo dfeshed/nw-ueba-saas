@@ -5,7 +5,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
+import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -18,8 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static fortscale.utils.ConversionUtils.convertToLong;
 
 /**
  * Created by Amir Keren on 04/10/2015.
@@ -41,12 +39,12 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+    @Value("${broker.list}")
+    private String brokerConnection;
 	@Value("${zookeeper.connection}")
 	private String zookeeperConnection;
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
 
 	private BasicDBObject mongoQuery;
     private BasicDBObject sortQuery;
@@ -112,33 +110,33 @@ public class MongoToKafkaJob extends FortscaleJob {
             List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).sort(sortQuery).toArray();
             long lastMessageTime = 0;
-            for (int i = 0; i < results.size(); i++) {
-                DBObject result = results.get(i);
-                if (i == results.size() - 1) {
-                    lastMessageTime = Long.parseLong(result.get(dateField).toString());
-                }
-                String message = manipulateMessage(collectionName, results.get(i));
+            for (DBObject result: results) {
+                String message = manipulateMessage(collectionName, result);
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
-                for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.send(null, message);
-            }
-            //throttling
-            int currentTry = 0;
-            while (currentTry < checkRetries) {
-                logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
-                TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                        String.format("%s-last-message-epochtime", jobToMonitor)));
-                if (time != null && time == lastMessageTime) {
-                    logger.debug("last message in batch processed, moving to next batch");
-                    break;
+                for (KafkaEventsWriter streamWriter: streamWriters) {
+                    try {
+                        streamWriter.send(null, message);
+                    } catch (Exception ex) {
+                        logger.error("failed to send message to topic");
+                        throw new JobExecutionException(ex);
+                    }
                 }
-                logger.debug("last message not yet processed, waiting {} milliseconds...");
-                Thread.sleep(MILLISECONDS_TO_WAIT);
+                lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }
-            if (currentTry >= checkRetries) {
-                logger.error("did not receive last message time {} in task {} - breaking",lastMessageTime,jobToMonitor);
-                break;
+            if (lastMessageTime > 0) {
+                //throttling
+                logger.info("throttling by last message metrics on job {}", jobToMonitor);
+                boolean result = MetricsReader.waitForMetrics(brokerConnection.split(":")[0],
+                        Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
+                        String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
+                        MILLISECONDS_TO_WAIT, checkRetries);
+                if (result == true) {
+                    logger.info("last message in batch processed, moving to next batch");
+                } else {
+                    logger.error("last message not yet processed - timed out!");
+                    throw new JobExecutionException();
+                }
             }
             counter += batchSize;
         }
@@ -147,7 +145,9 @@ public class MongoToKafkaJob extends FortscaleJob {
         } else {
             logger.debug("forwarded all {} documents", totalItems);
         }
-        for (KafkaEventsWriter streamWriter: streamWriters) streamWriter.close();
+        for (KafkaEventsWriter streamWriter: streamWriters) {
+            streamWriter.close();
+        }
 		finishStep();
 	}
 

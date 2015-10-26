@@ -31,4 +31,11 @@ public class FeatureBucketAggrMetadataRepositoryImpl implements FeatureBucketAgg
 		return mongoTemplate.find(query, FeatureBucketAggrMetadata.class);
 	}
 
+
+	@Override
+	public void deleteByEndTimeLessThan(Long endTime) {
+		Query query = new Query(Criteria.where(FeatureBucketAggrMetadata.END_TIME_FIELD).lt(endTime));
+		mongoTemplate.remove(query,  FeatureBucketAggrMetadata.class);
+	}
+
 }

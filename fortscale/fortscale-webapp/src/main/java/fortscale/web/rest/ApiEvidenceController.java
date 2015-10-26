@@ -5,13 +5,14 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.User;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
-import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
@@ -23,13 +24,14 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import javax.annotation.PostConstruct;
+
 import java.util.*;
 
 /**
@@ -48,6 +50,8 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
+	private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
+
 	/**
 	 * Mongo repository for fetching evidences
 	 */
@@ -60,39 +64,23 @@ public class ApiEvidenceController extends DataQueryController {
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
 
-	@Value("${fortscale.evidence.name.text}")
-	private String evidenceNameText;
-
 	@Autowired
 	private SupportingInformationService supportingInformationService;
 
 	@Autowired
 	DataQueryHelper dataQueryHelper;
 
-	@Value("${fortscale.evidence.type.map}")
-	private String evidenceTypeProperty;
-
-	private Map evidenceTypeMap;
-
 	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
-
-	@PostConstruct
-	public void initMaps(){
-		evidenceTypeMap = ConfigurationUtils.getStringMap(evidenceTypeProperty);
-	}
-
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
-			Object name = evidenceTypeMap.get(evidence.getAnomalyTypeFieldName());
-			String anomalyType = (name!=null ? name.toString(): "ANOMALY NAME IS NOT MAPPED");
+			Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
+			String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 
 			evidence.setAnomalyType(anomalyType);
-			String evidenceName = String.format(evidenceNameText, evidence.getEntityType().toString().toLowerCase(),
-					evidence.getEntityName(), anomalyType);
-			evidence.setName(evidenceName);
+			evidence.setName(anomalyType);
 		}
 	}
 
@@ -130,29 +118,29 @@ public class ApiEvidenceController extends DataQueryController {
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (Evidence evidence : evidences){
 
-
-			//the function "getListOfEvents" accesses Impala using query builder and retrieves events that are related to specific indicator
-			//each event is built as a map object with all attributes as key-value
-			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
-			//retrieve the data from the data bean so we can manipulate it:
-			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
 			//iterate over each event map object
-			for (Map<String, Object> eventMapObject : data){
+			for (VpnSession vpnSession :((VpnGeoHoppingSupportingInformation) evidence.getSupportingInformation()).getRawEvents()){
+				Map<String,Object> eventMapObject = new HashMap<>();
 
-				String eventNormalizedUsername = (String)eventMapObject.get("normalized_username");
 				//needs to retrieve user id from the user name, so use the userService for that.
+				String eventNormalizedUsername = vpnSession.getNormalizedUserName();
 				User user = evidencesService.getUserIdByUserName(eventNormalizedUsername);
 				String userId="";
 				if (user != null) {
 					userId =user.getId();
 					eventMapObject.put("userid",userId);
 				}
+				eventMapObject.put("username",vpnSession.getUsername());
+				eventMapObject.put("normalized_username",vpnSession.getNormalizedUserName());
+				eventMapObject.put("city",vpnSession.getCity());
+				eventMapObject.put("country",vpnSession.getCountry());
+				eventMapObject.put("source_ip",vpnSession.getSourceIp());
+				eventMapObject.put("event_time_utc",vpnSession.getCreatedAtEpoch());
 
 				//create a unique is by concatanating userId + eventTime + sourceIp
 				eventMapObject.put("id",userId + eventMapObject.get("event_time") + eventMapObject.get("source_ip"));
-				eventMapObject.put("evidenceId", evidence.getId());
+				result.add(eventMapObject);
 			}
-			result.addAll(data);
 		}
 		DataBean<List<Map<String, Object>>> dataBean = new DataBean<>();
 		dataBean.setData(result);

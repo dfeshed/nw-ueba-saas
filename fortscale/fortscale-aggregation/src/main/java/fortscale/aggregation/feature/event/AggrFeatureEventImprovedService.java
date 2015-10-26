@@ -110,18 +110,20 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     public void sendEvents(long curEventTime){
     	//moving feature bucket to sending queue
     	long curTime = System.currentTimeMillis()/1000;
-    	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(curEventTime+fetchDataCycleInSeconds)){
+    	long endTime = curEventTime+fetchDataCycleInSeconds;
+    	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(endTime)){
     		FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(aggrMetadata.getFeatureBucketConfName(), aggrMetadata.getBucketId(), curTime, aggrMetadata.getEndTime());
     		featureBucketAggrSendingQueueRepository.save(featureBucketAggrSendingQueue);
-    		featureBucketAggrMetadataRepository.delete(aggrMetadata);
     	}
+    	featureBucketAggrMetadataRepository.deleteByEndTimeLessThan(endTime);
     	
     	//creating and sending feature aggregated events
     	List<FeatureBucketAggrSendingQueue> featureBucketAggrSendingQueueList = null;
+    	long fireTime = curTime-waitingTimeBeforeNotification;
     	if(useEndTimeSort){
-    		featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification, new Sort(Direction.ASC, FeatureBucketAggrSendingQueue.END_TIME_FIELD));
+    		featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(fireTime, new Sort(Direction.ASC, FeatureBucketAggrSendingQueue.END_TIME_FIELD));
 		} else{
-			featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(curTime-waitingTimeBeforeNotification);
+			featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(fireTime);
 		}
     	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueList){
     		FeatureBucket bucket = null;
@@ -147,10 +149,11 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	
 	                // Sending the event
 	                sendEvent(event);
-	                featureBucketAggrSendingQueueRepository.delete(featureBucketAggrSendingQueue);
 	    		}
     		}
     	}
+    	featureBucketAggrSendingQueueRepository.deleteByFireTimeLessThan(fireTime);
+    	
     }
     
     private void sendEvent(JSONObject event) {

@@ -6,4 +6,5 @@ public interface FeatureBucketMetadataRepositoryCustom {
 
 	public List<FeatureBucketMetadata> updateFeatureBucketsEndTime(String featureBucketConfName, String strategyId, long newCloseTime);
 	public List<FeatureBucketMetadata> findByEndTimeLessThanAndSyncTimeLessThan(long endTime, long syncTime);
+	public void deleteByEndTimeLessThanAndSyncTimeLessThan(long endTime, long syncTime);
 }

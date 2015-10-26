@@ -37,6 +37,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String statusField = "status";
 	public static final String feedbackField = "feedback";
 	public static final String commentField = "comment";
+	public static final String severityCodeField = "severityCode";
 
 	//document's fields
 	@Field(nameField) private String name;
@@ -52,6 +53,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@DBRef private List<Evidence> evidences;
 	@Field(evidencesSizeField) private Integer evidenceSize;
 	@Field(scoreField) private Integer score;
+	@Field(severityCodeField) private Integer severityCode;
 	@Indexed(unique = false) @Field(severityField) private Severity severity;
 	@Indexed(unique = false) @Field(statusField) private AlertStatus status;
 	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
@@ -72,6 +74,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.evidenceSize = evidencesSize;
 		this.score = score;
 		this.severity = severity;
+		this.severityCode = severity.ordinal();
 		this.status = status;
 		this.feedback = feedback;
 		this.comment = comment;
@@ -182,4 +185,13 @@ public class Alert extends AbstractDocument implements Serializable {
 	public void setFeedback(AlertFeedback feedback) {
 		this.feedback = feedback;
 	}
+
+	public Integer getSeverityCode() {
+		return severityCode;
+	}
+
+	public void setSeverityCode(Integer severityCode) {
+		this.severityCode = severityCode;
+	}
+
 }

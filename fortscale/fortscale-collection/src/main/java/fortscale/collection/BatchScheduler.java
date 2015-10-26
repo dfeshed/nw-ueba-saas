@@ -100,7 +100,7 @@ public class BatchScheduler {
 		scheduler.start();
 		scheduler.pauseAll();
 	}
-	
+
 	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
 		
