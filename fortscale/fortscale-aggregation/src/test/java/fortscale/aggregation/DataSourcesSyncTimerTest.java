@@ -121,4 +121,46 @@ public class DataSourcesSyncTimerTest {
 		Mockito.verify(listener2, Mockito.times(1)).dataSourcesReachedTime();
 		Mockito.verify(listener3, Mockito.times(1)).dataSourcesReachedTime();
 	}
+
+	/**
+	 * Testing the calling order of 1000 listeners that are registred to the same time.
+	 */
+	static long listenerCallingTimes[] = new long[1000];
+	static DataSourcesSyncTimerListener dataSourceLinsteners[] = new DataSourcesSyncTimerListener[1000];
+	class DataSourcesSyncTimerListenerImpl implements DataSourcesSyncTimerListener {
+		int listnereNumber;
+
+		public DataSourcesSyncTimerListenerImpl(int listnereNumber) {
+			this.listnereNumber = listnereNumber;
+		}
+
+		@Override
+		public void dataSourcesReachedTime() throws Exception {
+			listenerCallingTimes[listnereNumber] = System.currentTimeMillis();
+			Thread.currentThread().sleep(1);
+		}
+	}
+
+	@Test
+	public void test_listneres_calling_order() throws Exception{
+		List<String> dataSources = new ArrayList<>();
+		dataSources.add(DEFAULT_DATA_SOURCE);
+		long timeToregister = timer.getLastEventEpochtime()+1;
+		for(int i=0; i<1000; i++) {
+			dataSourceLinsteners[i] = new DataSourcesSyncTimerListenerImpl(i);
+			timer.notifyWhenDataSourcesReachTime(dataSources, timeToregister, dataSourceLinsteners[i]);
+		}
+
+		JSONObject message = new JSONObject();
+		message.put(epochtimeFieldName, timeToregister+1);
+		timer.process(new JsonObjectWrapperEvent(message));
+		long systemTime = (timeToregister + 2) * 1000;
+		timer.timeCheck(systemTime);
+		systemTime += (cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000;
+		timer.timeCheck(systemTime);
+
+		for(int i=1; i<1000; i++) {
+			Assert.assertTrue(listenerCallingTimes[i-i] < listenerCallingTimes[i]);
+		}
+	}
 }

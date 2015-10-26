@@ -37,7 +37,7 @@
             "param3": "valueOfParam3"
           }
         },
-        "retentionStrategyName": "daily_feature_retention_strategy"
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
         "name": "name2",
@@ -46,8 +46,8 @@
         "numberOfBuckets": 2,
         "bucketsLeap": 2,
         "waitAfterBucketCloseSeconds": 2,
-        "anomalyType": "number_of_ssh_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "anomalyType": "number_of_ssh_events_daily",
+        "evidencesFilterStrategy": "HighestScorePerValue",
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
             "aggregatedFeatureName1",

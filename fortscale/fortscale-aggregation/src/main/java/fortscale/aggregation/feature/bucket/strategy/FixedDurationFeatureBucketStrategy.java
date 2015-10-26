@@ -39,7 +39,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 
 	@Override
 	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds) {
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds +1);
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds + 3600);
 		return strategyDatas.get(0);
 	}
 
