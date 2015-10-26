@@ -42,6 +42,10 @@ public class KafkaEventsWriter implements Closeable {
 		this.topic = topic;
 	}
 
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
 	/**
 	 * Ensure a producer is initialized and return it to caller. We initialize the producer upon call instead of
 	 * in the class constructor since properties are not injected prior to constructor by spring using bean xml
@@ -68,7 +72,6 @@ public class KafkaEventsWriter implements Closeable {
 		return  producer;
 	}
 
-	
 	public void send(String key, String data) {
 		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
 		getProducer().send(message);

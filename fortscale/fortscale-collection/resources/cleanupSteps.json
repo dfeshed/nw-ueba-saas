@@ -52,7 +52,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-entity-event###fortscale-aggr-feature-events-score"
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###__samza_checkpoint_aggregation-events-streaming_1-0###fortscale-aggregated-feature-f-event###__samza_checkpoint_fortscale-aggr-feature-events-prevalence-stats_1-0###fortscale-aggregated-feature-p-event###__samza_checkpoint_entity-events-streaming_1-0###fortscale-entity-event###__samza_checkpoint_alert-generator-task_1-0###fortscale-aggr-feature-events-score###__samza_checkpoint_entity-events-streaming_1-0###__samza_checkpoint_evidence-creation-task_1-0"
       }
     ]
   },
@@ -68,7 +68,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write"
+        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###__samza_checkpoint_4769-user-score_1-0###__samza_checkpoint_vpn-user-score_1-0###__samza_checkpoint_ssh-user-score_1-0###__samza_checkpoint_evidence-creation-task_1-0###"
       }
     ]
   },
@@ -84,7 +84,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-notification-event-score"
+        "dataSources": "fortscale-notification-event-score###__samza_checkpoint_evidence-creation-task_1-0"
       }
     ]
   },
@@ -100,7 +100,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-evidences###fortscale-entity-event-score"
+        "dataSources": "fortscale-evidences###fortscale-entity-event-score###__samza_checkpoint_alert-generator-task_1-0"
       }
     ]
   }

@@ -1,72 +1,50 @@
 package fortscale.collection.jobs;
 
-import fortscale.services.impl.RegexMatcher;
-import fortscale.utils.ConfigurationUtils;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.TopicConsumer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeConstants;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
-import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.impala.ImpalaCriteria.*;
 
 @DisallowConcurrentExecution
-public class EventsFromDataTableToStreamingJob extends FortscaleJob {
+public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private static Logger logger = Logger.getLogger(EventsFromDataTableToStreamingJob.class);
 
     private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
     private static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
     private static final long LOGGER_MAX_FREQUENCY = 20 * 60;
     private static final long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
-    private static final int DEFAULT_CHECK_RETRIES = 60;
-    private static final int MILLISECONDS_TO_WAIT = 1000 * 60;
-    private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
-    private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
+
     private static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
     private static final String DELTA_TIME_IN_SEC_JOB_PARAMETER = "deltaTimeInSec";
-    private static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "epochtimeField";
-    private static final String STREAMING_TOPIC_FIELD_JOB_PARAMETER = "streamingTopic";
-    private static final String STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER = "streamingTopicPartitionKey";
-    private static final String WHERE_CRITERIA_FIELD_JOB_PARAMETER = "where";
     private static final String SLEEP_FIELD_JOB_PARAMETER = "sleep";
     private static final String THROTTLING_SLEEP_FIELD_JOB_PARAMETER = "throttlingSleep";
     private static final String FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER = "fetchEventsStepInMinutes";
     private static final String FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER = "fieldClusterGroupsRegexResource";
-    private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaDestinationTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
     private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
-    private static final String JOB_MONITOR_PARAMETER = "jobmonitor";
-    private static final String CLASS_MONITOR_PARAMETER = "classmonitor";
-    private static final String RETRIES_PARAMETER = "retries";
 
     //define how much time to subtract from now to get the last event time to send to streaming job
     //default of 3 hours - 60 * 60 * 3
@@ -77,22 +55,11 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
     protected long eventsDeltaTimeInSec;
 
-    @Value("${zookeeper.connection}")
-    private String zookeeperConnection;
-    @Value("${zookeeper.timeout}")
-    private int zookeeperTimeout;
-    @Value("${zookeeper.group}")
-    private String zookeeperGroup;
-
-    @Autowired
-    private JdbcOperations impalaJdbcTemplate;
-
     //parameters:
     private String impalaTableName;
     private String impalaTableFields;
     private String epochtimeField;
     private String streamingTopic;
-    private String whereCriteria;
     private Long sleepField;
     private Long throttlingSleepField;
     private String streamingTopicKey;
@@ -105,11 +72,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private Long maxSourceDestinationTimeGap;
     private long destinationTableLatestTime = 0;
     private long latestLoggerWriteTime = 0;
-    private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
     private int sleepingCounter = 0;
-    private int checkRetries;
-    private String jobToMonitor;
-    private String jobClassToMonitor;
 
     protected String getTableName() {
         return impalaTableName;
@@ -124,7 +87,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         impalaTableFields = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_FIELDS_JOB_PARAMETER);
         epochtimeField = jobDataMapExtension.getJobDataMapStringValue(map, EPOCH_TIME_FIELD_JOB_PARAMETER);
         streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER);
-        whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
         throttlingSleepField = jobDataMapExtension.getJobDataMapLongValue(map, THROTTLING_SLEEP_FIELD_JOB_PARAMETER, null);
         streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
@@ -135,11 +97,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         impalaDestinationTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
         maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT);
-        checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
-        if (map.containsKey(JOB_MONITOR_PARAMETER)) {
-            jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
-            jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER);
-        }
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
@@ -148,37 +105,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
             } catch (Exception e) {
                 logger.error("Got an exception while calling get file of resource {}", fieldClusterGroupsRegexResource.getFilename());
             }
-        }
-    }
-
-    private void fillRegexMatcherMap(File f) {
-        try {
-            if (f.exists() && f.isFile()) {
-                ArrayList<String> fieldConfList = new ArrayList<>(FileUtils.readLines(f));
-                for (String fieldConf : fieldConfList) {
-                    FieldRegexMatcherConverter fieldRegexMatcherConverter = new FieldRegexMatcherConverter(fieldConf);
-                    fieldRegexMatcherMap.put(fieldRegexMatcherConverter.getInputField(), fieldRegexMatcherConverter);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Got an exception while loading the regex file", e);
-        }
-    }
-
-    @Override
-    protected int getTotalNumOfSteps() {
-        return 1;
-    }
-
-    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
-        PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
-        String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
-        String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
-        if (earliestValue.equals(latestValue)) {
-            query.where(equalsTo(partitionStrategy.getImpalaPartitionFieldName(), earliestValue));
-        } else {
-            query.where(gte(partitionStrategy.getImpalaPartitionFieldName(), earliestValue));
-            query.where(lte(partitionStrategy.getImpalaPartitionFieldName(), latestValue));
         }
     }
 
@@ -193,22 +119,10 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
             streamWriter = new KafkaEventsWriter(streamingTopic);
             long timestampCursor = latestEventTime - deltaTimeInSec;
             while (timestampCursor < latestEventTime) {
-                long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes * DateTimeConstants.SECONDS_PER_MINUTE);
-                ImpalaQuery query = new ImpalaQuery();
-                query.select("count(*)").from(impalaTableName);
-                query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
-                if (StringUtils.isNotBlank(whereCriteria))
-                    query.andWhere(whereCriteria);
-                addPartitionFilterToQuery(query, timestampCursor, nextTimestampCursor, impalaTablePartitionType);
-                if (nextTimestampCursor == latestEventTime)
-                    query.andWhere(lte(epochtimeField, Long.toString(nextTimestampCursor)));
-                else
-                    query.andWhere(lt(epochtimeField, Long.toString(nextTimestampCursor)));
-                int limit = impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
-                query.select("*");
-                query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.ASC, epochtimeField)));
-
-                List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
+                long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes *
+                        DateTimeConstants.SECONDS_PER_MINUTE);
+                List<Map<String, Object>> resultsMap = getDataFromImpala(nextTimestampCursor, latestEventTime,
+                        timestampCursor, impalaTableName, epochtimeField, whereCriteria, impalaTablePartitionType);
                 long latestEpochTimeSent = 0;
 
                 for (Map<String, Object> result : resultsMap) {
@@ -223,8 +137,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         latestEpochTimeSent = currentEpochTimeField;
                     }
                 }
-
-                monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
 
                 if (throttlingSleepField != null && throttlingSleepField > 0 && impalaDestinationTable != null && resultsMap.size() > 0) {
                     long timeGap;
@@ -242,25 +154,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                         }
                     }
                 //metric based throttling
-                } else if (resultsMap.size() > 0 && jobToMonitor != null) {
-                    int currentTry = 0;
-                    while (currentTry < checkRetries) {
-                        logger.debug("try number {}, checking task {}", currentTry, jobToMonitor);
-                        TopicConsumer topicConsumer = new TopicConsumer(zookeeperConnection, zookeeperGroup, "metrics");
-                        Long time = convertToLong(topicConsumer.readSamzaMetric(jobToMonitor, jobClassToMonitor,
-                                String.format("%s-last-message-epochtime", jobToMonitor)));
-                        if (time != null && time == latestEpochTimeSent) {
-                            logger.debug("last message in batch processed, moving to next batch");
-                            break;
-                        }
-                        logger.debug("last message not yet processed, waiting {} milliseconds...");
-                        Thread.sleep(MILLISECONDS_TO_WAIT);
-                    }
-                    if (currentTry >= checkRetries) {
-                        logger.error("did not receive last message time {} in task {} - breaking", latestEpochTimeSent,
-                                jobToMonitor);
-                        break;
-                    }
+                } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
+                    listenToMetrics(latestEpochTimeSent);
                 }
 
                 timestampCursor = nextTimestampCursor;
@@ -284,27 +179,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         }
     }
 
-    private void fillJsonWithFieldValue(JSONObject json, String fieldName, Object val) {
-        if (val instanceof String) {
-            FieldRegexMatcherConverter fieldRegexMatcherConverter = fieldRegexMatcherMap.get(fieldName);
-            if (fieldRegexMatcherConverter == null) {
-                json.put(fieldName, val);
-            } else {
-                String newVal = fieldRegexMatcherConverter.replace((String) val);
-                if (fieldRegexMatcherConverter.getOutputField() == null) {
-                    json.put(fieldName, newVal);
-                } else {
-                    json.put(fieldName, val);
-                    json.put(fieldRegexMatcherConverter.getOutputField(), newVal);
-                }
-            }
-        } else if(val instanceof Timestamp){
-            json.put(fieldName, val.toString());
-        } else{
-        	json.put(fieldName, val);
-        }
-    }
-
     private long getGapFromDestinationTable(long timestampCursor) {
         ImpalaQuery query = new ImpalaQuery();
         query.select("*").from(impalaDestinationTable);
@@ -323,88 +197,18 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         return timestampCursor - destinationTableLatestTime;
     }
 
-    @Override
-    protected boolean shouldReportDataReceived() {
-        return true;
-    }
-
-    public static class FieldRegexMatcherConverter {
-        private static final String PREFIX_PARAMETER_NAME = "field_";
-        private static final String INPUT_FIELD_PARAMETER_NAME = "field_input:";
-        private static final String OUTPUT_FIELD_PARAMETER_NAME = "field_output:";
-        private static final String FIELD_REGEX_PARAMETER_NAME = "field_regex:";
-        private static final String FIELD_CASE_PREFIX_PARAMETER_NAME = "field_case";
-        private static final String FIELD_UPPER_CASE_PARAMETER_NAME = "field_case_upper";
-        private static final String FIELD_LOWER_CASE_PARAMETER_NAME = "field_case_lower";
-
-        private String inputField;
-        private RegexMatcher fieldRegexMatcher;
-        private String outputField = null;
-        private boolean changeCase = false;
-        private boolean upperCase = false;
-
-        //The expected format is: field_input:<xxx> field_output:<yyy> field_regex:<zzz>
-        public FieldRegexMatcherConverter(String confLine) {
-            inputField = extractValue(confLine, INPUT_FIELD_PARAMETER_NAME);
-
-
-            String clusterGroupsRegexString = extractValue(confLine, FIELD_REGEX_PARAMETER_NAME);
-            String[][] configPatternsArray = ConfigurationUtils.getStringArrays(clusterGroupsRegexString);
-            fieldRegexMatcher = new RegexMatcher(configPatternsArray);
-
-
-            outputField = extractValue(confLine, OUTPUT_FIELD_PARAMETER_NAME);
-
-            if (confLine.contains(FIELD_CASE_PREFIX_PARAMETER_NAME)) {
-                if (confLine.contains(FIELD_UPPER_CASE_PARAMETER_NAME)) {
-                    changeCase = true;
-                    upperCase = true;
-                } else if (confLine.contains(FIELD_LOWER_CASE_PARAMETER_NAME)) {
-                    changeCase = true;
+    private void fillRegexMatcherMap(File f) {
+        try {
+            if (f.exists() && f.isFile()) {
+                ArrayList<String> fieldConfList = new ArrayList<>(FileUtils.readLines(f));
+                for (String fieldConf : fieldConfList) {
+                    FieldRegexMatcherConverter fieldRegexMatcherConverter = new FieldRegexMatcherConverter(fieldConf);
+                    fieldRegexMatcherMap.put(fieldRegexMatcherConverter.getInputField(), fieldRegexMatcherConverter);
                 }
             }
-        }
-
-        private String extractValue(String confLine, String paramName) {
-            int fieldIndexStart = confLine.indexOf(paramName);
-            if (fieldIndexStart == -1) {
-                return null;
-            }
-
-            fieldIndexStart = fieldIndexStart + paramName.length();
-
-
-            int fieldIndexEnd = confLine.indexOf(PREFIX_PARAMETER_NAME, fieldIndexStart);
-            if (fieldIndexEnd == -1) {
-                return confLine.substring(fieldIndexStart).trim();
-            } else {
-                return confLine.substring(fieldIndexStart, fieldIndexEnd).trim();
-            }
-        }
-
-        public String replace(String val) {
-            String ret = fieldRegexMatcher.replaceInPlace(val);
-
-            if (changeCase) {
-                if (upperCase) {
-                    ret = ret.toUpperCase();
-                } else {
-                    ret = ret.toLowerCase();
-                }
-            }
-            return ret;
-        }
-
-        public String getInputField() {
-            return inputField;
-        }
-
-        public RegexMatcher getFieldRegexMatcher() {
-            return fieldRegexMatcher;
-        }
-
-        public String getOutputField() {
-            return outputField;
+        } catch (Exception e) {
+            logger.error("Got an exception while loading the regex file", e);
         }
     }
+
 }
