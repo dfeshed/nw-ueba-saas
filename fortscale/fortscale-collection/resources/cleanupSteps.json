@@ -124,7 +124,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats###4769-user-score###amt-prevalence-stats###amtsessions-prevalence-stats###amtsession-user-score###amt-user-score###hdfs-write-amtscores###hdfs-write-amtscores_top###hdfs-write-amtsessiondata###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###sessionize-amt###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-amtenriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###sessionize-amt"
+        "dataSources": "4769-prevalence-stats###4769-user-score###amt-prevalence-stats###amtsessions-prevalence-stats###amtsession-user-score###amt-user-score###hdfs-write-amtscores###hdfs-write-amtscores_top###hdfs-write-amtsessiondata###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###sessionize-amt###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-amtenriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###sessionize-amt###aggr_event_@@@prefix"
       }
     ]
   },
@@ -148,7 +148,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats###4769-user-score###amt-prevalence-stats###amtsessions-prevalence-stats###amtsession-user-score###amt-user-score###hdfs-write-amtscores###hdfs-write-amtscores_top###hdfs-write-amtsessiondata###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###sessionize-amt###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store"
+        "dataSources": "4769-prevalence-stats###4769-user-score###amt-prevalence-stats###amtsessions-prevalence-stats###amtsession-user-score###amt-user-score###hdfs-write-amtscores###hdfs-write-amtscores_top###hdfs-write-amtsessiondata###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###sessionize-amt###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
       }
     ]
   },
@@ -167,7 +167,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix###"
+        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
       }
     ]
   }
