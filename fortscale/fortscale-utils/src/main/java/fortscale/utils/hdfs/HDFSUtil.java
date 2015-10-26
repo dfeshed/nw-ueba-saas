@@ -96,17 +96,16 @@ public class HDFSUtil implements CleanupUtil {
                 numberOfDeletedEntities++;
             }
         }
-        if (numberOfDeletedEntities == hdfsPaths.size()) {
-            logger.info("deleted all {} files/folders", hdfsPaths.size());
-            closeHadoopFS(hadoopFS);
-            return true;
-        }
-        logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
-                numberOfDeletedEntities);
         closeHadoopFS(hadoopFS);
         if (doValidate) {
             impalaUtils.refreshAllTables();
         }
+        if (numberOfDeletedEntities == hdfsPaths.size()) {
+            logger.info("deleted all {} files/folders", hdfsPaths.size());
+            return true;
+        }
+        logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
+                numberOfDeletedEntities);
         return false;
     }
 
@@ -173,10 +172,14 @@ public class HDFSUtil implements CleanupUtil {
             try {
                 if (!restoreFile(hadoopFS, hdfsPath, restorePath)) {
                     logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+                    closeHadoopFS(hadoopFS);
+                    impalaUtils.refreshAllTables();
                     return false;
                 }
             } catch (IOException ex) {
                 logger.error("failed to restore file {} to {} - {}", restorePath, hdfsPath, ex);
+                closeHadoopFS(hadoopFS);
+                impalaUtils.refreshAllTables();
                 return false;
             }
         }
@@ -264,11 +267,12 @@ public class HDFSUtil implements CleanupUtil {
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
         }
-        FileSystem hadoopFS = null;
+        FileSystem hadoopFS;
         try {
             hadoopFS = getHadoopFileSystem();
         } catch (Exception ex) {
             logger.error("failed to delete path {} - {}", hdfsPath, ex);
+            return success;
         }
         success = deletePath(hadoopFS, hdfsPath, true);
         closeHadoopFS(hadoopFS);
