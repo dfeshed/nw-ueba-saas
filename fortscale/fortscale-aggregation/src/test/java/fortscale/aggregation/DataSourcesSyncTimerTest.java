@@ -36,24 +36,24 @@ public class DataSourcesSyncTimerTest {
 		// First registration
 		List<String> dataSources1 = new ArrayList<>();
 		dataSources1.add(DEFAULT_DATA_SOURCE);
-		long epochtime1 = 1435752000; // 12:00
+		long epochtime1 = System.currentTimeMillis() / 1000 + 3600;
 		DataSourcesSyncTimerListener listener1 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Second registration
 		List<String> dataSources2 = new ArrayList<>();
 		dataSources2.add(DEFAULT_DATA_SOURCE);
-		long epochtime2 = 1435755600; // 13:00
+		long epochtime2 = epochtime1 + 3600;
 		DataSourcesSyncTimerListener listener2 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Third registration
 		List<String> dataSources3 = new ArrayList<>();
 		dataSources3.add(DEFAULT_DATA_SOURCE);
-		long epochtime3 = 1435759200; // 14:00
+		long epochtime3 = epochtime2 + 3600;
 		DataSourcesSyncTimerListener listener3 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Register all
 		timer.notifyWhenDataSourcesReachTime(dataSources1, epochtime1, listener1);
-		timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2);
+		long registration2 = timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2);
 		timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3);
 
 		// None of the listeners should be notified
@@ -82,8 +82,8 @@ public class DataSourcesSyncTimerTest {
 		Mockito.verify(listener3, Mockito.never()).dataSourcesReachedTime();
 
 		// Change epochtime2
-		epochtime2 = 1435762800; // 15:00
-		timer.updateNotificationRegistration(1, epochtime2);
+		epochtime2 = epochtime3 + 3600;
+		timer.updateNotificationRegistration(registration2, epochtime2);
 
 		// Process event with epochtime later than epochtime3 (but earlier than updated epochtime2)
 		message.put(epochtimeFieldName, epochtime3 + 1800); // add 30 minutes
