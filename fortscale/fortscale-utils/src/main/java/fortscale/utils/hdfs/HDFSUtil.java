@@ -259,10 +259,9 @@ public class HDFSUtil implements CleanupUtil {
      */
     @Override
     public boolean deleteEntityBetween(String hdfsPath, String partitionType, Date startDate, Date endDate) {
-        boolean success = false;
         if ((startDate == null && endDate != null) || (startDate != null && endDate == null)) {
             logger.error("must provide both start and end dates to run");
-            return success;
+            return false;
         }
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
@@ -272,9 +271,9 @@ public class HDFSUtil implements CleanupUtil {
             hadoopFS = getHadoopFileSystem();
         } catch (Exception ex) {
             logger.error("failed to delete path {} - {}", hdfsPath, ex);
-            return success;
+            return false;
         }
-        success = deletePath(hadoopFS, hdfsPath, true);
+        boolean success = deletePath(hadoopFS, hdfsPath, true);
         closeHadoopFS(hadoopFS);
         impalaUtils.refreshAllTables();
         return success;
