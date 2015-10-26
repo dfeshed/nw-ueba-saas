@@ -340,10 +340,10 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
-		if (startTime == null && endTime == null && toDelete == null) {
+		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = hdfsUtils.deleteAllEntities(doValidate);
-		} else if (startTime == null && endTime == null) {
+		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
@@ -365,10 +365,10 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate){
 		boolean success;
-		if (startTime == null && endTime == null && toDelete == null) {
+		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = mongoUtils.deleteAllEntities(doValidate);
-		} else if (startTime == null && endTime == null) {
+		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
