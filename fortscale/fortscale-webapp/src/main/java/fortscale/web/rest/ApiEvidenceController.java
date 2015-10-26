@@ -11,7 +11,6 @@ import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
-import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
@@ -23,14 +22,14 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
-import fortscale.web.spring.SpringPropertiesUtil;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import javax.annotation.PostConstruct;
+
 import java.util.*;
 
 /**

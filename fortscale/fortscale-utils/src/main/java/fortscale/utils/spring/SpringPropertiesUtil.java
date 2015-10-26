@@ -1,4 +1,4 @@
-package fortscale.web.spring;
+package fortscale.utils.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
