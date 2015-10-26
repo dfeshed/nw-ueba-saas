@@ -67,7 +67,9 @@ public class HDFSUtil implements CleanupUtil {
         boolean enrichedDataSuccess = deletePath(hadoopFS, enrichedDataPath, doValidate);
         boolean processedDataSuccess = deletePath(hadoopFS, processedDataPath, doValidate);
         closeHadoopFS(hadoopFS);
-        impalaUtils.refreshAllTables();
+        if (doValidate) {
+            impalaUtils.refreshAllTables();
+        }
         return dataSuccess && rawDataSuccess && enrichedDataSuccess && processedDataSuccess;
     }
 
@@ -102,7 +104,9 @@ public class HDFSUtil implements CleanupUtil {
         logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
                 numberOfDeletedEntities);
         closeHadoopFS(hadoopFS);
-        impalaUtils.refreshAllTables();
+        if (doValidate) {
+            impalaUtils.refreshAllTables();
+        }
         return false;
     }
 
