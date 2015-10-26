@@ -11,7 +11,7 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
-import fortscale.web.spring.SpringPropertiesUtil;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

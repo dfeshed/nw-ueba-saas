@@ -1,5 +1,6 @@
 package fortscale.web.spring;
 
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.test.category.IntegrationTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
