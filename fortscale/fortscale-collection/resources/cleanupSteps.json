@@ -167,7 +167,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store"
+        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix###"
       }
     ]
   }
