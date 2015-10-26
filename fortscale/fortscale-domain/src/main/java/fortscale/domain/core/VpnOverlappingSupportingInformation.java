@@ -15,7 +15,7 @@ import java.util.List;
 @JsonTypeName("vpnOverlappingSupportingInformation")
 public class VpnOverlappingSupportingInformation extends NotificationSupportingInformation {
 
-    private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
+    private static Logger logger = LoggerFactory.getLogger(VpnOverlappingSupportingInformation.class);
 
     private List<VpnSessionOverlap> rawEvents;
 
@@ -43,6 +43,10 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
             evidence.setAnomalyValue(Integer.toString(rawEvents.size()));
 
         }
+    }
+
+    public void setRawEvents(List<VpnSessionOverlap> rawEvents) {
+        this.rawEvents = rawEvents;
     }
 
 }

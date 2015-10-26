@@ -19,7 +19,7 @@ import java.util.List;
 @JsonTypeName("vpnGeoHoppingSupportingInformation")
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
-	private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
+	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
 
@@ -40,5 +40,10 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 	public List<VpnSession> getRawEvents() {
 		return rawEvents;
 	}
+
+	public void setRawEvents(List<VpnSession> rawEvents) {
+		this.rawEvents = rawEvents;
+	}
+
 
 }
