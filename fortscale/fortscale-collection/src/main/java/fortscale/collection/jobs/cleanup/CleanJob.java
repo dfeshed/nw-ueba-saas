@@ -149,31 +149,35 @@ public class CleanJob extends FortscaleJob {
 		int successfulSteps = 0, totalSteps = 0;
 		Map<String, String> dataSources;
 		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
-		totalSteps += miniSteps.size();
-		//running all time based mini steps
-		for (int i = 0; i < miniSteps.size(); i++) {
-			MiniStep miniStep = miniSteps.get(i);
-			dataSources = createDataSourcesMap(miniStep.getDataSources());
-			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
-			if (!success) {
-				logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
-			} else {
-				logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
-				successfulSteps++;
+		if (miniSteps != null) {
+			totalSteps += miniSteps.size();
+			//running all time based mini steps
+			for (int i = 0; i < miniSteps.size(); i++) {
+				MiniStep miniStep = miniSteps.get(i);
+				dataSources = createDataSourcesMap(miniStep.getDataSources());
+				success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
+				if (!success) {
+					logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
+				} else {
+					logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
+					successfulSteps++;
+				}
 			}
 		}
 		miniSteps = cleanupStep.getOtherSteps();
-		totalSteps += miniSteps.size();
-		//running all other mini steps
-		for (int i = 0; i < miniSteps.size(); i++) {
-			MiniStep miniStep = miniSteps.get(i);
-			dataSources = createDataSourcesMap(miniStep.getDataSources());
-			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
-			if (!success) {
-				logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
-			} else {
-				logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
-				successfulSteps++;
+		if (miniSteps != null) {
+			totalSteps += miniSteps.size();
+			//running all other mini steps
+			for (int i = 0; i < miniSteps.size(); i++) {
+				MiniStep miniStep = miniSteps.get(i);
+				dataSources = createDataSourcesMap(miniStep.getDataSources());
+				success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
+				if (!success) {
+					logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
+				} else {
+					logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
+					successfulSteps++;
+				}
 			}
 		}
 		logger.info("Finished cleaning {} out of {} mini steps", successfulSteps, totalSteps);
@@ -302,9 +306,13 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CleanupDeletionUtil customUtil) {
-		Set<String> entities;
-		//if deleting specific entities
-		if (toDelete != null) {
+		if (toDelete == null || toDelete.keySet().contains("ALL")) {
+			//deleting all
+			logger.info("deleting all entities");
+			return customUtil.deleteAllEntities(doValidate);
+		} else {
+			Set<String> entities;
+			//deleting specific entities
 			Collection<String> temp = toDelete.keySet();
 			entities = new HashSet(temp);
 			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
@@ -317,10 +325,6 @@ public class CleanJob extends FortscaleJob {
 			}
 			logger.info("deleting {} entities", entities.size());
 			return customUtil.deleteEntities(entities, doValidate);
-		} else {
-			//deleting all
-			logger.info("deleting all entities");
-			return customUtil.deleteAllEntities(doValidate);
 		}
 	}
 
