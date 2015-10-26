@@ -310,22 +310,21 @@ public class CleanJob extends FortscaleJob {
 			//deleting all
 			logger.info("deleting all entities");
 			return customUtil.deleteAllEntities(doValidate);
-		} else {
-			Set<String> entities;
-			//deleting specific entities
-			Collection<String> temp = toDelete.keySet();
-			entities = new HashSet(temp);
-			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-				String filter = entry.getValue();
-				String name = entry.getKey();
-				if (!filter.isEmpty()) {
-					entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
-					entities.remove(name);
-				}
-			}
-			logger.info("deleting {} entities", entities.size());
-			return customUtil.deleteEntities(entities, doValidate);
 		}
+		Set<String> entities;
+		//deleting specific entities
+		Collection<String> temp = toDelete.keySet();
+		entities = new HashSet(temp);
+		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+			String filter = entry.getValue();
+			String name = entry.getKey();
+			if (!filter.isEmpty()) {
+				entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
+				entities.remove(name);
+			}
+		}
+		logger.info("deleting {} entities", entities.size());
+		return customUtil.deleteEntities(entities, doValidate);
 	}
 
 	/***
