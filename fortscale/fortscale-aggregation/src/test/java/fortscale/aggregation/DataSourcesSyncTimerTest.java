@@ -52,9 +52,9 @@ public class DataSourcesSyncTimerTest {
 		DataSourcesSyncTimerListener listener3 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Register all
-		Assert.assertEquals(0, timer.notifyWhenDataSourcesReachTime(dataSources1, epochtime1, listener1));
-		Assert.assertEquals(1, timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2));
-		Assert.assertEquals(2, timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3));
+		timer.notifyWhenDataSourcesReachTime(dataSources1, epochtime1, listener1);
+		timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2);
+		timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3);
 
 		// None of the listeners should be notified
 		long systemTime = System.currentTimeMillis();

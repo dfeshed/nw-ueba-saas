@@ -21,7 +21,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 1,
         "anomalyType": "number_of_ssh_events_hourly",
-        "evidencesFilterStrategy": "HighestScore",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
             "aggregatedFeatureName1",
@@ -47,7 +47,7 @@
         "bucketsLeap": 2,
         "waitAfterBucketCloseSeconds": 2,
         "anomalyType": "number_of_ssh_events_daily",
-        "evidencesFilterStrategy": "HighestScorePerValue",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
             "aggregatedFeatureName1",
