@@ -4,12 +4,14 @@ import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -41,6 +43,9 @@ public class HDFSUtil implements CleanupUtil {
     @Value("${hdfs.user.processeddata.path}")
     private String processedDataPath;
 
+    @Autowired
+    private ImpalaUtils impalaUtils;
+
     /***
      *
      * This method deletes all partitions from HDFS
@@ -62,6 +67,7 @@ public class HDFSUtil implements CleanupUtil {
         boolean enrichedDataSuccess = deletePath(hadoopFS, enrichedDataPath, doValidate);
         boolean processedDataSuccess = deletePath(hadoopFS, processedDataPath, doValidate);
         closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
         return dataSuccess && rawDataSuccess && enrichedDataSuccess && processedDataSuccess;
     }
 
@@ -96,6 +102,7 @@ public class HDFSUtil implements CleanupUtil {
         logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
                 numberOfDeletedEntities);
         closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
         return false;
     }
 
@@ -171,6 +178,7 @@ public class HDFSUtil implements CleanupUtil {
             }
         }
         closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
         return true;
     }
 
@@ -245,9 +253,10 @@ public class HDFSUtil implements CleanupUtil {
      */
     @Override
     public boolean deleteEntityBetween(String hdfsPath, String partitionType, Date startDate, Date endDate) {
+        boolean success = false;
         if ((startDate == null && endDate != null) || (startDate != null && endDate == null)) {
             logger.error("must provide both start and end dates to run");
-            return false;
+            return success;
         }
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
@@ -255,13 +264,13 @@ public class HDFSUtil implements CleanupUtil {
         FileSystem hadoopFS = null;
         try {
             hadoopFS = getHadoopFileSystem();
-            return deletePath(hadoopFS, hdfsPath, true);
         } catch (Exception ex) {
             logger.error("failed to delete path {} - {}", hdfsPath, ex);
-        } finally {
-            closeHadoopFS(hadoopFS);
         }
-        return false;
+        success = deletePath(hadoopFS, hdfsPath, true);
+        closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
+        return success;
     }
 
     /***
