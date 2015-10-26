@@ -95,7 +95,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING2, featureNameMap.toString());
         Assert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString());
         Assert.assertEquals("number_of_ssh_events_daily", anomalyType);
-        Assert.assertEquals("HighestScorePerValue", evidencesFilterStrategy);
+        Assert.assertEquals("HIGHEST_SCORE_PER_VALUE", evidencesFilterStrategy);
         Assert.assertEquals(2, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
         Assert.assertEquals("daily_feature_retention_strategy", retentionStrategyName);
