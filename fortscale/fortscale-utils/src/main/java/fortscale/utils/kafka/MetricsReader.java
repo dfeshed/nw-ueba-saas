@@ -23,6 +23,8 @@ public class MetricsReader {
     private static final String HEADER = "header";
     private static final String JOB_NAME = "job-name";
     private static final String METRICS_TOPIC = "metrics";
+    private static final int TIMEOUT = 10000;
+    private static final int BUFFER_SIZE = 1024000;
 
     /***
      *
@@ -39,14 +41,14 @@ public class MetricsReader {
     public static boolean waitForMetrics(String zookeeper, int port, String headerToCheck, String jobToCheck,
                                   String metricsToExtract, long lastMessageTime,
                                   int waitTimeBetweenMetricsChecks, int checkRetries) {
-        SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, 10000, 1024000, "clientName");
+        SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
         long offset = 0, lastoffset = -1, currentTry = 0;
         int partition = 0;
         Long time = null;
         while (currentTry < checkRetries) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
-                    .addFetch(METRICS_TOPIC, partition, offset, 1000000)
+                    .addFetch(METRICS_TOPIC, partition, offset, BUFFER_SIZE)
                     .build();
             FetchResponse messages = consumer.fetch(fetchRequest);
             if (messages.hasError()) {
@@ -57,9 +59,8 @@ public class MetricsReader {
             for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
                 long currentOffset = msg.offset();
                 if (currentOffset < offset) {
-                    logger.debug("found an old offset: " + currentOffset + " expecting: " + offset);
-                    consumer.close();
-                    continue;
+                    logger.warn("found an old offset: " + currentOffset + " expecting: " + offset);
+                    break;
                 }
                 String message = convertPayloadToString(msg);
                 Map<String, Object> metricData = getMetricData(message, headerToCheck, metricsToExtract);
@@ -86,6 +87,8 @@ public class MetricsReader {
                     consumer.close();
                     return false;
                 }
+            } else {
+                currentTry = 0;
             }
             lastoffset = offset;
         }
