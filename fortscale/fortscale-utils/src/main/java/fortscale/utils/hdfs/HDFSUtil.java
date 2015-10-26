@@ -127,9 +127,8 @@ public class HDFSUtil implements CleanupUtil {
         hdfsPath = hdfsPath.trim();
         logger.debug("attempting to remove {}", hdfsPath);
         try {
-            if (!hadoopFS.delete(new Path(hdfsPath), true)) {
-                logger.error("failed to remove {}", hdfsPath);
-            } else if (doValidate) {
+            hadoopFS.delete(new Path(hdfsPath), true);
+            if (doValidate) {
                 if (!hadoopFS.exists(new Path(hdfsPath))) {
                     success = true;
                     logger.info("{} deleted successfully", hdfsPath);
