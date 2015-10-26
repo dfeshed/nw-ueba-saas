@@ -168,10 +168,9 @@ public class HDFSUtil implements CleanupUtil {
             } catch (IOException ex) {
                 logger.error("failed to restore file {} to {} - {}", restorePath, hdfsPath, ex);
                 return false;
-            } finally {
-                closeHadoopFS(hadoopFS);
             }
         }
+        closeHadoopFS(hadoopFS);
         return true;
     }
 
