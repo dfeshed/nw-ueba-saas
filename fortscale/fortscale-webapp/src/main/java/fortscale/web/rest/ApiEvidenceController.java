@@ -5,6 +5,8 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.User;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
@@ -116,29 +118,29 @@ public class ApiEvidenceController extends DataQueryController {
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (Evidence evidence : evidences){
 
-
-			//the function "getListOfEvents" accesses Impala using query builder and retrieves events that are related to specific indicator
-			//each event is built as a map object with all attributes as key-value
-			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
-			//retrieve the data from the data bean so we can manipulate it:
-			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
 			//iterate over each event map object
-			for (Map<String, Object> eventMapObject : data){
+			for (VpnSession vpnSession :((VpnGeoHoppingSupportingInformation) evidence.getSupportingInformation()).getRawEvents()){
+				Map<String,Object> eventMapObject = new HashMap<>();
 
-				String eventNormalizedUsername = (String)eventMapObject.get("normalized_username");
 				//needs to retrieve user id from the user name, so use the userService for that.
+				String eventNormalizedUsername = vpnSession.getNormalizedUserName();
 				User user = evidencesService.getUserIdByUserName(eventNormalizedUsername);
 				String userId="";
 				if (user != null) {
 					userId =user.getId();
 					eventMapObject.put("userid",userId);
 				}
+				eventMapObject.put("username",vpnSession.getUsername());
+				eventMapObject.put("normalized_username",vpnSession.getNormalizedUserName());
+				eventMapObject.put("city",vpnSession.getCity());
+				eventMapObject.put("country",vpnSession.getCountry());
+				eventMapObject.put("source_ip",vpnSession.getSourceIp());
+				eventMapObject.put("event_time_utc",vpnSession.getCreatedAtEpoch());
 
 				//create a unique is by concatanating userId + eventTime + sourceIp
 				eventMapObject.put("id",userId + eventMapObject.get("event_time") + eventMapObject.get("source_ip"));
-				eventMapObject.put("evidenceId", evidence.getId());
+				result.add(eventMapObject);
 			}
-			result.addAll(data);
 		}
 		DataBean<List<Map<String, Object>>> dataBean = new DataBean<>();
 		dataBean.setData(result);

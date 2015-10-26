@@ -154,7 +154,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
 		evidence.put(notificationValueField, vpnSessions.get(0).getCountry());
 		evidence.put(notificationNumOfEventsField, vpnSessions.size());
-		evidence.put(notificationSupportingInformationField, "");
+		evidence.put(notificationSupportingInformationField, vpnSessions);
 		List<String> entities = new ArrayList();
 		entities.add(NOTIFICATION_ENTITY);
 		evidence.put(notificationEntityField, entities);
