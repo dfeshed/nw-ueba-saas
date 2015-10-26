@@ -63,21 +63,21 @@
             "distinct_yid_amt": ["normalized_username_amt_daily.distinct_number_of_yid_amt_daily"]
           },
           "alphas": {
-            "distinct_src_machines_kerberos_logins": 0.066,
-            "distinct_dst_machines_kerberos_logins": 0.066,
-            "failed_kerberos_logins_events": 0.066,
-            "kerberos_logins_events": 0.066,
-            "distinct_src_machines_ssh": 0.066,
-            "distinct_dst_machines_ssh": 0.066,
-            "ssh_events": 0.066,
-            "failed_ssh_events": 0.066,
-            "failed_vpn_events": 0.066,
-            "distinct_src_machines_vpn": 0.066,
-            "distinct_countries_vpn": 0.066,
-            "failed_amt_events": 0.066,
-            "distinct_src_machines_amt": 0.066,
-            "sensitive_actions_amt": 0.066,
-            "distinct_yid_amt": 0.066
+            "distinct_src_machines_kerberos_logins": 0.09,
+            "distinct_dst_machines_kerberos_logins": 0.09,
+            "failed_kerberos_logins_events": 0.09,
+            "kerberos_logins_events": 0.09,
+            "distinct_src_machines_ssh": 0.09,
+            "distinct_dst_machines_ssh": 0.09,
+            "ssh_events": 0.09,
+            "failed_ssh_events": 0.09,
+            "failed_vpn_events": 0.09,
+            "distinct_src_machines_vpn": 0.09,
+            "distinct_countries_vpn": 0.09,
+            "failed_amt_events": 0.09,
+            "distinct_src_machines_amt": 0.09,
+            "sensitive_actions_amt": 0.09,
+            "distinct_yid_amt": 0.09
           },
           "betas": {
             "normalized_username_kerberos_logins_daily.distinct_number_of_src_machines_with_high_score_kerberos_logins_daily": 0.2,
@@ -92,8 +92,8 @@
             "normalized_username_vpn_daily.distinct_number_of_src_machines_with_high_score_vpn_daily": 0.2,
             "normalized_username_vpn_daily.distinct_number_of_country_with_high_score_vpn_daily": 0.15,
             "normalized_username_vpn_session_daily.number_of_high_score_rate_vpn_session_daily": 0.1,
-            "normalized_username_amt_daily.has_high_score_date_time_events_amt_daily": 0.1,
-            "normalized_username_amt_daily.has_high_score_action_code_events_amt_daily": 0.1
+            "normalized_username_amt_daily.has_high_score_date_time_events_amt_daily": 0.15,
+            "normalized_username_amt_daily.has_high_score_action_code_events_amt_daily": 0.15
           }
         }
       },
@@ -154,21 +154,21 @@
             "distinct_yid_amt": ["normalized_username_amt_hourly.distinct_number_of_yid_amt_hourly"]
           },
           "alphas": {
-            "distinct_src_machines_kerberos_logins": 0.066,
-            "distinct_dst_machines_kerberos_logins": 0.066,
-            "failed_kerberos_logins_events": 0.066,
-            "kerberos_logins_events": 0.066,
-            "distinct_src_machines_ssh": 0.066,
-            "distinct_dst_machines_ssh": 0.066,
-            "ssh_events": 0.066,
-            "failed_ssh_events": 0.066,
-            "failed_vpn_events": 0.066,
-            "distinct_src_machines_vpn": 0.066,
-            "distinct_countries_vpn": 0.066,
-            "failed_amt_events": 0.066,
-            "distinct_src_machines_amt": 0.066,
-            "sensitive_actions_amt": 0.066,
-            "distinct_yid_amt": 0.066
+            "distinct_src_machines_kerberos_logins": 0.09,
+            "distinct_dst_machines_kerberos_logins": 0.09,
+            "failed_kerberos_logins_events": 0.09,
+            "kerberos_logins_events": 0.09,
+            "distinct_src_machines_ssh": 0.09,
+            "distinct_dst_machines_ssh": 0.09,
+            "ssh_events": 0.09,
+            "failed_ssh_events": 0.09,
+            "failed_vpn_events": 0.09,
+            "distinct_src_machines_vpn": 0.09,
+            "distinct_countries_vpn": 0.09,
+            "failed_amt_events": 0.09,
+            "distinct_src_machines_amt": 0.09,
+            "sensitive_actions_amt": 0.09,
+            "distinct_yid_amt": 0.09
           },
           "betas": {
             "normalized_username_kerberos_logins_hourly.distinct_number_of_src_machines_with_high_score_kerberos_logins_hourly": 0.2,
@@ -183,8 +183,8 @@
             "normalized_username_vpn_hourly.distinct_number_of_src_machines_with_high_score_vpn_hourly": 0.2,
             "normalized_username_vpn_hourly.distinct_number_of_country_with_high_score_vpn_hourly": 0.15,
             "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpn_session_hourly": 0.1,
-            "normalized_username_amt_hourly.has_high_score_date_time_events_amt_hourly": 0.1,
-            "normalized_username_amt_hourly.has_high_score_action_code_events_amt_hourly": 0.1
+            "normalized_username_amt_hourly.has_high_score_date_time_events_amt_hourly": 0.15,
+            "normalized_username_amt_hourly.has_high_score_action_code_events_amt_hourly": 0.15
           }
         }
       }
