@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -51,6 +52,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	@Field(ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
 	private long  end_time_unix;
 	@Field(ENTITY_EVENT_CREATION_TIME_FILED_NAME)
+	@JsonIgnore
 	private Date creation_time;
 	@Field(ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME)
 	private long creation_epochtime;

@@ -96,17 +96,16 @@ public class HDFSUtil implements CleanupUtil {
                 numberOfDeletedEntities++;
             }
         }
-        if (numberOfDeletedEntities == hdfsPaths.size()) {
-            logger.info("deleted all {} files/folders", hdfsPaths.size());
-            closeHadoopFS(hadoopFS);
-            return true;
-        }
-        logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
-                numberOfDeletedEntities);
         closeHadoopFS(hadoopFS);
         if (doValidate) {
             impalaUtils.refreshAllTables();
         }
+        if (numberOfDeletedEntities == hdfsPaths.size()) {
+            logger.info("deleted all {} files/folders", hdfsPaths.size());
+            return true;
+        }
+        logger.error("failed to delete all {} files/folders, deleted only {}", hdfsPaths.size(),
+                numberOfDeletedEntities);
         return false;
     }
 
@@ -127,9 +126,8 @@ public class HDFSUtil implements CleanupUtil {
         hdfsPath = hdfsPath.trim();
         logger.debug("attempting to remove {}", hdfsPath);
         try {
-            if (!hadoopFS.delete(new Path(hdfsPath), true)) {
-                logger.error("failed to remove {}", hdfsPath);
-            } else if (doValidate) {
+            hadoopFS.delete(new Path(hdfsPath), true);
+            if (doValidate) {
                 if (!hadoopFS.exists(new Path(hdfsPath))) {
                     success = true;
                     logger.info("{} deleted successfully", hdfsPath);
@@ -174,10 +172,14 @@ public class HDFSUtil implements CleanupUtil {
             try {
                 if (!restoreFile(hadoopFS, hdfsPath, restorePath)) {
                     logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+                    closeHadoopFS(hadoopFS);
+                    impalaUtils.refreshAllTables();
                     return false;
                 }
             } catch (IOException ex) {
                 logger.error("failed to restore file {} to {} - {}", restorePath, hdfsPath, ex);
+                closeHadoopFS(hadoopFS);
+                impalaUtils.refreshAllTables();
                 return false;
             }
         }
@@ -257,21 +259,21 @@ public class HDFSUtil implements CleanupUtil {
      */
     @Override
     public boolean deleteEntityBetween(String hdfsPath, String partitionType, Date startDate, Date endDate) {
-        boolean success = false;
         if ((startDate == null && endDate != null) || (startDate != null && endDate == null)) {
             logger.error("must provide both start and end dates to run");
-            return success;
+            return false;
         }
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
         }
-        FileSystem hadoopFS = null;
+        FileSystem hadoopFS;
         try {
             hadoopFS = getHadoopFileSystem();
         } catch (Exception ex) {
             logger.error("failed to delete path {} - {}", hdfsPath, ex);
+            return false;
         }
-        success = deletePath(hadoopFS, hdfsPath, true);
+        boolean success = deletePath(hadoopFS, hdfsPath, true);
         closeHadoopFS(hadoopFS);
         impalaUtils.refreshAllTables();
         return success;

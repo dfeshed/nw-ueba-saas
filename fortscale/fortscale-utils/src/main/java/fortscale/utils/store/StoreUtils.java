@@ -73,25 +73,21 @@ public class StoreUtils extends CleanupDeletionUtil {
         logger.debug("attempting to delete {} states", states.size());
         for (String state: states) {
             File stateDirectory = new File(stateBaseFolder + "/" + state);
-            if (stateDirectory.exists()) {
-                try {
-                    FileUtils.deleteDirectory(stateDirectory);
-                } catch (IOException ex) {
-                    logger.debug("failed to delete state {} - {}", state, ex);
-                }
-                boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
-                if (doValidate) {
-                    if (!stateDirectory.exists() && deleteSuccess) {
-                        logger.info("deleted state {}", state);
-                        numberOfStatesDeleted++;
-                    } else {
-                        logger.error("failed to delete state {}", state);
-                    }
-                } else {
+            try {
+                FileUtils.deleteDirectory(stateDirectory);
+            } catch (IOException ex) {
+                logger.debug("failed to delete state {} - {}", state, ex);
+            }
+            boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
+            if (doValidate) {
+                if (!stateDirectory.exists() && deleteSuccess) {
+                    logger.info("deleted state {}", state);
                     numberOfStatesDeleted++;
+                } else {
+                    logger.error("failed to delete state {}", state);
                 }
             } else {
-                logger.warn("state {} doesn't exist", state);
+                numberOfStatesDeleted++;
             }
         }
         if (numberOfStatesDeleted == states.size()) {
