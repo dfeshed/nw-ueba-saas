@@ -1,5 +1,7 @@
 package fortscale.services.notifications;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -58,6 +60,11 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	private List<String> vpnSessionFields;
 
+	/**
+	 * create notification out of geo hopping event, and save it to notifications repository in mongo.
+	 * this, in order to separate execution levels in bdp - instead of sending them directly to the next topic.
+	 * @param vpnSessions
+	 */
 	public void createNotifications(List<VpnSession> vpnSessions){
 		if (vpnSessions.size() < 2) {
 			return;
@@ -95,7 +102,14 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		Map<String, String> attributes = getVpnSessionAttributes(vpnSessions.get(0));
 		attributes.put(START_TIME, startTimestamp + "");
 		attributes.put(END_TIME, endTimestamp + "");
-		notification.setAttributes(attributes);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			attributes.put("raw_events", mapper.writeValueAsString(vpnSessions));
+		}
+		catch(JsonProcessingException e){
+			logger.warn("failed to serialize vpn sessions to raw events in notification. they won't be written. cause: " ,e);
+		}
+			notification.setAttributes(attributes);
 
 
 		logger.info("adding geo hopping notification with the index {}", notification.getIndex());
