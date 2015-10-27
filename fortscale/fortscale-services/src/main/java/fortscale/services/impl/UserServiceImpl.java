@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService{
 
 		LogEventsEnum eventId = classifier.getLogEventsEnum();
 		String userId = usernameService.getUserId(normalizedUsername, eventId);
-		if(userId == null && onlyUpdate){
+		if(userId.equals(null) && onlyUpdate){
 			return;
 		}
 			
