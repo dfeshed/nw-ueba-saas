@@ -99,7 +99,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "success_events_counter"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -117,7 +117,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "success_events_counter"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -248,7 +248,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "success_events_counter"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -266,7 +266,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "success_events_counter"
+            "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
