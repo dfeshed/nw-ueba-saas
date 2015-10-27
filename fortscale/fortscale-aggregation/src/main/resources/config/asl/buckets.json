@@ -68,6 +68,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.failure_code == '0x0')]"}
+        },
+        {
           "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -150,6 +156,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.failure_code == '0x0')]"}
+        },
+        {
           "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -222,6 +234,12 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Accepted')]"}
         },
         {
           "name": "high_score_date_time_events_counter",
@@ -302,6 +320,12 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Accepted')]"}
         },
         {
           "name": "high_score_date_time_events_counter",
