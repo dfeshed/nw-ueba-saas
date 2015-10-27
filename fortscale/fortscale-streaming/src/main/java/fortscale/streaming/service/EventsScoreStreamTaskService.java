@@ -44,6 +44,7 @@ public class EventsScoreStreamTaskService {
 	private ModelService modelService;
 
 	private String outputTopic;
+	private boolean forwardEvent;
 	private String sourceType;
 	private String entityType;
 	private String timestampField;
@@ -67,10 +68,10 @@ public class EventsScoreStreamTaskService {
 		sourceType = getConfigString(config, "fortscale.source.type");
 		entityType = getConfigString(config, "fortscale.entity.type");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
+		outputTopic = config.get("fortscale.output.topic", "");
+		forwardEvent = true;
 		if (isBDPRunning && config.containsKey("fortscale.bdp.output.topic")) {
-			outputTopic = config.get("fortscale.bdp.output.topic", "");
-		} else {
-			outputTopic = config.get("fortscale.output.topic", "");
+			forwardEvent = false;
 		}
 
 		fillScoreConfig(config, featureExtractionService);
@@ -118,18 +119,20 @@ public class EventsScoreStreamTaskService {
 				}
 			}
 		}
-	
-		
-		// publish the event with score to the subsequent topic in the topology
+
 		if (StringUtils.isNotEmpty(outputTopic)){
-			try{
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
-				saveEvent(message);
-			} catch(Exception exception){
-				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
+			saveEvent(message);
+			// publish the event with score to the subsequent topic in the topology
+			if (forwardEvent){
+				try {
+					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+
+				} catch (Exception exception) {
+					throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
+				}
 			}
 		}
-		
+
 		processedMessageCount.inc();
 		lastTimestampCount.set(timestamp);
 	}
