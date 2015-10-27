@@ -439,7 +439,7 @@
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
       {
-        "name": "number_of_failed_amt_events_hourly",
+        "name": "number_of_failed_amt_hourly",
         "type": "F",
         "bucketConfName": "normalized_username_amt_hourly",
         "numberOfBuckets": 1,
@@ -1062,7 +1062,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "action_code",
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
             "high_score_action_code_events_counter"
