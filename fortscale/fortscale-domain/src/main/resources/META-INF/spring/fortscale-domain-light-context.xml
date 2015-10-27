@@ -26,4 +26,5 @@
 		<constructor-arg ref="mongoConverter" />
 		<property name="writeConcern" value="SAFE" />
 	</bean>
+	<bean class="fortscale.utils.mongodb.SpringMongoConfiguration"/>
 </beans>
