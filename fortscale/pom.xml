@@ -76,6 +76,7 @@
 		<perf4j.version>0.9.16</perf4j.version>
 		<jackson.version>2.4.0</jackson.version>
 		<jackson.dataformat.version>2.4.0</jackson.dataformat.version>
+        <jackson.datatype.version>2.4.0</jackson.datatype.version>
 		<test.exclude>nothingToExlude</test.exclude>
 		<test.include>**/*Test.java</test.include>
 		<test.groups></test.groups>
@@ -173,8 +174,13 @@
 			<artifactId>jackson-dataformat-csv</artifactId>
 			<version>${jackson.dataformat.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${jackson.datatype.version}</version>
+        </dependency>
 
-		<!-- Spring dependencies -->
+        <!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>

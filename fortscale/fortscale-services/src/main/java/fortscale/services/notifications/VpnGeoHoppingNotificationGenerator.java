@@ -2,6 +2,8 @@ package fortscale.services.notifications;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -103,6 +105,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		attributes.put(START_TIME, startTimestamp + "");
 		attributes.put(END_TIME, endTimestamp + "");
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		try {
 			attributes.put("raw_events", mapper.writeValueAsString(vpnSessions));
 		}
