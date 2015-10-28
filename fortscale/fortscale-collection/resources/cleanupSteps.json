@@ -35,7 +35,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###entity_event_normalized_username_daily@@@date:::startTime###entity_event_normalized_username_hourly@@@date:::startTime"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
@@ -47,7 +47,7 @@
       {
         "technology": "MONGO",
         "strategy": "RESTORE",
-        "dataSources": "aggr_###scored___###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue"
+        "dataSources": "aggr_###scored___###entity_event_###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue###FeatureBucketMetadata"
       },
       {
         "technology": "KAFKA",
