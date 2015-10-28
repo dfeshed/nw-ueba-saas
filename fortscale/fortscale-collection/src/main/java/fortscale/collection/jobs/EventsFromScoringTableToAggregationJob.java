@@ -23,6 +23,9 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
     private static final int DEFAULT_BATCH_SIZE = 1000;
     private static final int FETCH_EVENTS_STEP_IN_MINUTES = 60; // 1 hour
 
+    private static final String DATA_SOURCE_FIELD = "data_source";
+    private static final String DUMMY_DATA_SOURCE = "vpn";
+
     private Map<String, Map<String, String>> dataSourceToParameters;
     private int hoursToRun;
     private String dataSources;
@@ -40,14 +43,9 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                     IMPALA_TABLE_FIELDS_JOB_PARAMETER + "-" + dataSource));
             parameterMap.put(EPOCH_TIME_FIELD_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
                     EPOCH_TIME_FIELD_JOB_PARAMETER + "-" + dataSource));
-            parameterMap.put(STREAMING_TOPIC_FIELD_JOB_PARAMETER, jobDataMapExtension.getJobDataMapStringValue(map,
-                    STREAMING_TOPIC_FIELD_JOB_PARAMETER + "-" + dataSource));
-            parameterMap.put(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER, jobDataMapExtension.
-                    getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER + "-" +
-                            dataSource));
             parameterMap.put(IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, jobDataMapExtension.
                     getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER + "-" + dataSource,
-                            "daily"));
+                            IMPALA_TABLE_PARTITION_TYPE_DEFAULT));
             dataSourceToParameters.put(dataSource, parameterMap);
         }
     }
@@ -60,7 +58,9 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
         getGenericJobParameters(map);
         populateDataSourceToParametersMap(map, dataSources);
-        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE));
+        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
+                jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER),
+                jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER));
     }
 
     @Override
@@ -99,9 +99,8 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    batchToSend.send(dataSourceParams.get(STREAMING_TOPIC_FIELD_JOB_PARAMETER),
-                            result.get(dataSourceParams.get(STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER)).toString(),
-                            json.toJSONString(JSONStyle.NO_COMPRESS),
+                    json.put(DATA_SOURCE_FIELD, DUMMY_DATA_SOURCE);
+                    batchToSend.send(json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
                 timestampCursor = nextTimestampCursor;
@@ -117,11 +116,15 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
         private Queue<Message> messages;
         private int maxSize;
         private KafkaEventsWriter streamWriter;
+        private String topic;
+        private String partitionKey;
 
-        public BatchToSend(int maxSize) {
-            messages = new LinkedList();
-            streamWriter = new KafkaEventsWriter("");
+        public BatchToSend(int maxSize, String topic, String partitionKey) {
             this.maxSize = maxSize;
+            this.topic = topic;
+            this.partitionKey = partitionKey;
+            messages = new LinkedList();
+            streamWriter = new KafkaEventsWriter(topic);
         }
 
         public void shutDown() {
@@ -135,12 +138,11 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
             long latestEpochTimeSent = 0;
             int messagesSent = 0;
             for (Message message: messages) {
-                logger.debug("sending message {} to topic {} - {} ", messagesSent, message.topic, message.messageString);
-                streamWriter.setTopic(message.topic);
+                logger.debug("sending message {} to topic {} - {} ", messagesSent, topic, message.messageString);
                 try {
-                    streamWriter.send(message.partitionKey, message.messageString);
+                    streamWriter.send(partitionKey, message.messageString);
                 } catch (Exception ex) {
-                    logger.error("failed to send message to topic {}", message.topic);
+                    logger.error("failed to send message to topic {}", topic);
                     throw new JobExecutionException(ex);
                 }
                 logger.debug("{} messages sent", messagesSent++);
@@ -154,9 +156,9 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
             messages.clear();
         }
 
-        public void send(String topic, String partitionKey, String messageStr, long epochTime)
+        public void send(String messageStr, long epochTime)
                 throws JobExecutionException {
-            messages.add(new Message(topic, messageStr, partitionKey, epochTime));
+            messages.add(new Message(messageStr, epochTime));
             if (messages.size() < maxSize) {
                 return;
             }
@@ -165,15 +167,11 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
 
         private class Message {
 
-            private String topic;
             private String messageString;
-            private String partitionKey;
             private long epochTime;
 
-            private Message(String topic, String messageString, String partitionKey, long epochTime) {
-                this.topic = topic;
+            private Message(String messageString, long epochTime) {
                 this.messageString = messageString;
-                this.partitionKey = partitionKey;
                 this.epochTime = epochTime;
             }
 
