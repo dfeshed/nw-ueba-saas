@@ -523,9 +523,11 @@
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "high_score_action_code_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "name": "high_score_action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
           "filter": {"jsonPath": "[?(@.action_code_score >= 50)]"}
         },
         {
@@ -574,9 +576,11 @@
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "high_score_action_code_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "name": "high_score_action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
           "filter": {"jsonPath": "[?(@.action_code_score >= 50)]"}
         },
         {

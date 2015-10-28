@@ -1053,7 +1053,7 @@
         }
       },
       {
-        "name": "has_high_score_action_code_events_amt_daily",
+        "name": "distinct_number_of_high_score_action_code_events_amt_daily",
         "type": "P",
         "bucketConfName": "normalized_username_amt_daily",
         "numberOfBuckets": 1,
@@ -1063,29 +1063,31 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_action_code_events_counter"
+            "high_score_action_code_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": true
         }
       },
       {
-        "name": "has_high_score_action_code_events_amt_hourly",
+        "name": "distinct_number_of_high_score_action_code_events_amt_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_amt_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "anomalyType": "action_code",
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "aggregated_feature_name_to_sum": [
-            "high_score_action_code_events_counter"
+            "high_score_action_code_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": true
         }
       }
     ]
