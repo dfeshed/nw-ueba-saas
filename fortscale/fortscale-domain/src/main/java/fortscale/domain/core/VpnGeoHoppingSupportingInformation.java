@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.events.VpnSession;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
@@ -29,7 +30,9 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 	public void setData(Evidence evidence, String json) {
 
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		try {
 			rawEvents = mapper.readValue(json, new TypeReference<List<VpnSession>>(){});
 		} catch (IOException ex) {
