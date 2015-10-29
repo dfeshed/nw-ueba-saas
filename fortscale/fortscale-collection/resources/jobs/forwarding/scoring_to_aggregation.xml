@@ -15,83 +15,83 @@
             <recover>true</recover>
             <job-data-map>
                 <entry>
-                    <key>impalaTableName-VPN</key>
+                    <key>impalaTableName-vpn</key>
                     <value>${impala.score.vpn.table.name}</value>
                 </entry>
                 <entry>
-                    <key>epochtimeField-VPN</key>
+                    <key>epochtimeField-vpn</key>
                     <value>${impala.score.vpn.table.field.date_time_unix}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableFields-VPN</key>
+                    <key>impalaTableFields-vpn</key>
                     <value>${impala.score.vpn.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType-VPN</key>
+                    <key>impalaTablePartitionType-vpn</key>
                     <value>${impala.score.vpn.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableName-VPN_SESSION</key>
+                    <key>impalaTableName-vpn_session</key>
                     <value>${impala.score.vpn.session.table.name}</value>
                 </entry>
                 <entry>
-                    <key>epochtimeField-VPN_SESSION</key>
+                    <key>epochtimeField-vpn_session</key>
                     <value>${impala.score.vpn.table.field.date_time_unix}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableFields-VPN_SESSION</key>
+                    <key>impalaTableFields-vpn_session</key>
                     <value>${impala.score.vpn.session.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType-VPN_SESSION</key>
+                    <key>impalaTablePartitionType-vpn_session</key>
                     <value>${impala.score.vpn.session.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableName-SSH</key>
+                    <key>impalaTableName-ssh</key>
                     <value>${impala.score.ssh.table.name}</value>
                 </entry>
                 <entry>
-                    <key>epochtimeField-SSH</key>
+                    <key>epochtimeField-ssh</key>
                     <value>${impala.score.ssh.table.field.epochtime}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableFields-SSH</key>
+                    <key>impalaTableFields-ssh</key>
                     <value>${impala.score.ssh.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType-SSH</key>
+                    <key>impalaTablePartitionType-ssh</key>
                     <value>${impala.score.ssh.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableName-SecurityEvents</key>
+                    <key>impalaTableName-kerberos_logins</key>
                     <value>${impala.score.ldapauth.table.name}</value>
                 </entry>
                 <entry>
-                    <key>epochtimeField-SecurityEvents</key>
+                    <key>epochtimeField-kerberos_logins</key>
                     <value>${impala.score.ldapauth.table.fields.date_time_unix}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableFields-SecurityEvents</key>
+                    <key>impalaTableFields-kerberos_logins</key>
                     <value>${impala.score.ldapauth.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType-SecurityEvents</key>
+                    <key>impalaTablePartitionType-kerberos_logins</key>
                     <value>${impala.score.ldapauth.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableName-AMT</key>
+                    <key>impalaTableName-amt</key>
                     <value>${impala.score.amt.table.name}</value>
                 </entry>
                 <entry>
-                    <key>epochtimeField-AMT</key>
+                    <key>epochtimeField-amt</key>
                     <value>${impala.score.amt.table.field.epochtime}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableFields-AMT</key>
+                    <key>impalaTableFields-amt</key>
                     <value>${impala.score.amt.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType-AMT</key>
+                    <key>impalaTablePartitionType-amt</key>
                     <value>${impala.score.amt.table.partition.type}</value>
                 </entry>
                 <entry>

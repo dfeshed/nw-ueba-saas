@@ -8,7 +8,7 @@
     <schedule>
         <job>
             <name>ScoringToIndicator</name>
-            <group>SecurityEvents</group>
+            <group>kerberos_logins</group>
             <description>Sending events from scored SecurityEvents table to specified kafka topic.</description>
             <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>

@@ -22,9 +22,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
     private static final long DELTA_TIME_IN_SECONDS = 3599; // 59 minutes and 59 seconds
     private static final int DEFAULT_BATCH_SIZE = 1000;
     private static final int FETCH_EVENTS_STEP_IN_MINUTES = 60; // 1 hour
-
     private static final String DATA_SOURCE_FIELD = "data_source";
-    private static final String DUMMY_DATA_SOURCE = "vpn";
 
     private Map<String, Map<String, String>> dataSourceToParameters;
     private int hoursToRun;
@@ -99,7 +97,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                         Object val = result.get(fieldName.toLowerCase());
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
-                    json.put(DATA_SOURCE_FIELD, DUMMY_DATA_SOURCE);
+                    json.put(DATA_SOURCE_FIELD, dataSource);
                     batchToSend.send(json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
