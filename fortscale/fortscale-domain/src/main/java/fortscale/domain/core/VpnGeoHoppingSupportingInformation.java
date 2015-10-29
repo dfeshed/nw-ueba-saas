@@ -22,13 +22,14 @@ import java.util.List;
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 
-	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
 
-	public VpnGeoHoppingSupportingInformation(){}
+	public VpnGeoHoppingSupportingInformation(boolean isBDPRunning) {
+		this.isBDPRunning = isBDPRunning;
+	}
 
 	@Override
 	public void setData(Evidence evidence, String json) {
