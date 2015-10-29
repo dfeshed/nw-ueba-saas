@@ -6,27 +6,13 @@
 */
 
 import Ember from "ember";
-import ajax from "ic-ajax";
+import ajax, {raw} from "ic-ajax";
+import config from '../config/environment';
 import Base from "simple-auth/authenticators/base";
-import config from "sa/config/environment";
 
 export default Base.extend({
 
-    initialize: function() {
-        // Force the client to always attempt to restore an existing session in case the
-        // server-side session is still valid.
-        if (config["simple-auth"].store === "simple-auth-session-store:localStorage") {
-            var key = "ember_simple_auth:session";
-            if (localStorage.getItem(key) === null) {
-                var token = {
-                    secure: {
-                        authenticator: "authenticator:sa-authenticator"
-                    }
-                };
-                localStorage.setItem(key, JSON.stringify(token));
-            }
-        }
-    }.on("init"),
+    localStorageCsrf: config["simple-auth"].csrfLocalstorageKey,
 
     getInfo: function() {
         return ajax("/api/info");
@@ -57,10 +43,14 @@ export default Base.extend({
     * @param credentials.password {string} password of the user
     */
     authenticate(credentials) {
-        return ajax({
-            type: "POST",
+        var csrfKey = this.get("localStorageCsrf");
+        return raw({
             url: "/api/user/login",
+            type: 'POST',
             data: credentials
+        }).then(function(result) {
+            var csrf = result.jqXHR.getResponseHeader("X-CSRF-TOKEN") || null;
+            localStorage.setItem(csrfKey, csrf);
         });
     },
 
@@ -68,9 +58,12 @@ export default Base.extend({
     * @function invalidate
     */
     invalidate() {
-        return ajax({
+        var csrfKey = this.get("localStorageCsrf");
+        return raw({
             type: "POST",
             url: "/api/user/logout"
+        }).then(function() {
+            localStorage.removeItem(csrfKey);
         });
     }
 });

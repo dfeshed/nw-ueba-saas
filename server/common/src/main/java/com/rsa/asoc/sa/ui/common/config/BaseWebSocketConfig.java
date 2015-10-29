@@ -1,8 +1,6 @@
 package com.rsa.asoc.sa.ui.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
@@ -25,7 +23,7 @@ public abstract class BaseWebSocketConfig extends AbstractWebSocketMessageBroker
     @Autowired
     private ObjectMapper objectMapper;
 
-    protected abstract String getEndpointPrefix();
+    protected abstract EndpointBuilder getEndpointBuilder();
 
     @Bean
     public WebSocketSettings webSocketSettings() {
@@ -40,7 +38,7 @@ public abstract class BaseWebSocketConfig extends AbstractWebSocketMessageBroker
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(getEndpointPath())
+        registry.addEndpoint(getEndpointBuilder().buildWebSocketPath())
                 .setAllowedOrigins("*")
                 .withSockJS()
                 .setHeartbeatTime(webSocketSettings().getSockjs().getHeartbeatInterval());
@@ -58,27 +56,5 @@ public abstract class BaseWebSocketConfig extends AbstractWebSocketMessageBroker
         messageConverters.add(converter);
 
         return false;
-    }
-
-    /**
-     * Ensures the provided prefix is valid and creates the fully-qualified STOMP endpoint path in the form
-     * of: [prefix]/socket
-     * @return the fully-qualified STOMP endpoint path
-     */
-    private String getEndpointPath() {
-        String prefix = getEndpointPrefix();
-        Preconditions.checkState(!Strings.isNullOrEmpty(prefix), "Endpoint prefix must be defined.");
-
-        StringBuilder builder = new StringBuilder(prefix);
-        if (!prefix.startsWith("/")) {
-            builder.insert(0, "/");
-        }
-        if (!prefix.endsWith("/")) {
-            builder.append("/");
-        }
-
-        builder.append("socket");
-
-        return builder.toString();
     }
 }
