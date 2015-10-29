@@ -10,7 +10,7 @@ public class NotificationSupportingInformationFactory {
 
     public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence) {
 
-        switch (evidence.getAnomalyTypeFieldName().toLowerCase()){
+        switch (evidence.getAnomalyTypeFieldName()){
 
         case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
 
