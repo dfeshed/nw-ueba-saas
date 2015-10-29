@@ -22,17 +22,14 @@ import java.util.List;
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 
-	private boolean isBDPRunning;
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
 
-	public VpnGeoHoppingSupportingInformation(boolean isBDPRunning) {
-		this.isBDPRunning = isBDPRunning;
-	}
+	public VpnGeoHoppingSupportingInformation() {}
 
 	@Override
-	public void setData(Evidence evidence, String json) {
+	public void setData(Evidence evidence, String json, boolean isBDPRunning) {
 
 		ObjectMapper mapper = new ObjectMapper();
 		if(isBDPRunning) { //we get two different kinds of jsons, need to deserialize them differently

@@ -8,14 +8,13 @@ public class NotificationSupportingInformationFactory {
     private final static String VPN_OVERLAPPING = "VPN_user_creds_share";
     private final static String VPN_GEO_HOPPING = "vpn_geo_hopping";
 
-    public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence,
-                                                                                         boolean isBDPRunning) {
+    public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence) {
 
         switch (evidence.getAnomalyTypeFieldName()){
 
         case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
 
-        case VPN_GEO_HOPPING: return new VpnGeoHoppingSupportingInformation(isBDPRunning);
+        case VPN_GEO_HOPPING: return new VpnGeoHoppingSupportingInformation();
 
         default: break;
 
