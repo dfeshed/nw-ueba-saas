@@ -5,7 +5,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mockito="http://www.mockito.org/spring/mockito"
        xsi:schemaLocation="http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 
@@ -13,20 +13,22 @@
 
     <context:property-placeholder location="classpath:META-INF/fortscale-collection-test.properties" />
 
-
     <mockito:mock id="impalaJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"/>
 
     <mockito:mock id="vpnSessionRepository" class = "fortscale.domain.events.dao.VpnSessionRepository"/>
+    <mockito:mock id="computerLoginEventRepository" class = "fortscale.domain.events.dao.ComputerLoginEventRepository"/>
     <mockito:mock id="userRepository" class = "fortscale.domain.core.dao.UserRepository"/>
     <mockito:mock id="computerRepository" class = "fortscale.domain.core.dao.ComputerRepository"/>
+
 
     <!-- Mongo mocks -->
     <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"/>
     <mockito:mock id="repository" class="fortscale.domain.eventscache.CachedRecordRepository"/>
     <mockito:mock id="notificationsRepository" class="fortscale.domain.core.dao.NotificationsRepository"/>
     <mockito:mock id="notificationResourcesRepository" class="fortscale.domain.core.dao.NotificationResourcesRepository"/>
-    <!--<mockito:mock id="mongoRepositoryFactory" class="org.springframework.data.mongodb.repository.support.MongoRepositoryFactory"/>-->
-    <mockito:mock id="mongoRepositoryFactoryBean" class="org.springframework.data.mongodb.repository.support.MongoRepositoryFactoryBean"/>
+    <!--<bean id="fsMongoConfiguration" class="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>-->
+    <mockito:mock id="mongo" class="com.mongodb.Mongo"/>
+
 
     <!-- Hadoop mocks -->
     <mockito:mock id="impalaWriterFactoryImpl" class="fortscale.collection.jobs.scoring.ImpalaWriterFactoryImpl"/>
@@ -34,10 +36,31 @@
 
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
-    <mockito:mock id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
+
+    <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
+
+
+    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+
+    <bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
+
+    <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
+
+    <bean id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.services.computer.filtering,fortscale.services.notifications,fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.global,fortscale.utils,fortscale.collection.morphlines,fortscale.collection.configuration" />
+    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.utils,fortscale.collection">
+        <context:exclude-filter type="regex" expression="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
+    </context:component-scan>
 
 </beans>
