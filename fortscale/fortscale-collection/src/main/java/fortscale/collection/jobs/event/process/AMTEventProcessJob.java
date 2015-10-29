@@ -28,17 +28,4 @@ public class AMTEventProcessJob extends EventProcessJob {
 	protected String extractNormalizedUsernameFromRecord(Record record){
 		return RecordExtensions.getStringValue(record,userNameField );
 	}
-
-	@Override
-	protected void updateOrCreateUserWithClassifierUsername(Record record){
-		Classifier classifier = getClassifier();
-		if(classifier != null){
-			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
-			String logUsername = extractUsernameFromRecord(record);
-			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
-		}
-	}
-
-
-
 }
