@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.events.VpnSession;
+import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -20,17 +21,20 @@ import java.util.List;
 @JsonTypeName("vpnGeoHoppingSupportingInformation")
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
+
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
 
-	public VpnGeoHoppingSupportingInformation(){}
+	public VpnGeoHoppingSupportingInformation() {}
 
 	@Override
-	public void setData(Evidence evidence, String json) {
+	public void setData(Evidence evidence, String json, boolean isBDPRunning) {
 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JodaModule());
+		if(isBDPRunning) { //we get two different kinds of jsons, need to deserialize them differently
+			mapper.registerModule(new JodaModule());
+		}
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {

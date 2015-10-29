@@ -19,7 +19,7 @@ public class NotificationSupportingInformation extends EntitySupportingInformati
 
     public NotificationSupportingInformation(){}
 
-    public void setData(Evidence evidence, String json){
+    public void setData(Evidence evidence, String json, boolean isBDPRunning){
         throw new AbstractMethodError("Notification Supporting information is abstract!!");
     }
 

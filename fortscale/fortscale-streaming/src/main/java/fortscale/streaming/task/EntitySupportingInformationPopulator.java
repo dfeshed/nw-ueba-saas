@@ -8,6 +8,6 @@ import fortscale.domain.core.Evidence;
  */
 public interface EntitySupportingInformationPopulator {
 
-    EntitySupportingInformation populate(Evidence evidence, String data);
+    EntitySupportingInformation populate(Evidence evidence, String data, boolean isBDPRunning);
 
 }

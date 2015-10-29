@@ -8,11 +8,11 @@ import fortscale.domain.core.*;
 public class NotificationSupportingInformationPopulator implements EntitySupportingInformationPopulator {
 
     @Override
-    public EntitySupportingInformation populate(Evidence evidence, String data) {
+    public EntitySupportingInformation populate(Evidence evidence, String data, boolean isBDPRunning) {
         NotificationSupportingInformation notificationSupportingInformation = NotificationSupportingInformationFactory.
                 getNotificationSupportingInformation(evidence);
         if (notificationSupportingInformation != null) {
-            notificationSupportingInformation.setData(evidence, data);
+            notificationSupportingInformation.setData(evidence, data, isBDPRunning);
             return notificationSupportingInformation;
         }
         return null;
