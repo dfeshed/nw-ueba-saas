@@ -32,7 +32,6 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private static Logger logger = Logger.getLogger(EventsFromDataTableToStreamingJob.class);
 
     private static final int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
-    private static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
     private static final long LOGGER_MAX_FREQUENCY = 20 * 60;
     private static final long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
 

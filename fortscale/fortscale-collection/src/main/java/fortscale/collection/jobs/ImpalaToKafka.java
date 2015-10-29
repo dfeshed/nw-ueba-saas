@@ -42,6 +42,7 @@ public abstract class ImpalaToKafka extends FortscaleJob {
     protected static final String JOB_MONITOR_PARAMETER = "jobmonitor";
     protected static final String CLASS_MONITOR_PARAMETER = "classmonitor";
     protected static final String RETRIES_PARAMETER = "retries";
+    protected static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
 
     @Value("${broker.list}")
     protected String zookeeperConnection;

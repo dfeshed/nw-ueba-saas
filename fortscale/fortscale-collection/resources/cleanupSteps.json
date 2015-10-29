@@ -35,7 +35,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###entity_event_normalized_username_daily@@@date:::startTime###entity_event_normalized_username_hourly@@@date:::startTime"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
@@ -47,7 +47,7 @@
       {
         "technology": "MONGO",
         "strategy": "RESTORE",
-        "dataSources": "aggr_###scored___###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue"
+        "dataSources": "aggr_###scored___###entity_event_###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue###FeatureBucketMetadata"
       },
       {
         "technology": "KAFKA",
@@ -149,6 +149,25 @@
         "technology": "STORE",
         "strategy": "DELETE",
         "dataSources": "4769-prevalence-stats###4769-user-score###amt-prevalence-stats###amtsessions-prevalence-stats###amtsession-user-score###amt-user-score###hdfs-write-amtscores###hdfs-write-amtscores_top###hdfs-write-amtsessiondata###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###sessionize-amt###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
+      }
+    ]
+  },
+  "AfterScored": {
+    "otherSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "ALL"
+      },
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
       }
     ]
   },
