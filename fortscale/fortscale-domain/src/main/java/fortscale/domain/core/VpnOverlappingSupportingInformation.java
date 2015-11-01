@@ -36,7 +36,7 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
     }
 
     @Override
-    public void setData(Evidence evidence, String json) {
+    public void setData(Evidence evidence, String json, boolean isBDPRunning) {
         setRawEvents(json);
         if (rawEvents != null) {
             evidence.setNumOfEvents(rawEvents.size());

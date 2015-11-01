@@ -81,6 +81,12 @@
 			<groupId>com.cloudera.api</groupId>
 			<artifactId>cloudera-manager-api</artifactId>
 			<version>${cloudera-manager-api.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jackson-databind</artifactId>
+					<groupId>com.fasterxml.jackson.core</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
