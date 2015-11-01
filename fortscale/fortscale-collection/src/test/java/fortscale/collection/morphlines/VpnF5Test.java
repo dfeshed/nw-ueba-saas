@@ -1,19 +1,16 @@
 package fortscale.collection.morphlines;
 
-import fortscale.collection.FsParameterizedTest;
-import fortscale.domain.events.dao.VpnSessionRepository;
+import fortscale.collection.FsParametrizedMultiLineTest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.junit.SpringAware;
 import fortscale.utils.properties.PropertiesResolver;
+import org.junit.*;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.junit.runners.Parameterized;
-import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -29,18 +26,15 @@ import static junitparams.JUnitParamsRunner.$;
 		locations = {"classpath*:META-INF/spring/collection-context-test-mocks.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class VpnF5Test extends FsParameterizedTest {
+public class VpnF5Test extends FsParametrizedMultiLineTest {
 
 	//rules used to set JUnit parameters in SpringAware
 	@ClassRule
 	public static final SpringAware SPRING_AWARE = SpringAware.forClass(VpnF5Test.class);
 	@Rule
 	public TestRule springAwareMethod = SPRING_AWARE.forInstance(this);
-	@Rule
-	public TestName testName = new TestName();
 
-	Object[] lines;
-	Object[] outputs;
+
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_F5.conf";
@@ -89,9 +83,7 @@ public class VpnF5Test extends FsParameterizedTest {
 	}
 
 	public VpnF5Test(String testCase, Object[] lines, Object[] outputs) {
-		super(testCase, null, null);
-		this.lines = lines;
-		this.outputs = outputs;
+		super(testCase, lines, outputs);
 	}
 
 	private static void prepareDates() {
