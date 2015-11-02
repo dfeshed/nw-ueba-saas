@@ -39,6 +39,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private final String SORT_FIELD = "ts";
 	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String CHECKING_ON_YID = "user_checking_up_on_yids";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
 
@@ -239,7 +240,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			return result;
 		}
 		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
-		if (cause.contains("amt")) {
+		if (cause.contains("amt") || cause.equalsIgnoreCase(CHECKING_ON_YID)) {
 			result.add("amt");
 		} else if (cause.contains("vpn")) {
 			result.add("vpn");
