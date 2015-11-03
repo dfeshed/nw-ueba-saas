@@ -44,24 +44,21 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask implements InitableTask {
 
-	private static final String DATA_SOURCE_FIELD = "dataSource";
-
-	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
-	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
-
-	private static String usernameKey = "username";
-	private static String userTagsKey = "user-tag";
-	private static String samAccountKey = "samAccountName";
-
-	/**
-	 * Logger
-	 */
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
 
+	private static final String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
+	private static final String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
+
+	private static final String usernameKey = "username";
+	private static final String userTagsKey = "user-tag";
+	private static final String samAccountKey = "samAccountName";
+
+	private static final String DATA_SOURCE_FIELD = "dataSource";
+
 	/**
-	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 * Map of configuration: from the data-source name to a corresponding entry of normalization service and input/output topics
 	 */
-	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
+	protected Map<String, UsernameNormalizationConfig> dataSourceToConfiguration = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
@@ -84,15 +81,15 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
+		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
 		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
+		for (Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
 			String dataSource = ConfigField.getKey();
-			String inputTopic = ConfigField.getValue();
+			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
 			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
@@ -111,7 +108,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
+			dataSourceToConfiguration.put(dataSource, new UsernameNormalizationConfig(inputTopic, outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
@@ -154,7 +151,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
 
 		if (dataSource == null) {
-			logger.error("Could not find dataSource field. Skipping message: " + messageText);
+			logger.error("Could not find mandatory dataSource field. Skipping message: " + messageText);
 
 			return;
 		}
@@ -167,7 +164,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			// Get configuration for data source
-			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
+			UsernameNormalizationConfig configuration = dataSourceToConfiguration.get(dataSource);
 			if (configuration == null) {
 				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
 				return;
