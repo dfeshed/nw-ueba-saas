@@ -219,18 +219,26 @@ public class ApiEvidenceController extends DataQueryController {
 					TimestampUtils.convertToSeconds(endDate));
 			termsMap.add(term);
 
-			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
 			//set sort order
-			SortDirection sortDir = SortDirection.DESC;
-			String sortFieldStr = timestampField;
+			SortDirection sortDir;
+			String sortFieldStr;
+
+			List<QuerySort> querySortList = new ArrayList<QuerySort>();
+
+			// Add custom sort if provided by request
+			// List<String, SortDirection> sortMap = new HashMap<>();
 			if (sort_field != null) {
 				if (sort_direction != null) {
 					sortDir = SortDirection.valueOf(sort_direction);
 					sortFieldStr = sort_field;
+					dataQueryHelper.addQuerySort(querySortList, sortFieldStr, sortDir);
 				}
 			}
-			//sort according to event times for continues forwarding
-			List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
+
+			// Sort according to event times for continues forwarding. sort is added so it's primary or secondary
+			// based on previous search params.
+			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
+			dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
 
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
 					size);

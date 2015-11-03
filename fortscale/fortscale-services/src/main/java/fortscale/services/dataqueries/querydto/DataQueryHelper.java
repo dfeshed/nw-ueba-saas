@@ -101,19 +101,32 @@ public class DataQueryHelper {
     }
 
     /**
-     * Creates a Sort object for the Data Query object
-     * @param sortField
-     * @param sortDirection an object with wither ASC or DESC value
+     * Adds a query sort to a pre-made querySortList
+     * @param querySortList A query sort list
+     * @param sortField The name of the sort field
+     * @param sortDirection The sort direction
      * @return
      */
-    public List<QuerySort> createQuerySort(String sortField, SortDirection sortDirection){
-        List<QuerySort> querySortList = new ArrayList<QuerySort>();
+    public List<QuerySort> addQuerySort (List<QuerySort> querySortList, String sortField, SortDirection sortDirection) {
         QuerySort queryUpdateTimestampSort = new QuerySort();
         DataQueryField dataQueryUpdateTimestampSortField = new DataQueryField();
         dataQueryUpdateTimestampSortField.setId(sortField);
         queryUpdateTimestampSort.setField(dataQueryUpdateTimestampSortField);
         queryUpdateTimestampSort.setDirection(sortDirection);
         querySortList.add(queryUpdateTimestampSort);
+
+        return querySortList;
+    }
+
+    /**
+     * Creates a Sort object for the Data Query object
+     * @param sortField the name of the sort field
+     * @param sortDirection an object with wither ASC or DESC value
+     * @return
+     */
+    public List<QuerySort> createQuerySort(String sortField, SortDirection sortDirection){
+        List<QuerySort> querySortList = new ArrayList<QuerySort>();
+        addQuerySort(querySortList, sortField, sortDirection);
         return querySortList;
     }
 
