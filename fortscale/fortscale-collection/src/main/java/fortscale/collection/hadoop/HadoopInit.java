@@ -315,7 +315,7 @@ public class HadoopInit implements InitializingBean{
 
 		//Iterate over the configuration and create the HDFS paths and schemas based on that
 		try {
-			String[] dataSourcesList = env.getEnvPropertyValue("fortscale.data.source").split(",");
+			String[] dataSourcesList = env.getEnvPropertyValue("${fortscale.data.source}").split(",");
 
 			for (int i = 0; i < dataSourcesList.length; i++) {
 				String dataSource = dataSourcesList[i];
