@@ -321,11 +321,11 @@ public class HadoopInit implements InitializingBean{
 				String dataSource = dataSourcesList[i];
 
 				//Data schema
-				String impalaDataTableFields = env.getEnvPropertyValue(String.format("impala.data.%s.table.fields", dataSource));
-				String impalaDataTableDelimiter = env.getEnvPropertyValue(String.format("impala.data.%s.table.delimiter", dataSource));
-				String impalaDataTableName = env.getEnvPropertyValue(String.format("impala.data.%s.table.name", dataSource));
-				String impalaDataDirectory = env.getEnvPropertyValue(String.format("hdfs.user.data.%s.path", dataSource));
-				String impalaDataTablePartitionType = env.getEnvPropertyValue(String.format("impala.data.%s.table.partition.type", dataSource));
+				String impalaDataTableFields = env.getEnvPropertyValue(String.format("${impala.data.%s.table.fields}", dataSource));
+				String impalaDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.data.%s.table.delimiter}", dataSource));
+				String impalaDataTableName = env.getEnvPropertyValue(String.format("${impala.data.%s.table.name}", dataSource));
+				String impalaDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.data.%s.path}", dataSource));
+				String impalaDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.data.%s.table.partition.type}", dataSource));
 
 
 				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaDataTablePartitionType);
@@ -333,22 +333,22 @@ public class HadoopInit implements InitializingBean{
 
 
 				//Enriched schema
-				String impalaEnrichedDataTableFields = env.getEnvPropertyValue(String.format("impala.enricheddata.%s.table.fields", dataSource));
-				String impalaEnrichedDataTableDelimiter = env.getEnvPropertyValue(String.format("impala.enricheddata.%s.table.delimiter", dataSource));
-				String impalaEnrichedDataTableName = env.getEnvPropertyValue(String.format("impala.enricheddata.%s.table.name", dataSource));
-				String impalaEnrichedDataDirectory = env.getEnvPropertyValue(String.format("hdfs.user.enricheddata.%s.path", dataSource));
-				String impalaEnrichedDataTablePartitionType = env.getEnvPropertyValue(String.format("impala.enricheddata.%s.table.partition.type", dataSource));
+				String impalaEnrichedDataTableFields = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.fields}", dataSource));
+				String impalaEnrichedDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.delimiter}", dataSource));
+				String impalaEnrichedDataTableName = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.name}", dataSource));
+				String impalaEnrichedDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.enricheddata.%s.path}", dataSource));
+				String impalaEnrichedDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.partition.type}", dataSource));
 
 				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaEnrichedDataTablePartitionType);
 				createTable(impalaEnrichedDataTableName, impalaEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaEnrichedDataTableDelimiter, impalaEnrichedDataDirectory);
 
 
 				//Scored schema
-				String impalaScoringTableFields = env.getEnvPropertyValue(String.format("impala.score.%s.table.fields", dataSource));
-				String impalaScoringTableDelimiter = env.getEnvPropertyValue(String.format("impala.score.%s.table.delimiter", dataSource));
-				String impalaScoringTableName = env.getEnvPropertyValue(String.format("impala.score.%s.table.name", dataSource));
-				String impalaScoringDirectory = env.getEnvPropertyValue(String.format("hdfs.user.processeddata.%s.path", dataSource));
-				String impalaScoringTablePartitionType = env.getEnvPropertyValue(String.format("impala.score.%s.table.partition.type", dataSource));
+				String impalaScoringTableFields = env.getEnvPropertyValue(String.format("${impala.score.%s.table.fields}", dataSource));
+				String impalaScoringTableDelimiter = env.getEnvPropertyValue(String.format("${impala.score.%s.table.delimiter}", dataSource));
+				String impalaScoringTableName = env.getEnvPropertyValue(String.format("${impala.score.%s.table.name}", dataSource));
+				String impalaScoringDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.processeddata.%s.path}", dataSource));
+				String impalaScoringTablePartitionType = env.getEnvPropertyValue(String.format("${impala.score.%s.table.partition.type}", dataSource));
 
 
 				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaScoringTablePartitionType);
@@ -356,11 +356,11 @@ public class HadoopInit implements InitializingBean{
 
 
 				//Top table schema
-				String impalaTopScoringTableFields = env.getEnvPropertyValue(String.format("impala.score.%s.top.table.fields", dataSource));
-				String impalaTopScoringTableDelimiter = env.getEnvPropertyValue(String.format("impala.score.%s.top.table.delimiter", dataSource));
-				String impalaTopScoringTableName = env.getEnvPropertyValue(String.format("impala.score.%s.top.table.name", dataSource));
-				String impalaTopScoringDirectory = env.getEnvPropertyValue(String.format("hdfs.user.processeddata.%s.top.path", dataSource));
-				String impalaTopScoringTablePartitionType = env.getEnvPropertyValue(String.format("impala.score.%s.top.table.partition.type", dataSource));
+				String impalaTopScoringTableFields = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.fields}", dataSource));
+				String impalaTopScoringTableDelimiter = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.delimiter}", dataSource));
+				String impalaTopScoringTableName = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.name}", dataSource));
+				String impalaTopScoringDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.processeddata.%s.top.path}", dataSource));
+				String impalaTopScoringTablePartitionType = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.partition.type}", dataSource));
 
 
 				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopScoringTablePartitionType);
