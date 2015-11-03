@@ -357,34 +357,6 @@ public class HadoopInit implements InitializingBean{
 
 
 
-
-		//SSH Scoring table
-		@Value("${impala.score.ssh.table.fields}")
-		private
-		@Value("${impala.score.ssh.table.delimiter}")
-		private
-		@Value("${impala.score.ssh.table.name}")
-		private String impalaSshScoringTableName;
-		@Value("${hdfs.user.processeddata.sshscores.path}")
-		private String impalaSshScoringDirectory;
-		@Value("${impala.score.ssh.table.partition.type}")
-		private String impalaSshScoringTablePartitionType;
-
-		//Top SSH Scoring table
-		@Value("${impala.score.ssh_top.table.fields}")
-		private String impalaTopSshScoringTableFields;
-		@Value("${impala.score.ssh_top.table.delimiter}")
-		private String impalaTopSshScoringTableDelimiter;
-		@Value("${impala.score.ssh_top.table.name}")
-		private String impalaTopSshScoringTableName;
-		@Value("${hdfs.user.processeddata.sshscores.top.path}")
-		private String impalaTopSshScoringDirectory;
-		@Value("${impala.score.ssh_top.table.partition.type}")
-		private String impalaTopSshScoringTablePartitionType;
-
-
-
-
 		//Iterate over the configuration and create the HDFS paths and schemas based on that
 		String [] dataSourcesList = env.getProperty("fortscale.data.source").split(",");
 
@@ -416,10 +388,28 @@ public class HadoopInit implements InitializingBean{
 
 
 			//Scored schema
-			String impalaSshScoringTableFields;
-			String impalaSshScoringTableDelimiter;
+			String impalaScoringTableFields = env.getProperty(String.format("impala.score.%s.table.fieldss", dataSource));
+			String impalaScoringTableDelimiter = env.getProperty(String.format("impala.score.%s.table.delimiter", dataSource));
+			String impalaScoringTableName = env.getProperty(String.format("impala.score.%s.table.name", dataSource));
+			String impalaScoringDirectory = env.getProperty(String.format("hdfs.user.processeddata.%s.path", dataSource));
+			String impalaScoringTablePartitionType = env.getProperty(String.format("impala.score.%s.table.partition.type", dataSource));
+
+
+			partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaScoringTablePartitionType);
+			createTable(impalaScoringTableName, impalaScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaScoringTableDelimiter, impalaScoringDirectory);
+
 
 			//Top table schema
+			String impalaTopScoringTableFields = env.getProperty(String.format("impala.score.%s.top.table.fields", dataSource));
+			String impalaTopScoringTableDelimiter = env.getProperty(String.format("impala.score.%s.top.table.delimiter", dataSource));
+			String impalaTopScoringTableName = env.getProperty(String.format("impala.score.%s.top.table.name", dataSource));
+			String impalaTopScoringDirectory = env.getProperty(String.format("hdfs.user.processeddata.%s.top.path", dataSource));
+			String impalaTopScoringTablePartitionType = env.getProperty(String.format("impala.score.%s.top.table.partition.type", dataSource));
+
+
+			partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopScoringTablePartitionType);
+			createTable(impalaTopScoringTableName, impalaTopScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopScoringTableDelimiter, impalaTopScoringDirectory);
+
 
 
 
@@ -469,15 +459,6 @@ public class HadoopInit implements InitializingBean{
 		//Top VPN Session Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopVpnSessionScoringTablePartitionType);
 		createTable(impalaTopVpnSessionScoringTableName, impalaTopVpnSessionScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopVpnSessionScoringTableDelimiter, impalaTopVpnSessionScoringDirectory);
-
-
-		//SSH Scoring table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSshScoringTablePartitionType);
-		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
-
-		//SSH Scoring table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopSshScoringTablePartitionType);
-		createTable(impalaTopSshScoringTableName, impalaTopSshScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopSshScoringTableDelimiter, impalaTopSshScoringDirectory);
 
 
 
