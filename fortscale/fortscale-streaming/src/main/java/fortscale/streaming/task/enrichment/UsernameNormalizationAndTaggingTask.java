@@ -143,30 +143,29 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
-
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-
-		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
-
-		if (dataSource == null) {
-			logger.error("Could not find mandatory dataSource field. Skipping message: " + messageText);
-
-			return;
-		}
-
-		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
-		} else {
+		}
+		else {
+			String messageText = (String)envelope.getMessage();
+
+			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+			String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+			if (dataSource == null) {
+				logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+				return;
+			}
+
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = dataSourceToConfiguration.get(dataSource);
 			if (configuration == null) {
-				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
+				logger.error("No configuration found for data source {}. Dropping Record", inputTopic);
 				return;
 			}
 
