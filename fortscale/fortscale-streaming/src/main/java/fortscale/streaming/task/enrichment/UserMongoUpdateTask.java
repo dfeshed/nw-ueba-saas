@@ -77,7 +77,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
-	protected Map<String, DataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
+	protected Map<String, DataSourceConfiguration> dataSourceToConfiguration = new HashMap<>();
 
 	/**
 	 * Map between classifier id to updateonly flag
@@ -100,22 +100,21 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// Get field names
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		//usernameField = getConfigString(config, "fortscale.username.field");
 
 		// Get the user service (for Mongo) from spring
 		userService = SpringService.getInstance().resolve(UserService.class);
 
 		// Fill the map between the input topic and the data source
-		Config fieldsSubset = config.subset("fortscale.data-source.input.topic.");
-		for (String dataSource : fieldsSubset.keySet()) {
-			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
-			String successfulLoginField = getConfigString(config, String.format("fortscale.data-source.success.field.%s", dataSource));
-			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
-			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
-			String logUserNameField =getConfigString(config, String.format("fortscale.data-source.logusername.field.%s", dataSource));
+		for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
+			String dataSource = ConfigField.getKey();
+			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
+			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+			String successfulLoginField = getConfigString(config, String.format("fortscale.events.success.field.%s", dataSource));
+			String successfulLoginValue = getConfigString(config, String.format("fortscale.events.success.value.%s", dataSource));
+			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
+			String logUserNameField =getConfigString(config, String.format("fortscale.events.logusername.field.%s", dataSource));
 			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
+			dataSourceToConfiguration.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
@@ -158,7 +157,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		// Get relevant data source according to topic
-		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
+		DataSourceConfiguration dataSourceConfiguration = dataSourceToConfiguration.get(topic);
 		if (dataSourceConfiguration == null) {
 			logger.error("No data source is defined for input topic {} ", topic);
 			return;
