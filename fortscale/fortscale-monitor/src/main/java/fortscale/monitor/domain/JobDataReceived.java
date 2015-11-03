@@ -1,5 +1,7 @@
 package fortscale.monitor.domain;
 
+import java.util.Map;
+
 /**
  * indicates the amount of data received by the job. Could hold values of 
  * various types.
@@ -9,6 +11,7 @@ public class JobDataReceived {
 	private String dataType;
 	private int value;
 	private String valueType;
+	private Map<String, Integer> filterCauseCount;
 	
 	public JobDataReceived() {}
 	
@@ -16,7 +19,7 @@ public class JobDataReceived {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
-		
+		this.filterCauseCount = filterCauseCount;
 		normalizeValue();
 	}
 	
@@ -31,6 +34,7 @@ public class JobDataReceived {
 			}
 		}
 	}
+
 	
 	public String getDataType() {
 		return dataType;
@@ -52,6 +56,16 @@ public class JobDataReceived {
 	public void setValueType(String valueType) {
 		this.valueType = valueType;
 	}
+
+
+	public Map<String, Integer> getFilterCauseCount() {
+		return filterCauseCount;
+	}
+
+	public void setFilterCauseCount(Map<String, Integer> filterCauseCount) {
+		this.filterCauseCount = filterCauseCount;
+	}
+
 
 
 	@Override

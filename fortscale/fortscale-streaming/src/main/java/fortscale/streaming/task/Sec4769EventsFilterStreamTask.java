@@ -3,6 +3,8 @@ package fortscale.streaming.task;
 import static fortscale.utils.ConversionUtils.convertToBoolean;
 import static fortscale.utils.ConversionUtils.convertToString;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.minidev.json.JSONObject;
@@ -16,13 +18,17 @@ import fortscale.domain.system.ServersListConfigurationImpl;
 import fortscale.streaming.service.SpringService;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
-private static final String NAT_SRC_MACHINE = "nat_src_machine";
-	
+	private static final String NAT_SRC_MACHINE = "nat_src_machine";
+	public static final String ACCOUNT_NAME_MATCH_TO_REGEX = "Account Name match to $account_regex";
+	public static final String SERVICE_NAME_MATCH_TO_REGEX = "Service Name match to $dcRegex";
+	public static final String SERVICE_NAME_MATCH_COMPUTER_NAME = "Service Name match to computer name";
+
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
 	
 	private boolean filterVpnPool;
 	private Pattern vpnIpPool;
+
 
 	@Override
 	public void init(Config config, TaskContext context) throws Exception {
@@ -46,7 +52,7 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 			// load vpn address pool regex pattern
 			String ips = convertToString(config.get("fortscale.filter.vpnpool.ip"));
 			vpnIpPool = Pattern.compile(ips);
-	}
+		}
 	}
 	
 	@Override
@@ -55,18 +61,26 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
-				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt"))
+				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
+
+			countNewFilteredEvents(ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
+		}
+
 		
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
-		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches())
+		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
+			countNewFilteredEvents(SERVICE_NAME_MATCH_TO_REGEX);
 			return false;
+		}
 		
 		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
-		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name))
+		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
+			countNewFilteredEvents(SERVICE_NAME_MATCH_COMPUTER_NAME);
 			return false;
+		}
 		
 		// set field for source ip address only is it not nat, otherwise put don't care value in the event
 		String normalized_src_machine = convertToString(message.get("normalized_src_machine")); 		
