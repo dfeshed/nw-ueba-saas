@@ -113,43 +113,7 @@ public class HadoopInit implements InitializingBean{
 	private String impalaLoginScoringDirectory;
     @Value("${impala.score.login.table.partition.type}")
     private String impalaSecLoginScoringTablePartitionType;
-	
-	//VPN Data table
-	@Value("${impala.data.vpn.table.fields}")
-	private String impalaVpnDataTableFields;
-	@Value("${impala.data.vpn.table.delimiter}")
-	private String impalaVpnDataTableDelimiter;
-	@Value("${impala.data.vpn.table.name}")
-	private String impalaVpnDataTableName;
-	@Value("${hdfs.user.data.vpn.path}")
-	private String impalaVpnDataDirectory;
-	@Value("${impala.data.vpn.table.partition.type}")
-	private String impalaVpnDataTablePartitionType;
-		
-	//VPN Scoring table
-	@Value("${impala.score.vpn.table.fields}")
-	private String impalaVpnScoringTableFields;
-	@Value("${impala.score.vpn.table.delimiter}")
-	private String impalaVpnScoringTableDelimiter;
-	@Value("${impala.score.vpn.table.name}")
-	private String impalaVpnScoringTableName;
-	@Value("${hdfs.user.processeddata.vpnscores.path}")
-	private String impalaVpnScoringDirectory;
-	@Value("${impala.score.vpn.table.partition.type}")
-	private String impalaVpnScoringTablePartitionType;
-	
-	//Top VPN Scoring table
-	@Value("${impala.score.vpn_top.table.fields}")
-	private String impalaTopVpnScoringTableFields;
-	@Value("${impala.score.vpn_top.table.delimiter}")
-	private String impalaTopVpnScoringTableDelimiter;
-	@Value("${impala.score.vpn_top.table.name}")
-	private String impalaTopVpnScoringTableName;
-	@Value("${hdfs.user.processeddata.vpnscores_top.path}")
-	private String impalaTopVpnScoringDirectory;
-	@Value("${impala.score.vpn_top.table.partition.type}")
-	private String impalaTopVpnScoringTablePartitionType;
-	
+
 	//VPN Session Scoring table
 	@Value("${impala.score.vpn.session.table.fields}")
 	private String impalaVpnSessionScoringTableFields;
@@ -175,7 +139,6 @@ public class HadoopInit implements InitializingBean{
     private String impalaTopVpnSessionScoringTablePartitionType;
 	
 
-	
 	//Total Score table
 	@Value("${impala.total.scores.table.fields}")
 	private String impalaTotalScoringTableFields;
@@ -251,17 +214,7 @@ public class HadoopInit implements InitializingBean{
 
 
 
-	// VPN Enriched Data table
-	@Value("${impala.enricheddata.vpn.table.fields}")
-	private String impalaVpnEnrichedDataTableFields;
-	@Value("${impala.enricheddata.vpn.table.delimiter}")
-	private String impalaVpnEnrichedDataTableDelimiter;
-	@Value("${impala.enricheddata.vpn.table.name}")
-	private String impalaVpnEnrichedDataTableName;
-	@Value("${hdfs.user.enricheddata.vpn.path}")
-	private String impalaVpnEnrichedDataDirectory;
-	@Value("${impala.enricheddata.vpn.table.partition.type}")
-	private String impalaVpnEnrichedDataTablePartitionType;
+
 
 	// AMT Enriched Data table
 	@Value("${impala.enricheddata.amt.table.fields}")
@@ -425,7 +378,7 @@ public class HadoopInit implements InitializingBean{
 
 
 
-		
+
 
 
 
@@ -455,13 +408,6 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
 
 
-		//VPN Scoring table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnScoringTablePartitionType);
-		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
-
-		//Top VPN Scoring table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopVpnScoringTablePartitionType);
-		createTable(impalaTopVpnScoringTableName, impalaTopVpnScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopVpnScoringTableDelimiter, impalaTopVpnScoringDirectory);
 
 		//VPN Session Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnSessionScoringTablePartitionType);
