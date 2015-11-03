@@ -1,6 +1,5 @@
 package fortscale.streaming.task;
 
-import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -8,7 +7,6 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.*;
-import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
@@ -24,9 +22,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -90,40 +85,39 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		long windowDuration = config.getLong("task.window.ms");
 
 		// Get configuration properties
-		Config fieldsSubset = config.subset("fortscale.");
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+		for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
+			String dataSource = ConfigField.getKey();
 
 			// create specific configuration for topic
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
-			String inputTopic = resolveStringValue(config, String.format("fortscale.%s.input.topic", eventType), res);
+			String inputTopic = resolveStringValue(config, String.format("fortscale.input.topic.%s", dataSource), res);
 			if (!topicToWriterConfigurationMap.containsKey(inputTopic)) {
 				topicToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
 			}
 			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
 
-			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
+			if (isConfigContainKey(config, String.format("fortscale.output.topics.%s", dataSource))) {
 				writerConfiguration.outputTopics = getConfigStringList(config,
-						String.format("fortscale.%s.output.topics", eventType));
+						String.format("fortscale.output.topics.%s", dataSource));
 			}
-			if (isConfigContainKey(config, String.format("fortscale.%s.bdp.output.topics", eventType))) {
+			if (isConfigContainKey(config, String.format("fortscale.bdp.output.topics.%s", dataSource))) {
 				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
-						String.format("fortscale.%s.bdp.output.topics", eventType));
+						String.format("fortscale.bdp.output.topics", dataSource));
 			}
 
 			// read configuration properties
 
-			writerConfiguration.timestampField = resolveStringValue(config, String.format("fortscale.%s.timestamp.field", eventType), res);
-			writerConfiguration.usernameField = resolveStringValue(config, String.format("fortscale.%s.username.field", eventType), res);
-			List<String> discriminatorsFields = resolveStringValues(config, String.format("fortscale.%s.discriminator.fields", eventType), res);
-			writerConfiguration.fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, String.format("fortscale.%s.fields", eventType), res));
-			writerConfiguration.separator = resolveStringValueDefault(config, String.format("fortscale.%s.separator", eventType), ",", res);
-			String hdfsRootPath = resolveStringValue(config, String.format("fortscale.%s.hdfs.root", eventType), res);
-			writerConfiguration.tableName = resolveStringValue(config, String.format("fortscale.%s.table.name", eventType), res);
-			String fileName = resolveStringValue(config, String.format("fortscale.%s.file.name", eventType), res);
-			writerConfiguration.partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, String.format("fortscale.%s.partition.strategy", eventType), res));
-			String splitClassName = resolveStringValue(config, String.format("fortscale.%s.split.strategy", eventType), res);
-			int eventsCountFlushThreshold = config.getInt(String.format("fortscale.%s.events.flush.threshold", eventType));
+			writerConfiguration.timestampField = resolveStringValue(config, String.format("fortscale.%s.timestamp.field.%s", dataSource), res);
+			writerConfiguration.usernameField = resolveStringValue(config, String.format("fortscale.%s.username.field.%s", dataSource), res);
+			List<String> discriminatorsFields = resolveStringValues(config, String.format("fortscale.%s.discriminator.fields.%s", dataSource), res);
+			writerConfiguration.fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, String.format("fortscale.%s.fields.%s", dataSource), res));
+			writerConfiguration.separator = resolveStringValueDefault(config, String.format("fortscale.%s.separator.%s", dataSource), ",", res);
+			String hdfsRootPath = resolveStringValue(config, String.format("fortscale.%s.hdfs.root.%s", dataSource), res);
+			writerConfiguration.tableName = resolveStringValue(config, String.format("fortscale.%s.table.name.%s", dataSource), res);
+			String fileName = resolveStringValue(config, String.format("fortscale.%s.file.name.%s", dataSource), res);
+			writerConfiguration.partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, String.format("fortscale.%s.partition.strategy.%s", dataSource), res));
+			String splitClassName = resolveStringValue(config, String.format("fortscale.%s.split.strategy.%s", dataSource), res);
+			int eventsCountFlushThreshold = config.getInt(String.format("fortscale.%s.events.flush.threshold.%s", dataSource));
 
 
 			writerConfiguration.storeName = storeNamePrefix + writerConfiguration.tableName;
@@ -132,7 +126,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			// create HDFS appender service
 			writerConfiguration.service = new HdfsService(hdfsRootPath, fileName, writerConfiguration.partitionStrategy,
 					splitStrategy, writerConfiguration.tableName, eventsCountFlushThreshold, windowDuration, writerConfiguration.separator);
-			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.%s.feature.extractor.", eventType));
+			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.%s.feature.extractor.", dataSource));
 
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));
@@ -143,13 +137,13 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			writerConfiguration.barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(writerConfiguration.storeName), discriminatorsFields);
 
 			// load filters from configuration
-			for (String filterName : config.getList(String.format("fortscale.%s.filters", eventType), new LinkedList<String>())) {
+			for (String filterName : config.getList(String.format("fortscale.%s.filters", dataSource), new LinkedList<String>())) {
 				// create a filter instance
-				String filterClass = getConfigString(config, String.format("fortscale.%s.filter.%s.class", eventType, filterName));
+				String filterClass = getConfigString(config, String.format("fortscale.%s.filter.%s.class", dataSource, filterName));
 				MessageFilter filter = (MessageFilter) Class.forName(filterClass).newInstance();
 
 				// initialize the filter with configuration
-				filter.init(filterName, config, eventType);
+				filter.init(filterName, config, dataSource);
 				writerConfiguration.filters.add(filter);
 			}
 
