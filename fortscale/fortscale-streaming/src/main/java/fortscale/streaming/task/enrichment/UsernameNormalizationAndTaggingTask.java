@@ -44,6 +44,8 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask implements InitableTask {
 
+	private static final String DATA_SOURCE_FIELD = "dataSource";
+
 	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
@@ -146,6 +148,17 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
+
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+		if (dataSource == null) {
+			logger.error("Could not find dataSource field. Skipping message: " + messageText);
+
+			return;
+		}
+
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -153,7 +166,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
-			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
 			if (configuration == null) {
