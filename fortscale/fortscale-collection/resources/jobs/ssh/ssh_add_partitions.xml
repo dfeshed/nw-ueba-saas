@@ -84,7 +84,7 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.ssh_top.table.name}</value>
+						<value>${impala.score.ssh.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>

@@ -42,29 +42,24 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
 
-	// Security Events Login Raw Data table
-	@Value("${impala.rawdata.security.events.login.table.fields}")
-	private String impalaSecLoginRawDataTableFields;
-	@Value("${impala.rawdata.security.events.login.table.delimiter}")
-	private String impalaSecLoginRawDataTableDelimiter;
-	@Value("${impala.rawdata.security.events.login.table.name}")
-	private String impalaSecLoginRawDataTableName;
-	@Value("${hdfs.user.rawdata.security.events.login.path}")
-	private String impalaSecLoginRawDataDirectory;
-	@Value("${impala.rawdata.security.events.login.table.partition.type}")
-	private String  impalaSecLoginRawDataTablePartitionType;
+	//Total Score table
+	@Value("${impala.total.scores.table.fields}")
+	private String impalaTotalScoringTableFields;
+	@Value("${impala.total.scores.table.delimiter}")
+	private String impalaTotalScoringTableDelimiter;
+	@Value("${impala.total.scores.table.name}")
+	private String impalaTotalScoringTableName;
+	@Value("${hdfs.user.processeddata.totalscore.path}")
+	private String impalaTotalScoringDirectory;
+	@Value("${impala.total.scores.table.partition.type}")
+	private String impalaTotalScoringTablePartitionType;
 
-	// Security Events Login Data table
-	@Value("${impala.data.security.events.login.table.fields}")
-	private String impalaSecLoginTableFields;
-	@Value("${impala.data.security.events.login.table.delimiter}")
-	private String impalaSecLoginTableDelimiter;
-	@Value("${impala.data.security.events.login.table.name}")
-	private String impalaSecLoginTableName;
-	@Value("${hdfs.user.data.security.events.login.path}")
-	private String impalaSecLoginDirectory;
-    @Value("${impala.data.security.events.login.table.partition.type}")
-    private String  impalaSecLoginTablePartitionType;
+
+
+
+
+
+
 	
 	//Security Events Data table
 	@Value("${impala.data.security.events.4769.table.fields}")
@@ -139,17 +134,7 @@ public class HadoopInit implements InitializingBean{
     private String impalaTopVpnSessionScoringTablePartitionType;
 	
 
-	//Total Score table
-	@Value("${impala.total.scores.table.fields}")
-	private String impalaTotalScoringTableFields;
-	@Value("${impala.total.scores.table.delimiter}")
-	private String impalaTotalScoringTableDelimiter;
-	@Value("${impala.total.scores.table.name}")
-	private String impalaTotalScoringTableName;
-	@Value("${hdfs.user.processeddata.totalscore.path}")
-	private String impalaTotalScoringDirectory;
-    @Value("${impala.total.scores.table.partition.type}")
-    private String impalaTotalScoringTablePartitionType;
+
 	
 	
 	//AD Computers table
@@ -321,26 +306,36 @@ public class HadoopInit implements InitializingBean{
 				String dataSource = dataSourcesList[i];
 
 				//Data schema
-				String impalaDataTableFields = env.getEnvPropertyValue(String.format("${impala.data.%s.table.fields}", dataSource));
-				String impalaDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.data.%s.table.delimiter}", dataSource));
-				String impalaDataTableName = env.getEnvPropertyValue(String.format("${impala.data.%s.table.name}", dataSource));
-				String impalaDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.data.%s.path}", dataSource));
-				String impalaDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.data.%s.table.partition.type}", dataSource));
+				Boolean haveData = env.getBooleanValue(String.format("${impala.%s.have.data}", dataSource));
+
+				if (haveData) {
+					String impalaDataTableFields = env.getEnvPropertyValue(String.format("${impala.data.%s.table.fields}", dataSource));
+					String impalaDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.data.%s.table.delimiter}", dataSource));
+					String impalaDataTableName = env.getEnvPropertyValue(String.format("${impala.data.%s.table.name}", dataSource));
+					String impalaDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.data.%s.path}", dataSource));
+					String impalaDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.data.%s.table.partition.type}", dataSource));
 
 
-				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaDataTablePartitionType);
-				createTable(impalaDataTableName, impalaDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaDataTableDelimiter, impalaDataDirectory);
+					partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaDataTablePartitionType);
+					createTable(impalaDataTableName, impalaDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaDataTableDelimiter, impalaDataDirectory);
+				}
+
 
 
 				//Enriched schema
-				String impalaEnrichedDataTableFields = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.fields}", dataSource));
-				String impalaEnrichedDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.delimiter}", dataSource));
-				String impalaEnrichedDataTableName = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.name}", dataSource));
-				String impalaEnrichedDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.enricheddata.%s.path}", dataSource));
-				String impalaEnrichedDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.partition.type}", dataSource));
+				Boolean haveEnrich = env.getBooleanValue(String.format("${impala.%s.have.enrich}", dataSource));
 
-				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaEnrichedDataTablePartitionType);
-				createTable(impalaEnrichedDataTableName, impalaEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaEnrichedDataTableDelimiter, impalaEnrichedDataDirectory);
+				if (haveEnrich) {
+
+					String impalaEnrichedDataTableFields = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.fields}", dataSource));
+					String impalaEnrichedDataTableDelimiter = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.delimiter}", dataSource));
+					String impalaEnrichedDataTableName = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.name}", dataSource));
+					String impalaEnrichedDataDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.enricheddata.%s.path}", dataSource));
+					String impalaEnrichedDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.partition.type}", dataSource));
+
+					partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaEnrichedDataTablePartitionType);
+					createTable(impalaEnrichedDataTableName, impalaEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaEnrichedDataTableDelimiter, impalaEnrichedDataDirectory);
+				}
 
 
 				//Scored schema
@@ -386,13 +381,7 @@ public class HadoopInit implements InitializingBean{
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
 		createTable(impalaSecDataTableName, impalaSecDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
 
-		//Security Events Login table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
-		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
-
-		//Security Events Login raw data table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginRawDataTablePartitionType);
-		createTable(impalaSecLoginRawDataTableName, impalaSecLoginRawDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginRawDataTableDelimiter, impalaSecLoginRawDataDirectory);
+	
 
 
 		//Security Events Scoring table

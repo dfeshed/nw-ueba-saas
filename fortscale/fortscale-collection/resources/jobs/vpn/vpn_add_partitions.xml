@@ -84,11 +84,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn_top.table.name}</value>
+						<value>${impala.score.vpn.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn_top.table.partition.type}</value>
+						<value>${impala.score.vpn.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

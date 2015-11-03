@@ -56,11 +56,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.rawdata.security.events.login.table.name}</value>
+						<value>${impala.data.login4768.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.rawdata.security.events.login.table.partition.type}</value>
+						<value>${impala.data.login4768.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -84,11 +84,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.security.events.login.table.name}</value>
+						<value>${impala.enricheddata.login4768.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.security.events.login.table.partition.type}</value>
+						<value>${impala.enricheddata.login4768.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
