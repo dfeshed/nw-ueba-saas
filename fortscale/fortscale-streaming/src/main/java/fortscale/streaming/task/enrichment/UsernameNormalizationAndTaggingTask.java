@@ -65,7 +65,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 * Uses for updates arriving from kafka update topic
 	 */
 	//
-	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
+	protected Map<String, CachingService> inputTopicToCachingServiceMap = new HashMap<>();
 
 
 	/**
@@ -115,13 +115,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		// add the usernameService to update input topics map
 		if (usernameService != null) {
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
+			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, usernameKey)), usernameService);
 		}
 
 		//add the samAccountNameService to the update input topic map
 		if(samAccountNameService != null)
 		{
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
+			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
 		}
 
 		// construct tagging service with the tags that are required from configuration
@@ -136,7 +136,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// add the tagService to update input topics map
 		if (userService != null) {
 			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
+			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
 
@@ -145,8 +145,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
-		if (topicToServiceMap.containsKey(inputTopic)) {
-			CachingService cachingService = topicToServiceMap.get(inputTopic);
+		if (inputTopicToCachingServiceMap.containsKey(inputTopic)) {
+			CachingService cachingService = inputTopicToCachingServiceMap.get(inputTopic);
+
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		}
 		else {

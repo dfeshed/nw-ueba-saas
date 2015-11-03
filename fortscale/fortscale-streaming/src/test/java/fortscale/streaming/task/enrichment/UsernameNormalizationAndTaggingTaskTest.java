@@ -57,13 +57,13 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		KeyValueStore<String,Set> userServiceStore = new KeyValueStoreMock<>();
 		userService = new UserServiceImpl();
 		userService.setCache(new LevelDbBasedCache<String, Set>(userServiceStore, Set.class));
-		task.topicToServiceMap.put("userUpdatesTopic", userService);
+		task.inputTopicToCachingServiceMap.put("userUpdatesTopic", userService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> usernameStore = new KeyValueStoreMock<>();
 		usernameService = new UsernameService();
 		usernameService.setCache(new LevelDbBasedCache<String, String>(usernameStore, String.class));
-		task.topicToServiceMap.put("usernameUpdatesTopic", usernameService);
+		task.inputTopicToCachingServiceMap.put("usernameUpdatesTopic", usernameService);
 
 
 		// Mocks
