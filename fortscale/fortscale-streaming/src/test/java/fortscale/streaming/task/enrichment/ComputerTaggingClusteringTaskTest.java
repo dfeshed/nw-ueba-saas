@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
-	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
+	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"dataSource\": \"vpn\" }";
 	final String HOST_NAME = "MY-PC";
 
 	ComputerTaggingClusteringTask task;
