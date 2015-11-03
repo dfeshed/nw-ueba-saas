@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by rans on 23/07/15.
@@ -130,21 +129,6 @@ public class DataQueryHelper {
         addQuerySort(querySortList, sortField, sortDirection);
         return querySortList;
     }
-
-    /**
-     *
-     * @param sortMap HashMap of field_name: sort_direction
-     * @return
-     */
-    public List<QuerySort> createQuerySort(Map<String, SortDirection> sortMap){
-        List<QuerySort> querySortList = new ArrayList<QuerySort>();
-        for (Map.Entry<String, SortDirection> entry : sortMap.entrySet()) {
-            addQuerySort(querySortList, entry.getKey(), entry.getValue());
-
-        }
-        return querySortList;
-    }
-
 
     /**
      * Create a Data Query Conditions object for the data query
