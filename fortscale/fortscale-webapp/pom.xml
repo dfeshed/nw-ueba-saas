@@ -67,7 +67,7 @@
 		<!--<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>-->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-		<java-lang-config.version>1.7</java-lang-config.version>
+		<java-lang-config.version>1.8</java-lang-config.version>
 	</properties>
 
 	<dependencies>
@@ -216,6 +216,13 @@
 			<version>9.0.0.RC2</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<!-- <finalName>fortscale-webapp</finalName> -->

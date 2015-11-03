@@ -300,7 +300,7 @@
 	<build>
 		<plugins>
 
-			<!-- Tells maven to use the Java 7 JDK instead of its default -->
+			<!-- Tells maven to use the Java 8 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
