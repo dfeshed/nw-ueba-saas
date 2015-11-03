@@ -52,7 +52,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.path}</value>
+						<value>${hdfs.user.processeddata.vpn.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -80,7 +80,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores_top.path}</value>
+						<value>${hdfs.user.processeddata.vpn.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
