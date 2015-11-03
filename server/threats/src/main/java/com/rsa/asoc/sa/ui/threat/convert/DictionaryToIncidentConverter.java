@@ -48,29 +48,22 @@ public class DictionaryToIncidentConverter implements Converter<PropertyListProt
         consumeInstantFromMap(values, "lastUpdated", incident::setLastUpdated);
         if (values.containsKey("lastUpdatedByUser")) {
             Map<String, Object> lastUpdatedByUser = (Map<String, Object>) values.get("lastUpdatedByUser");
-            if ( lastUpdatedByUser != null && !lastUpdatedByUser.isEmpty()) {
-                Person person = new Person( Long.valueOf((String) lastUpdatedByUser.get("id")),
-                        (String) lastUpdatedByUser.get("name"),
-                        (String) lastUpdatedByUser.get("login"),
-                        (String) lastUpdatedByUser.get("emailAddress"));
-                incident.setLastUpdatedByUser(person);
+            if (lastUpdatedByUser != null && !lastUpdatedByUser.isEmpty()) {
+
+                incident.setLastUpdatedByUser(createPerson(lastUpdatedByUser));
             }
         } else if (values.containsKey("lastUpdatedByUserName")) {
             String name = (String) values.get("lastUpdatedByUserName");
             if (StringUtils.isNotBlank(name)) {
-                Person person = new Person( null, name, null, null);
+                Person person = new Person(null, name, null, null);
                 incident.setLastUpdatedByUser(person);
             }
         }
 
         if (values.containsKey("assignee")) {
             Map<String, Object> assignee = (Map<String, Object>) values.get("assignee");
-            if ( assignee != null && !assignee.isEmpty()) {
-                Person person = new Person(Long.valueOf((String)assignee.get("id")),
-                        (String) assignee.get("name"),
-                        (String) assignee.get("login"),
-                        (String) assignee.get("emailAddress"));
-                incident.setAssignee(person);
+            if (assignee != null && !assignee.isEmpty()) {
+                incident.setAssignee(createPerson(assignee));
             }
         }
 
@@ -106,14 +99,29 @@ public class DictionaryToIncidentConverter implements Converter<PropertyListProt
         return incident;
     }
 
+    private Person createPerson(Map<String, Object> personMap) {
+        Person person = new Person();
+        Object personId = personMap.get("id");
+        if (personId instanceof Long) {
+            person.setId((Long) personMap.get("id"));
+        } else if (personId instanceof String) {
+            person.setId(Long.valueOf((String) personMap.get("id")));
+        }
+        person.setName((String) personMap.get("name"));
+        person.setLogin((String) personMap.get("login"));
+        person.setEmailAddress((String) personMap.get("emailAddress"));
+
+        return person;
+    }
+
     private void setStatusSortIfMissing(Incident incident) {
-        if ( incident.getStatusSort() == null ) {
+        if (incident.getStatusSort() == null) {
             incident.setStatusSort(Integer.valueOf(incident.getStatus().ordinal()));
         }
     }
 
     private void setPrioritySortIfMissing(Incident incident) {
-        if ( incident.getPrioritySort() == null ) {
+        if (incident.getPrioritySort() == null) {
             incident.setPrioritySort(Integer.valueOf(incident.getPriority().ordinal()));
         }
     }
