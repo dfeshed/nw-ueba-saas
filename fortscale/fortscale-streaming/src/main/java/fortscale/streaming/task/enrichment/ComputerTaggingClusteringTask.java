@@ -26,6 +26,8 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.core.env.Environment;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +36,14 @@ import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Created by danal on 18/01/2015.
  */
 public class ComputerTaggingClusteringTask extends AbstractStreamTask {
+
+	private static Logger logger = LoggerFactory.getLogger(ComputerTaggingClusteringTask.class);
 
 	private final static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
 	private final static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
@@ -46,10 +51,12 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	private final static String computerKey = "computer";
 	private final static String sensitiveMachineKey = "sensitive-machine";
 
+	private static final String DATA_SOURCE_FIELD = "dataSource";
+
 	protected static ComputerTaggingService computerTaggingService;
 
 	// Map between (update) input topic name and relevant caching service
-	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
+	protected static Map<String, CachingService> inputTopicToCachingServiceMap = new HashMap<>();
 
 	/**
 	 * This method response to the initiation of the streaming job
@@ -73,45 +80,43 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		// create the computer service with the levelDB cache
 		ComputerService computerService = SpringService.getInstance().resolve(ComputerServiceImpl.class);
 		computerService.setCache(new LevelDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
-		topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerKey)), computerService);
+		inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerKey)), computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		SensitiveMachineService sensitiveMachineService = SpringService.getInstance().resolve(SensitiveMachineServiceImpl.class);
 		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class));
-		topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, sensitiveMachineKey)), sensitiveMachineService);
+		inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, sensitiveMachineKey)), sensitiveMachineService);
 
 		// get spring environment to resolve properties values using configuration files
 		Environment env = SpringService.getInstance().resolve(Environment.class);
 
 		Map<String, ComputerTaggingConfig> configs = new HashMap<>();
 
-		Config configSubset = config.subset("fortscale.events.");
-		for (String configKey : Iterables.filter(configSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
+		for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
+			String dataSource = ConfigField.getKey();
 
-			String eventType = configKey.substring(0, configKey.indexOf(".input.topic"));
-
-			String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-			String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-			String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
+			String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", dataSource));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", dataSource));
+			String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", dataSource)));
 
 			List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigs = new ArrayList<>();
-			Config fieldsSubset = config.subset(String.format("fortscale.events.%s.", eventType));
+			Config fieldsSubset = config.subset(String.format("fortscale.events.%s.", dataSource));
 			for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".hostname.field"))) {
 
 				String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
-				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.hostname.field", eventType, tagType)));
-				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.classification.field", eventType, tagType)));
-				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.clustering.field", eventType, tagType)));
+				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.hostname.field", dataSource, tagType)));
+				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.classification.field", dataSource, tagType)));
+				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.clustering.field", dataSource, tagType)));
 				String isSensitiveMachineField = null;
-				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.%s.is-sensitive-machine.field", eventType, tagType);
+				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.%s.is-sensitive-machine.field", dataSource, tagType);
 				if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 					isSensitiveMachineField = env.getProperty(getConfigString(config, isSensitiveMachineFieldKey));
 				}
-				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.%s.create-new-computer-instances", eventType, tagType));
+				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.%s.create-new-computer-instances", dataSource, tagType));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
-			configs.put(inputTopic, new ComputerTaggingConfig(eventType, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
+			configs.put(inputTopic, new ComputerTaggingConfig(dataSource, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
 
 		}
 
@@ -132,24 +137,29 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {
 
-		// get message
-		String messageText = (String) envelope.getMessage();
-
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
-		if (topicToServiceMap.containsKey(inputTopic)) {
-			String key = (String) envelope.getKey();
-			CachingService cachingService = topicToServiceMap.get(inputTopic);
+		if (inputTopicToCachingServiceMap.containsKey(inputTopic)) {
+			CachingService cachingService = inputTopicToCachingServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
-			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+			String messageText = (String)envelope.getMessage();
 
-			event = computerTaggingService.enrichEvent(inputTopic, event);
-			// construct outgoing message
+			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+			String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+			if (dataSource == null) {
+				logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+				return;
+			}
+
+			message = computerTaggingService.enrichEvent(inputTopic, message);
+
 			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, message), message.toJSONString());
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
@@ -164,9 +174,9 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 	@Override
 	protected void wrappedClose() throws Exception {
-		for(CachingService cachingService: topicToServiceMap.values()) {
+		for(CachingService cachingService: inputTopicToCachingServiceMap.values()) {
 			cachingService.getCache().close();
 		}
-		topicToServiceMap.clear();
+		inputTopicToCachingServiceMap.clear();
 	}
 }

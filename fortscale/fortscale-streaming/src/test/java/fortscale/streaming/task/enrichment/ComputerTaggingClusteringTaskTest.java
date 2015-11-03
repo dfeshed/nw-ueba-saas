@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Computer;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
+import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -27,7 +26,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
@@ -54,13 +54,13 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
 		computerService = new ComputerServiceImpl();
 		computerService.setCache(new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
-		task.topicToServiceMap.put("computerUpdatesTopic", computerService);
+		task.inputTopicToCachingServiceMap.put("computerUpdatesTopic", computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> sensitiveMachineServiceStore = new KeyValueStoreMock<>();
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
 		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
-		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
+		task.inputTopicToCachingServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 
 
 		// Mocks
