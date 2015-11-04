@@ -4,7 +4,6 @@ import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.utils.time.TimeUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
@@ -16,9 +15,7 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +23,15 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 
 
 public class EventsFilterStreamTask extends AbstractStreamTask{
+	public static final String TOTAL_FILTERED_EVENTS_LABEL = "Filtered Events";
+	public static final String FIRST_EVENT_TIME_LABEL = "First Event Time";
+	public static final String LAST_EVENT_TIME_LABEL = "Last Event Time";
+	public static final String NOT_FILTERED_EVENTS_LABEL = "Not Filtered Events";
+	public static final String JOB_DATA_SOURCE = "Streaming";
+	public static final String MONITOR_NAME_POSTFIX = "EventsFilterStreaming";
+	private static final String EVENTS_TYPE="EVENTS";
+	private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - ";
 
-//	private static final Logger logger = LoggerFactory.getLogger(EventsFilterStreamTask.class);
-	
 	private String outputTopic;
 	private String dataSource;
 	private Counter processedFilterCount;
@@ -37,9 +40,12 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	private JobProgressReporter jobMonitorReporter;
 	private Map<String, Integer> countFilterByCause;
 	private int countNotFilteredEvents;
-	private static final String EVENTS_TYPE="EVENTS";
+
+
 	private long timeOfFirstEventInWindow;
+	private String timeOfFirstEventInWindowAsString;
 	private long timeOfLastEventInWindow;
+	private String timeOfLastEventInWindowAsString;
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -50,13 +56,19 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 		processedNonFilterCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-non-filter-count", dataSource));
 
 		jobMonitorReporter = SpringService.getInstance().resolve(JobProgressReporter.class);
+		initCountersPerWindow();
+
+	}
+
+	private void initCountersPerWindow() {
 		countFilterByCause = new HashMap<>();
 		countNotFilteredEvents = 0;
 		timeOfFirstEventInWindow = Long.MAX_VALUE;
 		timeOfLastEventInWindow = Long.MIN_VALUE;
-
+		timeOfFirstEventInWindowAsString= "";
+		timeOfLastEventInWindowAsString = "";
 	}
-	
+
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
@@ -80,20 +92,22 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			}
 		}
 
-		updateFirstLastEventInWindow(message.getAsNumber("date_time_unix"));
+		updateFirstLastEventInWindow(message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
 		countNotFilteredEvents++; //This parameter initilized for each new window
 		processedNonFilterCount.inc();
 		
 	}
 
-	private void updateFirstLastEventInWindow(Number time){
+	private void updateFirstLastEventInWindow(Number time, String dateAsString){
 		long eventTime = time.longValue();
 		if (eventTime < timeOfFirstEventInWindow){
 			timeOfFirstEventInWindow = eventTime;
+			timeOfFirstEventInWindowAsString = dateAsString;
 		}
 
 		if (eventTime > timeOfLastEventInWindow){
 			timeOfLastEventInWindow = eventTime;
+			timeOfLastEventInWindowAsString = dateAsString;
 		}
 
 
@@ -107,28 +121,26 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	}
 
 	private void saveJobStatusReport() {
-		String monitorId =  jobMonitorReporter.startJob(dataSource,"EventsFilterStreaming",1,true);
+		String monitorId =  jobMonitorReporter.startJob(JOB_DATA_SOURCE,getSpecificDataSource()+ MONITOR_NAME_POSTFIX,1,true);
 
+		addJobData(monitorId, FIRST_EVENT_TIME_LABEL,null, timeOfFirstEventInWindowAsString);
+		addJobData(monitorId, LAST_EVENT_TIME_LABEL,null, timeOfLastEventInWindowAsString);
+		addJobData(monitorId, NOT_FILTERED_EVENTS_LABEL,countNotFilteredEvents, EVENTS_TYPE);
 
-
-
-
-		addJobData(monitorId,"First Event Time",1, timeOfFirstEventInWindow+"");
-		addJobData(monitorId,"Last Event Time",1, timeOfLastEventInWindow+"");
-		addJobData(monitorId,"Not Filter Events",countNotFilteredEvents, EVENTS_TYPE);
-
-		for (Map.Entry<String, Integer> cause: countFilterByCause.entrySet()){
-			addJobData(monitorId,cause.getKey(), cause.getValue(), EVENTS_TYPE);
+		if (countFilterByCause.size() > 0) {
+			for (Map.Entry<String, Integer> cause : countFilterByCause.entrySet()) {
+				String label = FILTERED_EVENTS_PREFIX+ cause.getKey();
+				addJobData(monitorId, label, cause.getValue(), EVENTS_TYPE);
+			}
+		} else {
+			addJobData(monitorId, TOTAL_FILTERED_EVENTS_LABEL, 0, EVENTS_TYPE);
 		}
 
 
 		jobMonitorReporter.finishJob(monitorId);
 
 		//Reset counters
-		timeOfFirstEventInWindow = Long.MAX_VALUE;
-		timeOfLastEventInWindow = Long.MIN_VALUE;
-		countNotFilteredEvents = 0;
-		countFilterByCause.clear();
+		initCountersPerWindow();
 	}
 
 	/** save the state to mongodb when the job shutsdown */
@@ -136,7 +148,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 	}
 
-	private void addJobData(String monitorId, String text, int value, String valueType ){
+	private void addJobData(String monitorId, String text, Integer value, String valueType ){
 		JobDataReceived dataRecieved = new JobDataReceived(text, value, valueType);
 		jobMonitorReporter.addDataReceived(monitorId,dataRecieved);
 	}
@@ -146,9 +158,15 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	protected void countNewFilteredEvents(String cause){
 		Integer causeReason = countFilterByCause.get(cause);
 		if (causeReason == null){
-			countFilterByCause.put(cause,1);
+			causeReason = 1;
 		} else {
 			causeReason++;
 		}
+		countFilterByCause.put(cause,causeReason);
+	}
+
+
+	protected String getSpecificDataSource(){
+		return "";
 	}
 }

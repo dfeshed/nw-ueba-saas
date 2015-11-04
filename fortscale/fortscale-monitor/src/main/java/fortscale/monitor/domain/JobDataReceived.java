@@ -9,13 +9,13 @@ import java.util.Map;
 public class JobDataReceived {
 
 	private String dataType;
-	private int value;
+	private Integer value;
 	private String valueType;
 	private Map<String, Integer> filterCauseCount;
 	
 	public JobDataReceived() {}
 	
-	public JobDataReceived(String dataType, int value, String valueType) {
+	public JobDataReceived(String dataType, Integer value, String valueType) {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
@@ -24,7 +24,7 @@ public class JobDataReceived {
 	}
 	
 	private void normalizeValue() {
-		if (valueType!=null && value>1024) {
+		if (valueType!=null && value !=null && value>1024) {
 			if (valueType.equalsIgnoreCase("KB")) {
 				valueType = "MB";
 				value = value / 1024;
@@ -42,10 +42,10 @@ public class JobDataReceived {
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
-	public void setValue(int value) {
+	public void setValue(Integer value) {
 		this.value = value;
 		
 		normalizeValue();

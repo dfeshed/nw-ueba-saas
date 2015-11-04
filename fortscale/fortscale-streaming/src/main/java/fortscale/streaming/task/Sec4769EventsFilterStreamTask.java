@@ -112,4 +112,9 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		
 		return true;
 	}
+
+	@Override
+	protected String getSpecificDataSource(){
+		return "4769-";
+	}
 }
