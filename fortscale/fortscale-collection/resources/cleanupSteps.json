@@ -93,7 +93,12 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag###evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+        "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
@@ -176,7 +181,17 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Tag###evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###evidences@@@date:::startDate%%%evidenceType:::Notification"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Tag"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Notification"
       }
     ],
     "otherSteps": [
