@@ -95,9 +95,9 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
 			String dataSource = ConfigField.getKey();
 
-			String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", dataSource));
-			String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", dataSource));
-			String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", dataSource)));
+			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
+			String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource)));
 
 			List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigs = new ArrayList<>();
 			Config fieldsSubset = config.subset(String.format("fortscale.events.%s.", dataSource));
@@ -105,15 +105,15 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 				String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
-				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.hostname.field", dataSource, tagType)));
-				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.classification.field", dataSource, tagType)));
-				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.clustering.field", dataSource, tagType)));
+				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.hostname.field.%s", dataSource, tagType)));
+				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.classification.field.%s", dataSource, tagType)));
+				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.clustering.field", dataSource, tagType)));
 				String isSensitiveMachineField = null;
-				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.%s.is-sensitive-machine.field", dataSource, tagType);
+				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.is-sensitive-machine.field.%s", dataSource, tagType);
 				if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 					isSensitiveMachineField = env.getProperty(getConfigString(config, isSensitiveMachineFieldKey));
 				}
-				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.%s.create-new-computer-instances", dataSource, tagType));
+				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.create-new-computer-instances.%s", dataSource, tagType));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
 			configs.put(inputTopic, new ComputerTaggingConfig(dataSource, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
