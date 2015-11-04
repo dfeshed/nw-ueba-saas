@@ -101,7 +101,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 			List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigs = new ArrayList<>();
 			Config fieldsSubset = config.subset(String.format("fortscale.events.%s.", dataSource));
-			for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".hostname.field"))) {
+			for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".hostname.field." + dataSource))) {
 
 				String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
