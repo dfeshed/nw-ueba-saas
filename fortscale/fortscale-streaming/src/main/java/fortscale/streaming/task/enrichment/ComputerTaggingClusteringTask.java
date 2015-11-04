@@ -105,18 +105,18 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 				String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
-				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.hostname.field.%s", dataSource, tagType)));
-				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.classification.field.%s", dataSource, tagType)));
-				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.clustering.field", dataSource, tagType)));
+				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.hostname.field.%s", tagType, dataSource)));
+				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.classification.field.%s", tagType, dataSource)));
+				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.clustering.field.%s", tagType, dataSource)));
 				String isSensitiveMachineField = null;
-				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.is-sensitive-machine.field.%s", dataSource, tagType);
+				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.is-sensitive-machine.field.%s", tagType, dataSource);
 				if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 					isSensitiveMachineField = env.getProperty(getConfigString(config, isSensitiveMachineFieldKey));
 				}
-				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.create-new-computer-instances.%s", dataSource, tagType));
+				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.create-new-computer-instances.%s", tagType, dataSource));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
-			configs.put(inputTopic, new ComputerTaggingConfig(dataSource, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
+			configs.put(dataSource, new ComputerTaggingConfig(dataSource, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
 
 		}
 
@@ -156,10 +156,10 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				return;
 			}
 
-			message = computerTaggingService.enrichEvent(inputTopic, message);
+			message = computerTaggingService.enrichEvent(dataSource, message);
 
 			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, message), message.toJSONString());
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(dataSource)), computerTaggingService.getPartitionKey(dataSource, message), message.toJSONString());
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);

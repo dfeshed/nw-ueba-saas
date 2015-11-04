@@ -9,15 +9,15 @@ import java.util.List;
  */
 public class ComputerTaggingConfig {
 
-	private String eventType;
+	private String dataSource;
 	private String inputTopic;
 	private String outputTopic;
 	private String partitionField;
 	private List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList;
 
-	public ComputerTaggingConfig(String eventType, String inputTopic, String outputTopic,
+	public ComputerTaggingConfig(String dataSource, String inputTopic, String outputTopic,
 			String partitionField, List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
-		setEventType(eventType);
+		setDataSource(dataSource);
 		setInputTopic(inputTopic);
 		setOutputTopic(outputTopic);
 		setPartitionField(partitionField);
@@ -25,12 +25,12 @@ public class ComputerTaggingConfig {
 	}
 
 
-	public String getEventType() {
-		return eventType;
+	public String getDataSource() {
+		return dataSource;
 	}
 
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public String getInputTopic() {

@@ -1,19 +1,18 @@
 package fortscale.streaming.service.tagging.computer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer
@@ -39,12 +38,12 @@ public class ComputerTaggingService {
 		this.configs = configs;
 	}
 
-	public JSONObject enrichEvent(String inputTopic, JSONObject event) {
-		checkNotNull(inputTopic);
+	public JSONObject enrichEvent(String dataSource, JSONObject event) {
+		checkNotNull(dataSource);
 		checkNotNull(event);
-		ComputerTaggingConfig config = configs.get(inputTopic);
+		ComputerTaggingConfig config = configs.get(dataSource);
 		if (config == null) {
-			logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+			logger.error("received event from data source {} that does not appear in configuration", dataSource);
 			return event;
 		}
 
@@ -98,22 +97,23 @@ public class ComputerTaggingService {
 		}
 	}
 
-	public String getOutputTopic(String inputTopic) {
-		if (configs.containsKey(inputTopic))
-			return configs.get(inputTopic).getOutputTopic();
+	public String getOutputTopic(String dataSource) {
+		if (configs.containsKey(dataSource))
+			return configs.get(dataSource).getOutputTopic();
 		else
-			throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
+			throw new RuntimeException("received events from data source " + dataSource + " that does not appear in configuration");
 	}
 
 	/** Get the partition key to use for outgoing message envelope for the given event */
-	public Object getPartitionKey(String inputTopic, JSONObject event) {
-		checkNotNull(inputTopic);
+	public Object getPartitionKey(String dataSource, JSONObject event) {
+		checkNotNull(dataSource);
 		checkNotNull(event);
 
-		// get the configuration for the input topic, if not found skip this event
-		ComputerTaggingConfig config = configs.get(inputTopic);
+		// get the configuration for the data source, if not found skip this event
+		ComputerTaggingConfig config = configs.get(dataSource);
 		if (config==null) {
-			logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+			logger.error("received event from data source {} that does not appear in configuration", dataSource);
+
 			return null;
 		}
 
