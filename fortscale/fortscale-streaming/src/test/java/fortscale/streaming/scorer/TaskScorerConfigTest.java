@@ -12,6 +12,7 @@ import java.util.Map;
 
 import net.minidev.json.JSONObject;
 
+import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -54,8 +55,13 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 
 	
 	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
-		config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
+		Config configInput = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
 
+		return buildScorersFromTaskConfig(configInput);
+	}
+	
+	protected Map<String, Scorer> buildScorersFromTaskConfig(Config configInput) throws IOException{
+		config = configInput;
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
 		context = new ScorerContext(config);
 		context.setBean("modelService", modelService);

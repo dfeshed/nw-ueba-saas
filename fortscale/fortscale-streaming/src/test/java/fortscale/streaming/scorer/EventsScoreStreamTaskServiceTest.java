@@ -22,9 +22,9 @@ import fortscale.streaming.service.EventsScoreStreamTaskService;
 public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 	
 	
-	private TaskContext context;
-	private MetricsRegistry metricsRegistry;
-	private Counter counter;
+	protected TaskContext context;
+	protected MetricsRegistry metricsRegistry;
+	protected Counter counter;
 	
 	@SuppressWarnings("resource")
 	@BeforeClass

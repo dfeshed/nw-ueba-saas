@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.config.MapConfig;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
@@ -59,15 +60,15 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	
 
 	private Config addPrefixToConfigEntries(Config config, String prefix) {
+		Map<String, String> newConfigMap = new HashMap<>();
 		if(config!=null && StringUtils.isNotBlank(prefix)) {
 			for (String oldKey : config.keySet()) {
 				String value = config.get(oldKey);
 				String newKey = String.format("%s%s", prefix, oldKey);
-				config.put(newKey, value);
-				config.remove(oldKey);
+				newConfigMap.put(newKey, value);
 			}
 		}
-		return config;
+		return new MapConfig(newConfigMap);
 	}
 	
 	/** Process incoming events and update the user models stats */
