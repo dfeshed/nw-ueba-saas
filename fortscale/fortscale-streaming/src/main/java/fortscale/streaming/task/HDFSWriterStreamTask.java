@@ -46,9 +46,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private static final String DATA_SOURCE_FIELD = "dataSource";
 
 	/**
-	 * Map from input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
+	 * Map from combination of data source & input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
 	 */
-	protected Map<String, List<WriterConfiguration>> dataSourceToWriterConfigurationMap = new HashMap<>();
+	protected Map<HDFSWriterConfigurationKey, List<WriterConfiguration>> dataSourceToWriterConfigurationMap = new HashMap<>();
 
 	private BDPService bdpService;
 
@@ -96,10 +96,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
 			String inputTopic = resolveStringValue(config, String.format("fortscale.%s.input.topic", eventType), res);
 
-			if (!dataSourceToWriterConfigurationMap.containsKey(dataSource)) {
-				dataSourceToWriterConfigurationMap.put(dataSource, new ArrayList<WriterConfiguration>());
+			HDFSWriterConfigurationKey hdfsWriterConfigurationKey = new HDFSWriterConfigurationKey(dataSource, inputTopic);
+
+			if (!dataSourceToWriterConfigurationMap.containsKey(hdfsWriterConfigurationKey)) {
+				dataSourceToWriterConfigurationMap.put(hdfsWriterConfigurationKey, new ArrayList<WriterConfiguration>());
 			}
-			dataSourceToWriterConfigurationMap.get(dataSource).add(writerConfiguration);
+			dataSourceToWriterConfigurationMap.get(hdfsWriterConfigurationKey).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
 				writerConfiguration.outputTopics = getConfigStringList(config,
@@ -192,7 +194,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
-		List<WriterConfiguration> writerConfigurations = dataSourceToWriterConfigurationMap.get(inputTopic);
+		HDFSWriterConfigurationKey hdfsWriterConfigurationKey = new HDFSWriterConfigurationKey(dataSource, inputTopic);
+
+		List<WriterConfiguration> writerConfigurations = dataSourceToWriterConfigurationMap.get(hdfsWriterConfigurationKey);
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for input topic " + inputTopic + ". Dropping event");
@@ -324,6 +328,36 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 
+	}
+
+	public class HDFSWriterConfigurationKey {
+
+		private String dataSource;
+		private String inputTopic;
+
+		public HDFSWriterConfigurationKey(String dataSource, String inputTopic) {
+			this.dataSource = dataSource;
+			this.inputTopic = inputTopic;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			HDFSWriterConfigurationKey that = (HDFSWriterConfigurationKey) o;
+
+			if (dataSource != null ? !dataSource.equals(that.dataSource) : that.dataSource != null) return false;
+			return !(inputTopic != null ? !inputTopic.equals(that.inputTopic) : that.inputTopic != null);
+
+		}
+
+		@Override
+		public int hashCode() {
+			int result = dataSource != null ? dataSource.hashCode() : 0;
+			result = 31 * result + (inputTopic != null ? inputTopic.hashCode() : 0);
+			return result;
+		}
 	}
 
 }
