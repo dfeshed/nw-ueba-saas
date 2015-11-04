@@ -172,11 +172,18 @@
     ]
   },
   "AfterSingleIndicators": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Tag###evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###evidences@@@date:::startDate%%%evidenceType:::Notification"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@evidenceType:::Tag###evidences@@@evidenceType:::AnomalyAggregatedEvent###evidences@@@evidenceType:::Notification###alerts###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "alerts###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
