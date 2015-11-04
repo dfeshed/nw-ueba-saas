@@ -113,7 +113,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			String successfulLoginValue = getConfigString(config, String.format("fortscale.events.success.value.%s", dataSource));
 			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
 			String logUserNameField =getConfigString(config, String.format("fortscale.events.logusername.field.%s", dataSource));
-			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
+			usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s", dataSource));
 			dataSourceToConfiguration.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
