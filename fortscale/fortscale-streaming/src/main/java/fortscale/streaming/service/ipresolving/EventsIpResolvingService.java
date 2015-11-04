@@ -152,6 +152,11 @@ public class EventsIpResolvingService {
 		checkNotNull(dataSource);
 		checkNotNull(event);
 
+        if (isUnknownDataSource(dataSource)) {
+            logger.error("Received event with unknown data source: {}. Dropping event", dataSource);
+
+            return true;
+        }
 
 		// get the configuration for the data source, if not found skip this event
 		EventResolvingConfig config = configs.get(dataSource);
@@ -160,6 +165,9 @@ public class EventsIpResolvingService {
 
 	}
 
+    private boolean isUnknownDataSource(String dataSource) {
+        return !configs.containsKey(dataSource);
+    }
 
 
 }
