@@ -1062,7 +1062,7 @@
         "anomalyType": "action_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "groupBy": [
             "high_score_action_code_histogram"
           ]
         },
@@ -1081,7 +1081,7 @@
         "anomalyType": "action_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "groupBy": [
             "high_score_action_code_histogram"
           ]
         },
