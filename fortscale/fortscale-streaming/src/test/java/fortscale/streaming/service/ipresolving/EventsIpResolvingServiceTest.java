@@ -22,11 +22,11 @@ public class EventsIpResolvingServiceTest {
     public void setUp() {
 		List<EventResolvingConfig> configs = new LinkedList<>();
 
-		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition", false, true,RESERVED_IP_RANGES));
+		configs.add(EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, false, "time", "partition", false, true,RESERVED_IP_RANGES));
 
 		List<EventResolvingConfig> configs2 = new LinkedList<>();
 
-		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false,""));
+		configs2.add(EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false,""));
 
 		resolver = mock(IpToHostnameResolver.class);
 		service = new EventsIpResolvingService(resolver, configs);
@@ -39,7 +39,7 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent("vpn", event);
         Assert.assertNull(output.get("host"));
     }
 
@@ -48,7 +48,7 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent("vpn", event);
         Assert.assertNull(output.get("host"));
     }
 
@@ -71,7 +71,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent("vpn", event);
         Assert.assertEquals("my-pc", output.get("host"));
 
         verify(resolver, times(1)).resolve("1.1.1.1", 3L, false, false, false);
@@ -85,7 +85,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("192.168.4.4", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent("vpn", event);
         Assert.assertEquals("my-pc", output.get("host"));
 
         verify(resolver, times(1)).resolve("192.168.4.4", 3L, false, false, false);
@@ -98,7 +98,7 @@ public class EventsIpResolvingServiceTest {
         event.put("ip", "2.2.2.2"); //2.2.2.2 not in RESERVED_IP_RANGES
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent("vpn", event);
         Assert.assertNull(output.get("host"));
 
     }
@@ -107,7 +107,7 @@ public class EventsIpResolvingServiceTest {
 
     @Test
     public void service_should_return_output_topic_according_to_input_topic() {
-        String actual = service.getOutputTopic("input");
+        String actual = service.getOutputTopic("vpn");
         Assert.assertEquals("output", actual);
     }
 
@@ -124,7 +124,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         event.put("partition", "part-A");
 
-        Object actual = service.getPartitionKey("input", event);
+        Object actual = service.getPartitionKey("vpn", event);
         Assert.assertEquals("part-A", actual);
     }
 
@@ -133,17 +133,17 @@ public class EventsIpResolvingServiceTest {
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
-		boolean res = service.dropEvent("input",event);
+		boolean res = service.dropEvent("vpn",event);
 		Assert.assertTrue(!res);
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.dropEvent("vpn",event);
 		Assert.assertTrue(res);
 
 		event.put("hostname", "");
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.dropEvent("vpn",event);
 		Assert.assertTrue(res);
 
 
