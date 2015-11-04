@@ -54,10 +54,10 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 	}
 
 	
-	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
-		Config configInput = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
+	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath, String dataSource) throws IOException{
+		Config dataSourceConfig = TaskTestUtil.buildPrevalenceTaskConfig(taskConfigPropertiesFilePath, dataSource);	
 
-		return buildScorersFromTaskConfig(configInput);
+		return buildScorersFromTaskConfig(dataSourceConfig);
 	}
 	
 	protected Map<String, Scorer> buildScorersFromTaskConfig(Config configInput) throws IOException{
