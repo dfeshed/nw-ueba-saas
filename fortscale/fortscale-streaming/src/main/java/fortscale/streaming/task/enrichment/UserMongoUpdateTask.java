@@ -171,9 +171,9 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		}
 
 		//get the actual username from the event - using for assigning to logusername
-		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
+		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.getLogUserNameField()));
 		if (logUserNameFromEvent == null) {
-			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
+			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.getLogUserNameField());
 			return;
 		}
 
@@ -181,10 +181,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		//in case that the success field is equal to #AnyRow# in the configuration file
 		//update the last activity for any row
 		// or check that the event represent successful login
-		if (dataSourceConfiguration.successField.equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
+		if (dataSourceConfiguration.getSuccessField().equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.getSuccessField())).equalsIgnoreCase(dataSourceConfiguration.getSuccessValue())) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 			//update the logusername if needed
-			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
+			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.getMongoClassifierId(),logUserNameFromEvent);
 
 		}
 
