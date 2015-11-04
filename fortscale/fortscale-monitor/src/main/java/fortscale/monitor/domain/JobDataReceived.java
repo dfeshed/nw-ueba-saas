@@ -1,12 +1,18 @@
 package fortscale.monitor.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Map;
 
 /**
  * indicates the amount of data received by the job. Could hold values of 
  * various types.
  */
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+//NON-NULL tells Jackson to ignore fields which their value is null.
 public class JobDataReceived {
+
 
 	private String dataType;
 	private Integer value;

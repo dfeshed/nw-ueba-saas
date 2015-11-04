@@ -25,13 +25,14 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class EventsFilterStreamTask extends AbstractStreamTask{
 	//Constant labels for JOB monitoring
 	public static final String TOTAL_FILTERED_EVENTS_LABEL = "Filtered Events";
-	public static final String FIRST_EVENT_TIME_LABEL = "First Event Time";
-	public static final String LAST_EVENT_TIME_LABEL = "Last Event Time";
-	public static final String NOT_FILTERED_EVENTS_LABEL = "Not Filtered Events";
+	public static final String FIRST_EVENT_TIME_LABEL = "First Event Original Time";
+	public static final String LAST_EVENT_TIME_LABEL = "Last Event Original Time";
+	public static final String TOTAL_EVENTS_LABEL = "Total Events";
+	public static final String NOT_FILTERED_EVENTS_LABEL = "Processed Event";
 	public static final String JOB_DATA_SOURCE = "Streaming";
 	public static final String MONITOR_NAME_POSTFIX = "EventsFilterStreaming";
 	private static final String EVENTS_TYPE="EVENTS";
-	private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - ";
+	private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - Reason ";
 
 	private String outputTopic;
 	private String dataSource;
@@ -46,6 +47,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	private String timeOfFirstEventInWindowAsString;
 	private long timeOfLastEventInWindow;
 	private String timeOfLastEventInWindowAsString;
+	private int totalAmountOfEventsInWindow; //Filtered and unfiltered events
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -64,6 +66,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	private void initCountersPerWindow() {
 		countFilterByCause = new HashMap<>();
 		countNotFilteredEvents = 0;
+		totalAmountOfEventsInWindow = 0;
 		timeOfFirstEventInWindow = Long.MAX_VALUE;
 		timeOfLastEventInWindow = Long.MIN_VALUE;
 		timeOfFirstEventInWindowAsString= "";
@@ -75,7 +78,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		
+		totalAmountOfEventsInWindow++;
 
 		if (!acceptMessage(message)) {
 			processedFilterCount.inc();
@@ -143,16 +146,20 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 	/**
 	 * Create new instance of job report, with the time of the first event in the window,
-	 * the time of last event of the window, the number of unfiltered events in the window,
+	 * the time of last event of the window, the total number of events in window (filtered and not filtered)
+	 * the number of unfiltered events in the window,
 	 * and how many filtered events per each cause.
 	 * If there where no filtered event, add one line of Filter events = 0
 	 */
 	private void saveJobStatusReport() {
 		String monitorId =  jobMonitorReporter.startJob(JOB_DATA_SOURCE,getSpecificDataSource()+ MONITOR_NAME_POSTFIX,1,true);
 
+		//All the events which arrive to the job in the windows
+		addJobData(monitorId, TOTAL_EVENTS_LABEL,totalAmountOfEventsInWindow, EVENTS_TYPE);
+		//Original time of first event in the window
 		addJobData(monitorId, FIRST_EVENT_TIME_LABEL,null, timeOfFirstEventInWindowAsString);
+		//Original time of last event in the window
 		addJobData(monitorId, LAST_EVENT_TIME_LABEL,null, timeOfLastEventInWindowAsString);
-		addJobData(monitorId, NOT_FILTERED_EVENTS_LABEL,countNotFilteredEvents, EVENTS_TYPE);
 
 		//Add all cause and how many events filtered per cause,
 		//or add "filtered events = 0 if no filtered events in the window.
@@ -165,6 +172,8 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			addJobData(monitorId, TOTAL_FILTERED_EVENTS_LABEL, 0, EVENTS_TYPE);
 		}
 
+		//How many events not filtered in the window
+		addJobData(monitorId, NOT_FILTERED_EVENTS_LABEL,countNotFilteredEvents, EVENTS_TYPE);
 
 		jobMonitorReporter.finishJob(monitorId);
 
@@ -195,7 +204,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	 * @param valueType
 	 */
 	private void addJobData(String monitorId, String text, Integer value, String valueType ){
-		JobDataReceived dataRecieved = new JobDataReceived(text, value, valueType);
-		jobMonitorReporter.addDataReceived(monitorId,dataRecieved);
+		JobDataReceived dataReceived = new JobDataReceived(text, value, valueType);
+		jobMonitorReporter.addDataReceived(monitorId,dataReceived);
 	}
 }
