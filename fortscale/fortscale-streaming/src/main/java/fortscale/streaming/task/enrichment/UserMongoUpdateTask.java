@@ -7,6 +7,7 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
@@ -48,6 +49,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * The level DB store name
 	 */
 	private static final String storeName = "user-mongo-update";
+
+	private static final String DATA_SOURCE_FIELD = "dataSource";
 
 	/**
 	 * Logger
@@ -114,7 +117,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
 			String logUserNameField =getConfigString(config, String.format("fortscale.events.logusername.field.%s", dataSource));
 			usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s", dataSource));
-			dataSourceToConfiguration.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
+			dataSourceToConfiguration.put(dataSource, new DataSourceConfiguration(dataSource, inputTopic, classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
@@ -132,9 +135,18 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
 
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
+		String messageText = (String)envelope.getMessage();
+
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+		if (dataSource == null) {
+			logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+			return;
+		}
+
 
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
@@ -151,15 +163,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
 
-
-
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
 		// Get relevant data source according to topic
-		DataSourceConfiguration dataSourceConfiguration = dataSourceToConfiguration.get(topic);
+		DataSourceConfiguration dataSourceConfiguration = dataSourceToConfiguration.get(dataSource);
 		if (dataSourceConfiguration == null) {
-			logger.error("No data source is defined for input topic {} ", topic);
+			logger.error("No configuration is defined for data source {} ", dataSource);
 			return;
 		}
 
@@ -169,8 +176,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
 			return;
 		}
-
-
 
 
 		//in case that the success field is equal to #AnyRow# in the configuration file
@@ -290,8 +295,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	protected static class DataSourceConfiguration {
 
-		protected DataSourceConfiguration(String mongoClassifierId, String successField, String successValue,
+		protected DataSourceConfiguration(String dataSource, String inputTopic, String mongoClassifierId, String successField, String successValue,
 				boolean udpateOnlyFlag, String logUserNameField) {
+			this.dataSource = dataSource;
+			this.inputTopic = inputTopic;
 			this.mongoClassifierId = mongoClassifierId;
 			this.successField = successField;
 			this.successValue = successValue;
@@ -300,11 +307,41 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		}
 
-		public String mongoClassifierId;
-		public String successField;
-		public String successValue;
-		public boolean dataSourceUpdateOnlyFlag;
-		public String logUserNameField;
+		private String dataSource;
+		private String inputTopic;
+		private String mongoClassifierId;
+		private String successField;
+		private String successValue;
+		private boolean dataSourceUpdateOnlyFlag;
+		private String logUserNameField;
+
+		public String getDataSource() {
+			return dataSource;
+		}
+
+		public String getInputTopic() {
+			return inputTopic;
+		}
+
+		public String getMongoClassifierId() {
+			return mongoClassifierId;
+		}
+
+		public String getSuccessField() {
+			return successField;
+		}
+
+		public String getSuccessValue() {
+			return successValue;
+		}
+
+		public boolean isDataSourceUpdateOnlyFlag() {
+			return dataSourceUpdateOnlyFlag;
+		}
+
+		public String getLogUserNameField() {
+			return logUserNameField;
+		}
 	}
 
 
