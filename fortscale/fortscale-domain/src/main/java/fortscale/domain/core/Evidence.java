@@ -87,6 +87,7 @@ public class Evidence extends AbstractDocument{
 	@Field(startDateField)
 	private Long startDate;
 
+	@Indexed
 	@Field(endDateField)
 	private Long endDate;
 
