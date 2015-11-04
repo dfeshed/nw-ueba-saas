@@ -45,7 +45,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     // map between input topic name and relevant resolving cache instance
     private static Map<String, CachingService> inputTopicToCachingServiceMap = new HashMap<>();
 
-    private static EventsIpResolvingService service;
+    private static EventsIpResolvingService eventsIpResolvingService;
 
     private final static String topicConfigKeyFormat = "fortscale.%s.topic";
     private final static String storeConfigKeyFormat = "fortscale.%s.store";
@@ -67,7 +67,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         // for all task instances. We won't have a problem for concurrent accesses here, since samza is a single
         // threaded and all task instances run on the same thread, meaning we cannot have concurrent calls to
         // init or process methods here, so it is safe to check for initialization the way we did.
-        if (service==null) {
+        if (eventsIpResolvingService ==null) {
 
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
 
@@ -121,13 +121,13 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
                 // build EventResolvingConfig for the event type
-                resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
+                resolvingConfigList.add(EventResolvingConfig.build(dataSource, inputTopic, ipField, hostField, outputTopic,
                         restrictToADName, shortName, isRemoveLastDot, dropWhenFail, timestampField, partitionField,
                         overrideIPWithHostname,dataSourceResolveOnlyReservedIp, reservedIpAddress));
             }
 
             // construct the resolving service
-            service = new EventsIpResolvingService(resolver, resolvingConfigList);
+            eventsIpResolvingService = new EventsIpResolvingService(resolver, resolvingConfigList);
         }
     }
 
@@ -161,17 +161,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // we are doing so, to prevent cases of 4769 events from a machine to itself.
             // most of the cases we can't resolve the host name in 4769 events are self connect.
             //TODO: in next versions we want to add extra check if this is the case or not.
-			if (!service.dropEvent(inputTopic, message)) {
+			if (!eventsIpResolvingService.dropEvent(dataSource, message)) {
 
 				// construct outgoing message
 				try {
 					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
-							new SystemStream("kafka", service.getOutputTopic(inputTopic)),
-							service.getPartitionKey(inputTopic, message),
+							new SystemStream("kafka", eventsIpResolvingService.getOutputTopic(dataSource)),
+							eventsIpResolvingService.getPartitionKey(dataSource, message),
                             message.toJSONString());
 					collector.send(output);
 				} catch (Exception exception) {
-					throw new KafkaPublisherException(String.format("failed to send event to from input inputTopic %s, inputTopic %s after ip resolving", inputTopic, service.getOutputTopic(inputTopic)), exception);
+					throw new KafkaPublisherException(String.format("failed to send event to from input inputTopic %s, inputTopic %s after ip resolving", inputTopic, eventsIpResolvingService.getOutputTopic(dataSource)), exception);
 				}
 			}
         }
