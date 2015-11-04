@@ -156,6 +156,12 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				return;
 			}
 
+			if (computerTaggingService.isDataSourceUnknown(dataSource)) {
+				logger.error("Skipping message due to unknown dataSource field: {} ", messageText);
+
+				return;
+			}
+
 			message = computerTaggingService.enrichEvent(dataSource, message);
 
 			try {

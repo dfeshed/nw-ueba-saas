@@ -60,6 +60,10 @@ public class ComputerTaggingService {
 		return event;
 	}
 
+	public boolean isDataSourceUnknown(String dataSource) {
+		return !configs.containsKey(dataSource);
+	}
+
 	/** ensure computer exists */
 	private void ensureComputerExists(String hostname, ComputerTaggingFieldsConfig computerTaggingFieldsConfig){
 		if (computerTaggingFieldsConfig.isCreateNewComputerInstances()) {
