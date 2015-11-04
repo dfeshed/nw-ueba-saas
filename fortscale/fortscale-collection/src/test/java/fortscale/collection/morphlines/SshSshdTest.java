@@ -95,25 +95,25 @@ public class SshSshdTest {
         		$ (
         		"Successful Password Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,,ssh"
 				),
 				$ (
 						"Successful Password Authentication - with WAN enrichment",
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2 Flume enrichment timezone Asia/Jerusalem",
-						Nov_19_14_58_32_OUT_WAN + "," + "1416394712,192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
+						Nov_19_14_58_32_OUT_WAN + "," + "1416394712,192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,,ssh"
 				),
         		$ (
         		"Successful Public Key Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,,,,"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,,,,,ssh"),
         		$ (
         		"Successful Public Key Authentication from NAT address",
 						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.0.22 port 38681 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,,,,"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,,,,,ssh"),
         		$ (
         		"Password Failed Authentication",
 						Nov_19_14_58_32 + " inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,,,,"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,,,,,ssh"),
         		$ (
 
         		"Invalid User Failed Authentication",
@@ -123,7 +123,7 @@ public class SshSshdTest {
                 $(
                 "Target Machine as IP",
 						Nov_19_14_58_32 + " 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,192.168.0.30,root,Accepted,password,,,,false,,,,"
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,192.168.0.30,root,Accepted,password,,,,false,,,,,ssh"
                 )
 
 

@@ -82,8 +82,8 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-09-03 05:12:22,1409721142,tomerl-test,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,",
-                                "2014-10-01 00:05:44,1412121944,idan-test,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,",
+                                "2014-09-03 05:12:22,1409721142,tomerl-test,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,,vpn",
+                                "2014-10-01 00:05:44,1412121944,idan-test,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,,vpn",
                                 (String)null
                         )
                 ),
@@ -111,7 +111,7 @@ public class VpnCiscoASATest {
                                 "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
                                 "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
                         ),
-                        $("2014-09-03 05:12:22,1409721142,tomerl,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,",
+                        $("2014-09-03 05:12:22,1409721142,tomerl,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null,
@@ -159,7 +159,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                        		"2014-10-01 00:05:44,1412121944,idantest,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,",
+                        		"2014-10-01 00:05:44,1412121944,idantest,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,,vpn",
                                 (String)null
 
                         )
@@ -173,7 +173,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                        		"2014-07-01 06:49:49,1404197389,idantest,188.76.199.235,,CLOSED,,,,,,,,78243017,69672950,8570067,868193,,,",
+                        		"2014-07-01 06:49:49,1404197389,idantest,188.76.199.235,,CLOSED,,,,,,,,78243017,69672950,8570067,868193,,,,vpn",
                                 (String)null
 
                         )
@@ -190,7 +190,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,,"
+                                "2014-03-21 23:03:49,1395443029,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,,,vpn"
 
                         )
 
@@ -208,7 +208,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,",
+                                "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null
 
@@ -229,7 +229,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,",
+                                "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null
 
@@ -301,8 +301,8 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,",
-                                "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,"
+                                "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,,vpn",
+                                "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,,vpn"
 
 
                         )
@@ -319,7 +319,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,latom,108.202.178.181,10.21.77.114,SUCCESS,,,,,,,,,,,,,,",
+                                "2014-03-21 23:03:49,1395443029,latom,108.202.178.181,10.21.77.114,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null
 
@@ -341,7 +341,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,latom,108.99.114.225,,CLOSED,,,,,,,,210180173,123772941,86407232,26591,,,",
+                                "2014-03-21 23:03:49,1395443029,latom,108.99.114.225,,CLOSED,,,,,,,,210180173,123772941,86407232,26591,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null,
@@ -373,7 +373,7 @@ public class VpnCiscoASATest {
                                 "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
                                 "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
                         ),
-                        $("2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,,",
+                        $("2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null,
@@ -400,7 +400,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,rkukunur,102.76.169.108,,CLOSED,,,,,,,,6120455,5179731,940724,2078,,,",
+                                "2014-03-21 23:03:49,1395443029,rkukunur,102.76.169.108,,CLOSED,,,,,,,,6120455,5179731,940724,2078,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null,
@@ -425,7 +425,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.82.210.107,SUCCESS,,,,,,,,,,,,,,",
+                                "2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.82.210.107,SUCCESS,,,,,,,,,,,,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null
@@ -448,7 +448,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395443029,kebarrow,102.253.118.222,,CLOSED,,,,,,,,19982857,14038276,5944581,3175,,,",
+                                "2014-03-21 23:03:49,1395443029,kebarrow,102.253.118.222,,CLOSED,,,,,,,,19982857,14038276,5944581,3175,,,,vpn",
                                 (String)null,
                                 (String)null,
                                 (String)null,
@@ -479,7 +479,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-03-21 23:03:49,1395443029,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,,"
+                                "2014-03-21 23:03:49,1395443029,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,,,vpn"
                         )
                 )
 

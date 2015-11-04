@@ -22,6 +22,7 @@ public class VpnCiscoASANoEventCodesTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_ASA_Cisco_NoEventCodes.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 
 	@BeforeClass
 	public static void setUpClass(){
@@ -42,7 +43,7 @@ public class VpnCiscoASANoEventCodesTest {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(new String[] {confFile}, vpnOutputFields);
+		morphlineTester.init(new String[] {confFile,confEnrichmentFile}, vpnOutputFields);
 	}
 
 	@After
@@ -83,7 +84,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 00:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 00:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
 								(String)null,
 								(String)null
 						)
@@ -99,7 +100,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 00:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,"
+								"2014-12-14 00:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn"
 						)
 				),
 
@@ -124,7 +125,7 @@ public class VpnCiscoASANoEventCodesTest {
 								"2014-12-14T23:59:46.000+00:00|device-id=gi-0-1.rav2-1-gci.sydney.corp.fortscale.com User authentication failed: Uname: "
 						),
 						$(
-								"2014-12-14 23:59:46,1418601586,admin,,,FAIL,,,,,,,,,,,,,,",
+								"2014-12-14 23:59:46,1418601586,admin,,,FAIL,,,,,,,,,,,,,,,vpn",
 								(String)null
 						)
 				),
@@ -140,8 +141,8 @@ public class VpnCiscoASANoEventCodesTest {
 								"2014-12-14T23:59:44.000+00:00|device-id=gi-0-1.rav1-1-gci.corp.tw1.fortscale.com AAA user authentication Rejected : reason = AAA failure : server = 67.195.88.201 : user = "
 						),
 						$(
-								"2014-12-14 23:59:43,1418601583,admin,,,FAIL,,,,,,,,,,,,,,",
-								"2014-12-14 23:59:44,1418601584,niniyni,,,FAIL,,,,,,,,,,,,,,",
+								"2014-12-14 23:59:43,1418601583,admin,,,FAIL,,,,,,,,,,,,,,,vpn",
+								"2014-12-14 23:59:44,1418601584,niniyni,,,FAIL,,,,,,,,,,,,,,,vpn",
 								(String)null
 						)
 				),
@@ -158,8 +159,8 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 00:00:28,1418515228,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
-								"2014-12-14 01:01:29,1418518889,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,"
+								"2014-12-14 00:00:28,1418515228,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
+								"2014-12-14 01:01:29,1418518889,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,,vpn"
 						)
 				),
 
@@ -183,7 +184,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 00:17:26,1418516246,moav,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,"
+								"2014-12-14 00:17:26,1418516246,moav,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn"
 						)
 				),
 				$(
@@ -199,12 +200,12 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 00:01:20,1418515280,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 00:01:20,1418515280,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
 								(String)null,
-								"2014-12-14 00:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 00:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
 								(String)null,
-								"2014-12-14 00:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
-								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,"
+								"2014-12-14 00:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
+								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,,vpn"
 						)
 				),
 
@@ -221,12 +222,12 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-13 00:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-13 00:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
 								(String)null,
-								"2014-12-14 00:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 00:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
 								(String)null,
-								"2014-12-14 00:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
-								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,36061,,,"
+								"2014-12-14 00:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
+								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,36061,,,,vpn"
 						)
 				),
 
@@ -239,8 +240,8 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-13 00:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
-								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,,,," +
+								"2014-12-13 00:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,,vpn",
+								"2014-12-14 01:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,,,,,vpn" +
 										""
 						)
 				)
