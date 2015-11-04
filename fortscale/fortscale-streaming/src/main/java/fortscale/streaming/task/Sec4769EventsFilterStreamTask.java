@@ -19,6 +19,8 @@ import fortscale.streaming.service.SpringService;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";
+
+	//Labels for monitoring
 	public static final String ACCOUNT_NAME_MATCH_TO_REGEX = "Account Name match to $account_regex";
 	public static final String SERVICE_NAME_MATCH_TO_REGEX = "Service Name match to $dcRegex";
 	public static final String SERVICE_NAME_MATCH_COMPUTER_NAME = "Service Name match to computer name";
@@ -28,7 +30,6 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	
 	private boolean filterVpnPool;
 	private Pattern vpnIpPool;
-
 
 	@Override
 	public void init(Config config, TaskContext context) throws Exception {
@@ -62,12 +63,10 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
 				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
-
 			countNewFilteredEvents(ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 
-		
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {

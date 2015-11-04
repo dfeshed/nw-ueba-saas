@@ -19,7 +19,6 @@ public class JobDataReceived {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
-		this.filterCauseCount = filterCauseCount;
 		normalizeValue();
 	}
 	
