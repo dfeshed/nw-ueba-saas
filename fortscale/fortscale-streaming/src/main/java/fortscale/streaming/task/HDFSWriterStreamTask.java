@@ -89,7 +89,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		// Get configuration properties
 		Config fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".data.source"))) {
-			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".data.source"));
 
 			// create specific configuration for topic
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
