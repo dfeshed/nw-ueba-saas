@@ -39,12 +39,11 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
+	private static Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
+
 	private static final String storeNamePrefix = "hdfs-write-";
 
-	/**
-	 * Logger
-	 */
-	private static Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
+	private static final String DATA_SOURCE_FIELD = "dataSource";
 
 	/**
 	 * Map from input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
@@ -91,14 +90,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".data.source"))) {
 			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".data.source"));
 
+			String dataSource = getConfigString(config, String.format("fortscale.%s.data.source", eventType));
+
 			// create specific configuration for topic
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
 			String inputTopic = resolveStringValue(config, String.format("fortscale.%s.input.topic", eventType), res);
 
-			if (!dataSourceToWriterConfigurationMap.containsKey(inputTopic)) {
-				dataSourceToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
+			if (!dataSourceToWriterConfigurationMap.containsKey(dataSource)) {
+				dataSourceToWriterConfigurationMap.put(dataSource, new ArrayList<WriterConfiguration>());
 			}
-			dataSourceToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
+			dataSourceToWriterConfigurationMap.get(dataSource).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
 				writerConfiguration.outputTopics = getConfigStringList(config,
@@ -151,7 +152,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.filters.add(filter);
 			}
 
-			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
+			logger.info(String.format("Finished loading configuration for table %s (data source: %s) ", writerConfiguration.tableName, dataSource));
 
 		}
 
@@ -176,17 +177,25 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	public void wrappedProcess(IncomingMessageEnvelope envelope,
 			MessageCollector collector, TaskCoordinator coordinator)
 			throws Exception {
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
+
+		String messageText = (String)envelope.getMessage();
+
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		// Get all writers according to topic
-		List<WriterConfiguration> writerConfigurations = dataSourceToWriterConfigurationMap.get(topic);
+		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+		if (dataSource == null) {
+			logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+			return;
+		}
+
+		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+
+		List<WriterConfiguration> writerConfigurations = dataSourceToWriterConfigurationMap.get(inputTopic);
 
 		if (writerConfigurations.isEmpty()) {
-			logger.error("Couldn't find HDFS writer for topic " + topic + ". Dropping event");
+			logger.error("Couldn't find HDFS writer for input topic " + inputTopic + ". Dropping event");
 		}
 
 		// go over all writers and write message
@@ -229,8 +238,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 								collector.send(output);
 							} catch (Exception exception) {
 								throw new KafkaPublisherException(String.
-								  format("failed to send event from input topic %s to output topic %s after HDFS write",
-										  topic, outputTopic), exception);
+								  format("failed to send event from input inputTopic %s to output inputTopic %s after HDFS write",
+										  inputTopic, outputTopic), exception);
 							}
 						}
 					}
