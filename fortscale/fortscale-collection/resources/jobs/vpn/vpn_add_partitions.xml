@@ -108,15 +108,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.session.path}</value>
+						<value>${hdfs.user.processeddata.vpnsession.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn.session.table.name}</value>
+						<value>${impala.score.vpnsession.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn.session.table.partition.type}</value>
+						<value>${impala.score.vpnsession.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -136,15 +136,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.session.top.path}</value>
+						<value>${hdfs.user.processeddata.vpnsession.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn.session.top.table.name}</value>
+						<value>${impala.score.vpnsession.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn.session.top.table.partition.type}</value>
+						<value>${impala.score.vpnsession.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
