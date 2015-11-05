@@ -14,11 +14,11 @@ import static fortscale.utils.impala.ImpalaCriteria.lte;
 
 @Component("amtsessionDAO")
 public class AmtSessionDAOImpl extends AccessDAO {
-	@Value("${impala.data.amtsession.table.name}")
+	@Value("${impala.score.amtsession.table.name}")
 	private String tableName;
-	@Value("${impala.data.amtsession.table.fields}")
+	@Value("${impala.score.amtsession.table.fields}")
 	private String tableFields;
-	@Value("${impala.data.amtsession.table.partition.type}")
+	@Value("${impala.score.amtsession.table.partition.type}")
 	private String tablePartitionType;
 
 	@Value("${impala.sessiondata.amt.table.field.EventScore}")

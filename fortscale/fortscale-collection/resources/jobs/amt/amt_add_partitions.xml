@@ -86,11 +86,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.amtsession.table.name}</value>
+						<value>${impala.score.amtsession.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.amtsession.table.partition.type}</value>
+						<value>${impala.score.amtsession.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
