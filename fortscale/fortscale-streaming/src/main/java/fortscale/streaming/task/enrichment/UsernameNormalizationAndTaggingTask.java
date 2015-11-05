@@ -156,7 +156,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
-			if (configuration == null) {
+			if (configuration == null)
+			{
+				String filteredEventLabel = getDataSource(message)+": No configuration found for input topic "+inputTopic;
+				countNewFilteredEvents(filteredEventLabel);
 				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
 				return;
 			}
@@ -171,6 +174,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				String username = convertToString(message.get(configuration.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
 					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
+					String filteredEventLabel = getDataSource(message)+": Message does not contains username in field " +
+							configuration.getUsernameField();
+					countNewFilteredEvents(filteredEventLabel);
 					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
@@ -192,6 +198,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
+					String filteredEventLabel = getDataSource(message)+": User " + username + "does not exists";
+					countNewFilteredEvents(filteredEventLabel);
 					return;
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
@@ -218,6 +226,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	}
 
 	@Override
+	protected String getJobLabel() {
+		return "USERNAME NORMALIZED AND TAGGING";
+	}
+
+	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// Do nothing
 	}
@@ -228,6 +241,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		checkNotNull(event);
 		return event.get(partitionKeyField);
 	}
+
+	protected boolean isMonitoredTask(){
+		return true;
+	}
+
 
 
 

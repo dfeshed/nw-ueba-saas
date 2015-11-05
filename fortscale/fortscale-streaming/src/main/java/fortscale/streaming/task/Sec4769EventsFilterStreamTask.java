@@ -24,6 +24,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	public static final String ACCOUNT_NAME_MATCH_TO_REGEX = "Account Name match to $account_regex";
 	public static final String SERVICE_NAME_MATCH_TO_REGEX = "Service Name match to $dcRegex";
 	public static final String SERVICE_NAME_MATCH_COMPUTER_NAME = "Service Name match to computer name";
+	private static final String MONITOR_NAME = "4769-EventsFilterStreaming";
 
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
@@ -112,8 +113,9 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		return true;
 	}
 
+
 	@Override
-	protected String getSpecificDataSource(){
-		return "4769-";
+	protected String getJobLabel(){
+		return MONITOR_NAME;
 	}
 }
