@@ -48,7 +48,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	/**
 	 * Map from combination of data source & input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
 	 */
-	protected Map<HDFSWriterConfigurationKey, List<WriterConfiguration>> hdfsWriterConfigurationMap = new HashMap<>();
+	private Map<HDFSWriterConfigurationKey, List<WriterConfiguration>> hdfsWriterConfigurationMap = new HashMap<>();
+
+	private Set<String> dataSourcesInConfig = new HashSet<>();
 
 	private BDPService bdpService;
 
@@ -102,6 +104,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				hdfsWriterConfigurationMap.put(hdfsWriterConfigurationKey, new ArrayList<WriterConfiguration>());
 			}
 			hdfsWriterConfigurationMap.get(hdfsWriterConfigurationKey).add(writerConfiguration);
+
+			if (!dataSource.contains(dataSource)) {
+				dataSourcesInConfig.add(dataSource);
+			}
 
 			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
 				writerConfiguration.outputTopics = getConfigStringList(config,
@@ -192,14 +198,28 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			return;
 		}
 
+		if (!dataSourcesInConfig.contains(dataSource)) {
+			logger.error("Message contains data source {} which is not exist in configuration. Skipping message: {} ", dataSource, messageText);
+
+			return;
+		}
+
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		HDFSWriterConfigurationKey hdfsWriterConfigurationKey = new HDFSWriterConfigurationKey(dataSource, inputTopic);
 
+		if (!hdfsWriterConfigurationMap.containsKey(hdfsWriterConfigurationKey)) {
+			logger.error("Message contains combination of data source {} and input topic {} which have no HDFS writer configuration. Skipping message: {} ", dataSource, inputTopic, messageText);
+
+			return;
+		}
+
 		List<WriterConfiguration> writerConfigurations = hdfsWriterConfigurationMap.get(hdfsWriterConfigurationKey);
 
 		if (writerConfigurations.isEmpty()) {
-			logger.error("Couldn't find HDFS writer for input topic " + inputTopic + ". Dropping event");
+			logger.error("Couldn't find HDFS writer for data source {} and input topic {}. Skipping event", dataSource, inputTopic);
+
+			return;
 		}
 
 		// go over all writers and write message
