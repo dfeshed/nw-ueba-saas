@@ -64,7 +64,7 @@
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<open-csv.version>2.3</open-csv.version>
 		<!-- maven plugins versions -->
-		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
+		<!--<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>-->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>

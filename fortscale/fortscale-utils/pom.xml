@@ -63,10 +63,7 @@
 		<commons-pool.version>1.4</commons-pool.version>
 		<splunk.version>1.2.0</splunk.version>
 		<janino.version>2.5.15</janino.version>
-		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
-		<spring.security.core.version>3.1.3.RELEASE</spring.security.core.version>
-		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
-		<servlet-api.version>2.5</servlet-api.version>
+		<servlet-api.version>3.0.1</servlet-api.version>
 		<perf4j.version>0.9.7</perf4j.version>
 		<commons-jexl.version>1.1</commons-jexl.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
@@ -199,7 +196,7 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<version>${servlet-api.version}</version>
 		</dependency>
 		<dependency>

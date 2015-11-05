@@ -18,6 +18,6 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.global,fortscale.streaming.scorer" />
+    <context:component-scan base-package="fortscale.global,fortscale.streaming.scorer,fortscale.domain.core.dao" />
 
 </beans>
