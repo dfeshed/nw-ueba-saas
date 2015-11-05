@@ -105,7 +105,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 			hdfsWriterConfigurationMap.get(hdfsWriterConfigurationKey).add(writerConfiguration);
 
-			if (!dataSource.contains(dataSource)) {
+			if (!dataSourcesInConfig.contains(dataSource)) {
 				dataSourcesInConfig.add(dataSource);
 			}
 
@@ -350,7 +350,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	}
 
-	public class HDFSWriterConfigurationKey {
+	private static class HDFSWriterConfigurationKey {
 
 		private String dataSource;
 		private String inputTopic;
