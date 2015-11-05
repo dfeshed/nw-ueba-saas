@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.DataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
-import org.eclipse.jdt.internal.core.Assert;
+import org.springframework.util.Assert;
 
 public class ModelConf {
     private String name;
@@ -22,12 +22,13 @@ public class ModelConf {
                      @JsonProperty("builder") IModelBuilder modelBuilder,
                      @JsonProperty("retriever") DataRetriever dataRetriever,
                      @JsonProperty("store") ModelStore modelStore) {
-        Assert.isNotNull(name);
+
+        Assert.hasText(name);
         Assert.isTrue(buildIntervalInSeconds > 0);
-        Assert.isNotNull(entitiesSelector);
-        Assert.isNotNull(modelBuilder);
-        Assert.isNotNull(dataRetriever);
-        Assert.isNotNull(modelStore);
+        Assert.notNull(entitiesSelector);
+        Assert.notNull(modelBuilder);
+        Assert.notNull(dataRetriever);
+        Assert.notNull(modelStore);
 
         this.name = name;
         this.buildIntervalInSeconds = buildIntervalInSeconds;
