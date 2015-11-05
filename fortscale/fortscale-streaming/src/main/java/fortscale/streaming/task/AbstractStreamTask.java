@@ -1,23 +1,15 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.exceptions.*;
+import fortscale.streaming.service.SpringService;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.StreamTask;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.WindowableTask;
-
-import fortscale.streaming.exceptions.ExceptionHandler;
-import fortscale.streaming.exceptions.HdfsException;
-import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.exceptions.LevelDbException;
-import fortscale.streaming.exceptions.TaskCoordinatorException;
-import fortscale.streaming.service.SpringService;
-import fortscale.utils.logging.Logger;
+import org.apache.samza.task.*;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
@@ -60,6 +52,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
+			updateLastState(envelope);
 			wrappedProcess(envelope, collector, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -78,6 +71,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			windowExceptionHandler.handleException(exception);
 		}
     }
+
+	protected void updateLastState(IncomingMessageEnvelope envelope) throws ParseException {
+		String messageText = (String)envelope.getMessage();
+
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+		message.put("last_state", this.getClass().getName());
+	}
 	
 	@Override 
 	public void close() throws Exception {
