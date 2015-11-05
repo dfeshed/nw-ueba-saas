@@ -190,16 +190,21 @@ public class HadoopInit implements InitializingBean{
 				createTable(impalaScoringTableName, impalaScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaScoringTableDelimiter, impalaScoringDirectory);
 
 
+
 				//Top table schema
-				String impalaTopScoringTableFields = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.fields}", dataSource));
-				String impalaTopScoringTableDelimiter = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.delimiter}", dataSource));
-				String impalaTopScoringTableName = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.name}", dataSource));
-				String impalaTopScoringDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.processeddata.%s.top.path}", dataSource));
-				String impalaTopScoringTablePartitionType = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.partition.type}", dataSource));
+				Boolean haveTop = env.getBooleanValue(String.format("${impala.%s.have.topScore}", dataSource));
+
+				if(haveTop) {
+					String impalaTopScoringTableFields = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.fields}", dataSource));
+					String impalaTopScoringTableDelimiter = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.delimiter}", dataSource));
+					String impalaTopScoringTableName = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.name}", dataSource));
+					String impalaTopScoringDirectory = env.getEnvPropertyValue(String.format("${hdfs.user.processeddata.%s.top.path}", dataSource));
+					String impalaTopScoringTablePartitionType = env.getEnvPropertyValue(String.format("${impala.score.%s.top.table.partition.type}", dataSource));
 
 
-				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopScoringTablePartitionType);
-				createTable(impalaTopScoringTableName, impalaTopScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopScoringTableDelimiter, impalaTopScoringDirectory);
+					partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopScoringTablePartitionType);
+					createTable(impalaTopScoringTableName, impalaTopScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopScoringTableDelimiter, impalaTopScoringDirectory);
+				}
 			}
 		}
 		catch (Exception e) {
