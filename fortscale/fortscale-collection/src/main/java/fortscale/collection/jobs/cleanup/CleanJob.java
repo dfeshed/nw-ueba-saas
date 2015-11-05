@@ -64,6 +64,8 @@ public class CleanJob extends FortscaleJob {
 	private String dataSourcesDelimiter;
 	@Value("${data.sources.field.delimiter}")
 	private String dataSourcesFieldDelimiter;
+	@Value("${data.sources.optional.delimiter}")
+	private String optionalDelimiter;
 	@Value("${dates.format}")
 	private String datesFormat;
 	@Value("${kafka.service.name}")
@@ -392,12 +394,12 @@ public class CleanJob extends FortscaleJob {
 		int deleted = 0;
 		logger.debug("trying to delete {} entities", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-			if (dataSource.getKey().contains("%%%")) {
+			if (dataSource.getKey().contains(optionalDelimiter)) {
 				if (customUtil == null) {
 					throw new UnsupportedOperationException("Not supported for this type of technology");
 				}
 				Collection<String> collections = customUtil.getEntitiesMatchingPredicate(dataSource.getKey().
-								split("%%%")[0], dataSource.getKey().split("%%%")[1]);
+								split(optionalDelimiter)[0], dataSource.getKey().split(optionalDelimiter)[1]);
 				for (String collection: collections) {
 					cleanupUtil.deleteEntityBetween(collection, dataSource.getValue(), startDate, endDate);
 				}
