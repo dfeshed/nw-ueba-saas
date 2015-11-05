@@ -19,4 +19,10 @@ public class TaskFeatureExtractorServiceConfigTestBase {
 		
 		return ret;
 	}
+	
+	protected FeatureExtractionService buildFeatureExtractionServiceFromTaskConfig(Config config, String propertyName) throws IOException{		
+		FeatureExtractionService ret = propertyName == null ? new FeatureExtractionService(config) : new FeatureExtractionService(config, propertyName);
+		
+		return ret;
+	}
 }

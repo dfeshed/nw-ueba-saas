@@ -6,6 +6,6 @@ public class EventsScoreStreamTaskServiceVpnTest extends EventsScoreStreamTaskSe
 
 	@Test
 	public void testSanity() throws Exception{
-		createEventsScoreStreamTaskService("config/vpn-prevalence-stats.properties");
+		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", "vpn");
 	}
 }
