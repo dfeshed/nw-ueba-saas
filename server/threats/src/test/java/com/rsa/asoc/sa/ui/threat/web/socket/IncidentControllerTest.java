@@ -3,6 +3,7 @@ package com.rsa.asoc.sa.ui.threat.web.socket;
 import com.rsa.asoc.sa.ui.common.data.ResponseCode;
 import com.rsa.asoc.sa.ui.common.data.Response;
 import com.rsa.asoc.sa.ui.common.data.Request;
+import com.rsa.asoc.sa.ui.common.service.WebSocketSubscriptionService;
 import com.rsa.asoc.sa.ui.common.test.stomp.StompMessageUtils;
 import com.rsa.asoc.sa.ui.common.test.stomp.TestingStompMessageHandler;
 import com.rsa.asoc.sa.ui.threat.domain.bean.Incident;
@@ -40,7 +41,8 @@ public class IncidentControllerTest {
     @Before
     public void init() {
         incidentService = mock(IncidentService.class);
-        IncidentController incidentController = new IncidentController(incidentService);
+        WebSocketSubscriptionService webSocketSubscriptionService = mock(WebSocketSubscriptionService.class);
+        IncidentController incidentController = new IncidentController(incidentService, webSocketSubscriptionService);
 
         testingStompMessageHandler = new TestingStompMessageHandler(incidentController);
     }
@@ -76,8 +78,7 @@ public class IncidentControllerTest {
                 testingStompMessageHandler.popOutboundMessage(responseType);
 
         StompHeaderAccessor replyHeaders = StompHeaderAccessor.wrap(reply);
-        String destination = StompMessageUtils.getUserDestination("admin", "/queue/incidents");
-        assertEquals(destination, replyHeaders.getDestination());
+        assertEquals("/topic/threats/incidents", replyHeaders.getDestination());
 
         Response<Collection<Incident>> response = reply.getPayload();
         assertEquals(ResponseCode.SUCCESS, response.getCode());
@@ -90,8 +91,7 @@ public class IncidentControllerTest {
     public void testFindIncidentsWithError() {
         when(incidentService.findIncidents(any(Request.class))).thenReturn(
                 CompletableFuture.completedFuture(new ArrayList<>()));
-        when(incidentService.countIncidents(any(Request.class))).thenThrow(
-                new RuntimeException("Error"));
+        when(incidentService.countIncidents(any(Request.class))).thenThrow( new RuntimeException("Error"));
 
         Request request = Request.newBuilder()
                 .withPage(Request.Page.newBuilder()
@@ -108,12 +108,10 @@ public class IncidentControllerTest {
 
         assertEquals(1, testingStompMessageHandler.getOutboundMessages().size());
 
-        Message<Response<Collection<Incident>>> reply =
-                testingStompMessageHandler.popOutboundMessage(responseType);
+        Message<Response<Collection<Incident>>> reply = testingStompMessageHandler.popOutboundMessage(responseType);
 
         StompHeaderAccessor replyHeaders = StompHeaderAccessor.wrap(reply);
-        String destination = StompMessageUtils.getUserDestination("admin", "/queue/incidents");
-        assertEquals(destination, replyHeaders.getDestination());
+        assertEquals("/topic/threats/incidents", replyHeaders.getDestination());
 
         Response<Collection<Incident>> response = reply.getPayload();
         assertEquals(ResponseCode.GENERAL_EXCEPTION, response.getCode());

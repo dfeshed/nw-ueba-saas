@@ -29,7 +29,7 @@ function newFieldObject(cube, key, config) {
 }
 
 // Generates a callback for a subscription for an instance of cube.
-function makeMessageCallback(me, channelDest, subscriptionKey) {
+function makeMessageCallback(me) {
     return function (message) {
         var response = message.body;
         if (response.code !== 0) {      // error
@@ -58,10 +58,9 @@ function makeMessageCallback(me, channelDest, subscriptionKey) {
                  */
                 var request = response.request;
                 if (request.page && (typeof request.page.index === "number")) {
-                    me.get(subscriptionKey).send(
-                        {},
-                        me.getChannelBody(request.page.index + 1),
-                        channelDest
+                    me.resetChannel(
+                        false,  // don't clear the data we've fetched so far
+                        me.getChannelBody(request.page.index + 1)   // request the next page of data
                     );
                 }
             }
@@ -414,8 +413,13 @@ export default Ember.Object.extend({
      * "data": (Object[]) an array of data records (e.g., a list of Incident objects);
      * "request": (Object) an object that echo's the original request body (e.g., {page: .., sort: .., filter: ..});
      * "meta": (Object) an object with additional information about the response (e.g., {total: ###}).
+     * @param {Object} [body] Optional payload to be sent to websocket server in the MESSAGE immediately following the
+     * SUBSCRIBE request.  This payload usually specifies the request that the websocket is used to service. If
+     * body is null or undefined, this method will attempt to call the configurable "getChannelBody" method (if any) to
+     * compute the appropriate payload.  Use this body argument as a way to override "getChannelBody" and ask
+     * for a specific request.
      */
-    openChannel: function(){
+    openChannel: function(body){
         if (this.get("_subscription")) {
             console.warn("Tried to open a 2nd channel before closing the previous channel.");
             return;
@@ -432,7 +436,7 @@ export default Ember.Object.extend({
                         me.set("_subscription", subscription);
                         subscription.send(
                             {},
-                            (me.getChannelBody && me.getChannelBody(0)) || {},
+                            body || (me.getChannelBody && me.getChannelBody(0)) || {},
                             channelDest
                         );
                     });
@@ -442,29 +446,34 @@ export default Ember.Object.extend({
 
     /**
      * Closes the currently opened channel (if any) and clears the cached data records.
+     * @param {Boolean} [clearMe=false] If true, indicates that the cube's data should be cleared.
      */
-    closeChannel: function(){
+    closeChannel: function(clearMe){
         var sub = this.get("_subscription");
         if (sub) {
             this.set("_subscription", null);
             sub.unsubscribe();
         }
-        this.clear();
+        if (clearMe) {
+            this.clear();
+        }
     },
 
     /**
      * Helper method for closing current channel and immediately opening new channel.
+     * @param {Boolean} clearMe This flag is passed directly to closeChannel.  See closeChannel docs for details.
+     * @param {Object} body This payload is passed directly to openChannel. See openChannel docs for details.
      */
-    resetChannel: function(){
-        this.closeChannel();
-        this.openChannel();
+    resetChannel: function(clearMe, body){
+        this.closeChannel(clearMe);
+        this.openChannel(body);
     },
 
     /**
      * Destroys all the generated field objects.
      */
     destroy: function(){
-        this.closeChannel();
+        this.closeChannel(true);
         var fields = this.get("fields");
         Object.keys(fields).forEach(function(f){
             fields[f].destroy();

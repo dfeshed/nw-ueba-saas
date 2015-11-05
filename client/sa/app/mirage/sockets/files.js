@@ -82,7 +82,11 @@ export default function (server) {
 
                     // JSON file loaded. Send the array contents into socket in chunks.
                     var records = response || [],
-                        recordsToSend = {"code" : 0};
+                        recordsToSend = {
+                            "code" : 0,
+                            "meta" : response.meta,
+                            "request": firstFrame.body ? JSON.parse(firstFrame.body) : null
+                        };
                     hash[subId].interval = window.setInterval(function(){
                         recordsToSend.data = records.data.splice(0, _RECORDS_PER_CHUNK);
                         me.sendFrame(

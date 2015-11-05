@@ -55,7 +55,7 @@ public class DictionaryToIncidentConverterTest {
         Date lastUpdated = new Date(Instant.parse("2015-06-03T11:49:16.841Z").toEpochMilli());
         Map<String, Object> lastUpdatedByUser = buildPerson("2", "Bob Foo", "bfoo", "bfoo@rsa.com");
         Set<String> sources = ImmutableSet.<String>builder().add("Security Analytics Investigator").build();
-        final Map<String, Object> assignee = buildPerson("1", "Admin", "admin", "admin@rsa.com");
+        final Map<String, Object> assignee = buildPerson(1L, "Admin", "admin", "admin@rsa.com");
         IncidentStatus status = IncidentStatus.ASSIGNED;
         final Integer statusSort = 1;
         List<Map<String, Object>> notes = ImmutableList.<Map<String, Object>>builder().add(buildRandomNote()).build();
@@ -162,7 +162,7 @@ public class DictionaryToIncidentConverterTest {
         return true;
     }
 
-    public ImmutableMap<String, Object> buildPerson(String id, String name, String login, String emailAddress) {
+    public ImmutableMap<String, Object> buildPerson(Object id, String name, String login, String emailAddress) {
         ImmutableMap.Builder<String, Object> builder =
                 ImmutableMap.<String, Object>builder().put("id", id).put("name", name).put("login", login);
         if (emailAddress != null) {

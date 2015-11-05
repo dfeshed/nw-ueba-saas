@@ -3,7 +3,6 @@ package com.rsa.asoc.sa.ui.common.domain.repository;
 import com.rsa.asoc.sa.ui.common.endpoint.domain.bean.Endpoint;
 import com.rsa.netwitness.carlos.transport.MessageChannel;
 import com.rsa.netwitness.carlos.transport.MessageChannelListener;
-import com.rsa.netwitness.carlos.transport.MessageEndpoint;
 import com.rsa.netwitness.im.IMProtocol;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,6 +99,7 @@ public class BaseCarlosRepositoryTest {
      * A sample implementation of the {@link BaseCarlosRepository} for use in testing
      */
     private static class TestRepository extends BaseCarlosRepository {
+
         public CompletableFuture<TestPojo> findById(Endpoint endpoint, String id) {
             IMProtocol.GetIncidentRequest request = IMProtocol.GetIncidentRequest.newBuilder()
                     .setId(id)

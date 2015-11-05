@@ -107,7 +107,7 @@ export default Base.extend({
      */
     timeRangeDidChange: function(){
 
-        Ember.run.once(this, "resetChannel");
+        Ember.run.once(this, "resetChannel", true);
     }.observes("timeRange", "timeRange.from", "timeRange.to").on("init"),
 
     // Configure socket channel according to timeRange:
@@ -115,7 +115,7 @@ export default Base.extend({
         var timeFrom = this.get("timeRange.from"),
             timeTo = this.get("timeRange.to");
         if (timeFrom && timeTo) {
-            return "/user/queue/incidents";
+            return "/topic/threats/incidents";
         }
         else {
             return null;
