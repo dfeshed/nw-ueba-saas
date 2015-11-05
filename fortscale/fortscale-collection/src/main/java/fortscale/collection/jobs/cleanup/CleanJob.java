@@ -347,7 +347,7 @@ public class CleanJob extends FortscaleJob {
 			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
+			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils, null);
 		}
 		return success;
 	}
@@ -372,7 +372,7 @@ public class CleanJob extends FortscaleJob {
 			success = handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
+			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils, mongoUtils);
 		}
 		return success;
 	}
@@ -388,12 +388,24 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean deleteEntityBetween(Map<String, String> sources, Date startDate, Date endDate,
-										CleanupUtil cleanupUtil) {
+										CleanupUtil cleanupUtil, CleanupDeletionUtil customUtil) {
 		int deleted = 0;
 		logger.debug("trying to delete {} entities", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-			if (cleanupUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+			if (dataSource.getKey().contains("%%%")) {
+				if (customUtil == null) {
+					throw new UnsupportedOperationException("Not supported for this type of technology");
+				}
+				Collection<String> collections = customUtil.getEntitiesMatchingPredicate(dataSource.getKey().
+								split("%%%")[0], dataSource.getKey().split("%%%")[1]);
+				for (String collection: collections) {
+					cleanupUtil.deleteEntityBetween(collection, dataSource.getValue(), startDate, endDate);
+				}
 				deleted++;
+			} else {
+				if (cleanupUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+					deleted++;
+				}
 			}
 		}
 		if (deleted != sources.size()) {
