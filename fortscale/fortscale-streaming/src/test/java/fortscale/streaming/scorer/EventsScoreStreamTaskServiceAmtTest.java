@@ -6,6 +6,6 @@ public class EventsScoreStreamTaskServiceAmtTest  extends EventsScoreStreamTaskS
 
 	@Test
 	public void testSanity() throws Exception{
-		createEventsScoreStreamTaskService("config/amtsessions-prevalance-stats.properties");
+		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", "amtsession");
 	}
 }

@@ -6,6 +6,6 @@ public class EventsScoreStreamTaskServiceSshTest extends EventsScoreStreamTaskSe
 
 	@Test
 	public void testSanity() throws Exception{
-		createEventsScoreStreamTaskService("config/ssh-prevalance-stats.properties");
+		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", "ssh");
 	}
 }

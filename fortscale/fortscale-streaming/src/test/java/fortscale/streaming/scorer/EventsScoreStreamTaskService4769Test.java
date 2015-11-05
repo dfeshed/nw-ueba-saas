@@ -6,6 +6,6 @@ public class EventsScoreStreamTaskService4769Test extends EventsScoreStreamTaskS
 
 	@Test
 	public void testSanity() throws Exception{
-		createEventsScoreStreamTaskService("config/4769-prevalance-stats.properties");
-	}
+		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", "4769");
+	}	
 }

@@ -10,6 +10,7 @@ public class TaskScorer4769ConfigTest extends TaskScorerConfigTest{
 	
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/4769-prevalance-stats.properties");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "4769");
 	}
+	
 }
