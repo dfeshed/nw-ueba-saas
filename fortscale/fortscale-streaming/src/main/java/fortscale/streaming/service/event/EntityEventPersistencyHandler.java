@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
+
+	private static final String INDEX_FOR_FORWARDING = "end_time_unix";
 
 	@Autowired
 	private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
@@ -53,6 +56,9 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 					new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS)
 							.named(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME)
 							.on(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME, Sort.Direction.DESC));
+			mongoTemplate.indexOps(collectionName).ensureIndex(
+					new Index().named(INDEX_FOR_FORWARDING)
+							.on(INDEX_FOR_FORWARDING, Sort.Direction.DESC));
 			collectionNames.add(collectionName);
 		}
 
