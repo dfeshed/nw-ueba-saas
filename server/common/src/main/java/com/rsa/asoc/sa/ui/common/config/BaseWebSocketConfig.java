@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.security.messaging.web.csrf.CsrfChannelInterceptor;
+import org.springframework.security.messaging.web.socket.server.CsrfTokenHandshakeInterceptor;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -41,6 +44,7 @@ public abstract class BaseWebSocketConfig extends AbstractWebSocketMessageBroker
         registry.addEndpoint(getEndpointBuilder().buildWebSocketPath())
                 .setAllowedOrigins("*")
                 .withSockJS()
+                .setInterceptors(new CsrfTokenHandshakeInterceptor())
                 .setHeartbeatTime(webSocketSettings().getSockjs().getHeartbeatInterval());
     }
 
@@ -56,5 +60,10 @@ public abstract class BaseWebSocketConfig extends AbstractWebSocketMessageBroker
         messageConverters.add(converter);
 
         return false;
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.setInterceptors(new CsrfChannelInterceptor());
     }
 }
