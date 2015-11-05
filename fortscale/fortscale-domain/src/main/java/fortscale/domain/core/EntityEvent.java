@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.IOException;
@@ -50,7 +49,6 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private Map<String, String> context;
 	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
 	private String contextId;
-	@Indexed
 	@Field(ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
 	private long  end_time_unix;
 	@Field(ENTITY_EVENT_CREATION_TIME_FILED_NAME)
