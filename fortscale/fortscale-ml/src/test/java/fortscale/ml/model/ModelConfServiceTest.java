@@ -20,7 +20,7 @@ public class ModelConfServiceTest {
         List<ModelConf> modelConfs = modelConfService.getModelConfs();
         Assert.assertNotNull(modelConfs);
         Assert.assertEquals(2, modelConfs.size());
-        Assert.assertEquals("name1", modelConfs.get(0).name);
-        Assert.assertEquals("name2", modelConfs.get(1).name);
+        Assert.assertEquals("name1", modelConfs.get(0).getName());
+        Assert.assertEquals("name2", modelConfs.get(1).getName());
     }
 }

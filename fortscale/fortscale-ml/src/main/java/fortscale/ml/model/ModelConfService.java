@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelConfService implements InitializingBean {
-    private final static String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
+    private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
     private static final Logger logger = Logger.getLogger(ModelConfService.class);
 
     @Value("${fortscale.model.configurations.json.file.path}")
@@ -38,7 +38,8 @@ public class ModelConfService implements InitializingBean {
         String errorMsg;
 
         try {
-            modelConfJSONs = (JSONArray) ((JSONObject) JSONValue.parseWithException(new FileReader(JSONFilePath))).get(MODEL_CONFS_JSON_FIELD_NAME);
+            JSONObject json = (JSONObject) JSONValue.parseWithException(new FileReader(JSONFilePath));
+            modelConfJSONs = (JSONArray) json.get(MODEL_CONFS_JSON_FIELD_NAME);
         } catch (Exception e) {
             errorMsg = String.format("Failed to parse JSON file %s", JSONFilePath);
             logger.error(errorMsg, e);

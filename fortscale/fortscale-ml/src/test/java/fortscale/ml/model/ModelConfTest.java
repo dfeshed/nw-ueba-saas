@@ -73,7 +73,7 @@ public class ModelConfTest {
                 builBuilderJSON(null),
                 builStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-        Assert.assertEquals(name, modelConf.name);
+        Assert.assertEquals(name, modelConf.getName());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ModelConfTest {
                 builBuilderJSON(null),
                 builStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-        Assert.assertEquals(buildIntervalInSeconds, modelConf.buildIntervalInSeconds);
+        Assert.assertEquals(buildIntervalInSeconds, modelConf.getBuildIntervalInSeconds());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ModelConfTest {
                 builBuilderJSON("continuous_data_histogram"),
                 builStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-        Assert.assertTrue(modelConf.modelBuilder instanceof ContinuousHistogramModelBuilder);
+        Assert.assertTrue(modelConf.getModelBuilder() instanceof ContinuousHistogramModelBuilder);
     }
 
     @Test(expected = Exception.class)
@@ -125,7 +125,7 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfSelectorNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON(null,
+        JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
                 null,
                 builRetrieverJSON(),
@@ -136,7 +136,7 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfRetrieverNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON(null,
+        JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
                 builSelectorJSON(),
                 null,
@@ -147,7 +147,7 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfBuilderNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON(null,
+        JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
                 builSelectorJSON(),
                 builRetrieverJSON(),
@@ -158,7 +158,7 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfStoreNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON(null,
+        JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
                 builSelectorJSON(),
                 builRetrieverJSON(),
