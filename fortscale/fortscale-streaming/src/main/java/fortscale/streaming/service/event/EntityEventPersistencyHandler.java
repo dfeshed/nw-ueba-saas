@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class EntityEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
-	private static final String INDEX_FOR_FORWARDING = "end_time_unix";
-
 	@Autowired
 	private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
 
@@ -57,8 +55,8 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 							.named(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME)
 							.on(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME, Sort.Direction.DESC));
 			mongoTemplate.indexOps(collectionName).ensureIndex(
-					new Index().named(INDEX_FOR_FORWARDING)
-							.on(INDEX_FOR_FORWARDING, Sort.Direction.DESC));
+					new Index().named(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
+							.on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, Sort.Direction.DESC));
 			collectionNames.add(collectionName);
 		}
 
