@@ -1,6 +1,9 @@
 /**
  * @file  Base Cube class.
- * A wrapper for Square's crossfilter library.
+ * A wrapper for Square's crossfilter library. A Cube instance observes a given Array instance. The Cube will populate
+ * itself with the Array's data contents, and exposes a "results" attribute which applies configurable sort &
+ * filter to that data.  The sort & filter are configured by using the Cube's public API.  The Cube attaches listeners
+ * to the Array, so that it can update its results automatically as the Array's contents change.
  */
 /* global crossfilter */
 import Ember from "ember";
@@ -28,105 +31,46 @@ function newFieldObject(cube, key, config) {
     return whichClass.create(config);
 }
 
-// Generates a callback for a subscription for an instance of cube.
-function makeMessageCallback(me) {
-    return function (message) {
-        var response = message.body;
-        if (response.code !== 0) {      // error
-            console.err("Socket error message received: ", message);
-        }
-        else {      // success
-
-            // Add incoming data to cube.
-            me.add(response.data);
-
-            // Recompute count, total and progress.
-            var count = (me.get("records") || []).length,
-                total = (response.meta && response.meta.total) || count;
-            me.setProperties({
-                totalCount: total,
-                progress: total ? parseInt(100 * count / total, 10) : 100
-            });
-
-            // Are there more pages of socket data to fetch?
-            if (count < total) {
-
-                /*
-                 @hack Read the page index from this payload, and request the next page.
-                 This assumes a certain structure for the payload JSON, which is cheating.
-                 @todo Can we make this be a little more formalized?
-                 */
-                var request = response.request;
-                if (request.page && (typeof request.page.index === "number")) {
-                    me.resetChannel(
-                        false,  // don't clear the data we've fetched so far
-                        me.getChannelBody(request.page.index + 1)   // request the next page of data
-                    );
-                }
-            }
-        }
-    };
-}
-
 export default Ember.Object.extend({
 
     /**
-     * Master set of data records for this crossfilter to filter/aggregate/sort.  This array should be treated
-     * as read-only. To add records to the crossfilter, use this object's "add()" method.
+     * Master array of data objects for this crossfilter to filter/aggregate/sort.
+     * This cube instance will attach listeners to the array and update itself when the array's contents are
+     * modified. A reference to the array should be passed into the constructor of this cube instance, and cannot be
+     * subsequently changed to point to a different array.  To cube-ify a different array, instantiate another cube.
      * @readonly
      * @type Object[]
      * @default []
      */
-    records: null,
-
-    /**
-     * Total size of the master set of data records for this crossfilter to filter/aggregate/sort. This count should
-     * be treated as read-only. It may be larger than the length of "records" if the records are being received from
-     * the webserver in "pages" (chunks); in that scenario, "totalCount" is the count across all pages, not just the
-     * current page.
-     * @readonly
-     * @type Number
-     * @default 0
-     */
-    totalCount: 0,
-
-    /**
-     * Maximum number of records to fetch over websocket per request.
-     * @type Integer
-     * @default 100
-     */
-    pageSize: 100,
-
-    /**
-     * Measure of progress in loading records from websocket. Generally defined as count of records received so far
-     * divided by total count of incoming records, expressed as a whole number percentage (0-100).
-     * If totalCount is zero or undefined, progress is considered 100.
-     * @readonly
-     * @type Number
-     */
-    progress: 100,
+    records: Ember.computed(function(){
+        return this._array;
+    }).readOnly(),
 
     /**
      * Hash of field objects. Each field object represents a field in the data records. A field object is an instance
      * of one of the cube/field/ classes (e.g., DefaultField, CsvField, or ArrayField).  These fields can be
      * used for sorting, filtering and aggregation.  The "fields" hash is derived at run-time from the "fieldsConfig"
      * property. For more details, see "fieldsConfig" docs.
-     * @readonly
      * @type {}
-     * @default {}
+     * @readonly
      */
-    fields: null,
+    fields: Ember.computed(function(){
+        return this._fields;
+    }).readOnly(),
 
     /**
-     * An Array with the objects from the "fields" hash.
-     * @workaround This is redundant with the "fields" attribute, but useful for templates. If the template helper
-     * "{{#each}}" supported hashes (not just arrays), we wouldn't need "fieldsList".
+     * Reference to the native Crossfilter instance wrapped by this cube. This object is instantiated and set once
+     * during init, and cannot be swapped out with another Crossfilter instance.
+     * @type {}
+     * @readonly
      */
-    fieldsList: null,
+    crossfilter: Ember.computed(function(){
+        return this._crossfilter;
+    }).readOnly(),
 
     /**
-     * Metadata hash for the fields of "records". These fields can be used to create dimensions for this crossfilter.
-     * Each field represents either an actual property of the objects in "records" or a computed property of those
+     * Configurable metadata hash for the fields of "records". Used to define dimensions for crossfilter.
+     * Each field can represent either an actual property of the objects in "records" or a computed property of those
      * objects.  (For example, if records have "createdDate" property, then the computed field "age" could be defined
      * by using a getter that computes an age number from the "createdDate" property).
      * The keys of the "records" hash are names of fields; the hash values are each an Object with the following
@@ -178,61 +122,13 @@ export default Ember.Object.extend({
 
     /**
      * Triggers a recalculation of computed properties (e.g., "results").
-     * This is accomplished by simply updating an attribute ("lastRecalc") to the current timestamp.  Computed
-     * properties can then observe this attribute and update themselves accordingly.
+     * This is accomplished by simply incrementing the attribute "lastRecalc". Computed properties can then observe
+     * this attribute and update themselves accordingly. Note: we increment lastRecalc, rather than setting it to the
+     * current timestamp, because timestamps lack sufficient precision and could cause recalculations to be skipped
+     * during fast operations.
      */
     recalc: function(){
-        this.set("lastRecalc", this.get("lastRecalc") + 1);
-    },
-
-    /**
-     * Adds the given set of objects to "records" and to the crossfilter's data space. Triggers a recalculation
-     * of computed properties, such as "results".
-     * @param {Object[]} records The objects to be added.
-     */
-    add: function(records) {
-        if (records) {
-            this.get("crossfilter").add(records);
-            this.get("records").pushObjects(records);
-            this.recalc();
-        }
-    },
-
-    /**
-     * Removes all the records from the cube's data space (even records that fall outside of the current
-     * filters). Triggers a recalculation of computed properties, such as "results".
-     */
-    clear: function() {
-        this.setProperties({
-            records: [],
-            totalCount: 0,
-            progress: 100
-        });
-
-        // Crossfilter's native remove() method will only work on the records within the current filter. So we
-        // temporarily clear all the filters, call remove(), then restore the filters.
-        var xfilter = this.get("crossfilter"),
-            fields = this.get("fields"),
-            filters = {};
-
-        // Remove all the current filters, one dimension at a time, temporarily caching them.
-        Object.keys(fields).forEach(function(f) {
-            var filter = fields[f].get("filter.native");
-            if (filter !== null) {
-                filters[f] = filter;
-                fields[f].get("dimension").filterAll();
-            }
-        });
-
-        // Now that all filters are cleared, .remove() should clear all records.
-        xfilter.remove();
-
-        // Now restore all the filters we just removed.
-        Object.keys(filters).forEach(function(f) {
-            fields[f].get("dimension").filter(filters[f]);
-        });
-
-        this.recalc();
+        this.incrementProperty("lastRecalc");
     },
 
     /**
@@ -324,15 +220,12 @@ export default Ember.Object.extend({
      * hash of field objects.
      */
     init: function(){
-        this._super();
+        this._super.apply(this, arguments);
 
-        // Define local caches.
-        this.setProperties({
-            records: [],
-            crossfilter: crossfilter(),
-            fields: Ember.Object.create(),
-            fieldsList: []
-        });
+        // Define local vars.
+        this._array = this.get("array") || [];
+        this._fields = Ember.Object.create();
+        this._crossfilter = crossfilter();
 
         // Generate the field objects from the given configs.
         var cfg = this.get("fieldsConfig"),
@@ -342,6 +235,12 @@ export default Ember.Object.extend({
                 me.addField(key, cfg[key]);
             });
         }
+
+        // Process the existing contents of the array, if any.
+        this._arrayDidChange(this._array, 0, 0, this._array.length);
+
+        // Attach listeners to array for future additions/removals.
+        this._array.addArrayObserver(this, {willChange: "_arrayWillChange", didChange: "_arrayDidChange"});
     },
 
     /**
@@ -353,127 +252,74 @@ export default Ember.Object.extend({
     addField: function(key, cfg){
         var fieldObject = newFieldObject(this, key, cfg);
         this.set("fields." + key, fieldObject);
-        this.get("fieldsList").pushObjects([fieldObject]);
         return fieldObject;
     },
 
     /**
-     * Optional handle to the websocket service, which this object can use to retrieve data via openChannel().
-     * @workaround We add "websocket" as an attribute because we can't get a reference to the service in a util.
-     * @type Object
-     * @default null
+     * Listener for changes in the source array. Notified just before Array contents are about to change.
+     * Responsible for removing exiting data from the crossfilter instance.
+     * This listener is attached during init() by calling Array.addArrayObserver.
+     * For more details, see Ember.Array API docs: http://emberjs.com/api/classes/Ember.Array.html#method_addArrayObserver
      */
-    websocket: null,
+    _arrayWillChange: function(observedObj, start, removeCount){
 
-    /**
-     * The destination used by openChannel() to subscribe for data records. Must be set in order to use openChannel().
-     * Typically set by subclasses or set on individual instances.
-     * @type String
-     * @default null
-     */
-    channel: null,
+        // If any data is exiting, find it in the crossfilter instance and remove it. Alas, crossfilter.remove()
+        // only removes the records that are currently in its filter. So to remove exiting data, we must temporarily
+        // reset the filter to include only the exiting data, call crossfilter.remove(), then revert back to the
+        // previous filter (if any).  Don't call recalc() yet; wait until after any entering data has arrived.
+        // (See _arrayDidChange handler for that.)
+        if (removeCount) {
 
-    /**
-     * The destination used by openChannel() to send an initial message over a new channel, in order to kick off data
-     * flow. Must be set in order to use openChannel(). Typically set by subclasses or set on individual instances.
-     * @type String
-     * @default null
-     */
-    channelDestination: null,
+            // Remove all the current filters, one dimension at a time, temporarily caching them.
+            var xfilter = this.get("crossfilter"),
+                fields = this.get("fields"),
+                filters = {};
 
-    /**
-     * Optional data payload sent by openChannel() in the initial message over a new channel, in order to kick off data
-     * flow.  Typically extended by subclasses or set on individual instances.
-     * @type String
-     * @default null
-     */
-    getChannelBody: function(index) {
-        var out = {
-                "page": {
-                    "index": index || 0
+            Object.keys(fields).forEach(function(f) {
+                var filter = fields[f].get("filter.native");
+                if (filter !== null) {
+                    filters[f] = filter;
+                    fields[f].get("dimension").filterAll();
                 }
-            },
-            size = this.get("pageSize");
+            });
 
-        if (size) {
-            out.page.size = size;
+            // Now that all filters are cleared, create a filter that targets only the exiting records.
+            var ids = observedObj.slice(start, start + removeCount).mapBy("id");
+            fields["id"].get("dimension").filter(ids);
+            xfilter.remove();
+
+            // Now restore all the filters we just removed.
+            fields["id"].get("dimension").filterAll();
+            Object.keys(filters).forEach(function(f) {
+                fields[f].get("dimension").filter(filters[f]);
+            });
         }
-
-        return out;
     },
 
     /**
-     * Opens a websocket channel to fetch data records. The data records are then cached into the crossfilter.
-     * If channel is already open, does nothing.
-     * Relies on required properties "channel" and "channelDestination" to configure the socket destination. If those
-     * properties return null, then this method aborts and exits.
-     * When the channel returns a successful response, its response is assumes to be an object with the following
-     * structure:
-     * "code": (Number) an error code (0 = success, no error);
-     * "data": (Object[]) an array of data records (e.g., a list of Incident objects);
-     * "request": (Object) an object that echo's the original request body (e.g., {page: .., sort: .., filter: ..});
-     * "meta": (Object) an object with additional information about the response (e.g., {total: ###}).
-     * @param {Object} [body] Optional payload to be sent to websocket server in the MESSAGE immediately following the
-     * SUBSCRIBE request.  This payload usually specifies the request that the websocket is used to service. If
-     * body is null or undefined, this method will attempt to call the configurable "getChannelBody" method (if any) to
-     * compute the appropriate payload.  Use this body argument as a way to override "getChannelBody" and ask
-     * for a specific request.
+     * Listener for changes in the source array. Notified just after Array contents are changed.
+     * Responsible for adding entering data to the crossfilter instance.
+     * This listener is attached during init() by calling Array.addArrayObserver.
+     * For more details, see Ember.Array API docs: http://emberjs.com/api/classes/Ember.Array.html#method_addArrayObserver
      */
-    openChannel: function(body){
-        if (this.get("_subscription")) {
-            console.warn("Tried to open a 2nd channel before closing the previous channel.");
-            return;
+    _arrayDidChange: function(observedObj, start, removeCount, addCount){
+        if (addCount) {
+            this.get("crossfilter").add(observedObj.slice(start, start + addCount));
         }
 
-        var websocket = this.get("websocket");
-        if (websocket) {
-            var me = this,
-                channel = this.get("channel"),
-                channelDest = this.get("channelDestination");
-            if (channel && channelDest) {
-                websocket.subscribe(channel, makeMessageCallback(me, channelDest, "_subscription"))
-                    .then(function(subscription){
-                        me.set("_subscription", subscription);
-                        subscription.send(
-                            {},
-                            body || (me.getChannelBody && me.getChannelBody(0)) || {},
-                            channelDest
-                        );
-                    });
-            }
+        // If array items were added OR removed, recompute crossfilter results.
+        if (addCount || removeCount) {
+            this.recalc();
         }
     },
 
     /**
-     * Closes the currently opened channel (if any) and clears the cached data records.
-     * @param {Boolean} [clearMe=false] If true, indicates that the cube's data should be cleared.
-     */
-    closeChannel: function(clearMe){
-        var sub = this.get("_subscription");
-        if (sub) {
-            this.set("_subscription", null);
-            sub.unsubscribe();
-        }
-        if (clearMe) {
-            this.clear();
-        }
-    },
-
-    /**
-     * Helper method for closing current channel and immediately opening new channel.
-     * @param {Boolean} clearMe This flag is passed directly to closeChannel.  See closeChannel docs for details.
-     * @param {Object} body This payload is passed directly to openChannel. See openChannel docs for details.
-     */
-    resetChannel: function(clearMe, body){
-        this.closeChannel(clearMe);
-        this.openChannel(body);
-    },
-
-    /**
-     * Destroys all the generated field objects.
+     * Detaches array observer and destroys all the generated field objects.
      */
     destroy: function(){
-        this.closeChannel(true);
+        this._array.removeArrayObserver(this, {willChange: "_arrayWillChange", didChange: "_arrayDidChange"});
+        delete this._array;
+
         var fields = this.get("fields");
         Object.keys(fields).forEach(function(f){
             fields[f].destroy();

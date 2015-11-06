@@ -3,19 +3,23 @@
     <ul>
         <li class="js-test-respond-incs-filter-hour-btn"
                 selected="{{is-equal "H" cube.timeRangeUnit}}"
-            {{action "set" "timeRangeUnit" "H" target=cube}}
+                {{action (action timeRangeAction "H")}}
+            {{!action "set" "timeRangeUnit" "H" target=cube}}
                 >{{t "time.lastHour"}}</li>
         <li class="js-test-respond-incs-filter-day-btn"
                 selected="{{is-equal "D" cube.timeRangeUnit}}"
-            {{action "set" "timeRangeUnit" "D" target=cube}}
+                {{action (action timeRangeAction "D")}}
+            {{!action "set" "timeRangeUnit" "D" target=cube}}
                 >{{t "time.last24Hours"}}</li>
         <li class="js-test-respond-incs-filter-week-btn"
                 selected="{{is-equal "W" cube.timeRangeUnit}}"
-            {{action "set" "timeRangeUnit" "W" target=cube}}
+                {{action (action timeRangeAction "W")}}
+            {{!action "set" "timeRangeUnit" "W" target=cube}}
                 >{{t "time.last7Days"}}</li>
         <li class="js-test-respond-incs-filter-month-btn"
                 selected="{{is-equal "M" cube.timeRangeUnit}}"
-            {{action "set" "timeRangeUnit" "M" target=cube}}
+                {{action (action timeRangeAction "M")}}
+            {{!action "set" "timeRangeUnit" "M" target=cube}}
                 >{{t "time.last30Days"}}</li>
     </ul>
 </section>

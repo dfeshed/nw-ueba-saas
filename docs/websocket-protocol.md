@@ -258,9 +258,6 @@ Example:
       "descending": true
     }
   ],
-  "stream": {
-    "limit": 3000
-  },
   "filter": [
     {
       "field": "created",

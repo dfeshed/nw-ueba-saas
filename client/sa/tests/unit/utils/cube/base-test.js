@@ -35,19 +35,19 @@ test("it exists, stores records, and maintains filters", function(assert) {
     assert.equal(obj.get("records").length, 0, "Unexpected data size after instantiation.");
 
     // Add more data and recheck data size.
-    obj.add([{id: 1}, {id: 2}]);
+    obj.get("records").pushObjects([{id: 1}, {id: 2}]);
     assert.equal(obj.get("records").length, 2, "Unexpected data size after adding data.");
 
     // Next, before clearing the data, apply a filter. We will test if this filter is preserved after clearing data.
     obj.filter([{field: "id", value: 1}], true);
-    assert.equal(obj.fields.id.get("filter").includes(1), true, "Unexpected includes result from simple filter.");
+    assert.equal(obj.get("fields.id.filter").includes(1), true, "Unexpected includes result from simple filter.");
 
     // Now clear the data, and confirm that data is cleared and filter is preserved.
     Ember.run(function(){
-        obj.clear();
+        obj.get("records").clear();
     });
     assert.equal(obj.get("records").length, 0, "Unexpected data size after clearing data.");
-    assert.equal(obj.fields.id.get("filter").includes(1), true, "Unexpected includes result from simple filter.");
+    assert.equal(obj.get("fields.id.filter").includes(1), true, "Unexpected includes result from simple filter.");
 
     Ember.run(function(){
         obj.destroy();
@@ -113,7 +113,7 @@ test("it filters fields of default type", function(assert) {
 
     // Feed it data and tell it how to sort the data so we can predict the results of these operations.
     var FIELD_KEY = "field1";
-    obj.add([
+    obj.get("records").pushObjects([
         {field1: 1},
         {field1: 2},
         {field1: 10},
@@ -311,7 +311,7 @@ function testFilteringByNonDefaultField(indexField, filterField, fieldsCfg, reco
     assert.ok(obj, "Unable to create object.");
 
     // Feed it data and tell it how to sort the data so we can predict the results of these operations.
-    obj.add(records);
+    obj.get("records").pushObjects(records);
     obj.sort(indexField, true);
 
     // Confirm sorted results.
@@ -506,7 +506,7 @@ test("it groups fields of default type", function(assert){
             sortBy: FIELD_KEY
         });
     assert.ok(obj, "Unable to create object.");
-    obj.add([
+    obj.get("records").pushObjects([
         {field1: 10},
         {field1: 20},
         {field1: 30},
@@ -528,7 +528,7 @@ test("it groups fields of default type", function(assert){
     );
 
     // Try adding a record and confirm that the grouping result was updated.
-    obj.add([{field1: 30}]);
+    obj.get("records").pushObjects([{field1: 30}]);
     helpers.testGrouping(
         obj,
         FIELD_KEY,
@@ -551,7 +551,7 @@ function testGroupingByNonDefaultField(fieldsCfg, records, groupField, recordsTo
             sortBy: groupField
         });
     assert.ok(obj, "Unable to create object.");
-    obj.add(records);
+    obj.get("records").pushObjects(records);
 
     // Perform a simple grouping operation.
     helpers.testGrouping(
@@ -563,7 +563,7 @@ function testGroupingByNonDefaultField(fieldsCfg, records, groupField, recordsTo
     );
 
     // Try adding a record and confirm that the grouping result was updated.
-    obj.add(recordsToAdd);
+    obj.get("records").pushObjects(recordsToAdd);
     helpers.testGrouping(
         obj,
         groupField,

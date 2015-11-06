@@ -16,7 +16,7 @@ test("it exists and supports incident fields", function(assert) {
     assert.ok(obj);
 
     // Add some data.
-    obj.add([
+    obj.get("records").pushObjects([
         {
             id: 1,
             prioritySort: 0,
@@ -55,22 +55,4 @@ test("it exists and supports incident fields", function(assert) {
     obj.sort("priorityRiskScore", true);    // sort descending
     assert.equal(obj.get("results")[0].id, 2, "Unexpected results at index 0 sorting by priorityRiskScore.");
     assert.equal(obj.get("results")[1].id, 3, "Unexpected results at index 1 sorting by priorityRiskScore.");
-
-    // Confirm the default timeRangeUnit and timeRange.
-    assert.equal(obj.get("timeRangeUnit"), timeUtil.UNITS.DAY, "Unexpected default timeRangeUnit.");
-    assert.equal(
-        obj.get("timeRange.to") - obj.get("timeRange.from"),
-        24 * 60 * 60 * 1000,
-        "Unexpected default timeRange."
-    );
-
-    // Change the timeRangeUnit and confirm a corresponding chnage in timeRange.
-    Ember.run(function(){
-        obj.set("timeRangeUnit", timeUtil.UNITS.WEEK);
-    });
-    assert.equal(
-        obj.get("timeRange.to") - obj.get("timeRange.from"),
-        7 * 24 * 60 * 60 * 1000,
-        "Unexpected computed timeRange after setting timeRangeUnit to WEEK."
-    );
 });

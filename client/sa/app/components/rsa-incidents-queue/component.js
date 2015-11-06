@@ -36,6 +36,7 @@ export default Ember.Component.extend({
 
     /**
      * The incident record from cube which has been selected, typically by some user interaction.
+     * Used for highlighting the selected record in the DOM template.
      * @type Object
      */
     selectedRecord: null,
@@ -46,7 +47,14 @@ export default Ember.Component.extend({
      * @type Function
      * @default null
      */
-    onselect: null,
+    onSelectIncident: null,
+
+    /**
+     * Optional callback to be invoked whenever user requests a change in time range. This is intended to be set
+     * externally, by either a parent component or some other object that observes this component.
+     * @type Function
+     */
+    onSelectTimeRangeUnit: null,
 
     actions: {
 
@@ -57,6 +65,10 @@ export default Ember.Component.extend({
          */
         selectRecord: function(record){
             this.set("selectedRecord", record);
+            var callback = this.get("onSelectIncident");
+            if (callback) {
+                callback(record);
+            }
         },
 
         /**
@@ -89,16 +101,6 @@ export default Ember.Component.extend({
         }
         Ember.run.once(this, setQueue);
 
-    }.observes("whichQueue", "cube").on("didInsertElement"),
+    }.observes("whichQueue", "cube").on("didInsertElement")
 
-    /**
-     * Responds to changes in the selection by calling the primary action (if any), which is stored in
-     * the "action" attribute.
-     */
-    selectedRecordDidChange: function(){
-        var callback = this.get("onselect");
-        if (callback) {
-            callback(this.get("selectedRecord"));
-        }
-    }.observes("selectedRecord")
 });

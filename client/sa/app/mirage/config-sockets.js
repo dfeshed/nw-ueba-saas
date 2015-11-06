@@ -75,24 +75,33 @@ MockServer.prototype.initHandlers = function(){
             }
         });
     });
+    return this;
 };
 
 export default function initSockets(){
-    var server;
-    if (config.socketURL) {
 
-        // According to mock-socket docs, we must first create a mock server before creating any mock sockets.
-        // So create a simple server here, and cache handle to it so that subsequent code can enhance
-        // it to handle whatever socket requests we decide to mock later.
-        server = window.mockServer = new MockServer(config.socketURL);
-        server.initHandlers();
+    var urls = config.socketURLs,
+        servers = [];
+    if (urls) {
+        urls.forEach(function(url){
 
-        // Substitute the mock socket class for the real socket class.
-        window.WebSocket = window.MockSocket;
-
-        // @workaround Explicitly substitute mock socket for SockJS too, if SockJS is defined. Without this,
-        // SockJS will not use our MockSocket even though we've substituted it for WebSocket, not sure why.
-        window.SockJS = window.SockJS && window.MockSocket;
+            // According to mock-socket docs, we must first create a mock server before creating any mock sockets.
+            // So create a simple server here, and later subsequent code can enhance it to handle whatever socket
+            // requests we decide to mock elsewhere.
+            var server = new MockServer(url);
+            server.initHandlers();
+            servers.push(
+                (new MockServer(url)).initHandlers()
+            );
+        });
     }
-    return server;
+
+    // Substitute the mock socket class for the real socket class.
+    window.WebSocket = window.MockSocket;
+
+    // @workaround Explicitly substitute mock socket for SockJS too, if SockJS is defined. Without this,
+    // SockJS will not use our MockSocket even though we've substituted it for WebSocket, not sure why.
+    window.SockJS = window.SockJS && window.MockSocket;
+
+    return servers;
 }

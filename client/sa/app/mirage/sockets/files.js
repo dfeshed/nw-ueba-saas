@@ -27,7 +27,7 @@ function _fileForDestination(dest) {
     var file;
     if (dest) {
         for (var i = 0, len = _FILE_MAP.length; i < len; i++) {
-            var match = dest.match(_FILE_MAP[i]);
+            var match = dest.match(_FILE_MAP[i].regex);
             if (match) {
                 file = _FILE_MAP[i].file;
                 if (typeof file === "function") {
@@ -47,7 +47,7 @@ function _fileForDestination(dest) {
  * @type {number}
  * @private
  */
-var _RECORDS_PER_CHUNK = 10000;
+var _RECORDS_PER_CHUNK = 2;
 
 /**
  * MockServer message handler that responds to SUBSCRIBE & UNSUBSCRIBE messages for certain destinations
