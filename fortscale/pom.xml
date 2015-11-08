@@ -77,9 +77,9 @@
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
-		<jackson.version>2.6.3</jackson.version>
-		<jackson.dataformat.version>2.6.3</jackson.dataformat.version>
-        <jackson.datatype.version>2.6.3</jackson.datatype.version>
+		<jackson.version>2.2.3</jackson.version>
+		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
+        <jackson.datatype.version>2.2.3</jackson.datatype.version>
 		<test.exclude>nothingToExlude</test.exclude>
 		<test.include>**/*Test.java</test.include>
 		<test.groups></test.groups>
@@ -180,6 +180,11 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
