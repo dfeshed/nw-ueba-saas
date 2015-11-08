@@ -1,6 +1,6 @@
 package fortscale.ml.model;
 
 public class ModelStore {
-    public void save(String entityID, Model entityModel) {
+    public void save(ModelConf modelConf, String entityID, Model entityModel) {
     }
 }

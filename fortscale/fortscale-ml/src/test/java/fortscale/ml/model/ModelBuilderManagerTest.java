@@ -1,7 +1,7 @@
 package fortscale.ml.model;
 
 import fortscale.ml.model.builder.IModelBuilder;
-import fortscale.ml.model.retriever.DataRetriever;
+import fortscale.ml.model.retriever.ModelBuilderDataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,29 +39,52 @@ public class ModelBuilderManagerTest {
         ModelConf modelConf = Mockito.mock(ModelConf.class);
         EntitiesSelector entitiesSelector = Mockito.mock(EntitiesSelector.class);
         Mockito.when(modelConf.getEntitiesSelector()).thenReturn(entitiesSelector);
-        DataRetriever dataRetriever = Mockito.mock(DataRetriever.class);
-        Mockito.when(modelConf.getDataRetriever()).thenReturn(dataRetriever);
+        ModelBuilderDataRetriever modelBuilderDataRetriever = Mockito.mock(ModelBuilderDataRetriever.class);
+        Mockito.when(modelConf.getModelBuilderDataRetriever()).thenReturn(modelBuilderDataRetriever);
         IModelBuilder modelBuilder = Mockito.mock(IModelBuilder.class);
         Mockito.when(modelConf.getModelBuilder()).thenReturn(modelBuilder);
         ModelStore modelStore = Mockito.mock(ModelStore.class);
         Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
 
         String[] entityIDs = {"user1", "user2"};
-        EntityData[] entityDatas = {new EntityData() {}, new EntityData() {}};
+        ModelBuilderData[] modelBuilderDatas = {new ModelBuilderData() {}, new ModelBuilderData() {}};
         Model[] entityModels = {new Model(), new Model()};
         Mockito.when(entitiesSelector.getEntities()).thenReturn(entityIDs);
         for (int i = 0; i < entityIDs.length; i++) {
-            Mockito.when(dataRetriever.retrieve(entityIDs[i])).thenReturn(entityDatas[i]);
-            Mockito.when(modelBuilder.build(entityDatas[i])).thenReturn(entityModels[i]);
+            Mockito.when(modelBuilderDataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderDatas[i]);
+            Mockito.when(modelBuilder.build(modelBuilderDatas[i])).thenReturn(entityModels[i]);
         }
 
         ModelBuilderManager modelManager = new ModelBuilderManager(modelConf);
-        modelManager.run();
+        modelManager.process();
 
         Mockito.verify(entitiesSelector).getEntities();
         for (int i = 0; i < entityIDs.length; i++) {
-            Mockito.verify(modelStore).save(entityIDs[i], entityModels[i]);
+            Mockito.verify(modelStore).save(modelConf, entityIDs[i], entityModels[i]);
         }
+        Mockito.verifyNoMoreInteractions(modelStore);
+    }
+
+    @Test
+    public void shouldBuildAndStoreGlobalModel() {
+        ModelConf modelConf = Mockito.mock(ModelConf.class);
+        Mockito.when(modelConf.getEntitiesSelector()).thenReturn(null);
+        ModelBuilderDataRetriever modelBuilderDataRetriever = Mockito.mock(ModelBuilderDataRetriever.class);
+        Mockito.when(modelConf.getModelBuilderDataRetriever()).thenReturn(modelBuilderDataRetriever);
+        IModelBuilder modelBuilder = Mockito.mock(IModelBuilder.class);
+        Mockito.when(modelConf.getModelBuilder()).thenReturn(modelBuilder);
+        ModelStore modelStore = Mockito.mock(ModelStore.class);
+        Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
+
+        ModelBuilderData modelBuilderData = new ModelBuilderData() {};
+        Model globalModel = new Model();
+        Mockito.when(modelBuilderDataRetriever.retrieve(null)).thenReturn(modelBuilderData);
+        Mockito.when(modelBuilder.build(modelBuilderData)).thenReturn(globalModel);
+
+        ModelBuilderManager modelManager = new ModelBuilderManager(modelConf);
+        modelManager.process();
+
+        Mockito.verify(modelStore).save(modelConf, null, globalModel);
         Mockito.verifyNoMoreInteractions(modelStore);
     }
 }

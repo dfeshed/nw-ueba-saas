@@ -124,17 +124,6 @@ public class ModelConfTest {
     }
 
     @Test(expected = Exception.class)
-    public void shouldFailIfSelectorNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
-                null,
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
-        (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-    }
-
-    @Test(expected = Exception.class)
     public void shouldFailIfRetrieverNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,

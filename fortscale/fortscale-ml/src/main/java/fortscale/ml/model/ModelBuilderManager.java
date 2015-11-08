@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.selector.EntitiesSelector;
 import org.springframework.util.Assert;
 
 public class ModelBuilderManager {
@@ -23,11 +24,21 @@ public class ModelBuilderManager {
         return nextRunTimeInSeconds;
     }
 
-    public void run() {
-        for (String entityID : modelConf.getEntitiesSelector().getEntities()) {
-            EntityData entityData = modelConf.getDataRetriever().retrieve(entityID);
-            Model model = modelConf.getModelBuilder().build(entityData);
-            modelConf.getModelStore().save(entityID, model);
+    public void process() {
+        EntitiesSelector entitiesSelector = modelConf.getEntitiesSelector();
+        String[] entities;
+        if (entitiesSelector != null) {
+            // we get here for entity model configurations
+            entities = entitiesSelector.getEntities();
+        }
+        else {
+            // we get here for global model configurations
+            entities = new String[]{null};
+        }
+        for (String entityID : entities) {
+            ModelBuilderData modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
+            Model model = modelConf.getModelBuilder().build(modelBuilderData);
+            modelConf.getModelStore().save(modelConf, entityID, model);
         }
     }
 }
