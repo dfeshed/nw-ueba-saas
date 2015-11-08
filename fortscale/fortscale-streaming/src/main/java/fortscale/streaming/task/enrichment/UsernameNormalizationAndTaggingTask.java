@@ -44,28 +44,29 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask implements InitableTask {
 
-	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
+	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
+	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
-	private static final String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
-	private static final String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
-
-	private static final String usernameKey = "username";
-	private static final String userTagsKey = "user-tag";
-	private static final String samAccountKey = "samAccountName";
-
-	private static final String DATA_SOURCE_FIELD = "dataSource";
+	private static String usernameKey = "username";
+	private static String userTagsKey = "user-tag";
+	private static String samAccountKey = "samAccountName";
 
 	/**
-	 * Map of configuration: from the data-source name to a corresponding entry of normalization service and input/output topics
+	 * Logger
 	 */
-	protected Map<String, UsernameNormalizationConfig> dataSourceToConfiguration = new HashMap<>();
+	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
+
+	/**
+	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 */
+	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
 	 * Uses for updates arriving from kafka update topic
 	 */
 	//
-	protected Map<String, CachingService> inputTopicToCachingServiceMap = new HashMap<>();
+	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
 
 	/**
@@ -81,15 +82,15 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
+		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
 		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
+		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
 			String dataSource = ConfigField.getKey();
-			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
+			String inputTopic = ConfigField.getValue();
 			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
 			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
@@ -108,20 +109,20 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			dataSourceToConfiguration.put(dataSource, new UsernameNormalizationConfig(inputTopic, outputTopic,
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
 
 		// add the usernameService to update input topics map
 		if (usernameService != null) {
-			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, usernameKey)), usernameService);
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
 		}
 
 		//add the samAccountNameService to the update input topic map
 		if(samAccountNameService != null)
 		{
-			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
 		}
 
 		// construct tagging service with the tags that are required from configuration
@@ -136,37 +137,30 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// add the tagService to update input topics map
 		if (userService != null) {
 			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
-			inputTopicToCachingServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, userTagsKey)), userService);
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
 
 	
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		// parse the message into json 
+		String messageText = (String)envelope.getMessage();
+		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
-		if (inputTopicToCachingServiceMap.containsKey(inputTopic)) {
-			CachingService cachingService = inputTopicToCachingServiceMap.get(inputTopic);
-
+		if (topicToServiceMap.containsKey(inputTopic)) {
+			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
-		}
-		else {
-			String messageText = (String)envelope.getMessage();
-
+		} else {
 			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-
-			String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
-
-			if (dataSource == null) {
-				logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
-
-				return;
-			}
-
 			// Get configuration for data source
-			UsernameNormalizationConfig configuration = dataSourceToConfiguration.get(dataSource);
-			if (configuration == null) {
-				logger.error("No configuration found for data source {}. Dropping Record", inputTopic);
+			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
+			if (configuration == null)
+			{
+				String filteredEventLabel = getDataSource(message)+": No configuration found for input topic "+inputTopic;
+				taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
+				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
 				return;
 			}
 
@@ -180,6 +174,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				String username = convertToString(message.get(configuration.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
 					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
+					String filteredEventLabel = getDataSource(message)+": Message does not contains username in field " +
+							configuration.getUsernameField();
+					taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
 					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
@@ -201,6 +198,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
+					String filteredEventLabel = getDataSource(message)+": User " + username + "does not exists";
+					taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
 					return;
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
@@ -217,6 +216,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
 			}
+			taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
 		}
 	}
 
@@ -224,6 +224,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedClose() throws Exception {
 		tagService = null;
+	}
+
+	@Override
+	protected String getJobLabel() {
+		return "USERNAME NORMALIZED AND TAGGING";
 	}
 
 	@Override
@@ -237,7 +242,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		checkNotNull(event);
 		return event.get(partitionKeyField);
 	}
-
 
 
 }
