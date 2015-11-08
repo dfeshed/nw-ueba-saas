@@ -66,7 +66,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			}
 		}
 
-		handleUnFilteredEvents(message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
+		taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
 		processedNonFilterCount.inc(); //Count not filtered events total
 		
 	}
@@ -99,10 +99,5 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	protected String getJobLabel(){
 		return MONITOR_NAME;
 	}
-
-	protected boolean isMonitoredTask(){
-		return true;
-	}
-
 
 }
