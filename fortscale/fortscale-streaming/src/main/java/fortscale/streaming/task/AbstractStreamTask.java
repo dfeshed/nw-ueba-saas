@@ -22,6 +22,8 @@ import fortscale.streaming.service.SpringService;
 import fortscale.utils.logging.Logger;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
+
+	public static final String DATA_SOURCE_FIELD_NAME = "DataSource";
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 	
 	private ExceptionHandler processExceptionHandler;
@@ -110,10 +112,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 
+	//Extract the name of the datasource from the message.
+	//Currently this field is not exists, but after marging with the code of generic data source,
+	//We will have this field.
 	protected String getDataSource(JSONObject message){
 		String datasource = null;
 		try {
-			datasource = message.getAsString("DataSource");
+			datasource = message.getAsString(DATA_SOURCE_FIELD_NAME);
 		} catch (Exception e){
 
 		}
