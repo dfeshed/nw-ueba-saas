@@ -135,4 +135,12 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return this.getClass().getName();
 	}
 
+
+	public TaskMonitoringHelper getTaskMonitoringHelper() {
+		return taskMonitoringHelper;
+	}
+
+	public void setTaskMonitoringHelper(TaskMonitoringHelper taskMonitoringHelper) {
+		this.taskMonitoringHelper = taskMonitoringHelper;
+	}
 }
