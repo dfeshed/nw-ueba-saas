@@ -52,10 +52,11 @@ public class ModelConfService implements InitializingBean {
             throw new JsonException(errorMsg);
         }
 
+        ObjectMapper objectMapper = new ObjectMapper();
         for (Object modelConfJSON : modelConfJSONs) {
             String jsonString = ((JSONObject) modelConfJSON).toJSONString();
             try {
-                ModelConf modelConf = (new ObjectMapper()).readValue(jsonString, ModelConf.class);
+                ModelConf modelConf = objectMapper.readValue(jsonString, ModelConf.class);
                 modelConfs.add(modelConf);
             } catch (IOException e) {
                 errorMsg = String.format("Failed to deserialize JSON %s", jsonString);
