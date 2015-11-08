@@ -1,0 +1,30 @@
+{
+  "ModelConfs": [
+    {
+      "name": "name1",
+      "buildIntervalInSeconds": 1,
+      "selector": {
+      },
+      "retriever": {
+      },
+      "builder": {
+        "type": "continuous_data_histogram"
+      },
+      "store": {
+      }
+    },
+    {
+      "name": "name2",
+      "buildIntervalInSeconds": 1,
+      "selector": {
+      },
+      "retriever": {
+      },
+      "builder": {
+        "type": "continuous_data_histogram"
+      },
+      "store": {
+      }
+    }
+  ]
+}
