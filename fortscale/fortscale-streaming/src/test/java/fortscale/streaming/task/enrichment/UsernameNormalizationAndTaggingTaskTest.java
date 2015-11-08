@@ -1,5 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +45,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 	SystemStream systemStream;
 	MessageCollector messageCollector;
 	TaskCoordinator taskCoordinator;
+	TaskMonitoringHelper taskMonitoringHelper;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,6 +72,11 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
+		taskMonitoringHelper = mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
+		//Mockito.when(taskMonitoringHelper.handleUnFilteredEvents(Any)).thenReturn();
+
+
 
 	}
 
@@ -77,7 +85,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// Init the task to test
 		UsernameNormalizationAndTaggingTask task = new UsernameNormalizationAndTaggingTask();
-
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		// fields
 		String normalizedUsernameField = "normalized_name";
 		String usernameField = "name";
