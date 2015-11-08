@@ -85,12 +85,8 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 	}
 
-
 	/** Auxiliary method to enable filtering messages on specific events types */
 	protected boolean acceptMessage(JSONObject message){ return true;}
-
-
-
 
 	/**
 	 * Abstract method to get the prefix of the job name, depnded on the class

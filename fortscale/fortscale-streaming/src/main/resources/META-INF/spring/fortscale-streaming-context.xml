@@ -9,9 +9,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
-	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper">
-
-	</bean>
+	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper"></bean>
 
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
  		<property name="location" value="file:config/fortscale-overriding-streaming.properties"/>

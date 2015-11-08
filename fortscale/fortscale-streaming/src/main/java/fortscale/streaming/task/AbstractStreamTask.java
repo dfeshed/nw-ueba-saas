@@ -63,7 +63,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		// call specific task init method
 		wrappedInit(config, context);
 
-		//jobMonitorReporter = SpringService.getInstance().resolve(JobProgressReporter.class);
 		taskMonitoringHelper = SpringService.getInstance().resolve(TaskMonitoringHelper.class);
 
 		boolean isMonitoredTask = config.getBoolean("fortscale.monitoring.enable",false);
