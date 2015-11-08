@@ -9,7 +9,7 @@ public class ModelBuilderManager {
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
-        nextRunTimeInSeconds = -1;
+        this.nextRunTimeInSeconds = -1;
     }
 
     public void calcNextRunTime(long currentTimeInSeconds) {
@@ -18,11 +18,16 @@ public class ModelBuilderManager {
 
     public long getNextRunTimeInSeconds() {
         if (nextRunTimeInSeconds < 0) {
-            throw new IllegalStateException("calcNextRunTime must be called before calling to getNextRunTimeInSeconds");
+            throw new IllegalStateException("next run time hasn't been calculated yet");
         }
         return nextRunTimeInSeconds;
     }
 
     public void run() {
+        for (String entityID : modelConf.getEntitiesSelector().getEntities()) {
+            EntityData entityData = modelConf.getDataRetriever().retrieve(entityID);
+            Model model = modelConf.getModelBuilder().build(entityData);
+            modelConf.getModelStore().save(entityID, model);
+        }
     }
 }
