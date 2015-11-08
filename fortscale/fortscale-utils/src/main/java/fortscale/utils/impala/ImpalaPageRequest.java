@@ -10,7 +10,7 @@ public class ImpalaPageRequest extends PageRequest {
 	private static final long serialVersionUID = 1L;
 
 	public ImpalaPageRequest(int limit, Sort sort) {
-		super(0, limit, sort);
+		super(0, limit < 1 ? 1 : limit, sort);
 	}
 
 	@Override
