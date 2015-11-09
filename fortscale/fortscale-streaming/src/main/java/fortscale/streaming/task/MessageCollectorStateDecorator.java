@@ -10,6 +10,8 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 /**
+ * Decorator of the basic MessageCollector. Decorates the message with the task's state
+ *
  * @author gils
  * Date: 09/11/2015
  */
@@ -29,7 +31,6 @@ public class MessageCollectorStateDecorator implements MessageCollector {
 
     @Override
     public void send(OutgoingMessageEnvelope envelope) {
-
         try {
             // extract original envelope values
             SystemStream systemStream = envelope.getSystemStream();
@@ -38,7 +39,6 @@ public class MessageCollectorStateDecorator implements MessageCollector {
 
             JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-            // add/override last state field
             message.put(LAST_STATE_FIELD, streamingMessageState.serialize());
 
             OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
