@@ -29,7 +29,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected abstract void wrappedClose() throws Exception;
 
 	protected StreamingMessageState getCurrentStreamingMessageState() {
-		return new StreamingMessageState(getCurrentStreamingStepType(), this.getClass().getName());
+		return new StreamingMessageState(getCurrentStreamingStepType(), this.getClass().getSimpleName());
 	}
 
 	protected StreamingStepType getCurrentStreamingStepType() {

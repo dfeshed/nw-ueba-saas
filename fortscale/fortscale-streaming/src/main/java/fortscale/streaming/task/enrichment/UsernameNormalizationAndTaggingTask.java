@@ -157,9 +157,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-			String lastState = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
+			String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
 
-			StreamingMessageState lastMessageState = StreamingMessageStateExtractor.extract(lastState);
+			if (lastMessageStateStr != null) {
+				StreamingMessageState lastMessageState = StreamingMessageStateExtractor.extract(lastMessageStateStr);
+			}
 
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
