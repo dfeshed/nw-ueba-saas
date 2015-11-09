@@ -64,6 +64,10 @@
 					<value>${impala.data.security4769.table.fields}</value>
 				</entry>
 				<entry>
+					<key>messageOutputFieldsSecEvt4769</key>
+					<value>${kafka.security4769.message.record.fields}</value>
+				</entry>
+				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
 					<value>${impala.data.security.events.4769.table.morphline.fields.username}</value>
 				</entry>
@@ -104,6 +108,10 @@
 				<entry>
 					<key>outputFieldsLoginEvt</key>
 					<value>${impala.data.login4768.table.fields}</value>
+				</entry>
+				<entry>
+					<key>messageOutputFieldsLoginEvt</key>
+					<value>${kafka.security.events.login.message.record.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsLoginEvt</key>

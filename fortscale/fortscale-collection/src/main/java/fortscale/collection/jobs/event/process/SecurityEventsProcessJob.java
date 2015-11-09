@@ -75,8 +75,10 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
 
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
+			String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields" + impalaTable);
 			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+			handler.recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
 			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
 
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
@@ -156,7 +158,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							// output event to streaming platform
 							if (handler.streamWriter!=null && sendToKafka == true)
 								handler.streamWriter.send(handler.recordKeyExtractor.process(record),
-										handler.recordToStringProcessor.toJSON(record));
+										handler.recordToMessageString.toJSON(record));
 
 							return true;
 						}
@@ -295,6 +297,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public RecordToStringItemsProcessor recordKeyExtractor;
+		public RecordToStringItemsProcessor recordToMessageString;
 		public KafkaEventsWriter streamWriter;
         public PartitionStrategy partitionStrategy;
 	}
