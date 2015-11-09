@@ -1,22 +1,24 @@
 package fortscale.streaming.service.state;
 
 /**
+ * Representation of the message state in the streaming topology
+ *
  * @author gils
  * Date: 09/11/2015
  */
-public class StreamingMessageState {
+public class StreamingTaskMessageState {
 
     private static final String STREAMING_MESSAGE_STATE_DELIMITER = "_";
 
     private StreamingStepType stepType;
     private String taskName;
 
-    public StreamingMessageState(StreamingStepType stepType, String taskName) {
+    public StreamingTaskMessageState(StreamingStepType stepType, String taskName) {
         this.stepType = stepType;
         this.taskName = taskName;
     }
 
-    public StreamingMessageState(StreamingStepType stepType) {
+    public StreamingTaskMessageState(StreamingStepType stepType) {
         this.stepType = stepType;
     }
 

@@ -2,9 +2,9 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingMessageState;
-import fortscale.streaming.service.state.StreamingMessageStateExtractor;
 import fortscale.streaming.service.state.StreamingStepType;
+import fortscale.streaming.service.state.StreamingTaskMessageState;
+import fortscale.streaming.service.state.StreamingTaskMessageStateExtractor;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -42,11 +42,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		fillExceptionHandler(windowExceptionHandler);
 	}
 
-	private StreamingMessageState createCurrentStreamingMessageState(IncomingMessageEnvelope envelope) throws ParseException {
+	private StreamingTaskMessageState createCurrentStreamingMessageState(IncomingMessageEnvelope envelope) throws ParseException {
 		String messageText = (String) envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		return new StreamingMessageState(determineCurrentStreamingStepType(message), this.getClass().getSimpleName());
+		return new StreamingTaskMessageState(determineCurrentStreamingStepType(message), this.getClass().getSimpleName());
 	}
 
 	public static void fillExceptionHandler(ExceptionHandler exceptionHandler){
@@ -80,8 +80,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			StreamingMessageState streamingMessageState = createCurrentStreamingMessageState(envelope);
-			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, streamingMessageState);
+			StreamingTaskMessageState streamingTaskMessageState = createCurrentStreamingMessageState(envelope);
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, streamingTaskMessageState);
 			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -134,11 +134,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
-	protected StreamingMessageState getInputMessageState(JSONObject message) {
+	protected StreamingTaskMessageState getInputMessageState(JSONObject message) {
 		String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
 
 		if (lastMessageStateStr != null) {
-			return StreamingMessageStateExtractor.extract(lastMessageStateStr);
+			return StreamingTaskMessageStateExtractor.extract(lastMessageStateStr);
 		}
 		else {
 			return null;

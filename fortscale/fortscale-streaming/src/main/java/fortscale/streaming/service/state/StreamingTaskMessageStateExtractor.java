@@ -1,27 +1,32 @@
 package fortscale.streaming.service.state;
 
 /**
+ * Extractor of the streaming task message state
+ *
  * @author gils
  * Date: 09/11/2015
  */
-public class StreamingMessageStateExtractor {
+public class StreamingTaskMessageStateExtractor {
 
     private static final String STREAMING_MESSAGE_STATE_DELIMITER = "_";
 
-    public static StreamingMessageState extract(String streamingMessageState) {
+    private static final int STEP_TYPE_INDEX = 0;
+    private static final int TASK_NAME_INDEX = 1;
+
+    public static StreamingTaskMessageState extract(String streamingMessageState) {
         String[] streamingStateSplitted = streamingMessageState.split(STREAMING_MESSAGE_STATE_DELIMITER);
 
         if (streamingStateSplitted.length > 1) {
-            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[0]);
+            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
 
-            String taskName = streamingStateSplitted[1];
+            String taskName = streamingStateSplitted[TASK_NAME_INDEX];
 
-            return new StreamingMessageState(streamingStepType, taskName);
+            return new StreamingTaskMessageState(streamingStepType, taskName);
         }
         else if (streamingStateSplitted.length == 1) {
-            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[0]);
+            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
 
-            return new StreamingMessageState(streamingStepType);
+            return new StreamingTaskMessageState(streamingStepType);
         }
 
         throw new IllegalStateException("Could not extract message state from message state: " + streamingMessageState);

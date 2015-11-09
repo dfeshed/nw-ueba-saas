@@ -1,6 +1,6 @@
 package fortscale.streaming.task;
 
-import fortscale.streaming.service.state.StreamingMessageState;
+import fortscale.streaming.service.state.StreamingTaskMessageState;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -22,11 +22,11 @@ public class MessageCollectorStateDecorator implements MessageCollector {
     private static final String LAST_STATE_FIELD = "last_state";
 
     private MessageCollector messageCollector;
-    private StreamingMessageState streamingMessageState;
+    private StreamingTaskMessageState streamingTaskMessageState;
 
-    public MessageCollectorStateDecorator(MessageCollector messageCollector, StreamingMessageState streamingMessageState) {
+    public MessageCollectorStateDecorator(MessageCollector messageCollector, StreamingTaskMessageState streamingTaskMessageState) {
         this.messageCollector = messageCollector;
-        this.streamingMessageState = streamingMessageState;
+        this.streamingTaskMessageState = streamingTaskMessageState;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class MessageCollectorStateDecorator implements MessageCollector {
 
             JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-            message.put(LAST_STATE_FIELD, streamingMessageState.serialize());
+            message.put(LAST_STATE_FIELD, streamingTaskMessageState.serialize());
 
             OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
 
