@@ -27,6 +27,9 @@ public class RequestTest {
                 "    \"index\": 1,\n" +
                 "    \"size\": 10000\n" +
                 "  },\n" +
+                "  \"stream\": {\n" +
+                "    \"limit\": 20000\n" +
+                "  },\n" +
                 "  \"sort\": [\n" +
                 "    { \"field\": \"created\", \"descending\": true },\n" +
                 "    { \"field\": \"assigned\", \"descending\": false }\n" +
@@ -67,6 +70,13 @@ public class RequestTest {
         assertNotNull(page);
         assertEquals(Integer.valueOf(1), page.getIndex());
         assertEquals(Integer.valueOf(10000), page.getSize());
+
+
+        // Verify streaming object
+        assertTrue(request.hasStream());
+        Request.Stream stream = request.getStream();
+        assertNotNull(stream);
+        assertEquals(Long.valueOf(20000L), stream.getLimit());
 
 
         // Verify sorting
@@ -126,6 +136,8 @@ public class RequestTest {
                 .withPage(Request.Page.newBuilder()
                         .withIndex(0)
                         .withSize(25))
+                .withStream(Request.Stream.newBuilder()
+                        .withLimit(20000L))
                 .withSort(Request.Sort.newBuilder()
                         .withField("created")
                         .withDescending(true))

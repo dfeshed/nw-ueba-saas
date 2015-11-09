@@ -38,6 +38,11 @@ public class Response<T> {
         setTotal(total);
     }
 
+    public Response(T data, Map<String, Object> meta, Request request) {
+        this(data, request);
+        setMeta(meta);
+    }
+
     public Response(ResponseCode code, Request request) {
         this.code = code;
         this.request = request;
