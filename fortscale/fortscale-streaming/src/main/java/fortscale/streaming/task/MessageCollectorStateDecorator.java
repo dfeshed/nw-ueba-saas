@@ -13,16 +13,16 @@ import parquet.org.slf4j.LoggerFactory;
  * @author gils
  * Date: 09/11/2015
  */
-public class StatefulMessageCollector implements MessageCollector {
+public class MessageCollectorStateDecorator implements MessageCollector {
 
-    private static Logger logger = LoggerFactory.getLogger(StatefulMessageCollector.class);
+    private static Logger logger = LoggerFactory.getLogger(MessageCollectorStateDecorator.class);
 
     private static final String LAST_STATE_FIELD = "last_state";
 
     private MessageCollector messageCollector;
     private StreamingMessageState streamingMessageState;
 
-    public StatefulMessageCollector(MessageCollector messageCollector, StreamingMessageState streamingMessageState) {
+    public MessageCollectorStateDecorator(MessageCollector messageCollector, StreamingMessageState streamingMessageState) {
         this.messageCollector = messageCollector;
         this.streamingMessageState = streamingMessageState;
     }

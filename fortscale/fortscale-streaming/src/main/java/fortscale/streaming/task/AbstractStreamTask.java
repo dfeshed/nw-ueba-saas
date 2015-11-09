@@ -79,8 +79,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector, getCurrentStreamingMessageState());
-			wrappedProcess(envelope, statefulMessageCollector, coordinator);
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, getCurrentStreamingMessageState());
+			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
@@ -93,8 +93,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		try{
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 
-			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector, getCurrentStreamingMessageState());
-			wrappedWindow(statefulMessageCollector, coordinator);
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, getCurrentStreamingMessageState());
+			wrappedWindow(messageCollectorStateDecorator, coordinator);
 
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
