@@ -149,13 +149,13 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			try {
 				event = computerTaggingService.enrichEvent(inputTopic, event);
 			} catch (Exception e){
-				taskMonitoringHelper.countNewFilteredEvents(e.getMessage());
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(event),e.getMessage());
 				throw e;
 			}
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
-				taskMonitoringHelper.handleUnFilteredEvents(getDataSource(event),event.getAsNumber("date_time_unix"), event.getAsString("date_time"));
+				handleUnfilteredEvent(event);
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);

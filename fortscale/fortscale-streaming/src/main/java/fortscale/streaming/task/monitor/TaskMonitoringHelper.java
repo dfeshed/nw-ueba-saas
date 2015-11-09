@@ -2,6 +2,7 @@ package fortscale.streaming.task.monitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,14 +63,20 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(String cause){
-        Integer causeReason = countFilterByCause.get(cause);
-        if (causeReason == null){
-            causeReason = 1;
-        } else {
-            causeReason++;
+    public void countNewFilteredEvents(String dataSource, String cause){
+        String causeLabel="";
+        if (StringUtils.isNotBlank(dataSource)){
+            causeLabel = "Data Source: "+dataSource+". ";
         }
-        countFilterByCause.put(cause,causeReason);
+        causeLabel +=cause;
+
+        Integer causeCount = countFilterByCause.get(causeLabel);
+        if (causeCount == null){
+            causeCount = 1;
+        } else {
+            causeCount++;
+        }
+        countFilterByCause.put(causeLabel,causeCount);
     }
 
 

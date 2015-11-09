@@ -126,11 +126,19 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		}
 		if (StringUtils.isBlank(datasource)){
-			datasource = "No Data Source";
+			datasource = null;
 		}
 		return datasource;
 
 	}
+
+//	protected String getDataSourcDisplayName(JSONObject message){
+//		String dataSourceName = getDataSource(message);
+//		if (dataSourceName == null){
+//			dataSourceName = "";
+//		}
+//		return dataSourceName;
+//	}
 
 	//This is the name of job that will be presented in the monitoring screen
 	//The method should be override
@@ -138,6 +146,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return this.getClass().getName();
 	}
 
+	protected void handleUnfilteredEvent(JSONObject event){
+
+		String dataSource  = getDataSource(event);
+		Number eventTitleAsLong = event.getAsNumber("date_time_unix");
+		String eventTimeAsString = event.getAsString("date_time");
+		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTitleAsLong, eventTimeAsString);
+	}
 
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
 		return taskMonitoringHelper;
@@ -152,7 +167,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			String messageText = (String) envelope.getMessage();
 			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
-			taskMonitoringHelper.countNewFilteredEvents(CANNOT_PARSE_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(null,CANNOT_PARSE_MESSAGE_LABEL);
 			throw e;
 		}
 	}

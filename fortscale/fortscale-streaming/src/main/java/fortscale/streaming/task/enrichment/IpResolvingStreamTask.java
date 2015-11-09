@@ -159,17 +159,18 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                                 new SystemStream("kafka", service.getOutputTopic(topic)),
                                 service.getPartitionKey(topic, event),
                                 event.toJSONString());
-                        taskMonitoringHelper.handleUnFilteredEvents(getDataSource(event),event.getAsNumber("date_time_unix"), event.getAsString("date_time"));
+                        handleUnfilteredEvent(event);
                         collector.send(output);
 
                 }
             } catch (FilteredEventException exception) {
-                taskMonitoringHelper.countNewFilteredEvents(exception.getMessage());
+                taskMonitoringHelper.countNewFilteredEvents(getDataSource(event),exception.getMessage());
             } catch (Exception exception) {
                 throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
             }
         }
     }
+
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}

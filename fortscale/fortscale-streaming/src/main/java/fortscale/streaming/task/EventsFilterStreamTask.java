@@ -66,7 +66,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			}
 		}
 
-		taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
+		handleUnfilteredEvent(message);
 		processedNonFilterCount.inc(); //Count not filtered events total
 		
 	}

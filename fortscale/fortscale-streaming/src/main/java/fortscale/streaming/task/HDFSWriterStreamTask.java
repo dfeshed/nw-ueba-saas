@@ -41,6 +41,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private static final String storeNamePrefix = "hdfs-write-";
 	public static final String NO_WRITER_CONFIGURATIONS_LABEL = "No Writer Configurations";
 	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_label = "No timestamp field in message";
+	public static final String FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL = "Failed to Send Event to Kafka";
+	public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "Event Older then NewestEvent";
 
 
 	/**
@@ -188,7 +190,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for topic " + topic + ". Dropping event");
-			taskMonitoringHelper.countNewFilteredEvents(NO_WRITER_CONFIGURATIONS_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_WRITER_CONFIGURATIONS_LABEL);
 		}
 
 		// go over all writers and write message
@@ -199,7 +201,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
-				taskMonitoringHelper.countNewFilteredEvents(NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
 				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
 
@@ -228,12 +230,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
-								taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
+								handleUnfilteredEvent(message);
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
-								taskMonitoringHelper.countNewFilteredEvents("Failed to Send Event to Kafka");
+								taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output topic %s after HDFS write",
 										  topic, outputTopic), exception);
@@ -246,7 +248,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
 			} else {//Event filter becuase of  barrier
-				taskMonitoringHelper.countNewFilteredEvents("Event Older then NewestEvent");
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
 	}
@@ -260,7 +262,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message)) {
-				taskMonitoringHelper.countNewFilteredEvents("MessageFilter: "+filter.getName());
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), "MessageFilter: "+filter.getName());
 				return true;
 			}
 		}
