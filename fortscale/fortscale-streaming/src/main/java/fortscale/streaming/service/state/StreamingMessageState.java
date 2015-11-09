@@ -27,4 +27,18 @@ public class StreamingMessageState {
     public String getTaskName() {
         return taskName;
     }
+
+    public String serialize() {
+        return this.toString();
+    }
+
+    @Override
+    public String toString() {
+        if (taskName != null) {
+            return stepType.name() + STREAMING_MESSAGE_STATE_DELIMITER + taskName;
+        }
+        else {
+            return stepType.name();
+        }
+    }
 }

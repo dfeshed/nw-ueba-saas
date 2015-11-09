@@ -2,6 +2,8 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.state.StreamingMessageState;
+import fortscale.streaming.service.state.StreamingStepType;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -26,10 +28,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
 
-	protected String getCurrentState() {
-		return this.getClass().getName();
+	protected StreamingMessageState getCurrentStreamingMessageState() {
+		return new StreamingMessageState(getCurrentStreamingStepType(), this.getClass().getName());
 	}
 
+	protected StreamingStepType getCurrentStreamingStepType() {
+		return StreamingStepType.ENRICH;
+	}
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
 
@@ -74,7 +79,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector);
+			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector, getCurrentStreamingMessageState());
 			wrappedProcess(envelope, statefulMessageCollector, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -88,7 +93,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		try{
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 
-			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector);
+			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector, getCurrentStreamingMessageState());
 			wrappedWindow(statefulMessageCollector, coordinator);
 
 			windowExceptionHandler.clear();
