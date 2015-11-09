@@ -12,6 +12,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Created by Amir Keren on 24/09/15.
@@ -36,7 +37,7 @@ public class StoreUtils extends CleanupDeletionUtil {
     @Override
     public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> states = getAllEntities();
-        logger.debug("found {} states to delete", states.size());
+        logger.info("found {} states to delete", states.size());
         return deleteEntities(states, doValidate);
     }
 
@@ -49,14 +50,18 @@ public class StoreUtils extends CleanupDeletionUtil {
     @Override
     public Collection<String> getAllEntities() {
         File file = new File(stateBaseFolder);
-        String[] states = file.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File current, String name) {
-                return new File(current, name).isDirectory();
-            }
-        });
-        logger.debug("found {} states", states.length);
-        return Arrays.asList(states);
+        if (file.exists()) {
+            String[] states = file.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File current, String name) {
+                    return new File(current, name).isDirectory();
+                }
+            });
+            logger.info("found {} states", states.length);
+            return Arrays.asList(states);
+        }
+        logger.info("no states found");
+        return new HashSet();
     }
 
     /***
@@ -70,13 +75,13 @@ public class StoreUtils extends CleanupDeletionUtil {
     @Override
     public boolean deleteEntities(Collection<String> states, boolean doValidate) {
         int numberOfStatesDeleted = 0;
-        logger.debug("attempting to delete {} states", states.size());
+        logger.info("attempting to delete {} states", states.size());
         for (String state: states) {
             File stateDirectory = new File(stateBaseFolder + "/" + state);
             try {
                 FileUtils.deleteDirectory(stateDirectory);
             } catch (IOException ex) {
-                logger.debug("failed to delete state {} - {}", state, ex);
+                logger.error("failed to delete state {} - {}", state, ex);
             }
             boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
             if (doValidate) {
