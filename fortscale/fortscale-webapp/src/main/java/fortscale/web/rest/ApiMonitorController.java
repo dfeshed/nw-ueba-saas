@@ -148,7 +148,8 @@ public class ApiMonitorController {
 	
 	private boolean hasData(JobReport report) {
 		for (JobDataReceived data : report.getDataReceived()) {
-			if (data.getValue()>0)
+
+			if (data.getValue()!= null && data.getValue()>0)
 				return true;
 		}
 		return false;

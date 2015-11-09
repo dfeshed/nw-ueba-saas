@@ -22,9 +22,9 @@ import fortscale.streaming.service.EventsScoreStreamTaskService;
 public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 	
 	
-	private TaskContext context;
-	private MetricsRegistry metricsRegistry;
-	private Counter counter;
+	protected TaskContext context;
+	protected MetricsRegistry metricsRegistry;
+	protected Counter counter;
 	
 	@SuppressWarnings("resource")
 	@BeforeClass
@@ -40,12 +40,12 @@ public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 		counter = mock(Counter.class);
 	}
 	
-	protected EventsScoreStreamTaskService createEventsScoreStreamTaskService(String taskConfigPropertiesFilePath) throws Exception{
-		Config config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
+	protected EventsScoreStreamTaskService createEventsScoreStreamTaskService(String taskConfigPropertiesFilePath, String dataSource) throws Exception{
 		when(context.getMetricsRegistry()).thenReturn(metricsRegistry);
 		when(metricsRegistry.newCounter((String)anyObject(), (String)anyObject())).thenReturn(counter);
 		
-		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, modelService, new FeatureExtractionService(config));
+		Config dataSourceConfig = TaskTestUtil.buildPrevalenceTaskConfig(taskConfigPropertiesFilePath, dataSource);		
+		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(dataSourceConfig, context, modelService, new FeatureExtractionService(dataSourceConfig));
 		return eventsScoreStreamTaskService;
 	}
 	

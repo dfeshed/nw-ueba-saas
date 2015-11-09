@@ -29,7 +29,7 @@ public class AMTWithOngoingParsingTest {
 	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass(){
-		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
 
 	}
 
@@ -131,7 +131,7 @@ public class AMTWithOngoingParsingTest {
                                 "2014-10-10 07:42:48,1412952168,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid1,SUCCESS,,,false,false,false,false,nanu,CHANGEPW,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid1"
                         )
                 ),
-            */
+
 
 				$(
 						"Test Yahoo merege",
@@ -145,7 +145,7 @@ public class AMTWithOngoingParsingTest {
 
 						)
 				),
-
+*/
 
 
 				$(

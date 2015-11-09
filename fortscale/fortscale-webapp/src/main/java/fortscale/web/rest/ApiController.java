@@ -147,7 +147,7 @@ public class ApiController extends DataQueryController {
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		int total = resultsMap.size();
 		if(countQuery != null) {
-			total = impalaJdbcTemplate.queryForInt(countQuery);
+			total = impalaJdbcTemplate.queryForObject(countQuery, Integer.class);
 		}
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);

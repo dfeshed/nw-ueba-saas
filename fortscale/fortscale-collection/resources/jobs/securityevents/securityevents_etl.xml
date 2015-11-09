@@ -61,7 +61,7 @@
 				</entry>				
 				<entry>
 					<key>outputFieldsSecEvt4769</key>
-					<value>${impala.data.security.events.4769.table.fields}</value>
+					<value>${impala.data.security4769.table.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
@@ -73,11 +73,11 @@
 				</entry>
 				<entry>
 					<key>outputSeparatorSecEvt4769</key>
-					<value>${impala.data.security.events.4769.table.delimiter}</value>
+					<value>${impala.data.security4769.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathSecEvt4769</key>
-					<value>${hdfs.user.data.security.events.4769.path}</value>
+					<value>${hdfs.user.data.security4769.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameSecEvt4769</key>
@@ -85,7 +85,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableNameSecEvt4769</key>
-					<value>${impala.data.security.events.4769.table.name}</value>
+					<value>${impala.data.security4769.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicSecEvt4769</key>
@@ -93,7 +93,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategySecEvt4769</key>
-                    <value>${impala.data.security.events.4769.table.partition.type}</value>
+                    <value>${impala.data.security4769.table.partition.type}</value>
                 </entry>
 				
 				<!--  Login table parameters -->
@@ -103,7 +103,7 @@
 				</entry>
 				<entry>
 					<key>outputFieldsLoginEvt</key>
-					<value>${impala.rawdata.security.events.login.table.fields}</value>
+					<value>${impala.data.login4768.table.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsLoginEvt</key>
@@ -115,11 +115,11 @@
 				</entry>
 				<entry>
 					<key>outputSeparatorLoginEvt</key>
-					<value>${impala.rawdata.security.events.login.table.delimiter}</value>
+					<value>${impala.data.login4768.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathLoginEvt</key>
-					<value>${hdfs.user.rawdata.security.events.login.path}</value>
+					<value>${hdfs.user.data.login4768.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameLoginEvt</key>
@@ -127,7 +127,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableNameLoginEvt</key>
-					<value>${impala.rawdata.security.events.login.table.name}</value>
+					<value>${impala.data.login4768.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicLoginEvt</key>
@@ -135,7 +135,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategyLoginEvt</key>
-                    <value>${impala.data.security.events.login.table.partition.type}</value>
+                    <value>${impala.data.login4768.table.partition.type}</value>
                 </entry>
 
 			</job-data-map>

@@ -35,7 +35,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###aggr_%%%prefix@@@date:::startTime###scored___%%%prefix@@@date:::start_time_unix###entity_event_%%%prefix@@@date:::startTime"
       }
     ],
     "otherSteps": [
@@ -47,12 +47,12 @@
       {
         "technology": "MONGO",
         "strategy": "RESTORE",
-        "dataSources": "aggr_###scored___###entity_event_###streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue###FeatureBucketMetadata"
+        "dataSources": "streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue###FeatureBucketMetadata"
       },
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###__samza_checkpoint_aggregation-events-streaming_1-0###fortscale-aggregated-feature-f-event###__samza_checkpoint_fortscale-aggr-feature-events-prevalence-stats_1-0###fortscale-aggregated-feature-p-event###__samza_checkpoint_entity-events-streaming_1-0###fortscale-entity-event###__samza_checkpoint_alert-generator-task_1-0###fortscale-aggr-feature-events-score###__samza_checkpoint_entity-events-streaming_1-0###__samza_checkpoint_evidence-creation-task_1-0"
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###__samza_checkpoint_aggregation-events-streaming_1-0###fortscale-aggregated-feature-f-event###__samza_checkpoint_fortscale-aggr-feature-events-prevalence-stats_1-0###fortscale-aggregated-feature-p-event###__samza_checkpoint_entity-events-streaming_1-0###fortscale-entity-event###__samza_checkpoint_alert-generator-task_1-0###fortscale-aggr-feature-events-score###__samza_checkpoint_entity-events-streaming_1-0###__samza_checkpoint_evidence-creation-task_1-0###metrics"
       }
     ]
   },
@@ -68,7 +68,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###__samza_checkpoint_4769-user-score_1-0###__samza_checkpoint_vpn-user-score_1-0###__samza_checkpoint_ssh-user-score_1-0###__samza_checkpoint_evidence-creation-task_1-0###"
+        "dataSources": "fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###__samza_checkpoint_4769-user-score_1-0###__samza_checkpoint_vpn-user-score_1-0###__samza_checkpoint_ssh-user-score_1-0###__samza_checkpoint_evidence-creation-task_1-0###metrics"
       }
     ]
   },
@@ -93,14 +93,19 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag###evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+        "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-evidences###fortscale-entity-event-score###__samza_checkpoint_alert-generator-task_1-0"
+        "dataSources": "fortscale-evidences###fortscale-entity-event-score###__samza_checkpoint_alert-generator-task_1-0###metrics"
       }
     ]
   },
@@ -172,6 +177,23 @@
     ]
   },
   "AfterSingleIndicators": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Tag"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Notification"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",

@@ -1,8 +1,8 @@
 package fortscale.collection.configuration;
 
-import java.io.IOException;
-import java.util.Properties;
-
+import fortscale.utils.logging.Logger;
+import fortscale.utils.properties.IllegalStructuredProperty;
+import fortscale.utils.properties.PropertyNotExistException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.stereotype.Component;
 
-import fortscale.utils.logging.Logger;
-import fortscale.utils.properties.IllegalStructuredProperty;
-import fortscale.utils.properties.PropertyNotExistException;
+import java.io.IOException;
+import java.util.Properties;
 
 @Component
 public class CollectionPropertiesResolver implements InitializingBean{
@@ -105,5 +104,33 @@ public class CollectionPropertiesResolver implements InitializingBean{
 			ret = builder.toString();
 		}
 		return ret;
+	}
+
+	/**
+	 * This method will return boolean value from property configuration file
+	 * In case of not existing property key or non boolean value it will return as default false
+	 * @param key
+	 * @return
+	 */
+	public Boolean getBooleanValue(String key)
+	{
+		try {
+
+			String valueStr = getEnvPropertyValue(key);
+
+			// convert string to boolean
+			return Boolean.parseBoolean(valueStr);
+		} catch (ClassCastException e) {
+			logger.warn("value for key {} is not boolean return false as default", key);
+			return false;
+		}
+		catch (PropertyNotExistException e) {
+			logger.warn("value for key {}  is not exist return false as default", key);
+			return false ;
+		}
+		catch (IllegalStructuredProperty e) {
+			logger.warn("structure of value for key {}  is not legal return false as default", key);
+			return false ;
+		}
 	}
 }
