@@ -14,6 +14,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by shays on 09/11/2015.
+ * Abstract class for common services of steaming tasks.
+ * The <T> is the type of the configuration file and must implement StreamingTaskConfig
  */
 public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> {
 
@@ -23,6 +25,11 @@ public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> 
     public static final String NULL_EVENT_INPUT_TOPIC_LABEL = "Null event  Input Topic";
 
 
+    /**
+     *
+     * @param inputTopic - the name of the topic
+     * @return
+     */
     public String getOutputTopic(String inputTopic) {
         if (configs.containsKey(inputTopic))
             return configs.get(inputTopic).getOutputTopic();
@@ -44,6 +51,14 @@ public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> 
     }
 
 
+    /**
+     * Check that configuration is fine and throw FilteredEventException if it doesn't
+     * @param inputTopic - the name of the topic
+     * @param event - event JSON object
+     * @param configs - the map of all configurations per inputTopic
+     * @return
+     * @throws FilteredEventException
+     */
     protected T  verifyInputTopicAndEventFetchConfig(String inputTopic, JSONObject event, Map<String,T> configs)
             throws FilteredEventException {
         try {

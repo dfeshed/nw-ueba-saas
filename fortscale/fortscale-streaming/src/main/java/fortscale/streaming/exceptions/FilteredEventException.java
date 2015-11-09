@@ -3,6 +3,11 @@ package fortscale.streaming.exceptions;
 /**
  * Created by shays on 08/11/2015.
  */
+
+/**
+ * Excpetion for monitoring reasons for event filtering
+ * The message his the filter cause
+ */
 public class FilteredEventException extends Exception {
 
 
