@@ -32,7 +32,7 @@ public class ContextTestInt {
 	@Value("${impala.score.vpn.table.name}")
 	private String vpnTableName;
 	
-	@Value("${impala.score.security4769.table.name}")
+	@Value("${impala.score.kerberosLogin.table.name}")
 	private String loginTableName;
 	
 	@Value("${impala.data.table.fields.normalized_username}")
