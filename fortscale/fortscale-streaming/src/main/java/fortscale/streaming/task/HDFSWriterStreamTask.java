@@ -8,6 +8,8 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.*;
+import fortscale.streaming.service.state.StreamingMessageState;
+import fortscale.streaming.service.state.StreamingStepType;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -24,9 +26,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -243,6 +242,13 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.lastTimestampCount.set(timestamp);
 			}
 		}
+	}
+
+	@Override
+	protected StreamingStepType determineCurrentStreamingStepType(JSONObject message) {
+		StreamingMessageState inputMessageState = getInputMessageState(message);
+
+		return inputMessageState.getStepType();
 	}
 	
 	/**

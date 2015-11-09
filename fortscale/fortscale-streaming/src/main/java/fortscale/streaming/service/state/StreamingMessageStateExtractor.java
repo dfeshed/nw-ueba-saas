@@ -5,12 +5,13 @@ package fortscale.streaming.service.state;
  * Date: 09/11/2015
  */
 public class StreamingMessageStateExtractor {
+
     private static final String STREAMING_MESSAGE_STATE_DELIMITER = "_";
 
     public static StreamingMessageState extract(String streamingMessageState) {
         String[] streamingStateSplitted = streamingMessageState.split(STREAMING_MESSAGE_STATE_DELIMITER);
 
-        if (streamingStateSplitted.length > 1) { // == 2
+        if (streamingStateSplitted.length > 1) {
             StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[0]);
 
             String taskName = streamingStateSplitted[1];

@@ -8,7 +8,7 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.state.StreamingMessageState;
-import fortscale.streaming.service.state.StreamingMessageStateExtractor;
+import fortscale.streaming.service.state.StreamingStepType;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
@@ -157,11 +157,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-			String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
-
-			if (lastMessageStateStr != null) {
-				StreamingMessageState lastMessageState = StreamingMessageStateExtractor.extract(lastMessageStateStr);
-			}
+			StreamingMessageState lastMessageState = getInputMessageState(message);
 
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
@@ -229,6 +225,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		}
 	}
 
+	@Override
+	protected StreamingStepType determineCurrentStreamingStepType(JSONObject message) {
+		return StreamingStepType.ENRICH;
+	}
 
 	@Override
 	protected void wrappedClose() throws Exception {

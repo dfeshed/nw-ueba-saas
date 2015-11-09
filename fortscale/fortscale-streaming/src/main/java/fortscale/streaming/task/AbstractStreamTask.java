@@ -3,51 +3,52 @@ package fortscale.streaming.task;
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.state.StreamingMessageState;
+import fortscale.streaming.service.state.StreamingMessageStateExtractor;
 import fortscale.streaming.service.state.StreamingStepType;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
+import static fortscale.utils.ConversionUtils.convertToString;
+
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
-	
+
+	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	private static final String LAST_STATE_FIELD_NAME = "last_state";
+
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
 
-	public static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	protected TaskMonitoringHelper taskMonitoringHelper;
 
-	public static final String LAST_STATE_FIELD_NAME = "last_state";
-	
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
 
-	protected StreamingMessageState getCurrentStreamingMessageState() {
-		return new StreamingMessageState(getCurrentStreamingStepType(), this.getClass().getSimpleName());
-	}
-
-	protected StreamingStepType getCurrentStreamingStepType() {
-		return StreamingStepType.ENRICH;
-	}
-
-	protected TaskMonitoringHelper taskMonitoringHelper;
-
-
-
 	public AbstractStreamTask(){
 		processExceptionHandler = new ExceptionHandler();
 		fillExceptionHandler(processExceptionHandler);
-		
+
 		windowExceptionHandler = new ExceptionHandler();
 		fillExceptionHandler(windowExceptionHandler);
 	}
-	
+
+	private StreamingMessageState createCurrentStreamingMessageState(IncomingMessageEnvelope envelope) throws ParseException {
+		String messageText = (String) envelope.getMessage();
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		return new StreamingMessageState(determineCurrentStreamingStepType(message), this.getClass().getSimpleName());
+	}
+
 	public static void fillExceptionHandler(ExceptionHandler exceptionHandler){
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(LevelDbException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(KafkaPublisherException.class, 1);
@@ -62,7 +63,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
 		}
-		
+
 		// call specific task init method
 		wrappedInit(config, context);
 
@@ -72,47 +73,46 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		taskMonitoringHelper.setIsMonitoredTask(isMonitoredTask);
 		taskMonitoringHelper.resetCountersPerWindow();
 
-        logger.info("Task init finished");
+		logger.info("Task init finished");
 	}
-	
+
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, getCurrentStreamingMessageState());
+			StreamingMessageState streamingMessageState = createCurrentStreamingMessageState(envelope);
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, streamingMessageState);
 			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
 			processExceptionHandler.handleException(exception);
-		}		
+		}
 	}
-	
+
 	@Override
-    public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
+	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
-
-			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, getCurrentStreamingMessageState());
-			wrappedWindow(messageCollectorStateDecorator, coordinator);
+			wrappedWindow(collector, coordinator);
 
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
 			windowExceptionHandler.handleException(exception);
 		}
-    }
-	
-	@Override 
+	}
+
+	@Override
 	public void close() throws Exception {
 		try {
-            logger.info("initiating task close");
+			logger.info("initiating task close");
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
 		}
-        logger.info("task closed");
+		logger.info("task closed");
 	}
 
 
@@ -132,6 +132,21 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 		return datasource;
 
+	}
+
+	protected StreamingMessageState getInputMessageState(JSONObject message) {
+		String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
+
+		if (lastMessageStateStr != null) {
+			return StreamingMessageStateExtractor.extract(lastMessageStateStr);
+		}
+		else {
+			return null;
+		}
+	}
+
+	protected StreamingStepType determineCurrentStreamingStepType(JSONObject message) {
+		return StreamingStepType.UNDEFINED;
 	}
 
 	//This is the name of job that will be presented in the monitoring screen
