@@ -1,12 +1,13 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.service.StreamingServiceAbstract;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 
@@ -18,12 +19,12 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Service that receive and event from a specific input topic, resolve the required ip field in it and
  * sends the enriched event to the designated output topic.
  */
-public class EventsIpResolvingService {
+public class EventsIpResolvingService extends StreamingServiceAbstract<EventResolvingConfig>{
 
-    public static Logger logger = LoggerFactory.getLogger(EventsIpResolvingService.class);
+
+    public static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
     private IpToHostnameResolver resolver;
-    private Map<String, EventResolvingConfig> configs = new HashMap<>();
     private Set<FsIpAddressContainer> reservedIpAddersses = null;
 
     public EventsIpResolvingService(IpToHostnameResolver resolver, List<EventResolvingConfig> configs) {
@@ -36,16 +37,10 @@ public class EventsIpResolvingService {
 
     }
 
-    public JSONObject enrichEvent(String inputTopic, JSONObject event) {
-        checkNotNull(inputTopic);
-        checkNotNull(event);
-
+    public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
         // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = configs.get(inputTopic);
-        if (config==null) {
-            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
-            return event;
-        }
+        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
+
 
         // get the ip address and timestamp fields from the event
         String ip = convertToString(event.get(config.getIpFieldName()));
@@ -147,19 +142,17 @@ public class EventsIpResolvingService {
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean dropEvent(String inputTopic, JSONObject event)
+	public boolean dropEvent(String inputTopic, JSONObject event) throws FilteredEventException
 	{
-		checkNotNull(inputTopic);
-		checkNotNull(event);
+        // get the configuration for the input topic, if not found skip this event
+        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
 
-
-		// get the configuration for the input topic, if not found skip this event
-		EventResolvingConfig config = configs.get(inputTopic);
-
-		return (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
+        boolean drop = (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
+        if (drop){
+            throw new FilteredEventException(HOST_IS_EMPTY_LABEL);
+        }
+		return drop;
 
 	}
-
-
 
 }

@@ -8,6 +8,7 @@ import fortscale.domain.events.IseEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
@@ -143,27 +144,30 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             String messageText = (String)envelope.getMessage();
             JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
 
-            event = service.enrichEvent(topic, event);
+            try {
+                 event = service.enrichEvent(topic, event);
 
+                //move to the next topic only if you are not event that need to drop
+                //we are dropping only security events in the case the resolving is not successful.
+                // we are doing so, to prevent cases of 4769 events from a machine to itself.
+                // most of the cases we can't resolve the host name in 4769 events are self connect.
+                //TODO: in next versions we want to add extra check if this is the case or not.
+                if (!service.dropEvent(topic, event)) {
+                    // construct outgoing message
 
-			//move to the next topic only if you are not event that need to drop
-            //we are dropping only security events in the case the resolving is not successful.
-            // we are doing so, to prevent cases of 4769 events from a machine to itself.
-            // most of the cases we can't resolve the host name in 4769 events are self connect.
-            //TODO: in next versions we want to add extra check if this is the case or not.
-			if (!service.dropEvent(topic, event)) {
+                        OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
+                                new SystemStream("kafka", service.getOutputTopic(topic)),
+                                service.getPartitionKey(topic, event),
+                                event.toJSONString());
+                        taskMonitoringHelper.handleUnFilteredEvents(getDataSource(event),event.getAsNumber("date_time_unix"), event.getAsString("date_time"));
+                        collector.send(output);
 
-				// construct outgoing message
-				try {
-					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
-							new SystemStream("kafka", service.getOutputTopic(topic)),
-							service.getPartitionKey(topic, event),
-							event.toJSONString());
-					collector.send(output);
-				} catch (Exception exception) {
-					throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
-				}
-			}
+                }
+            } catch (FilteredEventException exception) {
+                taskMonitoringHelper.countNewFilteredEvents(exception.getMessage());
+            } catch (Exception exception) {
+                throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
+            }
         }
     }
 
@@ -176,5 +180,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         for(CachingService cachingService: topicToCacheMap.values()) {
             cachingService.getCache().close();
         }
+    }
+
+    @Override
+    protected String getJobLabel() {
+        return "IP RESOLVING STEAN TASK";
     }
 }

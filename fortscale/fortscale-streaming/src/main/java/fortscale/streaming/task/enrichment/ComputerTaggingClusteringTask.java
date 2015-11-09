@@ -146,7 +146,12 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			// parse the message into json
 			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
 
-			event = computerTaggingService.enrichEvent(inputTopic, event);
+			try {
+				event = computerTaggingService.enrichEvent(inputTopic, event);
+			} catch (Exception e){
+				taskMonitoringHelper.countNewFilteredEvents(e.getMessage());
+				throw e;
+			}
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
