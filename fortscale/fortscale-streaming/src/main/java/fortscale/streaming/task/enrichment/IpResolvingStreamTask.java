@@ -184,6 +184,6 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     @Override
     protected String getJobLabel() {
-        return "IP RESOLVING STEAN TASK";
+        return "IpResolvingStreamTask";
     }
 }

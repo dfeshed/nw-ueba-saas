@@ -155,6 +155,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
+				taskMonitoringHelper.handleUnFilteredEvents(getDataSource(event),event.getAsNumber("date_time_unix"), event.getAsString("date_time"));
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
@@ -165,6 +166,11 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
+	}
+
+	@Override
+	protected String getJobLabel() {
+		return "ComputerTaggingClusteringTask";
 	}
 
 	@Override
