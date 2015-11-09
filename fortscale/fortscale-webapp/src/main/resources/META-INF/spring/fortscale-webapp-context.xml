@@ -22,6 +22,8 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="localOverride" value="true" />
 	</bean>
+
+
 	<bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
 
 	<!-- group by tags service cache that uses memory based implementation -->

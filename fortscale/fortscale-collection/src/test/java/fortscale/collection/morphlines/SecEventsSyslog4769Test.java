@@ -1,10 +1,9 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,10 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.properties.PropertiesResolver;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
+import java.util.ArrayList;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSyslog4769Test {
@@ -35,7 +34,7 @@ public class SecEventsSyslog4769Test {
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.data.security.events.4769.table.morphline.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.security4769.table.morphline.fields");
 		List<String> splunkSecEventsOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		List<String> splunkSecEventsOutputFieldsExcludingEnrichment = new ArrayList<>();
 		for(String field: splunkSecEventsOutputFields){
