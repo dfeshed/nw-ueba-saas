@@ -113,6 +113,7 @@
 		<net.minidev.asm.version>1.0.2</net.minidev.asm.version>
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
+        <cxf.version>2.7.6</cxf.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
@@ -375,6 +376,13 @@
 			<artifactId>logback-access</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
+
+        <!--  for JSON provider -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
