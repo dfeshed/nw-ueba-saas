@@ -1,6 +1,5 @@
 package fortscale.streaming.task;
 
-import fortscale.streaming.task.enrichment.UsernameNormalizationAndTaggingTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -15,7 +14,7 @@ import parquet.org.slf4j.LoggerFactory;
  */
 public class StatefulMessageCollector implements MessageCollector {
 
-    private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
+    private static Logger logger = LoggerFactory.getLogger(StatefulMessageCollector.class);
 
     private static final String LAST_STATE_FIELD = "last_state";
     private MessageCollector messageCollector;
