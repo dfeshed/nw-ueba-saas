@@ -41,7 +41,7 @@ public class MessageCollectorStateDecorator implements MessageCollector {
             // add/override last state field
             message.put(LAST_STATE_FIELD, streamingMessageState.serialize());
 
-            OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message);
+            OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
 
             messageCollector.send(outgoingMessageEnvelope);
         } catch (Exception e) {
