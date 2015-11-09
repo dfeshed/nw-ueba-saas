@@ -10,7 +10,7 @@ import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingStepType;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
@@ -172,7 +172,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected StreamingStepType determineCurrentStreamingStepType(JSONObject message) {
-		return StreamingStepType.ENRICH;
+	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+		return StreamingTaskStepType.ENRICH;
 	}
 }

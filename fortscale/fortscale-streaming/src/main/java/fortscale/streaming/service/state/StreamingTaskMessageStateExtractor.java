@@ -17,23 +17,23 @@ public class StreamingTaskMessageStateExtractor {
         String[] streamingStateSplitted = streamingMessageState.split(STREAMING_MESSAGE_STATE_DELIMITER);
 
         if (streamingStateSplitted.length > 1) {
-            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
+            StreamingTaskStepType streamingTaskStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
 
             String taskName = streamingStateSplitted[TASK_NAME_INDEX];
 
-            return new StreamingTaskMessageState(streamingStepType, taskName);
+            return new StreamingTaskMessageState(streamingTaskStepType, taskName);
         }
         else if (streamingStateSplitted.length == 1) {
-            StreamingStepType streamingStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
+            StreamingTaskStepType streamingTaskStepType = extractStreamingStepType(streamingStateSplitted[STEP_TYPE_INDEX]);
 
-            return new StreamingTaskMessageState(streamingStepType);
+            return new StreamingTaskMessageState(streamingTaskStepType);
         }
 
         throw new IllegalStateException("Could not extract message state from message state: " + streamingMessageState);
     }
 
-    private static StreamingStepType extractStreamingStepType(String streamingStateType) {
+    private static StreamingTaskStepType extractStreamingStepType(String streamingStateType) {
         String streamingStateTypeStr = streamingStateType.toUpperCase();
-        return StreamingStepType.valueOf(streamingStateTypeStr);
+        return StreamingTaskStepType.valueOf(streamingStateTypeStr);
     }
 }

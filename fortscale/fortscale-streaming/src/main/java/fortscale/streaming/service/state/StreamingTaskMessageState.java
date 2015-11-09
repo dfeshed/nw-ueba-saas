@@ -10,19 +10,19 @@ public class StreamingTaskMessageState {
 
     private static final String STREAMING_MESSAGE_STATE_DELIMITER = "_";
 
-    private StreamingStepType stepType;
+    private StreamingTaskStepType stepType;
     private String taskName;
 
-    public StreamingTaskMessageState(StreamingStepType stepType, String taskName) {
+    public StreamingTaskMessageState(StreamingTaskStepType stepType, String taskName) {
         this.stepType = stepType;
         this.taskName = taskName;
     }
 
-    public StreamingTaskMessageState(StreamingStepType stepType) {
+    public StreamingTaskMessageState(StreamingTaskStepType stepType) {
         this.stepType = stepType;
     }
 
-    public StreamingStepType getStepType() {
+    public StreamingTaskStepType getStepType() {
         return stepType;
     }
 

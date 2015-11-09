@@ -3,7 +3,6 @@ package fortscale.streaming.task;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingStepType;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -114,10 +113,4 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 		}
 		dataSourceToEventsPrevalenceModelStreamTaskManagerMap.clear();
 	}
-
-	@Override
-	protected StreamingStepType determineCurrentStreamingStepType(JSONObject message) {
-		return StreamingStepType.UNDEFINED;
-	}
-
 }
