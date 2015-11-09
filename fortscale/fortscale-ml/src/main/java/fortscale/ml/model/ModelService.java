@@ -1,9 +1,10 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,43 +12,56 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 public class ModelService {
+	private static final int PRIORITY_QUEUE_INITIAL_CAPACITY = 50;
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
 
 	@Autowired
-	ModelConfService modelConfService;
+	private ModelConfService modelConfService;
 
-	Map<String, ModelManager> modelConfNameToManager;
-	PriorityQueue<ModelManager> runTimePriorityQueue;
+	private IModelBuildingListener modelBuildingListener;
+	private Map<String, ModelBuilderManager> modelConfNameToManager;
+	private PriorityQueue<ModelBuilderManager> runTimePriorityQueue;
 
-	public ModelService() {
+	public ModelService(IModelBuildingListener modelBuildingListener) {
+		Assert.notNull(modelBuildingListener);
+		this.modelBuildingListener = modelBuildingListener;
+
 		modelConfNameToManager = new HashMap<>();
-		runTimePriorityQueue = new PriorityQueue<ModelManager>(new Comparator<ModelManager>() {
-			
+		runTimePriorityQueue = new PriorityQueue<>(PRIORITY_QUEUE_INITIAL_CAPACITY, new Comparator<ModelBuilderManager>() {
+			@Override
+			public int compare(ModelBuilderManager modelManager1, ModelBuilderManager modelManager2) {
+				return Long.compare(modelManager1.getNextRunTimeInSeconds(), modelManager2.getNextRunTimeInSeconds());
+			}
 		});
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
-			ModelManager modelManager = new ModelManager(modelConf);
+			ModelBuilderManager modelManager = new ModelBuilderManager(modelConf);
 			modelConfNameToManager.put(modelConf.getName(), modelManager);
 
-			long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-			modelManager.setNextRunTime(currentTimeSeconds);
+			calcNextRunTimeFromNow(modelManager);
 			runTimePriorityQueue.add(modelManager);
 		}
 	}
 
 	public void process(JSONObject event) {
 		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
-		ModelManager modelManager = modelConfNameToManager.get(modelConfName);
+		ModelBuilderManager modelManager = modelConfNameToManager.get(modelConfName);
 		if (modelManager != null) {
 			modelManager.process();
 		}
 	}
 
 	public void window(long currentTimeSeconds) {
-		while (!runTimePriorityQueue.isEmpty() && runTimePriorityQueue.peek().)
+		while (!runTimePriorityQueue.isEmpty() && runTimePriorityQueue.peek().getNextRunTimeInSeconds() <= currentTimeSeconds) {
+			ModelBuilderManager modelManager = runTimePriorityQueue.poll();
+			modelManager.process();
+			calcNextRunTimeFromNow(modelManager);
+			runTimePriorityQueue.add(modelManager);
+		}
 	}
 
-	public void close() {
-		
+	private static void calcNextRunTimeFromNow(ModelBuilderManager modelManager) {
+		long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+		modelManager.calcNextRunTime(currentTimeSeconds);
 	}
 }
