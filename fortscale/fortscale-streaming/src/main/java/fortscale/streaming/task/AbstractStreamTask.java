@@ -1,25 +1,14 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.exceptions.*;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.StreamTask;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.WindowableTask;
-
-import fortscale.streaming.exceptions.ExceptionHandler;
-import fortscale.streaming.exceptions.HdfsException;
-import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.exceptions.LevelDbException;
-import fortscale.streaming.exceptions.TaskCoordinatorException;
-import fortscale.streaming.service.SpringService;
-import fortscale.utils.logging.Logger;
+import org.apache.samza.task.*;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
@@ -78,7 +67,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			wrappedProcess(envelope, collector, coordinator);
+			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector);
+			wrappedProcess(envelope, statefulMessageCollector, coordinator);
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
@@ -90,7 +80,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
     public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
-			wrappedWindow(collector, coordinator);
+
+			StatefulMessageCollector statefulMessageCollector = new StatefulMessageCollector(collector);
+			wrappedWindow(statefulMessageCollector, coordinator);
+
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
