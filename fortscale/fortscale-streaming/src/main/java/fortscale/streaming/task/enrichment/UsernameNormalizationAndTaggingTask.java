@@ -145,7 +145,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
+
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -153,7 +153,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
-			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+			JSONObject message = parseJsonMessage(envelope);
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
 			if (configuration == null)
@@ -169,7 +169,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// get the normalized username from input record
 			String normalizedUsername = convertToString(message.get(configuration.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
-
+				String messageText = (String)envelope.getMessage();
 				// get username
 				String username = convertToString(message.get(configuration.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
@@ -214,7 +214,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			try {
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(configuration.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
+				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, (String)envelope.getMessage()), exception);
 			}
 			taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
 		}

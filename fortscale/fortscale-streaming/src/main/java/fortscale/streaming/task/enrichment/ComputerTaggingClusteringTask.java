@@ -133,7 +133,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			TaskCoordinator coordinator) throws Exception {
 
 		// get message
-		String messageText = (String) envelope.getMessage();
+	//	String messageText = (String) envelope.getMessage();
 
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
@@ -144,7 +144,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+			JSONObject event = parseJsonMessage(envelope);
 
 			try {
 				event = computerTaggingService.enrichEvent(inputTopic, event);

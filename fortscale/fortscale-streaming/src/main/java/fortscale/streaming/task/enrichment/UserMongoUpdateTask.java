@@ -7,7 +7,6 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -135,7 +134,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
+		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
 
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));

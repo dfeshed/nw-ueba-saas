@@ -141,8 +141,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
         } else {
             // process event message
-            String messageText = (String)envelope.getMessage();
-            JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+           // String messageText = (String)envelope.getMessage();
+            JSONObject event = parseJsonMessage(envelope);
 
             try {
                  event = service.enrichEvent(topic, event);

@@ -47,9 +47,9 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		// parse the message into json
+		JSONObject message = (JSONObject) parseJsonMessage(envelope);
 
 
 		if (!acceptMessage(message)) {
@@ -62,7 +62,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 			} catch(Exception exception){
-				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
+				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", (String)envelope.getMessage()), exception);
 			}
 		}
 

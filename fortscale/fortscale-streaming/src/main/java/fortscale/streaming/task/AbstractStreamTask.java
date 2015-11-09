@@ -2,6 +2,8 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -24,6 +26,7 @@ import fortscale.utils.logging.Logger;
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
 	public static final String DATA_SOURCE_FIELD_NAME = "DataSource";
+	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 	
 	private ExceptionHandler processExceptionHandler;
@@ -142,5 +145,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	public void setTaskMonitoringHelper(TaskMonitoringHelper taskMonitoringHelper) {
 		this.taskMonitoringHelper = taskMonitoringHelper;
+	}
+
+	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
+		try {
+			String messageText = (String) envelope.getMessage();
+			return (JSONObject) JSONValue.parseWithException(messageText);
+		} catch (ParseException e){
+			taskMonitoringHelper.countNewFilteredEvents(CANNOT_PARSE_MESSAGE_LABEL);
+			throw e;
+		}
 	}
 }
