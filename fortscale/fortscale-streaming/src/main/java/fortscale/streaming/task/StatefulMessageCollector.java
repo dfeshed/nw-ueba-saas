@@ -17,6 +17,7 @@ public class StatefulMessageCollector implements MessageCollector {
     private static Logger logger = LoggerFactory.getLogger(StatefulMessageCollector.class);
 
     private static final String LAST_STATE_FIELD = "last_state";
+
     private MessageCollector messageCollector;
 
     public StatefulMessageCollector(MessageCollector messageCollector) {
@@ -34,7 +35,7 @@ public class StatefulMessageCollector implements MessageCollector {
 
             JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-            // add last state field to message
+            // add/override last state field
             message.put(LAST_STATE_FIELD, "xxxxx");
 
             OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message);

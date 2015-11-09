@@ -12,16 +12,23 @@ import org.apache.samza.task.*;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
-	public static final String DATA_SOURCE_FIELD_NAME = "DataSource";
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 	
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
+
+	public static final String DATA_SOURCE_FIELD_NAME = "data_source";
+
+	public static final String LAST_STATE_FIELD_NAME = "last_state";
 	
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
+
+	protected String getCurrentState() {
+		return this.getClass().getName();
+	}
 
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
