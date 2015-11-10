@@ -65,7 +65,7 @@
 				</entry>
 				<entry>
 					<key>messageOutputFieldsSecEvt4769</key>
-					<value>${kafka.security4769.message.record.fields}</value>
+					<value>${kafka.kerberosLogin.message.record.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
