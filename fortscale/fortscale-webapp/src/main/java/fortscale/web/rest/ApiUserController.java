@@ -1,5 +1,7 @@
 package fortscale.web.rest;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
@@ -61,6 +63,7 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "page") Integer fromPage,
 			@RequestParam(required = false, value = "disabled_since") String disabledSince,
 			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
+			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
 			@RequestParam(required = false, value = "inactive_since") String inactiveSince) {
 
 
@@ -118,6 +121,18 @@ public class ApiUserController extends BaseController{
 			);
 		}
 
+		if (isDisabledWithActivity != null && isDisabledWithActivity) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(true));
+			criteriaList.add(new Criteria() {
+				@Override
+				public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
 
 		// Get users
 		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
@@ -125,6 +140,16 @@ public class ApiUserController extends BaseController{
 		usersList.setData(users);
 		usersList.setOffset(pageNumber*pageSize);
 		usersList.setTotal(userRepository.countAllUsers(criteriaList));
+		return usersList;
+	}
+	@RequestMapping(value="/disabled_with_activity", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public  DataBean<List<User>> disabledWithActivity(){
+
+
+
+		DataBean<List<User>> usersList = new DataBean<>();
 		return usersList;
 	}
 
