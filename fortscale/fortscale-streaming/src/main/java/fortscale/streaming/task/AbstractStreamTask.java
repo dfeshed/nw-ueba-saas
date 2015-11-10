@@ -3,9 +3,6 @@ package fortscale.streaming.task;
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
-import fortscale.streaming.service.state.StreamingTaskMessageState;
-import fortscale.streaming.service.state.StreamingTaskMessageStateExtractor;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -77,7 +74,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		try{
 			taskMonitoringHelper.handleNewEvent();
 
-			StreamingTaskMessageState streamingTaskMessageState = resolveOutputMessageState(envelope);
+			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
 			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
@@ -134,27 +131,12 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
-	protected StreamingTaskMessageState getInputMessageState(JSONObject message) {
-		String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
-
-		if (lastMessageStateStr != null) {
-			return StreamingTaskMessageStateExtractor.extract(lastMessageStateStr);
-		}
-		else {
-			return null;
-		}
+	protected String getInputMessageState(JSONObject message) {
+		return convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
 	}
 
-	private StreamingTaskMessageState resolveOutputMessageState(IncomingMessageEnvelope envelope) throws Exception {
-		String messageText = (String) envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-
-		return new StreamingTaskMessageState(determineOutputMessageStepType(message), this.getClass().getSimpleName());
-	}
-
-
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.UNDEFINED;
+	private String resolveOutputMessageState() throws Exception {
+		return this.getClass().getSimpleName();
 	}
 
 	//This is the name of job that will be presented in the monitoring screen

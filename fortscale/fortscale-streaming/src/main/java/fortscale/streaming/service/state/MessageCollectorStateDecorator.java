@@ -23,7 +23,7 @@ public class MessageCollectorStateDecorator extends MessageCollectorGenericDecor
         super.send(envelope);
     }
 
-    public void setStreamingTaskMessageState(StreamingTaskMessageState streamingTaskMessageState) {
-        additionalKeyValueMap.put(LAST_STATE_FIELD, streamingTaskMessageState.serialize());
+    public void setStreamingTaskMessageState(String streamingTaskMessageState) {
+        additionalKeyValueMap.put(LAST_STATE_FIELD, streamingTaskMessageState);
     }
 }

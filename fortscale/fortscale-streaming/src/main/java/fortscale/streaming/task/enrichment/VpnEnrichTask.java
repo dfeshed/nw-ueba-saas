@@ -3,7 +3,6 @@ package fortscale.streaming.task.enrichment;
 import com.google.common.collect.Iterables;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
@@ -182,10 +181,4 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     protected void wrappedClose() throws Exception {
 
     }
-
-	@Override
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.ENRICH;
-	}
-
 }

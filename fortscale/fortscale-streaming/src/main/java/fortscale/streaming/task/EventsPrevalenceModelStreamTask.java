@@ -1,8 +1,6 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.state.StreamingTaskStepType;
-import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
@@ -45,10 +43,5 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 			eventsPrevalenceModelStreamTaskManager.close();
 			eventsPrevalenceModelStreamTaskManager = null;
 		}		
-	}
-
-	@Override
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.SCORING;
 	}
 }

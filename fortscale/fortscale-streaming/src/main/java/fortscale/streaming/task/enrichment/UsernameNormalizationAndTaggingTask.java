@@ -7,7 +7,6 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
@@ -224,11 +223,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedClose() throws Exception {
 		tagService = null;
-	}
-
-	@Override
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.ENRICH;
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -112,10 +111,5 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 			eventsPrevalenceModelStreamTaskManager.close();
 		}
 		featureToEventsPrevalenceModelStreamTaskManagerMap.clear();
-	}
-
-	@Override
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.SCORING;
 	}
 }

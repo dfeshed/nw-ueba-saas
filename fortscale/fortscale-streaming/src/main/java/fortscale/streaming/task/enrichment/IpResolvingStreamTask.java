@@ -13,7 +13,6 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
@@ -182,12 +181,6 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             cachingService.getCache().close();
         }
     }
-
-    @Override
-    protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-        return StreamingTaskStepType.ENRICH;
-    }
-
 
     @Override
     protected String getJobLabel() {
