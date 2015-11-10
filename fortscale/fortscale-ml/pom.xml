@@ -121,6 +121,11 @@
 			<artifactId>fortscale-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-aggregation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 
 
