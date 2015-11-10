@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.service.state.StreamingTaskMessageState;
 import fortscale.streaming.service.state.StreamingTaskMessageStateExtractor;
 import fortscale.streaming.service.state.StreamingTaskStepType;
@@ -72,9 +73,14 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
+
 			StreamingTaskMessageState streamingTaskMessageState = resolveOutputMessageState(envelope);
-			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector, streamingTaskMessageState);
+
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
+			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
+
 			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
+
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
