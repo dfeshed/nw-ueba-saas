@@ -59,7 +59,9 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "sort_direction") String sortDirection,
 			@RequestParam(required = false, value = "size") Integer size,
 			@RequestParam(required = false, value = "page") Integer fromPage,
-			@RequestParam(required = false, value = "disabled_since") String disabledSince) {
+			@RequestParam(required = false, value = "disabled_since") String disabledSince,
+			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
+			@RequestParam(required = false, value = "inactive_since") String inactiveSince) {
 
 
 		// Create sorting
@@ -99,9 +101,21 @@ public class ApiUserController extends BaseController{
 		List<Criteria> criteriaList = new ArrayList<>();
 
 		if (disabledSince != null && !disabledSince.isEmpty()) {
-			Criteria disabledSinceCriteria = where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince)));
-			criteriaList.add(disabledSinceCriteria);
+			criteriaList.add(where("adInfo.disableAccountTime")
+					.gte(new Date(Long.parseLong(disabledSince))));
+		}
+
+		if (isDisabled != null) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabled));
+		}
+
+		if (inactiveSince != null && !inactiveSince.isEmpty()) {
+			criteriaList.add(
+					new Criteria().orOperator(
+							where("lastActivity").lt(new Date(Long.parseLong(inactiveSince))),
+							where("lastActivity").not().ne(null)
+					)
+			);
 		}
 
 
