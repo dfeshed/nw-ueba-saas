@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 
 import fortscale.monitor.domain.JobDataReceived;
 
+import java.util.Date;
+
 @RunWith(JUnitParamsRunner.class)
 public class JobProgressReportShellCommandTest {
 
@@ -105,6 +107,7 @@ public class JobProgressReportShellCommandTest {
 	@Test
 	public void run_with_data_should_pass_values_to_reporter() {
 		subject.run(new String[] { "-data", "jobid", "general", "33", "MB" });
+		Date d= new Date();
 		verify(reporter).addDataReceived("jobid", new JobDataReceived("general", new Integer(33), "MB"));
 	}
 }
