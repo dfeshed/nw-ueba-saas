@@ -181,5 +181,4 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     protected void wrappedClose() throws Exception {
 
     }
-
 }

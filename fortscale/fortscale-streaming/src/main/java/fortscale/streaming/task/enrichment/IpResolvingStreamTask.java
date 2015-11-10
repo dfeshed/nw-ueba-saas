@@ -16,7 +16,6 @@ import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;

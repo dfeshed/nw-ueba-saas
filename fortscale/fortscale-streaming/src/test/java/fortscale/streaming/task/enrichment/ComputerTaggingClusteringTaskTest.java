@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Computer;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
+import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -28,7 +27,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {

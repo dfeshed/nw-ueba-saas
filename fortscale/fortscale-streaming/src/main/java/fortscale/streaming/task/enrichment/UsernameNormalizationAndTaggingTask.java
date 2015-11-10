@@ -11,7 +11,6 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationCo
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
