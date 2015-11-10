@@ -1,11 +1,15 @@
 package fortscale.ml.model;
 
-import fortscale.ml.model.builder.IModelBuilder;
-import fortscale.ml.model.retriever.ModelBuilderDataRetriever;
-import fortscale.ml.model.selector.ContextSelector;
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.retriever.ModelBuilderDataRetriever;
+import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.FeatureBucketContextSelectorConf;
 
 public class ModelBuilderManagerTest {
     @Test
@@ -38,7 +42,7 @@ public class ModelBuilderManagerTest {
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
         ModelConf modelConf = Mockito.mock(ModelConf.class);
         ContextSelector entitiesSelector = Mockito.mock(ContextSelector.class);
-        Mockito.when(modelConf.getContextSelectorConf()).thenReturn(entitiesSelector);
+        Mockito.when(modelConf.getContextSelectorConf()).thenReturn(new FeatureBucketContextSelectorConf("featurebucketconfname1"));
         ModelBuilderDataRetriever modelBuilderDataRetriever = Mockito.mock(ModelBuilderDataRetriever.class);
         Mockito.when(modelConf.getModelBuilderDataRetriever()).thenReturn(modelBuilderDataRetriever);
         IModelBuilder modelBuilder = Mockito.mock(IModelBuilder.class);
@@ -49,7 +53,7 @@ public class ModelBuilderManagerTest {
         String[] entityIDs = {"user1", "user2"};
         ModelBuilderData[] modelBuilderDatas = {new ModelBuilderData() {}, new ModelBuilderData() {}};
         Model[] entityModels = {new Model(), new Model()};
-        Mockito.when(entitiesSelector.getContexts()).thenReturn(entityIDs);
+        Mockito.when(entitiesSelector.getContexts(0L,0L)).thenReturn(Arrays.asList(entityIDs));
         for (int i = 0; i < entityIDs.length; i++) {
             Mockito.when(modelBuilderDataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderDatas[i]);
             Mockito.when(modelBuilder.build(modelBuilderDatas[i])).thenReturn(entityModels[i]);
@@ -58,7 +62,7 @@ public class ModelBuilderManagerTest {
         ModelBuilderManager modelManager = new ModelBuilderManager(modelConf);
         modelManager.process();
 
-        Mockito.verify(entitiesSelector).getContexts();
+        Mockito.verify(entitiesSelector).getContexts(0L,0L);
         for (int i = 0; i < entityIDs.length; i++) {
             Mockito.verify(modelStore).save(modelConf, entityIDs[i], entityModels[i]);
         }

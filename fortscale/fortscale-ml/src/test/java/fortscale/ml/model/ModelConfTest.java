@@ -3,6 +3,8 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
+import fortscale.ml.model.selector.FeatureBucketContextSelectorConf;
+
 import org.junit.Assert;
 import net.minidev.json.JSONObject;
 import org.junit.Test;
@@ -41,7 +43,10 @@ public class ModelConfTest {
     }
 
     private JSONObject builSelectorJSON() {
-        return new JSONObject();
+    	JSONObject jsonObject = new JSONObject();
+    	jsonObject.put("type", "feature_bucket_context_selector_conf");
+    	jsonObject.put(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONF_NAME_PROPERTY, "featureBucketConfName1");
+    	return jsonObject;
     }
 
     private JSONObject builRetrieverJSON() {

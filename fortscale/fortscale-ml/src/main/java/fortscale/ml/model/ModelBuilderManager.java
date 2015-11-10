@@ -3,14 +3,17 @@ package fortscale.ml.model;
 import org.springframework.util.Assert;
 
 import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.FeatureBucketContextSelector;
 
 public class ModelBuilderManager {
     private ModelConf modelConf;
+    ContextSelector contextsSelector;
     private long nextRunTimeInSeconds;
 
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
+        contextsSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
         this.nextRunTimeInSeconds = -1;
     }
 
@@ -26,9 +29,8 @@ public class ModelBuilderManager {
     }
 
     public void process() {
-        ContextSelector contextsSelector = modelConf.getContextSelectorConf();
         if (contextsSelector != null) {
-	        for (String contextId : contextsSelector.getContexts()) {
+	        for (String contextId : contextsSelector.getContexts(nextRunTimeInSeconds - modelConf.getBuildIntervalInSeconds(), nextRunTimeInSeconds)) {
 	            ModelBuilderData modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(contextId);
 	            Model model = modelConf.getModelBuilder().build(modelBuilderData);
 	            modelConf.getModelStore().save(modelConf, contextId, model);
