@@ -52,7 +52,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.sshscores.path}</value>
+						<value>${hdfs.user.processeddata.sshs.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -64,7 +64,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${hdfs.user.processeddata.sshscores.retention}</value>
+						<value>${hdfs.user.processeddata.ssh.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 20 2 * * ?</cron-expression>
@@ -80,11 +80,11 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.sshscores.top.path}</value>
+						<value>${hdfs.user.processeddata.ssh.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.ssh_top.table.name}</value>
+						<value>${impala.score.ssh.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
@@ -92,7 +92,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${hdfs.user.processeddata.sshscores.top.retention}</value>
+						<value>${hdfs.user.processeddata.ssh.top.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 30 2 * * ?</cron-expression>
