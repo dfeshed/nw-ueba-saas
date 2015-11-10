@@ -2,6 +2,10 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.service.state.StreamingTaskMessageState;
+import fortscale.streaming.service.state.StreamingTaskMessageStateExtractor;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -12,33 +16,35 @@ import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
+import static fortscale.utils.ConversionUtils.convertToString;
+
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
-	public static final String DATA_SOURCE_FIELD_NAME = "DataSource";
-	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
-	
+
+	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	private static final String LAST_STATE_FIELD_NAME = "last_state";
+
+	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
+
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
-	
+
+	protected TaskMonitoringHelper taskMonitoringHelper;
+
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
 
-
-	protected TaskMonitoringHelper taskMonitoringHelper;
-
-
-
 	public AbstractStreamTask(){
 		processExceptionHandler = new ExceptionHandler();
 		fillExceptionHandler(processExceptionHandler);
-		
+
 		windowExceptionHandler = new ExceptionHandler();
 		fillExceptionHandler(windowExceptionHandler);
 	}
-	
+
 	public static void fillExceptionHandler(ExceptionHandler exceptionHandler){
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(LevelDbException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(KafkaPublisherException.class, 1);
@@ -53,7 +59,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
 		}
-		
+
 		// call specific task init method
 		wrappedInit(config, context);
 
@@ -63,23 +69,30 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		taskMonitoringHelper.setIsMonitoredTask(isMonitoredTask);
 		taskMonitoringHelper.resetCountersPerWindow();
 
-        logger.info("Task init finished ");
+		logger.info("Task init finished");
 	}
-	
+
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 			taskMonitoringHelper.handleNewEvent();
-			wrappedProcess(envelope, collector, coordinator);
+
+			StreamingTaskMessageState streamingTaskMessageState = resolveOutputMessageState(envelope);
+
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
+			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
+
+			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
+
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
 			processExceptionHandler.handleException(exception);
-		}		
+		}
 	}
-	
+
 	@Override
-    public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
+	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 			wrappedWindow(collector, coordinator);
@@ -88,18 +101,18 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			logger.error("got an exception while processing stream message", exception);
 			windowExceptionHandler.handleException(exception);
 		}
-    }
-	
-	@Override 
+	}
+
+	@Override
 	public void close() throws Exception {
 		try {
-            logger.info("initiating task close");
+			logger.info("initiating task close");
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
 		}
-        logger.info("task closed");
+		logger.info("task closed");
 	}
 
 
@@ -119,6 +132,29 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 		return datasource;
 
+	}
+
+	protected StreamingTaskMessageState getInputMessageState(JSONObject message) {
+		String lastMessageStateStr = convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
+
+		if (lastMessageStateStr != null) {
+			return StreamingTaskMessageStateExtractor.extract(lastMessageStateStr);
+		}
+		else {
+			return null;
+		}
+	}
+
+	private StreamingTaskMessageState resolveOutputMessageState(IncomingMessageEnvelope envelope) throws Exception {
+		String messageText = (String) envelope.getMessage();
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		return new StreamingTaskMessageState(determineOutputMessageStepType(message), this.getClass().getSimpleName());
+	}
+
+
+	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+		return StreamingTaskStepType.UNDEFINED;
 	}
 
 	//This is the name of job that will be presented in the monitoring screen

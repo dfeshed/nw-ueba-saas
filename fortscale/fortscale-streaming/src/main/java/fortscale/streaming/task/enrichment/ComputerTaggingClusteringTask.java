@@ -10,13 +10,13 @@ import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -166,6 +166,11 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
+	}
+
+	@Override
+	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+		return StreamingTaskStepType.ENRICH;
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.*;
+import fortscale.streaming.service.state.StreamingTaskMessageState;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -329,6 +331,13 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 
+	}
+
+	@Override
+	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+		StreamingTaskMessageState inputMessageState = getInputMessageState(message);
+
+		return inputMessageState.getStepType();
 	}
 
 	@Override

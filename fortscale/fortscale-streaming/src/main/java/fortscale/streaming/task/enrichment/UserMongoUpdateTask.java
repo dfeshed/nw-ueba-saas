@@ -4,9 +4,11 @@ package fortscale.streaming.task.enrichment;
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -293,6 +295,11 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			store.delete(username);
 		}
 
+	}
+
+	@Override
+	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+		return StreamingTaskStepType.ENRICH;
 	}
 
 	/**

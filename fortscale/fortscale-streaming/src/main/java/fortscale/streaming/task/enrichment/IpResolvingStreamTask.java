@@ -13,10 +13,10 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
+import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -182,6 +182,12 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             cachingService.getCache().close();
         }
     }
+
+    @Override
+    protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
+        return StreamingTaskStepType.ENRICH;
+    }
+
 
     @Override
     protected String getJobLabel() {
