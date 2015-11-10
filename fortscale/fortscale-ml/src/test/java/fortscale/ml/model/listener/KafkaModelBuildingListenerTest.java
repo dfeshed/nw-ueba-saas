@@ -9,9 +9,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class KafkaModelBuildingListenerTest {
 	@Test
 	public void should_create_and_send_the_correct_model_building_status() {
@@ -22,15 +19,14 @@ public class KafkaModelBuildingListenerTest {
 		kafkaModelBuildingListener.setMessageCollector(collector);
 
 		String modelConfName = "testModelConf";
-		Map<String, String> context = new HashMap<>();
-		context.put("normalized_username", "testUser");
+		String contextId = "testContextId";
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);
-		expectedJson.put("context", context);
+		expectedJson.put("contextId", contextId);
 		expectedJson.put("success", true);
 
-		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, context, true);
+		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, contextId, true);
 		ArgumentCaptor<OutgoingMessageEnvelope> argumentCaptor = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
 		Mockito.verify(collector, Mockito.times(1)).send(argumentCaptor.capture());
 
