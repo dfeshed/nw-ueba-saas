@@ -32,7 +32,7 @@ import java.util.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Controller
-@RequestMapping("/api/user/**")
+@RequestMapping("/api/user")
 public class ApiUserController extends BaseController{
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
@@ -47,6 +47,72 @@ public class ApiUserController extends BaseController{
 
 	private static final String DEFAULT_SORT_FIELD = "username";
 
+
+	/**
+	 * The API to get all users. GET: /api/user
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<User>> getUsers(
+			@RequestParam(required = false, value = "sort_field") String sortField,
+			@RequestParam(required = false, value = "sort_direction") String sortDirection,
+			@RequestParam(required = false, value = "size") Integer size,
+			@RequestParam(required = false, value = "page") Integer fromPage,
+			@RequestParam(required = false, value = "disabled_since") String disabledSince) {
+
+
+		// Create sorting
+		Sort sortUserDesc;
+		Sort.Direction sortDir = Sort.Direction.ASC;
+		if (sortField != null) {
+			if (sortDirection != null){
+				sortDir = Sort.Direction.valueOf(sortDirection);
+			}
+			sortUserDesc = new Sort(new Sort.Order(sortDir, sortField));
+
+			// If there the api get sortField, which different from DEFAULT_SORT_FIELD, add
+			// DEFAULT_SORT_FIELD as secondary sort
+			if (!DEFAULT_SORT_FIELD.equals(sortField)) {
+				Sort secondarySort = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
+				sortUserDesc = sortUserDesc.and(secondarySort);
+			}
+		} else {
+			sortUserDesc = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
+		}
+
+
+		// Create paging
+		Integer pageSize = 10;
+		if (size != null) {
+			pageSize = size;
+		}
+
+		Integer pageNumber = 0;
+		if (fromPage != null) {
+			pageNumber = fromPage - 1;
+		}
+
+		PageRequest pageRequest = new PageRequest(pageNumber, pageSize, sortUserDesc);
+
+		// Create criteria list
+		List<Criteria> criteriaList = new ArrayList<>();
+
+		if (disabledSince != null && !disabledSince.isEmpty()) {
+			Criteria disabledSinceCriteria = where("adInfo.disableAccountTime")
+					.gte(new Date(Long.parseLong(disabledSince)));
+			criteriaList.add(disabledSinceCriteria);
+		}
+
+
+		// Get users
+		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
+		DataBean<List<User>> usersList = new DataBean<>();
+		usersList.setData(users);
+		usersList.setOffset(pageNumber*pageSize);
+		usersList.setTotal(userRepository.countAllUsers(criteriaList));
+		return usersList;
+	}
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
@@ -300,71 +366,5 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-
-    /**
-     * The API to get all users. GET: /api/users
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
-    @LogException
-    public DataBean<List<User>> getUsers(
-            @RequestParam(required = false, value = "sort_field") String sortField,
-            @RequestParam(required = false, value = "sort_direction") String sortDirection,
-            @RequestParam(required = false, value = "size") Integer size,
-            @RequestParam(required = false, value = "page") Integer fromPage,
-            @RequestParam(required = false, value = "disabled_since") String disabledSince) {
-
-
-		// Create sorting
-        Sort sortUserDesc;
-        Sort.Direction sortDir = Sort.Direction.ASC;
-        if (sortField != null) {
-            if (sortDirection != null){
-                sortDir = Sort.Direction.valueOf(sortDirection);
-            }
-            sortUserDesc = new Sort(new Sort.Order(sortDir, sortField));
-
-            // If there the api get sortField, which different from DEFAULT_SORT_FIELD, add
-            // DEFAULT_SORT_FIELD as secondary sort
-            if (!DEFAULT_SORT_FIELD.equals(sortField)) {
-                Sort secondarySort = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
-                sortUserDesc = sortUserDesc.and(secondarySort);
-            }
-        } else {
-            sortUserDesc = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
-        }
-
-
-		// Create paging
-        Integer pageSize = 10;
-        if (size != null) {
-            pageSize = size;
-        }
-
-        Integer pageNumber = 0;
-        if (fromPage != null) {
-            pageNumber = fromPage;
-        }
-
-        PageRequest pageRequest = new PageRequest(pageNumber, pageSize, sortUserDesc);
-
-		// Create criteria list
-		List<Criteria> criteriaList = new ArrayList<>();
-
-		if (disabledSince != null && !disabledSince.isEmpty()) {
-			Criteria disabledSinceCriteria = where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince)));
-			criteriaList.add(disabledSinceCriteria);
-		}
-
-
-		// Get users
-		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
-        DataBean<List<User>> usersList = new DataBean<>();
-        usersList.setData(users);
-		usersList.setOffset(pageNumber*pageSize);
-		usersList.setTotal(userRepository.countAllUsers(criteriaList));
-        return usersList;
-    }
 
 }
