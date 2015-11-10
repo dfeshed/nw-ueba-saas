@@ -250,7 +250,7 @@ public class EventProcessJob implements Job {
 			// flush hadoop
 			flushOutputAppender();
 			
-			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
+			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
 			monitor.error(monitorId, "Process Files", e.toString());

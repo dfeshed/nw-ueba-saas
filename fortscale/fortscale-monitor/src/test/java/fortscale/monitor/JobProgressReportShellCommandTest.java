@@ -105,6 +105,6 @@ public class JobProgressReportShellCommandTest {
 	@Test
 	public void run_with_data_should_pass_values_to_reporter() {
 		subject.run(new String[] { "-data", "jobid", "general", "33", "MB" });
-		verify(reporter).addDataReceived("jobid", new JobDataReceived("general", 33, "MB"));
+		verify(reporter).addDataReceived("jobid", new JobDataReceived("general", new Integer(33), "MB"));
 	}
 }
