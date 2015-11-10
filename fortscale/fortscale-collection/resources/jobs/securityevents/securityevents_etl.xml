@@ -61,7 +61,7 @@
 				</entry>				
 				<entry>
 					<key>outputFieldsSecEvt4769</key>
-					<value>${impala.data.security4769.table.fields}</value>
+					<value>${impala.data.kerberosLogin.table.fields}</value>
 				</entry>
 				<entry>
 					<key>messageOutputFieldsSecEvt4769</key>
@@ -77,7 +77,7 @@
 				</entry>
 				<entry>
 					<key>outputSeparatorSecEvt4769</key>
-					<value>${impala.data.security4769.table.delimiter}</value>
+					<value>${impala.data.kerberosLogin.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathSecEvt4769</key>
@@ -89,7 +89,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableNameSecEvt4769</key>
-					<value>${impala.data.security4769.table.name}</value>
+					<value>${impala.data.kerberosLogin.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicSecEvt4769</key>
@@ -97,7 +97,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategySecEvt4769</key>
-                    <value>${impala.data.security4769.table.partition.type}</value>
+                    <value>${impala.data.kerberosLogin.table.partition.type}</value>
                 </entry>
 				
 				<!--  Login table parameters -->
