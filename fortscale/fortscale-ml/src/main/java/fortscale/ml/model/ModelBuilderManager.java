@@ -36,7 +36,7 @@ public class ModelBuilderManager {
             entities = new String[]{null};
         }
         for (String entityID : entities) {
-            ModelBuilderData modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
+            Object modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
             Model model = modelConf.getModelBuilder().build(modelBuilderData);
             modelConf.getModelStore().save(modelConf, entityID, model);
         }

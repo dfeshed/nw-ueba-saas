@@ -1,4 +1,4 @@
 package fortscale.ml.model;
 
-public class Model {
+public interface Model {
 }
