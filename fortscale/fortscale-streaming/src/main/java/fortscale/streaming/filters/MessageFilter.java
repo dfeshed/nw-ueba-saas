@@ -15,4 +15,6 @@ public interface MessageFilter {
 	 * Determine if a message should be filtered
 	 */
 	boolean filter(JSONObject message);
+
+	String getName();
 }

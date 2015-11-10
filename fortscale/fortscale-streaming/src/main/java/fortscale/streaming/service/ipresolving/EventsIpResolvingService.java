@@ -1,12 +1,13 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.service.StreamingServiceAbstract;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 
@@ -18,12 +19,12 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Service that receive and event from a specific input topic, resolve the required ip field in it and
  * sends the enriched event to the designated output topic.
  */
-public class EventsIpResolvingService {
+public class EventsIpResolvingService extends StreamingServiceAbstract<EventResolvingConfig>{
 
-    public static Logger logger = LoggerFactory.getLogger(EventsIpResolvingService.class);
+
+    public static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
     private IpToHostnameResolver resolver;
-    private Map<String, EventResolvingConfig> configs = new HashMap<>();
     private Set<FsIpAddressContainer> reservedIpAddersses = null;
 
     public EventsIpResolvingService(IpToHostnameResolver resolver, List<EventResolvingConfig> configs) {
@@ -31,21 +32,15 @@ public class EventsIpResolvingService {
         checkNotNull(configs);
         this.resolver = resolver;
         for (EventResolvingConfig config : configs) {
-            this.configs.put(config.getDataSource(), config);
+            this.configs.put(config.getInputTopic(), config);
         }
 
     }
 
-    public JSONObject enrichEvent(String dataSource, JSONObject event) {
-        checkNotNull(dataSource);
-        checkNotNull(event);
-
+    public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
         // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = configs.get(dataSource);
-        if (config==null) {
-            logger.error("received event from data source {} that does not appear in configuration", dataSource);
-            return event;
-        }
+        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
+
 
         // get the ip address and timestamp fields from the event
         String ip = convertToString(event.get(config.getIpFieldName()));
@@ -122,52 +117,20 @@ public class EventsIpResolvingService {
         return this.reservedIpAddersses;
     }
 
-    public String getOutputTopic(String dataSource) {
-        if (configs.containsKey(dataSource))
-            return configs.get(dataSource).getOutputTopic();
-        else
-            throw new RuntimeException("received events from data source " + dataSource + " that does not appear in configuration");
-    }
-
-    /** Get the partition key to use for outgoing message envelope for the given event */
-    public Object getPartitionKey(String dataSource, JSONObject event) {
-        checkNotNull(dataSource);
-        checkNotNull(event);
-
-        // get the configuration for the input topic, if not found return empty key
-        EventResolvingConfig config = configs.get(dataSource);
-        if (config==null) {
-            logger.error("received event from data source {} that does not appear in configuration", dataSource);
-            return null;
-        }
-
-        return event.get(config.getPartitionField()).toString();
-    }
-
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean dropEvent(String dataSource, JSONObject event)
+	public boolean dropEvent(String inputTopic, JSONObject event) throws FilteredEventException
 	{
-		checkNotNull(dataSource);
-		checkNotNull(event);
+        // get the configuration for the input topic, if not found skip this event
+        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
 
-        if (isUnknownDataSource(dataSource)) {
-            logger.error("Received event with unknown data source: {}. Dropping event", dataSource);
-
-            return true;
+        boolean drop = (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
+        if (drop){
+            throw new FilteredEventException(HOST_IS_EMPTY_LABEL);
         }
-
-		// get the configuration for the data source, if not found skip this event
-		EventResolvingConfig config = configs.get(dataSource);
-
-		return (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
+		return drop;
 
 	}
-
-    private boolean isUnknownDataSource(String dataSource) {
-        return !configs.containsKey(dataSource);
-    }
-
 
 }

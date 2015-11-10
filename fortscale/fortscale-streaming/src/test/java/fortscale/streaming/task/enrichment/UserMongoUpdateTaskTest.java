@@ -3,6 +3,7 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -50,13 +51,14 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
 		SystemStream systemStream = Mockito.mock(SystemStream.class);
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
-
+		TaskMonitoringHelper taskMonitoringHelper = Mockito.mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		// User1, VPN event with time 1
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "input1");
 		// run the process on the envelope
-		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.wrappedProcess(envelope, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		UserInfoForUpdate userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);

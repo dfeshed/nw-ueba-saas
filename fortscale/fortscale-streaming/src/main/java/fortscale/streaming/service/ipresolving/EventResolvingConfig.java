@@ -1,11 +1,13 @@
 package fortscale.streaming.service.ipresolving;
 
+import fortscale.streaming.service.StreamingTaskConfig;
+
 /**
  * Configuration for ip resolving on a specific event type. This should be constructed from the topology
  * settings or from the streaming task configuration and passed to the EventsIpResolvingService in order
  * to determine what action to take for each type of event.
  */
-public class EventResolvingConfig {
+public class EventResolvingConfig implements StreamingTaskConfig {
 
     private String dataSource;
     private String inputTopic;

@@ -2,6 +2,7 @@ package fortscale.streaming.task.monitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,14 +63,20 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(String cause){
-        Integer causeReason = countFilterByCause.get(cause);
-        if (causeReason == null){
-            causeReason = 1;
-        } else {
-            causeReason++;
+    public void countNewFilteredEvents(String dataSource, String cause){
+        String causeLabel="";
+        if (StringUtils.isNotBlank(dataSource)){
+            causeLabel = "Data Source: "+dataSource+". ";
         }
-        countFilterByCause.put(cause,causeReason);
+        causeLabel +=cause;
+
+        Integer causeCount = countFilterByCause.get(causeLabel);
+        if (causeCount == null){
+            causeCount = 1;
+        } else {
+            causeCount++;
+        }
+        countFilterByCause.put(causeLabel,causeCount);
     }
 
 
@@ -103,7 +110,7 @@ public class TaskMonitoringHelper {
             addJobData(monitorId, TOTAL_EVENTS_LABEL, totalAmountOfEventsInWindow, EVENTS_TYPE);
 
             for (Map.Entry<String, EventTimeRange> firstLastEventTime : eventTimeRange.entrySet()) {
-                String textPrefix = eventTimeRange.size() > 0 ? firstLastEventTime.getKey() +": " : "";
+                String textPrefix = eventTimeRange.size() > 1 ? firstLastEventTime.getKey() +": " : "";
                 //Original time of first event in the window
                 addJobData(monitorId, textPrefix + FIRST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfFirstEventInWindowAsString());
                 //Original time of last event in the window
@@ -134,6 +141,9 @@ public class TaskMonitoringHelper {
     //Keep the time of the first and last event time in the windows
     //First and last could be the same if there is only one event in the window
     private void updateFirstLastEventInWindow(String dataSource, Number time, String dateAsString){
+        if (time == null || dateAsString==null) {
+            return;
+        }
         long eventTime = time.longValue();
 
         EventTimeRange timeRange = eventTimeRange.get(dataSource);
@@ -149,8 +159,9 @@ public class TaskMonitoringHelper {
             }
         } else {
             timeRange = new EventTimeRange();
-            eventTimeRange.put(dataSource,timeRange);
+            eventTimeRange.put(dataSource, timeRange);
         }
+
     }
 
 
