@@ -110,7 +110,7 @@ public class TaskMonitoringHelper {
             addJobData(monitorId, TOTAL_EVENTS_LABEL, totalAmountOfEventsInWindow, EVENTS_TYPE);
 
             for (Map.Entry<String, EventTimeRange> firstLastEventTime : eventTimeRange.entrySet()) {
-                String textPrefix = eventTimeRange.size() > 0 ? firstLastEventTime.getKey() +": " : "";
+                String textPrefix = eventTimeRange.size() > 1 ? firstLastEventTime.getKey() +": " : "";
                 //Original time of first event in the window
                 addJobData(monitorId, textPrefix + FIRST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfFirstEventInWindowAsString());
                 //Original time of last event in the window
@@ -141,6 +141,9 @@ public class TaskMonitoringHelper {
     //Keep the time of the first and last event time in the windows
     //First and last could be the same if there is only one event in the window
     private void updateFirstLastEventInWindow(String dataSource, Number time, String dateAsString){
+        if (time == null || dateAsString==null) {
+            return;
+        }
         long eventTime = time.longValue();
 
         EventTimeRange timeRange = eventTimeRange.get(dataSource);
@@ -156,8 +159,9 @@ public class TaskMonitoringHelper {
             }
         } else {
             timeRange = new EventTimeRange();
-            eventTimeRange.put(dataSource,timeRange);
+            eventTimeRange.put(dataSource, timeRange);
         }
+
     }
 
 
