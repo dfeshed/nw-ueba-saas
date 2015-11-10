@@ -21,7 +21,7 @@ import fortscale.utils.logging.Logger;
 public abstract class FeatureBucketsService {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
 	private static final String BUCKET_ID_BUILDER_SEPARATOR = "###";
-	private static final String CONTEXT_ID_SEPARATOR = "###";
+	
 
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
 		if(updatedFeatureBucketStrategyData == null || updatedFeatureBucketStrategyData.isEmpty()){
@@ -105,27 +105,10 @@ public abstract class FeatureBucketsService {
 	
 	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception{
 		if(featureBucket.getContextId() == null){
-			String contextId = buildContextId(featureBucket.getContextFieldNameToValueMap());
+			String contextId = FeatureBucketUtils.buildContextId(featureBucket.getContextFieldNameToValueMap());
 			featureBucket.setContextId(contextId);
 		}
 		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
-	}
-	
-	private String buildContextId(Map<String, String> context) {
-		List<Map.Entry<String, String>> listOfEntries = new ArrayList<>(context.entrySet());
-		Collections.sort(listOfEntries, new Comparator<Map.Entry<String, String>>() {
-			@Override
-			public int compare(Map.Entry<String, String> entry1, Map.Entry<String, String> entry2) {
-				return entry1.getKey().compareTo(entry2.getKey());
-			}
-		});
-
-		List<String> listOfPairs = new ArrayList<>();
-		for (Map.Entry<String, String> entry : listOfEntries) {
-			listOfPairs.add(String.format("%s%s%s", entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()));
-		}
-
-		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);
 	}
 
 	private FeatureBucket createNewFeatureBucket(Event event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData) {

@@ -2,10 +2,11 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import fortscale.ml.model.Model;
 import org.apache.commons.math3.distribution.TDistribution;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class ContinuousDataModel {
+public class ContinuousDataModel implements Model {
 	public static final int SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY = 1;
 
 	private long N; // population size
@@ -50,5 +51,22 @@ public class ContinuousDataModel {
 		return z > 0 ?
 			tDistribution.density(z) + SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY :
 			-1 * tDistribution.density(z) - SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ContinuousDataModel)) {
+			return false;
+		}
+		ContinuousDataModel o = (ContinuousDataModel) obj;
+		if (N == 0) {
+			return o.N == 0;
+		}
+		return o.N == N && o.mean == mean && o.sd == sd;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("<ContinuousDataModel: N=%s, mean=%s, sd=%s>", N, mean, sd);
 	}
 }

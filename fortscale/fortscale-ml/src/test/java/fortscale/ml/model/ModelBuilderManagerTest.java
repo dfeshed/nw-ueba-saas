@@ -26,7 +26,7 @@ public class ModelBuilderManagerTest {
     @Mock
     ModelStore modelStore;
 
-    private ModelBuilderManager createProcessScenario(String[] entityIDs, Model[] entityModels, ModelBuilderData[] modelBuilderDatas, Boolean[] successes) {
+    private ModelBuilderManager createProcessScenario(String[] entityIDs, Model[] entityModels, Object[] modelBuilderDatas, Boolean[] successes) {
         if (entityIDs != null) {
             // entity model scenario
             Mockito.when(modelConf.getEntitiesSelector()).thenReturn(entitiesSelector);
@@ -78,13 +78,11 @@ public class ModelBuilderManagerTest {
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
         String[] entityIDs = {"user1", "user2"};
-        Model[] entityModels = {new Model(), new Model()};
+        Model[] entityModels = {new Model() {}, new Model() {}};
         ModelBuilderManager modelManager = createProcessScenario(
                 entityIDs,
                 entityModels,
-                new ModelBuilderData[]{new ModelBuilderData() {
-                }, new ModelBuilderData() {
-                }},
+                new Object[]{new Object(), new Object()},
                 new Boolean[]{true, true});
         modelManager.process(null);
 
@@ -97,12 +95,11 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreGlobalModel() {
-        Model globalModel = new Model();
+        Model globalModel = new Model() {};
         ModelBuilderManager modelManager = createProcessScenario(
                 null,
                 new Model[]{globalModel},
-                new ModelBuilderData[]{new ModelBuilderData() {
-                }},
+                new Object[]{new Object()},
                 new Boolean[]{true});
         modelManager.process(null);
 
@@ -114,8 +111,8 @@ public class ModelBuilderManagerTest {
     public void shouldRegisterItselfOnceFinishedProcessing() {
         ModelBuilderManager modelManager = createProcessScenario(
                 null,
-                new Model[]{new Model()},
-                new ModelBuilderData[]{new ModelBuilderData() {}},
+                new Model[]{new Model() {}},
+                new Object[]{new Object()},
                 new Boolean[]{true});
         Mockito.reset(scheduler);
         modelManager.process(null);
@@ -129,8 +126,8 @@ public class ModelBuilderManagerTest {
         Boolean[] successes = {true, false};
         ModelBuilderManager modelManager = createProcessScenario(
                 new String[]{"user1", "user2"},
-                new Model[]{new Model(), new Model()},
-                new ModelBuilderData[]{new ModelBuilderData() {}, new ModelBuilderData() {}},
+                new Model[]{new Model() {}, new Model() {}},
+                new Object[]{new Object(), new Object()},
                 successes);
         IModelBuildingListener listener = Mockito.mock(IModelBuildingListener.class);
         modelManager.process(listener);
