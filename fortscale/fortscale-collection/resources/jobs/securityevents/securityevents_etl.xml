@@ -77,7 +77,7 @@
 				</entry>
 				<entry>
 					<key>hadoopPathSecEvt4769</key>
-					<value>${hdfs.user.data.security4769.path}</value>
+					<value>${hdfs.user.data.kerberosLogin.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameSecEvt4769</key>
