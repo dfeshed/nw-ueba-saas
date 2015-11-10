@@ -9,6 +9,6 @@ package fortscale.streaming.service.state;
 public enum StreamingTaskStepType {
     ETL,
     ENRICH,
-    SCORE,
+    SCORING,
     UNDEFINED
 }
