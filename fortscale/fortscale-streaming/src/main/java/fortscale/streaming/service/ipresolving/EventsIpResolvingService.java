@@ -31,19 +31,19 @@ public class EventsIpResolvingService {
         checkNotNull(configs);
         this.resolver = resolver;
         for (EventResolvingConfig config : configs) {
-            this.configs.put(config.getInputTopic(), config);
+            this.configs.put(config.getDataSource(), config);
         }
 
     }
 
-    public JSONObject enrichEvent(String inputTopic, JSONObject event) {
-        checkNotNull(inputTopic);
+    public JSONObject enrichEvent(String dataSource, JSONObject event) {
+        checkNotNull(dataSource);
         checkNotNull(event);
 
         // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = configs.get(inputTopic);
+        EventResolvingConfig config = configs.get(dataSource);
         if (config==null) {
-            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+            logger.error("received event from data source {} that does not appear in configuration", dataSource);
             return event;
         }
 
@@ -122,22 +122,22 @@ public class EventsIpResolvingService {
         return this.reservedIpAddersses;
     }
 
-    public String getOutputTopic(String inputTopic) {
-        if (configs.containsKey(inputTopic))
-            return configs.get(inputTopic).getOutputTopic();
+    public String getOutputTopic(String dataSource) {
+        if (configs.containsKey(dataSource))
+            return configs.get(dataSource).getOutputTopic();
         else
-            throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
+            throw new RuntimeException("received events from data source " + dataSource + " that does not appear in configuration");
     }
 
     /** Get the partition key to use for outgoing message envelope for the given event */
-    public Object getPartitionKey(String inputTopic, JSONObject event) {
-        checkNotNull(inputTopic);
+    public Object getPartitionKey(String dataSource, JSONObject event) {
+        checkNotNull(dataSource);
         checkNotNull(event);
 
         // get the configuration for the input topic, if not found return empty key
-        EventResolvingConfig config = configs.get(inputTopic);
+        EventResolvingConfig config = configs.get(dataSource);
         if (config==null) {
-            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+            logger.error("received event from data source {} that does not appear in configuration", dataSource);
             return null;
         }
 
@@ -147,19 +147,27 @@ public class EventsIpResolvingService {
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean dropEvent(String inputTopic, JSONObject event)
+	public boolean dropEvent(String dataSource, JSONObject event)
 	{
-		checkNotNull(inputTopic);
+		checkNotNull(dataSource);
 		checkNotNull(event);
 
+        if (isUnknownDataSource(dataSource)) {
+            logger.error("Received event with unknown data source: {}. Dropping event", dataSource);
 
-		// get the configuration for the input topic, if not found skip this event
-		EventResolvingConfig config = configs.get(inputTopic);
+            return true;
+        }
+
+		// get the configuration for the data source, if not found skip this event
+		EventResolvingConfig config = configs.get(dataSource);
 
 		return (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
 
 	}
 
+    private boolean isUnknownDataSource(String dataSource) {
+        return !configs.containsKey(dataSource);
+    }
 
 
 }

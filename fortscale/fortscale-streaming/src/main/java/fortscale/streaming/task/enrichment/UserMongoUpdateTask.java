@@ -51,6 +51,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	private static final String storeName = "user-mongo-update";
 
+	private static final String DATA_SOURCE_FIELD = "dataSource";
+
 	/**
 	 * Logger
 	 */
@@ -79,7 +81,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
-	protected Map<String, DataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
+	protected Map<String, DataSourceConfiguration> dataSourceToConfiguration = new HashMap<>();
 
 	/**
 	 * Map between classifier id to updateonly flag
@@ -102,22 +104,21 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// Get field names
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		//usernameField = getConfigString(config, "fortscale.username.field");
 
 		// Get the user service (for Mongo) from spring
 		userService = SpringService.getInstance().resolve(UserService.class);
 
 		// Fill the map between the input topic and the data source
-		Config fieldsSubset = config.subset("fortscale.data-source.input.topic.");
-		for (String dataSource : fieldsSubset.keySet()) {
-			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
-			String successfulLoginField = getConfigString(config, String.format("fortscale.data-source.success.field.%s", dataSource));
-			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
-			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
-			String logUserNameField =getConfigString(config, String.format("fortscale.data-source.logusername.field.%s", dataSource));
-			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
+		for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.data.source.").entrySet()) {
+			String dataSource = ConfigField.getKey();
+			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
+			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+			String successfulLoginField = getConfigString(config, String.format("fortscale.events.success.field.%s", dataSource));
+			String successfulLoginValue = getConfigString(config, String.format("fortscale.events.success.value.%s", dataSource));
+			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
+			String logUserNameField =getConfigString(config, String.format("fortscale.events.logusername.field.%s", dataSource));
+			usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s", dataSource));
+			dataSourceToConfiguration.put(dataSource, new DataSourceConfiguration(dataSource, inputTopic, classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
@@ -135,9 +136,18 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
 
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
+		String messageText = (String)envelope.getMessage();
+
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+		if (dataSource == null) {
+			logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+			return;
+		}
+
 
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
@@ -154,35 +164,28 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
 
-
-
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
 		// Get relevant data source according to topic
-		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
+		DataSourceConfiguration dataSourceConfiguration = dataSourceToConfiguration.get(dataSource);
 		if (dataSourceConfiguration == null) {
-			logger.error("No data source is defined for input topic {} ", topic);
+			logger.error("No configuration is defined for data source {} ", dataSource);
 			return;
 		}
 
 		//get the actual username from the event - using for assigning to logusername
-		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
+		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.getLogUserNameField()));
 		if (logUserNameFromEvent == null) {
-			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
+			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.getLogUserNameField());
 			return;
 		}
-
-
 
 
 		//in case that the success field is equal to #AnyRow# in the configuration file
 		//update the last activity for any row
 		// or check that the event represent successful login
-		if (dataSourceConfiguration.successField.equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
+		if (dataSourceConfiguration.getSuccessField().equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.getSuccessField())).equalsIgnoreCase(dataSourceConfiguration.getSuccessValue())) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 			//update the logusername if needed
-			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
+			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.getMongoClassifierId(),logUserNameFromEvent);
 
 		}
 
@@ -293,8 +296,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	protected static class DataSourceConfiguration {
 
-		protected DataSourceConfiguration(String mongoClassifierId, String successField, String successValue,
+		protected DataSourceConfiguration(String dataSource, String inputTopic, String mongoClassifierId, String successField, String successValue,
 				boolean udpateOnlyFlag, String logUserNameField) {
+			this.dataSource = dataSource;
+			this.inputTopic = inputTopic;
 			this.mongoClassifierId = mongoClassifierId;
 			this.successField = successField;
 			this.successValue = successValue;
@@ -303,11 +308,41 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		}
 
-		public String mongoClassifierId;
-		public String successField;
-		public String successValue;
-		public boolean dataSourceUpdateOnlyFlag;
-		public String logUserNameField;
+		private String dataSource;
+		private String inputTopic;
+		private String mongoClassifierId;
+		private String successField;
+		private String successValue;
+		private boolean dataSourceUpdateOnlyFlag;
+		private String logUserNameField;
+
+		public String getDataSource() {
+			return dataSource;
+		}
+
+		public String getInputTopic() {
+			return inputTopic;
+		}
+
+		public String getMongoClassifierId() {
+			return mongoClassifierId;
+		}
+
+		public String getSuccessField() {
+			return successField;
+		}
+
+		public String getSuccessValue() {
+			return successValue;
+		}
+
+		public boolean isDataSourceUpdateOnlyFlag() {
+			return dataSourceUpdateOnlyFlag;
+		}
+
+		public String getLogUserNameField() {
+			return logUserNameField;
+		}
 	}
 
 	@Override

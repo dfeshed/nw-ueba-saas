@@ -41,17 +41,18 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
-	private static final String storeNamePrefix = "hdfs-write-";
-
-	/**
-	 * Logger
-	 */
 	private static Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
 
+	private static final String storeNamePrefix = "hdfs-write-";
+
+	private static final String DATA_SOURCE_FIELD = "dataSource";
+
 	/**
-	 * Map from input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
+	 * Map from combination of data source & input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
 	 */
-	protected Map<String, List<WriterConfiguration>> topicToWriterConfigurationMap = new HashMap<>();
+	private Map<HDFSWriterConfigurationKey, List<WriterConfiguration>> hdfsWriterConfigurationMap = new HashMap<>();
+
+	private Set<String> dataSourcesInConfig = new HashSet<>();
 
 	private BDPService bdpService;
 
@@ -90,16 +91,25 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		// Get configuration properties
 		Config fieldsSubset = config.subset("fortscale.");
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".data.source"))) {
+			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".data.source"));
+
+			String dataSource = getConfigString(config, String.format("fortscale.%s.data.source", eventType));
 
 			// create specific configuration for topic
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
 			String inputTopic = resolveStringValue(config, String.format("fortscale.%s.input.topic", eventType), res);
-			if (!topicToWriterConfigurationMap.containsKey(inputTopic)) {
-				topicToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
+
+			HDFSWriterConfigurationKey hdfsWriterConfigurationKey = new HDFSWriterConfigurationKey(dataSource, inputTopic);
+
+			if (!hdfsWriterConfigurationMap.containsKey(hdfsWriterConfigurationKey)) {
+				hdfsWriterConfigurationMap.put(hdfsWriterConfigurationKey, new ArrayList<WriterConfiguration>());
 			}
-			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
+			hdfsWriterConfigurationMap.get(hdfsWriterConfigurationKey).add(writerConfiguration);
+
+			if (!dataSourcesInConfig.contains(dataSource)) {
+				dataSourcesInConfig.add(dataSource);
+			}
 
 			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
 				writerConfiguration.outputTopics = getConfigStringList(config,
@@ -152,7 +162,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.filters.add(filter);
 			}
 
-			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
+			logger.info(String.format("Finished loading configuration for table %s (data source: %s) ", writerConfiguration.tableName, dataSource));
 
 		}
 
@@ -177,17 +187,41 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	public void wrappedProcess(IncomingMessageEnvelope envelope,
 			MessageCollector collector, TaskCoordinator coordinator)
 			throws Exception {
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
+
+		String messageText = (String)envelope.getMessage();
+
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		// Get all writers according to topic
-		List<WriterConfiguration> writerConfigurations = topicToWriterConfigurationMap.get(topic);
+		String dataSource = convertToString(message.get(DATA_SOURCE_FIELD));
+
+		if (dataSource == null) {
+			logger.error("Could not find mandatory dataSource field. Skipping message: {} ", messageText);
+
+			return;
+		}
+
+		if (!dataSourcesInConfig.contains(dataSource)) {
+			logger.error("Message contains data source {} which is not exist in configuration. Skipping message: {} ", dataSource, messageText);
+
+			return;
+		}
+
+		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+
+		HDFSWriterConfigurationKey hdfsWriterConfigurationKey = new HDFSWriterConfigurationKey(dataSource, inputTopic);
+
+		if (!hdfsWriterConfigurationMap.containsKey(hdfsWriterConfigurationKey)) {
+			logger.error("Message contains combination of data source {} and input topic {} which have no HDFS writer configuration. Skipping message: {} ", dataSource, inputTopic, messageText);
+
+			return;
+		}
+
+		List<WriterConfiguration> writerConfigurations = hdfsWriterConfigurationMap.get(hdfsWriterConfigurationKey);
 
 		if (writerConfigurations.isEmpty()) {
-			logger.error("Couldn't find HDFS writer for topic " + topic + ". Dropping event");
+			logger.error("Couldn't find HDFS writer for data source {} and input topic {}. Skipping event", dataSource, inputTopic);
+
+			return;
 		}
 
 		// go over all writers and write message
@@ -230,8 +264,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 								collector.send(output);
 							} catch (Exception exception) {
 								throw new KafkaPublisherException(String.
-								  format("failed to send event from input topic %s to output topic %s after HDFS write",
-										  topic, outputTopic), exception);
+								  format("failed to send event from input inputTopic %s to output inputTopic %s after HDFS write",
+										  inputTopic, outputTopic), exception);
 							}
 						}
 					}
@@ -287,7 +321,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// flush all writers
-		for (List<WriterConfiguration> writerConfigurations : topicToWriterConfigurationMap.values()) {
+		for (List<WriterConfiguration> writerConfigurations : hdfsWriterConfigurationMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
 				// flush writes to hdfs and refresh impala
 				writerConfiguration.service.flushHdfs();
@@ -313,7 +347,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedClose() throws Exception {
 
-		for (List<WriterConfiguration> writerConfigurations : topicToWriterConfigurationMap.values()) {
+		for (List<WriterConfiguration> writerConfigurations : hdfsWriterConfigurationMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
 				// close hdfs appender
 				if (writerConfiguration.service != null) {
@@ -325,6 +359,44 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 
+	}
+
+	private static class HDFSWriterConfigurationKey {
+
+		private String dataSource;
+		private String inputTopic;
+
+		public HDFSWriterConfigurationKey(String dataSource, String inputTopic) {
+			this.dataSource = dataSource;
+			this.inputTopic = inputTopic;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			HDFSWriterConfigurationKey that = (HDFSWriterConfigurationKey) o;
+
+			if (dataSource != null ? !dataSource.equals(that.dataSource) : that.dataSource != null) return false;
+			return !(inputTopic != null ? !inputTopic.equals(that.inputTopic) : that.inputTopic != null);
+
+		}
+
+		@Override
+		public int hashCode() {
+			int result = dataSource != null ? dataSource.hashCode() : 0;
+			result = 31 * result + (inputTopic != null ? inputTopic.hashCode() : 0);
+			return result;
+		}
+
+		@Override
+		public String toString() {
+			return "HDFSWriterConfigurationKey{" +
+					"dataSource='" + dataSource + '\'' +
+					", inputTopic='" + inputTopic + '\'' +
+					'}';
+		}
 	}
 
 }

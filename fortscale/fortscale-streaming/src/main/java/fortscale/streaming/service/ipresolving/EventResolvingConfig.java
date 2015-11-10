@@ -7,6 +7,7 @@ package fortscale.streaming.service.ipresolving;
  */
 public class EventResolvingConfig {
 
+    private String dataSource;
     private String inputTopic;
     private String outputTopic;
     private String ipFieldName;
@@ -24,12 +25,13 @@ public class EventResolvingConfig {
     /**
      * Builder for EventResolvingConfig, used as a utility function to simplify creation
      */
-    public static EventResolvingConfig build(String inputTopic, String ipFieldName, String hostFieldName,
+    public static EventResolvingConfig build(String dataSource, String inputTopic, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
                                              boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName,
                                              String partitionField, boolean overrideIPWithHostname,
                                              boolean resolveOnlyReservedIp, String reservedIpAddress) {
         EventResolvingConfig config = new EventResolvingConfig();
+        config.setDataSource(dataSource);
         config.setHostFieldName(hostFieldName);
         config.setInputTopic(inputTopic);
         config.setIpFieldName(ipFieldName);
@@ -144,5 +146,13 @@ public class EventResolvingConfig {
 
     public void setReservedIpAddress(String reservedIpAddress) {
         this.reservedIpAddress = reservedIpAddress;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 }
