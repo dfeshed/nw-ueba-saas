@@ -31,7 +31,7 @@ public class ModelBuilderManager {
     public void process() {
         if (contextsSelector != null) {
 	        for (String contextId : contextsSelector.getContexts(nextRunTimeInSeconds - modelConf.getBuildIntervalInSeconds(), nextRunTimeInSeconds)) {
-	            ModelBuilderData modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(contextId);
+	        	Object modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(contextId);
 	            Model model = modelConf.getModelBuilder().build(modelBuilderData);
 	            modelConf.getModelStore().save(modelConf, contextId, model);
 	        }

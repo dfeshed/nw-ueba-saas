@@ -51,8 +51,8 @@ public class ModelBuilderManagerTest {
         Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
 
         String[] entityIDs = {"user1", "user2"};
-        ModelBuilderData[] modelBuilderDatas = {new ModelBuilderData() {}, new ModelBuilderData() {}};
-        Model[] entityModels = {new Model(), new Model()};
+        Object[] modelBuilderDatas = {new Object() {}, new Object() {}};
+        Model[] entityModels = {new Model() {}, new Model() {}};
         Mockito.when(entitiesSelector.getContexts(0L,0L)).thenReturn(Arrays.asList(entityIDs));
         for (int i = 0; i < entityIDs.length; i++) {
             Mockito.when(modelBuilderDataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderDatas[i]);
@@ -80,8 +80,8 @@ public class ModelBuilderManagerTest {
         ModelStore modelStore = Mockito.mock(ModelStore.class);
         Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
 
-        ModelBuilderData modelBuilderData = new ModelBuilderData() {};
-        Model globalModel = new Model();
+        Object modelBuilderData = new Object() {};
+        Model globalModel = new Model() {};
         Mockito.when(modelBuilderDataRetriever.retrieve(null)).thenReturn(modelBuilderData);
         Mockito.when(modelBuilder.build(modelBuilderData)).thenReturn(globalModel);
 
