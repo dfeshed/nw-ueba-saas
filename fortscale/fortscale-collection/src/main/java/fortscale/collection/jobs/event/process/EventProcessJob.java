@@ -61,8 +61,9 @@ public class EventProcessJob implements Job {
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
 	protected MorphlinesItemsProcessor morphlineEnrichment;
-	protected RecordToStringItemsProcessor recordToString;
+	protected RecordToStringItemsProcessor recordToHadoopString;
 	protected RecordToStringItemsProcessor recordKeyExtractor;
+	protected RecordToStringItemsProcessor recordToMessageString;
 	protected String monitorId;
 	protected String hadoopPath;
 	protected String hadoopFilename;
@@ -110,8 +111,10 @@ public class EventProcessJob implements Job {
 		
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
+		String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields");
 		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+		recordToHadoopString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+		recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
 		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
@@ -289,13 +292,18 @@ public class EventProcessJob implements Job {
 		} else {
 			record = rec;
 		}
-		String output = recordToString.process(record);
+
+		//divide to two outputs:
+		//1. longer one - including data_source and last_state
+		//2. shorter one - without them - to hadoop
+
+		String outputToHadoop = recordToHadoopString.process(record);
 		
 		// append to hadoop, if there is data to be written
-		if (output!=null) {
+		if (outputToHadoop!=null) {
 			// append to hadoop
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
-			appender.writeLine(output, timestamp.longValue());
+			appender.writeLine(outputToHadoop, timestamp.longValue());
 
 			// ensure user exists in mongodb
 			// todo - Think how to deprecate this part or move it to the streaming
@@ -303,7 +311,7 @@ public class EventProcessJob implements Job {
 			updateOrCreateUserWithClassifierUsername(record);
 
 			// output event to streaming platform
-			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
+			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
 
 			return true;
 		} else {
