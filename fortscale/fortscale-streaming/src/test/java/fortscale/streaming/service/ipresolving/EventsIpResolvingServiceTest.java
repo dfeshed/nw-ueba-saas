@@ -54,7 +54,7 @@ public class EventsIpResolvingServiceTest {
     }
 
 
-    @Test
+    @Test(expected = FilteredEventException.class )
     public void service_should_ignore_and_not_touch_events_with_unknown_topics() throws FilteredEventException{
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
@@ -62,7 +62,6 @@ public class EventsIpResolvingServiceTest {
         when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
 
         JSONObject output = service.enrichEvent("unknown-topic", event);
-        Assert.assertNull(output.get("host"));
     }
 
     @Test
@@ -119,7 +118,7 @@ public class EventsIpResolvingServiceTest {
 
 
     @Test
-    public void service_should_return_partition_field() throws FilteredEventException{
+    public void service_should_return_partition_field() throws FilteredEventException {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
         event.put("time", 3L);
@@ -129,7 +128,7 @@ public class EventsIpResolvingServiceTest {
         Assert.assertEquals("part-A", actual);
     }
 
-	@Test
+	@Test(expected =  FilteredEventException.class)
 	public void service_should_drop_events_that_cant_resolved() throws FilteredEventException
 	{
 		JSONObject event = new JSONObject();
@@ -150,5 +149,22 @@ public class EventsIpResolvingServiceTest {
 
 
 	}
+
+    @Test(expected =  FilteredEventException.class)
+    public void service_should_drop_events_that_cant_resolved2() throws FilteredEventException
+    {
+        JSONObject event = new JSONObject();
+        event.put("hostname", null);
+        boolean res = service.dropEvent("input",event);
+        Assert.assertTrue(!res);
+
+        event.put("hostname", "");
+
+        res = service2.dropEvent("input",event);
+        Assert.assertTrue(res);
+
+
+
+    }
 
 }
