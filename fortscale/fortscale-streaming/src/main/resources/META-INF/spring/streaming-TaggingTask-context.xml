@@ -164,11 +164,6 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
-    <bean id="genericUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="usernameService" ref="usernameService"/>
-        <property name="userService" ref="userService"/>
-        <property name="samAccountNameService" ref="samAccountNameService"/>
-    </bean>
 
     <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${security.normalizedUser.fail.filter:true}"/>
@@ -185,11 +180,6 @@
     <bean id="AMTUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${amt.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="amtUsernameNormalizer"/>
-    </bean>
-
-    <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
-        <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>
-        <property name="usernameNormalizer" ref="genericUsernameNormalizer"/>
     </bean>
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />

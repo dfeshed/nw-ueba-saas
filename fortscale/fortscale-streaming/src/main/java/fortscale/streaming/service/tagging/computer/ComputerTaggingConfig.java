@@ -11,15 +11,15 @@ import java.util.List;
  */
 public class ComputerTaggingConfig implements StreamingTaskConfig {
 
-	private String dataSource;
+	private String eventType;
 	private String inputTopic;
 	private String outputTopic;
 	private String partitionField;
 	private List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList;
 
-	public ComputerTaggingConfig(String dataSource, String inputTopic, String outputTopic,
+	public ComputerTaggingConfig(String eventType, String inputTopic, String outputTopic,
 			String partitionField, List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
-		setDataSource(dataSource);
+		setEventType(eventType);
 		setInputTopic(inputTopic);
 		setOutputTopic(outputTopic);
 		setPartitionField(partitionField);
@@ -27,12 +27,12 @@ public class ComputerTaggingConfig implements StreamingTaskConfig {
 	}
 
 
-	public String getDataSource() {
-		return dataSource;
+	public String getEventType() {
+		return eventType;
 	}
 
-	public void setDataSource(String dataSource) {
-		this.dataSource = dataSource;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
 	}
 
 	public String getInputTopic() {

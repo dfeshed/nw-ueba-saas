@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
-	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"dataSource\": \"vpn\" }";
+	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
 	final String HOST_NAME = "MY-PC";
 
 	ComputerTaggingClusteringTask task;
@@ -55,13 +55,13 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
 		computerService = new ComputerServiceImpl();
 		computerService.setCache(new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
-		task.inputTopicToCachingServiceMap.put("computerUpdatesTopic", computerService);
+		task.topicToServiceMap.put("computerUpdatesTopic", computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> sensitiveMachineServiceStore = new KeyValueStoreMock<>();
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
 		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
-		task.inputTopicToCachingServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
+		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 
 
 		// Mocks

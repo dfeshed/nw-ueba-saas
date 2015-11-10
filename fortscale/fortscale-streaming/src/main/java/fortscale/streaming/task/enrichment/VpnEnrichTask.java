@@ -3,7 +3,6 @@ package fortscale.streaming.task.enrichment;
 import com.google.common.collect.Iterables;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.state.StreamingTaskStepType;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
@@ -172,11 +171,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", vpnEnrichService.getInputTopic(), vpnEnrichService.getOutputTopic()), exception);
         }
     }
-
-	@Override
-	protected StreamingTaskStepType determineOutputMessageStepType(JSONObject message) {
-		return StreamingTaskStepType.ENRICH;
-	}
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
