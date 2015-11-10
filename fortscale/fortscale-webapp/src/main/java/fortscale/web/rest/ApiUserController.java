@@ -338,7 +338,7 @@ public class ApiUserController extends BaseController{
 		// Create paging
         Integer pageSize = 10;
         if (size != null) {
-            pageSize = fromPage;
+            pageSize = size;
         }
 
         Integer pageNumber = 0;
