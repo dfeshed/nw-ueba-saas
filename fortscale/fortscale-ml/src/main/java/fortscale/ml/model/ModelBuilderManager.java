@@ -1,30 +1,25 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.selector.EntitiesSelector;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.util.Assert;
 
-public class ModelBuilderManager {
+public class ModelBuilderManager implements IModelBuildingRegistrar {
     private ModelConf modelConf;
-    private long nextRunTimeInSeconds;
+    private IModelBuildingScheduler scheduler;
 
-    public ModelBuilderManager(ModelConf modelConf) {
+    public ModelBuilderManager(ModelConf modelConf, IModelBuildingScheduler scheduler) {
         Assert.notNull(modelConf);
+        Assert.notNull(scheduler);
         this.modelConf = modelConf;
-        this.nextRunTimeInSeconds = -1;
+        this.scheduler = scheduler;
+
+        scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void calcNextRunTime(long currentTimeInSeconds) {
-        nextRunTimeInSeconds = currentTimeInSeconds + modelConf.getBuildIntervalInSeconds();
-    }
-
-    public long getNextRunTimeInSeconds() {
-        if (nextRunTimeInSeconds < 0) {
-            throw new IllegalStateException("next run time hasn't been calculated yet");
-        }
-        return nextRunTimeInSeconds;
-    }
-
-    public void process() {
+    @Override
+    public void process(IModelBuildingListener listener) {
         EntitiesSelector entitiesSelector = modelConf.getEntitiesSelector();
         String[] entities;
         if (entitiesSelector != null) {
@@ -36,9 +31,21 @@ public class ModelBuilderManager {
             entities = new String[]{null};
         }
         for (String entityID : entities) {
-            ModelBuilderData modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
+            Object modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
             Model model = modelConf.getModelBuilder().build(modelBuilderData);
-            modelConf.getModelStore().save(modelConf, entityID, model);
+            boolean success = modelConf.getModelStore().save(modelConf, entityID, model);
+
+            if (listener != null) {
+                // TODO: Change to contextId
+                listener.modelBuildingStatus(modelConf.getName(), null, success);
+            }
         }
+
+        scheduler.register(this, calcNextRunTimeInSeconds());
+    }
+
+    private long calcNextRunTimeInSeconds() {
+        long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+        return currentTimeSeconds + modelConf.getBuildIntervalInSeconds();
     }
 }

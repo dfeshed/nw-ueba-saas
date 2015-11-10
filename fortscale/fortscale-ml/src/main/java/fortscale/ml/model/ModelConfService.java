@@ -6,15 +6,18 @@ import groovy.json.JsonException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelConfService implements InitializingBean {
+public class ModelConfService implements InitializingBean, ApplicationContextAware {
     private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
     private static final Logger logger = Logger.getLogger(ModelConfService.class);
 
@@ -22,11 +25,17 @@ public class ModelConfService implements InitializingBean {
     private String modelConfigurationsJSONFilePath;
 
     private List<ModelConf> modelConfs;
+    private ApplicationContext applicationContext;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         modelConfs = new ArrayList<>();
         loadModelDefinitions(modelConfigurationsJSONFilePath);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     public List<ModelConf> getModelConfs() {
@@ -38,7 +47,8 @@ public class ModelConfService implements InitializingBean {
         String errorMsg;
 
         try {
-            JSONObject json = (JSONObject) JSONValue.parseWithException(new FileReader(JSONFilePath));
+            Resource jsonResource = applicationContext.getResource(JSONFilePath);
+            JSONObject json = (JSONObject) JSONValue.parseWithException(jsonResource.getInputStream());
             modelConfJSONs = (JSONArray) json.get(MODEL_CONFS_JSON_FIELD_NAME);
         } catch (Exception e) {
             errorMsg = String.format("Failed to parse JSON file %s", JSONFilePath);
