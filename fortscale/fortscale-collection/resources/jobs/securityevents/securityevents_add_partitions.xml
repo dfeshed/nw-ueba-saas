@@ -108,7 +108,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.data.security4769.path}</value>
+						<value>${hdfs.user.data.kerberosLogin.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -137,7 +137,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.security4769.path}</value>
+						<value>${hdfs.user.processeddata.kerberosLogin.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -165,7 +165,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.security4769.top.path}</value>
+						<value>${hdfs.user.processeddata.kerberosLogin.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -193,11 +193,11 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.enricheddata.security4769.path}</value>
+						<value>${hdfs.user.enricheddata.kerberosLogin.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.enricheddata.security4769.table.nam}</value>
+						<value>${impala.enricheddata.kerberosLogin.table.nam}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
