@@ -13,14 +13,11 @@ import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
-import static fortscale.utils.ConversionUtils.convertToString;
-
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
-	private static final String LAST_STATE_FIELD_NAME = "last_state";
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 
@@ -129,10 +126,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 		return datasource;
 
-	}
-
-	protected String getInputMessageState(JSONObject message) {
-		return convertToString(message.get(AbstractStreamTask.LAST_STATE_FIELD_NAME));
 	}
 
 	private String resolveOutputMessageState() throws Exception {
