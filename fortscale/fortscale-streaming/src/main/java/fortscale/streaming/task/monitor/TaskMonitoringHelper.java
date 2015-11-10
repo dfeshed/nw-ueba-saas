@@ -173,7 +173,14 @@ public class TaskMonitoringHelper {
      * @param valueType
      */
     private void addJobData(String monitorId, String text, Integer value, String valueType ){
-        JobDataReceived dataReceived = new JobDataReceived(text, value, valueType);
+        JobDataReceived dataReceived;
+        if (value == null){
+            dataReceived = new JobDataReceived(text, valueType);
+        } else {
+
+            dataReceived = new JobDataReceived(text,value.intValue(), valueType);
+        }
+
         jobMonitorReporter.addDataReceived(monitorId,dataReceived);
     }
 }
