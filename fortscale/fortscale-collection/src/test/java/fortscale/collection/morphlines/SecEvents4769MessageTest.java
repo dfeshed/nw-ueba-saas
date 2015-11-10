@@ -36,7 +36,7 @@ public class SecEvents4769MessageTest {
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-		String kafkaMessageFields = propertiesResolver.getProperty("kafka.security4769.message.record.fields");
+		String kafkaMessageFields = propertiesResolver.getProperty("kafka.kerberosLogin.message.record.fields");
 		List<String> splunkSecEventsOutputFields = ImpalaParser.getTableFieldNames(kafkaMessageFields);
 		List<String> splunkSecEventsOutputFieldsExcludingEnrichment = new ArrayList<>();
 		for(String field: splunkSecEventsOutputFields){
