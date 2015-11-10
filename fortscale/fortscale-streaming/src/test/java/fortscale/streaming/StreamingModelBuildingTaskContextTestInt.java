@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/streaming-model-building-context.xml"})
 @Category(HadoopTestCategory.class)
 public class StreamingModelBuildingTaskContextTestInt {
-	@Test
-	@Category(IntegrationTestCategory.class)
-	public void testContext() {}
+//	@Test
+//	@Category(IntegrationTestCategory.class)
+//	public void testContext() {}
 }
