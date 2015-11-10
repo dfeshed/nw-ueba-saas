@@ -111,6 +111,17 @@ public class ModelConfTest {
                 builStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
+    
+    @Test
+    public void shouldNotFailIfSelectorNotGiven() throws IOException {
+        JSONObject modelConfJSON = buildModelConfJSON("some name",
+                1,
+                null,
+                builRetrieverJSON(),
+                builBuilderJSON("continuous_data_histogram"),
+                builStoreJSON());
+        (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
+    }
 
     @Test(expected = Exception.class)
     public void shouldFailIfBuildIntervalInSecondsNotGiven() throws IOException {
