@@ -15,4 +15,6 @@ public class StreamingModelBuildingTaskContextTestInt {
 //	@Test
 //	@Category(IntegrationTestCategory.class)
 //	public void testContext() {}
+	@Test
+	public void test_to_remove() {}
 }
