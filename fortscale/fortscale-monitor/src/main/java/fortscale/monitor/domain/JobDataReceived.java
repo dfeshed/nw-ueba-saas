@@ -20,10 +20,17 @@ public class JobDataReceived {
 	private Map<String, Integer> filterCauseCount;
 	
 	public JobDataReceived() {}
-	
-	public JobDataReceived(String dataType, Integer value, String valueType) {
+
+	public JobDataReceived(String dataType, String valueType) {
 		this.dataType = dataType;
-		this.value = value;
+		this.value = null;
+		this.valueType = valueType;
+
+	}
+
+	public JobDataReceived(String dataType, int value, String valueType) {
+		this.dataType = dataType;
+		this.value = Integer.valueOf(value);
 		this.valueType = valueType;
 		normalizeValue();
 	}
