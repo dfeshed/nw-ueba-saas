@@ -32,19 +32,19 @@
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.enricheddata.security4769.table.fields}</value>
+					<value>${impala.enricheddata.kerberosLogin.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.enricheddata.security4769.table.partition.type}</value>
+					<value>${impala.enricheddata.kerberosLogin.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.security4769.table.partition.type}</value>
+					<value>${impala.score.kerberosLogin.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.security4769.table.name}</value>
+					<value>${impala.score.kerberosLogin.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>

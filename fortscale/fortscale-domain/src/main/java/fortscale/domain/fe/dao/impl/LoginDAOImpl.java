@@ -10,11 +10,11 @@ import fortscale.utils.hdfs.partition.PartitionsUtils;
 
 public class LoginDAOImpl extends AccessDAO{
 	
-	@Value("${impala.score.security4769.table.name}")
+	@Value("${impala.score.kerberosLogin.table.name}")
 	private String tableName;	
-	@Value("${impala.score.security4769.table.fields}")
+	@Value("${impala.score.kerberosLogin.table.fields}")
 	private String impalaSecScoringTableFields;
-	@Value("${impala.score.security4769.table.partition.type}")
+	@Value("${impala.score.kerberosLogin.table.partition.type}")
 	private String partitionName;
 	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
 	public String TIMEGENERATED;
