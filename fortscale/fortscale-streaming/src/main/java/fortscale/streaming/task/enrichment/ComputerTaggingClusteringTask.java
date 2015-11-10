@@ -133,7 +133,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			TaskCoordinator coordinator) throws Exception {
 
 		// get message
-		String messageText = (String) envelope.getMessage();
+	//	String messageText = (String) envelope.getMessage();
 
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
@@ -144,12 +144,18 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+			JSONObject event = parseJsonMessage(envelope);
 
-			event = computerTaggingService.enrichEvent(inputTopic, event);
+			try {
+				event = computerTaggingService.enrichEvent(inputTopic, event);
+			} catch (Exception e){
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(event),e.getMessage());
+				throw e;
+			}
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
+				handleUnfilteredEvent(event);
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
@@ -160,6 +166,11 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
+	}
+
+	@Override
+	protected String getJobLabel() {
+		return "ComputerTaggingClusteringTask";
 	}
 
 	@Override

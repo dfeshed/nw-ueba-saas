@@ -145,7 +145,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
+
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -153,13 +153,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
-			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+			JSONObject message = parseJsonMessage(envelope);
 			// Get configuration for data source
 			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
 			if (configuration == null)
 			{
-				String filteredEventLabel = getDataSource(message)+": No configuration found for input topic "+inputTopic;
-				taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
+				String filteredEventLabel = "No configuration found for input topic "+inputTopic;
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
 				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
 				return;
 			}
@@ -169,14 +169,14 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// get the normalized username from input record
 			String normalizedUsername = convertToString(message.get(configuration.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
-
+				String messageText = (String)envelope.getMessage();
 				// get username
 				String username = convertToString(message.get(configuration.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
 					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
-					String filteredEventLabel = getDataSource(message)+": Message does not contains username in field " +
+					String filteredEventLabel = "Message does not contains username in field " +
 							configuration.getUsernameField();
-					taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
 					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
@@ -198,8 +198,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
-					String filteredEventLabel = getDataSource(message)+": User " + username + "does not exists";
-					taskMonitoringHelper.countNewFilteredEvents(filteredEventLabel);
+					String filteredEventLabel = "User " + username + "does not exists";
+					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), filteredEventLabel);
 					return;
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
@@ -214,9 +214,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			try {
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(configuration.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
+				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, (String)envelope.getMessage()), exception);
 			}
-			taskMonitoringHelper.handleUnFilteredEvents(getDataSource(message),message.getAsNumber("date_time_unix"), message.getAsString("date_time"));
+			handleUnfilteredEvent(message);
 		}
 	}
 

@@ -11,6 +11,7 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -70,6 +71,9 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
 		task.computerTaggingService = mock(ComputerTaggingService.class);
+
+		TaskMonitoringHelper taskMonitoringHelper = mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 
 	}
 
