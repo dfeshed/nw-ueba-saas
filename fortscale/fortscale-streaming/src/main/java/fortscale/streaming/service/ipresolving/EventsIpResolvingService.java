@@ -117,28 +117,6 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
         return this.reservedIpAddersses;
     }
 
-    public String getOutputTopic(String inputTopic) {
-        if (configs.containsKey(inputTopic))
-            return configs.get(inputTopic).getOutputTopic();
-        else
-            throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
-    }
-
-    /** Get the partition key to use for outgoing message envelope for the given event */
-    public Object getPartitionKey(String inputTopic, JSONObject event) {
-        checkNotNull(inputTopic);
-        checkNotNull(event);
-
-        // get the configuration for the input topic, if not found return empty key
-        EventResolvingConfig config = configs.get(inputTopic);
-        if (config==null) {
-            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
-            return null;
-        }
-
-        return event.get(config.getPartitionField()).toString();
-    }
-
 	/** Drop Event when resolving fail??
 	 *
 	 */

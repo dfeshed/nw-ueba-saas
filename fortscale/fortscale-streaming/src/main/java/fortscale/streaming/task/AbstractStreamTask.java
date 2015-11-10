@@ -132,20 +132,16 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
-//	protected String getDataSourcDisplayName(JSONObject message){
-//		String dataSourceName = getDataSource(message);
-//		if (dataSourceName == null){
-//			dataSourceName = "";
-//		}
-//		return dataSourceName;
-//	}
-
 	//This is the name of job that will be presented in the monitoring screen
 	//The method should be override
 	protected String getJobLabel(){
 		return this.getClass().getName();
 	}
 
+	/**
+	 * handleUnfilteredEvent
+	 * @param event
+	 */
 	protected void handleUnfilteredEvent(JSONObject event){
 
 		String dataSource  = getDataSource(event);

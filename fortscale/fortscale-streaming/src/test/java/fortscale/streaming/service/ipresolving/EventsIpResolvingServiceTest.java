@@ -119,7 +119,7 @@ public class EventsIpResolvingServiceTest {
 
 
     @Test
-    public void service_should_return_partition_field() {
+    public void service_should_return_partition_field() throws FilteredEventException{
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
         event.put("time", 3L);
