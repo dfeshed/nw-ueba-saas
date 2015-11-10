@@ -1,5 +1,5 @@
 package fortscale.ml.model;
 
-public interface Registrar {
+public interface IModelBuildingRegistrar {
 	public void process();
 }
