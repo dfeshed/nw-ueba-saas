@@ -22,6 +22,7 @@ public class FeatureBucket {
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
 	public static final String DATA_SOURCES_FIELD = "dataSources";
 	public static final String CONTEXT_FIELD_NAMES_FIELD = "contextFieldNames";
+	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 	public static final String BUCKET_ID_FIELD = "bucketId";
@@ -44,6 +45,8 @@ public class FeatureBucket {
 	private String strategyId;
 	@Field(CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD)
 	private Map<String, String> contextFieldNameToValueMap = new HashMap<>();
+	@Field(CONTEXT_ID_FIELD)
+	private String contextId;
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
 	
@@ -110,6 +113,14 @@ public class FeatureBucket {
 
 	public void setContextFieldNameToValueMap(Map<String, String> contextFieldNameToValueMap) {
 		this.contextFieldNameToValueMap = contextFieldNameToValueMap;
+	}
+
+	public String getContextId() {
+		return contextId;
+	}
+
+	public void setContextId(String contextId) {
+		this.contextId = contextId;
 	}
 
 	public String getBucketId() {

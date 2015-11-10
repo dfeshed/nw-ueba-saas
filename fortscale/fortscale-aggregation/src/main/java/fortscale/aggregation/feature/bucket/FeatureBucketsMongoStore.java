@@ -98,6 +98,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.DESC).unique(Duplicates.DROP));
+			
+			// Context ID + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
+					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
 			// Strategy ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
@@ -120,6 +125,16 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		} catch (Exception e) {
 			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
+		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+
+		Criteria endTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(endTime));
+
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+		return mongoTemplate.getCollection(getCollectionName(featureBucketConf)).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
 	}
 
 	private String getCollectionName(FeatureBucketConf featureBucketConf) {
