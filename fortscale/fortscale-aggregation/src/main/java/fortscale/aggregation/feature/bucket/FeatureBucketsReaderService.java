@@ -20,5 +20,8 @@ public class FeatureBucketsReaderService {
 	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
 		return featureBucketsMongoStore.findDistinctContextByTimeRange(featureBucketConf, startTime, endTime);
 	}
-	
+
+	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds, long endTimeInSeconds) {
+		return featureBucketsMongoStore.getFeatureBucketsByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
+	}
 }
