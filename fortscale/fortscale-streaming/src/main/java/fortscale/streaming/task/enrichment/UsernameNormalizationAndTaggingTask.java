@@ -90,22 +90,22 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
 			String configKey = ConfigField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
-			String inputState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
 			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
 			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
-			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
-					dataSource));
-			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
-							+ ".domain.fake.%s", dataSource)) : "";
-			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events"
-					+ ".normalizedusername.field.%s",dataSource));
-			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
-			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
-			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
+					configKey));
+			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
+							+ ".domain.fake", configKey)) : "";
+			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
+					+ ".normalizedusername.field",dataSource));
+			String partitionKey = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic",dataSource));
+			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",dataSource));
+			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", dataSource));
+			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", dataSource));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
