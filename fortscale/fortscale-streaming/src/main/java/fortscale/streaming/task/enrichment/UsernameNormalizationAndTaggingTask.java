@@ -7,6 +7,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
@@ -56,9 +57,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
 
 	/**
-	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 * Map of configuration: from the data-source and state to an entry of normalization service and output topic
 	 */
-	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
@@ -101,18 +102,18 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
 							+ ".domain.fake", configKey)) : "";
 			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
-					+ ".normalizedusername.field",dataSource));
-			String partitionKey = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic",dataSource));
-			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",dataSource));
-			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", dataSource));
+					+ ".normalizedusername.field",configKey));
+			String partitionKey = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic",configKey));
+			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
+			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
+			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", configKey));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
+			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(inputTopic, outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
@@ -158,7 +159,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
 			// Get configuration for data source
-			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
+			UsernameNormalizationConfig configuration = dataSourceToConfigurationMap.get(inputTopic);
 			if (configuration == null)
 			{
 				String filteredEventLabel = "No configuration found for input topic "+inputTopic;

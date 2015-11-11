@@ -1,9 +1,5 @@
 package fortscale.streaming.task.enrichment;
 
-import fortscale.streaming.service.SpringService;
-import fortscale.streaming.task.monitor.TaskMonitoringHelper;
-import org.junit.Before;
-import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.UserService;
 import fortscale.services.impl.UserServiceImpl;
@@ -13,6 +9,7 @@ import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -21,12 +18,17 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
@@ -96,9 +98,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
 
 		// configuration
-		task.inputTopicToConfiguration = new HashMap<>();
+		task.dataSourceToConfigurationMap = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1",
+		task.dataSourceToConfigurationMap.put("input1" , new UsernameNormalizationConfig("input1", "output1",
 				usernameField,"domain","",normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
