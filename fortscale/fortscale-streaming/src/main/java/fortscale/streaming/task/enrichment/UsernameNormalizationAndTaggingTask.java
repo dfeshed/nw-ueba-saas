@@ -7,6 +7,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
@@ -56,9 +57,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
 
 	/**
-	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 * Map of configuration: from the data-source and state to an entry of normalization service and output topic
 	 */
-	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
@@ -87,28 +88,32 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
-			String dataSource = ConfigField.getKey();
-			String inputTopic = ConfigField.getValue();
-			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
-			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
-			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
-					dataSource));
-			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
-							+ ".domain.fake.%s", dataSource)) : "";
-			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events"
-					+ ".normalizedusername.field.%s",dataSource));
-			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
-			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
-			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+		for (Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = ConfigField.getValue();
+			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+
+			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
+
+			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
+			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
+					configKey));
+			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
+							+ ".domain.fake", configKey)) : "";
+			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
+					+ ".normalizedusername.field",configKey));
+			String partitionKey = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic",configKey));
+			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
+			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
+			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", configKey));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
+			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(inputTopic, outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
@@ -143,8 +148,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// parse the message into json 
-
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -153,8 +156,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
-			// Get configuration for data source
-			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
+
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+
+			UsernameNormalizationConfig configuration = dataSourceToConfigurationMap.get(configKey);
 			if (configuration == null)
 			{
 				String filteredEventLabel = "No configuration found for input topic "+inputTopic;
