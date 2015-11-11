@@ -74,6 +74,14 @@
                     <key>notificationsToIgnore</key>
                     <value>${collection.evidence.notification.ignore}</value>
                 </entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>Notification</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
             </job-data-map>
         </job>
 

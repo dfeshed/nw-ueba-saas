@@ -57,7 +57,7 @@
                     <value>kerberosLogin</value>
                 </entry>
                 <entry>
-                    <key>lastStep</key>
+                    <key>lastState</key>
                     <value>etl</value>
                 </entry>
 			</job-data-map>

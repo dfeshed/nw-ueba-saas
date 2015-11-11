@@ -45,7 +45,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
     private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
 	private static final String DATA_SOURCE_PARAMETER = "dataSource";
-	private static final String LAST_STEP_PARAMETER = "lastStep";
+	private static final String LAST_STATE_PARAMETER = "lastState";
 
     //define how much time to subtract from now to get the last event time to send to streaming job
     //default of 3 hours - 60 * 60 * 3
@@ -76,7 +76,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private long latestLoggerWriteTime = 0;
     private int sleepingCounter = 0;
 	private String dataSource;
-	private String lastStep;
+	private String lastState;
 
 
     protected String getTableName() {
@@ -103,7 +103,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
         maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT);
 		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
-		lastStep = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STEP_PARAMETER );
+		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
@@ -142,7 +142,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
 					//Add the data source sign to the message
 					fillJsonWithFieldValue(json, "data_source", dataSource);
 					//Add the last step  sign to the message
-					fillJsonWithFieldValue(json, "last_state ", lastStep);
+					fillJsonWithFieldValue(json, "last_state ", lastState);
 
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
                     long currentEpochTimeField = convertToLong(result.get(epochtimeField));
