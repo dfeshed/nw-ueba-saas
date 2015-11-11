@@ -10,7 +10,7 @@
 
 
 
-    
+
 
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
@@ -29,7 +29,7 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale" />
-    
+
     <!--List of Tagging service implementation -->
     <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
     <bean id = "serverUsageImpl" class="fortscale.streaming.service.tagging.UseServerDesktopTagImpl"></bean>
@@ -164,6 +164,11 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
+    <bean id="genericUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
+    </bean>
 
     <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${security.normalizedUser.fail.filter:true}"/>
@@ -180,6 +185,11 @@
     <bean id="AMTUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${amt.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="amtUsernameNormalizer"/>
+    </bean>
+
+    <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>
+        <property name="usernameNormalizer" ref="genericUsernameNormalizer"/>
     </bean>
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />

@@ -87,11 +87,15 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
-			String dataSource = ConfigField.getKey();
-			String inputTopic = ConfigField.getValue();
-			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
-			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
+		for (Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = ConfigField.getValue();
+			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+			String inputState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+
+			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
+
+			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
 			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
 					dataSource));
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
