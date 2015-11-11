@@ -541,7 +541,7 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'CORP' && @.action_string == 'User Open Failed')]"}
+          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
@@ -608,7 +608,7 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'CORP' && @.action_string == 'User Open Failed')]"}
+          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
