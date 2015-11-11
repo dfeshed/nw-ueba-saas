@@ -36,10 +36,10 @@ import static org.mockito.Mockito.never;
 public class UsernameNormalizationAndTaggingTaskTest {
 
 
-	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\" }";
-	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\" }";
-	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\" }";
-	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\" }";
+	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
+	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\", \"data_source\": \"vpn\" }";
+	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
+	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
 
 	UsernameNormalizationAndTaggingTask task;
 	UserService userService;
@@ -222,7 +222,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 	}
 
 	private IncomingMessageEnvelope getIncomingMessageEnvelope(SystemStreamPartition systemStreamPartition,
-					SystemStream systemStream, String key, String message, String topic) {
+															   SystemStream systemStream, String key, String message, String topic) {
 
 		IncomingMessageEnvelope envelope = Mockito.mock(IncomingMessageEnvelope.class);
 		Mockito.when(envelope.getKey()).thenReturn(key);
