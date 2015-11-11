@@ -3,7 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilder;
-import fortscale.ml.model.retriever.ModelBuilderDataRetriever;
+import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
 import org.springframework.util.Assert;
 
@@ -12,7 +12,7 @@ public class ModelConf {
     private long buildIntervalInSeconds;
     private EntitiesSelector entitiesSelector;
     private IModelBuilder modelBuilder;
-    private ModelBuilderDataRetriever modelBuilderDataRetriever;
+    private IDataRetriever dataRetriever;
     private ModelStore modelStore;
 
     @JsonCreator
@@ -20,20 +20,20 @@ public class ModelConf {
                      @JsonProperty("buildIntervalInSeconds") long buildIntervalInSeconds,
                      @JsonProperty("selector") EntitiesSelector entitiesSelector,
                      @JsonProperty("builder") IModelBuilder modelBuilder,
-                     @JsonProperty("retriever") ModelBuilderDataRetriever modelBuilderDataRetriever,
+                     @JsonProperty("retriever") IDataRetriever dataRetriever,
                      @JsonProperty("store") ModelStore modelStore) {
 
         Assert.hasText(name);
         Assert.isTrue(buildIntervalInSeconds > 0);
         Assert.notNull(modelBuilder);
-        Assert.notNull(modelBuilderDataRetriever);
+        Assert.notNull(dataRetriever);
         Assert.notNull(modelStore);
 
         this.name = name;
         this.buildIntervalInSeconds = buildIntervalInSeconds;
         this.entitiesSelector = entitiesSelector;
         this.modelBuilder = modelBuilder;
-        this.modelBuilderDataRetriever = modelBuilderDataRetriever;
+        this.dataRetriever = dataRetriever;
         this.modelStore = modelStore;
     }
 
@@ -53,8 +53,8 @@ public class ModelConf {
         return modelBuilder;
     }
 
-    public ModelBuilderDataRetriever getModelBuilderDataRetriever() {
-        return modelBuilderDataRetriever;
+    public IDataRetriever getDataRetriever() {
+        return dataRetriever;
     }
 
     public ModelStore getModelStore() {

@@ -6,6 +6,7 @@
       "selector": {
       },
       "retriever": {
+        "type": "entity_histogram_retriever"
       },
       "builder": {
         "type": "continuous_data_histogram"
@@ -19,6 +20,7 @@
       "selector": {
       },
       "retriever": {
+        "type": "entity_histogram_retriever"
       },
       "builder": {
         "type": "continuous_data_histogram"

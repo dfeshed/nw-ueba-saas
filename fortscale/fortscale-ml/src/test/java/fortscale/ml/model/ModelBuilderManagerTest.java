@@ -2,7 +2,7 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
-import fortscale.ml.model.retriever.ModelBuilderDataRetriever;
+import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
 import fortscale.utils.time.TimestampUtils;
 import org.junit.Before;
@@ -20,13 +20,13 @@ public class ModelBuilderManagerTest {
     @Mock
     EntitiesSelector entitiesSelector;
     @Mock
-    ModelBuilderDataRetriever modelBuilderDataRetriever;
+    IDataRetriever dataRetriever;
     @Mock
     IModelBuilder modelBuilder;
     @Mock
     ModelStore modelStore;
 
-    private ModelBuilderManager createProcessScenario(String[] entityIDs, Model[] entityModels, Object[] modelBuilderDatas, Boolean[] successes) {
+    private ModelBuilderManager createProcessScenario(String[] entityIDs, Model[] entityModels, Object[] modelBuilderData, Boolean[] successes) {
         if (entityIDs != null) {
             // entity model scenario
             Mockito.when(modelConf.getEntitiesSelector()).thenReturn(entitiesSelector);
@@ -35,14 +35,14 @@ public class ModelBuilderManagerTest {
             Mockito.when(modelConf.getEntitiesSelector()).thenReturn(null);
             entityIDs = new String[]{null};
         }
-        Mockito.when(modelConf.getModelBuilderDataRetriever()).thenReturn(modelBuilderDataRetriever);
+        Mockito.when(modelConf.getDataRetriever()).thenReturn(dataRetriever);
         Mockito.when(modelConf.getModelBuilder()).thenReturn(modelBuilder);
         Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
 
         Mockito.when(entitiesSelector.getEntities()).thenReturn(entityIDs);
         for (int i = 0; i < entityIDs.length; i++) {
-            Mockito.when(modelBuilderDataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderDatas[i]);
-            Mockito.when(modelBuilder.build(modelBuilderDatas[i])).thenReturn(entityModels[i]);
+            Mockito.when(dataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderData[i]);
+            Mockito.when(modelBuilder.build(modelBuilderData[i])).thenReturn(entityModels[i]);
             Mockito.when(modelStore.save(modelConf, entityIDs[i], entityModels[i])).thenReturn(successes[i]);
         }
         return new ModelBuilderManager(modelConf, scheduler);
@@ -69,7 +69,7 @@ public class ModelBuilderManagerTest {
     }
 
     @Test
-    public void shouldRegiterItselfInsideCtor() {
+    public void shouldRegisterItselfInsideCtor() {
         Mockito.when(modelConf.getBuildIntervalInSeconds()).thenReturn(60L);
         ModelBuilderManager modelManager = new ModelBuilderManager(modelConf, scheduler);
         verifyModelManagerRegistered(modelManager);

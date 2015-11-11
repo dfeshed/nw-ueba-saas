@@ -31,7 +31,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
             entities = new String[]{null};
         }
         for (String entityID : entities) {
-            Object modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(entityID);
+            Object modelBuilderData = modelConf.getDataRetriever().retrieve(entityID);
             Model model = modelConf.getModelBuilder().build(modelBuilderData);
             boolean success = modelConf.getModelStore().save(modelConf, entityID, model);
 
