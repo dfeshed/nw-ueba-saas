@@ -17,7 +17,7 @@ public class JobDataReceived {
 	private String dataType;
 	private Integer value;
 	private String valueType;
-	private Map<String, Integer> filterCauseCount;
+
 	
 	public JobDataReceived() {}
 
@@ -68,16 +68,6 @@ public class JobDataReceived {
 	public void setValueType(String valueType) {
 		this.valueType = valueType;
 	}
-
-
-	public Map<String, Integer> getFilterCauseCount() {
-		return filterCauseCount;
-	}
-
-	public void setFilterCauseCount(Map<String, Integer> filterCauseCount) {
-		this.filterCauseCount = filterCauseCount;
-	}
-
 
 
 	@Override

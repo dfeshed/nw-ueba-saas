@@ -41,7 +41,7 @@ public class ApiMonitorControllerTest {
 		report.setSourceType("MySource");
 		report.setJobName("MyJob");
 		report.setFinish(new Date());
-		report.getDataReceived().add(new JobDataReceived("MyType", 0, "Events"));
+		report.getDataReceived().add(new JobDataReceived("MyType", new Integer(0), "Events"));
 		report.setShouldReportDataReceived(true);
 		reports.add(report);
 		when(monitor.findLatestJobReports()).thenReturn(reports);
@@ -64,8 +64,8 @@ public class ApiMonitorControllerTest {
 		report.setSourceType("MySource");
 		report.setJobName("MyJob");
 		report.setFinish(new Date());
-		report.getDataReceived().add(new JobDataReceived("MyTypeA", 0, "Events"));
-		report.getDataReceived().add(new JobDataReceived("MyTypeB", 1, "Events"));
+		report.getDataReceived().add(new JobDataReceived("MyTypeA", new Integer(0), "Events"));
+		report.getDataReceived().add(new JobDataReceived("MyTypeB", new Integer(1), "Events"));
 		reports.add(report);
 		when(monitor.findLatestJobReports()).thenReturn(reports);
 		

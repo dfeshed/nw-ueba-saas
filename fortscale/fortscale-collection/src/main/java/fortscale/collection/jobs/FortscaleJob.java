@@ -192,7 +192,7 @@ public abstract class FortscaleJob implements Job {
 	}
 	
 	protected void monitorDataReceived(String dataType, int value, String valueType){
-		monitor.addDataReceived(monitorId, new JobDataReceived(dataType, value, valueType));
+		monitor.addDataReceived(monitorId, new JobDataReceived(dataType, new Integer(value), valueType));
 	}
 	
 	private JobDataReceived getJobDataReceived(File output, String dataType) {
