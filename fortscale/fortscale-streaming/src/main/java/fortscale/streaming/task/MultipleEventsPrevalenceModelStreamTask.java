@@ -1,27 +1,22 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.samza.config.Config;
-import org.apache.samza.config.MapConfig;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.samza.config.Config;
+import org.apache.samza.config.MapConfig;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private static final String FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME = "fortscale.events-prevalence-stream-managers.data-sources";

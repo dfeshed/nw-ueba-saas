@@ -297,10 +297,10 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 
 	private JobDataReceived getJobDataReceived(File output) {
 		if (output.length() < 1024) {
-			return new JobDataReceived("Events", (int)output.length(), "Bytes");
+			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
 		} else {
 			int sizeInKB = (int) (output.length() / 1024);
-			return new JobDataReceived("Events", sizeInKB, "KB");
+			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
 		}
 	}
 

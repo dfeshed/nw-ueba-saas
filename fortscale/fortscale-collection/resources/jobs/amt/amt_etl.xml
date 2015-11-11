@@ -24,6 +24,10 @@
                     <value>${impala.data.amt.table.fields}</value>
                 </entry>
                 <entry>
+                    <key>messageOutputFields</key>
+                    <value>${kafka.amt.message.record.fields}</value>
+                </entry>
+                <entry>
                     <key>timestampField</key>
                     <value>${impala.data.table.fields.epochtime}</value>
                 </entry>

@@ -2,8 +2,6 @@ package fortscale.monitor.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Map;
-
 /**
  * indicates the amount of data received by the job. Could hold values of 
  * various types.
@@ -17,11 +15,13 @@ public class JobDataReceived {
 	private String dataType;
 	private Integer value;
 	private String valueType;
-	private Map<String, Integer> filterCauseCount;
+
 	
 	public JobDataReceived() {}
-	
-	public JobDataReceived(String dataType, Integer value, String valueType) {
+
+
+
+	public JobDataReceived(String dataType, Integer  value, String valueType) {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
@@ -61,16 +61,6 @@ public class JobDataReceived {
 	public void setValueType(String valueType) {
 		this.valueType = valueType;
 	}
-
-
-	public Map<String, Integer> getFilterCauseCount() {
-		return filterCauseCount;
-	}
-
-	public void setFilterCauseCount(Map<String, Integer> filterCauseCount) {
-		this.filterCauseCount = filterCauseCount;
-	}
-
 
 
 	@Override

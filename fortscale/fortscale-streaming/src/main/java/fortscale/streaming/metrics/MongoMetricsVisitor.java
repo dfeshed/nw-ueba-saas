@@ -24,7 +24,7 @@ public class MongoMetricsVisitor extends MetricsVisitor {
 	
 	@Override
 	public void counter(Counter counter) {
-		reporter.addDataReceived(monitorId, new JobDataReceived(String.format("%s-%s", group, counter.getName()), (int)counter.getCount(), ""));		
+		reporter.addDataReceived(monitorId, new JobDataReceived(String.format("%s-%s", group, counter.getName()), new Integer((int)counter.getCount()), ""));
 	}
 
 	@Override

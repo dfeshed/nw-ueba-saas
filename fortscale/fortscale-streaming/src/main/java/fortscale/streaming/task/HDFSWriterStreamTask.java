@@ -15,7 +15,6 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -24,9 +23,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -43,6 +39,11 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
+	public static final String NO_WRITER_CONFIGURATIONS_LABEL = "No Writer Configurations";
+	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_label = "No timestamp field in message";
+	public static final String FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL = "Failed to Send Event to Kafka";
+	public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "Event Older then NewestEvent";
+
 
 	/**
 	 * Logger
@@ -179,8 +180,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			MessageCollector collector, TaskCoordinator coordinator)
 			throws Exception {
 		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+		JSONObject message = parseJsonMessage(envelope);
 
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
@@ -189,6 +190,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for topic " + topic + ". Dropping event");
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_WRITER_CONFIGURATIONS_LABEL);
 		}
 
 		// go over all writers and write message
@@ -199,7 +201,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
-				throw new StreamMessageNotContainFieldException(messageText, writerConfiguration.timestampField);
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
+				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
 
 			// get the username from the message
@@ -211,6 +214,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// filter messages if needed
 				if (filterMessage(message, writerConfiguration.filters)) {
 					writerConfiguration.skipedMessageCount.inc();
+
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
@@ -226,10 +230,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
+								handleUnfilteredEvent(message);
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
+								taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output topic %s after HDFS write",
 										  topic, outputTopic), exception);
@@ -241,18 +247,24 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
+			} else {//Event filter becuase of  barrier
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
 	}
-	
+
+
+
 	/**
 	 * filter message method that can be used by overriding instances to control 
 	 * which messages are written
 	 */
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
-			if (filter.filter(message))
+			if (filter.filter(message)) {
+				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), "MessageFilter: "+filter.getName());
 				return true;
+			}
 		}
 		return false;
 	}
@@ -317,6 +329,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 
+	}
+
+	@Override
+	protected String getJobLabel() {
+		return "HDFSWriterStreamTask";
 	}
 
 }
