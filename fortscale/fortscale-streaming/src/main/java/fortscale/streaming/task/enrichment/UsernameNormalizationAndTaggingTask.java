@@ -43,7 +43,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Since we are using the users in mongo when creating the notifications we must create the users in mongo after the normalization and not as part of regular updates in UserMongoUpdateTask.
  */
 public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask implements InitableTask {
-
+	
 	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
@@ -158,8 +158,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
-			// Get configuration for data source
-			UsernameNormalizationConfig configuration = dataSourceToConfigurationMap.get(inputTopic);
+
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+
+			UsernameNormalizationConfig configuration = dataSourceToConfigurationMap.get(configKey);
 			if (configuration == null)
 			{
 				String filteredEventLabel = "No configuration found for input topic "+inputTopic;

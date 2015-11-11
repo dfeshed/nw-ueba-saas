@@ -6,6 +6,7 @@ import fortscale.services.impl.UserServiceImpl;
 import fortscale.services.impl.UsernameService;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -100,7 +101,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		task.dataSourceToConfigurationMap = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.dataSourceToConfigurationMap.put("input1" , new UsernameNormalizationConfig("input1", "output1",
+		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("input1", "state1") , new UsernameNormalizationConfig("input1", "output1",
 				usernameField,"domain","",normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
