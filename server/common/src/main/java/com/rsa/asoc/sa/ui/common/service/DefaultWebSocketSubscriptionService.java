@@ -55,9 +55,9 @@ public class DefaultWebSocketSubscriptionService implements WebSocketSubscriptio
         String sessionId = SimpMessageHeaderAccessor.getSessionId(headers);
         String taskId = submit(headers, request, () -> future.cancel(true));
         future.handle((ok, ex) -> {
-                cleanupTask(sessionId, taskId);
-                return ok;
-            });
+            cleanupTask(sessionId, taskId);
+            return ok;
+        });
         return taskId;
     }
 

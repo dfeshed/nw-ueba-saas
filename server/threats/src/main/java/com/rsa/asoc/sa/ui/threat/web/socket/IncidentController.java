@@ -132,14 +132,14 @@ public class IncidentController {
             // Make another request recursively
             if (streamingRequest.continueSending()) {
                 future.thenRunAsync(SecurityContextUtils.wrap(streamingRequest.authentication, () -> {
-                        Request pagingRequest = streamingRequest.nextPagingRequest();
+                    Request pagingRequest = streamingRequest.nextPagingRequest();
 
-                        CompletableFuture<Response<List<Incident>>> responseFuture =
-                                incidentService.findIncidents(pagingRequest).thenApply((incidents) ->
-                                        new Response<>(incidents, response.getMeta(), streamingRequest.request));
+                    CompletableFuture<Response<List<Incident>>> responseFuture =
+                            incidentService.findIncidents(pagingRequest).thenApply((incidents) ->
+                                    new Response<>(incidents, response.getMeta(), streamingRequest.request));
 
-                        responseFuture.thenAccept(responseConsumer(streamingRequest, responseFuture));
-                    }));
+                    responseFuture.thenAccept(responseConsumer(streamingRequest, responseFuture));
+                }));
             }
         };
     }

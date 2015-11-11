@@ -33,11 +33,11 @@ public class YmlApplianceEndpointRepository implements ApplianceEndpointReposito
     public void init() {
         // Pre-fetch all the ApplianceDescriptions on startup so we don't have to do it for each request
         applianceEndpointSettings.getEndpoints().stream().forEach((endpoint) -> {
-                Optional<ApplianceDescriptor> optional = findApplianceById(endpoint.getApplianceId());
-                if (optional.isPresent()) {
-                    endpoint.setApplianceDescriptor(optional.get());
-                }
-            });
+            Optional<ApplianceDescriptor> optional = findApplianceById(endpoint.getApplianceId());
+            if (optional.isPresent()) {
+                endpoint.setApplianceDescriptor(optional.get());
+            }
+        });
     }
 
     @Override

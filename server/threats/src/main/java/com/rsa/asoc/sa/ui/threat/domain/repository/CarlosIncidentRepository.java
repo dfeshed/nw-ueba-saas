@@ -47,23 +47,23 @@ public class CarlosIncidentRepository extends BaseCarlosRepository implements In
         // The incident management service throws a NullPointerException when an incident with the given
         // identifier cannot be found. Most likely a bug in IM.
         future = future.exceptionally((throwable) -> {
-                if (throwable instanceof NullPointerException) {
-                    return null;
-                }
-                throw new RuntimeException(throwable);
-            });
+            if (throwable instanceof NullPointerException) {
+                return null;
+            }
+            throw new RuntimeException(throwable);
+        });
 
         return future.thenApply(incidentMessage -> {
-                PropertyListProtocol.Dictionary dictionary = null;
-                if (incidentMessage != null && incidentMessage.hasGetIncidentResponse()
-                        && incidentMessage.getGetIncidentResponse().hasIncident()) {
-                    dictionary = incidentMessage.getGetIncidentResponse().getIncident();
-                }
+            PropertyListProtocol.Dictionary dictionary = null;
+            if (incidentMessage != null && incidentMessage.hasGetIncidentResponse()
+                    && incidentMessage.getGetIncidentResponse().hasIncident()) {
+                dictionary = incidentMessage.getGetIncidentResponse().getIncident();
+            }
 
-                return dictionary != null
-                        ? Optional.of(conversionService.convert(dictionary, Incident.class))
-                        : Optional.empty();
-            });
+            return dictionary != null
+                    ? Optional.of(conversionService.convert(dictionary, Incident.class))
+                    : Optional.empty();
+        });
     }
 
     @Override
@@ -100,11 +100,11 @@ public class CarlosIncidentRepository extends BaseCarlosRepository implements In
                 send(endpoint, message, IMProtocol.IncidentMessage.class);
 
         return future.thenApply(incidentMessage -> {
-                PropertyListProtocol.Dictionary dictionary =
-                        incidentMessage.getGetIncidentCountByGroupResponse().getGroupedIncidentCount();
+            PropertyListProtocol.Dictionary dictionary =
+                    incidentMessage.getGetIncidentCountByGroupResponse().getGroupedIncidentCount();
 
-                Integer count = ProtocolBufferUtils.getDictionaryValue(dictionary, "NOT_SET", Integer.class, 0);
-                return Long.valueOf(count);
-            });
+            Integer count = ProtocolBufferUtils.getDictionaryValue(dictionary, "NOT_SET", Integer.class, 0);
+            return Long.valueOf(count);
+        });
     }
 }

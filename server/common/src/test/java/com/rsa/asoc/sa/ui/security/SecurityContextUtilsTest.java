@@ -27,11 +27,11 @@ public class SecurityContextUtilsTest {
         assertNull(context.getAuthentication());
 
         Runnable wrapped = SecurityContextUtils.wrap(authentication, () -> {
-                SecurityContext innerContext = SecurityContextHolder.getContext();
+            SecurityContext innerContext = SecurityContextHolder.getContext();
 
-                assertNotNull(innerContext);
-                assertEquals(authentication, innerContext.getAuthentication());
-            });
+            assertNotNull(innerContext);
+            assertEquals(authentication, innerContext.getAuthentication());
+        });
 
         wrapped.run();
 
@@ -49,13 +49,13 @@ public class SecurityContextUtilsTest {
         assertNull(context.getAuthentication());
 
         Runnable wrapped = SecurityContextUtils.wrap(authentication, (Runnable) () -> {
-                SecurityContext innerContext = SecurityContextHolder.getContext();
+            SecurityContext innerContext = SecurityContextHolder.getContext();
 
-                assertNotNull(innerContext);
-                assertEquals(authentication, innerContext.getAuthentication());
+            assertNotNull(innerContext);
+            assertEquals(authentication, innerContext.getAuthentication());
 
-                throw new RuntimeException("failed");
-            });
+            throw new RuntimeException("failed");
+        });
 
         try {
             wrapped.run();
@@ -79,13 +79,13 @@ public class SecurityContextUtilsTest {
         assertNull(context.getAuthentication());
 
         Callable<String> wrapped = SecurityContextUtils.wrap(authentication, () -> {
-                SecurityContext innerContext = SecurityContextHolder.getContext();
+            SecurityContext innerContext = SecurityContextHolder.getContext();
 
-                assertNotNull(innerContext);
-                assertEquals(authentication, innerContext.getAuthentication());
+            assertNotNull(innerContext);
+            assertEquals(authentication, innerContext.getAuthentication());
 
-                return authentication.getName();
-            });
+            return authentication.getName();
+        });
 
         String name = wrapped.call();
         assertEquals("admin", name);
@@ -104,13 +104,13 @@ public class SecurityContextUtilsTest {
         assertNull(context.getAuthentication());
 
         Callable<String> wrapped = SecurityContextUtils.wrap(authentication, () -> {
-                SecurityContext innerContext = SecurityContextHolder.getContext();
+            SecurityContext innerContext = SecurityContextHolder.getContext();
 
-                assertNotNull(innerContext);
-                assertEquals(authentication, innerContext.getAuthentication());
+            assertNotNull(innerContext);
+            assertEquals(authentication, innerContext.getAuthentication());
 
-                throw new RuntimeException("failed");
-            });
+            throw new RuntimeException("failed");
+        });
 
         try {
             wrapped.call();

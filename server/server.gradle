@@ -79,7 +79,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = "6.10.1"
+        toolVersion = "6.11.2"
         configFile = file("${project(':server').projectDir}/checkstyle.xml")
     }
 

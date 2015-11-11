@@ -39,9 +39,9 @@ public class DefaultEndpointService implements EndpointService {
     public CompletableFuture<List<Endpoint>> getEndpointsByType(EndpointType type) {
         return applianceEndpointRepository.findEndpointsByType(type).thenApply((descriptors) ->
             descriptors.stream().map((desc) -> {
-                    GenericEndpoint genericEndpoint = new GenericEndpoint(desc.getApplianceDescriptor(), desc);
-                    genericEndpoint.setMessageEndpointFactory(messageEndpointFactory);
-                    return genericEndpoint;
-                }).collect(Collectors.toList()));
+                GenericEndpoint genericEndpoint = new GenericEndpoint(desc.getApplianceDescriptor(), desc);
+                genericEndpoint.setMessageEndpointFactory(messageEndpointFactory);
+                return genericEndpoint;
+            }).collect(Collectors.toList()));
     }
 }
