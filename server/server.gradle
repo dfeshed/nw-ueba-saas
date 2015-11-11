@@ -88,19 +88,19 @@ subprojects {
     }
     findbugsMain {
         reports {
-            xml.enabled = false
-            html.enabled = true
+            xml.enabled = true
+            html.enabled = false
         }
     }
     findbugsTest {
         reports {
-            xml.enabled = false
-            html.enabled = true
+            xml.enabled = true
+            html.enabled = false
         }
     }
 
     jacoco {
-        toolVersion = "0.7.5.201505241946"
+        toolVersion = "0.7.4.201502262128"
     }
     jacocoTestReport {
         reports {
