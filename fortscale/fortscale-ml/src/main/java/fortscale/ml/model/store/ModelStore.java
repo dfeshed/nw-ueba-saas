@@ -11,10 +11,14 @@ import org.springframework.data.mongodb.core.index.Index;
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
 
-	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+
+	@Autowired
+	ModelStore(MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService) {
+		this.mongoTemplate = mongoTemplate;
+		this.mongoDbUtilService = mongoDbUtilService;
+	}
 
 	public void save(ModelConf modelConf, String contextId, Model model) {
         ModelDAO modelDAO = new ModelDAO(contextId, model);
