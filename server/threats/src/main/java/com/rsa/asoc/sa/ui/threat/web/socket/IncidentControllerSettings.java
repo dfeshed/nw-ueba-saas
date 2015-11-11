@@ -16,7 +16,7 @@ public class IncidentControllerSettings {
     /**
      * The number of incidents to send, per message, when streaming the incident to a client.
      */
-    private int batchSize = 25;
+    private int batchSize = 300;
 
     public int getBatchSize() {
         return batchSize;

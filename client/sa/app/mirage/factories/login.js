@@ -3,9 +3,11 @@
  * @author Srividhya Mahalingam
  */
 
-import Mirage  from 'ember-cli-mirage';
+import Mirage  from "ember-cli-mirage";
+
+var logins = ["admin", "Ian", "Justin", "Tony"];
 
 export default Mirage.Factory.extend({
-    username: 'admin',
-    password: 'netwitness'
+    username: function(i) { return logins[i % logins.length]; },
+    password: "netwitness"
 });

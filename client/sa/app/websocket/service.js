@@ -38,6 +38,28 @@ var _connectionPromises = {},
     _subscriptions = {},
 
     /**
+     * Hash of arrays that are going to be populated by the results from on-going stream requests.
+     * The hash keys are request ids, the hash values are arrays.  These arrays stay in the cache until
+     * they are done streaming (i.e., an error occurs, or the stream has hit its limit, or all records have
+     * arrived in the stream).
+     * @type {{}}
+     * @private
+     */
+    _streamResults = {},
+
+    /**
+     * Hashes of resolve() and reject() functions, respectively, for Promises that were kicked off for on-going
+     * stream requests.
+     * The hash keys are request ids, the hash values are functions.  These functions stay in the cache until
+     * they are done streaming (i.e., an error occurs, or the stream has hit its limit, or all records have
+     * arrived in the stream).
+     * @type {{}}
+     * @private
+     */
+    _streamResolves = {},
+    _streamRejects = {},
+
+    /**
      * Counter used for auto-generating request ids.
      * @type {number}
      * @private
@@ -82,6 +104,68 @@ function _wrapCallback(callback) {
         }
         return callback(message);
     };
+}
+
+function _teardownStream(id) {
+    delete _streamResults[id];
+    delete _streamRejects[id];
+    delete _streamResolves[id];
+}
+
+/**
+ * Callback for handling responses from a stream request.
+ * Pushes the response data into the corresponding results array for that request, and resolves the corresponding
+ * promise for that request too.  Unless the response has an error code, in which case, rejects the promise.
+ * In order to access the corresponding results array, resolve function & reject function, this function relies
+ * on private caches of those things. These caches are populated at request time, and are then emptied out after
+ * the stream is done.
+ * This method assumes that:
+ * (1) it is harmless to call resolve() on a promise repeatedly, if its data stream comes back in multiple batches;
+ * (2) a promise should be resolved as soon as its first batch successfully returns;
+ * (3) if subsequent batches have an error code, we call reject on that promise which was already resolved earlier,
+ * and this might be ignored by the promise, but that's okay because (i) this is an unlikely scenario and (ii) we
+ * also update the array object's "errorCode" attribute in this scenario anyway.
+ * @param {object} message The STOMP message with a response for a data stream.
+ * @private
+ */
+function _onStreamMessage(message) {
+
+    // Validate the request id.
+    var response = message && message.body,
+        request = response && response.request,
+        id = request && request.id,
+        results = _streamResults[id];
+    if (!results) {
+        console.warn("Stream response with unexpected request id. Discarding it.", response);
+        return;
+    }
+
+
+    if (response.code !== 0) {
+        results.setProperties({
+            isStreaming: false,
+            errorCode: response.code
+        });
+        _streamRejects[id](response);
+        _teardownStream(id);
+    }
+    else {
+
+        // Update the results contents and meta.
+        results.pushObjects(response.data);
+        var count = results.get("length"),
+            total = response.meta && response.meta.total,
+            progress = total ? parseInt(100 * count / total, 10) : 100;
+        results.setProperties({
+            total: total,
+            progress: progress,
+            isStreaming: progress < 100
+        });
+        _streamResolves[id](results);
+        if (progress >= 100) {
+            _teardownStream(id);
+        }
+    }
 }
 
 export default Ember.Service.extend({
@@ -195,8 +279,8 @@ export default Ember.Service.extend({
      * by providing it in the input param).
      */
     subscribe: function(url, destination, callback, headers) {
-        var subs = _subscriptions[url],
-            sub = subs && subs[destination];
+        var subs = _subscriptions[url] = _subscriptions[url] || {},
+            sub = subs[destination];
         if (!sub) {
 
             // We don't have this subscription cached, so create it now.
@@ -209,6 +293,7 @@ export default Ember.Service.extend({
                     h.id = h.id || subscription.id;
                     return me.send(url, d || this.destination, h, b);
                 };
+                subs[destination] = subscription;
                 return subscription;
             });
         }
@@ -247,30 +332,28 @@ export default Ember.Service.extend({
 
         // Define an array to store the results.
         var me = this,
-            results = Ember.A();
-
-        // Equip the results array with attributes & a cancel method to stop this stream.
-        results.setProperties({
-            "isStreaming": true,
-            "progress": 0,
-            "params": params
-        });
+            results = Ember.A().setProperties({
+                "isStreaming": true,
+                "progress": 0,
+                "params": params
+            });
         results.cancel = function() {
             if (this.get("isStreaming")) {
                 me.send(
                     config.url,
                     config.cancelDestination,
                     {},
-                    {id: id}
+                    {id: id, cancel: true}
                 );
             }
         };
 
-        return new Ember.RSVP.Promise(function(resolve, reject){
+        // Cache the array so it can be populated later with the response data.
+        _streamResults[id] = results;
 
-            // Validate configuration.
+        return new Ember.RSVP.Promise(function(resolve, reject){
             if (!config || !config.url || !config.subscriptionDestination || !config.requestDestination) {
-                reject("Invalid configuration.");
+                reject("Invalid request configuration.");
                 return;
             }
 
@@ -278,38 +361,15 @@ export default Ember.Service.extend({
             me.subscribe(
                 config.url,
                 config.subscriptionDestination,
-
-                // When responses come from this subscription...
-                function(message){
-
-                    // Validate the request id.
-                    var response = message && message.body,
-                        request = response && response.request;
-                    if (request && request.id !== id) {
-                        console.warn("Stream response with unexpected request id. Discarding it.", response);
-                        return;
-                    }
-
-                    if (response.code !== 0) {
-                        reject(response);
-                    }
-                    else {
-
-                        // Update the results contents and meta.
-                        results.pushObjects(response.data);
-                        var count = results.get("length"),
-                            total = response.meta && response.meta.total,
-                            progress = total ? parseInt(100 * count / total, 10) : 100;
-                        results.setProperties({
-                            total: total,
-                            progress: progress,
-                            isStreaming: progress < 100
-                        });
-                        resolve(results);
-                    }
-                }
+                _onStreamMessage
             )
             .then(function(sub) {
+
+                // ...cache the resolve & reject functions for later use...
+                _streamResolves[id] = resolve;
+                _streamRejects[id] = reject;
+
+                // ... and request the data stream.
                 sub.send({}, params, config.requestDestination);
             })
             .catch(reject);

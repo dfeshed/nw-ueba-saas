@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
      * The time range unit of the current data query. A value from the enumeration sa/utils/time.UNITS.
      * @type String
      */
-    timeRangeUnit: timeUtil.UNITS.WEEK,
+    timeRangeUnit: timeUtil.UNITS.DAY,
 
     /**
      * The time range for these data records. An object with 2 properties, "from" and "to", which are both UTC Dates
@@ -35,14 +35,25 @@ export default Ember.Controller.extend({
     fetchModel: function(){
         var me = this,
             timeRangeUnit = this.get("timeRangeUnit"),
-            timeRange = this.get("timeRange");
+            timeRange = this.get("timeRange"),
+            oldModel = this.get("model");
+
+        // If any old model is still streaming, stop the stream. But don't destroy the model yet, so at least
+        // the user can still view its data while awaiting for the new data stream.
+        if (oldModel) {
+            var arr = oldModel.get("records");
+            if (arr && arr.cancel) {
+                arr.cancel();
+            }
+        }
 
         // @todo Move this configuration somewhere else (config/environment.js?)
         this.get("websocket").stream(
             {
                 url: "/threats/socket",
                 subscriptionDestination: "/user/queue/threats/incidents",
-                requestDestination: "/ws/threats/incidents/stream"
+                requestDestination: "/ws/threats/incidents/stream",
+                cancelDestination: "/ws/threats/cancel"
             },
             {
                 sort: [{field: "created", descending: true}],
@@ -50,13 +61,14 @@ export default Ember.Controller.extend({
                 stream: {limit: 10000}
             })
             .then(function(results) {
-                var oldModel = me.get("model"),
-                    newModel = IncidentsCube.create({
+                me.set("model", IncidentsCube.create({
                         array: results,
                         timeRangeUnit: timeRangeUnit,
                         timeRange: timeRange
-                    });
-                me.set("model", newModel);
+                    })
+                );
+
+                // Now that we are pointing to a new model, destroy the old one, if any.
                 if (oldModel) {
                     oldModel.destroy();
                 }

@@ -16,8 +16,14 @@ export default Ember.Route.extend({
         // Tears down the data.
         willTransition: function(){
             var cube = this.get("controller.model");
-            if (cube && cube.destroy) {
-                cube.destroy();
+            if (cube) {
+                var arr = cube.get("records");
+                if (arr && arr.cancel) {
+                    arr.cancel();
+                }
+                if (cube.destroy) {
+                    cube.destroy();
+                }
             }
         }
     }

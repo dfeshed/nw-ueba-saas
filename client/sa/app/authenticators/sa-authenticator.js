@@ -51,6 +51,10 @@ export default Base.extend({
         }).then(function(result) {
             var csrf = result.jqXHR.getResponseHeader("X-CSRF-TOKEN") || null;
             localStorage.setItem(csrfKey, csrf);
+
+            // Promise must return a response so that it wil be cached in session.content.secure, which
+            // can later be accessed by other code to read the current user's login & authorizations.
+            return result && result.response;
         });
     },
 
