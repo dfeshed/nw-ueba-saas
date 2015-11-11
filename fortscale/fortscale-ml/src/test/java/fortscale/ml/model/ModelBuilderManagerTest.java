@@ -4,6 +4,7 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.time.TimestampUtils;
 import org.junit.Before;
 import org.junit.Test;
