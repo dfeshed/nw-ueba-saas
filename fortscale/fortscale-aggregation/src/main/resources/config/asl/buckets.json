@@ -548,6 +548,20 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
@@ -601,6 +615,20 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
