@@ -4,7 +4,6 @@ import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -173,13 +172,8 @@ public class TaskMonitoringHelper {
      * @param valueType
      */
     private void addJobData(String monitorId, String text, Integer value, String valueType ){
-        JobDataReceived dataReceived;
-        if (value == null){
-            dataReceived = new JobDataReceived(text, valueType);
-        } else {
 
-            dataReceived = new JobDataReceived(text,value.intValue(), valueType);
-        }
+		JobDataReceived dataReceived = new JobDataReceived(text,value, valueType);
 
         jobMonitorReporter.addDataReceived(monitorId,dataReceived);
     }
