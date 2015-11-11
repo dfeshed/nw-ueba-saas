@@ -4,7 +4,6 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 
 public class ModelStore {
-	public boolean save(ModelConf modelConf, String contextId, Model model) {
-		return false;
+	public void save(ModelConf modelConf, String contextId, Model model) {
 	}
 }

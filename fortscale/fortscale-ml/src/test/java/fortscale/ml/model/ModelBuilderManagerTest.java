@@ -44,7 +44,9 @@ public class ModelBuilderManagerTest {
         for (int i = 0; i < entityIDs.length; i++) {
             Mockito.when(dataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderData[i]);
             Mockito.when(modelBuilder.build(modelBuilderData[i])).thenReturn(entityModels[i]);
-            Mockito.when(modelStore.save(modelConf, entityIDs[i], entityModels[i])).thenReturn(successes[i]);
+            if (!successes[i]) {
+                Mockito.doThrow(Exception.class).when(modelStore).save(modelConf, entityIDs[i], entityModels[i]);
+            }
         }
         return new ModelBuilderManager(modelConf, scheduler);
     }
