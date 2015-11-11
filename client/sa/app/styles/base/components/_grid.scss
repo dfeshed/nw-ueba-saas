@@ -105,7 +105,7 @@
     are fixed and known, and the section has auto scrolling enabled.
     Absolute positioning may be more reliable than flexbox when you have a scrolling area.
 */
-@mixin rsa-vertical-triplet($header-height, $footer-height) {
+@mixin rsa-vertical-triplet($header-height, $footer-height, $overflow: auto) {
     > header,
     > section,
     > footer {
@@ -124,7 +124,7 @@
     > section {
         top: $header-height;
         bottom: $footer-height;
-        overflow: auto;
+        overflow: $overflow;
     }
 
     /* Positions the footer at the bottom, with a fixed height. */

@@ -57,16 +57,28 @@ export default Ember.Controller.extend({
             },
             {
                 sort: [{field: "created", descending: true}],
-                filter: [{field: "created", range: timeRange}],
-                stream: {limit: 10000}
+                filter: [{field: "created", range: timeRange}]
             })
             .then(function(results) {
-                me.set("model", IncidentsCube.create({
-                        array: results,
-                        timeRangeUnit: timeRangeUnit,
-                        timeRange: timeRange
-                    })
-                );
+
+                // Wrap the incoming results in a cube to use as our new "model".
+                var newModel = IncidentsCube.create({
+                    array: results,
+                    timeRangeUnit: timeRangeUnit,
+                    timeRange: timeRange
+                });
+
+                // Preserve the old model's sort & filters onto the new model, so the only change is the time range.
+                // @assumes  Time range filter is applied only on server, not on client.
+                if (oldModel) {
+                    newModel
+                        .sort(oldModel.get("sortField"), oldModel.get("sortDesc"))
+                        .filter(oldModel.filters());
+                }
+                me.set("model", newModel);
+
+
+
 
                 // Now that we are pointing to a new model, destroy the old one, if any.
                 if (oldModel) {

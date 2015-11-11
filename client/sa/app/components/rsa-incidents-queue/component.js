@@ -96,7 +96,7 @@ export default Ember.Component.extend({
                     null : this.get("session.content.secure.username"),
                 cube = this.get("cube");
             if (cube && cube.filter) {
-                cube.filter("assignee", assignee, null, true);
+                cube.filter("assignee", assignee, null, false);
             }
         }
         Ember.run.once(this, setQueue);

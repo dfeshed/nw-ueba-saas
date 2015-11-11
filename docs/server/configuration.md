@@ -31,4 +31,4 @@ These are the system properties that can be overridden to configure the various 
 ## Threats - Incident Options
 |Property|Default Value|Description|
 |--------|-------------|-----------|
-|threats.incident.controller.batchSize|25|The number of incidents to send, per message, when streaming the incident to a client.|
+|threats.incident.controller.batchSize|300|The number of incidents to send, per message, when streaming the incident to a client.|

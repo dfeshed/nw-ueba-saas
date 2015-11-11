@@ -9,6 +9,15 @@ import Ember from "ember";
 import config from "../config/environment";
 
 /**
+ * Default limit on the number of records that a stream will transmit from server. Used to avoid excessive
+ * memory consumption on browser. Can be overwritten by each individual stream request via request.stream.limit.
+ * @type {number}
+ * @default 100000
+ * @private
+ */
+const _STREAM_LIMIT = 100000;
+
+/**
  * Hash of Promises for existing socket server connections. The hash keys are socket URLs. The hash values
  * are each a Promise, which resolves when the connection to the corresponding socket URL is successful.
  * Each promise is created by calling the service's connect() method. Each promise resolves with a reference
@@ -136,7 +145,7 @@ function _onStreamMessage(message) {
         id = request && request.id,
         results = _streamResults[id];
     if (!results) {
-        console.warn("Stream response with unexpected request id. Discarding it.", response);
+        Ember.Logger.warn("Stream response with unexpected request id. Discarding it.", response);
         return;
     }
 
@@ -198,7 +207,7 @@ export default Ember.Service.extend({
                         reject.apply(null, arguments || []);
                         delete _stompClients[url];
                     };
-                client.debug = config.socketDebug ? console.debug.bind(console) : null;
+                client.debug = config.socketDebug ? Ember.Logger.debug.bind(Ember.Logger) : null;
                 headers = headers || {};
                 headers['X-CSRF-TOKEN'] = localStorage.getItem("rsa-x-csrf-token");
                 client.connect(headers, success, fail);
@@ -325,10 +334,16 @@ export default Ember.Service.extend({
      */
     stream: function(config, params, id) {
 
-        // Ensure every request has an "id" param.
+        // Ensure every request has an "id".
         params = params || {};
         id = id || params.id || ("req-" + _requestCounter++);
         params.id = params.id || id;
+
+        // Ensure every request has a "stream.limit".
+        var stream = params.stream = params.stream || {};
+        if (typeof stream.limit !== "number") {
+            stream.limit = _STREAM_LIMIT;
+        }
 
         // Define an array to store the results.
         var me = this,

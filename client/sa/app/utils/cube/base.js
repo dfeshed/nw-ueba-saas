@@ -126,9 +126,11 @@ export default Ember.Object.extend({
      * this attribute and update themselves accordingly. Note: we increment lastRecalc, rather than setting it to the
      * current timestamp, because timestamps lack sufficient precision and could cause recalculations to be skipped
      * during fast operations.
+     * @returns {object} This cube instance.
      */
     recalc: function(){
         this.incrementProperty("lastRecalc");
+        return this;
     },
 
     /**
@@ -136,6 +138,7 @@ export default Ember.Object.extend({
      * such as "results".  Subsequently, the "results" will continue to be automatically sorted, even after records
      * are added or removed. The given field and order are cached in the attributes "sortField" and "sortDesc" for
      * future reference.
+     * @returns {object} This cube instance.
      */
     sort: function(field, desc){
         var props = {};
@@ -145,8 +148,9 @@ export default Ember.Object.extend({
         if (desc !== null) {
             props.sortDesc = !!desc;
         }
-        this.setProperties(props);
-        this.recalc();
+        return this
+            .setProperties(props)
+            .recalc();
     },
 
     /**
@@ -164,6 +168,7 @@ export default Ember.Object.extend({
      * (i) "filters" (Object[]): an array of objects with the properties "field", "value" & "options", which correspond
      * to the params of the 1st signature described above;
      * (ii) "clearOthers" (Boolean): see the description of the "clearOthers" param in the 1st signature above.
+     * @returns {object} This cube instance.
      */
     filter: function(){
 
@@ -211,7 +216,31 @@ export default Ember.Object.extend({
         }
 
         // Update computed attributes.
-        this.recalc();
+        return this.recalc();
+    },
+
+    /**
+     * Convenience method for getting all the filters currently applied to this cube.
+     * Although the filters can be accessed individually via this cube's "fields" collection, this method gathers
+     * all the field's filters into a single array structure. This is the same array structure that is supported
+     * by the .filter() function to set filters.  So this method is a handy way to read the filters from one cube
+     * into a format that can then be applied to another cube.
+     * @todo Consider implementing this as an Ember.computed(..).readOnly() property.
+     * @returns {Object[]} The filters array, possibly empty.
+     */
+    filters: function(){
+        var out = [],
+            fields = this.get("fields");
+        if (fields) {
+            Object.keys(fields).forEach(function(key) {
+                var fieldObject = fields.get(key);
+                var value = fieldObject.get("filter.value");
+                if (value !== null) {
+                    out.push({field: key, value: value});
+                }
+            });
+        }
+        return out;
     },
 
 

@@ -95,7 +95,7 @@ export default Ember.Controller.extend({
                                     "login.unAuthorized" : "login.genericError"
                             ));
                         me.set("status", _STATUS.ERROR);
-                        console.log("Authentication error:", message);
+                        Ember.Logger.log("Authentication error:", message);
                     });
             }
         }

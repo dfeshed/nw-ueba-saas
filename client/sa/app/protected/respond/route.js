@@ -17,6 +17,7 @@ export default Ember.Route.extend({
         willTransition: function(){
             var cube = this.get("controller.model");
             if (cube) {
+                this.set("controller.model", null);
                 var arr = cube.get("records");
                 if (arr && arr.cancel) {
                     arr.cancel();

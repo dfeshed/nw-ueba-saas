@@ -112,7 +112,7 @@ export default function (server) {
                     // Failure loading the JSON file.
                     // @todo Replace window.alert with html modal dialog.
                     window.alert("Unable to load data.\nAn unexpected error occurred when fetching data.");
-                    console.error("Unexpected error loading mock JSON file:\n", file, ret);
+                    Ember.Logger.error("Unexpected error loading mock JSON file:\n", file, ret);
                 });
 
             // Let other message handler code know that we've covered this message.
