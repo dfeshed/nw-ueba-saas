@@ -11,10 +11,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.List;
 import java.util.Map;
 
+@Configurable(preConstruction = true)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class EntityHistogramRetriever extends IDataRetriever {
 	public static final String DATA_RETRIEVER_TYPE = "entity_histogram_retriever";
