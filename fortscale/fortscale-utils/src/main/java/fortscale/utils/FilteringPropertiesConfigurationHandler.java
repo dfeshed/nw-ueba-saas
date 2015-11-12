@@ -41,8 +41,10 @@ public class FilteringPropertiesConfigurationHandler {
 		}
 
 		if (filter[2].startsWith(VARIABLE_ANNOTATION_PREFIX) && filter[2].endsWith(VARIABLE_ANNOTATION_SUFFIX)) {
-			String field = filter[2].replaceAll(VARIABLE_ANNOTATION_PREFIX,"").replaceAll(VARIABLE_ANNOTATION_SUFFIX,"");
-			filter[2] = evidenceMap.get(field);
+			String field = filter[2].substring(2, filter[2].length() - 2);
+			if (evidenceMap != null && evidenceMap.containsKey(field)) {
+				filter[2] = evidenceMap.get(field);
+			}
 		}
 
 		//Create CustomedFilter from raw value
