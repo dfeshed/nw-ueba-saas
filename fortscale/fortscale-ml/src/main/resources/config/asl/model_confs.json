@@ -14,7 +14,7 @@
       "builder": {
         "type": "continuous_data_histogram"
       },
-      "store": null
+      "store": {}
     }
   ]
 }
