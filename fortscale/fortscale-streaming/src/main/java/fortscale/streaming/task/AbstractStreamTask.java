@@ -5,6 +5,7 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -147,9 +148,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected void handleUnfilteredEvent(JSONObject event){
 
 		String dataSource  = getDataSource(event);
-		Number eventTitleAsLong = event.getAsNumber("date_time_unix");
+
+		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTitleAsLong, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTime, eventTimeAsString);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {

@@ -89,7 +89,7 @@ public class TaskMonitoringHelper {
 
     }
 
-    public void handleUnFilteredEvents(String datasource, Number dateTimeUnix, String dateAsString){
+    public void handleUnFilteredEvents(String datasource, Long dateTimeUnix, String dateAsString){
         updateFirstLastEventInWindow(datasource,dateTimeUnix, dateAsString);
         countNotFilteredEvents++; //Count not filtered events per window
     }
@@ -150,7 +150,7 @@ public class TaskMonitoringHelper {
 
     //Keep the time of the first and last event time in the windows
     //First and last could be the same if there is only one event in the window
-    private void updateFirstLastEventInWindow(String dataSource, Number time, String dateAsString){
+    private void updateFirstLastEventInWindow(String dataSource, Long time, String dateAsString){
         if (time == null || dateAsString==null) {
             return;
         }
