@@ -1,11 +1,8 @@
 package fortscale.ml.model;
 
-import fortscale.ml.model.builder.IModelBuilder;
-import fortscale.ml.model.listener.IModelBuildingListener;
-import fortscale.ml.model.retriever.IDataRetriever;
-import fortscale.ml.model.selector.EntitiesSelector;
-import fortscale.ml.model.store.ModelStore;
-import fortscale.utils.time.TimestampUtils;
+
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
@@ -13,47 +10,71 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.retriever.IDataRetriever;
+import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.time.TimestampUtils;
+
 public class ModelBuilderManagerTest {
     @Mock
     ModelConf modelConf;
     @Mock
     private IModelBuildingScheduler scheduler;
     @Mock
-    EntitiesSelector entitiesSelector;
+    ContextSelector entitiesSelector;
     @Mock
     IDataRetriever dataRetriever;
     @Mock
     IModelBuilder modelBuilder;
     @Mock
     ModelStore modelStore;
+    @Mock
+    BucketConfigurationService bucketConfigurationService;
+    @Mock
+    FeatureBucketConf featureBucketConf;
 
     private ModelBuilderManager createProcessScenario(String[] entityIDs, Model[] entityModels, Object[] modelBuilderData, Boolean[] successes) {
-        if (entityIDs != null) {
-            // entity model scenario
-            Mockito.when(modelConf.getEntitiesSelector()).thenReturn(entitiesSelector);
-        } else {
-            // global model scenario
-            Mockito.when(modelConf.getEntitiesSelector()).thenReturn(null);
-            entityIDs = new String[]{null};
-        }
         Mockito.when(modelConf.getDataRetriever()).thenReturn(dataRetriever);
         Mockito.when(modelConf.getModelBuilder()).thenReturn(modelBuilder);
         Mockito.when(modelConf.getModelStore()).thenReturn(modelStore);
 
-        Mockito.when(entitiesSelector.getEntities()).thenReturn(entityIDs);
-        for (int i = 0; i < entityIDs.length; i++) {
-            Mockito.when(dataRetriever.retrieve(entityIDs[i])).thenReturn(modelBuilderData[i]);
-            Mockito.when(modelBuilder.build(modelBuilderData[i])).thenReturn(entityModels[i]);
-            if (!successes[i]) {
-                Mockito.doThrow(Exception.class).when(modelStore).save(
-                        Mockito.eq(modelConf),
-                        Mockito.eq(entityIDs[i]),
-                        Mockito.eq(entityModels[i]),
-                        Mockito.anyLong());
-            }
+        if(entityIDs!=null){
+	        Mockito.when(entitiesSelector.getContexts(0L,0L)).thenReturn(Arrays.asList(entityIDs));
+	        for (int i = 0; i < entityIDs.length; i++) {
+	        	mockBuild(entityIDs[i], modelBuilderData[i], entityModels[i], successes[i]);
+	        }
+        } else{
+        	mockBuild(null, modelBuilderData[0], entityModels[0], successes[0]);
+        	entitiesSelector = null;
         }
-        return new ModelBuilderManager(modelConf, scheduler);
+        
+       
+        ModelBuilderManager ret = new ModelBuilderManager(modelConf, scheduler);
+        ret.setContextsSelector(entitiesSelector);
+        return ret;
     }
+    
+    private void mockBuild(String contextId, Object modelBuilderData, Model entityModel, Boolean success){
+    	Mockito.when(dataRetriever.retrieve(contextId)).thenReturn(modelBuilderData);
+        Mockito.when(modelBuilder.build(modelBuilderData)).thenReturn(entityModel);
+        if (!success) {
+            Mockito.doThrow(Exception.class).when(modelStore).save(
+                    Mockito.eq(modelConf),
+                    Mockito.eq(contextId),
+                    Mockito.eq(entityModel),
+                    Mockito.anyLong());
+        }
+    }
+    
+//    private void mockSelector(){
+//    	String bucketName = "bucketName1";
+//        Mockito.when(modelConf.getContextSelectorConf()).thenReturn(new FeatureBucketContextSelectorConf(bucketName));
+//        Mockito.when(bucketConfigurationService.getBucketConf(bucketName)).thenReturn(featureBucketConf);
+//    }
 
     @Before
     public void setUp() throws Exception {
@@ -79,26 +100,29 @@ public class ModelBuilderManagerTest {
     public void shouldRegisterItselfInsideCtor() {
         Mockito.when(modelConf.getBuildIntervalInSeconds()).thenReturn(60L);
         ModelBuilderManager modelManager = new ModelBuilderManager(modelConf, scheduler);
+        modelManager.setContextsSelector(entitiesSelector);
         verifyModelManagerRegistered(modelManager);
     }
 
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
-        long sessionId = 1234;
-        String[] entityIDs = {"user1", "user2"};
+    	long sessionId = 1234;
+    	String[] entityIDs = {"user1", "user2"};
         Model[] entityModels = {new Model() {}, new Model() {}};
+        
         ModelBuilderManager modelManager = createProcessScenario(
                 entityIDs,
                 entityModels,
                 new Object[]{new Object(), new Object()},
-                new Boolean[]{true, true});
+                new Boolean[]{true, true});        
+        
         modelManager.process(null, sessionId);
 
-        Mockito.verify(entitiesSelector).getEntities();
+        Mockito.verify(entitiesSelector).getContexts(0L,0L);
         for (int i = 0; i < entityIDs.length; i++) {
             Mockito.verify(modelStore).save(modelConf, entityIDs[i], entityModels[i], sessionId);
         }
-        Mockito.verifyNoMoreInteractions(modelStore);
+        Mockito.verifyNoMoreInteractions(modelStore);        
     }
 
     @Test

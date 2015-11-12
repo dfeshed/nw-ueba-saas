@@ -4,6 +4,8 @@
       "name": "name1",
       "buildIntervalInSeconds": 1,
       "selector": {
+         "type": "feature_bucket_context_selector_conf",
+         "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
         "type": "entity_histogram_retriever"
@@ -18,6 +20,8 @@
       "name": "name2",
       "buildIntervalInSeconds": 1,
       "selector": {
+         "type": "feature_bucket_context_selector_conf",
+         "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
         "type": "entity_histogram_retriever"
