@@ -146,6 +146,16 @@ public class AMTWithOngoingParsingTest {
 						)
 				),
 
+				$(
+						"Test Failure event",
+						$(
+								"2015-03-27T12:42:43.000+00:00|192.168.61.67|12.48.102.0|yahoousr3|yid3@yahoo.com|CORP|User Open Failed|abcdef=="
+						),
+						$(
+								"2015-03-27 12:42:43,1427460163,12.48.102.0,,Unknown,,192.168.61.67,,yahoousr3,FAILURE,,,false,false,false,false,yid3@yahoo.com,CORP,User Open Failed,abcdef==,,,"
+						)
+				),
+
 
 
 				$(
