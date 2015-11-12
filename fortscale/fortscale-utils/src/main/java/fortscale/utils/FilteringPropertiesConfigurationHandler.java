@@ -44,6 +44,8 @@ public class FilteringPropertiesConfigurationHandler {
 			String field = filter[2].substring(2, filter[2].length() - 2);
 			if (evidenceMap != null && evidenceMap.containsKey(field)) {
 				filter[2] = evidenceMap.get(field);
+			} else {
+				return null;
 			}
 		}
 
