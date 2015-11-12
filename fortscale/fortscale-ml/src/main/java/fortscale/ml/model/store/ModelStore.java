@@ -1,7 +1,5 @@
 package fortscale.ml.model.store;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
@@ -13,18 +11,10 @@ import org.springframework.data.mongodb.core.index.Index;
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
 
-	private MongoTemplate mongoTemplate;
-	private MongoDbUtilService mongoDbUtilService;
-
 	@Autowired
-	@JsonCreator
-	ModelStore(
-			@JsonProperty("mongoTemplate") MongoTemplate mongoTemplate,
-			@JsonProperty("mongoDbUtilService") MongoDbUtilService mongoDbUtilService) {
-
-		this.mongoTemplate = mongoTemplate;
-		this.mongoDbUtilService = mongoDbUtilService;
-	}
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private MongoDbUtilService mongoDbUtilService;
 
 	public void save(ModelConf modelConf, String contextId, Model model, long sessionId) {
 		ModelDAO modelDAO = new ModelDAO(contextId, model, sessionId);

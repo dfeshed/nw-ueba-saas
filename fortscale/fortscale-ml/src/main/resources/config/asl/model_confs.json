@@ -3,18 +3,20 @@
     {
       "name": "data_rate_normalized_username_vpn_session_daily",
       "buildIntervalInSeconds": 86400,
-      "selector": null,
+      "selector": {
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "normalized_username_vpn_session_daily"
+      },
       "retriever": {
-        "type": "entity_histogram_retriever",
+        "type": "entity_histogram_retriever_conf",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
         "featureName": "vpn_session_rate"
       },
       "builder": {
-        "type": "continuous_data_histogram"
-      },
-      "store": {}
+        "type": "continuous_histogram_model_builder_conf"
+      }
     }
   ]
 }

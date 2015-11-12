@@ -19,14 +19,14 @@ public class ModelStoreTest {
     private static final String COLLECTION_NAME_PREFIX = "model_";
 
     @Mock
-    ModelConf modelConf;
+    private ModelConf modelConf;
     @Mock
-    Model model;
+    private Model model;
     @Mock
     private MongoTemplate mongoTemplate;
     @Mock
     private MongoDbUtilService mongoDbUtilService;
-
+    @InjectMocks
     private ModelStore store;
     private String modelConfCollectionName;
 
@@ -36,7 +36,6 @@ public class ModelStoreTest {
         String modelConfName = "modelConfName";
         Mockito.when(modelConf.getName()).thenReturn(modelConfName);
         modelConfCollectionName = COLLECTION_NAME_PREFIX + modelConfName;
-        store = new ModelStore(mongoTemplate, mongoDbUtilService);
     }
 
     private void mockCollectionExistence(String collectionName, boolean shouldExist) {
