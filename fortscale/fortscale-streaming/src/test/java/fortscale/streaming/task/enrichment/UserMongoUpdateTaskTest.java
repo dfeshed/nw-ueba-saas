@@ -42,10 +42,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 
 
-		task.topicToDataSourceMap = new HashMap<>();
-		task.topicToDataSourceMap.put("input1" , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
-		task.topicToDataSourceMap.put("input2" , new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
-		task.topicToDataSourceMap.put("input3" , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
+		task.dataSourceConfigs = new HashMap<>();
+		task.dataSourceConfigs.put("input1" , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put("input2" , new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put("input3" , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
 
 		// Mocks
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
