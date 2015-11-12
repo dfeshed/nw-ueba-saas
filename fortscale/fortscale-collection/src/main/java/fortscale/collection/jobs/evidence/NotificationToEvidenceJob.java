@@ -44,7 +44,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String END_DATE = "end_date";
 	private static final String DATA_SOURCE_PARAMETER = "dataSource";
 	private static final String LAST_STATE_PARAMETER = "lastState";
-
+	private final String MIN_DATE = "minwhen";
+	private final String MAX_DATE = "maxwhen";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -197,7 +198,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getStartTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case VPN_OVERLAPPING: {
+			case CHECKING_ON_YID: {
+				return attributes != null && attributes.containsKey(MIN_DATE) ?
+						Long.parseLong(attributes.get(MIN_DATE)) : notification.getTs();
+			} case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(START_DATE) ?
 				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
@@ -210,7 +214,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getEndTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case VPN_OVERLAPPING: {
+			case CHECKING_ON_YID: {
+				return attributes != null && attributes.containsKey(MAX_DATE) ?
+						Long.parseLong(attributes.get(MAX_DATE)) : notification.getTs();
+			} case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(END_DATE) ?
 					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
