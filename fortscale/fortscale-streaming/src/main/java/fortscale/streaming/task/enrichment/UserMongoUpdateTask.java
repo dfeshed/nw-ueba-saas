@@ -110,7 +110,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		userService = SpringService.getInstance().resolve(UserService.class);
 
 		// Fill the map between the input topic and the data source
-		Config fieldsSubset = config.subset("fortscale.events.entry");
+		Config fieldsSubset = config.subset("fortscale.events.entry.name.");
 		for (String dsSettings : fieldsSubset.keySet()) {
 
 			String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
@@ -119,9 +119,9 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", dsSettings));
 			String successfulLoginField = getConfigString(config, String.format("fortscale.events.entry.%s.success.field", dsSettings));
 			String successfulLoginValue = getConfigString(config, String.format("fortscale.events.entry.%s.success.value", dsSettings));
-			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.updateOnly.%s", dsSettings));
-			String logUserNameField =getConfigString(config, String.format("fortscale.events.entry.logusername.field.%s", dsSettings));
-			usernameField  =getConfigString(config, String.format("fortscale.events.entry.username.field.%s", dsSettings));
+			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", dsSettings));
+			String logUserNameField =getConfigString(config, String.format("fortscale.events.entry.%s.logusername.field", dsSettings));
+			usernameField  =getConfigString(config, String.format("fortscale.events.entry.%s.username.field", dsSettings));
 
 			dataSourceConfigs.put(configKey, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
@@ -168,7 +168,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		// Get relevant data source according to topic
-		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(topic);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
 			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_CONFIGURATION_IN_MESSAGE_LABEL);
 			logger.error("No data source is defined for input topic {} ", topic);
