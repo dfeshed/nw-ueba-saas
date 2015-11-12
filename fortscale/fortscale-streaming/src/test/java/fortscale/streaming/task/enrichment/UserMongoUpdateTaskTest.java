@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -43,9 +44,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 
 		task.dataSourceConfigs = new HashMap<>();
-		task.dataSourceConfigs.put("input1" , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
-		task.dataSourceConfigs.put("input2" , new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
-		task.dataSourceConfigs.put("input3" , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input1","1") , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input2","2"), new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input3","3") , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
 
 		// Mocks
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
