@@ -20,8 +20,8 @@ public class ModelStore {
 		this.mongoDbUtilService = mongoDbUtilService;
 	}
 
-	public void save(ModelConf modelConf, String contextId, Model model) {
-        ModelDAO modelDAO = new ModelDAO(contextId, model);
+	public void save(ModelConf modelConf, String contextId, Model model, long sessionId) {
+        ModelDAO modelDAO = new ModelDAO(contextId, model, sessionId);
         String collectionName = COLLECTION_NAME_PREFIX + modelConf.getName();
         ensureCollectionExists(collectionName);
         mongoTemplate.save(modelDAO, collectionName);

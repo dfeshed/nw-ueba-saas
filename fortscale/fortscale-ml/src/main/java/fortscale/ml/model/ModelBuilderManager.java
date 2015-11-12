@@ -22,7 +22,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
     }
 
     @Override
-    public void process(IModelBuildingListener listener) {
+    public void process(IModelBuildingListener listener, long sessionId) {
         EntitiesSelector entitiesSelector = modelConf.getEntitiesSelector();
         String[] entities;
         if (entitiesSelector != null) {
@@ -38,7 +38,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
             Model model = modelConf.getModelBuilder().build(modelBuilderData);
             boolean success = true;
             try {
-                modelConf.getModelStore().save(modelConf, entityID, model);
+                modelConf.getModelStore().save(modelConf, entityID, model, sessionId);
             } catch (Exception e) {
                 logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), entityID), e);
                 success = false;
