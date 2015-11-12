@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.logging.Logger;
@@ -18,6 +19,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	private static final String LAST_STATE_FIELD_NAME = "last_state";
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 
@@ -148,6 +150,17 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		Number eventTitleAsLong = event.getAsNumber("date_time_unix");
 		String eventTimeAsString = event.getAsString("date_time");
 		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTitleAsLong, eventTimeAsString);
+	}
+
+	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
+		String dataSource = (String) message.get(DATA_SOURCE_FIELD_NAME);
+		String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
+
+		if (dataSource == null) {
+			throw new IllegalStateException("Message does not contain " + LAST_STATE_FIELD_NAME + " field: " + message.toJSONString());
+		}
+
+		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 	}
 
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
