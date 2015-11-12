@@ -44,8 +44,8 @@ public class ContinuousHistogramModelBuilderTest {
     public void shouldBuildModelBasedOnOneSample() {
         long N = 10;
         double val = 5;
-        Map<Double, Long> modelBuilderData = new HashMap<>();
-        modelBuilderData.put(val, N);
+        Map<Double, Double> modelBuilderData = new HashMap<>();
+        modelBuilderData.put(val, (double) N);
         Model model = modelBuilder.build(modelBuilderData);
         assertModelEquals(model, N, val, 0);
     }
@@ -54,9 +54,9 @@ public class ContinuousHistogramModelBuilderTest {
     public void shouldBuildModelBasedOnTwoSamples() {
         long N1 = 10, N2 = 5;
         double val1 = 30, val2 = 3;
-        Map<Double, Long> modelBuilderData = new HashMap<>();
-        modelBuilderData.put(val1, N1);
-        modelBuilderData.put(val2, N2);
+        Map<Double, Double> modelBuilderData = new HashMap<>();
+        modelBuilderData.put(val1, (double) N1);
+        modelBuilderData.put(val2, (double) N2);
         Model model = modelBuilder.build(modelBuilderData);
         assertModelEquals(model, N1 + N2, 21, 12.727922061357855);
     }
