@@ -8,6 +8,7 @@
          "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
+        "type": "entity_histogram_retriever"
       },
       "builder": {
         "type": "continuous_data_histogram"
@@ -23,6 +24,7 @@
          "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
+        "type": "entity_histogram_retriever"
       },
       "builder": {
         "type": "continuous_data_histogram"

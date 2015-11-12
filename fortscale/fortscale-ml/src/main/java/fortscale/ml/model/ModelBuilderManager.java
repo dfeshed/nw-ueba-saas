@@ -1,40 +1,60 @@
 package fortscale.ml.model;
 
+
 import org.springframework.util.Assert;
 
+import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
+import fortscale.utils.time.TimestampUtils;
 
-public class ModelBuilderManager {
+public class ModelBuilderManager implements IModelBuildingRegistrar {
     private ModelConf modelConf;
-    ContextSelector contextsSelector;
-    private long nextRunTimeInSeconds;
+    private ContextSelector contextsSelector;
+    private IModelBuildingScheduler scheduler;
 
-    public ModelBuilderManager(ModelConf modelConf) {
+    public ModelBuilderManager(ModelConf modelConf, IModelBuildingScheduler scheduler) {
         Assert.notNull(modelConf);
+        Assert.notNull(scheduler);
         this.modelConf = modelConf;
-        contextsSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
-        this.nextRunTimeInSeconds = -1;
-    }
-
-    public void calcNextRunTime(long currentTimeInSeconds) {
-        nextRunTimeInSeconds = currentTimeInSeconds + modelConf.getBuildIntervalInSeconds();
-    }
-
-    public long getNextRunTimeInSeconds() {
-        if (nextRunTimeInSeconds < 0) {
-            throw new IllegalStateException("next run time hasn't been calculated yet");
+        this.scheduler = scheduler;
+        if(modelConf.getContextSelectorConf() != null){
+        	contextsSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
         }
-        return nextRunTimeInSeconds;
+
+        scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void process() {
+    public void process(IModelBuildingListener listener) {
         if (contextsSelector != null) {
-	        for (String contextId : contextsSelector.getContexts(nextRunTimeInSeconds - modelConf.getBuildIntervalInSeconds(), nextRunTimeInSeconds)) {
-	        	Object modelBuilderData = modelConf.getModelBuilderDataRetriever().retrieve(contextId);
-	            Model model = modelConf.getModelBuilder().build(modelBuilderData);
-	            modelConf.getModelStore().save(modelConf, contextId, model);
+	        for (String contextId : contextsSelector.getContexts(0L, 0L)) {
+	        	 build(listener, contextId);
 	        }
+	    } else{
+	    	build(listener, null);
 	    }
+        scheduler.register(this, calcNextRunTimeInSeconds());
     }
+    
+    public void build(IModelBuildingListener listener, String contextId){
+    	Object modelBuilderData = modelConf.getDataRetriever().retrieve(contextId);
+        Model model = modelConf.getModelBuilder().build(modelBuilderData);
+        boolean success = modelConf.getModelStore().save(modelConf, contextId, model);
+
+        if (listener != null) {
+            // TODO: Change to contextId
+            listener.modelBuildingStatus(modelConf.getName(), null, success);
+        }
+    }
+
+    private long calcNextRunTimeInSeconds() {
+        long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+        return currentTimeSeconds + modelConf.getBuildIntervalInSeconds();
+    }
+
+	public void setContextsSelector(ContextSelector contextsSelector) {
+		this.contextsSelector = contextsSelector;
+	}
+    
+    
 }

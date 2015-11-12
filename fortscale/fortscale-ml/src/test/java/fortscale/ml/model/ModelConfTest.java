@@ -42,18 +42,20 @@ public class ModelConfTest {
         return result;
     }
 
-    private JSONObject builSelectorJSON() {
+    private JSONObject buildSelectorJSON() {
     	JSONObject jsonObject = new JSONObject();
     	jsonObject.put("type", "feature_bucket_context_selector_conf");
     	jsonObject.put(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONF_NAME_PROPERTY, "featureBucketConfName1");
     	return jsonObject;
     }
 
-    private JSONObject builRetrieverJSON() {
-        return new JSONObject();
+    private JSONObject buildRetrieverJSON() {
+        JSONObject json = new JSONObject();
+        json.put("type", "entity_histogram_retriever");
+        return json;
     }
 
-    private JSONObject builBuilderJSON(String type) {
+    private JSONObject buildBuilderJSON(String type) {
         if (type == null) {
             type = "continuous_data_histogram";
         }
@@ -64,7 +66,7 @@ public class ModelConfTest {
         return result;
     }
 
-    private JSONObject builStoreJSON() {
+    private JSONObject buildStoreJSON() {
         return new JSONObject();
     }
 
@@ -73,10 +75,10 @@ public class ModelConfTest {
         String name = "some name";
         JSONObject modelConfJSON = buildModelConfJSON(name,
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
+                buildStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
         Assert.assertEquals(name, modelConf.getName());
     }
@@ -86,10 +88,10 @@ public class ModelConfTest {
         int buildIntervalInSeconds = 12345;
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 buildIntervalInSeconds,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
+                buildStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
         Assert.assertEquals(buildIntervalInSeconds, modelConf.getBuildIntervalInSeconds());
     }
@@ -98,10 +100,10 @@ public class ModelConfTest {
     public void shouldCreateModelConfWithTheGivenModelBuilder() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON("continuous_data_histogram"),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON("continuous_data_histogram"),
+                buildStoreJSON());
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
         Assert.assertTrue(modelConf.getModelBuilder() instanceof ContinuousHistogramModelBuilder);
     }
@@ -110,10 +112,10 @@ public class ModelConfTest {
     public void shouldFailIfNameNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON(null,
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
     
@@ -122,9 +124,9 @@ public class ModelConfTest {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
                 null,
-                builRetrieverJSON(),
-                builBuilderJSON("continuous_data_histogram"),
-                builStoreJSON());
+                buildRetrieverJSON(),
+                buildBuilderJSON("continuous_data_histogram"),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
@@ -132,10 +134,10 @@ public class ModelConfTest {
     public void shouldFailIfBuildIntervalInSecondsNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 null,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
@@ -143,10 +145,10 @@ public class ModelConfTest {
     public void shouldFailIfRetrieverNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
-                builSelectorJSON(),
+                buildSelectorJSON(),
                 null,
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildBuilderJSON(null),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
@@ -154,10 +156,10 @@ public class ModelConfTest {
     public void shouldFailIfBuilderNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
                 null,
-                builStoreJSON());
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
@@ -165,9 +167,9 @@ public class ModelConfTest {
     public void shouldFailIfStoreNotGiven() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
                 null);
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
@@ -176,10 +178,10 @@ public class ModelConfTest {
     public void shouldFailIfBuildIntervalInSecondsIsNegative() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 -1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON(null),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON(null),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
@@ -187,10 +189,10 @@ public class ModelConfTest {
     public void shouldFailIfUnknownModelBuilderType() throws IOException {
         JSONObject modelConfJSON = buildModelConfJSON("some name",
                 1,
-                builSelectorJSON(),
-                builRetrieverJSON(),
-                builBuilderJSON("unknown model builder type"),
-                builStoreJSON());
+                buildSelectorJSON(),
+                buildRetrieverJSON(),
+                buildBuilderJSON("unknown model builder type"),
+                buildStoreJSON());
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 }

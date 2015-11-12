@@ -141,4 +141,17 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
+	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds, long endTimeInSeconds) {
+		String collectionName = getCollectionName(featureBucketConf);
+
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
+			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
+			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
+			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
+			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		} else {
+			return Collections.emptyList();
+		}
+	}
 }
