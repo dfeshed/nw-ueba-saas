@@ -46,7 +46,7 @@ public class EntityHistogramRetriever extends IDataRetriever {
 				histogram.add(((GenericHistogram)featureValue).getHistogramMap());
 
 				for (IDataRetrieverFunction function : functions) {
-					histogram = (ContinuousDataHistogram)function.execute(histogram);
+					histogram = (ContinuousDataHistogram)function.execute(histogram, endTimeInSeconds - featureBucket.getStartTime());
 				}
 
 				reductionHistogram.add(histogram.getMap());
