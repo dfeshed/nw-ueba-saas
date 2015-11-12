@@ -16,6 +16,7 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.time.TimestampUtils;
 
 public class ModelBuilderManagerTest {
@@ -60,7 +61,13 @@ public class ModelBuilderManagerTest {
     private void mockBuild(String contextId, Object modelBuilderData, Model entityModel, Boolean success){
     	Mockito.when(dataRetriever.retrieve(contextId)).thenReturn(modelBuilderData);
         Mockito.when(modelBuilder.build(modelBuilderData)).thenReturn(entityModel);
-        Mockito.when(modelStore.save(modelConf, contextId, entityModel)).thenReturn(success);
+        if (!success) {
+            Mockito.doThrow(Exception.class).when(modelStore).save(
+                    Mockito.eq(modelConf),
+                    Mockito.eq(contextId),
+                    Mockito.eq(entityModel),
+                    Mockito.anyLong());
+        }
     }
     
 //    private void mockSelector(){
@@ -99,6 +106,7 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
+    	long sessionId = 1234;
     	String[] entityIDs = {"user1", "user2"};
         Model[] entityModels = {new Model() {}, new Model() {}};
         
@@ -106,27 +114,29 @@ public class ModelBuilderManagerTest {
                 entityIDs,
                 entityModels,
                 new Object[]{new Object(), new Object()},
-                new Boolean[]{true, true});
-        modelManager.process(null);
+                new Boolean[]{true, true});        
         
+        modelManager.process(null, sessionId);
+
         Mockito.verify(entitiesSelector).getContexts(0L,0L);
         for (int i = 0; i < entityIDs.length; i++) {
-            Mockito.verify(modelStore).save(modelConf, entityIDs[i], entityModels[i]);
+            Mockito.verify(modelStore).save(modelConf, entityIDs[i], entityModels[i], sessionId);
         }
         Mockito.verifyNoMoreInteractions(modelStore);        
     }
 
     @Test
     public void shouldBuildAndStoreGlobalModel() {
+        long sessionId = 1234;
         Model globalModel = new Model() {};
         ModelBuilderManager modelManager = createProcessScenario(
                 null,
                 new Model[]{globalModel},
                 new Object[]{new Object()},
                 new Boolean[]{true});
-        modelManager.process(null);
+        modelManager.process(null, sessionId);
 
-        Mockito.verify(modelStore).save(modelConf, null, globalModel);
+        Mockito.verify(modelStore).save(modelConf, null, globalModel, sessionId);
         Mockito.verifyNoMoreInteractions(modelStore);
     }
 
@@ -138,7 +148,7 @@ public class ModelBuilderManagerTest {
                 new Object[]{new Object()},
                 new Boolean[]{true});
         Mockito.reset(scheduler);
-        modelManager.process(null);
+        modelManager.process(null, 1234);
         verifyModelManagerRegistered(modelManager);
     }
 
@@ -153,7 +163,7 @@ public class ModelBuilderManagerTest {
                 new Object[]{new Object(), new Object()},
                 successes);
         IModelBuildingListener listener = Mockito.mock(IModelBuildingListener.class);
-        modelManager.process(listener);
+        modelManager.process(listener, 1234);
 
         for (boolean success: successes) {
             Mockito.verify(listener).modelBuildingStatus(modelConfName, null, success);

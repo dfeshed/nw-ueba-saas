@@ -6,9 +6,12 @@ import org.springframework.util.Assert;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 
 public class ModelBuilderManager implements IModelBuildingRegistrar {
+    private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
+
     private ModelConf modelConf;
     private ContextSelector contextsSelector;
     private IModelBuildingScheduler scheduler;
@@ -25,21 +28,28 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
         scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void process(IModelBuildingListener listener) {
+    public void process(IModelBuildingListener listener, long sessionId) {
         if (contextsSelector != null) {
 	        for (String contextId : contextsSelector.getContexts(0L, 0L)) {
-	        	 build(listener, contextId);
+	        	 build(listener, contextId, sessionId);
 	        }
 	    } else{
-	    	build(listener, null);
+	    	build(listener, null, sessionId);
 	    }
+
         scheduler.register(this, calcNextRunTimeInSeconds());
     }
     
-    public void build(IModelBuildingListener listener, String contextId){
+    public void build(IModelBuildingListener listener, String contextId, long sessionId){
     	Object modelBuilderData = modelConf.getDataRetriever().retrieve(contextId);
         Model model = modelConf.getModelBuilder().build(modelBuilderData);
-        boolean success = modelConf.getModelStore().save(modelConf, contextId, model);
+        boolean success = true;
+        try {
+            modelConf.getModelStore().save(modelConf, contextId, model, sessionId);
+        } catch (Exception e) {
+            logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), contextId), e);
+            success = false;
+        }
 
         if (listener != null) {
             // TODO: Change to contextId

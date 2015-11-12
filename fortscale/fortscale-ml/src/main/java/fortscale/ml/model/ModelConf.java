@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.ContextSelectorConf;
+import fortscale.ml.model.store.ModelStore;
 
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)

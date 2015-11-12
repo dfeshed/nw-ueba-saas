@@ -15,7 +15,9 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ModelConfService implements InitializingBean, ApplicationContextAware {
     private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
@@ -62,11 +64,19 @@ public class ModelConfService implements InitializingBean, ApplicationContextAwa
             throw new JsonException(errorMsg);
         }
 
+        Set<String> modelConfNames = new HashSet<>(modelConfJSONs.size());
         ObjectMapper objectMapper = new ObjectMapper();
         for (Object modelConfJSON : modelConfJSONs) {
             String jsonString = ((JSONObject) modelConfJSON).toJSONString();
             try {
                 ModelConf modelConf = objectMapper.readValue(jsonString, ModelConf.class);
+                String modelConfName = modelConf.getName();
+                if (modelConfNames.contains(modelConfName)) {
+                    errorMsg = String.format("model configuration names must be unique. %s appears multiple times", modelConfName);
+                    logger.error(errorMsg);
+                    throw new RuntimeException(errorMsg);
+                }
+                modelConfNames.add(modelConfName);
                 modelConfs.add(modelConf);
             } catch (IOException e) {
                 errorMsg = String.format("Failed to deserialize JSON %s", jsonString);
