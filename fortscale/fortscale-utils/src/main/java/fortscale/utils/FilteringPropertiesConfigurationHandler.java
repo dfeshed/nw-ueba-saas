@@ -7,6 +7,8 @@ import java.util.Map;
 public class FilteringPropertiesConfigurationHandler {
 
 	final String DELIMITER = "%%%";
+	final String VARIABLE_ANNOTATION_PREFIX = "{{";
+	final String VARIABLE_ANNOTATION_SUFFIX = "}}";
 
 	private Map<String, String> filtering;
 
@@ -21,7 +23,7 @@ public class FilteringPropertiesConfigurationHandler {
 	 * @param key
 	 * @return
 	 */
-	public CustomedFilter getFilter(String key) {
+	public CustomedFilter getFilter(String key, Map<String, String> evidenceMap) {
 
 		// Getting raw value from config in a form of:
 		// KEY ### OPERATOR ### VALUE
@@ -36,6 +38,11 @@ public class FilteringPropertiesConfigurationHandler {
 		// Check filter structure
 		if (filter.length != 3) {
 			return null;
+		}
+
+		if (filter[2].startsWith(VARIABLE_ANNOTATION_PREFIX) && filter[2].endsWith(VARIABLE_ANNOTATION_SUFFIX)) {
+			String field = filter[2].replaceAll(VARIABLE_ANNOTATION_PREFIX,"").replaceAll(VARIABLE_ANNOTATION_SUFFIX,"");
+			filter[2] = evidenceMap.get(field);
 		}
 
 		//Create CustomedFilter from raw value
