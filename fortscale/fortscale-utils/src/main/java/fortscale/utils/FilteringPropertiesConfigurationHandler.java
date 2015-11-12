@@ -40,8 +40,10 @@ public class FilteringPropertiesConfigurationHandler {
 			return null;
 		}
 
+		//if filter contains a value of type {{somevalue}} then strip the {{ }} from the filter and get the value of the evidence field with that name
 		if (filter[2].startsWith(VARIABLE_ANNOTATION_PREFIX) && filter[2].endsWith(VARIABLE_ANNOTATION_SUFFIX)) {
-			String field = filter[2].substring(2, filter[2].length() - 2);
+			String field = filter[2].substring(VARIABLE_ANNOTATION_PREFIX.length(), filter[2].length() -
+					VARIABLE_ANNOTATION_SUFFIX.length());
 			if (evidenceMap != null && evidenceMap.containsKey(field)) {
 				filter[2] = evidenceMap.get(field);
 			} else {
