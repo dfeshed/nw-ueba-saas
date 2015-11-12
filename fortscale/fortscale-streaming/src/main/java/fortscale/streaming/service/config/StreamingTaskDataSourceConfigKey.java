@@ -31,4 +31,12 @@ public class StreamingTaskDataSourceConfigKey {
         result = 31 * result + (lastState != null ? lastState.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "StreamingTaskDataSourceConfigKey{" +
+                "dataSource='" + dataSource + '\'' +
+                ", lastState='" + lastState + '\'' +
+                '}';
+    }
 }

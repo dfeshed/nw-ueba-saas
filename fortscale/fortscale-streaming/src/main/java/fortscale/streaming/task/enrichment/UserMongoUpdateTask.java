@@ -164,15 +164,12 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 
 
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
 		// Get relevant data source according to topic
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
 			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_CONFIGURATION_IN_MESSAGE_LABEL);
-			logger.error("No data source is defined for input topic {} ", topic);
+			logger.error("No data source is defined for input topic {} ", configKey);
 			return;
 		}
 
