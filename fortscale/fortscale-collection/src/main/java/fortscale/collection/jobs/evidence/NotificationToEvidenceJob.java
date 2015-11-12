@@ -42,6 +42,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String CHECKING_ON_YID = "user_checking_up_on_yids";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
+	private static final String DATA_SOURCE_PARAMETER = "dataSource";
+	private static final String LAST_STATE_PARAMETER = "lastState";
+
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -57,6 +60,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
+	private String dataSource;
+	private String lastState;
 
 	private Long startTime;
 	private Long endTime;
@@ -97,6 +102,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
+		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
+		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
@@ -164,6 +171,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationEntityField, getEntity(notification.getCause().toLowerCase()));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
+
+				//Add the last state and data source fields to the message
+				evidence.put("data_source", dataSource);
+				evidence.put("last_state ", lastState);
+
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.info("Writing to topic evidence - {}", messageToWrite);
 				streamWriter.send(notification.getIndex(), messageToWrite);

@@ -50,6 +50,14 @@
 					<key>throttlingSleep</key>
 					<value>${kafka.throttlingSleep}</value>
 				</entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>vpn</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
 			</job-data-map>
 		</job>
 	</schedule>
