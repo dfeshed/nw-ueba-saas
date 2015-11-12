@@ -52,8 +52,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
         }
 
         if (listener != null) {
-            // TODO: Change to contextId
-            listener.modelBuildingStatus(modelConf.getName(), null, success);
+            listener.modelBuildingStatus(modelConf.getName(), contextId, success);
         }
     }
 

@@ -5,10 +5,12 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
+@Configurable(preConstruction = true)
 public class ModelService implements IModelBuildingScheduler {
 	private static final int PRIORITY_QUEUE_INITIAL_CAPACITY = 50;
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";

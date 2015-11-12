@@ -1,0 +1,20 @@
+{
+  "ModelConfs": [
+    {
+      "name": "data_rate_normalized_username_vpn_session_daily",
+      "buildIntervalInSeconds": 86400,
+      "selector": null,
+      "retriever": {
+        "type": "entity_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_vpn_session_daily",
+        "featureName": "vpn_session_rate"
+      },
+      "builder": {
+        "type": "continuous_data_histogram"
+      },
+      "store": {}
+    }
+  ]
+}
