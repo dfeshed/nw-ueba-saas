@@ -90,7 +90,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
@@ -103,7 +103,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void close() throws Exception {
 		try {
 			logger.info("initiating task close");
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel());
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
