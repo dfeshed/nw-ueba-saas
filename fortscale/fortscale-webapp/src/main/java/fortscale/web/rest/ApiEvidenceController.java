@@ -210,7 +210,12 @@ public class ApiEvidenceController extends DataQueryController {
 			// Add condition for custom filtering
 			if (eventsFilter != null) {
 				ObjectMapper objectMapper = new ObjectMapper();
-				Map evidenceMap = objectMapper.convertValue(evidence, Map.class);
+				Map evidenceMap = null;
+				try {
+					evidenceMap = objectMapper.convertValue(evidence, Map.class);
+				} catch (Exception ex) {
+					logger.error("failed to convert evidence object to map");
+				}
 				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
 				if (customedFilter != null) {
 					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
