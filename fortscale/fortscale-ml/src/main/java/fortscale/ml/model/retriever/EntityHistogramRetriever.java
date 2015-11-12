@@ -9,6 +9,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.ml.model.data.type.ContinuousDataHistogram;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -36,23 +37,24 @@ public class EntityHistogramRetriever extends IDataRetriever {
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
-		GenericHistogram reductionHistogram = new GenericHistogram();
+		ContinuousDataHistogram reductionHistogram = new ContinuousDataHistogram();
 
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				FeatureValue featureValue = aggregatedFeatures.get(featureName).getValue();
-				GenericHistogram histogram = (GenericHistogram)featureValue;
+				ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+				histogram.add(((GenericHistogram)featureValue).getHistogramMap());
 
 				for (IDataRetrieverFunction function : functions) {
-					histogram = (GenericHistogram)function.execute(histogram);
+					histogram = (ContinuousDataHistogram)function.execute(histogram);
 				}
 
-				reductionHistogram.add(histogram);
+				reductionHistogram.add(histogram.getMap());
 			}
 		}
 
-		return reductionHistogram.getHistogramMap();
+		return reductionHistogram.getMap();
 	}
 }

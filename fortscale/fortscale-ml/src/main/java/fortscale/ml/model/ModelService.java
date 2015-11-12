@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class ModelService implements IModelBuildingScheduler {
@@ -24,10 +21,12 @@ public class ModelService implements IModelBuildingScheduler {
 	private IModelBuildingListener modelBuildingListener;
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
 	private PriorityQueue<Pair<IModelBuildingRegistrar, Long>> registrarRunTimeQueue;
+	private long sessionId;
 
 	public ModelService(IModelBuildingListener modelBuildingListener) {
 		Assert.notNull(modelBuildingListener);
 		this.modelBuildingListener = modelBuildingListener;
+		sessionId = new Random().nextLong();
 
 		modelConfNameToManager = new HashMap<>();
 		registrarRunTimeQueue = new PriorityQueue<>(PRIORITY_QUEUE_INITIAL_CAPACITY, new Comparator<Pair<IModelBuildingRegistrar, Long>>() {
@@ -47,14 +46,14 @@ public class ModelService implements IModelBuildingScheduler {
 		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
 		ModelBuilderManager modelManager = modelConfNameToManager.get(modelConfName);
 		if (modelManager != null) {
-			modelManager.process(modelBuildingListener);
+			modelManager.process(modelBuildingListener, sessionId);
 		}
 	}
 
 	public void window(long currentTimeSeconds) {
 		while (!registrarRunTimeQueue.isEmpty() && registrarRunTimeQueue.peek().getRight() <= currentTimeSeconds) {
 			Pair<IModelBuildingRegistrar, Long> registrarRunTimePair = registrarRunTimeQueue.poll();
-			registrarRunTimePair.getLeft().process(modelBuildingListener);
+			registrarRunTimePair.getLeft().process(modelBuildingListener, sessionId);
 		}
 	}
 
