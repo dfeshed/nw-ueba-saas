@@ -157,16 +157,18 @@ public class ModelBuilderManagerTest {
         String modelConfName = "modelConfName";
         Mockito.when(modelConf.getName()).thenReturn(modelConfName);
         Boolean[] successes = {true, false};
+        String[] entityIDs = {"user1", "user2"};
         ModelBuilderManager modelManager = createProcessScenario(
-                new String[]{"user1", "user2"},
+                entityIDs,
                 new Model[]{new Model() {}, new Model() {}},
                 new Object[]{new Object(), new Object()},
                 successes);
         IModelBuildingListener listener = Mockito.mock(IModelBuildingListener.class);
         modelManager.process(listener, 1234);
 
-        Mockito.verify(listener).modelBuildingStatus(modelConfName, "user1", true);
-        Mockito.verify(listener).modelBuildingStatus(modelConfName, "user2", false);
+        for (int i = 0; i < entityIDs.length; i++) {
+            Mockito.verify(listener).modelBuildingStatus(modelConfName, entityIDs[i], successes[i]);
+        }
         Mockito.verifyNoMoreInteractions(listener);
     }
 }
