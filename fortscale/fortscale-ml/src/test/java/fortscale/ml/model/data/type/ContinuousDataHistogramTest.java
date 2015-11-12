@@ -7,17 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataHistogramTest {
+
+	private void assertHistogramCount(ContinuousDataHistogram histogram, double value, long expectedCount) {
+		Assert.assertEquals(expectedCount, Math.round(histogram.getCount(value)));
+	}
+
 	@Test
 	public void should_add_new_value_to_histogram() {
 		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
 
-		Assert.assertEquals(0, histogram.getCount(42));
+		assertHistogramCount(histogram, 42, 0);
 		histogram.add(42, 100);
-		Assert.assertEquals(100, histogram.getCount(42));
+		assertHistogramCount(histogram, 42, 100);
 
-		Assert.assertEquals(0, histogram.getCount(3.14));
+		assertHistogramCount(histogram, 3.14, 0);
 		histogram.add(3.14);
-		Assert.assertEquals(1, histogram.getCount(3.14));
+		assertHistogramCount(histogram, 3.14, 1);
 	}
 
 	@Test
@@ -25,18 +30,18 @@ public class ContinuousDataHistogramTest {
 		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
 
 		histogram.add(1.9, 86);
-		Assert.assertEquals(86, histogram.getCount(1.9));
+		assertHistogramCount(histogram, 1.9, 86);
 		histogram.add(1.9, 14);
-		Assert.assertEquals(100, histogram.getCount(1.9));
+		assertHistogramCount(histogram, 1.9, 100);
 		histogram.add(1.9);
-		Assert.assertEquals(101, histogram.getCount(1.9));
+		assertHistogramCount(histogram, 1.9, 101);
 
 		histogram.add(14.5);
-		Assert.assertEquals(1, histogram.getCount(14.5));
+		assertHistogramCount(histogram, 14.5, 1);
 		histogram.add(14.5, 87);
-		Assert.assertEquals(88, histogram.getCount(14.5));
+		assertHistogramCount(histogram, 14.5, 88);
 		histogram.add(14.5);
-		Assert.assertEquals(89, histogram.getCount(14.5));
+		assertHistogramCount(histogram, 14.5, 89);
 	}
 
 	@Test
@@ -49,9 +54,9 @@ public class ContinuousDataHistogramTest {
 		input1.put("3", 30.0);
 
 		histogram.add(input1);
-		Assert.assertEquals(10, histogram.getCount(1));
-		Assert.assertEquals(20, histogram.getCount(2));
-		Assert.assertEquals(30, histogram.getCount(3));
+		assertHistogramCount(histogram, 1, 10);
+		assertHistogramCount(histogram, 2, 20);
+		assertHistogramCount(histogram, 3, 30);
 
 		Map<Object, Object> input2 = new HashMap<>();
 		input2.put(1, 1);
@@ -59,9 +64,9 @@ public class ContinuousDataHistogramTest {
 		input2.put(3, 3);
 
 		histogram.add(input2);
-		Assert.assertEquals(11, histogram.getCount(1.0));
-		Assert.assertEquals(22, histogram.getCount(2.0));
-		Assert.assertEquals(33, histogram.getCount(3.0));
+		assertHistogramCount(histogram, 1, 11);
+		assertHistogramCount(histogram, 2, 22);
+		assertHistogramCount(histogram, 3, 33);
 	}
 
 	@Test
@@ -76,7 +81,7 @@ public class ContinuousDataHistogramTest {
 		input.put(-200, 20);
 
 		histogram.add(input);
-		Assert.assertEquals(11, histogram.getCount(-100));
-		Assert.assertEquals(22, histogram.getCount(-200));
+		assertHistogramCount(histogram, -100, 11);
+		assertHistogramCount(histogram, -200, 22);
 	}
 }
