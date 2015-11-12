@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.EntitiesSelector;
+import fortscale.ml.model.store.ModelStore;
 import org.springframework.util.Assert;
 
 public class ModelConf {

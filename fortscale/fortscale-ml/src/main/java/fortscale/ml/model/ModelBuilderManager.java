@@ -2,10 +2,13 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.selector.EntitiesSelector;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.util.Assert;
 
 public class ModelBuilderManager implements IModelBuildingRegistrar {
+    private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
+
     private ModelConf modelConf;
     private IModelBuildingScheduler scheduler;
 
@@ -19,7 +22,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
     }
 
     @Override
-    public void process(IModelBuildingListener listener) {
+    public void process(IModelBuildingListener listener, long sessionId) {
         EntitiesSelector entitiesSelector = modelConf.getEntitiesSelector();
         String[] entities;
         if (entitiesSelector != null) {
@@ -33,7 +36,13 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
         for (String entityID : entities) {
             Object modelBuilderData = modelConf.getDataRetriever().retrieve(entityID);
             Model model = modelConf.getModelBuilder().build(modelBuilderData);
-            boolean success = modelConf.getModelStore().save(modelConf, entityID, model);
+            boolean success = true;
+            try {
+                modelConf.getModelStore().save(modelConf, entityID, model, sessionId);
+            } catch (Exception e) {
+                logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), entityID), e);
+                success = false;
+            }
 
             if (listener != null) {
                 // TODO: Change to contextId
