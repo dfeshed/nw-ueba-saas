@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataHistogram {
-	private Map<Double, Long> histogram;
+	private Map<Double, Double> histogram;
 
 	public ContinuousDataHistogram() {
 		histogram = new HashMap<>();
 	}
 
-	public void add(double value, long count) {
+	public void add(double value, double count) {
 		if (count > 0) {
-			Long oldCount = histogram.get(value);
+			Double oldCount = histogram.get(value);
 
 			if (oldCount == null) {
 				histogram.put(value, count);
@@ -42,7 +42,7 @@ public class ContinuousDataHistogram {
 		}
 	}
 
-	public long getCount(double value) {
+	public double getCount(double value) {
 		if (histogram.containsKey(value)) {
 			return histogram.get(value);
 		} else {
@@ -50,7 +50,7 @@ public class ContinuousDataHistogram {
 		}
 	}
 
-	public Map<Double, Long> getMap() {
+	public Map<Double, Double> getMap() {
 		return histogram;
 	}
 }

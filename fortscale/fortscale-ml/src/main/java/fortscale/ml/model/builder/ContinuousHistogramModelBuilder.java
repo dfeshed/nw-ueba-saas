@@ -12,13 +12,13 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        Map<Double, Long> histogram = castModelBuilderData(modelBuilderData);
+        Map<Double, Double> histogram = castModelBuilderData(modelBuilderData);
 
         // Calculate mean
-        long totalCount = 0;
+        double totalCount = 0;
         double sum = 0;
-        for (Map.Entry<Double, Long> entry : histogram.entrySet()) {
-            Long count = entry.getValue();
+        for (Map.Entry<Double, Double> entry : histogram.entrySet()) {
+            double count = entry.getValue();
             totalCount += count;
             sum += entry.getKey() * count;
         }
@@ -26,16 +26,16 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
 
         // Calculate standard deviation
         sum = 0;
-        for (Map.Entry<Double, Long> entry : histogram.entrySet())
+        for (Map.Entry<Double, Double> entry : histogram.entrySet())
             sum += Math.pow(entry.getKey() - mean, 2) * entry.getValue();
         double sd = Math.sqrt(sum / totalCount);
 
         ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters(totalCount, mean, sd);
+        model.setParameters((long) totalCount, mean, sd);
         return model;
     }
 
-    private Map<Double, Long> castModelBuilderData(Object modelBuilderData) {
+    private Map<Double, Double> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
         }
@@ -44,6 +44,6 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
             logger.error(errorMsg);
             throw new ClassCastException(errorMsg);
         }
-        return (Map<Double, Long>) modelBuilderData;
+        return (Map<Double, Double>) modelBuilderData;
     }
 }
