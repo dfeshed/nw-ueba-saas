@@ -541,13 +541,27 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'CORP' && @.action_string == 'User Open Failed')]"}
+          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
@@ -594,17 +608,51 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'CORP' && @.action_string == 'User Open Failed')]"}
+          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
 
+    {
+      "name": "yid_amt_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "yid"
+      ],
+      "dataSources": [
+        "amt"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "action_code_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
 
 
     {
