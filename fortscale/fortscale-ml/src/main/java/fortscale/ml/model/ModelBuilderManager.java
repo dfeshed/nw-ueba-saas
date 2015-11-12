@@ -1,15 +1,19 @@
 package fortscale.ml.model;
 
+
+import org.springframework.util.Assert;
+
 import fortscale.ml.model.listener.IModelBuildingListener;
-import fortscale.ml.model.selector.EntitiesSelector;
+import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.FeatureBucketContextSelector;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.util.Assert;
 
 public class ModelBuilderManager implements IModelBuildingRegistrar {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
 
     private ModelConf modelConf;
+    private ContextSelector contextsSelector;
     private IModelBuildingScheduler scheduler;
 
     public ModelBuilderManager(ModelConf modelConf, IModelBuildingScheduler scheduler) {
@@ -17,44 +21,50 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
         Assert.notNull(scheduler);
         this.modelConf = modelConf;
         this.scheduler = scheduler;
+        if(modelConf.getContextSelectorConf() != null){
+        	contextsSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
+        }
 
         scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    @Override
     public void process(IModelBuildingListener listener, long sessionId) {
-        EntitiesSelector entitiesSelector = modelConf.getEntitiesSelector();
-        String[] entities;
-        if (entitiesSelector != null) {
-            // we get here for entity model configurations
-            entities = entitiesSelector.getEntities();
-        }
-        else {
-            // we get here for global model configurations
-            entities = new String[]{null};
-        }
-        for (String entityID : entities) {
-            Object modelBuilderData = modelConf.getDataRetriever().retrieve(entityID);
-            Model model = modelConf.getModelBuilder().build(modelBuilderData);
-            boolean success = true;
-            try {
-                modelConf.getModelStore().save(modelConf, entityID, model, sessionId);
-            } catch (Exception e) {
-                logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), entityID), e);
-                success = false;
-            }
-
-            if (listener != null) {
-                // TODO: Change to contextId
-                listener.modelBuildingStatus(modelConf.getName(), null, success);
-            }
-        }
+        if (contextsSelector != null) {
+	        for (String contextId : contextsSelector.getContexts(0L, 0L)) {
+	        	 build(listener, contextId, sessionId);
+	        }
+	    } else{
+	    	build(listener, null, sessionId);
+	    }
 
         scheduler.register(this, calcNextRunTimeInSeconds());
+    }
+    
+    public void build(IModelBuildingListener listener, String contextId, long sessionId){
+    	Object modelBuilderData = modelConf.getDataRetriever().retrieve(contextId);
+        Model model = modelConf.getModelBuilder().build(modelBuilderData);
+        boolean success = true;
+        try {
+            modelConf.getModelStore().save(modelConf, contextId, model, sessionId);
+        } catch (Exception e) {
+            logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), contextId), e);
+            success = false;
+        }
+
+        if (listener != null) {
+            // TODO: Change to contextId
+            listener.modelBuildingStatus(modelConf.getName(), null, success);
+        }
     }
 
     private long calcNextRunTimeInSeconds() {
         long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
         return currentTimeSeconds + modelConf.getBuildIntervalInSeconds();
     }
+
+	public void setContextsSelector(ContextSelector contextsSelector) {
+		this.contextsSelector = contextsSelector;
+	}
+    
+    
 }

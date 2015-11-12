@@ -93,6 +93,11 @@
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
