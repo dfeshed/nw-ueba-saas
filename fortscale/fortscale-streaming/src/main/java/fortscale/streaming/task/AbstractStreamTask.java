@@ -157,7 +157,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
 		if (dataSource == null) {
-			throw new IllegalStateException("Message does not contain" + LAST_STATE_FIELD_NAME + " field");
+			throw new IllegalStateException("Message does not contain " + LAST_STATE_FIELD_NAME + " field: " + message.toJSONString());
 		}
 
 		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
