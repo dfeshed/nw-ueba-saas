@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
@@ -17,6 +18,7 @@ import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
@@ -24,11 +26,10 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
-import fortscale.utils.spring.SpringPropertiesUtil;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -208,7 +209,14 @@ public class ApiEvidenceController extends DataQueryController {
 			termsMap.add(term);
 			// Add condition for custom filtering
 			if (eventsFilter != null) {
-				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map evidenceMap = null;
+				try {
+					evidenceMap = objectMapper.convertValue(evidence, Map.class);
+				} catch (Exception ex) {
+					logger.error("failed to convert evidence object to map");
+				}
+				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
 				if (customedFilter != null) {
 					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
 				}
