@@ -19,8 +19,8 @@ public class ModelStore {
 	@Autowired
 	@JsonCreator
 	ModelStore(
-			@JsonProperty("mongoTemplate") MongoTemplate mongoTemplate,
-			@JsonProperty("mongoDbUtilService") MongoDbUtilService mongoDbUtilService) {
+			@JsonProperty("this is autowired 1") MongoTemplate mongoTemplate,
+			@JsonProperty("this is autowired 2") MongoDbUtilService mongoDbUtilService) {
 
 		this.mongoTemplate = mongoTemplate;
 		this.mongoDbUtilService = mongoDbUtilService;
