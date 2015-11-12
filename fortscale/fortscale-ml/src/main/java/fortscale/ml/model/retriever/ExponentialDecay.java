@@ -23,11 +23,9 @@ public class ExponentialDecay implements IDataRetrieverFunction {
     public ContinuousDataHistogram execute(Object data, long timeRelativeToNow) {
         ContinuousDataHistogram histogram = (ContinuousDataHistogram) data;
         ContinuousDataHistogram res = new ContinuousDataHistogram();
+        double decayFactor = Math.pow(base, Math.floor(timeRelativeToNow / timeRangeIntervalInSeconds));
         for (Map.Entry<Double, Double> entry : histogram.getMap().entrySet()) {
-            double count = entry.getValue() * Math.pow(base, Math.floor(timeRelativeToNow / timeRangeIntervalInSeconds));
-            if (count > 0) {
-                res.add(entry.getKey(), count);
-            }
+            res.add(entry.getKey(), entry.getValue() * decayFactor);
         }
         return res;
     }
