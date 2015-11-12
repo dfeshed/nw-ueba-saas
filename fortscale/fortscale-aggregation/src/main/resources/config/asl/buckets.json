@@ -633,27 +633,6 @@
       ]
     },
 
-    {
-      "name": "yid_amt_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "yid"
-      ],
-      "dataSources": [
-        "amt"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "action_code_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_code"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-
 
     {
       "name": "source_machine_kerberos_logins_daily",
