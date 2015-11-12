@@ -165,9 +165,8 @@ public class ModelBuilderManagerTest {
         IModelBuildingListener listener = Mockito.mock(IModelBuildingListener.class);
         modelManager.process(listener, 1234);
 
-        for (boolean success: successes) {
-            Mockito.verify(listener).modelBuildingStatus(modelConfName, null, success);
-        }
+        Mockito.verify(listener).modelBuildingStatus(modelConfName, "user1", true);
+        Mockito.verify(listener).modelBuildingStatus(modelConfName, "user2", false);
         Mockito.verifyNoMoreInteractions(listener);
     }
 }
