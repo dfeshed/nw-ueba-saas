@@ -156,7 +156,7 @@ public class ApiUserControllerTest {
 		manager.setAdInfo(adInfo);
 		when(userRepository.findByFollowed(true)).thenReturn(new ArrayList(Arrays.asList(user)));
 		when(userRepository.findByDNs(any(Collection.class))).thenReturn(new ArrayList(Arrays.asList(manager)));
-		MvcResult result = mockMvc.perform(get("/api/user/123/followedUsersDetails")
+		MvcResult result = mockMvc.perform(get("/api/user/followedUsersDetails")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))

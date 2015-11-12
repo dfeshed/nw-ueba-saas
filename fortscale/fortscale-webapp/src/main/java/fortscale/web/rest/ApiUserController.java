@@ -142,16 +142,7 @@ public class ApiUserController extends BaseController{
 		usersList.setTotal(userRepository.countAllUsers(criteriaList));
 		return usersList;
 	}
-	@RequestMapping(value="/disabled_with_activity", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public  DataBean<List<User>> disabledWithActivity(){
 
-
-
-		DataBean<List<User>> usersList = new DataBean<>();
-		return usersList;
-	}
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
