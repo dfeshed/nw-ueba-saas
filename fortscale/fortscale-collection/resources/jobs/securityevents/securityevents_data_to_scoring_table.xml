@@ -52,6 +52,14 @@
 					<key>throttlingSleep</key>
 					<value>${kafka.throttlingSleep}</value>
 				</entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>kerberosLogin</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>etl</value>
+                </entry>
 			</job-data-map>
 
 		</job>

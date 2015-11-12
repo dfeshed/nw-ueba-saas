@@ -46,6 +46,14 @@
                     <key>classmonitor</key>
                     <value>fortscale.streaming.task.EvidenceCreationTask</value>
                 </entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>ssh</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
             </job-data-map>
 
         </job>
