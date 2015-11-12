@@ -36,10 +36,10 @@ import static org.mockito.Mockito.never;
 public class UsernameNormalizationAndTaggingTaskTest {
 
 
-	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
-	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\", \"data_source\": \"vpn\" }";
-	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
-	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\", \"data_source\": \"vpn\" }";
+	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\"}";
+	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
+	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
+	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
 
 	UsernameNormalizationAndTaggingTask task;
 	UserService userService;
@@ -101,7 +101,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		task.dataSourceToConfigurationMap = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("input1", "state1") , new UsernameNormalizationConfig("input1", "output1",
+		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl") , new UsernameNormalizationConfig("input1", "output1",
 				usernameField,"domain","",normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
