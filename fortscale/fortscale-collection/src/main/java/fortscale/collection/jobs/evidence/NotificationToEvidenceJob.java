@@ -37,13 +37,17 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
+	private static final int DAYS_BACK = 1;
 	private final String SORT_FIELD = "ts";
 	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
-	private final String CHECKING_ON_YID = "user_checking_up_on_yids";
+	private final String AMT_CHECKING_ON_YID = "user_checking_up_on_yids";
+	private final String AMT_LOGIN_AS_MAIL = "amt_login_as_mail";
+	private final String AMT_RESET_PASSWORD = "amt_reset_pwd";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
 	private final String MIN_DATE = "minwhen";
 	private final String MAX_DATE = "maxwhen";
+	private final String DATE_TIME_UNIX = "date_time_unix";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -187,7 +191,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getStartTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case CHECKING_ON_YID: {
+			case AMT_RESET_PASSWORD:
+			case AMT_LOGIN_AS_MAIL: {
+				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
+						Long.parseLong(attributes.get(DATE_TIME_UNIX)) - (60 * 60 * 24 * DAYS_BACK) :
+						notification.getTs();
+			} case AMT_CHECKING_ON_YID: {
 				return attributes != null && attributes.containsKey(MIN_DATE) ?
 						Long.parseLong(attributes.get(MIN_DATE)) : notification.getTs();
 			} case VPN_OVERLAPPING: {
@@ -203,7 +212,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getEndTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case CHECKING_ON_YID: {
+			case AMT_RESET_PASSWORD:
+			case AMT_LOGIN_AS_MAIL: {
+				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
+						Long.parseLong(attributes.get(DATE_TIME_UNIX)) : notification.getTs();
+			} case AMT_CHECKING_ON_YID: {
 				return attributes != null && attributes.containsKey(MAX_DATE) ?
 						Long.parseLong(attributes.get(MAX_DATE)) : notification.getTs();
 			} case VPN_OVERLAPPING: {
@@ -248,7 +261,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			return result;
 		}
 		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
-		if (cause.contains("amt") || cause.equalsIgnoreCase(CHECKING_ON_YID)) {
+		if (cause.contains("amt") || cause.equalsIgnoreCase(AMT_CHECKING_ON_YID)) {
 			result.add("amt");
 		} else if (cause.contains("vpn")) {
 			result.add("vpn");
