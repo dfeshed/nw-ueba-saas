@@ -67,7 +67,7 @@ public class AmtResetPwdNotificationGenerator  implements InitializingBean {
 			}
 		}
 		if (user == null) {
-			logger.warn("AmtResetPwdNotificationGenerator notification - user {} not found", normalizeUsername);
+			logger.error("AmtResetPwdNotificationGenerator notification - user {} not found", normalizeUsername);
 			return;
 		}
 		Notification notification = new Notification();

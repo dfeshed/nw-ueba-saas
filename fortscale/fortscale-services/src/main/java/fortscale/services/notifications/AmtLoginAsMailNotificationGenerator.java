@@ -61,7 +61,7 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 			}
 		}
 		if (user == null) {
-			logger.warn("AmtLoginAsMailNotificationGenerator notification - user {} not found", normalizeUsername);
+			logger.error("AmtLoginAsMailNotificationGenerator notification - user {} not found", normalizeUsername);
 			return;
 		}
 		Notification notification = new Notification();
