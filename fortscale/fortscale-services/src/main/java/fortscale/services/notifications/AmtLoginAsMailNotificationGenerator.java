@@ -51,7 +51,12 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 		long date_time_unix = Long.parseLong(record.get("date_time_unix").get(0).toString());
 
 		List<Notification> notifications = new ArrayList<>();
-		List<User> users = userRepository.findByUsernameContaining(normalizeUsername);
+		List<User> users;
+		if (normalizeUsername.contains("@")) {
+			users = userRepository.findByUsernameContaining(normalizeUsername);
+		} else {
+			users = userRepository.findByUsernameContaining(normalizeUsername + "@");
+		}
 		Notification notification = new Notification();
 		long ts = date_time_unix;
 		notification.setTs(TimestampUtils.convertToSeconds(ts));
