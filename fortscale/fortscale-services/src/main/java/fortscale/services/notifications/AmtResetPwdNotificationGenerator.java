@@ -57,9 +57,13 @@ public class AmtResetPwdNotificationGenerator  implements InitializingBean {
 		long date_time_unix = Long.parseLong(record.get("date_time_unix").get(0).toString());
 
 		List<Notification> notifications = new ArrayList<>();
-		List<User> users;
+		List<User> users = null;
 		if (normalizeUsername.contains("@")) {
-			users = userRepository.findByUsernameContaining(normalizeUsername);
+			User user = userRepository.findByUsername(normalizeUsername);
+			if (user != null) {
+				users = new ArrayList();
+				users.add(user);
+			}
 		} else {
 			users = userRepository.findByUsernameContaining(normalizeUsername + "@");
 		}
