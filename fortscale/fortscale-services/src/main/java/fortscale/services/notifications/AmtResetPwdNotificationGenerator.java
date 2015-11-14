@@ -62,7 +62,7 @@ public class AmtResetPwdNotificationGenerator  implements InitializingBean {
 			user = userRepository.findByUsername(normalizeUsername);
 		} else {
 			List<User> users = userRepository.findByUsernameContaining(normalizeUsername + "@");
-			if (user != null && users.size() > 0) {
+			if (users != null && users.size() > 0) {
 				user = users.get(0);
 			}
 		}
