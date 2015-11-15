@@ -21,9 +21,9 @@ import static org.junit.Assert.assertNotNull;
 
 public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
-	public static final String MESSAGE_1 = "{ \"name\": \"user1\",\"username\": \"user1\", \"time\": 1 , \"Status\":\"B\"}";
-	public static final String MESSAGE_2 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 2 , \"Status\":\"B\"}";
-	public static final String MESSAGE_3 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 4 , \"Status\":\"C\"}";
+	public static final String MESSAGE_1 = "{ \"name\": \"user1\",\"username\": \"user1\", \"time\": 1 , \"Status\":\"B\", \"last_state\":\"state1\", \"data_source\":\"input1\"}";
+	public static final String MESSAGE_2 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 2 , \"Status\":\"B\", \"last_state\":\"state1\", \"data_source\":\"input2\"}";
+	public static final String MESSAGE_3 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 4 , \"Status\":\"C\", \"last_state\":\"state1\", \"data_source\":\"input3\"}";
 
 
 	@Test
@@ -44,9 +44,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 
 		task.dataSourceConfigs = new HashMap<>();
-		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input1","1") , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
-		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input2","2"), new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
-		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input3","3") , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input1","state1") , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input2","state1"), new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("input3","state1") , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
 
 		// Mocks
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
@@ -75,8 +75,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
-		assertEquals("User1 - VPN event", null,userInfo1.getUserInfo().get("ssh"));
+		assertEquals("User1 - VPN event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("ssh").getKey());
+
 		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
 		// User1, SSH event with time 1
@@ -88,8 +89,8 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - SSH event", new Long(2000), userInfo1.getUserInfo().get("ssh").getKey());
+		assertEquals("User1 - VPN event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
 		assertEquals("User1 - SSH event", "user1", userInfo1.getUserInfo().get("ssh").getValue());
 		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
@@ -102,8 +103,8 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - SSH event", new Long(2000), userInfo1.getUserInfo().get("ssh").getKey());
+		assertEquals("User1 - VPN event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
 
 	}
 
