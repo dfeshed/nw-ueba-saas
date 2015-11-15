@@ -35,7 +35,7 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
 
     private static final String DOT = ".";
     private static final String CONTEXT_PREFIX = "context";
-
+    private static final String EVENT_COUNTER_BUCKET = "events_counter";
     private static final String AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE = "user_checking_up_on_yids";
     private static final String AMT_LOGIN_AS_MAIL_ANOMALY_TYPE = "amt_login_as_mail";
     private static final String AMT_RESET_PASSWORD_ANOMALY_TYPE = "amt_reset_pwd";
@@ -74,16 +74,16 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
                                                                                          Integer timePeriodInDays) {
         String normalizedContextType = getNormalizedContextType(contextType);
         Long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        List<FeatureBucket> aggregatedEventsByContextAndTimeRange = featureBucketQueryService.
+        List<FeatureBucket> featureBucketsByContextAndTimeRange = featureBucketQueryService.
                 getFeatureBucketsByContextAndTimeRange(featureName, normalizedContextType, contextValue, startTime,
                         evidenceEndTime);
-        if (aggregatedEventsByContextAndTimeRange.isEmpty()) {
+        if (featureBucketsByContextAndTimeRange.isEmpty()) {
             throw new SupportingInformationException("Could not find any relevant supporting information creation");
         }
         Map<SupportingInformationKey, Double> supportingInformationHistogram = new HashMap<>();
-        for (FeatureBucket featureBucket : aggregatedEventsByContextAndTimeRange) {
+        for (FeatureBucket featureBucket : featureBucketsByContextAndTimeRange) {
             FeatureNumericValue numericValue = (FeatureNumericValue)featureBucket.getAggregatedFeatures().
-                    get(featureName).getValue();
+                    get(EVENT_COUNTER_BUCKET).getValue();
             Double numOfEvents = numericValue.getValue().doubleValue();
             SupportingInformationKey supportingInformationKey = new SupportingInformationTimestampKey(Long.
                     toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
