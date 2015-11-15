@@ -142,7 +142,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
 					//Add the data source sign to the message
 					fillJsonWithFieldValue(json, "data_source", dataSource);
 					//Add the last step  sign to the message
-					fillJsonWithFieldValue(json, "last_state ", lastState);
+					fillJsonWithFieldValue(json, "last_state", lastState);
 
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
                     long currentEpochTimeField = convertToLong(result.get(epochtimeField));
