@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.aggregation.feature.event.AggregatedEventQueryService;
+import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.FeatureBucketQueryService;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationTimeGranularity;
@@ -23,79 +24,76 @@ import java.util.Map;
 /**
  * Implementation of supporting information populator for aggregated events mapped by time
  *
- * @author gils
- * Date: 16/08/2015
+ * @author Amir Keren
+ * Date: 15/11/2015
  */
 @Component
 @Scope("prototype")
-public class SupportingInformationDistinctEventsByTimePopulator extends SupportingInformationBaseHistogramPopulator {
+public class SupportingInformationCountByTimePopulator extends SupportingInformationBaseHistogramPopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationDistinctEventsByTimePopulator.class);
+    private static Logger logger = Logger.getLogger(SupportingInformationCountByTimePopulator.class);
 
     private static final String DOT = ".";
     private static final String CONTEXT_PREFIX = "context";
-    private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
+    private static final String EVENT_COUNTER_BUCKET = "events_counter";
+    private static final String AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE = "user_checking_up_on_yids";
+    private static final String AMT_LOGIN_AS_MAIL_ANOMALY_TYPE = "amt_login_as_mail";
+    private static final String AMT_RESET_PASSWORD_ANOMALY_TYPE = "amt_reset_pwd";
 
     @Autowired
-    private AggregatedEventQueryService aggregatedEventQueryService;
+    private FeatureBucketQueryService featureBucketQueryService;
 
-    public SupportingInformationDistinctEventsByTimePopulator(String contextType, String dataEntity, String featureName) {
+    public SupportingInformationCountByTimePopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
 
     @Override
-    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
-
-        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays);
-
+    public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence,
+                                                                                    String contextValue,
+                                                                                    long evidenceEndTime,
+                                                                                    Integer timePeriodInDays) {
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue,
+                evidenceEndTime, timePeriodInDays);
         SupportingInformationGenericData<Double> supportingInformationData;
-
         if (isAnomalyIndicationRequired(evidence)) {
             SupportingInformationKey anomalySupportingInformationKey = createAnomalyHistogramKey(evidence, featureName);
-
             validateHistogramDataConsistency(histogramMap, anomalySupportingInformationKey);
-
-            supportingInformationData = new SupportingInformationGenericData<>(histogramMap, anomalySupportingInformationKey);
+            supportingInformationData = new SupportingInformationGenericData<>(histogramMap,
+                    anomalySupportingInformationKey);
         }
         else {
             supportingInformationData = new SupportingInformationGenericData<>(histogramMap);
         }
-
-
         SupportingInformationTimeGranularity supportingInformationTimeGranularity = determineTimeGranularity(evidence);
-
         supportingInformationData.setTimeGranularity(supportingInformationTimeGranularity);
-
         return supportingInformationData;
     }
 
-    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
-
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue,
+                                                                                         long evidenceEndTime,
+                                                                                         Integer timePeriodInDays) {
         String normalizedContextType = getNormalizedContextType(contextType);
-
         Long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        List<AggrEvent> aggregatedEventsByContextAndTimeRange = aggregatedEventQueryService.getAggregatedEventsByContextAndTimeRange(featureName, normalizedContextType, contextValue, startTime, evidenceEndTime);
-
-        if (aggregatedEventsByContextAndTimeRange.isEmpty()) {
-            throw new SupportingInformationException("Could not find any relevant scored aggregated events for supporting information creation");
+        List<FeatureBucket> featureBucketsByContextAndTimeRange = featureBucketQueryService.
+                getFeatureBucketsByContextAndTimeRange(featureName, normalizedContextType, contextValue, startTime,
+                        evidenceEndTime);
+        if (featureBucketsByContextAndTimeRange.isEmpty()) {
+            throw new SupportingInformationException("Could not find any relevant supporting information creation");
         }
-
         Map<SupportingInformationKey, Double> supportingInformationHistogram = new HashMap<>();
-
-        for (AggrEvent aggrEvent : aggregatedEventsByContextAndTimeRange) {
-            Double numOfEvents = aggrEvent.getAggregatedFeatureValue();
-
-            SupportingInformationKey supportingInformationKey = new SupportingInformationTimestampKey(Long.toString(TimestampUtils.convertToMilliSeconds(aggrEvent.getStartTimeUnix())));
-
+        for (FeatureBucket featureBucket : featureBucketsByContextAndTimeRange) {
+            FeatureNumericValue numericValue = (FeatureNumericValue)featureBucket.getAggregatedFeatures().
+                    get(EVENT_COUNTER_BUCKET).getValue();
+            Double numOfEvents = numericValue.getValue().doubleValue();
+            SupportingInformationKey supportingInformationKey = new SupportingInformationTimestampKey(Long.
+                    toString(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime())));
             supportingInformationHistogram.put(supportingInformationKey, numOfEvents);
         }
-
         return supportingInformationHistogram;
     }
 
     protected SupportingInformationTimeGranularity determineTimeGranularity(Evidence evidence) {
         EvidenceTimeframe evidenceTimeframe = evidence.getTimeframe();
-
         if (evidenceTimeframe != null) {
             if (evidenceTimeframe == EvidenceTimeframe.Hourly) {
                 return SupportingInformationTimeGranularity.Hourly;
@@ -110,18 +108,17 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
         else {
             logger.error("Could not determine supporting information time granularity for evidence ID {} : evidence timeframe field is not set", evidence.getId());
         }
-
         return null;
-    }
-
-    @Override
-    protected String getNormalizedFeatureName(String featureName) {
-        return String.format("%s_%s", featureName, FEATURE_HISTOGRAM_SUFFIX);
     }
 
     @Override
     protected String getNormalizedContextType(String contextType) {
         return removeContextTypePrefix(contextType);
+    }
+
+    @Override
+    String getNormalizedFeatureName(String featureName) {
+        return null;
     }
 
     private String removeContextTypePrefix(String contextType) {
@@ -135,17 +132,19 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
     @Override
     SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName) {
-        // TODO need to check if this correct
-        return new SupportingInformationTimestampKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.getStartDate())));
+        return new SupportingInformationTimestampKey(String.valueOf(TimestampUtils.convertToMilliSeconds(evidence.
+                getStartDate())));
     }
 
     @Override
     protected boolean isAnomalyIndicationRequired(Evidence evidence) {
-        return true;
+        return !AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
+               !AMT_LOGIN_AS_MAIL_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
+               !AMT_RESET_PASSWORD_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 
-    public void setAggregatedEventQueryService(AggregatedEventQueryService aggregatedEventQueryService) {
-        this.aggregatedEventQueryService = aggregatedEventQueryService;
+    public void setFeatureBucketQueryService(FeatureBucketQueryService featureBucketQueryService) {
+        this.featureBucketQueryService = featureBucketQueryService;
     }
+
 }
-
