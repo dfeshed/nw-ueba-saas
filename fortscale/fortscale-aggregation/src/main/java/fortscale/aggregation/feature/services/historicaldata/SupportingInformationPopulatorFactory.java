@@ -24,11 +24,12 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private static final String SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN = "supportingInformationCountPopulator";
     private static final String SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN = "supportingInformationHourlyCountGroupByDayOfWeekPopulator";
     private static final String SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR = "supportingInformationDistinctEventsByTimePopulator";
+    private static final String SUPPORTING_INFORMATION_COUNT_BY_TIME_POPULATOR = "supportingInformationCountByTimePopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN = "supportingInformationVPNOverlappingSessionPopulator";
 
     private static final String VPN_OVERLAPPING_SESSION = "VPN_user_creds_share";
-
+    private static final String AMT_YID_COUNT = "AMTYIDCount";
 
     private ApplicationContext applicationContext;
 
@@ -67,6 +68,9 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
             if (VPN_OVERLAPPING_SESSION.equalsIgnoreCase(featureName)) {
                 return (SupportingInformationVPNOverlappingSessionPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
             }
+        }
+        else if (AMT_YID_COUNT.equalsIgnoreCase(aggregationFunction)) {
+            return (SupportingInformationCountByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_COUNT_BY_TIME_POPULATOR, contextType, dataEntity, featureName);
         }
 
         throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);

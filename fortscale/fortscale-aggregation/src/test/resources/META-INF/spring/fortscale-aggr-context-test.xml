@@ -20,4 +20,5 @@
 	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype"/>
 	<bean id="supportingInformationMongoVPNSessionQueryPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationVPNSessionPopulator" scope="prototype"/>
 	<bean id="supportingInformationVPNOverlappingSessionPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationVPNOverlappingSessionPopulator" scope="prototype"/>
+	<bean id="supportingInformationCountByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountByTimePopulator" scope="prototype"/>
 </beans>
