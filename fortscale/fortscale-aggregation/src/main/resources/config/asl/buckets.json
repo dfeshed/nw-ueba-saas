@@ -650,11 +650,6 @@
             "groupBy": ["action_code"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         }
       ]
     },

@@ -36,6 +36,10 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     private static final String CONTEXT_PREFIX = "context";
     private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
+    private static final String AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE = "user_checking_up_on_yids";
+    private static final String AMT_LOGIN_AS_MAIL_ANOMALY_TYPE = "amt_login_as_mail";
+    private static final String AMT_RESET_PASSWORD_ANOMALY_TYPE = "amt_reset_pwd";
+
     @Autowired
     private AggregatedEventQueryService aggregatedEventQueryService;
 
@@ -141,7 +145,9 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
 
     @Override
     protected boolean isAnomalyIndicationRequired(Evidence evidence) {
-        return true;
+        return !AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
+               !AMT_LOGIN_AS_MAIL_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
+               !AMT_RESET_PASSWORD_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
     }
 
     public void setAggregatedEventQueryService(AggregatedEventQueryService aggregatedEventQueryService) {
