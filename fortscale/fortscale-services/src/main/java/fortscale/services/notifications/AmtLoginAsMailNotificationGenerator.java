@@ -51,22 +51,29 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 		long date_time_unix = Long.parseLong(record.get("date_time_unix").get(0).toString());
 
 		List<Notification> notifications = new ArrayList<>();
-		User user = userRepository.findByUsername(normalizeUsername);
+		User user = null;
+		if (normalizeUsername.contains("@")) {
+			user = userRepository.findByUsername(normalizeUsername);
+		} else {
+			List<User> users = userRepository.findByUsernameContaining(normalizeUsername + "@");
+			if (users != null && users.size() > 0) {
+				user = users.get(0);
+			}
+		}
+		if (user == null) {
+			logger.error("AmtLoginAsMailNotificationGenerator notification - user {} not found", normalizeUsername);
+			return;
+		}
 		Notification notification = new Notification();
 		long ts = date_time_unix;
 		notification.setTs(TimestampUtils.convertToSeconds(ts));
 		notification.setIndex(buildIndex(normalizeUsername,yid,date_time_unix));
 		notification.setGenerator_name(AmtLoginAsMailNotificationGenerator.class.getSimpleName());
-		notification.setName(normalizeUsername);
 		notification.setCause(CAUSE);
 		notification.setUuid(UUID.randomUUID().toString());
-		if(user != null) {
-			notification.setDisplayName(user.getDisplayName());
-			notification.setFsId(user.getId());
-		}else {
-			notification.setDisplayName(normalizeUsername);
-			notification.setFsId(normalizeUsername);
-		}
+		notification.setDisplayName(user.getDisplayName());
+		notification.setFsId(user.getId());
+		notification.setName(user.getUsername());
 
 		notification.setAttributes(getAmtEventsAttributes(record));
 
