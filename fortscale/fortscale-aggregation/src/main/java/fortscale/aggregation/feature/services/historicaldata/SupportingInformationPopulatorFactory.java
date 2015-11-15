@@ -68,6 +68,9 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
                 return (SupportingInformationVPNOverlappingSessionPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
             }
         }
+        else if (SupportingInformationAggrFunc.DistinctEventsByTime.name().equalsIgnoreCase(aggregationFunction)) {
+            return (SupportingInformationDistinctEventsByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR, contextType, dataEntity, featureName);
+        }
 
         throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);
     }
