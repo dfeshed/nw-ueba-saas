@@ -716,7 +716,26 @@
         }
       ]
     },
-
+    {
+      "name": "source_machine_amt_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "amt"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
     {
       "name": "source_machine_ssh_daily",
       "expireAfterSeconds": 31536000,
