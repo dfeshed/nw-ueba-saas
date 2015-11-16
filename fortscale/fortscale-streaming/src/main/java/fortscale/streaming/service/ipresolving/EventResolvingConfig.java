@@ -34,8 +34,8 @@ public class EventResolvingConfig implements StreamingTaskConfig {
                                              boolean resolveOnlyReservedIp, String reservedIpAddress) {
         EventResolvingConfig config = new EventResolvingConfig();
         config.setDataSource(dataSource);
-        config.setHostFieldName(hostFieldName);
         config.setInputTopic(inputTopic);
+        config.setHostFieldName(hostFieldName);
         config.setIpFieldName(ipFieldName);
         config.setOutputTopic(outputTopic);
         config.setRestrictToADName(restrictToADName);
