@@ -517,6 +517,14 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          "name": "high_score_source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_src_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+        },
+        {
           "name": "high_score_date_time_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -582,6 +590,14 @@
             "groupBy": ["normalized_src_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_src_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
         },
         {
           "name": "high_score_date_time_events_counter",

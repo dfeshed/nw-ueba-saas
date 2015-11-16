@@ -1089,6 +1089,44 @@
           "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
+      },
+      {
+        "name": "distinct_number_of_high_score_source_machine_events_amt_daily",
+        "type": "P",
+        "bucketConfName": "normalized_username_amt_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "high_score_source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": true
+        }
+      },
+      {
+        "name": "distinct_number_of_high_score_source_machine_events_amt_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_amt_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "source_machine",
+        "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "high_score_source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": true
+        }
       }
     ]
   }
