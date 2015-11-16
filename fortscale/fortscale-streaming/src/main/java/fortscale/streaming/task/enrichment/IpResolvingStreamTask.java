@@ -133,7 +133,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
-        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream(); //////TODO change to StreamingTask
         if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update check  message that arrive
             CachingService cachingService = topicToCacheMap.get(topic);
@@ -151,17 +151,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 // we are doing so, to prevent cases of 4769 events from a machine to itself.
                 // most of the cases we can't resolve the host name in 4769 events are self connect.
                 //TODO: in next versions we want to add extra check if this is the case or not.
-                if (!service.dropEvent(topic, event)) {
+              //  if (!service.dropEvent(topic, event)) { //TODO take gil's version for this part
                     // construct outgoing message
 
-                        OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
-                                new SystemStream("kafka", service.getOutputTopic(topic)),
-                                service.getPartitionKey(topic, event),
-                                event.toJSONString());
-                        handleUnfilteredEvent(event);
-                        collector.send(output);
+//                        OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
+//                                new SystemStream("kafka", service.getOutputTopic(topic)),
+//                                service.getPartitionKey(topic, event),
+//                                event.toJSONString());
+//                        handleUnfilteredEvent(event);
+//                        collector.send(output);
 
-                }
+              //  }
             } catch (FilteredEventException exception) {
                 taskMonitoringHelper.countNewFilteredEvents(getDataSource(event),exception.getMessage());
             } catch (Exception exception) {

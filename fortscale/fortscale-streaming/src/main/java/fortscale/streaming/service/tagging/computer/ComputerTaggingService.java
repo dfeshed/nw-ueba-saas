@@ -8,6 +8,7 @@ import java.util.Map;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.service.StreamingServiceAbstract;
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.apache.commons.lang.StringUtils;
 
 import fortscale.domain.core.ComputerUsageType;
@@ -27,7 +28,7 @@ public class ComputerTaggingService extends StreamingServiceAbstract<ComputerTag
 	protected SensitiveMachineService sensitiveMachineService;
 
 	public ComputerTaggingService(ComputerService computerService, SensitiveMachineService sensitiveMachineService,
-			Map<String, ComputerTaggingConfig>  configs) {
+			Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig>  configs) {
 		checkNotNull(computerService);
 		checkNotNull(sensitiveMachineService);
 		checkNotNull(configs);
@@ -37,8 +38,8 @@ public class ComputerTaggingService extends StreamingServiceAbstract<ComputerTag
 		this.configs = configs;
 	}
 
-	public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
-		ComputerTaggingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
+	public JSONObject enrichEvent(StreamingTaskDataSourceConfigKey configKey, JSONObject event) throws FilteredEventException {
+		ComputerTaggingConfig config = verifyConfigKeyAndEventFetchConfig(configKey, event, configs);
 
 
 		for (ComputerTaggingFieldsConfig computerTaggingFieldsConfig : config.getComputerTaggingFieldsConfigList()) {

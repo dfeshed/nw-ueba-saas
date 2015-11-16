@@ -3,6 +3,7 @@ package fortscale.streaming.service.ipresolving;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.service.StreamingServiceAbstract;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
 import net.minidev.json.JSONObject;
@@ -31,50 +32,50 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
         checkNotNull(resolver);
         checkNotNull(configs);
         this.resolver = resolver;
-        for (EventResolvingConfig config : configs) {
-            this.configs.put(config.getInputTopic(), config);
-        }
+//        for (EventResolvingConfig config : configs) { //TODO take gil's version here
+//            this.configs.put(config.getInputTopic(), config);
+//        }
 
     }
 
     public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
         // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
-
-
-        // get the ip address and timestamp fields from the event
-        String ip = convertToString(event.get(config.getIpFieldName()));
-        Long timestamp = convertToLong(event.get(config.getTimestampFieldName()));
-        if (StringUtils.isEmpty(ip) || timestamp == null)
-            return event;
-
-        if (!ipAddressShouldBeResolved(config, ip )) {
-            return event;
-        } else {
-
-            // get the hostname from the resolver and put it into the event message
-            String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
-            if (StringUtils.isNotEmpty(hostname)) {
-                event.put(config.getHostFieldName(), hostname);
-                if (config.isOverrideIPWithHostname()) {
-                    event.put(config.getIpFieldName(), hostname);
-                }
-            } else {
-                // check if we received an hostname to use externally - this could be in the case of
-                // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
-                // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
-                // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
-                // better to override that hostname
-                String eventHostname = convertToString(event.get(config.getHostFieldName()));
-                if (StringUtils.isNotEmpty(eventHostname)) {
-                    eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
-                    event.put(config.getHostFieldName(), eventHostname);
-                    if (config.isOverrideIPWithHostname()) {
-                        event.put(config.getIpFieldName(), hostname);
-                    }
-                }
-            }
-        }
+//        EventResolvingConfig config = verifyConfigKeyAndEventFetchConfig(inputTopic, event, configs); //TODO take gil's version here
+//
+//
+//        // get the ip address and timestamp fields from the event
+//        String ip = convertToString(event.get(config.getIpFieldName()));
+//        Long timestamp = convertToLong(event.get(config.getTimestampFieldName()));
+//        if (StringUtils.isEmpty(ip) || timestamp == null)
+//            return event;
+//
+//        if (!ipAddressShouldBeResolved(config, ip )) {
+//            return event;
+//        } else {
+//
+//            // get the hostname from the resolver and put it into the event message
+//            String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
+//            if (StringUtils.isNotEmpty(hostname)) {
+//                event.put(config.getHostFieldName(), hostname);
+//                if (config.isOverrideIPWithHostname()) {
+//                    event.put(config.getIpFieldName(), hostname);
+//                }
+//            } else {
+//                // check if we received an hostname to use externally - this could be in the case of
+//                // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
+//                // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
+//                // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
+//                // better to override that hostname
+//                String eventHostname = convertToString(event.get(config.getHostFieldName()));
+//                if (StringUtils.isNotEmpty(eventHostname)) {
+//                    eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
+//                    event.put(config.getHostFieldName(), eventHostname);
+//                    if (config.isOverrideIPWithHostname()) {
+//                        event.put(config.getIpFieldName(), hostname);
+//                    }
+//                }
+//            }
+//        }
         return event;
     }
 
@@ -120,10 +121,10 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean dropEvent(String inputTopic, JSONObject event) throws FilteredEventException
+	public boolean dropEvent(StreamingTaskDataSourceConfigKey configKey, JSONObject event) throws FilteredEventException
 	{
         // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
+        EventResolvingConfig config = verifyConfigKeyAndEventFetchConfig(configKey, event, configs);
 
         boolean drop = (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
         if (drop){

@@ -1,8 +1,7 @@
 package fortscale.streaming.service;
 
 import fortscale.streaming.exceptions.FilteredEventException;
-import fortscale.streaming.service.ipresolving.EventResolvingConfig;
-import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +18,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> {
 
-    protected Map<String, T> configs = new HashMap<>();
+    protected Map<StreamingTaskDataSourceConfigKey, T> configs = new HashMap<>();
     public Logger logger = LoggerFactory.getLogger(this.getClass());
-    public static final String NO_INPUT_TOPIC_LABEL = "No Input Topic";
-    public static final String NULL_EVENT_INPUT_TOPIC_LABEL = "Null event  Input Topic";
+    public static final String NO_DATA_SOURCE_CONFIG_KEY = "No Data Source Config Key";
+    public static final String NULL_EVENT_DATA_SOURCE_LABEL = "Null event  Data Source";
 
 
     /**
@@ -38,12 +37,12 @@ public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> 
     }
 
     /** Get the partition key to use for outgoing message envelope for the given event */
-    public Object getPartitionKey(String inputTopic, JSONObject event) throws FilteredEventException {
+    public Object getPartitionKey(StreamingTaskDataSourceConfigKey dataSourceConfigKey, JSONObject event) throws FilteredEventException {
 
         // get the configuration for the input topic, if not found skip this event
-        T config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
+        T config = verifyConfigKeyAndEventFetchConfig(dataSourceConfigKey, event, configs);
         if (config==null) {
-            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+            logger.error("received event with config key {} that does not appear in configuration", dataSourceConfigKey);
             return null;
         }
 
@@ -59,30 +58,31 @@ public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> 
      * @return
      * @throws FilteredEventException
      */
-    protected T  verifyInputTopicAndEventFetchConfig(String inputTopic, JSONObject event, Map<String,T> configs)
+    protected T verifyConfigKeyAndEventFetchConfig(StreamingTaskDataSourceConfigKey dataSourceConfigKey, JSONObject event,
+            Map<StreamingTaskDataSourceConfigKey, T> configs)
             throws FilteredEventException {
         try {
-            checkNotNull(inputTopic);
+            checkNotNull(dataSourceConfigKey);
         } catch (Exception e){
-            throw new FilteredEventException(NO_INPUT_TOPIC_LABEL,e);
+            throw new FilteredEventException(NO_DATA_SOURCE_CONFIG_KEY,e);
         }
 
         try {
             checkNotNull(event);
         } catch (Exception e){
-            throw new FilteredEventException(NULL_EVENT_INPUT_TOPIC_LABEL,e);
+            throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL,e);
         }
 
         try {
-            T config = configs.get(inputTopic);
+            T config = configs.get(dataSourceConfigKey);
 
             if (config==null) {
-                logger.error("received event from topic {} that does not appear in configuration", inputTopic);
-                throw new FilteredEventException(NULL_EVENT_INPUT_TOPIC_LABEL);
+                logger.error("received event with config key {}} that does not appear in configuration", dataSourceConfigKey);
+                throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL);
             }
             return config;
         } catch (Exception e){
-            throw new FilteredEventException(NULL_EVENT_INPUT_TOPIC_LABEL,e);
+            throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL,e);
         }
     }
 }

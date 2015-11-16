@@ -88,8 +88,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
-			String configKey = ConfigField.getValue();
+		for (Entry<String,String> configField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 

@@ -1,10 +1,13 @@
 package fortscale.streaming.service.config;
 
 /**
+ * key that allows to each streaming task to set its behavior according to data source and previous state (mostly previous task).
+ * this enables to support several data sources on the same topic.
  * @author gils
  * Date: 11/11/2015
  */
 public class StreamingTaskDataSourceConfigKey {
+
     private String dataSource;
     private String lastState;
 
@@ -12,6 +15,8 @@ public class StreamingTaskDataSourceConfigKey {
         this.dataSource = dataSource;
         this.lastState = lastState;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -30,5 +35,19 @@ public class StreamingTaskDataSourceConfigKey {
         int result = dataSource != null ? dataSource.hashCode() : 0;
         result = 31 * result + (lastState != null ? lastState.hashCode() : 0);
         return result;
+    }
+    @Override public String toString() {
+        return "StreamingTaskDataSourceConfigKey{" +
+                "dataSource='" + dataSource + '\'' +
+                ", lastState='" + lastState + '\'' +
+                '}';
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public String getLastState() {
+        return lastState;
     }
 }
