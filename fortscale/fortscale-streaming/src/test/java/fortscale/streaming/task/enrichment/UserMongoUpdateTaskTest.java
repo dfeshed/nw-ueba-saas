@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -20,9 +21,9 @@ import static org.junit.Assert.assertNotNull;
 
 public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
-	public static final String MESSAGE_1 = "{ \"name\": \"user1\",\"username\": \"user1\", \"time\": 1 , \"Status\":\"B\"}";
-	public static final String MESSAGE_2 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 2 , \"Status\":\"B\"}";
-	public static final String MESSAGE_3 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 4 , \"Status\":\"C\"}";
+	public static final String MESSAGE_1 = "{ \"name\": \"user1\",\"username\": \"user1\", \"time\": 1 , \"Status\":\"B\", \"last_state\":\"state1\", \"data_source\":\"vpn\"}";
+	public static final String MESSAGE_2 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 2 , \"Status\":\"B\", \"last_state\":\"state1\", \"data_source\":\"ssh\"}";
+	public static final String MESSAGE_3 = "{ \"name\": \"user1\",\"username\": \"user1\",  \"time\": 4 , \"Status\":\"C\", \"last_state\":\"state1\", \"data_source\":\"login\"}";
 
 
 	@Test
@@ -42,10 +43,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 
 
-		task.topicToDataSourceMap = new HashMap<>();
-		task.topicToDataSourceMap.put("input1" , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
-		task.topicToDataSourceMap.put("input2" , new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
-		task.topicToDataSourceMap.put("input3" , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
+		task.dataSourceConfigs = new HashMap<>();
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("vpn","state1") , new UserMongoUpdateTask.DataSourceConfiguration("vpn", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("ssh","state1"), new UserMongoUpdateTask.DataSourceConfiguration("ssh", "Status", "B",true,"username"));
+		task.dataSourceConfigs.put(new StreamingTaskDataSourceConfigKey("login","state1") , new UserMongoUpdateTask.DataSourceConfiguration("login", "Status", "B",true,"account_name"));
 
 		// Mocks
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
@@ -56,7 +57,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// User1, VPN event with time 1
 
 		// prepare envelope
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "input1");
+		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
 		// run the process on the envelope
 		task.wrappedProcess(envelope, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
@@ -68,41 +69,32 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// User1, VPN event with time 2
 
 		// prepare envelope
-		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_2, "input1");
+		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_2, "ssh");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
-		assertEquals("User1 - VPN event", null,userInfo1.getUserInfo().get("ssh"));
+		assertEquals("User1 - VPN event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - VPN event", new Long(2000) ,userInfo1.getUserInfo().get("ssh").getKey());
 		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
 		// User1, SSH event with time 1
 
+
+
 		// prepare envelope
-		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "input2");
+		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_3, "login");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
-		assertEquals("User1 - SSH event", "user1", userInfo1.getUserInfo().get("ssh").getValue());
-		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
-
-		// message without success status - shouldn't update last-activity
-
-		// prepare envelope
-		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_3, "input2");
-		// run the process on the envelope
-		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
-		// validate the last-activity map
-		userInfo1 = task.store.get("user1");
-		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("ssh").getKey());
+		//Login event filtered out because in the configuration StreamingTaskDataSourceConfigKey("login","state1")
+		//the logUserNameField equals to "account_name" and message3 doesn't have "account_name" field
+		assertEquals("User1 - Login event", null, userInfo1.getUserInfo().get("login"));
 
 	}
 
