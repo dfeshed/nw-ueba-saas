@@ -59,7 +59,7 @@ public class EntityEventDataStoreSamzaTest {
 		Mockito.when(storeMock.get(store.getEntityEventDataKey(event))).thenReturn(event);
 		Mockito.when(mongoDbUtilService.collectionExists(Mockito.anyString())).thenReturn(true);
 		List<EntityEventData> eventsStoredInMongo = new ArrayList<>();
-		long timeBeforeModification = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+		final long timeBeforeModification = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		eventsStoredInMongo.add(event);
 		Mockito.when(mongoTemplate.find(Mockito.any(Query.class), Mockito.eq(EntityEventData.class), Mockito.anyString())).thenReturn(eventsStoredInMongo);
 
@@ -68,8 +68,12 @@ public class EntityEventDataStoreSamzaTest {
 		Assert.assertEquals(1, entityEventDatas.size());
 
 		// modify the event and store it - so leveldb will have the true state (while mongodb will have a wrong modification time)
-		Thread.sleep(1000);
-		EntityEventData eventAfterModification = new EntityEventData();
+		EntityEventData eventAfterModification = new EntityEventData() {
+			@Override
+			public long getModifiedAtEpochtime() {
+				return timeBeforeModification + 100;
+			}
+		};
 		Mockito.when(storeMock.get(store.getEntityEventDataKey(event))).thenReturn(eventAfterModification);
 
 		// now the event shouldn't be retrieved
