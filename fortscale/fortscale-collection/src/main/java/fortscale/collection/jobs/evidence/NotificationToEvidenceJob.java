@@ -179,7 +179,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 				//Add the last state and data source fields to the message
 				evidence.put("data_source", dataSource);
-				evidence.put("last_state ", lastState);
+				evidence.put("last_state", lastState);
 
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.info("Writing to topic evidence - {}", messageToWrite);
