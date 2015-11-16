@@ -6,7 +6,7 @@ package fortscale.streaming.service;
  * Define common methods for all configurations
  */
 public interface StreamingTaskConfig {
-    public String getPartitionField();
-    public String getOutputTopic();
-    public String getInputTopic();
+    String getPartitionField();
+    String getOutputTopic();
+    String getInputTopic();
 }

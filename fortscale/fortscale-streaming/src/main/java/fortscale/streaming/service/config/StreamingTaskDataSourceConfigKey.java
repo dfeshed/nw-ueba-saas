@@ -13,6 +13,14 @@ public class StreamingTaskDataSourceConfigKey {
         this.lastState = lastState;
     }
 
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public String getLastState() {
+        return lastState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,5 +38,13 @@ public class StreamingTaskDataSourceConfigKey {
         int result = dataSource != null ? dataSource.hashCode() : 0;
         result = 31 * result + (lastState != null ? lastState.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "StreamingTaskDataSourceConfigKey{" +
+                "dataSource='" + dataSource + '\'' +
+                ", lastState='" + lastState + '\'' +
+                '}';
     }
 }

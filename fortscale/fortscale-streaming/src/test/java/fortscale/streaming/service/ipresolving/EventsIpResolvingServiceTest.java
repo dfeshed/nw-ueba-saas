@@ -30,8 +30,8 @@ public class EventsIpResolvingServiceTest {
 		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false,""));
 
 		resolver = mock(IpToHostnameResolver.class);
-		service = new EventsIpResolvingService(resolver, configs);
-		service2 = new EventsIpResolvingService(resolver, configs2);
+		service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
+		service2 = new EventsIpResolvingService(resolver, configs2, taskMonitoringHelper);
 	}
 
 
@@ -133,17 +133,17 @@ public class EventsIpResolvingServiceTest {
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
-		boolean res = service.dropEvent("input",event);
+		boolean res = service.filterEventIfNeeded("input", event);
 		Assert.assertTrue(!res);
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.filterEventIfNeeded("input", event);
 		Assert.assertTrue(res);
 
 		event.put("hostname", "");
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.filterEventIfNeeded("input", event);
 		Assert.assertTrue(res);
 
 
@@ -155,12 +155,12 @@ public class EventsIpResolvingServiceTest {
     {
         JSONObject event = new JSONObject();
         event.put("hostname", null);
-        boolean res = service.dropEvent("input",event);
+        boolean res = service.filterEventIfNeeded("input", event);
         Assert.assertTrue(!res);
 
         event.put("hostname", "");
 
-        res = service2.dropEvent("input",event);
+        res = service2.filterEventIfNeeded("input", event);
         Assert.assertTrue(res);
 
 
