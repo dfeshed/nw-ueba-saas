@@ -75,7 +75,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 				String outputTopic  = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
 				String partitionField  = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings));
 
-				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.entry.%s.doGeoLocationh", dsSettings));
+				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.entry.%s.doGeoLocation", dsSettings));
 				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.entry.%s.doDataBuckets", dsSettings));
 				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.entry.%s.doSessionUpdate", dsSettings));
 				String usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s" + ".username.field", dsSettings)));
