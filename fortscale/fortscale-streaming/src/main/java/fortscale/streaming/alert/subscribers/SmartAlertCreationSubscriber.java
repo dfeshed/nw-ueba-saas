@@ -226,7 +226,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 	//<editor-fold desc="Notification and tag evidence handling">
 	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
-		return evidencesService.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(startTime, endTime, NOTIFICATION_EVIDENCE_TYPE, entityValue);
+		return evidencesService.findByEndDateBetweenAndEvidenceTypeAndEntityName(startTime, endTime, NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
 
 	/**
