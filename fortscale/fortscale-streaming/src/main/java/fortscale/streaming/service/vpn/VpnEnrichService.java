@@ -261,9 +261,6 @@ import static fortscale.utils.ConversionUtils.*;
 		return config.getOutputTopic();
 	}
 
-	public String getInputTopic() {
-		return config.getInputTopic();
-	}
 
 	/**
 	 * Get the partition key to use for outgoing message envelope for the given event

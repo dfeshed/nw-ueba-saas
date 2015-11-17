@@ -76,7 +76,6 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
 
     //geolocation fields:
-    private String inputTopic = "input-1";
     private String outputTopic = "output-1";
 
     private static String IP = "172.16.0.0";
@@ -126,15 +125,11 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         });
         //init
 
-
-
         //run test:
         event = vpnEnrichService.processSessionUpdate(event, null);
 
         //Validations
-//        verify(geoIPServiceMock).getGeoIPInfo(IP);
 
-        assertEquals(inputTopic, vpnEnrichService.getInputTopic());
         assertEquals(outputTopic, vpnEnrichService.getOutputTopic());
         assertEquals(PARTITION, vpnEnrichService.getPartitionKey(event));
         assertEquals(UPDATED_LOCAL_IP, event.get("local_ip"));
