@@ -24,7 +24,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class EventsIpResolvingService extends StreamingServiceAbstract<EventResolvingConfig>{
 
 
-    public static final String HOST_IS_EMPTY_LABEL = "Host is empty";
+    private static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
     private IpToHostnameResolver resolver;
     private Set<FsIpAddressContainer> reservedIpAddersses = null;

@@ -59,7 +59,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	/**
 	 * Map of configuration: from the data-source and state to an entry of normalization service and output topic
 	 */
-	private Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service

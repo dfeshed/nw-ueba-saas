@@ -2,13 +2,15 @@ package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -18,20 +20,18 @@ public class EventsIpResolvingServiceTest {
 	private EventsIpResolvingService service2;
     private IpToHostnameResolver resolver;
     private final String RESERVED_IP_RANGES = "10.0.0.0 - 10.255.255.255, 192.168.0.0 - 192.168.255.255, 1.1.1.1";
+    private Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> configs = new HashMap<>();;
 
     @Before
     public void setUp() {
-		List<EventResolvingConfig> configs = new LinkedList<>();
+		configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, false, "time", "partition", false, true, RESERVED_IP_RANGES));
 
-		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition", false, true,RESERVED_IP_RANGES));
-
-		List<EventResolvingConfig> configs2 = new LinkedList<>();
-
-		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false,""));
+        configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false, ""));
 
 		resolver = mock(IpToHostnameResolver.class);
-		service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
-		service2 = new EventsIpResolvingService(resolver, configs2, taskMonitoringHelper);
+        TaskMonitoringHelper taskMonitoringHelper = new TaskMonitoringHelper();
+        service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
+		service2 = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 	}
 
 
@@ -40,7 +40,7 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent(new EventResolvingConfig(), event);
         Assert.assertNull(output.get("host"));
     }
 
@@ -49,7 +49,7 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
         Assert.assertNull(output.get("host"));
     }
 
@@ -61,7 +61,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent("unknown-topic", event);
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
         Assert.assertEquals("my-pc", output.get("host"));
 
         verify(resolver, times(1)).resolve("1.1.1.1", 3L, false, false, false);
@@ -85,7 +85,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("192.168.4.4", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
         Assert.assertEquals("my-pc", output.get("host"));
 
         verify(resolver, times(1)).resolve("192.168.4.4", 3L, false, false, false);
@@ -98,7 +98,7 @@ public class EventsIpResolvingServiceTest {
         event.put("ip", "2.2.2.2"); //2.2.2.2 not in RESERVED_IP_RANGES
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent("input", event);
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
         Assert.assertNull(output.get("host"));
 
     }
@@ -107,13 +107,13 @@ public class EventsIpResolvingServiceTest {
 
     @Test
     public void service_should_return_output_topic_according_to_input_topic() throws FilteredEventException{
-        String actual = service.getOutputTopic("input");
+        String actual = service.getOutputTopic(configs.keySet().iterator().next());
         Assert.assertEquals("output", actual);
     }
 
     @Test(expected =  Exception.class)
     public void service_should_fail_output_topic_in_case_of_unknown_input_topic()  throws FilteredEventException{
-        String actual = service.getOutputTopic("unknown");
+        String actual = service.getOutputTopic(configs.keySet().iterator().next());
     }
 
 
@@ -124,7 +124,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         event.put("partition", "part-A");
 
-        Object actual = service.getPartitionKey("input", event);
+        Object actual = service.getPartitionKey(configs.keySet().iterator().next(), event);
         Assert.assertEquals("part-A", actual);
     }
 
@@ -133,17 +133,17 @@ public class EventsIpResolvingServiceTest {
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
-		boolean res = service.filterEventIfNeeded("input", event);
+		boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
 		Assert.assertTrue(!res);
 
 
-		res = service2.filterEventIfNeeded("input", event);
+		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
 		Assert.assertTrue(res);
 
 		event.put("hostname", "");
 
 
-		res = service2.filterEventIfNeeded("input", event);
+		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
 		Assert.assertTrue(res);
 
 
@@ -155,12 +155,12 @@ public class EventsIpResolvingServiceTest {
     {
         JSONObject event = new JSONObject();
         event.put("hostname", null);
-        boolean res = service.filterEventIfNeeded("input", event);
+        boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
         Assert.assertTrue(!res);
 
         event.put("hostname", "");
 
-        res = service2.filterEventIfNeeded("input", event);
+        res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
         Assert.assertTrue(res);
 
 
