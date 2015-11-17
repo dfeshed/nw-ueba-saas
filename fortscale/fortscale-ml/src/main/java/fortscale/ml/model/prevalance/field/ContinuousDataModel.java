@@ -35,17 +35,12 @@ public class ContinuousDataModel implements Model {
 		this.sd = sd;
 	}
 
-	/**
-	 * Scores a given value according to the model.
-	 *
-	 * @param value the value to score.
-	 * @return the score.
-	 */
-	public double calculateScore(double value) {
+	@Override
+	public double calculateScore(Object value) {
 		if (sd == 0)
 			return 0;
 
-		double z = (value - mean) / sd;
+		double z = ((Double) value - mean) / sd;
 		TDistribution tDistribution = new TDistribution(N - 1);
 
 		return z > 0 ?
