@@ -8,6 +8,7 @@ import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -139,7 +140,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 				return event;
 			}
 		};
-		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(StreamingTaskDataSourceConfigKey.class),any(JSONObject.class));
+		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(ComputerTaggingConfig.class),any(JSONObject.class));
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");

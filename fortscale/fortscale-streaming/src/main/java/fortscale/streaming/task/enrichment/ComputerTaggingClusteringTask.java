@@ -51,6 +51,8 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	// Map between (update) input topic name and relevant caching service
 	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
+	private Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
+
 	/**
 	 * This method response to the initiation of the streaming job
 	 * First step is to create the caching based on spring configuration
@@ -83,7 +85,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		// get spring environment to resolve properties values using configuration files
 		Environment env = SpringService.getInstance().resolve(Environment.class);
 
-		Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
+
 
 		for (Map.Entry<String,String> configField :  config.subset("fortscale.events.entry.name.").entrySet()) {
 			String configKey = configField.getValue();
@@ -109,7 +111,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.entry.%s.%s.create-new-computer-instances", configKey, tagType));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
-			configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(new StreamingTaskDataSourceConfigKey(dataSource,lastState),outputTopic, partitionField, computerTaggingFieldsConfigs));
+			configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));
 
 		}
 
@@ -141,21 +143,21 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			// parse the message into json
 			JSONObject message = parseJsonMessage(envelope);
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
-
+			ComputerTaggingConfig config = configs.get(configKey);
 
 			try {
-				message = computerTaggingService.enrichEvent(configKey, message);
+				message = computerTaggingService.enrichEvent(config, message);
 			} catch (Exception e){
 				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),e.getMessage());
 				throw e;
 			}
 			// construct outgoing message
 			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopicComputerCache)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(configKey)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
 				handleUnfilteredEvent(message);
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopicComputerCache, computerTaggingService.getOutputTopic(inputTopicComputerCache)), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
 			}
 		}
 	}

@@ -47,12 +47,4 @@ public class StreamingTaskDataSourceConfigKey {
                 ", lastState='" + lastState + '\'' +
                 '}';
     }
-
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public String getLastState() {
-        return lastState;
-    }
 }

@@ -20,69 +20,32 @@ public abstract  class StreamingTaskConfigurationService<T extends  StreamingTas
 
     protected Map<StreamingTaskDataSourceConfigKey, T> configs = new HashMap<>();
     public Logger logger = LoggerFactory.getLogger(this.getClass());
-    public static final String NO_DATA_SOURCE_CONFIG_KEY = "No Data Source Config Key";
-    public static final String NULL_EVENT_DATA_SOURCE_LABEL = "Null event  Data Source";
 
+    public StreamingTaskConfigurationService(Map<StreamingTaskDataSourceConfigKey, T> configs) {
+        checkNotNull(configs);
 
+        this.configs = configs;
+    }
     /**
-     *
-     * @param inputTopic - the name of the topic
+     * get the output topic according to config key: data source and last state.
+     * @param configKey
      * @return
      */
-    public String getOutputTopic(String inputTopic) {
-        if (configs.containsKey(inputTopic))
-            return configs.get(inputTopic).getOutputTopic();
-        else
-            throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
+    public String getOutputTopic(StreamingTaskDataSourceConfigKey configKey) {
+        if (configs.containsKey(configKey))
+            return configs.get(configKey).getOutputTopic();
+        else {
+            throw new IllegalStateException("Could not find any configuration match for data source " + configKey.getDataSource() + " and state " + configKey.getLastState());
+        }
     }
 
     /** Get the partition key to use for outgoing message envelope for the given event */
-    public Object getPartitionKey(StreamingTaskDataSourceConfigKey dataSourceConfigKey, JSONObject event) throws FilteredEventException {
-
-        // get the configuration for the input topic, if not found skip this event
-        T config = verifyConfigKeyAndEventFetchConfig(dataSourceConfigKey, event, configs);
-        if (config==null) {
-            logger.error("received event with config key {} that does not appear in configuration", dataSourceConfigKey);
-            return null;
-        }
-
-        return event.get(config.getPartitionField());
-    }
-
-
-    /**
-     * Check that configuration is fine and throw FilteredEventException if it doesn't
-     * @param inputTopic - the name of the topic
-     * @param event - event JSON object
-     * @param configs - the map of all configurations per inputTopic
-     * @return
-     * @throws FilteredEventException
-     */
-    protected T verifyConfigKeyAndEventFetchConfig(StreamingTaskDataSourceConfigKey dataSourceConfigKey, JSONObject event,
-            Map<StreamingTaskDataSourceConfigKey, T> configs)
-            throws FilteredEventException {
-        try {
-            checkNotNull(dataSourceConfigKey);
-        } catch (Exception e){
-            throw new FilteredEventException(NO_DATA_SOURCE_CONFIG_KEY,e);
-        }
-
-        try {
-            checkNotNull(event);
-        } catch (Exception e){
-            throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL,e);
-        }
-
-        try {
-            T config = configs.get(dataSourceConfigKey);
-
-            if (config==null) {
-                logger.error("received event with config key {}} that does not appear in configuration", dataSourceConfigKey);
-                throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL);
-            }
-            return config;
-        } catch (Exception e){
-            throw new FilteredEventException(NULL_EVENT_DATA_SOURCE_LABEL,e);
+    public Object getPartitionKey(StreamingTaskDataSourceConfigKey configKey, JSONObject event) {
+        if (configs.containsKey(configKey))
+            return event.get(configs.get(configKey).getPartitionField());
+        else {
+            throw new IllegalStateException("Could not find any configuration match for data source " + configKey.getDataSource() + " and state " + configKey.getLastState());
         }
     }
+
 }

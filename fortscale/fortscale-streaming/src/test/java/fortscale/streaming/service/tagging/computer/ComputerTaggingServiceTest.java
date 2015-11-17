@@ -20,9 +20,11 @@ public class ComputerTaggingServiceTest {
 	ComputerService computerService;
 
 	SensitiveMachineService sensitiveMachineService;
+	Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs;
+
 
 	@Before public void setUp() throws Exception {
-		Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = createConfigurations();
+		configs = createConfigurations();
 		computerService = mock(ComputerService.class);
 		sensitiveMachineService = mock(SensitiveMachineService.class);
 		computerTaggingService = new ComputerTaggingService(computerService,sensitiveMachineService,configs);
@@ -40,7 +42,7 @@ public class ComputerTaggingServiceTest {
 		when(computerService.getClusterGroupNameForHostname("destination-MY-PC")).thenReturn("cluster2");
 		when(sensitiveMachineService.isMachineSensitive("destination-MY-PC")).thenReturn(false);
 
-		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new StreamingTaskDataSourceConfigKey("ssh","lastState"), event);
+		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new ComputerTaggingConfig("ssh", "lastState", "ssh output topic", "ssh_userId",configs.get(new StreamingTaskDataSourceConfigKey("ssh","lastState")).getComputerTaggingFieldsConfigList()), event);
 
 		assertEquals(ComputerUsageType.Server, enrichedEvent.get("source_classification"));
 		assertEquals("cluster", enrichedEvent.get("source_clustering"));
@@ -65,7 +67,7 @@ public class ComputerTaggingServiceTest {
 		when(computerService.getClusterGroupNameForHostname("destination-MY-PC")).thenReturn("cluster2");
 		when(sensitiveMachineService.isMachineSensitive("destination-MY-PC")).thenReturn(false);
 
-		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new StreamingTaskDataSourceConfigKey("ssh","lastState"), event);
+		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new ComputerTaggingConfig("ssh", "lastState", "ssh output topic", "ssh_userId",configs.get(new StreamingTaskDataSourceConfigKey("ssh","lastState")).getComputerTaggingFieldsConfigList()), event);
 
 		assertEquals(ComputerUsageType.Server, enrichedEvent.get("source_classification1"));
 		assertEquals("cluster", enrichedEvent.get("source_clustering1"));
@@ -87,7 +89,7 @@ public class ComputerTaggingServiceTest {
 
 	@Test(expected =  Exception.class)
 	public void getOutputTopic_should_throw_exception_in_case_input_topic_not_defined_in_configuration() {
-		computerTaggingService.getOutputTopic("unknown");
+		computerTaggingService.getOutputTopic(new StreamingTaskDataSourceConfigKey("dataSource","lastState"));
 	}
 
 	private Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> createConfigurations(){
@@ -100,7 +102,7 @@ public class ComputerTaggingServiceTest {
 		ComputerTaggingFieldsConfig securityEventsDestinationComputerTaggingFieldsConfig = new ComputerTaggingFieldsConfig("destination","destination_hostname","destination_classification","destination_clustering",null,false);
 		securityEventsComputerTaggingFieldsConfigs.add(securityEventsDestinationComputerTaggingFieldsConfig);
 
-		configs.put(new StreamingTaskDataSourceConfigKey("login","lastState"), new ComputerTaggingConfig("security events", "security events input topic", "security events output topic", "userId", securityEventsComputerTaggingFieldsConfigs));
+		configs.put(new StreamingTaskDataSourceConfigKey("login","lastState"), new ComputerTaggingConfig("security events", "last state", "security events output topic", "userId", securityEventsComputerTaggingFieldsConfigs));
 
 		List<ComputerTaggingFieldsConfig> sshComputerTaggingFieldsConfigs = new ArrayList<>();
 
@@ -110,7 +112,7 @@ public class ComputerTaggingServiceTest {
 		ComputerTaggingFieldsConfig sshDestinationComputerTaggingFieldsConfig = new ComputerTaggingFieldsConfig("destination","destination_hostname1","destination_classification1","destination_clustering1",null,true);
 		sshComputerTaggingFieldsConfigs.add(sshDestinationComputerTaggingFieldsConfig);
 
-		configs.put(new StreamingTaskDataSourceConfigKey("ssh","lastState"), new ComputerTaggingConfig("ssh", "ssh input topic", "ssh output topic", "ssh_userId", sshComputerTaggingFieldsConfigs));
+		configs.put(new StreamingTaskDataSourceConfigKey("ssh","lastState"), new ComputerTaggingConfig("ssh", "last state", "ssh output topic", "ssh_userId", sshComputerTaggingFieldsConfigs));
 		return configs;
 	}
 }

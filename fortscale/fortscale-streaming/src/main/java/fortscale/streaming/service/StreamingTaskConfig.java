@@ -1,6 +1,5 @@
 package fortscale.streaming.service;
 
-import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 
 /**
  * Created by shays on 09/11/2015.
@@ -10,5 +9,4 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 public interface StreamingTaskConfig {
     public String getPartitionField();
     public String getOutputTopic();
-    public StreamingTaskDataSourceConfigKey getConfigKey();
 }

@@ -12,14 +12,16 @@ import java.util.List;
  */
 public class ComputerTaggingConfig implements StreamingTaskConfig {
 
-	private StreamingTaskDataSourceConfigKey configKey;
+	private String dataSource;
+	private String lastState;
 	private String outputTopic;
 	private String partitionField;
 	private List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList;
 
-	public ComputerTaggingConfig(StreamingTaskDataSourceConfigKey configKey, String outputTopic,
+	public ComputerTaggingConfig(String dataSource , String lastState, String outputTopic,
 			String partitionField, List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
-		setConfigKey(configKey);
+		setDataSource(dataSource);
+		setLastState(lastState);
 		setOutputTopic(outputTopic);
 		setPartitionField(partitionField);
 		setComputerTaggingFieldsConfigList(computerTaggingFieldsConfigList);
@@ -48,12 +50,20 @@ public class ComputerTaggingConfig implements StreamingTaskConfig {
 	public void setComputerTaggingFieldsConfigList(List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
 		this.computerTaggingFieldsConfigList = computerTaggingFieldsConfigList;
 	}
-	public StreamingTaskDataSourceConfigKey getConfigKey() {
-		return configKey;
+
+	public String getDataSource() {
+		return dataSource;
 	}
 
-	public void setConfigKey(StreamingTaskDataSourceConfigKey configKey) {
-		this.configKey = configKey;
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
 
+	public String getLastState() {
+		return lastState;
+	}
+
+	public void setLastState(String lastState) {
+		this.lastState = lastState;
+	}
 }
