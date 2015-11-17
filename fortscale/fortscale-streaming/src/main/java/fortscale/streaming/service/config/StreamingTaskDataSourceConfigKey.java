@@ -7,7 +7,6 @@ package fortscale.streaming.service.config;
  * Date: 11/11/2015
  */
 public class StreamingTaskDataSourceConfigKey {
-
     private String dataSource;
     private String lastState;
 
@@ -15,8 +14,6 @@ public class StreamingTaskDataSourceConfigKey {
         this.dataSource = dataSource;
         this.lastState = lastState;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
