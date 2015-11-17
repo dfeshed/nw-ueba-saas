@@ -89,14 +89,17 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		long windowDuration = config.getLong("task.window.ms");
 
+
 		// Get configuration properties
 		Config fieldsSubset = config.subset("fortscale.events.entry.name.");
+
 		for (String dsSettings : fieldsSubset.keySet()) {
-			// create specific configuration for topic
+
+			// create specific configuration for data source and last state
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
 			String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
-			StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource,lastState);
+			StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
 
 			if (!dataSourceToConfigsMap.containsKey(configKey)) {
 				dataSourceToConfigsMap.put(configKey, new ArrayList<WriterConfiguration>());
@@ -113,7 +116,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 
 			// read configuration properties
-
 			writerConfiguration.timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", dsSettings), res);
 			writerConfiguration.usernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.username.field", dsSettings), res);
 			List<String> discriminatorsFields = resolveStringValues(config, String.format("fortscale.events.entry.%s.discriminator.fields", dsSettings), res);
@@ -145,7 +147,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			// load filters from configuration
 			for (String filterName : config.getList(String.format("fortscale.events.entry.%s.filters", dsSettings), new LinkedList<String>())) {
-				MessageFilter filter = SpringService.getInstance().resolve(filterName,MessageFilter.class);
+				MessageFilter filter = SpringService.getInstance().resolve(filterName, MessageFilter.class);
 				filter.setName(filterName);
 				writerConfiguration.filters.add(filter);
 			}
@@ -153,7 +155,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, configKey));
 
 		}
-
 		bdpService = new BDPService();
 
 	}
