@@ -18,6 +18,7 @@ public class EventsIpResolvingServiceTest {
 
     private EventsIpResolvingService service;
 	private EventsIpResolvingService service2;
+    private TaskMonitoringHelper taskMonitoringHelper;
     private IpToHostnameResolver resolver;
     private final String RESERVED_IP_RANGES = "10.0.0.0 - 10.255.255.255, 192.168.0.0 - 192.168.255.255, 1.1.1.1";
     private Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> configs = new HashMap<>();;
@@ -29,7 +30,7 @@ public class EventsIpResolvingServiceTest {
         configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false, ""));
 
 		resolver = mock(IpToHostnameResolver.class);
-        TaskMonitoringHelper taskMonitoringHelper = new TaskMonitoringHelper();
+        taskMonitoringHelper = mock(TaskMonitoringHelper.class);
         service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 		service2 = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 	}
@@ -51,17 +52,6 @@ public class EventsIpResolvingServiceTest {
 
         JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
         Assert.assertNull(output.get("host"));
-    }
-
-
-    @Test(expected = FilteredEventException.class )
-    public void service_should_ignore_and_not_touch_events_with_unknown_topics() throws FilteredEventException{
-        JSONObject event = new JSONObject();
-        event.put("ip", "1.1.1.1");
-        event.put("time", 3L);
-        when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
-
-        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
     }
 
     @Test
@@ -111,12 +101,6 @@ public class EventsIpResolvingServiceTest {
         Assert.assertEquals("output", actual);
     }
 
-    @Test(expected =  Exception.class)
-    public void service_should_fail_output_topic_in_case_of_unknown_input_topic()  throws FilteredEventException{
-        String actual = service.getOutputTopic(configs.keySet().iterator().next());
-    }
-
-
     @Test
     public void service_should_return_partition_field() throws FilteredEventException {
         JSONObject event = new JSONObject();
@@ -128,13 +112,12 @@ public class EventsIpResolvingServiceTest {
         Assert.assertEquals("part-A", actual);
     }
 
-	@Test(expected =  FilteredEventException.class)
-	public void service_should_drop_events_that_cant_resolved() throws FilteredEventException
+	public void service_should_filter_events_that_cant_resolved()
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
 		boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
-		Assert.assertTrue(!res);
+		Assert.assertTrue(res);
 
 
 		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
@@ -150,13 +133,12 @@ public class EventsIpResolvingServiceTest {
 
 	}
 
-    @Test(expected =  FilteredEventException.class)
-    public void service_should_drop_events_that_cant_resolved2() throws FilteredEventException
+    public void service_should_filter_events_that_cant_resolved2()
     {
         JSONObject event = new JSONObject();
         event.put("hostname", null);
         boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
-        Assert.assertTrue(!res);
+        Assert.assertTrue(res);
 
         event.put("hostname", "");
 
