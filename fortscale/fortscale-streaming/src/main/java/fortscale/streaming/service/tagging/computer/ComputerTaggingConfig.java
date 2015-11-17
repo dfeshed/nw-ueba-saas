@@ -1,6 +1,7 @@
 package fortscale.streaming.service.tagging.computer;
 
 import fortscale.streaming.service.StreamingTaskConfig;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 
 import java.util.List;
 
@@ -11,36 +12,17 @@ import java.util.List;
  */
 public class ComputerTaggingConfig implements StreamingTaskConfig {
 
-	private String eventType;
-	private String inputTopic;
+	private StreamingTaskDataSourceConfigKey configKey;
 	private String outputTopic;
 	private String partitionField;
 	private List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList;
 
-	public ComputerTaggingConfig(String eventType, String inputTopic, String outputTopic,
+	public ComputerTaggingConfig(StreamingTaskDataSourceConfigKey configKey, String outputTopic,
 			String partitionField, List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
-		setEventType(eventType);
-		setInputTopic(inputTopic);
+		setConfigKey(configKey);
 		setOutputTopic(outputTopic);
 		setPartitionField(partitionField);
 		setComputerTaggingFieldsConfigList(computerTaggingFieldsConfigList);
-	}
-
-
-	public String getEventType() {
-		return eventType;
-	}
-
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
-
-	public String getInputTopic() {
-		return inputTopic;
-	}
-
-	public void setInputTopic(String inputTopic) {
-		this.inputTopic = inputTopic;
 	}
 
 	public String getOutputTopic() {
@@ -66,4 +48,12 @@ public class ComputerTaggingConfig implements StreamingTaskConfig {
 	public void setComputerTaggingFieldsConfigList(List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
 		this.computerTaggingFieldsConfigList = computerTaggingFieldsConfigList;
 	}
+	public StreamingTaskDataSourceConfigKey getConfigKey() {
+		return configKey;
+	}
+
+	public void setConfigKey(StreamingTaskDataSourceConfigKey configKey) {
+		this.configKey = configKey;
+	}
+
 }

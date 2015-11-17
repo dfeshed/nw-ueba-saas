@@ -89,8 +89,6 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
-
-			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 			String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey)));
 
@@ -111,7 +109,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.entry.%s.%s.create-new-computer-instances", configKey, tagType));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
-			configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(configKey, inputTopic, outputTopic, partitionField, computerTaggingFieldsConfigs));
+			configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(new StreamingTaskDataSourceConfigKey(dataSource,lastState),outputTopic, partitionField, computerTaggingFieldsConfigs));
 
 		}
 
