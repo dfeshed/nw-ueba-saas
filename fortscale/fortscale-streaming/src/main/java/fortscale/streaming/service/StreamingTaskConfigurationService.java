@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Abstract class for common services of steaming tasks.
  * The <T> is the type of the configuration file and must implement StreamingTaskConfig
  */
-public abstract  class StreamingServiceAbstract<T extends  StreamingTaskConfig> {
+public abstract  class StreamingTaskConfigurationService<T extends  StreamingTaskConfig> {
 
     protected Map<StreamingTaskDataSourceConfigKey, T> configs = new HashMap<>();
     public Logger logger = LoggerFactory.getLogger(this.getClass());

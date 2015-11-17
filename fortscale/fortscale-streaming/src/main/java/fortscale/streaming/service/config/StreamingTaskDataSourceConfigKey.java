@@ -15,6 +15,14 @@ public class StreamingTaskDataSourceConfigKey {
         this.lastState = lastState;
     }
 
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public String getLastState() {
+        return lastState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,18 +1,18 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
-import fortscale.streaming.exceptions.FilteredEventException;
-import fortscale.streaming.service.StreamingServiceAbstract;
+import fortscale.streaming.service.StreamingTaskConfigurationService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
@@ -20,62 +20,55 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Service that receive and event from a specific input topic, resolve the required ip field in it and
  * sends the enriched event to the designated output topic.
  */
-public class EventsIpResolvingService extends StreamingServiceAbstract<EventResolvingConfig>{
+public class EventsIpResolvingService extends StreamingTaskConfigurationService<EventResolvingConfig> {
 
-
-    public static final String HOST_IS_EMPTY_LABEL = "Host is empty";
+    private static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
     private IpToHostnameResolver resolver;
     private Set<FsIpAddressContainer> reservedIpAddersses = null;
 
-    public EventsIpResolvingService(IpToHostnameResolver resolver, List<EventResolvingConfig> configs) {
-        checkNotNull(resolver);
-        checkNotNull(configs);
-        this.resolver = resolver;
-//        for (EventResolvingConfig config : configs) { //TODO take gil's version here
-//            this.configs.put(config.getInputTopic(), config);
-//        }
+    private TaskMonitoringHelper taskMonitoringHelper;
 
+    public EventsIpResolvingService(IpToHostnameResolver resolver, Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> configurations, TaskMonitoringHelper taskMonitoringHelper) {
+        super(configurations);
+        this.resolver = resolver;
+        this.taskMonitoringHelper = taskMonitoringHelper;
     }
 
-    public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
-        // get the configuration for the input topic, if not found skip this event
-//        EventResolvingConfig config = verifyConfigKeyAndEventFetchConfig(inputTopic, event, configs); //TODO take gil's version here
-//
-//
-//        // get the ip address and timestamp fields from the event
-//        String ip = convertToString(event.get(config.getIpFieldName()));
-//        Long timestamp = convertToLong(event.get(config.getTimestampFieldName()));
-//        if (StringUtils.isEmpty(ip) || timestamp == null)
-//            return event;
-//
-//        if (!ipAddressShouldBeResolved(config, ip )) {
-//            return event;
-//        } else {
-//
-//            // get the hostname from the resolver and put it into the event message
-//            String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
-//            if (StringUtils.isNotEmpty(hostname)) {
-//                event.put(config.getHostFieldName(), hostname);
-//                if (config.isOverrideIPWithHostname()) {
-//                    event.put(config.getIpFieldName(), hostname);
-//                }
-//            } else {
-//                // check if we received an hostname to use externally - this could be in the case of
-//                // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
-//                // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
-//                // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
-//                // better to override that hostname
-//                String eventHostname = convertToString(event.get(config.getHostFieldName()));
-//                if (StringUtils.isNotEmpty(eventHostname)) {
-//                    eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
-//                    event.put(config.getHostFieldName(), eventHostname);
-//                    if (config.isOverrideIPWithHostname()) {
-//                        event.put(config.getIpFieldName(), hostname);
-//                    }
-//                }
-//            }
-//        }
+    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event) {
+        // get the ip address and timestamp fields from the event
+        String ip = convertToString(event.get(eventResolvingConfig.getIpFieldName()));
+        Long timestamp = convertToLong(event.get(eventResolvingConfig.getTimestampFieldName()));
+        if (StringUtils.isEmpty(ip) || timestamp == null)
+            return event;
+
+        if (!ipAddressShouldBeResolved(eventResolvingConfig, ip )) {
+            return event;
+        } else {
+
+            // get the hostname from the resolver and put it into the event message
+            String hostname = resolver.resolve(ip, timestamp, eventResolvingConfig.isRestrictToADName(), eventResolvingConfig.isShortName(), eventResolvingConfig.isRemoveLastDot());
+            if (StringUtils.isNotEmpty(hostname)) {
+                event.put(eventResolvingConfig.getHostFieldName(), hostname);
+                if (eventResolvingConfig.isOverrideIPWithHostname()) {
+                    event.put(eventResolvingConfig.getIpFieldName(), hostname);
+                }
+            } else {
+                // check if we received an hostname to use externally - this could be in the case of
+                // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
+                // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
+                // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
+                // better to override that hostname
+                String eventHostname = convertToString(event.get(eventResolvingConfig.getHostFieldName()));
+                if (StringUtils.isNotEmpty(eventHostname)) {
+                    eventHostname = resolver.normalizeHostname(eventHostname, eventResolvingConfig.isRemoveLastDot(), eventResolvingConfig.isShortName());
+                    event.put(eventResolvingConfig.getHostFieldName(), eventHostname);
+                    if (eventResolvingConfig.isOverrideIPWithHostname()) {
+                        event.put(eventResolvingConfig.getIpFieldName(), hostname);
+                    }
+                }
+            }
+        }
         return event;
     }
 
@@ -121,17 +114,17 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean dropEvent(StreamingTaskDataSourceConfigKey configKey, JSONObject event) throws FilteredEventException
+	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event)
 	{
-        // get the configuration for the input topic, if not found skip this event
-        EventResolvingConfig config = verifyConfigKeyAndEventFetchConfig(configKey, event, configs);
+        boolean shouldFilterEvent = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
 
-        boolean drop = (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
-        if (drop){
-            throw new FilteredEventException(HOST_IS_EMPTY_LABEL);
+        if (shouldFilterEvent){
+            taskMonitoringHelper.countNewFilteredEvents(eventResolvingConfig.getDataSource(), HOST_IS_EMPTY_LABEL);
+
+            return true;
         }
-		return drop;
 
+		return false;
 	}
 
 }
