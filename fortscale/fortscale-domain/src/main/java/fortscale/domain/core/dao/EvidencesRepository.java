@@ -46,6 +46,17 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String>, E
 	List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(long startDate,
 			long endDate, String evidenceType, String entityName);
 
+	/**
+	 * Find all evidences that are in the time window of end date, the same type and for the same entity
+	 * @param startDate
+	 * @param endDate
+	 * @param evidenceType
+	 * @param entityName
+	 * @return
+	 */
+	List<Evidence> findByEndDateBetweenAndEvidenceTypeAndEntityName(long startDate,
+			long endDate, String evidenceType, String entityName);
+
 	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldName(Long afterDate, Long beforeDate, String anomalyType);
 
 	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(Long afterDate, Long beforeDate, String anomalyType, String entityName);
