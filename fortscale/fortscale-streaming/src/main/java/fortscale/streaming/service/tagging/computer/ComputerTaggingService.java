@@ -6,8 +6,10 @@ import static fortscale.utils.ConversionUtils.convertToString;
 import java.util.Map;
 
 import fortscale.streaming.exceptions.FilteredEventException;
-import fortscale.streaming.service.StreamingServiceAbstract;
+import fortscale.streaming.service.StreamingTaskConfig;
+import fortscale.streaming.service.StreamingTaskConfigurationService;
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.apache.commons.lang.StringUtils;
 
 import fortscale.domain.core.ComputerUsageType;
@@ -18,7 +20,7 @@ import net.minidev.json.JSONObject;
 /**
  * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer
  */
-public class ComputerTaggingService extends StreamingServiceAbstract<ComputerTaggingConfig>{
+public class ComputerTaggingService extends StreamingTaskConfigurationService<ComputerTaggingConfig> {
 
 
 
@@ -27,19 +29,18 @@ public class ComputerTaggingService extends StreamingServiceAbstract<ComputerTag
 	protected SensitiveMachineService sensitiveMachineService;
 
 	public ComputerTaggingService(ComputerService computerService, SensitiveMachineService sensitiveMachineService,
-			Map<String, ComputerTaggingConfig>  configs) {
+			Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig>  configs) {
+		super(configs);
+
 		checkNotNull(computerService);
 		checkNotNull(sensitiveMachineService);
-		checkNotNull(configs);
 
 		this.computerService = computerService;
 		this.sensitiveMachineService = sensitiveMachineService;
 		this.configs = configs;
 	}
 
-	public JSONObject enrichEvent(String inputTopic, JSONObject event) throws FilteredEventException {
-		ComputerTaggingConfig config = verifyInputTopicAndEventFetchConfig(inputTopic, event, configs);
-
+	public JSONObject enrichEvent(ComputerTaggingConfig config, JSONObject event) throws FilteredEventException {
 
 		for (ComputerTaggingFieldsConfig computerTaggingFieldsConfig : config.getComputerTaggingFieldsConfigList()) {
 			// get the hostname from the event

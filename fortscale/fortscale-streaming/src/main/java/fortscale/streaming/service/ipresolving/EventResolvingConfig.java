@@ -1,6 +1,7 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.streaming.service.StreamingTaskConfig;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 
 /**
  * Configuration for ip resolving on a specific event type. This should be constructed from the topology
@@ -9,7 +10,8 @@ import fortscale.streaming.service.StreamingTaskConfig;
  */
 public class EventResolvingConfig implements StreamingTaskConfig {
 
-    private String inputTopic;
+    private String dataSource;
+    private String lastState;
     private String outputTopic;
     private String ipFieldName;
     private String hostFieldName;
@@ -26,14 +28,15 @@ public class EventResolvingConfig implements StreamingTaskConfig {
     /**
      * Builder for EventResolvingConfig, used as a utility function to simplify creation
      */
-    public static EventResolvingConfig build(String inputTopic, String ipFieldName, String hostFieldName,
+    public static EventResolvingConfig build(String dataSource,String lastState, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
                                              boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName,
                                              String partitionField, boolean overrideIPWithHostname,
                                              boolean resolveOnlyReservedIp, String reservedIpAddress) {
         EventResolvingConfig config = new EventResolvingConfig();
+        config.setDataSource(dataSource);
+        config.setLastState(lastState);
         config.setHostFieldName(hostFieldName);
-        config.setInputTopic(inputTopic);
         config.setIpFieldName(ipFieldName);
         config.setOutputTopic(outputTopic);
         config.setRestrictToADName(restrictToADName);
@@ -48,12 +51,8 @@ public class EventResolvingConfig implements StreamingTaskConfig {
         return config;
     }
 
-    public String getInputTopic() {
-        return inputTopic;
-    }
-
-    public void setInputTopic(String inputTopic) {
-        this.inputTopic = inputTopic;
+    public void setLastState(String lastState) {
+        this.lastState = lastState;
     }
 
     public String getOutputTopic() {
@@ -147,4 +146,14 @@ public class EventResolvingConfig implements StreamingTaskConfig {
     public void setReservedIpAddress(String reservedIpAddress) {
         this.reservedIpAddress = reservedIpAddress;
     }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
+
+
 }

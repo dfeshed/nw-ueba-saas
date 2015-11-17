@@ -79,8 +79,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		//Mockito.when(taskMonitoringHelper.handleUnFilteredEvents(Any)).thenReturn();
 
-
-
+		task.dataSourceToConfigurationMap = new HashMap<>();
 	}
 
 	@Test
@@ -99,10 +98,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
 
 		// configuration
-		task.dataSourceToConfigurationMap = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl") , new UsernameNormalizationConfig("input1", "output1",
-				usernameField,"domain","",normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
+		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl"), new UsernameNormalizationConfig("input1", "output1",
+				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);

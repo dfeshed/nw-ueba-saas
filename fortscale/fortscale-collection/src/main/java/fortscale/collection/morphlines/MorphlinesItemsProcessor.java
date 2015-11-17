@@ -28,7 +28,7 @@ public class MorphlinesItemsProcessor implements Closeable {
 	public MorphlinesItemsProcessor(Resource config) throws IOException, IllegalArgumentException {
 		// ensure required parameters are set
 		Assert.isTrue(config != null, "morphline config file is required");
-		Assert.isTrue(config.exists() && config.isReadable(), "morphline config file is not accesible");
+		Assert.isTrue(config.exists() && config.isReadable(), "morphline config file is not accesible: "+ config.getFilename());
 		
 		// create the morphline command to be used by this processor
 		MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
