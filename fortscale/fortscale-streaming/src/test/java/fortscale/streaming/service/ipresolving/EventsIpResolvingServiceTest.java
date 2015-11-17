@@ -2,6 +2,7 @@ package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,6 +19,7 @@ public class EventsIpResolvingServiceTest {
 	private EventsIpResolvingService service2;
     private IpToHostnameResolver resolver;
     private final String RESERVED_IP_RANGES = "10.0.0.0 - 10.255.255.255, 192.168.0.0 - 192.168.255.255, 1.1.1.1";
+    private StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey("dataSource","lastState");
 
     @Before
     public void setUp() {
@@ -124,7 +126,7 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         event.put("partition", "part-A");
 
-        Object actual = service.getPartitionKey("input", event);
+        Object actual = service.getPartitionKey(configKey, event);
         Assert.assertEquals("part-A", actual);
     }
 
@@ -133,17 +135,17 @@ public class EventsIpResolvingServiceTest {
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
-		boolean res = service.dropEvent("input",event);
+		boolean res = service.dropEvent(configKey,event);
 		Assert.assertTrue(!res);
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.dropEvent(configKey,event);
 		Assert.assertTrue(res);
 
 		event.put("hostname", "");
 
 
-		res = service2.dropEvent("input",event);
+		res = service2.dropEvent(configKey,event);
 		Assert.assertTrue(res);
 
 
@@ -155,12 +157,12 @@ public class EventsIpResolvingServiceTest {
     {
         JSONObject event = new JSONObject();
         event.put("hostname", null);
-        boolean res = service.dropEvent("input",event);
+        boolean res = service.dropEvent(configKey,event);
         Assert.assertTrue(!res);
 
         event.put("hostname", "");
 
-        res = service2.dropEvent("input",event);
+        res = service2.dropEvent(configKey,event);
         Assert.assertTrue(res);
 
 

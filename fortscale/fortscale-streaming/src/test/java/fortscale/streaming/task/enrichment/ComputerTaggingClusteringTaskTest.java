@@ -7,6 +7,7 @@ import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
-	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
+	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"data_source\": \"dataSource\", \"last_state:\": \"lastState\" }";
 	final String HOST_NAME = "MY-PC";
 
 	ComputerTaggingClusteringTask task;
@@ -138,7 +139,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 				return event;
 			}
 		};
-		doAnswer(answer).when(task.computerTaggingService).enrichEvent(anyString(),any(JSONObject.class));
+		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(StreamingTaskDataSourceConfigKey.class),any(JSONObject.class));
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
