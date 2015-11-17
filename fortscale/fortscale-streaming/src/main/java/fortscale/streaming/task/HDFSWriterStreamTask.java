@@ -145,12 +145,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			// load filters from configuration
 			for (String filterName : config.getList(String.format("fortscale.events.entry.%s.filters", dsSettings), new LinkedList<String>())) {
-				// create a filter instance
-				String filterClass = getConfigString(config, String.format("fortscale.events.entry.%s.filter.%s.class", dsSettings, filterName));
-				MessageFilter filter = (MessageFilter) Class.forName(filterClass).newInstance();
-
-				// initialize the filter with configuration
-				filter.init(filterName, config, dsSettings);
+				MessageFilter filter = SpringService.getInstance().resolve(filterName,MessageFilter.class);
+				filter.setName(filterName);
 				writerConfiguration.filters.add(filter);
 			}
 

@@ -16,11 +16,11 @@ public class EventScoreFilter implements MessageFilter {
 	private double threshold;
 	private String name;
 	
-	@Override
-	public void init(String name, Config config, String eventType) {
+
+	public EventScoreFilter(String eventScoreField, double threshold) {
 		// get the event score field name and the minimum threshold value 
-		eventScoreField = getConfigString(config, String.format("fortscale.%s.filter.%s.field", eventType, name));
-		threshold = config.getDouble(String.format("fortscale.%s.filter.%s.threshold", eventType, name));
+		this.eventScoreField = eventScoreField;
+		this.threshold = threshold;
 		this.name = name;
 	}
 
@@ -38,4 +38,7 @@ public class EventScoreFilter implements MessageFilter {
 		return this.name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
 }
