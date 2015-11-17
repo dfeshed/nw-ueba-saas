@@ -42,7 +42,7 @@ public class ComputerTaggingServiceTest {
 		when(computerService.getClusterGroupNameForHostname("destination-MY-PC")).thenReturn("cluster2");
 		when(sensitiveMachineService.isMachineSensitive("destination-MY-PC")).thenReturn(false);
 
-		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new ComputerTaggingConfig("ssh", "lastState", "ssh output topic", "ssh_userId",configs.get(new StreamingTaskDataSourceConfigKey("ssh","lastState")).getComputerTaggingFieldsConfigList()), event);
+		JSONObject enrichedEvent = computerTaggingService.enrichEvent(new ComputerTaggingConfig("login", "lastState", "ssh output topic", "ssh_userId",configs.get(new StreamingTaskDataSourceConfigKey("login","lastState")).getComputerTaggingFieldsConfigList()), event);
 
 		assertEquals(ComputerUsageType.Server, enrichedEvent.get("source_classification"));
 		assertEquals("cluster", enrichedEvent.get("source_clustering"));
