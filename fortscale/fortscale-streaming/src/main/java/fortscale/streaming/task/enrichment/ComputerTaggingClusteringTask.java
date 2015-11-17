@@ -51,7 +51,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	// Map between (update) input topic name and relevant caching service
 	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
-	private Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
 
 	/**
 	 * This method response to the initiation of the streaming job
