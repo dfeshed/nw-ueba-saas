@@ -59,6 +59,15 @@ public class SpringService {
 	}
 
 
+	/**
+	 * Retrieve Bean by bean name and class name.
+	 * This method checks that the type of the bean with the relevant name is of the expeted type,
+	 * and return the expected type istead of Object (don't need to cast)
+	 * @param requiredName - bean name
+	 * @param className - the expected bean type
+	 * @param <T>
+	 * @return
+	 */
 	public <T> T resolve(String requiredName, Class<T> className) {
 		return context.getBean(requiredName, className);
 	}
