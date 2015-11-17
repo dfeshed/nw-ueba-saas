@@ -1,8 +1,7 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.services.ipresolving.IpToHostnameResolver;
-import fortscale.streaming.exceptions.FilteredEventException;
-import fortscale.streaming.service.StreamingServiceAbstract;
+import fortscale.streaming.service.StreamingTaskConfigurationService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
@@ -21,8 +20,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Service that receive and event from a specific input topic, resolve the required ip field in it and
  * sends the enriched event to the designated output topic.
  */
-public class EventsIpResolvingService extends StreamingServiceAbstract<EventResolvingConfig>{
-
+public class EventsIpResolvingService extends StreamingTaskConfigurationService<EventResolvingConfig> {
 
     private static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
@@ -37,7 +35,7 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
         this.taskMonitoringHelper = taskMonitoringHelper;
     }
 
-    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event) throws FilteredEventException {
+    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event) {
         // get the ip address and timestamp fields from the event
         String ip = convertToString(event.get(eventResolvingConfig.getIpFieldName()));
         Long timestamp = convertToLong(event.get(eventResolvingConfig.getTimestampFieldName()));
@@ -116,12 +114,14 @@ public class EventsIpResolvingService extends StreamingServiceAbstract<EventReso
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event) throws FilteredEventException
+	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event)
 	{
-        boolean drop = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
+        boolean shouldFilterEvent = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
 
-        if (drop){
+        if (shouldFilterEvent){
             taskMonitoringHelper.countNewFilteredEvents(eventResolvingConfig.getDataSource(), HOST_IS_EMPTY_LABEL);
+
+            return true;
         }
 
 		return false;

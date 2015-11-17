@@ -4,7 +4,7 @@ import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import fortscale.streaming.exceptions.FilteredEventException;
-import fortscale.streaming.service.StreamingServiceAbstract;
+import fortscale.streaming.service.StreamingTaskConfigurationService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +17,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
 /**
  * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer
  */
-public class ComputerTaggingService extends StreamingServiceAbstract<ComputerTaggingConfig>{
+public class ComputerTaggingService extends StreamingTaskConfigurationService<ComputerTaggingConfig> {
 
 
 

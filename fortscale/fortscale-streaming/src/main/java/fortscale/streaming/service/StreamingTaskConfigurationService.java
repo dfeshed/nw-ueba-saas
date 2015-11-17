@@ -13,16 +13,13 @@ import java.util.Map;
  * Abstract class for common services of steaming tasks.
  * The <T> is the type of the configuration file and must implement StreamingTaskConfig
  */
-public abstract class StreamingServiceAbstract<T extends StreamingTaskConfig> {
+public abstract class StreamingTaskConfigurationService<T extends StreamingTaskConfig> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String NO_INPUT_TOPIC_LABEL = "No Input Topic";
-    private static final String NULL_EVENT_INPUT_TOPIC_LABEL = "Null event  Input Topic";
-
     protected Map<StreamingTaskDataSourceConfigKey, T> configs = new HashMap<>();
 
-    public StreamingServiceAbstract(Map<StreamingTaskDataSourceConfigKey, T> configs) {
+    public StreamingTaskConfigurationService(Map<StreamingTaskDataSourceConfigKey, T> configs) {
         this.configs = configs;
     }
 

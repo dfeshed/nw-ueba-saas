@@ -162,7 +162,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     handleUnfilteredEvent(message);
                     collector.send(output);
                 } catch (Exception exception) {
-                    throw new KafkaPublisherException(String.format("failed to send message to from input topic %s, topic %s after ip resolving", topic, ipResolvingService.getOutputTopic(configKey)), exception);
+                    throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), topic, ipResolvingService.getOutputTopic(configKey)), exception);
                 }
             }
         }

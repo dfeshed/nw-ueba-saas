@@ -214,7 +214,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			try {
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, (String)envelope.getMessage()), exception);
+				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
 			handleUnfilteredEvent(message);
 		}
