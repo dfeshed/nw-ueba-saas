@@ -152,6 +152,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+	public int countAllUsers(List<Criteria> criteriaList) {
+		Query query = new Query();
+
+		for (Criteria criteria : criteriaList) {
+			query.addCriteria(criteria);
+		}
+
+		return (int) mongoTemplate.count(query, User.class);
+	}
+
+
+	@Override
 	public void updateFollowed(User user, boolean followed) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.followedField, followed), User.class);
 	}
@@ -199,7 +211,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		query.fields().exclude(User.adInfoField);
 		return mongoTemplate.find(query, User.class);
 	}
-	
+
 	@Override
 	public User findByAdEmailAddress(EmailAddress emailAddress) {
 		return findOneByField(User.getAdInfoField(UserAdInfo.emailAddressField), emailAddress);
@@ -290,6 +302,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> findAllUsers(Pageable pageable) {
 		Query query = new Query().with(pageable);
+		return mongoTemplate.find(query, User.class);
+	}
+
+	@Override
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable) {
+
+		Query query = new Query().with(pageable);
+
+		for (Criteria criteria : criteriaList) {
+			query.addCriteria(criteria);
+		}
+
 		return mongoTemplate.find(query, User.class);
 	}
 

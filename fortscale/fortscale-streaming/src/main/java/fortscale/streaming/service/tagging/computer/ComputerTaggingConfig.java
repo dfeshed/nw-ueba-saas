@@ -1,5 +1,7 @@
 package fortscale.streaming.service.tagging.computer;
 
+import fortscale.streaming.service.StreamingTaskConfig;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,7 @@ import java.util.List;
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
  * to determine what action to take for each type of event.
  */
-public class ComputerTaggingConfig {
+public class ComputerTaggingConfig implements StreamingTaskConfig {
 
 	private String eventType;
 	private String inputTopic;

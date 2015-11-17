@@ -379,11 +379,11 @@ public class MongoJobProgressReporterTest {
 		// arrange
 		JobReport previousReport = new JobReport();
 		previousReport.setStart(new Date());
-		previousReport.getDataReceived().add(new JobDataReceived("Users", 323, "KB"));
+		previousReport.getDataReceived().add(new JobDataReceived("Users", new Integer(323), "KB"));
 		when(repository.findOne("sss")).thenReturn(previousReport);
 		
 		// act
-		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		subject.addDataReceived("sss", new JobDataReceived("Groups",  new Integer(23), "KB"));
 		
 		// assert
 		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
@@ -399,7 +399,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("sss")).thenReturn(previousReport);
 		
 		// act
-		subject.addDataReceived("sss", new JobDataReceived("Groups", 5300, "KB"));
+		subject.addDataReceived("sss", new JobDataReceived("Groups", new Integer(5300), "KB"));
 		
 		// assert
 		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
@@ -414,7 +414,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("sss")).thenReturn(null);
 		
 		// act
-		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		subject.addDataReceived("sss", new JobDataReceived("Groups", new Integer(23), "KB"));
 		
 		// assert
 		verify(repository, VerificationModeFactory.times(0)).save(any(JobReport.class));

@@ -64,21 +64,21 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
 				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
-			taskMonitoringHelper.countNewFilteredEvents(ACCOUNT_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents("",ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
-			taskMonitoringHelper.countNewFilteredEvents(SERVICE_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents("",SERVICE_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 		
 		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
 		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
-			taskMonitoringHelper.countNewFilteredEvents(SERVICE_NAME_MATCH_COMPUTER_NAME);
+			taskMonitoringHelper.countNewFilteredEvents("",SERVICE_NAME_MATCH_COMPUTER_NAME);
 			return false;
 		}
 		

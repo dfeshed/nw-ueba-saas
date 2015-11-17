@@ -1,14 +1,9 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
-import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
+import org.apache.samza.task.*;
 
 
 /**

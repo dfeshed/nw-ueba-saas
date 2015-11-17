@@ -1,11 +1,10 @@
 package fortscale.streaming.task.enrichment;
 
-import com.google.common.collect.Iterables;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -40,10 +39,10 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     private static Logger logger = LoggerFactory.getLogger(VpnEnrichTask.class);
 
 	// Map between (update) input topic name and relevant enrich service
-	protected static Map<String, VpnEnrichService> topicToServiceMap;
+	protected static Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> dataSourceConfigs;
 
-	public static void setTopicToServiceMap(Map<String, VpnEnrichService> topicToServiceMap) {
-		VpnEnrichTask.topicToServiceMap = topicToServiceMap;
+	public static void setDataSourceConfigs(Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> dataSourceConfigs) {
+		VpnEnrichTask.dataSourceConfigs = dataSourceConfigs;
 	}
 
 
@@ -58,31 +57,31 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
     private void initGeolocation(Config config) {
 
-		if (topicToServiceMap == null) {
+		if (dataSourceConfigs == null) {
 
-			topicToServiceMap = new HashMap<>();
+			dataSourceConfigs = new HashMap<>();
 
 
 			// get spring environment to resolve properties values using configuration files
 			Environment env = SpringService.getInstance().resolve(Environment.class);
 
-			Config configSubset = config.subset("fortscale.events.");
+			Config configSubset = config.subset("fortscale.events.entry.name.");
 
-			for (String configKey : Iterables.filter(configSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
+			for (String dsSettings : configSubset.keySet()) {
 
-				String eventType = configKey.substring(0, configKey.indexOf(".input.topic"));
+				String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
+				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
+				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource,lastState);
+				String outputTopic  = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
+				String partitionField  = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings));
 
-				String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-				String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
-
-				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.%s.doGeoLocationh", eventType));
-				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.%s.doDataBuckets", eventType));
-				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.%s.doSessionUpdate", eventType));
-				String usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s" + ".username.field", eventType)));
-				String longtitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.longtitude.field", eventType));
-				String latitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.latitude.field", eventType));
-				String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.countryIsoCode.field", eventType)));
+				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.entry.%s.doGeoLocation", dsSettings));
+				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.entry.%s.doDataBuckets", dsSettings));
+				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.entry.%s.doSessionUpdate", dsSettings));
+				String usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s" + ".username.field", dsSettings)));
+				String longtitudeFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.longtitude.field", dsSettings));
+				String latitudeFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.latitude.field", dsSettings));
+				String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.countryIsoCode.field", dsSettings)));
 
 				VpnGeolocationConfig vpnGeolocationConfig = null;
 				VpnDataBucketsConfig vpnDataBucketsConfig = null;
@@ -90,13 +89,13 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 				if (doGeoLocationh) {
 					//geolocation field names:
-					String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
-					String countryFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.country.field", eventType)));
+					String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.ip.field", dsSettings)));
+					String countryFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.country.field", dsSettings)));
 
-					String regionFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.region.field", eventType)));
-					String cityFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.city.field", eventType)));
-					String ispFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.isp.field", eventType)));
-					String usageTypeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.usageType.field", eventType)));
+					String regionFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.region.field", dsSettings)));
+					String cityFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.city.field", dsSettings)));
+					String ispFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.isp.field", dsSettings)));
+					String usageTypeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.usageType.field", dsSettings)));
 
 					vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName,regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
 				}
@@ -106,10 +105,10 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 
 					//data buckets field names:
-					String totalbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.totalbytes.field", eventType)));
-					String readbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.readbytes.field", eventType)));
-					String durationFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.duration.field", eventType)));
-					String databucketFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.databucket.field", eventType)));
+					String totalbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.totalbytes.field", dsSettings)));
+					String readbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.readbytes.field", dsSettings)));
+					String durationFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.duration.field", dsSettings)));
+					String databucketFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.databucket.field", dsSettings)));
 
 					vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
 				}
@@ -117,15 +116,15 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 				if (doSessionUpdate) {
 
 					//session update field names:
-					String vpnGeoHoppingOpenSessionThresholdInHours = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.geoHoppingOpenSessionThresholdInHours", eventType)));
-					String vpnGeoHoppingCloseSessionThresholdInHours = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.geoHoppingCloseSessionThresholdInHours", eventType)));
-					String sessionIdFieldName = getConfigString(config, String.format("fortscale.events.%s.sessionid.field", eventType));
-					String runGeoHoppingFieldName = getConfigString(config, String.format("fortscale.events.%s.runGeoHopping.field", eventType));
-					String addSessionDataFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.addSessionData.field", eventType)));
-					String resolveIpFieldName = getConfigString(config, String.format("fortscale.events.%s.resolveIp.field", eventType));
-					String dropCloseEventWhenOpenMissingFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.dropCloseEventWhenOpenMissing.field", eventType)));
-					String timeGapForResolveIpFrom = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpFrom", eventType)));
-					String timeGapForResolveIpTo = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpTo", eventType)));
+					String vpnGeoHoppingOpenSessionThresholdInHours = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.geoHoppingOpenSessionThresholdInHours", dsSettings)));
+					String vpnGeoHoppingCloseSessionThresholdInHours = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.geoHoppingCloseSessionThresholdInHours", dsSettings)));
+					String sessionIdFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.sessionid.field", dsSettings));
+					String runGeoHoppingFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.runGeoHopping.field", dsSettings));
+					String addSessionDataFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.addSessionData.field", dsSettings)));
+					String resolveIpFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.resolveIp.field", dsSettings));
+					String dropCloseEventWhenOpenMissingFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.dropCloseEventWhenOpenMissing.field", dsSettings)));
+					String timeGapForResolveIpFrom = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.timeGapForResolveIpFrom", dsSettings)));
+					String timeGapForResolveIpTo = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.timeGapForResolveIpTo", dsSettings)));
 
 
 					vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
@@ -134,11 +133,11 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 				}
 
-				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField,
+				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
 						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
 
-				topicToServiceMap.put(inputTopic, vpnEnrichService);
+				dataSourceConfigs.put(configKey, vpnEnrichService);
 			}
 		}
 
@@ -147,14 +146,13 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
-		// Get the input topic
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
         // parse the message into json
         String messageText = (String) envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		VpnEnrichService vpnEnrichService = topicToServiceMap.get(inputTopic);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		VpnEnrichService vpnEnrichService = dataSourceConfigs.get(configKey);
 
         message = vpnEnrichService.processVpnEvent(message, collector);
 
@@ -168,7 +166,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
             collector.send(output);
         } catch (Exception exception) {
-            throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", vpnEnrichService.getInputTopic(), vpnEnrichService.getOutputTopic()), exception);
+            throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", configKey, vpnEnrichService.getOutputTopic()), exception);
         }
     }
 
@@ -181,5 +179,4 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     protected void wrappedClose() throws Exception {
 
     }
-
 }

@@ -16,7 +16,7 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.enricheddata.security4769.table.nam}</value>
+					<value>${impala.enricheddata.kerberosLogin.table.nam}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
@@ -50,6 +50,14 @@
 					<key>throttlingSleep</key>
 					<value>${kafka.throttlingSleep}</value>
 				</entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>kerberosLogin</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
 			</job-data-map>
 		</job>
 	</schedule>

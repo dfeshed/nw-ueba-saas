@@ -4,10 +4,10 @@ package fortscale.streaming.task.enrichment;
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -48,6 +48,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * The level DB store name
 	 */
 	private static final String storeName = "user-mongo-update";
+	public static final String NO_LOG_USERNAME_IN_MESSAGE_LABEL = "No log username in message";
+	public static final String NO_CONFIGURATION_IN_MESSAGE_LABEL = "No configuration in message";
+	public static final String NO_USERNAME_FIELD_IN_MESSAGE_LABEL = "No username field  in message";
+	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL = "No timestamp field in message";
 
 	/**
 	 * Logger
@@ -77,7 +81,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
-	protected Map<String, DataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, DataSourceConfiguration> dataSourceConfigs = new HashMap<>();
 
 	/**
 	 * Map between classifier id to updateonly flag
@@ -106,16 +110,20 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		userService = SpringService.getInstance().resolve(UserService.class);
 
 		// Fill the map between the input topic and the data source
-		Config fieldsSubset = config.subset("fortscale.data-source.input.topic.");
-		for (String dataSource : fieldsSubset.keySet()) {
-			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
-			String successfulLoginField = getConfigString(config, String.format("fortscale.data-source.success.field.%s", dataSource));
-			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
-			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
-			String logUserNameField =getConfigString(config, String.format("fortscale.data-source.logusername.field.%s", dataSource));
-			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
+		Config fieldsSubset = config.subset("fortscale.events.entry.name.");
+		for (String dsSettings : fieldsSubset.keySet()) {
+
+			String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
+			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
+			StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource,lastState);
+			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", dsSettings));
+			String successfulLoginField = getConfigString(config, String.format("fortscale.events.entry.%s.success.field", dsSettings));
+			String successfulLoginValue = getConfigString(config, String.format("fortscale.events.entry.%s.success.value", dsSettings));
+			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", dsSettings));
+			String logUserNameField =getConfigString(config, String.format("fortscale.events.entry.%s.logusername.field", dsSettings));
+			usernameField  =getConfigString(config, String.format("fortscale.events.entry.%s.username.field", dsSettings));
+
+			dataSourceConfigs.put(configKey, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
@@ -135,11 +143,12 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
+		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
 
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
 		if (timestampSeconds == null) {
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
@@ -148,32 +157,32 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
 		if (normalizedUsername == null) {
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_USERNAME_FIELD_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains username in field {}", messageText, usernameField);
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
 
 
 
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
 		// Get relevant data source according to topic
-		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
-			logger.error("No data source is defined for input topic {} ", topic);
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_CONFIGURATION_IN_MESSAGE_LABEL);
+			logger.error("No data source is defined for input topic {} ", configKey);
 			return;
 		}
 
 		//get the actual username from the event - using for assigning to logusername
 		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
 		if (logUserNameFromEvent == null) {
+			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_LOG_USERNAME_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
 			return;
 		}
 
 
-
-
+		handleUnfilteredEvent(message);
 		//in case that the success field is equal to #AnyRow# in the configuration file
 		//update the last activity for any row
 		// or check that the event represent successful login
@@ -183,7 +192,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
 
 		}
-
 
 
 		// No output topic -> this is the last task in the chain
@@ -234,7 +242,11 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
+	}
 
+	@Override
+	protected String getJobLabel() {
+		return "UserMongoUpdateTask";
 	}
 
 	@Override

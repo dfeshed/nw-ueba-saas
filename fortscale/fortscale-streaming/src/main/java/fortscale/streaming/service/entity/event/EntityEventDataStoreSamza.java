@@ -46,13 +46,15 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         return res;
     }
 
-    private List<EntityEventData> getMergedListFromMongoAndSamza(List<EntityEventData> entityEventDataListFromMongo) {
+    private List<EntityEventData> getMergedListFromMongoAndSamza(List<EntityEventData> entityEventDataListFromMongo, long modifiedAtEpochtimeLte) {
         List<EntityEventData> resList = new ArrayList<>();
 
         for(EntityEventData entityEventData: entityEventDataListFromMongo) {
             EntityEventData entityEventData1FromSamzaStore = entityEventStore.get(getEntityEventDataKey(entityEventData));
             if(entityEventData1FromSamzaStore!=null) {
-                resList.add(entityEventData1FromSamzaStore);
+                if (entityEventData1FromSamzaStore.getModifiedAtEpochtime() <= modifiedAtEpochtimeLte) {
+                    resList.add(entityEventData1FromSamzaStore);
+                }
             } else {
                 resList.add(entityEventData);
             }
@@ -64,13 +66,13 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     @Override
     public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
         List<EntityEventData> listFromMongo = super.getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime);
-        return getMergedListFromMongoAndSamza(listFromMongo);
+        return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
     }
 
     @Override
     public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
         List<EntityEventData> listFromMongo = super.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventName, modifiedAtEpochtime);
-        return getMergedListFromMongoAndSamza(listFromMongo);
+        return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
     }
 
     @Override

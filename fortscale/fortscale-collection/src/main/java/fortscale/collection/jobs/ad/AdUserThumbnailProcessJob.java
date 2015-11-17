@@ -251,7 +251,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()){
 			adUserThumbnailRepository.save(adUserThumbnails);
-			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
+			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", new Integer(adUserThumbnails.size()), "Users"));
 			adUserThumbnails.clear();
 		}
 	}

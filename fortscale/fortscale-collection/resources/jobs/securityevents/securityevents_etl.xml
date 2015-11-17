@@ -64,6 +64,10 @@
 					<value>${impala.data.kerberosLogin.table.fields}</value>
 				</entry>
 				<entry>
+					<key>messageOutputFieldsSecEvt4769</key>
+					<value>${kafka.kerberosLogin.message.record.fields}</value>
+				</entry>
+				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
 					<value>${impala.data.security.events.4769.table.morphline.fields.username}</value>
 				</entry>
@@ -77,7 +81,7 @@
 				</entry>
 				<entry>
 					<key>hadoopPathSecEvt4769</key>
-					<value>${hdfs.user.data.security4769.path}</value>
+					<value>${hdfs.user.data.kerberosLogin.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameSecEvt4769</key>
@@ -104,6 +108,10 @@
 				<entry>
 					<key>outputFieldsLoginEvt</key>
 					<value>${impala.data.login4768.table.fields}</value>
+				</entry>
+				<entry>
+					<key>messageOutputFieldsLoginEvt</key>
+					<value>${kafka.security.events.login.message.record.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsLoginEvt</key>

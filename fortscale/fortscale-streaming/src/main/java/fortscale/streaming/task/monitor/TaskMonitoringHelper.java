@@ -2,8 +2,8 @@ package fortscale.streaming.task.monitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,14 +62,20 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(String cause){
-        Integer causeReason = countFilterByCause.get(cause);
-        if (causeReason == null){
-            causeReason = 1;
-        } else {
-            causeReason++;
+    public void countNewFilteredEvents(String dataSource, String cause){
+        String causeLabel="";
+        if (StringUtils.isNotBlank(dataSource)){
+            causeLabel = "Data Source: "+dataSource+". ";
         }
-        countFilterByCause.put(cause,causeReason);
+        causeLabel +=cause;
+
+        Integer causeCount = countFilterByCause.get(causeLabel);
+        if (causeCount == null){
+            causeCount = 1;
+        } else {
+            causeCount++;
+        }
+        countFilterByCause.put(causeLabel,causeCount);
     }
 
 
@@ -83,7 +89,7 @@ public class TaskMonitoringHelper {
 
     }
 
-    public void handleUnFilteredEvents(String datasource, Number dateTimeUnix, String dateAsString){
+    public void handleUnFilteredEvents(String datasource, Long dateTimeUnix, String dateAsString){
         updateFirstLastEventInWindow(datasource,dateTimeUnix, dateAsString);
         countNotFilteredEvents++; //Count not filtered events per window
     }
@@ -94,46 +100,60 @@ public class TaskMonitoringHelper {
      * and how many filtered events per each cause.
      * If there where no filtered event, add one line of Filter events = 0
      */
-    public void saveJobStatusReport(String jobLabel){
+    public void saveJobStatusReport(String jobLabel,boolean saveOnlyIfDataExists){
 
-        if (isMonitoredTask()) {
-            String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
-
-            //All the events which arrive to the job in the windows
-            addJobData(monitorId, TOTAL_EVENTS_LABEL, totalAmountOfEventsInWindow, EVENTS_TYPE);
-
-            for (Map.Entry<String, EventTimeRange> firstLastEventTime : eventTimeRange.entrySet()) {
-                String textPrefix = eventTimeRange.size() > 0 ? firstLastEventTime.getKey() +": " : "";
-                //Original time of first event in the window
-                addJobData(monitorId, textPrefix + FIRST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfFirstEventInWindowAsString());
-                //Original time of last event in the window
-                addJobData(monitorId, textPrefix+ LAST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfLastEventInWindowAsString());
-            }
-
-            //Add all cause and how many events filtered per cause,
-            //or add "filtered events = 0 if no filtered events in the window.
-            if (countFilterByCause.size() > 0) {
-                for (Map.Entry<String, Integer> cause : countFilterByCause.entrySet()) {
-                    String label = FILTERED_EVENTS_PREFIX + cause.getKey();
-                    addJobData(monitorId, label, cause.getValue(), EVENTS_TYPE);
-                }
-            } else {
-                addJobData(monitorId, TOTAL_FILTERED_EVENTS_LABEL, 0, EVENTS_TYPE);
-            }
-
-            //How many events not filtered in the window
-            addJobData(monitorId, NOT_FILTERED_EVENTS_LABEL, countNotFilteredEvents, EVENTS_TYPE);
-
-            jobMonitorReporter.finishJob(monitorId);
-
-            //Reset counters per window
-            resetCountersPerWindow();
+        //If tasks is not monitored - stop saving and do nothing
+        if (!isMonitoredTask()) {
+            return;
         }
+
+        //If there were no events in the window and saveOnlyIfDataExists turned on,
+        //stop saving and do nothing
+        if (saveOnlyIfDataExists && this.totalAmountOfEventsInWindow ==0){
+            return;
+        }
+
+        //Start saving:
+        String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
+
+        //All the events which arrive to the job in the windows
+        addJobData(monitorId, TOTAL_EVENTS_LABEL, totalAmountOfEventsInWindow, EVENTS_TYPE);
+
+        for (Map.Entry<String, EventTimeRange> firstLastEventTime : eventTimeRange.entrySet()) {
+            String textPrefix = eventTimeRange.size() > 1 ? firstLastEventTime.getKey() +": " : "";
+            //Original time of first event in the window
+            addJobData(monitorId, textPrefix + FIRST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfFirstEventInWindowAsString());
+            //Original time of last event in the window
+            addJobData(monitorId, textPrefix+ LAST_EVENT_TIME_LABEL, null, firstLastEventTime.getValue().getTimeOfLastEventInWindowAsString());
+        }
+
+        //Add all cause and how many events filtered per cause,
+        //or add "filtered events = 0 if no filtered events in the window.
+        if (countFilterByCause.size() > 0) {
+            for (Map.Entry<String, Integer> cause : countFilterByCause.entrySet()) {
+                String label = FILTERED_EVENTS_PREFIX + cause.getKey();
+                addJobData(monitorId, label, cause.getValue(), EVENTS_TYPE);
+            }
+        } else {
+            addJobData(monitorId, TOTAL_FILTERED_EVENTS_LABEL, 0, EVENTS_TYPE);
+        }
+
+        //How many events not filtered in the window
+        addJobData(monitorId, NOT_FILTERED_EVENTS_LABEL, countNotFilteredEvents, EVENTS_TYPE);
+
+        jobMonitorReporter.finishJob(monitorId);
+
+        //Reset counters per window
+        resetCountersPerWindow();
+
     }
 
     //Keep the time of the first and last event time in the windows
     //First and last could be the same if there is only one event in the window
-    private void updateFirstLastEventInWindow(String dataSource, Number time, String dateAsString){
+    private void updateFirstLastEventInWindow(String dataSource, Long time, String dateAsString){
+        if (time == null || dateAsString==null) {
+            return;
+        }
         long eventTime = time.longValue();
 
         EventTimeRange timeRange = eventTimeRange.get(dataSource);
@@ -149,8 +169,9 @@ public class TaskMonitoringHelper {
             }
         } else {
             timeRange = new EventTimeRange();
-            eventTimeRange.put(dataSource,timeRange);
+            eventTimeRange.put(dataSource, timeRange);
         }
+
     }
 
 
@@ -162,7 +183,9 @@ public class TaskMonitoringHelper {
      * @param valueType
      */
     private void addJobData(String monitorId, String text, Integer value, String valueType ){
-        JobDataReceived dataReceived = new JobDataReceived(text, value, valueType);
+
+		JobDataReceived dataReceived = new JobDataReceived(text,value, valueType);
+
         jobMonitorReporter.addDataReceived(monitorId,dataReceived);
     }
 }
