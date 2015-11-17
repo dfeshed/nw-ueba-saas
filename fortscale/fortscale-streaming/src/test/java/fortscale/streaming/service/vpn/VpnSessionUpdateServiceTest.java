@@ -125,8 +125,6 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         });
         //init
 
-
-
         //run test:
         event = vpnEnrichService.processSessionUpdate(event, null);
 
