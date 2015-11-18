@@ -1,7 +1,5 @@
 package fortscale.ml.model.retriever;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
@@ -18,21 +16,25 @@ import java.util.List;
 import java.util.Map;
 
 @Configurable(preConstruction = true)
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class EntityHistogramRetriever extends IDataRetriever {
-	public static final String DATA_RETRIEVER_TYPE = "entity_histogram_retriever";
-
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
 
-	private String featureBucketConfName;
+	private FeatureBucketConf featureBucketConf;
 	private String featureName;
+
+	public EntityHistogramRetriever(IDataRetrieverConf dataRetrieverConf) {
+		super(dataRetrieverConf);
+		EntityHistogramRetrieverConf entityHistogramRetrieverConf = (EntityHistogramRetrieverConf)dataRetrieverConf;
+		String featureBucketConfName = entityHistogramRetrieverConf.getFeatureBucketConfName();
+		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+		featureName = entityHistogramRetrieverConf.getFeatureName();
+	}
 
 	@Override
 	public Object retrieve(String contextId) {
-		FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 

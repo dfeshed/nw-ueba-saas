@@ -4,32 +4,36 @@
       "name": "name1",
       "buildIntervalInSeconds": 1,
       "selector": {
-         "type": "feature_bucket_context_selector_conf",
-         "featureBucketConfName": "featureBucketConfName1"
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
-        "type": "entity_histogram_retriever"
+        "type": "entity_histogram_retriever_conf",
+        "timeRangeInSeconds": 1,
+        "functions": [],
+        "featureBucketConfName": "featureBucketConfName1",
+        "featureName": "featureName1"
       },
       "builder": {
-        "type": "continuous_data_histogram"
-      },
-      "store": {
+        "type": "continuous_histogram_model_builder_conf"
       }
     },
     {
       "name": "name2",
       "buildIntervalInSeconds": 1,
       "selector": {
-         "type": "feature_bucket_context_selector_conf",
-         "featureBucketConfName": "featureBucketConfName1"
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "featureBucketConfName1"
       },
       "retriever": {
-        "type": "entity_histogram_retriever"
+        "type": "entity_histogram_retriever_conf",
+        "timeRangeInSeconds": 1,
+        "functions": [],
+        "featureBucketConfName": "featureBucketConfName1",
+        "featureName": "featureName1"
       },
       "builder": {
-        "type": "continuous_data_histogram"
-      },
-      "store": {
+        "type": "continuous_histogram_model_builder_conf"
       }
     }
   ]

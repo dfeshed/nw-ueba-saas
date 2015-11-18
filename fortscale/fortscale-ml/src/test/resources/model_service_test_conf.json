@@ -1,0 +1,22 @@
+{
+  "ModelConfs": [
+    {
+      "name": "first_test_model_conf",
+      "buildIntervalInSeconds": 10,
+      "selector": {
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "selector_feature_bucket_conf"
+      },
+      "retriever": {
+        "type": "entity_histogram_retriever_conf",
+        "timeRangeInSeconds": 10,
+        "functions": [],
+        "featureBucketConfName": "retriever_feature_bucket_conf",
+        "featureName": "retriever_feature"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder_conf"
+      }
+    }
+  ]
+}
