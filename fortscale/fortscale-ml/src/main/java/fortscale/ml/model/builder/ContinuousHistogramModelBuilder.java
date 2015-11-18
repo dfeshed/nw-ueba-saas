@@ -42,7 +42,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         if (!(modelBuilderData instanceof Map)) {
             String errorMsg = "got illegal modelBuilderData type - probably bad ASL";
             logger.error(errorMsg);
-            throw new ClassCastException(errorMsg);
+            throw new IllegalArgumentException(errorMsg);
         }
         return (Map<Double, Double>) modelBuilderData;
     }
