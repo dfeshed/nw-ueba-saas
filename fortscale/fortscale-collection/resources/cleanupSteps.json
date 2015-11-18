@@ -94,11 +94,6 @@
         "technology": "MONGO",
         "strategy": "DELETE",
         "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
