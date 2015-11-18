@@ -110,7 +110,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.entry.%s.resolveOnlyReserved", configKey), defaultResolveOnlyReservedIp);
 
                 // build EventResolvingConfig for the event type
-                EventResolvingConfig eventResolvingConfig = EventResolvingConfig.build(dataSource, inputTopic, ipField, hostField, outputTopic,
+                EventResolvingConfig eventResolvingConfig = EventResolvingConfig.build(dataSource, lastState, ipField, hostField, outputTopic,
                         restrictToADName, shortName, isRemoveLastDot, dropWhenFail, timestampField, partitionField,
                         overrideIPWithHostname, eventTypeResolveOnlyReservedIp, reservedIpAddress);
 

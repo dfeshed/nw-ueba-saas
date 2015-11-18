@@ -25,9 +25,9 @@ public class EventsIpResolvingServiceTest {
 
     @Before
     public void setUp() {
-		configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, false, "time", "partition", false, true, RESERVED_IP_RANGES));
+		configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "state", "ip", "host", "output", false, false, false, false, "time", "partition", false, true, RESERVED_IP_RANGES));
 
-        configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "input", "ip", "host", "output", false, false, false, true, "time", "partition", false, false, ""));
+        configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "state", "ip", "host", "output", false, false, false, true, "time", "partition", false, false, ""));
 
 		resolver = mock(IpToHostnameResolver.class);
         taskMonitoringHelper = mock(TaskMonitoringHelper.class);

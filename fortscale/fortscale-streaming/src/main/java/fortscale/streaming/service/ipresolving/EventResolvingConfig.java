@@ -1,7 +1,6 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.streaming.service.StreamingTaskConfig;
-import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 
 /**
  * Configuration for ip resolving on a specific event type. This should be constructed from the topology
@@ -155,5 +154,7 @@ public class EventResolvingConfig implements StreamingTaskConfig {
         this.dataSource = dataSource;
     }
 
-
+    public String getLastState() {
+        return lastState;
+    }
 }
