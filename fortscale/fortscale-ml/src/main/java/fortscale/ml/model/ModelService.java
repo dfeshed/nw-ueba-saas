@@ -4,6 +4,7 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -21,12 +22,12 @@ public class ModelService implements IModelBuildingScheduler {
 	private IModelBuildingListener modelBuildingListener;
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
 	private PriorityQueue<Pair<IModelBuildingRegistrar, Long>> registrarRunTimeQueue;
-	private long sessionId;
+	private DateTime sessionStartTime;
 
 	public ModelService(IModelBuildingListener modelBuildingListener) {
 		Assert.notNull(modelBuildingListener);
 		this.modelBuildingListener = modelBuildingListener;
-		sessionId = new Random().nextLong();
+		sessionStartTime = DateTime.now();
 
 		modelConfNameToManager = new HashMap<>();
 		registrarRunTimeQueue = new PriorityQueue<>(PRIORITY_QUEUE_INITIAL_CAPACITY, new Comparator<Pair<IModelBuildingRegistrar, Long>>() {
@@ -46,14 +47,14 @@ public class ModelService implements IModelBuildingScheduler {
 		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
 		ModelBuilderManager modelManager = modelConfNameToManager.get(modelConfName);
 		if (modelManager != null) {
-			modelManager.process(modelBuildingListener, sessionId);
+			modelManager.process(modelBuildingListener, sessionStartTime, null);
 		}
 	}
 
 	public void window(long currentTimeSeconds) {
 		while (!registrarRunTimeQueue.isEmpty() && registrarRunTimeQueue.peek().getRight() <= currentTimeSeconds) {
 			Pair<IModelBuildingRegistrar, Long> registrarRunTimePair = registrarRunTimeQueue.poll();
-			registrarRunTimePair.getLeft().process(modelBuildingListener, sessionId);
+			registrarRunTimePair.getLeft().process(modelBuildingListener, sessionStartTime, null);
 		}
 	}
 
