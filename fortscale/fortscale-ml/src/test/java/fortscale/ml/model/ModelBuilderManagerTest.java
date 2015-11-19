@@ -6,6 +6,7 @@ import fortscale.ml.model.retriever.EntityHistogramRetrieverConf;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import junitparams.JUnitParamsRunner;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,15 +62,17 @@ public class ModelBuilderManagerTest {
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
         String[] ids = {"user1", "user2"};
         Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
+        DateTime sessionStartTime = DateTime.now();
+        DateTime sessionEndTime = sessionStartTime.plusDays(1);
         boolean[] successes = {true, true};
-        ModelBuilderManager modelBuilderManager = createProcessScenario(ids, models, successes);
+        ModelBuilderManager modelBuilderManager = createProcessScenario(
+                ids, models, new DateTime[]{sessionStartTime, sessionStartTime}, new DateTime[]{sessionEndTime, sessionEndTime}, successes);
 
-        long sessionId = 1234;
-        modelBuilderManager.process(null, sessionId);
+        modelBuilderManager.process(null, sessionStartTime, sessionEndTime);
 
         verify(contextSelector, times(1)).getContexts(0L, 0L);
         for (int i = 0; i < ids.length; i++) {
-            verify(modelStore).save(eq(modelConf), eq(ids[i]), eq(models[i]), eq(sessionId));
+            verify(modelStore).save(eq(modelConf), eq(ids[i]), eq(models[i]), eq(sessionStartTime), eq(sessionEndTime));
         }
         verifyNoMoreInteractions(modelStore);
     }
@@ -77,23 +80,28 @@ public class ModelBuilderManagerTest {
     @Test
     public void shouldBuildAndStoreGlobalModel() {
         Model[] models = {new ContinuousDataModel()};
+        DateTime sessionStartTime = DateTime.now();
+        DateTime sessionEndTime = sessionStartTime.plusDays(1);
         boolean[] successes = {true};
-        ModelBuilderManager modelBuilderManager = createProcessScenario(null, models, successes);
+        ModelBuilderManager modelBuilderManager = createProcessScenario(
+                null, models, new DateTime[]{sessionStartTime}, new DateTime[]{sessionEndTime}, successes);
 
-        long sessionId = 1234;
-        modelBuilderManager.process(null, sessionId);
+        modelBuilderManager.process(null, sessionStartTime, sessionEndTime);
 
-        verify(modelStore).save(eq(modelConf), isNull(String.class), eq(models[0]), eq(sessionId));
+        verify(modelStore).save(eq(modelConf), isNull(String.class), eq(models[0]), eq(sessionStartTime), eq(sessionEndTime));
         verifyNoMoreInteractions(modelStore);
     }
 
     @Test
     public void shouldRegisterItselfOnceFinishedProcessing() {
         Model[] models = {new ContinuousDataModel()};
+        DateTime sessionStartTime = DateTime.now();
+        DateTime sessionEndTime = sessionStartTime.plusDays(1);
         boolean[] successes = {true};
-        ModelBuilderManager modelBuilderManager = createProcessScenario(null, models, successes);
+        ModelBuilderManager modelBuilderManager = createProcessScenario(
+                null, models, new DateTime[]{sessionStartTime}, new DateTime[]{sessionEndTime}, successes);
 
-        modelBuilderManager.process(null, 1234);
+        modelBuilderManager.process(null, sessionStartTime, sessionEndTime);
         verify(scheduler, times(2)).register(eq(modelBuilderManager), anyLong());
     }
 
@@ -104,11 +112,14 @@ public class ModelBuilderManagerTest {
 
         String[] entityIds = {"user1", "user2"};
         Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
+        DateTime sessionStartTime = DateTime.now();
+        DateTime sessionEndTime = sessionStartTime.plusDays(1);
         boolean[] successes = {true, false};
-        ModelBuilderManager modelManager = createProcessScenario(entityIds, models, successes);
+        ModelBuilderManager modelManager = createProcessScenario(
+                entityIds, models, new DateTime[]{sessionStartTime, sessionStartTime}, new DateTime[]{sessionEndTime, sessionEndTime}, successes);
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
-        modelManager.process(listener, 1234);
+        modelManager.process(listener, sessionStartTime, sessionEndTime);
 
         for (int i = 0; i < entityIds.length; i++) {
             verify(listener).modelBuildingStatus(eq(modelConfName), eq(entityIds[i]), eq(successes[i]));
@@ -116,20 +127,22 @@ public class ModelBuilderManagerTest {
         verifyNoMoreInteractions(listener);
     }
 
-    private void mockBuild(String id, Model model, boolean success) {
+    private void mockBuild(String id, Model model, DateTime sessionStartTime, DateTime sessionEndTime, boolean success) {
         if (!success) {
-            doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(id), eq(model), anyLong());
+            doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(id), eq(model), eq(sessionStartTime), eq(sessionEndTime));
         }
     }
 
-    private ModelBuilderManager createProcessScenario(String[] ids, Model[] models, boolean[] successes) {
+    private ModelBuilderManager createProcessScenario(
+            String[] ids, Model[] models, DateTime[] sessionStartTimes, DateTime[] sessionEndTimes, boolean[] successes) {
+
         if (ids != null) {
             when(contextSelector.getContexts(0L, 0L)).thenReturn(Arrays.asList(ids));
             for (int i = 0; i < ids.length; i++) {
-                mockBuild(ids[i], models[i], successes[i]);
+                mockBuild(ids[i], models[i], sessionStartTimes[i], sessionEndTimes[i], successes[i]);
             }
         } else {
-            mockBuild(null, models[0], successes[0]);
+            mockBuild(null, models[0], sessionStartTimes[0], sessionEndTimes[0], successes[0]);
             contextSelector = null;
         }
 
