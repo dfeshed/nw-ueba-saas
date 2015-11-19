@@ -1,7 +1,6 @@
 package fortscale.services.event.forward;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
