@@ -1,6 +1,7 @@
 package fortscale.services.event.forward;
 
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import org.springframework.data.annotation.Transient;
 
 /**
  *
@@ -9,6 +10,7 @@ import fortscale.services.dataqueries.querydto.DataQueryDTO;
 public class ForwardSingleConfiguration {
 
 	//data query to run when using this configuration
+	@Transient
 	private DataQueryDTO dataQueryDTO;
 
 	//if false run only once

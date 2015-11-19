@@ -22,7 +22,6 @@ public class ForwardConfiguration extends AbstractAuditableDocument{
 	@Indexed
 	private String type;
 
-	@Transient
 	private List<ForwardSingleConfiguration> confList;
 
 	public String getType() {
