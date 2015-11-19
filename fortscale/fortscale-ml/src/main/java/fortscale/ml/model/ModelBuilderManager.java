@@ -10,6 +10,7 @@ import fortscale.ml.model.selector.FeatureBucketContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -44,25 +45,25 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
     }
 
     @Override
-    public void process(IModelBuildingListener listener, long sessionId) {
+    public void process(IModelBuildingListener listener, DateTime sessionStartTime, DateTime sessionEndTime) {
         if (contextSelector != null) {
             for (String contextId : contextSelector.getContexts(0L, 0L)) {
-                build(listener, contextId, sessionId);
+                build(listener, contextId, sessionStartTime, sessionEndTime);
             }
         } else {
-            build(listener, null, sessionId);
+            build(listener, null, sessionStartTime, sessionEndTime);
         }
 
         scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void build(IModelBuildingListener listener, String contextId, long sessionId) {
+    public void build(IModelBuildingListener listener, String contextId, DateTime sessionStartTime, DateTime sessionEndTime) {
         Object modelBuilderData = dataRetriever.retrieve(contextId);
         Model model = modelBuilder.build(modelBuilderData);
 
         boolean success = true;
         try {
-            modelStore.save(modelConf, contextId, model, sessionId);
+            modelStore.save(modelConf, contextId, model, sessionStartTime, sessionEndTime);
         } catch (Exception e) {
             logger.error(String.format("Failed to save model %s for context ID %s", modelConf.getName(), contextId), e);
             success = false;

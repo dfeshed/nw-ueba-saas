@@ -1,7 +1,6 @@
 package fortscale.ml.model.store;
 
 import fortscale.ml.model.Model;
-import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -38,7 +37,7 @@ public class ModelDAO {
 		return contextId;
 	}
 
-	public Date getCreationTime() {
+	public DateTime getCreationTime() {
 		return creationTime;
 	}
 
@@ -46,7 +45,11 @@ public class ModelDAO {
 		return model;
 	}
 
-	public long getSessionId() {
-		return sessionId;
+	public DateTime getSessionStartTime() {
+		return sessionStartTime;
+	}
+
+	public DateTime getSessionEndTime() {
+		return sessionEndTime;
 	}
 }
