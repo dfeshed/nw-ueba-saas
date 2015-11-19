@@ -328,7 +328,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	}
 
-	@Override
+	@Override	
 	protected String getJobLabel() {
 		return "HDFSWriterStreamTask";
 	}
