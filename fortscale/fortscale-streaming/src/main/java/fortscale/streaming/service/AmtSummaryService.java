@@ -2,6 +2,7 @@ package fortscale.streaming.service;
 
 import fortscale.services.notifications.AmtActionToSensitiveAccountNotificationGenerator;
 import fortscale.streaming.model.AmtSession;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -60,6 +61,10 @@ public class AmtSummaryService {
 	private String outputSensitiveActionsCount;
 	private String outputFailedActionsCount;
 
+	private final String DATASOURCE_AMTSESSION_VALUE = "amtsession";
+	private static final String DATA_SOURCE_FIELD = "data_source";
+
+
 	private AmtActionToSensitiveAccountNotificationGenerator amtActionToSensitiveAccountNotificationGenerator;
 
 	// Constructor only for testing
@@ -116,6 +121,7 @@ public class AmtSummaryService {
 		outputIpAddress = env.getProperty("impala.sessiondata.amt.table.field.source_ip");
 		outputSensitiveActionsCount = env.getProperty("impala.sessiondata.amt.table.field.sensitive_action_count");
 		outputFailedActionsCount = env.getProperty("impala.sessiondata.amt.table.field.failed_action_count");
+
 	}
 
 	/**
@@ -205,6 +211,7 @@ public class AmtSummaryService {
 		json.put(outputSensitiveActionsCount, session.getActionTypeCount(AmtSession.ActionType.Sensitive));
 		json.put(outputFailedActionsCount, session.getActionTypeCount(AmtSession.ActionType.Failed));
 		json.put(outputIpAddress, session.getDominantIp());
+		json.put(DATA_SOURCE_FIELD,DATASOURCE_AMTSESSION_VALUE);
 
 		return json.toJSONString(JSONStyle.NO_COMPRESS);
 	}
