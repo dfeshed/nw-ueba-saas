@@ -36,25 +36,25 @@ public class DataSourcesSyncTimerTest {
 		// First registration
 		List<String> dataSources1 = new ArrayList<>();
 		dataSources1.add(DEFAULT_DATA_SOURCE);
-		long epochtime1 = 1435752000; // 12:00
+		long epochtime1 = System.currentTimeMillis() / 1000 + 3600;
 		DataSourcesSyncTimerListener listener1 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Second registration
 		List<String> dataSources2 = new ArrayList<>();
 		dataSources2.add(DEFAULT_DATA_SOURCE);
-		long epochtime2 = 1435755600; // 13:00
+		long epochtime2 = epochtime1 + 3600;
 		DataSourcesSyncTimerListener listener2 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Third registration
 		List<String> dataSources3 = new ArrayList<>();
 		dataSources3.add(DEFAULT_DATA_SOURCE);
-		long epochtime3 = 1435759200; // 14:00
+		long epochtime3 = epochtime2 + 3600;
 		DataSourcesSyncTimerListener listener3 = Mockito.mock(DataSourcesSyncTimerListener.class);
 
 		// Register all
-		Assert.assertEquals(0, timer.notifyWhenDataSourcesReachTime(dataSources1, epochtime1, listener1));
-		Assert.assertEquals(1, timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2));
-		Assert.assertEquals(2, timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3));
+		timer.notifyWhenDataSourcesReachTime(dataSources1, epochtime1, listener1);
+		long registration2 = timer.notifyWhenDataSourcesReachTime(dataSources2, epochtime2, listener2);
+		timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3);
 
 		// None of the listeners should be notified
 		long systemTime = System.currentTimeMillis();
@@ -82,8 +82,8 @@ public class DataSourcesSyncTimerTest {
 		Mockito.verify(listener3, Mockito.never()).dataSourcesReachedTime();
 
 		// Change epochtime2
-		epochtime2 = 1435762800; // 15:00
-		timer.updateNotificationRegistration(1, epochtime2);
+		epochtime2 = epochtime3 + 3600;
+		timer.updateNotificationRegistration(registration2, epochtime2);
 
 		// Process event with epochtime later than epochtime3 (but earlier than updated epochtime2)
 		message.put(epochtimeFieldName, epochtime3 + 1800); // add 30 minutes
@@ -120,5 +120,47 @@ public class DataSourcesSyncTimerTest {
 		Mockito.verify(listener1, Mockito.times(1)).dataSourcesReachedTime();
 		Mockito.verify(listener2, Mockito.times(1)).dataSourcesReachedTime();
 		Mockito.verify(listener3, Mockito.times(1)).dataSourcesReachedTime();
+	}
+
+	/**
+	 * Testing the calling order of 1000 listeners that are registred to the same time.
+	 */
+	static long listenerCallingTimes[] = new long[1000];
+	static DataSourcesSyncTimerListener dataSourceLinsteners[] = new DataSourcesSyncTimerListener[1000];
+	class DataSourcesSyncTimerListenerImpl implements DataSourcesSyncTimerListener {
+		int listnereNumber;
+
+		public DataSourcesSyncTimerListenerImpl(int listnereNumber) {
+			this.listnereNumber = listnereNumber;
+		}
+
+		@Override
+		public void dataSourcesReachedTime() throws Exception {
+			listenerCallingTimes[listnereNumber] = System.currentTimeMillis();
+			Thread.currentThread().sleep(1);
+		}
+	}
+
+	@Test
+	public void test_listneres_calling_order() throws Exception{
+		List<String> dataSources = new ArrayList<>();
+		dataSources.add(DEFAULT_DATA_SOURCE);
+		long timeToregister = timer.getLastEventEpochtime()+1;
+		for(int i=0; i<1000; i++) {
+			dataSourceLinsteners[i] = new DataSourcesSyncTimerListenerImpl(i);
+			timer.notifyWhenDataSourcesReachTime(dataSources, timeToregister, dataSourceLinsteners[i]);
+		}
+
+		JSONObject message = new JSONObject();
+		message.put(epochtimeFieldName, timeToregister+1);
+		timer.process(new JsonObjectWrapperEvent(message));
+		long systemTime = (timeToregister + 2) * 1000;
+		timer.timeCheck(systemTime);
+		systemTime += (cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000;
+		timer.timeCheck(systemTime);
+
+		for(int i=1; i<1000; i++) {
+			Assert.assertTrue(listenerCallingTimes[i-i] < listenerCallingTimes[i]);
+		}
 	}
 }

@@ -64,6 +64,8 @@ public class CleanJob extends FortscaleJob {
 	private String dataSourcesDelimiter;
 	@Value("${data.sources.field.delimiter}")
 	private String dataSourcesFieldDelimiter;
+	@Value("${data.sources.optional.delimiter}")
+	private String optionalDelimiter;
 	@Value("${dates.format}")
 	private String datesFormat;
 	@Value("${kafka.service.name}")
@@ -149,31 +151,35 @@ public class CleanJob extends FortscaleJob {
 		int successfulSteps = 0, totalSteps = 0;
 		Map<String, String> dataSources;
 		List<MiniStep> miniSteps = cleanupStep.getTimeBasedSteps();
-		totalSteps += miniSteps.size();
-		//running all time based mini steps
-		for (int i = 0; i < miniSteps.size(); i++) {
-			MiniStep miniStep = miniSteps.get(i);
-			dataSources = createDataSourcesMap(miniStep.getDataSources());
-			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
-			if (!success) {
-				logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
-			} else {
-				logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
-				successfulSteps++;
+		if (miniSteps != null) {
+			totalSteps += miniSteps.size();
+			//running all time based mini steps
+			for (int i = 0; i < miniSteps.size(); i++) {
+				MiniStep miniStep = miniSteps.get(i);
+				dataSources = createDataSourcesMap(miniStep.getDataSources());
+				success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, startTime, endTime);
+				if (!success) {
+					logger.error("Time based step {}: {} - failed", i + 1, miniStep.toString());
+				} else {
+					logger.info("Time based step {}: {} - succeeded", i + 1, miniStep.toString());
+					successfulSteps++;
+				}
 			}
 		}
 		miniSteps = cleanupStep.getOtherSteps();
-		totalSteps += miniSteps.size();
-		//running all other mini steps
-		for (int i = 0; i < miniSteps.size(); i++) {
-			MiniStep miniStep = miniSteps.get(i);
-			dataSources = createDataSourcesMap(miniStep.getDataSources());
-			success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
-			if (!success) {
-				logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
-			} else {
-				logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
-				successfulSteps++;
+		if (miniSteps != null) {
+			totalSteps += miniSteps.size();
+			//running all other mini steps
+			for (int i = 0; i < miniSteps.size(); i++) {
+				MiniStep miniStep = miniSteps.get(i);
+				dataSources = createDataSourcesMap(miniStep.getDataSources());
+				success = normalClean(miniStep.getStrategy(), miniStep.getTechnology(), dataSources, null, null);
+				if (!success) {
+					logger.error("Normal step {}: {} - failed", i + 1, miniStep.toString());
+				} else {
+					logger.info("Normal step {}: {} - succeeded", i + 1, miniStep.toString());
+					successfulSteps++;
+				}
 			}
 		}
 		logger.info("Finished cleaning {} out of {} mini steps", successfulSteps, totalSteps);
@@ -302,26 +308,25 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean handleDeletion(Map<String, String> toDelete, boolean doValidate, CleanupDeletionUtil customUtil) {
-		Set<String> entities;
-		//if deleting specific entities
-		if (toDelete != null) {
-			Collection<String> temp = toDelete.keySet();
-			entities = new HashSet(temp);
-			for (Map.Entry<String, String> entry : toDelete.entrySet()) {
-				String filter = entry.getValue();
-				String name = entry.getKey();
-				if (!filter.isEmpty()) {
-					entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
-					entities.remove(name);
-				}
-			}
-			logger.info("deleting {} entities", entities.size());
-			return customUtil.deleteEntities(entities, doValidate);
-		} else {
+		if (toDelete == null || toDelete.keySet().contains("ALL")) {
 			//deleting all
 			logger.info("deleting all entities");
 			return customUtil.deleteAllEntities(doValidate);
 		}
+		Set<String> entities;
+		//deleting specific entities
+		Collection<String> temp = toDelete.keySet();
+		entities = new HashSet(temp);
+		for (Map.Entry<String, String> entry : toDelete.entrySet()) {
+			String filter = entry.getValue();
+			String name = entry.getKey();
+			if (!filter.isEmpty()) {
+				entities.addAll(customUtil.getEntitiesMatchingPredicate(name, filter));
+				entities.remove(name);
+			}
+		}
+		logger.info("deleting {} entities", entities.size());
+		return customUtil.deleteEntities(entities, doValidate);
 	}
 
 	/***
@@ -336,15 +341,15 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleHDFSDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate) {
 		boolean success;
-		if (startTime == null && endTime == null && toDelete == null) {
+		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = hdfsUtils.deleteAllEntities(doValidate);
-		} else if (startTime == null && endTime == null) {
+		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils);
+			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils, null);
 		}
 		return success;
 	}
@@ -361,15 +366,15 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean handleMongoDeletion(Map<String, String> toDelete, Date startDate, Date endDate, boolean doValidate){
 		boolean success;
-		if (startTime == null && endTime == null && toDelete == null) {
+		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
 			success = mongoUtils.deleteAllEntities(doValidate);
-		} else if (startTime == null && endTime == null) {
+		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
 			success = handleDeletion(toDelete, doValidate, mongoUtils);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils);
+			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils, mongoUtils);
 		}
 		return success;
 	}
@@ -385,12 +390,24 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean deleteEntityBetween(Map<String, String> sources, Date startDate, Date endDate,
-										CleanupUtil cleanupUtil) {
+										CleanupUtil cleanupUtil, CleanupDeletionUtil customUtil) {
 		int deleted = 0;
 		logger.debug("trying to delete {} entities", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
-			if (cleanupUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+			if (dataSource.getKey().contains(optionalDelimiter)) {
+				if (customUtil == null) {
+					throw new UnsupportedOperationException("Not supported for this type of technology");
+				}
+				Collection<String> collections = customUtil.getEntitiesMatchingPredicate(dataSource.getKey().
+								split(optionalDelimiter)[0], dataSource.getKey().split(optionalDelimiter)[1]);
+				for (String collection: collections) {
+					cleanupUtil.deleteEntityBetween(collection, dataSource.getValue(), startDate, endDate);
+				}
 				deleted++;
+			} else {
+				if (cleanupUtil.deleteEntityBetween(dataSource.getKey(), dataSource.getValue(), startDate, endDate)) {
+					deleted++;
+				}
 			}
 		}
 		if (deleted != sources.size()) {

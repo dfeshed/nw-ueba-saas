@@ -37,10 +37,19 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
+	private static final int DAYS_BACK = 1;
 	private final String SORT_FIELD = "ts";
 	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
+	private final String AMT_CHECKING_ON_YID = "user_checking_up_on_yids";
+	private final String AMT_LOGIN_AS_MAIL = "amt_login_as_mail";
+	private final String AMT_RESET_PASSWORD = "amt_reset_pwd";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
+	private static final String DATA_SOURCE_PARAMETER = "dataSource";
+	private static final String LAST_STATE_PARAMETER = "lastState";
+	private final String MIN_DATE = "minwhen";
+	private final String MAX_DATE = "maxwhen";
+	private final String DATE_TIME_UNIX = "date_time_unix";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -56,6 +65,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
+	private String dataSource;
+	private String lastState;
 
 	private Long startTime;
 	private Long endTime;
@@ -96,6 +107,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
+		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
+		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
@@ -163,6 +176,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationEntityField, getEntity(notification.getCause().toLowerCase()));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
+
+				//Add the last state and data source fields to the message
+				evidence.put("data_source", dataSource);
+				evidence.put("last_state", lastState);
+
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.info("Writing to topic evidence - {}", messageToWrite);
 				streamWriter.send(notification.getIndex(), messageToWrite);
@@ -184,7 +202,15 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getStartTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case VPN_OVERLAPPING: {
+			case AMT_RESET_PASSWORD:
+			case AMT_LOGIN_AS_MAIL: {
+				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
+						Long.parseLong(attributes.get(DATE_TIME_UNIX)) - (60 * 60 * 24 * DAYS_BACK) :
+						notification.getTs();
+			} case AMT_CHECKING_ON_YID: {
+				return attributes != null && attributes.containsKey(MIN_DATE) ?
+						Long.parseLong(attributes.get(MIN_DATE)) : notification.getTs();
+			} case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(START_DATE) ?
 				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
@@ -197,7 +223,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getEndTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case VPN_OVERLAPPING: {
+			case AMT_RESET_PASSWORD:
+			case AMT_LOGIN_AS_MAIL: {
+				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
+						Long.parseLong(attributes.get(DATE_TIME_UNIX)) : notification.getTs();
+			} case AMT_CHECKING_ON_YID: {
+				return attributes != null && attributes.containsKey(MAX_DATE) ?
+						Long.parseLong(attributes.get(MAX_DATE)) : notification.getTs();
+			} case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(END_DATE) ?
 					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
@@ -211,8 +244,13 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		Map<String, String> attributes = notification.getAttributes();
 		//TODO - get attributes as a whole and not just raw_events object
 		if (attributes != null && attributes.containsKey("raw_events")) {
-			return "[" + attributes.get("raw_events") + "]";
+			switch (notification.getCause()){
+			case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: 	return  attributes.get("raw_events");
+			case VPN_OVERLAPPING: return "[" + attributes.get("raw_events") + "]";
+			default: return "";
+			}
 		}
+
 		return "";
 	}
 
@@ -234,7 +272,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			return result;
 		}
 		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
-		if (cause.contains("amt")) {
+		if (cause.contains("amt") || cause.equalsIgnoreCase(AMT_CHECKING_ON_YID)) {
 			result.add("amt");
 		} else if (cause.contains("vpn")) {
 			result.add("vpn");

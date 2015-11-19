@@ -54,8 +54,13 @@
 
 
 	</bean>
+	<bean id="testStreamingTaskDataSourceConfigKey" class="fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey">
+		<constructor-arg name="dataSource" value="datasource1"/>
+		<constructor-arg name="lastState" value="laststate1"/>
+	</bean>
+
 	<bean id="vpnEnrichConfig" class="fortscale.streaming.service.vpn.VpnEnrichConfig">
-		<constructor-arg name="inputTopic" value="input-1"/>
+		<constructor-arg name="streamingTaskDataSourceConfigKey" ref="testStreamingTaskDataSourceConfigKey"/>
 		<constructor-arg name="outputTopic" value="output-1"/>
 		<constructor-arg name="partitionField" value="partition-1"/>
 		<constructor-arg name="vpnGeolocationConfig" ref="vpnGeolocationConfig"/>

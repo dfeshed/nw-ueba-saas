@@ -104,7 +104,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 			}			
 			
-			monitor.addDataReceived(getMonitorId(), new JobDataReceived(file.getName(), lineCounter, "Events"));
+			monitor.addDataReceived(getMonitorId(), new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
 			monitor.error(getMonitorId(), getStepName(), e.toString());

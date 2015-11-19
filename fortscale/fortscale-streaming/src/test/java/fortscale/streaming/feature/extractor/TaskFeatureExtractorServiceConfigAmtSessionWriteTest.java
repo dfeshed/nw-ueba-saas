@@ -9,7 +9,7 @@ public class TaskFeatureExtractorServiceConfigAmtSessionWriteTest extends TaskFe
 	private static final String AMT_HOST_FIELD_NAME = "amt_host";
 	private static final String SOURCE_IP_FIELD_NAME = "source_ip";
 	public static final String HDFS_WRITER_TASK_PROPERTIES_FILE = "config/hdfs-events-writer-task.properties";
-	public static final String PROPERTY_NAME = "fortscale.amt_scored_session.feature.extractor.";
+	public static final String PROPERTY_NAME = "fortscale.events.entry.amt_scored_session_HDFSWriterStreamTask.feature.extractor.";
 
 	@Test
 	public void testSanity() throws Exception{

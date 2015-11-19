@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.List;
@@ -10,8 +12,15 @@ import java.util.List;
  */
 
 @JsonTypeName("notificationSupportingInformation")
-public abstract class NotificationSupportingInformation extends EntitySupportingInformation {
+@JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT,property="type")
+@JsonSubTypes({@JsonSubTypes.Type(value = VpnGeoHoppingSupportingInformation.class,name="vpnGeoHoppingSupportingInformation"),
+        @JsonSubTypes.Type(value = VpnOverlappingSupportingInformation.class,name="vpnOverlappingSupportingInformation")})
+public class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    public abstract void setData(Evidence evidence, String json);
+    public NotificationSupportingInformation(){}
+
+    public void setData(Evidence evidence, String json, boolean isBDPRunning){
+        throw new AbstractMethodError("Notification Supporting information is abstract!!");
+    }
 
 }

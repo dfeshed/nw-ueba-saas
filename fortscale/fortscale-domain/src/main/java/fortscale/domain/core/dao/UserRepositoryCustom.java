@@ -9,6 +9,7 @@ import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.*;
 
@@ -22,6 +23,7 @@ public interface UserRepositoryCustom {
 	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
+	public int countAllUsers(List<Criteria> criteriaList);
 	public User findByLogUsername(String logname, String username);
 	public void updateFollowed(User user, boolean followed);
 	public List<User> findByDNs(Collection<String> dns);
@@ -32,6 +34,7 @@ public interface UserRepositoryCustom {
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
 	public List<User> findAllUsers(Pageable pageable);
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable);
 	public Map<String, Long> groupByTags();
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);

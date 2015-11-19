@@ -173,7 +173,8 @@ public class VpnJuniperTest {
         			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - Agent login succeeded for baxishk/Company Users from 62.219.118.133.",        				
         			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - VPN Tunneling: Session started for user with IPv4 address 10.122.65.1, hostname SWAN"
         		),
-        		$((String)null, "2011-06-10 09:57:18,1307699838,baxishk,62.219.118.133,10.122.65.1,SUCCESS,,,,,,,SWAN,,,,,,,")
+        		$((String)null, "2011-06-10 09:57:18,1307699838,baxishk,62.219.118.133,10.122.65.1,SUCCESS,,,,,,,SWAN,,,,,,,"
+				)
             ),
             $ (
             	"Regular (Poza) Successful VPN Authentication",

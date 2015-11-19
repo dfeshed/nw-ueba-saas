@@ -29,6 +29,31 @@ public class ImpalaUtils extends CleanupDeletionUtil {
 
     /***
      *
+     * This method refreshed all impala tables
+     *
+     * @return
+     */
+    public boolean refreshAllTables() {
+        int numberOfTablesRefreshed = 0;
+        Collection<String> tables = impalaClient.getAllTables();
+        for (String table: tables) {
+            try {
+                impalaClient.refreshTable(table);
+                numberOfTablesRefreshed++;
+            } catch (Exception ex) {
+                logger.error("failed to refresh table {} - {}", table, ex);
+            }
+        }
+        if (numberOfTablesRefreshed == tables.size()) {
+            logger.info("refreshed all {} tables", numberOfTablesRefreshed);
+            return true;
+        }
+        logger.error("refreshed only {} out of {} tables", numberOfTablesRefreshed, tables.size());
+        return false;
+    }
+
+    /***
+     *
      * This method drops a given list of tables from Impala
      *
      * @param tableNames  list of tables to drop

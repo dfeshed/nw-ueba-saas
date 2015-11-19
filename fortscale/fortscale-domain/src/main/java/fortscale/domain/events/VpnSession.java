@@ -1,5 +1,6 @@
 package fortscale.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -36,15 +37,15 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
-	
+
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
-	
+
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
-	
+
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
 	private DateTime modifiedAt;
 	
@@ -99,6 +100,7 @@ public class VpnSession extends AbstractDocument{
 		this.sessionId = sessionId;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -115,6 +117,7 @@ public class VpnSession extends AbstractDocument{
 		this.createdAtEpoch = createdAtEpoch;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getClosedAt() {
 		return closedAt;
 	}
@@ -131,6 +134,7 @@ public class VpnSession extends AbstractDocument{
 		this.closedAtEpoch = closedAtEpoch;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getModifiedAt() {
 		return modifiedAt;
 	}

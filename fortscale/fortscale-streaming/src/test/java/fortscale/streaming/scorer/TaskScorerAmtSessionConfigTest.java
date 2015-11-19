@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import fortscale.ml.model.prevalance.PrevalanceModel;
 
-public class TaskScorerAmtConfigTest extends TaskScorerConfigTest{
+public class TaskScorerAmtSessionConfigTest extends TaskScorerConfigTest{
 	
 	private static final String AMT_SESSION_USER_MODEL_NAME = "amtsessionsuser";
 	private static final String AMT_SESSION_USER_CONTEXT = "testuser";
@@ -40,12 +40,12 @@ public class TaskScorerAmtConfigTest extends TaskScorerConfigTest{
 	
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/amtsessions-prevalance-stats.properties");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "amtsession");
 	}
 	
 	@Test
 	public void testAmtHostScore() throws Exception{
-		buildScorersFromTaskConfig("config/amtsessions-prevalance-stats.properties");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "amtsession");
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_USER_FIELD_NAME, AMT_SESSION_USER_CONTEXT);
 		addToEventMessage(eventMessage, HOST_FIELD_NAME, AMT_SESSION_HOST_CONTEXT);

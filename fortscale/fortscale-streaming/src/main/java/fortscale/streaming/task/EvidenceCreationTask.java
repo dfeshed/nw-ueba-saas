@@ -261,6 +261,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			// Create evidence from event
 			Evidence evidence = evidencesService.createTransientEvidence(dataSourceConfiguration.entityType, dataSourceConfiguration.entityNameField, entityName, dataSourceConfiguration.evidenceType, new Date(startTimestamp), new Date(endTimestamp), dataEntitiesIds, score, anomalyValue, anomalyTypeField,totalAmountOfEvents, evidenceTimeframe);
 
+			//create supporting information, if needed
 			if (evidence != null && dataSourceConfiguration.entitySupportingInformationPopulatorClass != null) {
 				String entitySupportingInformationPopulatorClass = dataSourceConfiguration.
 						entitySupportingInformationPopulatorClass;
@@ -270,7 +271,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					EntitySupportingInformationPopulator entitySupportingInformationPopulator =
 							(EntitySupportingInformationPopulator)SpringService.getInstance().resolve(Class.
 									forName(entitySupportingInformationPopulatorClass));
-					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.populate(evidence, supportingInformation);
+					EntitySupportingInformation entitySupportingInformation = entitySupportingInformationPopulator.
+							populate(evidence, supportingInformation, bdpService.isBDPRunning());
 					if (entitySupportingInformation != null) {
 						evidence.setSupportingInformation(entitySupportingInformation);
 					}

@@ -1,5 +1,8 @@
 package fortscale.streaming.service.tagging.computer;
 
+import fortscale.streaming.service.StreamingTaskConfig;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+
 import java.util.List;
 
 /**
@@ -7,38 +10,21 @@ import java.util.List;
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
  * to determine what action to take for each type of event.
  */
-public class ComputerTaggingConfig {
+public class ComputerTaggingConfig implements StreamingTaskConfig {
 
-	private String eventType;
-	private String inputTopic;
+	private String dataSource;
+	private String lastState;
 	private String outputTopic;
 	private String partitionField;
 	private List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList;
 
-	public ComputerTaggingConfig(String eventType, String inputTopic, String outputTopic,
+	public ComputerTaggingConfig(String dataSource , String lastState, String outputTopic,
 			String partitionField, List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
-		setEventType(eventType);
-		setInputTopic(inputTopic);
+		setDataSource(dataSource);
+		setLastState(lastState);
 		setOutputTopic(outputTopic);
 		setPartitionField(partitionField);
 		setComputerTaggingFieldsConfigList(computerTaggingFieldsConfigList);
-	}
-
-
-	public String getEventType() {
-		return eventType;
-	}
-
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
-
-	public String getInputTopic() {
-		return inputTopic;
-	}
-
-	public void setInputTopic(String inputTopic) {
-		this.inputTopic = inputTopic;
 	}
 
 	public String getOutputTopic() {
@@ -63,5 +49,21 @@ public class ComputerTaggingConfig {
 
 	public void setComputerTaggingFieldsConfigList(List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigList) {
 		this.computerTaggingFieldsConfigList = computerTaggingFieldsConfigList;
+	}
+
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public String getLastState() {
+		return lastState;
+	}
+
+	public void setLastState(String lastState) {
+		this.lastState = lastState;
 	}
 }

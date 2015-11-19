@@ -1,27 +1,35 @@
 package fortscale.monitor.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * indicates the amount of data received by the job. Could hold values of 
  * various types.
  */
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+//NON-NULL tells Jackson to ignore fields which their value is null.
 public class JobDataReceived {
 
+
 	private String dataType;
-	private int value;
+	private Integer value;
 	private String valueType;
+
 	
 	public JobDataReceived() {}
-	
-	public JobDataReceived(String dataType, int value, String valueType) {
+
+
+
+	public JobDataReceived(String dataType, Integer  value, String valueType) {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
-		
 		normalizeValue();
 	}
 	
 	private void normalizeValue() {
-		if (valueType!=null && value>1024) {
+		if (valueType!=null && value !=null && value>1024) {
 			if (valueType.equalsIgnoreCase("KB")) {
 				valueType = "MB";
 				value = value / 1024;
@@ -31,6 +39,7 @@ public class JobDataReceived {
 			}
 		}
 	}
+
 	
 	public String getDataType() {
 		return dataType;
@@ -38,10 +47,10 @@ public class JobDataReceived {
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
-	public void setValue(int value) {
+	public void setValue(Integer value) {
 		this.value = value;
 		
 		normalizeValue();

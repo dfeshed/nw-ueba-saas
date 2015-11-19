@@ -77,8 +77,9 @@
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
-		<jackson.version>2.4.0</jackson.version>
-		<jackson.dataformat.version>2.4.0</jackson.dataformat.version>
+		<jackson.version>2.2.3</jackson.version>
+		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
+        <jackson.datatype.version>2.2.3</jackson.datatype.version>
 		<test.exclude>nothingToExlude</test.exclude>
 		<test.include>**/*Test.java</test.include>
 		<test.groups></test.groups>
@@ -99,6 +100,8 @@
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
+		<servlet-api.version>3.0.1</servlet-api.version>
+		<java-lang-config.version>1.7</java-lang-config.version>
 		<java-lang-config.version>1.8</java-lang-config.version>
 		<scala.version>2.10.2</scala.version>
 		<kafka.version>0.8.1.1</kafka.version>
@@ -112,6 +115,7 @@
 		<net.minidev.asm.version>1.0.2</net.minidev.asm.version>
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
+        <cxf.version>2.7.6</cxf.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
@@ -137,6 +141,11 @@
 			<version>${java-lang-config.version}</version>
 			<scope>system</scope>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
 		</dependency>
 
 		<!-- mockito unit test mocking framework -->
@@ -182,12 +191,22 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-csv</artifactId>
 			<version>${jackson.dataformat.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${jackson.datatype.version}</version>
+        </dependency>
 
-		<!-- Spring dependencies -->
+        <!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
@@ -364,6 +383,13 @@
 			<artifactId>logback-access</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
+
+        <!--  for JSON provider -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

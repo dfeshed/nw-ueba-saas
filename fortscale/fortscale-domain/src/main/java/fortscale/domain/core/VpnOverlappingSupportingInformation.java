@@ -15,13 +15,15 @@ import java.util.List;
 @JsonTypeName("vpnOverlappingSupportingInformation")
 public class VpnOverlappingSupportingInformation extends NotificationSupportingInformation {
 
-    private static Logger logger = LoggerFactory.getLogger(NotificationSupportingInformation.class);
+    private static Logger logger = LoggerFactory.getLogger(VpnOverlappingSupportingInformation.class);
 
     private List<VpnSessionOverlap> rawEvents;
 
     public List<VpnSessionOverlap> getRawEvents() {
         return rawEvents;
     }
+
+    public VpnOverlappingSupportingInformation(){}
 
     public void setRawEvents(String json) {
         ObjectMapper mapper = new ObjectMapper();
@@ -34,13 +36,17 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
     }
 
     @Override
-    public void setData(Evidence evidence, String json) {
+    public void setData(Evidence evidence, String json, boolean isBDPRunning) {
         setRawEvents(json);
         if (rawEvents != null) {
             evidence.setNumOfEvents(rawEvents.size());
             evidence.setAnomalyValue(Integer.toString(rawEvents.size()));
 
         }
+    }
+
+    public void setRawEvents(List<VpnSessionOverlap> rawEvents) {
+        this.rawEvents = rawEvents;
     }
 
 }

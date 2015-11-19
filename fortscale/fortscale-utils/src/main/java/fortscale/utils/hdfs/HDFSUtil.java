@@ -4,15 +4,18 @@ import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.impala.ImpalaUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -40,6 +43,9 @@ public class HDFSUtil implements CleanupUtil {
     @Value("${hdfs.user.processeddata.path}")
     private String processedDataPath;
 
+    @Autowired
+    private ImpalaUtils impalaUtils;
+
     /***
      *
      * This method deletes all partitions from HDFS
@@ -49,10 +55,21 @@ public class HDFSUtil implements CleanupUtil {
      */
     public boolean deleteAllEntities(boolean doValidate) {
         logger.info("attempting to delete all HDFS folders");
-        boolean dataSuccess = deletePath(dataPath, doValidate);
-        boolean rawDataSuccess = deletePath(rawDataPath, doValidate);
-        boolean enrichedDataSuccess = deletePath(enrichedDataPath, doValidate);
-        boolean processedDataSuccess = deletePath(processedDataPath, doValidate);
+        FileSystem hadoopFS;
+        try {
+            hadoopFS = getHadoopFileSystem();
+        } catch (IOException ex) {
+            logger.error("failed to get hadoop fs - {}", ex);
+            return false;
+        }
+        boolean dataSuccess = deletePath(hadoopFS, dataPath, doValidate);
+        boolean rawDataSuccess = deletePath(hadoopFS, rawDataPath, doValidate);
+        boolean enrichedDataSuccess = deletePath(hadoopFS, enrichedDataPath, doValidate);
+        boolean processedDataSuccess = deletePath(hadoopFS, processedDataPath, doValidate);
+        closeHadoopFS(hadoopFS);
+        if (doValidate) {
+            impalaUtils.refreshAllTables();
+        }
         return dataSuccess && rawDataSuccess && enrichedDataSuccess && processedDataSuccess;
     }
 
@@ -66,11 +83,22 @@ public class HDFSUtil implements CleanupUtil {
      */
     public boolean deleteEntities(Collection<String> hdfsPaths, boolean doValidate) {
         int numberOfDeletedEntities = 0;
+        FileSystem hadoopFS;
+        try {
+            hadoopFS = getHadoopFileSystem();
+        } catch (IOException ex) {
+            logger.error("failed to get hadoop fs - {}", ex);
+            return false;
+        }
         logger.debug("attempting to delete {} files/folders from hdfs", hdfsPaths.size());
         for (String hdfsPath: hdfsPaths) {
-            if (deletePath(hdfsPath, doValidate)) {
+            if (deletePath(hadoopFS, hdfsPath, doValidate)) {
                 numberOfDeletedEntities++;
             }
+        }
+        closeHadoopFS(hadoopFS);
+        if (doValidate) {
+            impalaUtils.refreshAllTables();
         }
         if (numberOfDeletedEntities == hdfsPaths.size()) {
             logger.info("deleted all {} files/folders", hdfsPaths.size());
@@ -85,22 +113,22 @@ public class HDFSUtil implements CleanupUtil {
      *
      * This method deletes the path provided from the file system
      *
+     * @param hadoopFS    hadoop file system object
      * @param hdfsPath    a path to delete
      * @param doValidate  flag to determine should we perform validations
      * @return
      */
-    private boolean deletePath(String hdfsPath, boolean doValidate) {
+    private boolean deletePath(FileSystem hadoopFS, String hdfsPath, boolean doValidate) {
         boolean success = false;
         if (!hdfsPath.contains(basePath)) {
             hdfsPath = basePath + "/" + hdfsPath;
         }
+        hdfsPath = hdfsPath.trim();
         logger.debug("attempting to remove {}", hdfsPath);
         try {
-            Process process = Runtime.getRuntime().exec("hdfs dfs -rm -r -skipTrash " + hdfsPath);
-            if (process.waitFor() != 0) {
-                logger.error("failed to remove {}", hdfsPath);
-            } else if (doValidate) {
-                if (verifyPathNotFound(hdfsPath)) {
+            hadoopFS.delete(new Path(hdfsPath), true);
+            if (doValidate) {
+                if (!hadoopFS.exists(new Path(hdfsPath))) {
                     success = true;
                     logger.info("{} deleted successfully", hdfsPath);
                 } else {
@@ -117,40 +145,6 @@ public class HDFSUtil implements CleanupUtil {
 
     /***
      *
-     * This method verifies that a path doesn't exists on the hdfs file system
-     *
-     * @param hdfsPath  path to the request hdfs resource
-     * @return
-     */
-    private boolean verifyPathNotFound(String hdfsPath) {
-        boolean verified = false;
-        try {
-            Process process = Runtime.getRuntime().exec("hdfs dfs -ls " + hdfsPath);
-            InputStream stderr = process.getErrorStream();
-            if (process.waitFor() != 0) {
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));
-                String line;
-                StringBuilder sb = new StringBuilder();
-                while ((line = errReader.readLine ()) != null) {
-                    sb.append(line + "\n");
-                }
-                if (sb.toString().contains("No such file or directory")) {
-                    logger.debug("{} not found", hdfsPath);
-                    verified = true;
-                } else {
-                    logger.warn("unable to verify if {} found", hdfsPath);
-                }
-            } else {
-                logger.debug("{} found", hdfsPath);
-            }
-        } catch (Exception ex) {
-            logger.warn("unable to verify if {} not found - {}", hdfsPath, ex);
-        }
-        return verified;
-    }
-
-    /***
-     *
      * This method receives a folder containing backup csv files and restores them to HDFS
      *
      * @param backupPath
@@ -163,16 +157,34 @@ public class HDFSUtil implements CleanupUtil {
             logger.error("failed to find backup folder");
             return false;
         }
+        FileSystem hadoopFS;
+        try {
+            hadoopFS = getHadoopFileSystem();
+        } catch (IOException ex) {
+            logger.error("failed to get hadoop fs - {}", ex);
+            return false;
+        }
         Iterator<File> iterator = FileUtils.iterateFiles(directory, new String[] { "csv" }, true);
         while (iterator.hasNext()) {
             File file = iterator.next();
             String restorePath = file.getAbsolutePath();
             String hdfsPath = restorePath.replace(backupPath, "");
-            if (!restoreFile(hdfsPath, restorePath)) {
-                logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+            try {
+                if (!restoreFile(hadoopFS, hdfsPath, restorePath)) {
+                    logger.error("failed to restore file {} to {}", restorePath, hdfsPath);
+                    closeHadoopFS(hadoopFS);
+                    impalaUtils.refreshAllTables();
+                    return false;
+                }
+            } catch (IOException ex) {
+                logger.error("failed to restore file {} to {} - {}", restorePath, hdfsPath, ex);
+                closeHadoopFS(hadoopFS);
+                impalaUtils.refreshAllTables();
                 return false;
             }
         }
+        closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
         return true;
     }
 
@@ -180,48 +192,51 @@ public class HDFSUtil implements CleanupUtil {
      *
      * This method attempts to restore a file from the local file system to HDFS
      *
+     * @param hadoopFS     hadoop file system object
      * @param hdfsPath     the path to the file to be deletes on HDFS
      * @param restorePath  the path to the local backup file to be uploaded instead
      * @return
      */
-    private boolean restoreFile(String hdfsPath, String restorePath) {
+    private boolean restoreFile(FileSystem hadoopFS, String hdfsPath, String restorePath) throws IOException {
         boolean success = false;
         final String TEMPSUFFIX = "_clean-job-temp-suffix";
         if (!hdfsPath.contains(basePath)) {
             hdfsPath = basePath + "/" + hdfsPath;
         }
+        hdfsPath = hdfsPath.trim();
+        restorePath = restorePath.trim();
         logger.debug("verify that resources exist");
-        if (verifyPathNotFound(hdfsPath) || !new File(restorePath).exists()) {
+        if (!hadoopFS.exists(new Path(hdfsPath)) || !new File(restorePath).exists()) {
             logger.error("no origin or backup resource found");
             return success;
         }
         String tempResourceName = hdfsPath + TEMPSUFFIX;
+        tempResourceName = tempResourceName.trim();
         logger.debug("verify that destination resource temp name doesn't exist");
         //sanity check - shouldn't be found
-        if (!verifyPathNotFound(tempResourceName)) {
+        if (hadoopFS.exists(new Path(tempResourceName))) {
             logger.info("temp resource {} already exists, deleting...", tempResourceName);
-            if (!deletePath(tempResourceName, true)) {
+            if (!deletePath(hadoopFS, tempResourceName, true)) {
                 logger.error("failed to delete temp resource, manually delete it before continuing");
                 return success;
             }
         }
         try {
             logger.debug("renaming origin collection {} to {}", hdfsPath, tempResourceName);
-            Process process = Runtime.getRuntime().exec("hdfs dfs -mv " + hdfsPath + " " + tempResourceName);
-            if (process.waitFor() != 0 || !verifyPathNotFound(hdfsPath) || verifyPathNotFound(tempResourceName)) {
+            if (!hadoopFS.rename(new Path(hdfsPath), new Path(tempResourceName))) {
                 logger.error("renaming failed, abort");
                 return success;
             }
             logger.debug("uploading backup file {} to {}", restorePath, hdfsPath);
-            process = Runtime.getRuntime().exec("hdfs dfs -put " + restorePath + " " + hdfsPath);
-            if (process.waitFor() != 0 || verifyPathNotFound(hdfsPath)) {
+            hadoopFS.copyFromLocalFile(false, true, new Path(restorePath), new Path(hdfsPath));
+            if (!hadoopFS.exists(new Path(hdfsPath))) {
                 logger.error("failed to upload {}", hdfsPath);
                 return success;
             }
             logger.info("snapshot restored");
             success = true;
             //remove old file
-            if (!deletePath(tempResourceName, true)) {
+            if (!deletePath(hadoopFS, tempResourceName, true)) {
                 logger.warn("deleting temporary file {} failed, delete manually", tempResourceName);
             }
             return success;
@@ -251,7 +266,31 @@ public class HDFSUtil implements CleanupUtil {
         if (startDate != null && endDate != null) {
             hdfsPath = buildFileList(hdfsPath, partitionType, startDate, endDate);
         }
-        return deletePath(hdfsPath, true);
+        FileSystem hadoopFS;
+        try {
+            hadoopFS = getHadoopFileSystem();
+        } catch (Exception ex) {
+            logger.error("failed to delete path {} - {}", hdfsPath, ex);
+            return false;
+        }
+        boolean success = deletePath(hadoopFS, hdfsPath, true);
+        closeHadoopFS(hadoopFS);
+        impalaUtils.refreshAllTables();
+        return success;
+    }
+
+    /***
+     *
+     * This method shuts down the hadoop fs descriptor
+     *
+     * @param hadoopFS  hadoop file system object
+     */
+    private void closeHadoopFS(FileSystem hadoopFS) {
+        if (hadoopFS != null) {
+            try {
+                hadoopFS.close();
+            } catch (Exception ex) {}
+        }
     }
 
     /***
@@ -284,6 +323,22 @@ public class HDFSUtil implements CleanupUtil {
             }
         }
         return sb.toString();
+    }
+
+    /***
+     *
+     * This method initializes the Hadoop FS
+     *
+     * @return
+     * @throws IOException
+     */
+    private FileSystem getHadoopFileSystem() throws IOException {
+        Configuration hadoopFSConf = new Configuration();
+        hadoopFSConf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
+        hadoopFSConf.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
+        hadoopFSConf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        hadoopFSConf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+        return FileSystem.get(hadoopFSConf);
     }
 
 }

@@ -68,7 +68,6 @@ public class KafkaEventsWriter implements Closeable {
 		return  producer;
 	}
 
-	
 	public void send(String key, String data) {
 		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
 		getProducer().send(message);

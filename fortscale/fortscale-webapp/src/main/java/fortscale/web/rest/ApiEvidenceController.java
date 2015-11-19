@@ -1,21 +1,24 @@
 package fortscale.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.User;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.exceptions.InvalidValueException;
-import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
@@ -23,14 +26,13 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
-import fortscale.web.spring.SpringPropertiesUtil;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import javax.annotation.PostConstruct;
+
 import java.util.*;
 
 /**
@@ -117,29 +119,29 @@ public class ApiEvidenceController extends DataQueryController {
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (Evidence evidence : evidences){
 
-
-			//the function "getListOfEvents" accesses Impala using query builder and retrieves events that are related to specific indicator
-			//each event is built as a map object with all attributes as key-value
-			DataBean<List<Map<String, Object>>> listOfEventsInDataBean = getListOfEvents(false, true, page+1, size, "event_time_utc", SortDirection.DESC.name(), evidence);
-			//retrieve the data from the data bean so we can manipulate it:
-			List<Map<String, Object>> data = listOfEventsInDataBean.getData();
 			//iterate over each event map object
-			for (Map<String, Object> eventMapObject : data){
+			for (VpnSession vpnSession :((VpnGeoHoppingSupportingInformation) evidence.getSupportingInformation()).getRawEvents()){
+				Map<String,Object> eventMapObject = new HashMap<>();
 
-				String eventNormalizedUsername = (String)eventMapObject.get("normalized_username");
 				//needs to retrieve user id from the user name, so use the userService for that.
+				String eventNormalizedUsername = vpnSession.getNormalizedUserName();
 				User user = evidencesService.getUserIdByUserName(eventNormalizedUsername);
 				String userId="";
 				if (user != null) {
 					userId =user.getId();
 					eventMapObject.put("userid",userId);
 				}
+				eventMapObject.put("username",vpnSession.getUsername());
+				eventMapObject.put("normalized_username",vpnSession.getNormalizedUserName());
+				eventMapObject.put("city",vpnSession.getCity());
+				eventMapObject.put("country",vpnSession.getCountry());
+				eventMapObject.put("source_ip",vpnSession.getSourceIp());
+				eventMapObject.put("event_time_utc",vpnSession.getCreatedAtEpoch());
 
 				//create a unique is by concatanating userId + eventTime + sourceIp
 				eventMapObject.put("id",userId + eventMapObject.get("event_time") + eventMapObject.get("source_ip"));
-				eventMapObject.put("evidenceId", evidence.getId());
+				result.add(eventMapObject);
 			}
-			result.addAll(data);
 		}
 		DataBean<List<Map<String, Object>>> dataBean = new DataBean<>();
 		dataBean.setData(result);
@@ -207,7 +209,14 @@ public class ApiEvidenceController extends DataQueryController {
 			termsMap.add(term);
 			// Add condition for custom filtering
 			if (eventsFilter != null) {
-				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName());
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map evidenceMap = null;
+				try {
+					evidenceMap = objectMapper.convertValue(evidence, Map.class);
+				} catch (Exception ex) {
+					logger.error("failed to convert evidence object to map");
+				}
+				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
 				if (customedFilter != null) {
 					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
 				}
@@ -218,18 +227,26 @@ public class ApiEvidenceController extends DataQueryController {
 					TimestampUtils.convertToSeconds(endDate));
 			termsMap.add(term);
 
-			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
 			//set sort order
-			SortDirection sortDir = SortDirection.DESC;
-			String sortFieldStr = timestampField;
+			SortDirection sortDir;
+			String sortFieldStr;
+
+			List<QuerySort> querySortList = new ArrayList<QuerySort>();
+
+			// Add custom sort if provided by request
+			// List<String, SortDirection> sortMap = new HashMap<>();
 			if (sort_field != null) {
 				if (sort_direction != null) {
 					sortDir = SortDirection.valueOf(sort_direction);
 					sortFieldStr = sort_field;
+					dataQueryHelper.addQuerySort(querySortList, sortFieldStr, sortDir);
 				}
 			}
-			//sort according to event times for continues forwarding
-			List<QuerySort> querySortList = dataQueryHelper.createQuerySort(sortFieldStr, sortDir);
+
+			// Sort according to event times for continues forwarding. sort is added so it's primary or secondary
+			// based on previous search params.
+			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
+			dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
 
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
 					size);

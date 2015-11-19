@@ -26,7 +26,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.amtscores.path}</value>
+						<value>${hdfs.user.processeddata.amt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -54,15 +54,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.amtscores.top.path}</value>
+						<value>${hdfs.user.processeddata.amt.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.amt_top.table.name}</value>
+						<value>${impala.score.amt.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.amt_top.table.partition.type}</value>
+						<value>${impala.score.amt.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -86,11 +86,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.sessiondata.amt.table.name}</value>
+						<value>${impala.score.amtsession.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.sessiondata.amt.table.partition.type}</value>
+						<value>${impala.score.amtsession.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
