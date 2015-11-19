@@ -33,4 +33,20 @@ public class ModelDAO {
 		this.sessionEndTime = sessionEndTime;
 		this.creationTime = new DateTime(System.currentTimeMillis());
 	}
+
+	public String getContextId() {
+		return contextId;
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public long getSessionId() {
+		return sessionId;
+	}
 }

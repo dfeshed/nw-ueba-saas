@@ -1,54 +1,70 @@
 package fortscale.ml.model;
 
-
-import org.joda.time.DateTime;
-import org.springframework.util.Assert;
-
+import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
+import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.retriever.EntityHistogramRetriever;
+import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
+@Configurable(preConstruction = true)
 public class ModelBuilderManager implements IModelBuildingRegistrar {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
 
+    @Autowired
+    private ModelStore modelStore;
+
     private ModelConf modelConf;
-    private ContextSelector contextsSelector;
+    private ContextSelector contextSelector;
+    private IDataRetriever dataRetriever;
+    private IModelBuilder modelBuilder;
     private IModelBuildingScheduler scheduler;
 
     public ModelBuilderManager(ModelConf modelConf, IModelBuildingScheduler scheduler) {
         Assert.notNull(modelConf);
         Assert.notNull(scheduler);
+
         this.modelConf = modelConf;
         this.scheduler = scheduler;
-        if(modelConf.getContextSelectorConf() != null){
-        	contextsSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
+
+        if (modelConf.getContextSelectorConf() != null) {
+            contextSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
+        }
+        dataRetriever = new EntityHistogramRetriever(modelConf.getDataRetrieverConf());
+        modelBuilder = new ContinuousHistogramModelBuilder();
+
+        scheduler.register(this, calcNextRunTimeInSeconds());
+    }
+
+    @Override
+    public void process(IModelBuildingListener listener, long sessionId) {
+        if (contextSelector != null) {
+            for (String contextId : contextSelector.getContexts(0L, 0L)) {
+                build(listener, contextId, sessionId);
+            }
+        } else {
+            build(listener, null, sessionId);
         }
 
         scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void process(IModelBuildingListener listener, DateTime sessionStartTime, DateTime sessionEndTime) {
-        if (contextsSelector != null) {
-	        for (String contextId : contextsSelector.getContexts(0L, 0L)) {
-	        	 build(listener, contextId, sessionStartTime, sessionEndTime);
-	        }
-	    } else{
-	    	build(listener, null, sessionStartTime, sessionEndTime);
-	    }
+    public void build(IModelBuildingListener listener, String contextId, long sessionId) {
+        Object modelBuilderData = dataRetriever.retrieve(contextId);
+        Model model = modelBuilder.build(modelBuilderData);
 
-        scheduler.register(this, calcNextRunTimeInSeconds());
-    }
-    
-    public void build(IModelBuildingListener listener, String contextId, DateTime sessionStartTime, DateTime sessionEndTime){
-    	Object modelBuilderData = modelConf.getDataRetriever().retrieve(contextId);
-        Model model = modelConf.getModelBuilder().build(modelBuilderData);
         boolean success = true;
         try {
-            modelConf.getModelStore().save(modelConf, contextId, model, sessionStartTime, sessionEndTime);
+            modelStore.save(modelConf, contextId, model, sessionId);
         } catch (Exception e) {
-            logger.error(String.format("failed to save model for %s for context %s", modelConf.getName(), contextId), e);
+            logger.error(String.format("Failed to save model %s for context ID %s", modelConf.getName(), contextId), e);
             success = false;
         }
 
@@ -62,9 +78,7 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
         return currentTimeSeconds + modelConf.getBuildIntervalInSeconds();
     }
 
-	public void setContextsSelector(ContextSelector contextsSelector) {
-		this.contextsSelector = contextsSelector;
-	}
-    
-    
+    public void setContextSelector(ContextSelector contextSelector) {
+        this.contextSelector = contextSelector;
+    }
 }

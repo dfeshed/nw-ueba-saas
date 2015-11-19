@@ -98,6 +98,11 @@
 			<artifactId>springockito</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito-annotations</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
@@ -170,4 +175,34 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>${aspectj-maven-plugin.version}</version>
+				<configuration>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
+					<complianceLevel>${java-lang-config.version}</complianceLevel>
+					<showWeaveInfo>false</showWeaveInfo>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -1,0 +1,33 @@
+package fortscale.ml.model.retriever;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import net.minidev.json.JSONObject;
+import org.springframework.util.Assert;
+
+import java.util.List;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = EntityHistogramRetrieverConf.class, name = EntityHistogramRetrieverConf.ENTITY_HISTOGRAM_RETRIEVER_CONF)
+})
+public abstract class IDataRetrieverConf {
+	private long timeRangeInSeconds;
+	private List<JSONObject> functions;
+
+	public IDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
+		Assert.isTrue(timeRangeInSeconds > 0);
+		Assert.notNull(functions);
+
+		this.timeRangeInSeconds = timeRangeInSeconds;
+		this.functions = functions;
+	}
+
+	public long getTimeRangeInSeconds() {
+		return timeRangeInSeconds;
+	}
+
+	public List<JSONObject> getFunctionConfs() {
+		return functions;
+	}
+}

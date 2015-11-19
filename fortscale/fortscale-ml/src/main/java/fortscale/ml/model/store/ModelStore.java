@@ -1,7 +1,5 @@
 package fortscale.ml.model.store;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
@@ -15,18 +13,10 @@ import org.springframework.util.Assert;
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
 
-	private MongoTemplate mongoTemplate;
-	private MongoDbUtilService mongoDbUtilService;
-
 	@Autowired
-	@JsonCreator
-	ModelStore(
-			@JsonProperty("this is autowired 1") MongoTemplate mongoTemplate,
-			@JsonProperty("this is autowired 2") MongoDbUtilService mongoDbUtilService) {
-
-		this.mongoTemplate = mongoTemplate;
-		this.mongoDbUtilService = mongoDbUtilService;
-	}
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private MongoDbUtilService mongoDbUtilService;
 
 	public void save(ModelConf modelConf, String contextId, Model model, DateTime sessionStartTime, DateTime sessionEndTime) {
 		Assert.notNull(sessionStartTime);

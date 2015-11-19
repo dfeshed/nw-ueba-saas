@@ -9,6 +9,7 @@
 	<description>ML model building context</description>
 
 	<bean id="modelConfService" class="fortscale.ml.model.ModelConfService"/>
+	<bean id="modelStore" class="fortscale.ml.model.store.ModelStore"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService"/>
 	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
