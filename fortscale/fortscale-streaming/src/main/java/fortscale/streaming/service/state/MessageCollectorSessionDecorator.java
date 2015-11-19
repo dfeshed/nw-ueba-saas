@@ -8,6 +8,8 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 
 /**
+ * Decorator to add the 'session' notion to session events in the data-source field
+ *
  * @author gils
  * Date: 19/11/2015
  */
@@ -37,12 +39,16 @@ public class MessageCollectorSessionDecorator implements MessageCollector{
             throw new RuntimeException("Could not parse message: " + messageText);
         }
 
-        String dataSource = (String) message.get(DATA_SOURCE_FIELD);
-
-        message.put(DATA_SOURCE_FIELD, dataSource + SESSION_SUFFIX);
+        addSessionMarkToDataSourceField(message);
 
         OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
 
         messageCollector.send(outgoingMessageEnvelope);
+    }
+
+    private void addSessionMarkToDataSourceField(JSONObject message) {
+        String dataSource = (String) message.get(DATA_SOURCE_FIELD);
+
+        message.put(DATA_SOURCE_FIELD, dataSource + SESSION_SUFFIX);
     }
 }
