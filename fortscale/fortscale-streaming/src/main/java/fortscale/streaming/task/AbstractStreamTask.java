@@ -24,6 +24,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 
+	protected static final String KAFKA_MESSAGE_QUEUE = "kafka";
+
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
 
@@ -57,16 +59,20 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			SpringService.init(contextPath);
 		}
 
+		initTaskMonitoringHelper(config);
+
 		// call specific task init method
 		wrappedInit(config, context);
 
+		logger.info("Task init finished");
+	}
+
+	private void initTaskMonitoringHelper(Config config) {
 		taskMonitoringHelper = SpringService.getInstance().resolve(TaskMonitoringHelper.class);
 
 		boolean isMonitoredTask = config.getBoolean("fortscale.monitoring.enable",false);
 		taskMonitoringHelper.setIsMonitoredTask(isMonitoredTask);
 		taskMonitoringHelper.resetCountersPerWindow();
-
-		logger.info("Task init finished");
 	}
 
 	@Override
@@ -114,9 +120,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 
-	//Extract the name of the datasource from the message.
-	//Currently this field is not exists, but after marging with the code of generic data source,
-	//We will have this field.
 	protected String getDataSource(JSONObject message){
 		String datasource = null;
 		try {

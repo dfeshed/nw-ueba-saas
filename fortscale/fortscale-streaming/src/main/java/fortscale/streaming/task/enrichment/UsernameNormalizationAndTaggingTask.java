@@ -88,8 +88,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
-			String configKey = ConfigField.getValue();
+		for (Entry<String,String> configField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
@@ -159,43 +159,39 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
-			UsernameNormalizationConfig configuration = dataSourceToConfigurationMap.get(configKey);
-			if (configuration == null)
+			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
+
+			if (usernameNormalizationConfig == null)
 			{
-				String filteredEventLabel = "No configuration found for input topic "+inputTopic;
-				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
-				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
-				return;
+				throw new IllegalStateException("No configuration found for config key " + configKey);
 			}
 
-			// Normalized username
-
 			// get the normalized username from input record
-			String normalizedUsername = convertToString(message.get(configuration.getNormalizedUsernameField()));
+			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				String messageText = (String)envelope.getMessage();
 				// get username
-				String username = convertToString(message.get(configuration.getUsernameField()));
+				String username = convertToString(message.get(usernameNormalizationConfig.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
-					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
+					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
 					String filteredEventLabel = "Message does not contains username in field " +
-							configuration.getUsernameField();
+							usernameNormalizationConfig.getUsernameField();
 					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
-					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
+					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
 				}
 
 				// get domain
 				String domain;
 				//if domain field value is fake, then take the fake.domain field's value
-				if (configuration.getDomainField().equals("fake")) {
-					domain = configuration.getFakeDomain();
+				if (usernameNormalizationConfig.getDomainField().equals("fake")) {
+					domain = usernameNormalizationConfig.getFakeDomain();
 				} else {
-					domain = convertToString(message.get(configuration.getDomainField()));
+					domain = convertToString(message.get(usernameNormalizationConfig.getDomainField()));
 				}
 
-				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
+				UsernameNormalizationService normalizationService = usernameNormalizationConfig.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username, domain, configuration);
+				normalizedUsername = normalizationService.normalizeUsername(username, domain, usernameNormalizationConfig);
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
@@ -206,7 +202,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), filteredEventLabel);
 					return;
 				}
-				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
+				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);
 
 			}
 
@@ -214,11 +210,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			tagService.addTagsToEvent(normalizedUsername, message);
 
 			// send the event to the output topic
-			String outputTopic = configuration.getOutputTopic();
+			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(configuration.getPartitionField(), message), message.toJSONString()));
+				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, (String)envelope.getMessage()), exception);
+				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
 			handleUnfilteredEvent(message);
 		}
