@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
@@ -38,6 +39,23 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 
 		// Get configuration properties
 		List<String> dataSources = getConfigStringList(config,FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME);
+
+		for (Map.Entry<String,String> configField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = configField.getValue();
+
+			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+
+			if (!dataSources.contains(dataSource)) {
+				logger.warn("Cannot find data source {} in data source list: {}");
+
+				continue;
+			}
+
+			Config dataSourceConfig = config.subset(String.format("fortscale.events.entry.%s.", configKey));
+			dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
+			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
+			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(dataSource, eventsPrevalenceModelStreamTaskManager);
+		}
 
 		Config fieldsSubset = config.subset("fortscale.");
 		for (String dataSource : dataSources) {
