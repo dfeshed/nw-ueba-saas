@@ -64,14 +64,7 @@ public class OccurrencesHistogram {
 		}
 	}
 
-
-	//TODO: delete score function
-	public double score(String featureValue) {
-		return scoreFeatureCount(featureValueToCountMap.get(featureValue));
-	}
-
-
-	public double scoreFeatureCount(Double featureCount) {
+	public double score(Double featureCount) {
 		if(total == 0){
 			return 0;
 		}
