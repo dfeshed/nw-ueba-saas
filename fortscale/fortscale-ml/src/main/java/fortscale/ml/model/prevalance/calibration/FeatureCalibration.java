@@ -164,13 +164,17 @@ public class FeatureCalibration{
 		}
 	}
 
-	
+
 	public double score(String featureValue) {
+		return scoreFeatureCount(featureValueToCountMap.get(featureValue));
+	}
+
+	
+	public double scoreFeatureCount(Double featureCount) {
 		if(total == 0){
 			return 0;
 		}
-		
-		Double featureCount = featureValueToCountMap.get(featureValue);
+
 		if(featureCount == null){
 			featureCount = 1D;
 		}
