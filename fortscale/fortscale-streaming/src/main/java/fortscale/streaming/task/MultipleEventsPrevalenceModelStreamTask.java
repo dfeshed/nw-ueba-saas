@@ -56,19 +56,6 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
 			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(dataSource, eventsPrevalenceModelStreamTaskManager);
 		}
-
-		Config fieldsSubset = config.subset("fortscale.");
-		for (String dataSource : dataSources) {
-			Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", dataSource));
-			String dataSourceInputTopic = dataSourceConfig.get("input.topic");
-			if(StringUtils.isNotBlank(dataSourceInputTopic)){
-				topicToDataSourceMap.put(dataSourceInputTopic, dataSource);
-			}
-			dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
-			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
-			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(dataSource, eventsPrevalenceModelStreamTaskManager);
-		}
-
 	}
 	
 
