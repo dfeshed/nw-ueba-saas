@@ -33,7 +33,7 @@ public class TaskTestUtil {
 		Config config = buildTaskConfig(taskConfigPropertiesFilePath);
 		
 		Config fieldsSubset = config.subset("fortscale.events.");
-		Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", configKey));
+		Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", configKey.getDataSource() + "_MultipleEventsPrevalenceModelStreamTask"));
 		dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
 		
 		return dataSourceConfig;
