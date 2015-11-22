@@ -85,9 +85,6 @@ public class SshSshdTest {
         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
 
-        //10 Represent Nov Month at calendar (counting start from 0)
-		if (currentMonth < 10 || (currentMonth == 10 && currentDay < 19 ))
-			year--;
 
 		long runtime = ((new DateTime(year, 11, 19, 14, 58, 32, DateTimeZone.UTC).getMillis()) / 1000L);
 
@@ -97,11 +94,11 @@ public class SshSshdTest {
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
 						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
 				),
-				$ (
+				/*$ (
 						"Successful Password Authentication - with WAN enrichment",
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2 Flume enrichment timezone Asia/Jerusalem",
-						Nov_19_14_58_32_OUT_WAN + "," + "1416394712,192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
-				),
+						Nov_19_14_58_32_OUT_WAN + "," +  runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
+				),*/
         		$ (
         		"Successful Public Key Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
