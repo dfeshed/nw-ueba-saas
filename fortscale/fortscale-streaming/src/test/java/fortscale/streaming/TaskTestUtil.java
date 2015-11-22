@@ -1,15 +1,16 @@
 package fortscale.streaming;
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.samza.config.Config;
+import org.apache.samza.config.MapConfig;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.samza.config.Config;
-import org.apache.samza.config.MapConfig;
 
 public class TaskTestUtil {
 
@@ -28,11 +29,11 @@ public class TaskTestUtil {
 		return new MapConfig(propMap);
 	}
 	
-	public static Config buildPrevalenceTaskConfig(String taskConfigPropertiesFilePath, String dataSource) throws IOException{
+	public static Config buildPrevalenceTaskConfig(String taskConfigPropertiesFilePath, StreamingTaskDataSourceConfigKey configKey) throws IOException{
 		Config config = buildTaskConfig(taskConfigPropertiesFilePath);
 		
-		Config fieldsSubset = config.subset("fortscale.");
-		Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", dataSource));
+		Config fieldsSubset = config.subset("fortscale.events.");
+		Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", configKey));
 		dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
 		
 		return dataSourceConfig;
