@@ -71,7 +71,7 @@ public class OccurrencesHistogram {
 		// smoothing the score between element in bucketIndex and with the elements in the next bucket.
 		// nextBucketMinInfluence means that elements in bucketIndex will be influenced by the next bucket
 		// by at least this factor.
-		double nextBucketMinInfluence =  0.4 / (Math.pow(2, lowerBucketIndex + 1) - Math.pow(2, lowerBucketIndex));
+		double nextBucketMinInfluence =  0.4 / Math.pow(2, lowerBucketIndex);
 		double lowerBucketInfluence = lowerBucketIndex + 1 - bucketIndex - nextBucketMinInfluence;
 		double ret = (lowerBucketScore * lowerBucketInfluence) + (upperBucketScore * (1 - lowerBucketInfluence));
 
