@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -25,9 +26,10 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 
 	private static final Logger logger = Logger.getLogger(EventsPrevalenceModelStreamTask.class);
 
+	private Map<StreamingTaskDataSourceConfigKey, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
 
-	private Map<String, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
 	private Map<String, String> topicToDataSourceMap = new HashMap<>();
+
 	private String dataSourceFieldName;
 
 
@@ -51,10 +53,12 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 				continue;
 			}
 
+			String lastState = getConfigString(config, String.format("fortscale.events.%s.last.state", configKey));
+
 			Config dataSourceConfig = config.subset(String.format("fortscale.events.%s.", configKey));
 			dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
 			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
-			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(dataSource, eventsPrevalenceModelStreamTaskManager);
+			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), eventsPrevalenceModelStreamTaskManager);
 		}
 	}
 	
