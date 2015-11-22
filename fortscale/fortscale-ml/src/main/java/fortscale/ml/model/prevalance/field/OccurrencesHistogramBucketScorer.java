@@ -24,8 +24,13 @@ public class OccurrencesHistogramBucketScorer {
 		return score == 0 ? 0 : Math.pow(score, 2) + 0.1 * Math.pow((numOfFeatureValues-1), 2);
 	}
 
-	public void addFeatureCount(double featureCount) {
-		double featureScore = reduceCount(featureCount);
+	/**
+	 * Update the bucket with a new count.
+	 * This method must not be called twice for the same feature.
+	 * @param count the count of some feature.
+	 */
+	public void addFeatureCount(double count) {
+		double featureScore = reduceCount(count);
 		score = Math.max(score, featureScore);
 		numOfFeaturesInBucket++;
 	}
