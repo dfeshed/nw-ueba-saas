@@ -1,8 +1,8 @@
 package fortscale.ml.model.prevalance.field;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -13,33 +13,30 @@ public class OccurrencesHistogram {
 	private final static int NUM_OF_BUCKETS = 30;
 	private final static double ADDED_VALUE = 1;
 
-	private ArrayList<OccurrencesHistogramBucket> bucketScorerList;
+	private List<OccurrencesHistogramBucket> buckets;
 	private double maxBucketScore;
 
 	public OccurrencesHistogram(Map<String, Double> featureValueToCountMap) {
-		bucketScorerList = new ArrayList<>(NUM_OF_BUCKETS);
+		buckets = new ArrayList<>(NUM_OF_BUCKETS);
 		for (int i = 0; i < NUM_OF_BUCKETS; i++) {
-			bucketScorerList.add(new OccurrencesHistogramBucket());
+			buckets.add(new OccurrencesHistogramBucket());
 		}
 		updateBucketScorerList(featureValueToCountMap);
 		calcMaxBucketScore();
 	}
 
 	private void updateBucketScorerList(Map<String, Double> featureValueToCountMap) {
-		for (Entry<String, Double> featureValueToCount : featureValueToCountMap.entrySet()) {
-			Double count = featureValueToCount.getValue();
+		for (Double count : featureValueToCountMap.values()) {
 			if (count >= 1) {
-				String featureValue = featureValueToCount.getKey();
-				int bucketIndex = (int) getBucketIndex(count);
-				bucketScorerList.get(bucketIndex).updateFeatureValueCount(featureValue, count);
+				buckets.get((int) getBucketIndex(count)).addFeatureCount(count);
 			}
 		}
 	}
 
 	private void calcMaxBucketScore() {
 		maxBucketScore = 0;
-		for (int i = 0; i < bucketScorerList.size(); i++) {
-			maxBucketScore = Math.max(maxBucketScore, bucketScorerList.get(i).getScore());
+		for (int i = 0; i < buckets.size(); i++) {
+			maxBucketScore = Math.max(maxBucketScore, buckets.get(i).getScore());
 		}
 	}
 
@@ -53,20 +50,20 @@ public class OccurrencesHistogram {
 		}
 
 		double bucketIndex = getBucketIndex(featureCount);
-		if (bucketIndex + 1 >= bucketScorerList.size()) {
+		if (bucketIndex + 1 >= buckets.size()) {
 			return 0;
 		}
 
 		int lowerBucketIndex = (int) bucketIndex;
 		double lowerBucketScore = 0;
-		int size = 0;
+		int aggregatedNumOfFeatures = 0;
 		for (int i = 0; i <= lowerBucketIndex; i++) {
-			size += bucketScorerList.get(i).size();
-			lowerBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(i).getBoostedScore(size));
+			aggregatedNumOfFeatures += buckets.get(i).getNumOfFeaturesInBucket();
+			lowerBucketScore = Math.max(lowerBucketScore, buckets.get(i).getBoostedScore(aggregatedNumOfFeatures));
 		}
 
-		size += bucketScorerList.get(lowerBucketIndex + 1).size();
-		double upperBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(lowerBucketIndex+1).getBoostedScore(size));
+		aggregatedNumOfFeatures += buckets.get(lowerBucketIndex + 1).getNumOfFeaturesInBucket();
+		double upperBucketScore = Math.max(lowerBucketScore, buckets.get(lowerBucketIndex + 1).getBoostedScore(aggregatedNumOfFeatures));
 		// smoothing the score between element in bucketIndex and with the elements in the next bucket.
 		// nextBucketMinInfluence means that elements in bucketIndex will be influenced by the next bucket
 		// by at least this factor.
