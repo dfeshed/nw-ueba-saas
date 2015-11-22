@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import static fortscale.utils.ConversionUtils.*;
 
+@Deprecated //Amt session is about to be removed
 public class AmtSummaryService {
 	private KeyValueStore<String, AmtSession> store;
 	private String sessionNormalizedUsernameField;
