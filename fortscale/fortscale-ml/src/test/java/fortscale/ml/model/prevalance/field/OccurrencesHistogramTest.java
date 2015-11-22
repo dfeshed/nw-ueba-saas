@@ -35,7 +35,7 @@ public class OccurrencesHistogramTest {
 	}
 
 	@Test
-	public void simpleInputOutputForFeatureCalibration() throws Exception{
+	public void simpleInputOutputForFeatureCalibration() throws Exception {
 		Random rnd = new Random(1);
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		for (int i = 0; i < 50; i++) {
@@ -43,190 +43,96 @@ public class OccurrencesHistogramTest {
 			featureValueToCountMap.put(String.format("test%d", i), val);
 		}
 
-		String feature = "feature";
-		double featureCount = 1D;
-		featureValueToCountMap.put(feature, featureCount);
-		OccurrencesHistogram calibration = new OccurrencesHistogram(featureValueToCountMap);
-		double score = calibration.score(featureCount);
-		Assert.assertEquals(99, score, 1);
-
-		featureValueToCountMap.put(feature, 2D);
-		calibration = new OccurrencesHistogram(featureValueToCountMap);
-		score = calibration.score(featureValueToCountMap.get(feature));
-		Assert.assertEquals(93, score, 1);
-
-		featureValueToCountMap.put(feature, 3D);
-		calibration = new OccurrencesHistogram(featureValueToCountMap);
-		score = calibration.score(featureValueToCountMap.get(feature));
-		Assert.assertEquals(61, score, 1);
-
-		featureValueToCountMap.put(feature, 4D);
-		calibration = new OccurrencesHistogram(featureValueToCountMap);
-		score = calibration.score(featureValueToCountMap.get(feature));
-		Assert.assertEquals(18, score, 1);
+		double[] counts = new double[]{1, 2, 3, 4};
+		double[] scores = new double[]{99, 93, 61, 18};
+		for (int i = 0; i < scores.length; i++) {
+			featureValueToCountMap.put("feature", counts[i]);
+			OccurrencesHistogram calibration = new OccurrencesHistogram(featureValueToCountMap);
+			double score = calibration.score(counts[i]);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValueWithValuesIncreasingByTime() throws Exception{
+	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValueWithValuesIncreasingByTime() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
-		String featureValue1 = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue1, 5000D);
-		String featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(99, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 10000D);
-		featureValueToCountMap.put(featureValue, 2D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(96, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 15000D);
-		featureValueToCountMap.put(featureValue, 3D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(93, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 20000D);
-		featureValueToCountMap.put(featureValue, 4D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(90, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 40000D);
-		featureValueToCountMap.put(featureValue, 8D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(81, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 80000D);
-		featureValueToCountMap.put(featureValue, 16D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(70, score, 1);
-
-		featureValueToCountMap.put(featureValue1, 160000D);
-		featureValueToCountMap.put(featureValue, 32D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(56, score, 1);
+		double[] rareCounts = new double[]{1, 2, 3, 4, 8, 16, 32};
+		double[] commonCounts = new double[]{5000, 10000, 15000, 20000, 40000, 80000, 160000};
+		double[] scores = new double[]{99, 96, 93, 90, 81, 70, 56};
+		for (int i = 0; i < scores.length; i++) {
+			featureValueToCountMap.put("commonFeature", commonCounts[i]);
+			featureValueToCountMap.put("rareFeature", rareCounts[i]);
+			double score = new OccurrencesHistogram(featureValueToCountMap).score(rareCounts[i]);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception{
+	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
-
-		String featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 20000D);
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
+		String commonFeature = "commonFeature";
+		featureValueToCountMap.put(commonFeature, 20000D);
+		String rareFeatureA = "rareFeatureA";
+		featureValueToCountMap.put(rareFeatureA, 1D);
+		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureA));
 		Assert.assertEquals(99, score, 1);
 
-		String featureValue1 = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue1, 2D);
+		String rareFeatureB = "rareFeatureB";
+		featureValueToCountMap.put(rareFeatureB, 2D);
 		OccurrencesHistogram occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(featureValue));
-		double score1 = occurrencesHistogram.score(featureValueToCountMap.get(featureValue1));
+		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureA));
+		double score1 = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureB));
 		Assert.assertEquals(score, score1, 1);
 		Assert.assertEquals(94, score, 1);
 
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 2D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(87, score, 1);
-
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(76, score, 1);
-
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(59, score, 1);
-
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(38, score, 1);
+		double[] counts = new double[]{2, 2, 1, 1, 1};
+		double[] scores = new double[]{87, 76, 59, 38};
+		for (int i = 0; i < scores.length; i++) {
+			featureValueToCountMap.put(String.format("rareFeature-%d", i), counts[i]);
+			score = new OccurrencesHistogram(featureValueToCountMap).score(counts[i]);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception{
+	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
-
-		String veryLargefeatureValue = String.format("test%d", i++);
-
-		featureValueToCountMap.put(veryLargefeatureValue, 20000D);
-
-		String veryRarefeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(veryRarefeatureValue, 1D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(veryRarefeatureValue));
+		String veryCommonFeatureValue = "veryCommonFeatureValue";
+		featureValueToCountMap.put(veryCommonFeatureValue, 20000D);
+		String veryRareFeatureValue = "veryRareFeatureValue";
+		double veryRareFeatureCount = 1D;
+		featureValueToCountMap.put(veryRareFeatureValue, veryRareFeatureCount);
+		double score = new OccurrencesHistogram(featureValueToCountMap).score(veryRareFeatureCount);
 		Assert.assertEquals(99, score, 1);
 
-		String rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 5D);
-		OccurrencesHistogram occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(94, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(85, score, 1);
-
-		rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 6D);
-		occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(90, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(75, score, 1);
-
-		rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 4D);
-		occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(85, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(64, score, 1);
-
-		rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 5D);
-		occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(78, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(47, score, 1);
-
-		rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 6D);
-		occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(70, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(27, score, 1);
-
-		rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 4D);
-		occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(veryRarefeatureValue));
-		Assert.assertEquals(60, score, 1);
-		score = occurrencesHistogram.score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(1, score, 1);
+		double[] rareFeatureCounts = new double[]{5, 6, 4, 5, 6, 4};
+		double[] rareFeaturesScores = new double[]{85, 75, 64, 47, 27, 1};
+		double[] veryRareFeaturesScores = new double[]{94, 90, 85, 78, 70, 60};
+		for (int i = 0; i < rareFeatureCounts.length; i++) {
+			featureValueToCountMap.put(String.format("rareFeatureValue-%d", i), rareFeatureCounts[i]);
+			OccurrencesHistogram occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
+			score = occurrencesHistogram.score(veryRareFeatureCount);
+			Assert.assertEquals(veryRareFeaturesScores[i], score, 1);
+			score = occurrencesHistogram.score(rareFeatureCounts[i]);
+			Assert.assertEquals(rareFeaturesScores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValue() throws Exception{
+	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValue() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
+		int j = 0;
 
-		String mediumFeatureValue = String.format("test%d", i++);
+		String mediumFeatureValue = String.format("test%d", j++);
 
 		featureValueToCountMap.put(mediumFeatureValue, 50D);
 
-		String featureValue = String.format("test%d", i++);
+		String featureValue = String.format("test%d", j++);
 		featureValueToCountMap.put(featureValue, 4D);
 		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
 		Assert.assertEquals(76, score, 1);
 
-		String featureValue1 = String.format("test%d", i++);
+		String featureValue1 = String.format("test%d", j++);
 		featureValueToCountMap.put(featureValue1, 5D);
 		OccurrencesHistogram occurrencesHistogram = new OccurrencesHistogram(featureValueToCountMap);
 		score = occurrencesHistogram.score(featureValueToCountMap.get(featureValue));
@@ -234,27 +140,22 @@ public class OccurrencesHistogramTest {
 		Assert.assertEquals(score, score1, 1);
 		Assert.assertEquals(63, score, 1);
 
-		featureValue1 = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue1, 5D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(45, score, 1);
-
-		featureValue1 = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue1, 5D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(16, score, 1);
+		double[] scores = new double[]{45, 16};
+		for (int i = 0; i < scores.length; i++) {
+			double featureCount = 5D;
+			featureValueToCountMap.put(String.format("rareFeature-%d", i), featureCount);
+			score = new OccurrencesHistogram(featureValueToCountMap).score(featureCount);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfOnlyRareFeatureValues() throws Exception{
+	public void testingScoreOfOnlyRareFeatureValues() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		int i = 0;
-
 		String featureValue = String.format("test%d", i++);
-
 		featureValueToCountMap.put(featureValue, 1D);
-
-		for(int j = 0; j < 4; j++){
+		for (int j = 0; j < 4; j++) {
 			String tmp = String.format("test%d", i++);
 			featureValueToCountMap.put(tmp, 2D + j);
 		}
@@ -264,15 +165,13 @@ public class OccurrencesHistogramTest {
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValueAgainstMediumRareFeatureValues() throws Exception{
+	public void testingScoreOfVeryRareFeatureValueAgainstMediumRareFeatureValues() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		int i = 0;
-
 		String featureValue = String.format("test%d", i++);
-
 		featureValueToCountMap.put(featureValue, 1D);
 
-		for(int j = 0; j < 4; j++){
+		for (int j = 0; j < 4; j++) {
 			String mediumRareFeatureValue = String.format("test%d", i++);
 			featureValueToCountMap.put(mediumRareFeatureValue, 8D + j);
 			double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
@@ -281,123 +180,66 @@ public class OccurrencesHistogramTest {
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValueAgainstMediumRareFeatureValues() throws Exception{
+	public void testingScoreOfRareFeatureValueAgainstMediumRareFeatureValues() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
-
-		String rareFeatureValue = String.format("test%d", i++);
-
+		String rareFeatureValue = "rareFeatureValue";
 		featureValueToCountMap.put(rareFeatureValue, 3D);
-
-		String mediumRareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumRareFeatureValue, 8D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(52, score, 1);
-
-		mediumRareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumRareFeatureValue, 9D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(48, score, 1);
-
-		mediumRareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumRareFeatureValue, 10D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(40, score, 1);
+		double[] mediumRareFeatureCounts = new double[]{8, 9, 10};
+		double[] rareScores = new double[]{52, 48, 40};
+		for (int i = 0; i < rareScores.length; i++) {
+			featureValueToCountMap.put(String.format("mediumRareFeatureValue-%d", i), mediumRareFeatureCounts[i]);
+			double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
+			Assert.assertEquals(rareScores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfFewMediumFeatureValueAgainstVeryLargeFeatureValue() throws Exception{
+	public void testingScoreOfFewMediumFeatureValueAgainstVeryLargeFeatureValue() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
+		featureValueToCountMap.put("veryLargeFeatureValue", 19000D);
 
-		String veryLargeFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(veryLargeFeatureValue, 19000D);
-
-		String mediumFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumFeatureValue, 22D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(mediumFeatureValue));
-		Assert.assertEquals(57, score, 1);
-
-		mediumFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumFeatureValue, 22D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(mediumFeatureValue));
-		Assert.assertEquals(55, score, 1);
-
-		mediumFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumFeatureValue, 22D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(mediumFeatureValue));
-		Assert.assertEquals(48, score, 1);
-
-		mediumFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumFeatureValue, 22D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(mediumFeatureValue));
-		Assert.assertEquals(36, score, 1);
-
-		mediumFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(mediumFeatureValue, 22D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(mediumFeatureValue));
-		Assert.assertEquals(20, score, 1);
-
+		double mediumFeatureCount = 22;
+		double[] scores = new double[]{57, 55, 48, 36, 20};
+		for (int i = 0; i < scores.length; i++) {
+			featureValueToCountMap.put(String.format("mediumFeatureValue-%d", i), mediumFeatureCount);
+			double score = new OccurrencesHistogram(featureValueToCountMap).score(mediumFeatureCount);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValueAcrossTime() throws Exception{
+	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValueAcrossTime() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
 
-		String largeFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(largeFeatureValue, 20D);
+		String largeFeatureValue = "largeFeatureValue";
+		String rareFeatureValue = "rareFeatureValue";
 
-		String rareFeatureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(rareFeatureValue, 2D);
-
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(90, score, 1);
-
-		featureValueToCountMap.put(largeFeatureValue, 100D);
-		featureValueToCountMap.put(rareFeatureValue, 10D);
-
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(rareFeatureValue));
-		Assert.assertEquals(48, score, 1);
+		double[] rareFeatureValues = new double[]{2, 10};
+		double[] largeFeatureValues = new double[]{20, 100};
+		double[] rareFeatureScores = new double[]{90, 48};
+		for (int i = 0; i < rareFeatureScores.length; i++) {
+			featureValueToCountMap.put(largeFeatureValue, largeFeatureValues[i]);
+			featureValueToCountMap.put(rareFeatureValue, rareFeatureValues[i]);
+			double score = new OccurrencesHistogram(featureValueToCountMap).score(rareFeatureValues[i]);
+			Assert.assertEquals(rareFeatureScores[i], score, 1);
+		}
 	}
 
 	@Test
-	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValue() throws Exception{
+	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValue() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		int i = 0;
 
-		String featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 100D);
-		double score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
+		double mediumLargeFeatureCount = 100;
+		featureValueToCountMap.put("mediumLargeFeatureValue", mediumLargeFeatureCount);
+		double score = new OccurrencesHistogram(featureValueToCountMap).score(mediumLargeFeatureCount);
 		Assert.assertEquals(0, score, 1);
 
-		featureValue = String.format("test%d", i++);
-		featureValueToCountMap.put(featureValue, 1D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(99, score, 1);
-
-		featureValueToCountMap.put(featureValue, 2D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(93, score, 1);
-
-		featureValueToCountMap.put(featureValue, 3D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(86, score, 1);
-
-		featureValueToCountMap.put(featureValue, 4D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(79, score, 1);
-
-		featureValueToCountMap.put(featureValue, 5D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(73, score, 1);
-
-		featureValueToCountMap.put(featureValue, 10D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(48, score, 1);
-
-		featureValueToCountMap.put(featureValue, 20D);
-		score = new OccurrencesHistogram(featureValueToCountMap).score(featureValueToCountMap.get(featureValue));
-		Assert.assertEquals(14, score, 1);
+		double[] rareFeatureCounts = new double[]{1, 2, 3, 4, 5, 10, 20};
+		double[] rareFeatureScores = new double[]{99, 93, 86, 79, 73, 48, 14};
+		for (int i = 0; i < rareFeatureScores.length; i++) {
+			featureValueToCountMap.put("rareFeature", rareFeatureCounts[i]);
+			score = new OccurrencesHistogram(featureValueToCountMap).score(rareFeatureCounts[i]);
+			Assert.assertEquals(rareFeatureScores[i], score, 1);
+		}
 	}
 }
