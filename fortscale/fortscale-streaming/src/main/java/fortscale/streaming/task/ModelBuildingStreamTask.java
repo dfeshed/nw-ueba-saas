@@ -2,7 +2,6 @@ package fortscale.streaming.task;
 
 import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.KafkaModelBuildingListener;
-import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -44,8 +43,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 		}
 
 		if (modelService != null) {
-			long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-			modelService.window(currentTimeSeconds);
+			modelService.window();
 		}
 	}
 

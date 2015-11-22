@@ -11,12 +11,13 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 @Configurable(preConstruction = true)
-public class ModelBuilderManager implements IModelBuildingRegistrar {
+public class ModelBuilderManager {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
 
     @Autowired
@@ -26,57 +27,51 @@ public class ModelBuilderManager implements IModelBuildingRegistrar {
     private ContextSelector contextSelector;
     private IDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
-    private IModelBuildingScheduler scheduler;
 
-    public ModelBuilderManager(ModelConf modelConf, IModelBuildingScheduler scheduler) {
+    public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
-        Assert.notNull(scheduler);
-
         this.modelConf = modelConf;
-        this.scheduler = scheduler;
 
         if (modelConf.getContextSelectorConf() != null) {
             contextSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
         }
         dataRetriever = new EntityHistogramRetriever(modelConf.getDataRetrieverConf());
         modelBuilder = new ContinuousHistogramModelBuilder();
-
-        scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    @Override
-    public void process(IModelBuildingListener listener, DateTime sessionStartTime, DateTime sessionEndTime) {
+    public void process(IModelBuildingListener listener, DateTime previousEndTime, DateTime currentEndTime) {
+        Assert.notNull(currentEndTime);
+
         if (contextSelector != null) {
-            for (String contextId : contextSelector.getContexts(0L, 0L)) {
-                build(listener, contextId, sessionStartTime, sessionEndTime);
+            if (previousEndTime == null) {
+                long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
+                previousEndTime = currentEndTime.minus(new Duration(TimestampUtils.convertToMilliSeconds(timeRangeInSeconds)));
+            }
+
+            for (String contextId : contextSelector.getContexts(previousEndTime, currentEndTime)) {
+                build(listener, contextId, currentEndTime);
             }
         } else {
-            build(listener, null, sessionStartTime, sessionEndTime);
+            build(listener, null, currentEndTime);
         }
-
-        scheduler.register(this, calcNextRunTimeInSeconds());
     }
 
-    public void build(IModelBuildingListener listener, String contextId, DateTime sessionStartTime, DateTime sessionEndTime) {
-        Object modelBuilderData = dataRetriever.retrieve(contextId);
+    public void build(IModelBuildingListener listener, String contextId, DateTime endTime) {
+        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         Model model = modelBuilder.build(modelBuilderData);
 
         boolean success = true;
         try {
-            modelStore.save(modelConf, contextId, model, sessionStartTime, sessionEndTime);
+            modelStore.save(modelConf, contextId, model, endTime);
         } catch (Exception e) {
-            logger.error(String.format("Failed to save model %s for context ID %s", modelConf.getName(), contextId), e);
+            logger.error(String.format("Failed to save model %s, with end time %s, for context ID %s.",
+                    modelConf.getName(), endTime.toString(), contextId), e);
             success = false;
         }
 
         if (listener != null) {
             listener.modelBuildingStatus(modelConf.getName(), contextId, success);
         }
-    }
-
-    private long calcNextRunTimeInSeconds() {
-        long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-        return currentTimeSeconds + modelConf.getBuildIntervalInSeconds();
     }
 
     public void setContextSelector(ContextSelector contextSelector) {

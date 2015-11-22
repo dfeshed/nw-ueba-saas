@@ -9,6 +9,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.data.type.ContinuousDataHistogram;
 import fortscale.utils.time.TimestampUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -34,11 +35,12 @@ public class EntityHistogramRetriever extends IDataRetriever {
 	}
 
 	@Override
-	public Object retrieve(String contextId) {
-		long endTimeInSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+	public Object retrieve(String contextId, DateTime endTime) {
+		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getMillis());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
-		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
+		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
+				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
 		ContinuousDataHistogram reductionHistogram = new ContinuousDataHistogram();
 
 		for (FeatureBucket featureBucket : featureBuckets) {
