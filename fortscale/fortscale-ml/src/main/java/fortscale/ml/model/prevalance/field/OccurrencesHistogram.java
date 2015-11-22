@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import fortscale.ml.model.prevalance.calibration.FeatureCalibrationBucketScorer;
 
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -14,13 +13,13 @@ public class OccurrencesHistogram {
 	private final static int NUM_OF_BUCKETS = 30;
 	private final static double ADDED_VALUE = 1;
 
-	private ArrayList<FeatureCalibrationBucketScorer> bucketScorerList;
+	private ArrayList<OccurrencesHistogramBucket> bucketScorerList;
 	private double maxBucketScore;
 
 	public OccurrencesHistogram(Map<String, Double> featureValueToCountMap) {
 		bucketScorerList = new ArrayList<>(NUM_OF_BUCKETS);
 		for (int i = 0; i < NUM_OF_BUCKETS; i++) {
-			bucketScorerList.add(new FeatureCalibrationBucketScorer());
+			bucketScorerList.add(new OccurrencesHistogramBucket());
 		}
 		updateBucketScorerList(featureValueToCountMap);
 		calcMaxBucketScore();
