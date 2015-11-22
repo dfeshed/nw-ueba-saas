@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class OccurrencesHistogramBucket {
+public class OccurrencesHistogramBucketScorer {
 	private double score;
 	private int numOfFeaturesInBucket;
 
-	public OccurrencesHistogramBucket() {
+	public OccurrencesHistogramBucketScorer() {
 		score = 0;
 		numOfFeaturesInBucket = 0;
 	}
