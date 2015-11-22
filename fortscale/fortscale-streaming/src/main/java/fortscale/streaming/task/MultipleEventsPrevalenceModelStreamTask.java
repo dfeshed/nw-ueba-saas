@@ -18,10 +18,9 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
-	private static final String FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME = "fortscale.events-prevalence-stream-managers.data-sources";
-	private static final String DATA_SOURCE_FIELD_NAME_PROPERTY = "${streaming.event.datasource.field.name}";
+	private static final Logger logger = Logger.getLogger(MultipleEventsPrevalenceModelStreamTask.class);
 
-	private static final Logger logger = Logger.getLogger(EventsPrevalenceModelStreamTask.class);
+	private static final String FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME = "fortscale.events-prevalence-stream-managers.data-sources";
 
 	private Map<StreamingTaskDataSourceConfigKey, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
 
