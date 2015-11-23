@@ -6,15 +6,15 @@ import fortscale.ml.model.data.type.ContinuousDataHistogram;
 
 import java.util.Map;
 
-public class ExponentialDecay implements IDataRetrieverFunction {
-    public static final String DATA_RETRIEVER_FUNCTION_TYPE = "exponential_decay";
+public class ContinuousDataHistogramExponentialDecay implements IDataRetrieverFunction {
+    public static final String DATA_RETRIEVER_FUNCTION_TYPE = "continuous_data_histogram_exponential_decay";
 
     private final float base;
     private final long timeRangeIntervalInSeconds;
 
     @JsonCreator
-    public ExponentialDecay(@JsonProperty("base") float base,
-                            @JsonProperty("timeRangeIntervalInSeconds") long timeRangeIntervalInSeconds) {
+    public ContinuousDataHistogramExponentialDecay(@JsonProperty("base") float base,
+                                                   @JsonProperty("timeRangeIntervalInSeconds") long timeRangeIntervalInSeconds) {
         this.base = base;
         this.timeRangeIntervalInSeconds = timeRangeIntervalInSeconds;
     }
