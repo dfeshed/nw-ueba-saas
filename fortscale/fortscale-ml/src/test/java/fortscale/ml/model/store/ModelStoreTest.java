@@ -25,15 +25,15 @@ public class ModelStoreTest {
     @Mock
     private MongoDbUtilService mongoDbUtilService;
     @InjectMocks
-    private ModelStore store;
-    private String modelConfCollectionName;
+    private ModelStore modelStore;
+    private String collectionName;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        String modelConfName = "modelConfName";
+        String modelConfName = "testModelConf";
         Mockito.when(modelConf.getName()).thenReturn(modelConfName);
-        modelConfCollectionName = COLLECTION_NAME_PREFIX + modelConfName;
+        collectionName = COLLECTION_NAME_PREFIX + modelConfName;
     }
 
     private void mockCollectionExistence(String collectionName, boolean shouldExist) {
@@ -42,45 +42,35 @@ public class ModelStoreTest {
 
     @Test
     public void shouldCreateCollectionIfDoesNotExist() {
-        mockCollectionExistence(modelConfCollectionName, false);
+        mockCollectionExistence(collectionName, false);
         IndexOperations indexOperations = Mockito.mock(IndexOperations.class);
-        Mockito.when(mongoTemplate.indexOps(modelConfCollectionName)).thenReturn(indexOperations);
-
-        DateTime sessionStartTime = DateTime.now();
-        DateTime sessionEndTime = sessionStartTime.plusDays(1);
-        store.save(modelConf, "contextId", model, sessionStartTime, sessionEndTime);
-
-        Mockito.verify(mongoDbUtilService).createCollection(modelConfCollectionName);
+        Mockito.when(mongoTemplate.indexOps(collectionName)).thenReturn(indexOperations);
+        DateTime endTime = DateTime.now();
+        modelStore.save(modelConf, "contextId", model, endTime);
+        Mockito.verify(mongoDbUtilService).createCollection(collectionName);
         Mockito.verify(indexOperations, Mockito.times(1)).ensureIndex(Mockito.any(IndexDefinition.class));
     }
 
     @Test
     public void shouldNotCreateCollectionIfDoesExist() {
-        mockCollectionExistence(modelConfCollectionName, true);
-
-        DateTime sessionStartTime = DateTime.now();
-        DateTime sessionEndTime = sessionStartTime.plusDays(1);
-        store.save(modelConf, "contextId", model, sessionStartTime, sessionEndTime);
-
-        Mockito.verify(mongoDbUtilService, Mockito.times(0)).createCollection(modelConfCollectionName);
+        mockCollectionExistence(collectionName, true);
+        DateTime endTime = DateTime.now();
+        modelStore.save(modelConf, "contextId", model, endTime);
+        Mockito.verify(mongoDbUtilService, Mockito.times(0)).createCollection(collectionName);
     }
 
     @Test
     public void shouldSaveTheModel() {
-        mockCollectionExistence(modelConfCollectionName, true);
+        mockCollectionExistence(collectionName, true);
         ArgumentCaptor<ModelDAO> argumentCaptor = ArgumentCaptor.forClass(ModelDAO.class);
-        Mockito.doNothing().when(mongoTemplate).save(argumentCaptor.capture(), Mockito.eq(modelConfCollectionName));
-
+        Mockito.doNothing().when(mongoTemplate).save(argumentCaptor.capture(), Mockito.eq(collectionName));
         String contextId = "contextId";
-        DateTime sessionStartTime = DateTime.now();
-        DateTime sessionEndTime = sessionStartTime.plusDays(1);
-        store.save(modelConf, contextId, model, sessionStartTime, sessionEndTime);
-
+        DateTime endTime = DateTime.now();
+        modelStore.save(modelConf, contextId, model, endTime);
         ModelDAO modelDAOArg = argumentCaptor.getValue();
-        Assert.assertEquals(sessionStartTime, Whitebox.getInternalState(modelDAOArg, "sessionStartTime"));
-        Assert.assertEquals(sessionEndTime, Whitebox.getInternalState(modelDAOArg, "sessionEndTime"));
         Assert.assertEquals(contextId, Whitebox.getInternalState(modelDAOArg, "contextId"));
-        Assert.assertEquals(model, Whitebox.getInternalState(modelDAOArg, "model"));
         Assert.assertEquals(System.currentTimeMillis(), ((DateTime)Whitebox.getInternalState(modelDAOArg, "creationTime")).getMillis(), 1000);
+        Assert.assertEquals(model, Whitebox.getInternalState(modelDAOArg, "model"));
+        Assert.assertEquals(endTime, Whitebox.getInternalState(modelDAOArg, "endTime"));
     }
 }
