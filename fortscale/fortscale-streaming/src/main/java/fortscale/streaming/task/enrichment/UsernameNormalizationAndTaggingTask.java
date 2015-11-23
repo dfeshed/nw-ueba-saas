@@ -163,7 +163,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			if (usernameNormalizationConfig == null)
 			{
-				throw new IllegalStateException("No configuration found for config key " + configKey);
+				throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message: " + message.toJSONString());
 			}
 
 			// get the normalized username from input record
