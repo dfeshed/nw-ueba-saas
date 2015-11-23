@@ -38,21 +38,24 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	public Object retrieve(String contextId, DateTime endTime) {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getMillis());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
+		DateTime startTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
 				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
-		ContinuousDataHistogram reductionHistogram = new ContinuousDataHistogram();
+		ContinuousDataHistogram reductionHistogram = new ContinuousDataHistogram(startTime, endTime);
 
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
+			DateTime featureBucketStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
+			DateTime featureBucketEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(featureBucket.getEndTime()));
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				FeatureValue featureValue = aggregatedFeatures.get(featureName).getValue();
-				ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+				ContinuousDataHistogram histogram = new ContinuousDataHistogram(featureBucketStartTime, featureBucketEndTime);
 				histogram.add(((GenericHistogram)featureValue).getHistogramMap());
 
 				for (IDataRetrieverFunction function : functions) {
-					histogram = (ContinuousDataHistogram)function.execute(histogram, endTimeInSeconds - featureBucket.getStartTime());
+					histogram = (ContinuousDataHistogram)function.execute(histogram, endTime);
 				}
 
 				reductionHistogram.add(histogram.getMap());
