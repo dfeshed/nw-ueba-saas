@@ -22,7 +22,7 @@ public class TaskMonitoringHelper {
 
 
     //Node is the task for specific data source and last state
-    private Map<StreamingTaskDataSourceConfigKey, TaskMonitoringDTO> nodeMonitoringDetails;
+    private Map<StreamingTaskDataSourceConfigKey, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
 
     //Constant labels for JOB monitoring
     public static final String TOTAL_FILTERED_EVENTS_LABEL = "Filtered Events";
@@ -108,7 +108,7 @@ public class TaskMonitoringHelper {
 
         //If there were no events in the window and saveOnlyIfDataExists turned on,
         //stop saving and do nothing
-        if (saveOnlyIfDataExists && MapUtils.isNotEmpty(this.nodeMonitoringDetails)){
+        if (saveOnlyIfDataExists && MapUtils.isEmpty(this.nodeMonitoringDetails)){
             return;
         }
 
