@@ -77,17 +77,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		try {
-			JSONObject message = parseJsonMessage(envelope);
-			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
-		} catch (Exception e){
-			//Do nothing
-		}
-
-
 		try{
-
-
+			countNewMessage(envelope);
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
@@ -99,6 +90,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
 			processExceptionHandler.handleException(exception);
+		}
+	}
+
+	private void countNewMessage(IncomingMessageEnvelope envelope) {
+		try {
+			JSONObject message = parseJsonMessage(envelope);
+			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
+		} catch (Exception e){
+			//Do nothing
 		}
 	}
 

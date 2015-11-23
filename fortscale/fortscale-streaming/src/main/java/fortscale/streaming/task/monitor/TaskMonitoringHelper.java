@@ -116,7 +116,11 @@ public class TaskMonitoringHelper {
         String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
 
         for (Map.Entry<StreamingTaskDataSourceConfigKey,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
-            String nodePrefix = node.getKey().getDataSource()+"/"+node.getKey().getLastState()+"- ";
+            StreamingTaskDataSourceConfigKey nodeKey = node.getKey();
+            String nodePrefix = "";
+            if (nodeKey != null) {
+                nodePrefix = node.getKey().getDataSource() + "/" + node.getKey().getLastState() + "- ";
+            };
 
             TaskMonitoringDTO nodeData = node.getValue();
 
