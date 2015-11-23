@@ -8,7 +8,7 @@
         "featureBucketConfName": "selector_feature_bucket_conf"
       },
       "retriever": {
-        "type": "entity_histogram_retriever_conf",
+        "type": "context_histogram_retriever_conf",
         "timeRangeInSeconds": 10,
         "functions": [],
         "featureBucketConfName": "retriever_feature_bucket_conf",

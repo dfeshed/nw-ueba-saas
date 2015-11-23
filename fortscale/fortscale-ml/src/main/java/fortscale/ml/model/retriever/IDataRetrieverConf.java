@@ -9,7 +9,7 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-		@JsonSubTypes.Type(value = EntityHistogramRetrieverConf.class, name = EntityHistogramRetrieverConf.ENTITY_HISTOGRAM_RETRIEVER_CONF)
+		@JsonSubTypes.Type(value = ContextHistogramRetrieverConf.class, name = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER_CONF)
 })
 public abstract class IDataRetrieverConf {
 	private long timeRangeInSeconds;

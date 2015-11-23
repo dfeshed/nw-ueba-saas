@@ -2,7 +2,7 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
-import fortscale.ml.model.retriever.EntityHistogramRetrieverConf;
+import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import junitparams.JUnitParamsRunner;
@@ -35,7 +35,7 @@ public class ModelBuilderManagerTest {
         contextSelector = mock(ContextSelector.class);
         modelStore = testContextManager.getBean(ModelStore.class);
 
-        when(modelConf.getDataRetrieverConf()).thenReturn(mock(EntityHistogramRetrieverConf.class));
+        when(modelConf.getDataRetrieverConf()).thenReturn(mock(ContextHistogramRetrieverConf.class));
         reset(modelStore);
     }
 

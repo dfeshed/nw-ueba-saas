@@ -7,14 +7,14 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-public class EntityHistogramRetrieverConf extends IDataRetrieverConf {
-	public static final String ENTITY_HISTOGRAM_RETRIEVER_CONF = "entity_histogram_retriever_conf";
+public class ContextHistogramRetrieverConf extends IDataRetrieverConf {
+	public static final String CONTEXT_HISTOGRAM_RETRIEVER_CONF = "context_histogram_retriever_conf";
 
 	private String featureBucketConfName;
 	private String featureName;
 
 	@JsonCreator
-	public EntityHistogramRetrieverConf(
+	public ContextHistogramRetrieverConf(
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("featureBucketConfName") String featureBucketConfName,

@@ -3,7 +3,7 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
-import fortscale.ml.model.retriever.EntityHistogramRetriever;
+import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.retriever.IDataRetriever;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
@@ -35,7 +35,7 @@ public class ModelBuilderManager {
         if (modelConf.getContextSelectorConf() != null) {
             contextSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
         }
-        dataRetriever = new EntityHistogramRetriever(modelConf.getDataRetrieverConf());
+        dataRetriever = new ContextHistogramRetriever(modelConf.getDataRetrieverConf());
         modelBuilder = new ContinuousHistogramModelBuilder();
     }
 

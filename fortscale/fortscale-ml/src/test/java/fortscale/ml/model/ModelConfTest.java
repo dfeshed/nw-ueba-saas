@@ -45,7 +45,7 @@ public class ModelConfTest {
 
     private JSONObject buildRetrieverJSON() {
         JSONObject json = new JSONObject();
-        json.put("type", "entity_histogram_retriever_conf");
+        json.put("type", "context_histogram_retriever_conf");
         json.put("timeRangeInSeconds", 1);
         json.put("functions", new JSONArray());
         json.put("featureBucketConfName", "featureBucketConfName1");

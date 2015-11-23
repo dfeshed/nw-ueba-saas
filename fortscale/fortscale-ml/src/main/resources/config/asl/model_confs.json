@@ -8,7 +8,7 @@
         "featureBucketConfName": "normalized_username_vpn_session_daily"
       },
       "retriever": {
-        "type": "entity_histogram_retriever_conf",
+        "type": "context_histogram_retriever_conf",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
