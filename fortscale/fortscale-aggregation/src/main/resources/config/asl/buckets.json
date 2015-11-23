@@ -7,7 +7,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "kerberos_logins"
+        "kerberosLogins"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -89,7 +89,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "kerberos_logins"
+        "kerberosLogins"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -466,7 +466,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "vpn_session"
+        "vpnsession"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -485,7 +485,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "vpn_session"
+        "vpnsession"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -507,7 +507,7 @@
         "source_machine"
       ],
       "dataSources": [
-        "kerberos_logins"
+        "kerberosLogins"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -527,7 +527,7 @@
         "destination_machine"
       ],
       "dataSources": [
-        "kerberos_logins"
+        "kerberosLogins"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
