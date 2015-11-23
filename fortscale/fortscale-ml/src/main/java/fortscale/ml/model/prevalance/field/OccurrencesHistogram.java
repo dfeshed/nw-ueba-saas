@@ -16,19 +16,19 @@ public class OccurrencesHistogram {
 	private List<OccurrencesHistogramBucketScorer> bucketScorers;
 	private double maxBucketScore;
 
-	public OccurrencesHistogram(Map<String, Double> featureValueToCountMap) {
+	public OccurrencesHistogram(List<Double> featureOccurrences) {
 		bucketScorers = new ArrayList<>(NUM_OF_BUCKETS);
 		for (int i = 0; i < NUM_OF_BUCKETS; i++) {
 			bucketScorers.add(new OccurrencesHistogramBucketScorer());
 		}
-		updateBucketScorerList(featureValueToCountMap);
+		updateBucketScorerList(featureOccurrences);
 		calcMaxBucketScore();
 	}
 
-	private void updateBucketScorerList(Map<String, Double> featureValueToCountMap) {
-		for (Double count : featureValueToCountMap.values()) {
-			if (count >= 1) {
-				bucketScorers.get((int) getBucketIndex(count)).addFeatureCount(count);
+	private void updateBucketScorerList(List<Double> featureOccurrences) {
+		for (Double occurrence : featureOccurrences) {
+			if (occurrence >= 1) {
+				bucketScorers.get((int) getBucketIndex(occurrence)).addFeatureCount(occurrence);
 			}
 		}
 	}
@@ -43,10 +43,6 @@ public class OccurrencesHistogram {
 	public double score(Double featureCount) {
 		if (maxBucketScore == 0) {
 			return 0;
-		}
-
-		if (featureCount == null) {
-			featureCount = 1D;
 		}
 
 		double bucketIndex = getBucketIndex(featureCount);

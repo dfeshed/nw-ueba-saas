@@ -4,29 +4,32 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class DiscreteDataModelTest {
+	private DiscreteDataModel createModel(String ignoreValues, Double... counts) throws Exception {
+		Pattern ignorePattern = null;
+		if (ignoreValues != null) {
+			ignorePattern = Pattern.compile(ignoreValues);
+		}
+		DiscreteDataModel model = new DiscreteDataModel(ignorePattern);
+		model.setFeatureCounts(Arrays.asList(counts));
+		return model;
+	}
+
 	@Test
 	public void shouldScore0EmptyString() throws Exception {
-		final DiscreteDataModel model = new DiscreteDataModel(null);
-		final String emptyString = "";
-		model.setFeatureCounts(new HashMap<String, Double>() {{
-			this.put(emptyString, 1d);
-		}});
+		DiscreteDataModel model = createModel(null, 1d, 100d);
 
-		double score = model.calculateScore(new ImmutablePair<Object, Double>(emptyString, 1d));
+		double score = model.calculateScore(new ImmutablePair<Object, Double>("", 1d));
 		Assert.assertEquals(0d, score, 0.000001);
 	}
 
 	@Test
 	public void shouldScore0ToIgnoredValues() throws Exception {
 		final String ignore = "ignore";
-		final DiscreteDataModel model = new DiscreteDataModel(Pattern.compile(ignore));
-		model.setFeatureCounts(new HashMap<String, Double>() {{
-			this.put(ignore, 1d);
-		}});
+		DiscreteDataModel model = createModel(ignore, 1d, 100d);
 
 		double score = model.calculateScore(new ImmutablePair<Object, Double>(ignore, 1d));
 		Assert.assertEquals(0d, score, 0.000001);
@@ -34,16 +37,9 @@ public class DiscreteDataModelTest {
 
 	@Test
 	public void shouldScorePositiveToNotIgnoredValues() throws Exception {
-		final String ignore = "ignore";
-		final String s = "do not ignore";
-		final DiscreteDataModel model = new DiscreteDataModel(Pattern.compile(ignore));
-		model.setFeatureCounts(new HashMap<String, Double>() {{
-			this.put(ignore, 1d);
-			this.put(s, 1d);
-			this.put("frequent value", 100d);
-		}});
+		DiscreteDataModel model = createModel("ignore", 1d, 100d);
 
-		double score = model.calculateScore(new ImmutablePair<Object, Double>(s, 1d));
+		double score = model.calculateScore(new ImmutablePair<Object, Double>("do not ignore", 1d));
 		Assert.assertTrue(score > 0);
 	}
 

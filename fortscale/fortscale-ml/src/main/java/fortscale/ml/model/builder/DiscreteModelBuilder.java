@@ -6,6 +6,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.prevalance.field.DiscreteDataModel;
 import fortscale.utils.logging.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class DiscreteModelBuilder implements IModelBuilder {
         return model;
     }
 
-    private Map<String, Double> countFeatureValues(List<Object> values, DiscreteDataModel model) {
+    private List<Double> countFeatureValues(List<Object> values, DiscreteDataModel model) {
         Map<String, Double> featureValueToCountMap = new HashMap<>();
         for (Object value : values) {
             String featureValue = model.getFeatureValue(value);
@@ -48,7 +49,7 @@ public class DiscreteModelBuilder implements IModelBuilder {
                 featureValueToCountMap.put(featureValue, count + 1);
             }
         }
-        return featureValueToCountMap;
+        return new ArrayList<>(featureValueToCountMap.values());
     }
 
     private List<Object> castModelBuilderData(Object modelBuilderData) {
