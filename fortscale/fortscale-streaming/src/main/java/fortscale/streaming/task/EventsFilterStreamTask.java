@@ -1,11 +1,7 @@
 package fortscale.streaming.task;
 
-import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.SpringService;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -16,9 +12,6 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 
@@ -26,7 +19,6 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 
 	private String outputTopic;
-	private String dataSource;
 	private Counter processedFilterCount;
 	private Counter processedNonFilterCount;
 
@@ -36,7 +28,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		outputTopic = config.get("fortscale.output.topic", "");
-		dataSource = getConfigString(config, "fortscale.data.source");
+		String dataSource = getConfigString(config, "fortscale.data.source");
 		// create counter metric for processed messages
 		processedFilterCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-filter-count", dataSource));
 		processedNonFilterCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-non-filter-count", dataSource));
@@ -49,7 +41,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// parse the message into json
-		JSONObject message = (JSONObject) parseJsonMessage(envelope);
+		JSONObject message = parseJsonMessage(envelope);
 
 
 		if (!acceptMessage(message)) {
