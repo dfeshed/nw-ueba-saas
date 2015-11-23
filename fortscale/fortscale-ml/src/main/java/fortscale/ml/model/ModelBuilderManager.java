@@ -3,8 +3,8 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
-import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -39,7 +39,7 @@ public class ModelBuilderManager {
         modelBuilder = new ContinuousHistogramModelBuilder();
     }
 
-    public void process(IModelBuildingListener listener, DateTime previousEndTime, DateTime currentEndTime) {
+    public void process(IModelBuildingListener listener, String sessionId, DateTime previousEndTime, DateTime currentEndTime) {
         Assert.notNull(currentEndTime);
 
         if (contextSelector != null) {
@@ -49,20 +49,20 @@ public class ModelBuilderManager {
             }
 
             for (String contextId : contextSelector.getContexts(previousEndTime, currentEndTime)) {
-                build(listener, contextId, currentEndTime);
+                build(listener, sessionId, contextId, currentEndTime);
             }
         } else {
-            build(listener, null, currentEndTime);
+            build(listener, sessionId, null, currentEndTime);
         }
     }
 
-    public void build(IModelBuildingListener listener, String contextId, DateTime endTime) {
+    public void build(IModelBuildingListener listener, String sessionId, String contextId, DateTime endTime) {
         Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         Model model = modelBuilder.build(modelBuilderData);
 
         boolean success = true;
         try {
-            modelStore.save(modelConf, contextId, model, endTime);
+            modelStore.save(modelConf, sessionId, contextId, model, endTime);
         } catch (Exception e) {
             logger.error(String.format("Failed to save model %s, with end time %s, for context ID %s.",
                     modelConf.getName(), endTime.toString(), contextId), e);

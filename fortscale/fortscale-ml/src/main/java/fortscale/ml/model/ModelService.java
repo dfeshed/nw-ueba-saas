@@ -44,7 +44,7 @@ public class ModelService {
 
 		if (StringUtils.hasText(sessionId) && modelBuilderManager != null && endTimeInSeconds != null && endTimeInSeconds >= 0) {
 			DateTime currentEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTimeInSeconds));
-			modelBuilderManager.process(modelBuildingListener, null, currentEndTime);
+			modelBuilderManager.process(modelBuildingListener, sessionId, null, currentEndTime);
 		}
 	}
 

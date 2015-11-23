@@ -12,12 +12,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import java.util.Arrays;
 
+import java.util.Arrays;
 import static org.mockito.Mockito.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class ModelBuilderManagerTest {
+    private static final String DEFAULT_SESSION_ID = "testSessionId";
     private static ClassPathXmlApplicationContext testContextManager;
 
     private ModelConf modelConf;
@@ -53,11 +54,11 @@ public class ModelBuilderManagerTest {
         boolean[] successes = {true, true};
 
         ModelBuilderManager modelBuilderManager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
-        modelBuilderManager.process(null, previousEndTime, currentEndTime);
+        modelBuilderManager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         verify(contextSelector, times(1)).getContexts(previousEndTime, currentEndTime);
         for (int i = 0; i < ids.length; i++) {
-            verify(modelStore).save(eq(modelConf), eq(ids[i]), eq(models[i]), eq(currentEndTime));
+            verify(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentEndTime));
         }
         verifyNoMoreInteractions(modelStore);
     }
@@ -68,21 +69,11 @@ public class ModelBuilderManagerTest {
         Model[] models = {new ContinuousDataModel()};
         boolean[] successes = {true};
 
-        ModelBuilderManager modelBuilderManager = createProcessScenario(null, null, null, models, successes);
-        modelBuilderManager.process(null, null, currentEndTime);
-
-        verify(modelStore).save(eq(modelConf), isNull(String.class), eq(models[0]), eq(currentEndTime));
-        verifyNoMoreInteractions(modelStore);
-    }
-
-    @Test
-    public void shouldRegisterItselfOnceFinishedProcessing() {
-        DateTime currentEndTime = DateTime.now();
-        Model[] models = {new ContinuousDataModel()};
-        boolean[] successes = {true};
-
         ModelBuilderManager modelBuilderManager = createProcessScenario(null, currentEndTime, null, models, successes);
-        modelBuilderManager.process(null, null, currentEndTime);
+        modelBuilderManager.process(null, DEFAULT_SESSION_ID, null, currentEndTime);
+
+        verify(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentEndTime));
+        verifyNoMoreInteractions(modelStore);
     }
 
     @Test
@@ -98,7 +89,7 @@ public class ModelBuilderManagerTest {
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
         ModelBuilderManager modelManager = createProcessScenario(previousEndTime, currentEndTime, entityIds, models, successes);
-        modelManager.process(listener, previousEndTime, currentEndTime);
+        modelManager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         for (int i = 0; i < entityIds.length; i++) {
             verify(listener).modelBuildingStatus(eq(modelConfName), eq(entityIds[i]), eq(currentEndTime), eq(successes[i]));
@@ -108,7 +99,7 @@ public class ModelBuilderManagerTest {
 
     private void mockBuild(String id, Model model, DateTime endTime, boolean success) {
         if (!success) {
-            doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(id), eq(model), eq(endTime));
+            doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(endTime));
         }
     }
 
