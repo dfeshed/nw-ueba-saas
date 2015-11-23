@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.util.Assert;
 
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
@@ -18,9 +17,8 @@ public class ModelStore {
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
 
-	public void save(ModelConf modelConf, String contextId, Model model, DateTime sessionStartTime, DateTime sessionEndTime) {
-		Assert.notNull(sessionStartTime);
-		ModelDAO modelDAO = new ModelDAO(contextId, model, sessionStartTime, sessionEndTime);
+	public void save(ModelConf modelConf, String contextId, Model model, DateTime endTime) {
+		ModelDAO modelDAO = new ModelDAO(contextId, model, endTime);
 		String collectionName = COLLECTION_NAME_PREFIX + modelConf.getName();
 		ensureCollectionExists(collectionName);
 		mongoTemplate.save(modelDAO, collectionName);

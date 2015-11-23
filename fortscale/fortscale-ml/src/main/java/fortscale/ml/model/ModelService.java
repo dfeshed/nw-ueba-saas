@@ -1,71 +1,52 @@
 package fortscale.ml.model;
 
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.utils.ConversionUtils;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 @Configurable(preConstruction = true)
-public class ModelService implements IModelBuildingScheduler {
-	private static final int PRIORITY_QUEUE_INITIAL_CAPACITY = 50;
+public class ModelService {
+	private static final String SESSION_ID_JSON_FIELD = "sessionId";
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
+	private static final String END_TIME_IN_SECONDS_JSON_FIELD = "endTimeInSeconds";
 
 	@Autowired
 	private ModelConfService modelConfService;
 
 	private IModelBuildingListener modelBuildingListener;
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
-	private PriorityQueue<Pair<IModelBuildingRegistrar, Long>> registrarRunTimeQueue;
-	private DateTime sessionStartTime;
 
 	public ModelService(IModelBuildingListener modelBuildingListener) {
 		Assert.notNull(modelBuildingListener);
 		this.modelBuildingListener = modelBuildingListener;
-		sessionStartTime = DateTime.now();
 
 		modelConfNameToManager = new HashMap<>();
-		registrarRunTimeQueue = new PriorityQueue<>(PRIORITY_QUEUE_INITIAL_CAPACITY, new Comparator<Pair<IModelBuildingRegistrar, Long>>() {
-			@Override
-			public int compare(Pair<IModelBuildingRegistrar, Long> pair1, Pair<IModelBuildingRegistrar, Long> pair2) {
-				return Long.compare(pair1.getRight(), pair2.getRight());
-			}
-		});
-
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
-			ModelBuilderManager modelManager = new ModelBuilderManager(modelConf, this);
-			modelConfNameToManager.put(modelConf.getName(), modelManager);
+			ModelBuilderManager modelBuilderManager = new ModelBuilderManager(modelConf);
+			modelConfNameToManager.put(modelConf.getName(), modelBuilderManager);
 		}
 	}
 
 	public void process(JSONObject event) {
+		String sessionId = event.getAsString(SESSION_ID_JSON_FIELD);
 		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
-		ModelBuilderManager modelManager = modelConfNameToManager.get(modelConfName);
-		if (modelManager != null) {
-			modelManager.process(modelBuildingListener, sessionStartTime, null);
+		ModelBuilderManager modelBuilderManager = modelConfNameToManager.get(modelConfName);
+		Long endTimeInSeconds = ConversionUtils.convertToLong(event.get(END_TIME_IN_SECONDS_JSON_FIELD));
+
+		if (StringUtils.hasText(sessionId) && modelBuilderManager != null && endTimeInSeconds != null && endTimeInSeconds >= 0) {
+			DateTime currentEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTimeInSeconds));
+			modelBuilderManager.process(modelBuildingListener, null, currentEndTime);
 		}
 	}
 
-	public void window(long currentTimeSeconds) {
-		while (!registrarRunTimeQueue.isEmpty() && registrarRunTimeQueue.peek().getRight() <= currentTimeSeconds) {
-			Pair<IModelBuildingRegistrar, Long> registrarRunTimePair = registrarRunTimeQueue.poll();
-			registrarRunTimePair.getLeft().process(modelBuildingListener, sessionStartTime, null);
-		}
-	}
-
-	@Override
-	public void register(IModelBuildingRegistrar registrar, long epochtime) {
-		if (registrar != null && epochtime >= 0) {
-			Pair<IModelBuildingRegistrar, Long> registrarRunTimePair = new ImmutablePair<>(registrar, epochtime);
-			registrarRunTimeQueue.add(registrarRunTimePair);
-		}
-	}
+	public void window() {}
 }

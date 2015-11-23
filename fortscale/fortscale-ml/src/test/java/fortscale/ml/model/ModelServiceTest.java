@@ -10,8 +10,10 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.utils.time.TimestampUtils;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -68,9 +70,14 @@ public class ModelServiceTest {
 
 	@Test
 	public void should_process_correctly_a_build_continuous_data_model_event() throws Exception {
+		long previousEndTimeInSeconds = 1420070400;
+		long previousEndTimeInMillis = TimestampUtils.convertToMilliSeconds(previousEndTimeInSeconds);
+		long currentEndTimeInSeconds = 1420070410;
+		long currentEndTimeInMillis = TimestampUtils.convertToMilliSeconds(currentEndTimeInSeconds);
+
 		List<String> contextIds = Arrays.asList("id1", "id2");
-		// TODO: Should not be 0L!
-		when(featureBucketsReaderService.findDistinctContextByTimeRange(selectorFeatureBucketConf, 0L, 0L)).thenReturn(contextIds);
+		when(featureBucketsReaderService.findDistinctContextByTimeRange(
+				selectorFeatureBucketConf, previousEndTimeInMillis, currentEndTimeInMillis)).thenReturn(contextIds);
 
 		// ID #1, first bucket
 		GenericHistogram genericHistogram_1_1 = new GenericHistogram();
@@ -100,27 +107,28 @@ public class ModelServiceTest {
 		List<FeatureBucket> featureBuckets_1 = new ArrayList<>();
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_1));
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_2));
-		// TODO: Should not be any(Long.class)!
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id1"), any(Long.class), any(Long.class))).thenReturn(featureBuckets_1);
+				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_1);
 
 		List<FeatureBucket> featureBuckets_2 = new ArrayList<>();
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_1));
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_2));
-		// TODO: Should not be any(Long.class)!
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id2"), any(Long.class), any(Long.class))).thenReturn(featureBuckets_2);
+				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_2);
 
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 
 		JSONObject event = new JSONObject();
+		event.put("sessionId", "test_session_id");
 		event.put("modelConfName", modelConfName);
+		event.put("endTimeInSeconds", currentEndTimeInSeconds);
 		modelService.process(event);
 
 		// Assert listener
-		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", true);
-		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", true);
+		DateTime currentEndTime = new DateTime(currentEndTimeInMillis);
+		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
+		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
 		Assert.assertEquals(expectedStatuses, listener.getStatuses());
 
@@ -153,10 +161,11 @@ public class ModelServiceTest {
 		return featureBucket;
 	}
 
-	private static JSONObject buildStatus(String modelConfName, String contextId, boolean success) {
+	private static JSONObject buildStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
 		JSONObject statusJson = new JSONObject();
 		statusJson.put("modelConfName", modelConfName);
 		statusJson.put("contextId", contextId);
+		statusJson.put("endTime", endTime.toString());
 		statusJson.put("success", success);
 		return statusJson;
 	}
@@ -165,8 +174,8 @@ public class ModelServiceTest {
 		private List<JSONObject> statuses = new ArrayList<>();
 
 		@Override
-		public void modelBuildingStatus(String modelConfName, String contextId, boolean success) {
-			statuses.add(buildStatus(modelConfName, contextId, success));
+		public void modelBuildingStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
+			statuses.add(buildStatus(modelConfName, contextId, endTime, success));
 		}
 
 		public List<JSONObject> getStatuses() {

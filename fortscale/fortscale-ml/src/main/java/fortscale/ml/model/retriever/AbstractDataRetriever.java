@@ -3,17 +3,18 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IDataRetriever {
-	protected static final Logger logger = Logger.getLogger(IDataRetriever.class);
+public abstract class AbstractDataRetriever {
+	protected static final Logger logger = Logger.getLogger(AbstractDataRetriever.class);
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
 
-	public IDataRetriever(IDataRetrieverConf dataRetrieverConf) {
+	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -31,5 +32,5 @@ public abstract class IDataRetriever {
 		}
 	}
 
-	public abstract Object retrieve(String contextId);
+	public abstract Object retrieve(String contextId, DateTime endTime);
 }

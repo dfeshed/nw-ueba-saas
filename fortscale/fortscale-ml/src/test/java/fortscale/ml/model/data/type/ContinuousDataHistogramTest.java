@@ -1,5 +1,6 @@
 package fortscale.ml.model.data.type;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataHistogramTest {
+	private DateTime startTime = DateTime.now();
+	private DateTime endTime = startTime.plusDays(1);
 
 	private void assertHistogramCount(ContinuousDataHistogram histogram, double value, long expectedCount) {
 		Assert.assertEquals(expectedCount, Math.round(histogram.getCount(value)));
@@ -14,7 +17,7 @@ public class ContinuousDataHistogramTest {
 
 	@Test
 	public void should_add_new_value_to_histogram() {
-		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+		ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
 
 		assertHistogramCount(histogram, 42, 0);
 		histogram.add(42, 100);
@@ -27,7 +30,7 @@ public class ContinuousDataHistogramTest {
 
 	@Test
 	public void should_update_existing_value_in_histogram() {
-		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+		ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
 
 		histogram.add(1.9, 86);
 		assertHistogramCount(histogram, 1.9, 86);
@@ -46,7 +49,7 @@ public class ContinuousDataHistogramTest {
 
 	@Test
 	public void should_add_successfully_generic_histograms_after_init() {
-		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+		ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
 
 		Map<String, Double> input1 = new HashMap<>();
 		input1.put("1", 10.0);
@@ -71,7 +74,7 @@ public class ContinuousDataHistogramTest {
 
 	@Test
 	public void should_add_successfully_a_generic_histogram_when_there_are_already_values() {
-		ContinuousDataHistogram histogram = new ContinuousDataHistogram();
+		ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
 
 		histogram.add(-100.0);
 		histogram.add(-200.0, 2);

@@ -9,13 +9,13 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-		@JsonSubTypes.Type(value = EntityHistogramRetrieverConf.class, name = EntityHistogramRetrieverConf.ENTITY_HISTOGRAM_RETRIEVER_CONF)
+		@JsonSubTypes.Type(value = ContextHistogramRetrieverConf.class, name = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER_CONF)
 })
-public abstract class IDataRetrieverConf {
+public abstract class AbstractDataRetrieverConf {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
 
-	public IDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
+	public AbstractDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
 		Assert.isTrue(timeRangeInSeconds > 0);
 		Assert.notNull(functions);
 
