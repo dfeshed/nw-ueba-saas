@@ -4,7 +4,7 @@ import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
-import fortscale.ml.model.retriever.IDataRetriever;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -25,7 +25,7 @@ public class ModelBuilderManager {
 
     private ModelConf modelConf;
     private ContextSelector contextSelector;
-    private IDataRetriever dataRetriever;
+    private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
     public ModelBuilderManager(ModelConf modelConf) {

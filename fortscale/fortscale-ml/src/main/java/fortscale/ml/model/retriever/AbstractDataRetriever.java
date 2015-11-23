@@ -8,13 +8,13 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IDataRetriever {
-	protected static final Logger logger = Logger.getLogger(IDataRetriever.class);
+public abstract class AbstractDataRetriever {
+	protected static final Logger logger = Logger.getLogger(AbstractDataRetriever.class);
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
 
-	public IDataRetriever(IDataRetrieverConf dataRetrieverConf) {
+	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
 
 		ObjectMapper objectMapper = new ObjectMapper();

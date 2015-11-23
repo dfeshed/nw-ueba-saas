@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilderConf;
-import fortscale.ml.model.retriever.IDataRetrieverConf;
+import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.ContextSelectorConf;
 import org.springframework.util.Assert;
 
@@ -18,14 +18,14 @@ public class ModelConf {
     @JsonProperty("selector")
     private ContextSelectorConf contextSelectorConf;
     @JsonProperty("retriever")
-    private IDataRetrieverConf dataRetrieverConf;
+    private AbstractDataRetrieverConf dataRetrieverConf;
     @JsonProperty("builder")
     private IModelBuilderConf modelBuilderConf;
 
     @JsonCreator
     public ModelConf(@JsonProperty("name") String name,
                      @JsonProperty("buildIntervalInSeconds") long buildIntervalInSeconds,
-                     @JsonProperty("retriever") IDataRetrieverConf dataRetrieverConf,
+                     @JsonProperty("retriever") AbstractDataRetrieverConf dataRetrieverConf,
                      @JsonProperty("builder") IModelBuilderConf modelBuilderConf) {
 
         Assert.hasText(name);
@@ -51,7 +51,7 @@ public class ModelConf {
         return contextSelectorConf;
     }
 
-    public IDataRetrieverConf getDataRetrieverConf() {
+    public AbstractDataRetrieverConf getDataRetrieverConf() {
         return dataRetrieverConf;
     }
 

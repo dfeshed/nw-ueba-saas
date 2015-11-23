@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-public class ContextHistogramRetrieverConf extends IDataRetrieverConf {
+public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 	public static final String CONTEXT_HISTOGRAM_RETRIEVER_CONF = "context_histogram_retriever_conf";
 
 	private String featureBucketConfName;

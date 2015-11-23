@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configurable(preConstruction = true)
-public class ContextHistogramRetriever extends IDataRetriever {
+public class ContextHistogramRetriever extends AbstractDataRetriever {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
@@ -26,7 +26,7 @@ public class ContextHistogramRetriever extends IDataRetriever {
 	private FeatureBucketConf featureBucketConf;
 	private String featureName;
 
-	public ContextHistogramRetriever(IDataRetrieverConf dataRetrieverConf) {
+	public ContextHistogramRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		super(dataRetrieverConf);
 		ContextHistogramRetrieverConf contextHistogramRetrieverConf = (ContextHistogramRetrieverConf)dataRetrieverConf;
 		String featureBucketConfName = contextHistogramRetrieverConf.getFeatureBucketConfName();
