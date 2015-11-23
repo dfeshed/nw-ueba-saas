@@ -2,7 +2,6 @@ package fortscale.ml.model.prevalance.field;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -21,11 +20,11 @@ public class OccurrencesHistogram {
 		for (int i = 0; i < NUM_OF_BUCKETS; i++) {
 			bucketScorers.add(new OccurrencesHistogramBucketScorer());
 		}
-		updateBucketScorerList(featureOccurrences);
-		calcMaxBucketScore();
+		populateBucketScorers(featureOccurrences);
+		maxBucketScore = calcMaxBucketScore();
 	}
 
-	private void updateBucketScorerList(List<Double> featureOccurrences) {
+	private void populateBucketScorers(List<Double> featureOccurrences) {
 		for (Double occurrence : featureOccurrences) {
 			if (occurrence >= 1) {
 				bucketScorers.get((int) getBucketIndex(occurrence)).addFeatureCount(occurrence);
@@ -33,11 +32,12 @@ public class OccurrencesHistogram {
 		}
 	}
 
-	private void calcMaxBucketScore() {
-		maxBucketScore = 0;
-		for (int i = 0; i < bucketScorers.size(); i++) {
-			maxBucketScore = Math.max(maxBucketScore, bucketScorers.get(i).getScore());
+	private double calcMaxBucketScore() {
+		double max = 0;
+		for (OccurrencesHistogramBucketScorer bucketScorer : bucketScorers) {
+			max = Math.max(max, bucketScorer.getScore());
 		}
+		return max;
 	}
 
 	public double score(Double featureCount) {

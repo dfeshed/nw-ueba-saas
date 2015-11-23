@@ -18,7 +18,7 @@ public class OccurrencesHistogramTest {
 	}
 
 	@Test
-	public void elementarycheckForFeatureCalibration() throws Exception {
+	public void elementarycheckForOccurrencesHistogram() throws Exception {
 		double count = 100D;
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		for (int i = 0; i < 100; i++) {
@@ -29,7 +29,7 @@ public class OccurrencesHistogramTest {
 	}
 
 	@Test
-	public void simpleInputOutputForFeatureCalibration() throws Exception {
+	public void simpleInputOutputForOccurrencesHistogram() throws Exception {
 		Random rnd = new Random(1);
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		for (int i = 0; i < 50; i++) {
@@ -130,7 +130,7 @@ public class OccurrencesHistogramTest {
 		String featureValue1 = String.format("test%d", j++);
 		featureValueToCountMap.put(featureValue1, 5D);
 		score = calcScore(featureValueToCountMap, featureValue);
-		double score1 = calcScore(featureValueToCountMap, featureValue1);;
+		double score1 = calcScore(featureValueToCountMap, featureValue1);
 		Assert.assertEquals(score, score1, 1);
 		Assert.assertEquals(63, score, 1);
 
