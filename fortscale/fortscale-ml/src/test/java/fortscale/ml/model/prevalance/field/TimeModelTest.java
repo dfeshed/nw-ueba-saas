@@ -34,11 +34,11 @@ public class TimeModelTest {
 		
 		Integer epochSeconds = new Integer(1000);
 		for (int i = 0; i < 100; i++) {
-			timeModel.add(epochSeconds, 0);
+			timeModel.add(epochSeconds);
 		}
 		
 		epochSeconds = new Integer(6600);
-		timeModel.add(epochSeconds, 0);
+		timeModel.add(epochSeconds);
 		double score = timeModel.calculateScore(epochSeconds);
 		Assert.assertEquals(44.0, score, 0.0);
 	}
@@ -49,11 +49,11 @@ public class TimeModelTest {
 		
 		Integer epochSeconds = new Integer(1000);
 		for (int i = 0; i < 100; i++) {
-			timeModel.add(epochSeconds, 0);
+			timeModel.add(epochSeconds);
 		}
 		
 		epochSeconds = null;
-		timeModel.add(epochSeconds, 0);
+		timeModel.add(epochSeconds);
 		double score = timeModel.calculateScore(epochSeconds);
 		Assert.assertEquals(0.0, score, 0.0);
 	}

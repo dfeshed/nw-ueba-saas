@@ -114,7 +114,7 @@ public class TimeModel implements Model {
 		return total;
 	}
 
-	public void add(Object value, long timestamp) {
+	public void add(Object value) {
 		try {
 			Long epoch = convertToSeconds(value);
 			if (epoch != null) {
