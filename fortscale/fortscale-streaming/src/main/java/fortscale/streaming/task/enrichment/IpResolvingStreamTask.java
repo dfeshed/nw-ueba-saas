@@ -141,7 +141,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             if (eventResolvingConfig == null)
             {
-                throw new IllegalStateException("No configuration found for config key " + configKey);
+                throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message received from input topic " + topic + ": " + message.toJSONString());
             }
 
             message = ipResolvingService.enrichEvent(eventResolvingConfig, message);
