@@ -1,11 +1,13 @@
 package fortscale.streaming.service.vpn;
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+
 /**
  * Configuration for VPN geolocation. This should be constructed from the streaming task configuration and passed to the VpnEnrichService.
  */
 public class VpnEnrichConfig {
 
-    private String inputTopic;
+    private StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey;
     private String outputTopic;
     private String partitionField;
 
@@ -23,10 +25,10 @@ public class VpnEnrichConfig {
     private VpnDataBucketsConfig vpnDataBucketsConfig;
     private VpnSessionUpdateConfig vpnSessionUpdateConfig;
 
-    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig
+    public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
             vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
             vpnSessionUpdateConfig, String usernameFieldName) {
-        this.inputTopic = inputTopic;
+        this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
         this.vpnGeolocationConfig = vpnGeolocationConfig;
@@ -35,12 +37,12 @@ public class VpnEnrichConfig {
         this.usernameFieldName = usernameFieldName;
     }
 
-    public String getInputTopic() {
-        return inputTopic;
+    public StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey() {
+        return streamingTaskDataSourceConfigKey;
     }
 
-    public void setInputTopic(String inputTopic) {
-        this.inputTopic = inputTopic;
+    public void setStreamingTaskDataSourceConfigKey(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey) {
+        this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
     }
 
     public String getOutputTopic() {

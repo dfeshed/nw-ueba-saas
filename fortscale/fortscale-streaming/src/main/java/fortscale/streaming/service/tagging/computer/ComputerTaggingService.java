@@ -1,52 +1,41 @@
 package fortscale.streaming.service.tagging.computer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.service.StreamingTaskConfigurationService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer
  */
-public class ComputerTaggingService {
+public class ComputerTaggingService extends StreamingTaskConfigurationService<ComputerTaggingConfig> {
 
 	protected ComputerService computerService;
 
 	protected SensitiveMachineService sensitiveMachineService;
 
-	private Map<String, ComputerTaggingConfig> configs = new HashMap<>();
-
-	public static Logger logger = LoggerFactory.getLogger(ComputerTaggingService.class);
-
 	public ComputerTaggingService(ComputerService computerService, SensitiveMachineService sensitiveMachineService,
-			Map<String, ComputerTaggingConfig>  configs) {
+			Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig>  configs) {
+		super(configs);
+
 		checkNotNull(computerService);
 		checkNotNull(sensitiveMachineService);
-		checkNotNull(configs);
 
 		this.computerService = computerService;
 		this.sensitiveMachineService = sensitiveMachineService;
 		this.configs = configs;
 	}
 
-	public JSONObject enrichEvent(String inputTopic, JSONObject event) {
-		checkNotNull(inputTopic);
-		checkNotNull(event);
-		ComputerTaggingConfig config = configs.get(inputTopic);
-		if (config == null) {
-			logger.error("received event from topic {} that does not appear in configuration", inputTopic);
-			return event;
-		}
+	public JSONObject enrichEvent(ComputerTaggingConfig config, JSONObject event) throws FilteredEventException {
 
 		for (ComputerTaggingFieldsConfig computerTaggingFieldsConfig : config.getComputerTaggingFieldsConfigList()) {
 			// get the hostname from the event
@@ -98,25 +87,4 @@ public class ComputerTaggingService {
 		}
 	}
 
-	public String getOutputTopic(String inputTopic) {
-		if (configs.containsKey(inputTopic))
-			return configs.get(inputTopic).getOutputTopic();
-		else
-			throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
-	}
-
-	/** Get the partition key to use for outgoing message envelope for the given event */
-	public Object getPartitionKey(String inputTopic, JSONObject event) {
-		checkNotNull(inputTopic);
-		checkNotNull(event);
-
-		// get the configuration for the input topic, if not found skip this event
-		ComputerTaggingConfig config = configs.get(inputTopic);
-		if (config==null) {
-			logger.error("received event from topic {} that does not appear in configuration", inputTopic);
-			return null;
-		}
-
-		return event.get(config.getPartitionField());
-	}
 }

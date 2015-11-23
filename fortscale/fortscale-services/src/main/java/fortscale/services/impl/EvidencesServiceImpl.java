@@ -148,6 +148,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(startDate, endDate, evidenceType, entityName);
 	}
 
+	public  List<Evidence> findByEndDateBetweenAndEvidenceTypeAndEntityName(
+			long startDate, long endDate, String evidenceType, String entityName) {
+		return evidencesRepository.findByEndDateBetweenAndEvidenceTypeAndEntityName(startDate, endDate, evidenceType, entityName);
+	}
+
 	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName){
 		if (StringUtils.isBlank(entityName)){
 			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);

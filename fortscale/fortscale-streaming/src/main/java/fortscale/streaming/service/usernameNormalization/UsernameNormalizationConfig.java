@@ -1,11 +1,13 @@
 package fortscale.streaming.service.usernameNormalization;
 
+import fortscale.streaming.service.StreamingTaskConfig;
+
 /**
  * Configuration for computer tagging and clustering on a specific event type. This should be constructed from the topology
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
  * to determine what action to take for each type of event.
  */
-public class UsernameNormalizationConfig {
+public class UsernameNormalizationConfig implements StreamingTaskConfig {
 
 	private String inputTopic;
 	private String outputTopic;

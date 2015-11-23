@@ -142,7 +142,7 @@ public abstract class DataQueryController extends BaseController {
 					// If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
 					if(requestTotal) {
 						String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
-						total = impalaJdbcTemplate.queryForInt(totalQuery);
+						total = impalaJdbcTemplate.queryForObject(totalQuery, Integer.class);
 						info.put("totalQuery", totalQuery);
 					}
 

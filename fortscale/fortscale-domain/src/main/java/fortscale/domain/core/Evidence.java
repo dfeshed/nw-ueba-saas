@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -27,6 +28,7 @@ import java.util.UUID;
 		// index for making sure our evidence is unique
 	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1}", unique = true)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Evidence extends AbstractDocument{
 
 	/**
@@ -87,6 +89,7 @@ public class Evidence extends AbstractDocument{
 	@Field(startDateField)
 	private Long startDate;
 
+	@Indexed
 	@Field(endDateField)
 	private Long endDate;
 

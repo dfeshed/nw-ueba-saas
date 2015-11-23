@@ -24,6 +24,10 @@
 					<value>${impala.data.vpn.table.fields}</value>
 				</entry>
 				<entry>
+					<key>messageOutputFields</key>
+					<value>${kafka.vpn.message.record.fields}</value>
+				</entry>
+				<entry>
 					<key>partitionKeyFields</key>
 					<value>${impala.data.vpn.table.field.username}</value>
 				</entry>

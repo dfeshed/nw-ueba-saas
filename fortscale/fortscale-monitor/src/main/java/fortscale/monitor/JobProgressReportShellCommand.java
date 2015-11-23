@@ -230,7 +230,7 @@ public class JobProgressReportShellCommand {
 					int value = Integer.parseInt(args[2]);
 					String valueType = args[3];
 						
-					reporter.addDataReceived(id, new JobDataReceived(dataType, value, valueType));
+					reporter.addDataReceived(id, new JobDataReceived(dataType, Integer.valueOf(value), valueType));
 				} catch (NumberFormatException e) {}
 			}
 			

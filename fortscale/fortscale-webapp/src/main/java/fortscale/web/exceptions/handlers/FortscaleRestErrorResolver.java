@@ -18,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -121,7 +122,8 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
         //401
         applyDef(m, AuthenticationException.class, HttpStatus.UNAUTHORIZED);
         applyDef(m, InvalidCredentialsException.class, HttpStatus.UNAUTHORIZED, HttpStatusCode.WRONG_PASSWORD);
-        
+        applyDef(m, InvalidCsrfTokenException.class, HttpStatus.UNAUTHORIZED, HttpStatusCode.WRONG_PASSWORD);
+
 
         //403
         applyDef(m, CredentialsExpiredException.class, HttpStatus.FORBIDDEN, HttpStatusCode.PASSWORD_EXPIRED);

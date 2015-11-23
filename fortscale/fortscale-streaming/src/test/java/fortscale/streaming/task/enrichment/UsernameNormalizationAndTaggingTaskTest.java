@@ -1,16 +1,16 @@
 package fortscale.streaming.task.enrichment;
 
-import org.junit.Before;
-import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.UserService;
 import fortscale.services.impl.UserServiceImpl;
 import fortscale.services.impl.UsernameService;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -19,22 +19,27 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
 public class UsernameNormalizationAndTaggingTaskTest {
 
 
-	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\" }";
-	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\" }";
-	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\" }";
-	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\" }";
+	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\"}";
+	public static final String MESSAGE_2 = "{ \"name\": \"user2\",  \"normalized_name\": \"User 2\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
+	public static final String MESSAGE_3 = "{ \"name\": \"user3\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
+	public static final String MESSAGE_4 = "{ \"name\": \"user4\",  \"domain\": \"domain\", \"data_source\": \"vpn\", \"last_state\": \"etl\" }";
 
 	UsernameNormalizationAndTaggingTask task;
 	UserService userService;
@@ -43,6 +48,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 	SystemStream systemStream;
 	MessageCollector messageCollector;
 	TaskCoordinator taskCoordinator;
+	TaskMonitoringHelper taskMonitoringHelper;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,7 +75,11 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
+		taskMonitoringHelper = mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
+		//Mockito.when(taskMonitoringHelper.handleUnFilteredEvents(Any)).thenReturn();
 
+		task.dataSourceToConfigurationMap = new HashMap<>();
 	}
 
 	@Test
@@ -77,7 +87,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// Init the task to test
 		UsernameNormalizationAndTaggingTask task = new UsernameNormalizationAndTaggingTask();
-
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		// fields
 		String normalizedUsernameField = "normalized_name";
 		String usernameField = "name";
@@ -88,10 +98,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
 
 		// configuration
-		task.inputTopicToConfiguration = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1",
-				usernameField,"domain","",normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
+		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl"), new UsernameNormalizationConfig("input1", "output1",
+				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);
@@ -211,7 +220,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 	}
 
 	private IncomingMessageEnvelope getIncomingMessageEnvelope(SystemStreamPartition systemStreamPartition,
-					SystemStream systemStream, String key, String message, String topic) {
+															   SystemStream systemStream, String key, String message, String topic) {
 
 		IncomingMessageEnvelope envelope = Mockito.mock(IncomingMessageEnvelope.class);
 		Mockito.when(envelope.getKey()).thenReturn(key);

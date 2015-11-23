@@ -3,11 +3,11 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/security 
-		http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/security/spring-security-4.0.xsd
 		http://www.springframework.org/schema/util 
-		http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+		http://www.springframework.org/schema/util/spring-util-4.1.xsd">
 
 	<http pattern="/resources/**" security="none" />
 	
@@ -44,6 +44,16 @@
         </beans:property>
     </beans:bean>
 
+	<!--Todo: this is to enable CSRF protection-->
+	<!--<beans:bean id="csrfHeaderFilter" class="fortscale.web.spring.CSRFHeaderFilter"/>
+	<beans:bean id="springSecurityFilterChain" class="org.springframework.web.filter.DelegatingFilterProxy"/>
+	<beans:bean id="myfilterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+		<filter-chain-map request-matcher="ant">
+			<filter-chain pattern="/*" filters="springSecurityFilterChain,csrfHeaderFilter"/>
+		</filter-chain-map>
+	</beans:bean>-->
+
+
 	<http auto-config="true" use-expressions="true" entry-point-ref="fortscaleFailedEntryPoint">
 <!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/" access="permitAll" /> -->
@@ -73,12 +83,14 @@
 
 		<form-login login-page="/signin.html" authentication-failure-handler-ref="authenticationFailureHandler"
 		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
-		 login-processing-url="/api/analyst/login"/>
+		 login-processing-url="/api/analyst/login" username-parameter="j_username" password-parameter="j_password"/>
 
 		<access-denied-handler ref="accessDeniedHandler"/>
 		
 		<logout invalidate-session="true" logout-success-url="/signin.html"
 			logout-url="/api/analyst/logout" />
+		<!--<custom-filter ref="csrfHeaderFilter"  before="CSRF_FILTER"/>-->
+		<csrf disabled="true"/>
 	</http>
 
 	<beans:bean id="mongoAuthenticationProvider" class="fortscale.services.security.MongoAuthenticationProvider">

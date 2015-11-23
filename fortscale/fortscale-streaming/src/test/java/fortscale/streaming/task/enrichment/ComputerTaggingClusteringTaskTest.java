@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Computer;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
+import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
-import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
+import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -27,12 +30,15 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
-	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
+	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"data_source\": \"dataSource\", \"last_state\": \"lastState\" }";
 	final String HOST_NAME = "MY-PC";
 
 	ComputerTaggingClusteringTask task;
@@ -61,7 +67,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
 		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
-
+		task.configs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
 
 		// Mocks
 		systemStreamPartition = mock(SystemStreamPartition.class);
@@ -70,6 +76,9 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
 		task.computerTaggingService = mock(ComputerTaggingService.class);
+
+		TaskMonitoringHelper taskMonitoringHelper = mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 
 	}
 
@@ -134,7 +143,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 				return event;
 			}
 		};
-		doAnswer(answer).when(task.computerTaggingService).enrichEvent(anyString(),any(JSONObject.class));
+		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(ComputerTaggingConfig.class),any(JSONObject.class));
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");

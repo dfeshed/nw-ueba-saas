@@ -29,7 +29,7 @@ public class AMTWithOngoingParsingTest {
 	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass(){
-		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
 
 	}
 
@@ -68,84 +68,6 @@ public class AMTWithOngoingParsingTest {
 	@SuppressWarnings("unused")
 	private Object[] parametersForTest() {
 		return	$(
-
-
-
-              /*
-
-              $(
-                        "Test the TTL of caching events",
-                        $(
-                                "2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|testUser|testYid|VIEWAVINFO|VIEWAVINFO-TEST|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR",
-                                "2014-10-02T05:00:30.980+00:00|10.0.0.1|10.0.0.2|testUser|testYid|LOGINASMAIL|LOGINASMAIL-TEST|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR"
-                        ),
-                        $(
-                                "2014-10-01 05:00:30,1412164830,10.0.0.2,,UNKNOWN,10.0.0.1,,testUser,SUCCESS,,,false,false,false,false,testYid,VIEWAVINFO,VIEWAVINFO-TEST,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,testuser",
-                                "2014-10-02 05:00:30,1412251230,10.0.0.2,,UNKNOWN,10.0.0.1,,testUser,SUCCESS,,,false,false,false,false,testYid,LOGINASMAIL,LOGINASMAIL-TEST,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,testuser"
-                        )
-                ),
-                $(
-                        "Test the TTL of caching events-2",
-                        $(
-                                "2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|testUser|testYid|VIEWAVINFO|VIEWAVINFO-TEST|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR",
-                                "2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|testUser|testYid|LOGINASMAIL|LOGINASMAIL-TEST|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR"
-                        ),
-                        $(
-                                "2014-10-01 05:00:30,1412164830,10.0.0.2,,UNKNOWN,10.0.0.1,,testUser,SUCCESS,,,false,false,false,false,testYid,VIEWAVINFO,VIEWAVINFO-TEST,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,testuser",
-                                "2014-10-01 05:00:30,1412164830,10.0.0.2,,UNKNOWN,10.0.0.1,,testUser,SUCCESS,,,false,false,false,false,testYid,LOGINASMAIL,LOGINASMAIL-TEST,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,testuser"
-                        )
-                ),
-                $(
-                        "Test - CHANGEPW with preceding  event (TOKEN*)",
-                        $(
-                                "2014-10-10T07:43:48.000+00:00|10.0.0.1|10.0.0.2|rashid2|nanu|TOKEN2|Emailed To|1ser2ef&b=234234%s=6v",
-                                "2014-10-10T07:43:48.000+00:00|10.0.0.1|10.0.0.2|rashid2|nanu|CHANGEPW|Emailed To|1ser2ef&b=234234%s=6v"
-                        ),
-                        $(
-
-                                "2014-10-10 07:43:48,1412952228,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid2,SUCCESS,,,false,false,false,false,nanu,TOKEN2,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid2",
-                                "2014-10-10 07:43:48,1412952228,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid2,SUCCESS,,,false,false,false,false,nanu,CHANGEPW,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid2"
-                        )
-                ),
-
-              $(
-                        "Test - CHANGEPW without preceding  event",
-                        $(
-
-                                "2014-10-10T07:41:48.000+00:00|10.0.0.1|10.0.0.2|rashid|nanu|CHANGEPW|Emailed To|1ser2ef&b=234234%s=6v"
-                        ),
-                        $(
-
-                                "2014-10-10 07:41:48,1412952108,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid,SUCCESS,,,false,false,false,false,nanu,CHANGEPW,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid"
-                        )
-                ),
-                $(
-                        "Test - CHANGEPW with preceding  event",
-                        $(
-                                "2014-10-10T07:42:48.000+00:00|10.0.0.1|10.0.0.2|rashid1|nanu|VIEWAVINFO|Emailed To|1ser2ef&b=234234%s=6v",
-                                "2014-10-10T07:42:48.000+00:00|10.0.0.1|10.0.0.2|rashid1|nanu|CHANGEPW|Emailed To|1ser2ef&b=234234%s=6v"
-                        ),
-                        $(
-
-                                "2014-10-10 07:42:48,1412952168,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid1,SUCCESS,,,false,false,false,false,nanu,VIEWAVINFO,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid1",
-                                "2014-10-10 07:42:48,1412952168,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid1,SUCCESS,,,false,false,false,false,nanu,CHANGEPW,Emailed To,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid1"
-                        )
-                ),
-            */
-
-				$(
-						"Test Yahoo merege",
-						$(
-								"2015-03-27T12:42:43.000+00:00|192.168.61.67|12.48.102.0|yahoousr3|yid3@yahoo.com|STARTATT|STARTATT_String|abcdef==",
-								"2015-03-28T11:11:53.000+00:00|192.168.61.67|12.48.102.0|yahoousr3|yid3@yahoo.com|LOGINASMAIL|STARTATT_String|abcdef=="
-						),
-						$(
-								"2015-03-27 12:42:43,1427460163,12.48.102.0,,UNKNOWN,,192.168.61.67,,yahoousr3,SUCCESS,,,false,false,false,false,yid3@yahoo.com,STARTATT,STARTATT_String,abcdef==,,,",
-								"2015-03-28 11:11:53,1427541113,12.48.102.0,,UNKNOWN,,192.168.61.67,,yahoousr3,SUCCESS,,,false,false,false,false,yid3@yahoo.com,LOGINASMAIL,STARTATT_String,abcdef==,,,"
-
-						)
-				),
-
 
 
 				$(

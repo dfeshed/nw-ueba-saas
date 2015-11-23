@@ -1,6 +1,5 @@
 package fortscale.streaming.task.enrichment;
 
-import com.google.common.collect.Iterables;
 import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
@@ -10,12 +9,11 @@ import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -27,8 +25,6 @@ import org.apache.samza.task.TaskCoordinator;
 import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -42,16 +38,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     // map between input topic name and relevant resolving cache instance
     private static Map<String, CachingService> topicToCacheMap = new HashMap<>();
 
-    private static EventsIpResolvingService service;
-
-
     private final static String topicConfigKeyFormat = "fortscale.%s.topic";
     private final static String storeConfigKeyFormat = "fortscale.%s.store";
 
     private final static String dhcpCacheKey = "dhcp-cache";
-	private final static String iseCacheKey = "ise-cache";
+    private final static String iseCacheKey = "ise-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
+
+    private static EventsIpResolvingService ipResolvingService;
+
+    private Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> dataSourceToConfigurationMap = new HashMap<>();
 
 
     @Override
@@ -63,7 +60,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         // for all task instances. We won't have a problem for concurrent accesses here, since samza is a single
         // threaded and all task instances run on the same thread, meaning we cannot have concurrent calls to
         // init or process methods here, so it is safe to check for initialization the way we did.
-        if (service==null) {
+        if (ipResolvingService==null) {
 
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
 
@@ -94,36 +91,34 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             boolean defaultResolveOnlyReservedIp = config.getBoolean("fortscale.events.resolveOnlyReserved");
             String reservedIpAddress = getConfigString(config, "fortscale.events.reservedIpAddress");
 
-            // build EventResolvingConfig instances from streaming task configuration file
-            List<EventResolvingConfig> resolvingConfigList = new LinkedList<>();
-            Config fieldsSubset = config.subset("fortscale.events.");
-            for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-                String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+            for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
+                String configKey = ConfigField.getValue();
+                String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+                String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
-                // load configuration for event type
-                String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-                String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-                String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
-                String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.host.field", eventType)));
-                String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timestamp.field", eventType)));
-                boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
-                boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
-                boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
-				boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.%s.dropWhenFail", eventType));
-                String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
-                boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.%s.overrideIPWithHostname", eventType));
-                boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.%s.resolveOnlyReserved", eventType),defaultResolveOnlyReservedIp);
-
-
+                String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
+                String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
+                String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.ip.field", configKey)));
+                String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.host.field", configKey)));
+                String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey)));
+                boolean restrictToADName = config.getBoolean(String.format("fortscale.events.entry.%s.restrictToADName", configKey));
+                boolean shortName = config.getBoolean(String.format("fortscale.events.entry.%s.shortName", configKey));
+                boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.entry.%s.isRemoveLastDot", configKey));
+                boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.entry.%s.dropWhenFail", configKey));
+                String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey)));
+                boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.entry.%s.overrideIPWithHostname", configKey));
+                boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.entry.%s.resolveOnlyReserved", configKey), defaultResolveOnlyReservedIp);
 
                 // build EventResolvingConfig for the event type
-                resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
+                EventResolvingConfig eventResolvingConfig = EventResolvingConfig.build(dataSource, lastState, ipField, hostField, outputTopic,
                         restrictToADName, shortName, isRemoveLastDot, dropWhenFail, timestampField, partitionField,
-                        overrideIPWithHostname,eventTypeResolveOnlyReservedIp, reservedIpAddress));
+                        overrideIPWithHostname, eventTypeResolveOnlyReservedIp, reservedIpAddress);
+
+                dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), eventResolvingConfig);
             }
 
             // construct the resolving service
-            service = new EventsIpResolvingService(resolver, resolvingConfigList);
+            ipResolvingService = new EventsIpResolvingService(resolver, dataSourceToConfigurationMap, taskMonitoringHelper);
         }
     }
 
@@ -139,33 +134,40 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             CachingService cachingService = topicToCacheMap.get(topic);
             cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
         } else {
-            // process event message
-            String messageText = (String)envelope.getMessage();
-            JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+            JSONObject message = parseJsonMessage(envelope);
 
-            event = service.enrichEvent(topic, event);
+            StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
+            EventResolvingConfig eventResolvingConfig = dataSourceToConfigurationMap.get(configKey);
 
-			//move to the next topic only if you are not event that need to drop
+            if (eventResolvingConfig == null)
+            {
+                throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message received from input topic " + topic + ": " + message.toJSONString());
+            }
+
+            message = ipResolvingService.enrichEvent(eventResolvingConfig, message);
+
+            //move to the next topic only if you are not message that need to drop
             //we are dropping only security events in the case the resolving is not successful.
             // we are doing so, to prevent cases of 4769 events from a machine to itself.
             // most of the cases we can't resolve the host name in 4769 events are self connect.
             //TODO: in next versions we want to add extra check if this is the case or not.
-			if (!service.dropEvent(topic, event)) {
+            if (!ipResolvingService.filterEventIfNeeded(eventResolvingConfig, message)) {
 
-				// construct outgoing message
-				try {
-					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
-							new SystemStream("kafka", service.getOutputTopic(topic)),
-							service.getPartitionKey(topic, event),
-							event.toJSONString());
-					collector.send(output);
-				} catch (Exception exception) {
-					throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
-				}
-			}
+                try {
+                    OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
+                            new SystemStream(KAFKA_MESSAGE_QUEUE, ipResolvingService.getOutputTopic(configKey)),
+                            ipResolvingService.getPartitionKey(configKey, message),
+                            message.toJSONString());
+                    handleUnfilteredEvent(message);
+                    collector.send(output);
+                } catch (Exception exception) {
+                    throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), topic, ipResolvingService.getOutputTopic(configKey)), exception);
+                }
+            }
         }
     }
+
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}
@@ -176,5 +178,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         for(CachingService cachingService: topicToCacheMap.values()) {
             cachingService.getCache().close();
         }
+    }
+
+    @Override
+    protected String getJobLabel() {
+        return "IpResolvingStreamTask";
     }
 }

@@ -84,7 +84,8 @@ public class SshCiscoTest {
                 $ (
                         "Successful Public Key Authentication",
                         "2014-09-09T17:00:00+02:00 dev-gever sshd[2552]: Accepted publickey for root from 171.70.163.169 port 47952 ssh2",
-                        "2014-09-09 15:00:00,1410274800,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,,,,"),
+                        "2014-09-09 15:00:00,1410274800,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,,,,"
+                ),
                 $(
                         "Target Machine as IP",
                         "2014-09-09T17:00:00+02:00 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",

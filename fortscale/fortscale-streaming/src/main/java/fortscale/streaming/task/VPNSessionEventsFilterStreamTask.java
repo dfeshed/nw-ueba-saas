@@ -1,12 +1,23 @@
 package fortscale.streaming.task;
 
-import net.minidev.json.JSONObject;
 import fortscale.geoip.GeoIPInfo;
+import fortscale.streaming.service.state.MessageCollectorSessionDecorator;
+import net.minidev.json.JSONObject;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.TaskCoordinator;
 
 public class VPNSessionEventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String CLOSED = "CLOSED";
 	private static final String STATUS_FIELD = "status";
     private static final String COUNTRYFIELD = "country";
+
+	@Override
+	public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		MessageCollectorSessionDecorator messageCollectorSessionDecorator = new MessageCollectorSessionDecorator(collector);
+
+		super.wrappedProcess(envelope, messageCollectorSessionDecorator, coordinator);
+	}
 
 	
 	@Override

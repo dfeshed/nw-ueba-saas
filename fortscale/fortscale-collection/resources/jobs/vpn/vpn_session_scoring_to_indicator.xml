@@ -16,7 +16,7 @@
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.score.vpn.session.table.name}</value>
+                    <value>${impala.score.vpnsession.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
@@ -32,11 +32,11 @@
 				</entry>
                 <entry>
                     <key>impalaTableFields</key>
-                    <value>${impala.score.vpn.session.table.fields}</value>
+                    <value>${impala.score.vpnsession.table.fields}</value>
                 </entry>
                 <entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.score.vpn.session.table.partition.type}</value>
+					<value>${impala.score.vpnsession.table.partition.type}</value>
 				</entry>
                 <entry>
                     <key>jobmonitor</key>
@@ -45,6 +45,14 @@
                 <entry>
                     <key>classmonitor</key>
                     <value>fortscale.streaming.task.EvidenceCreationTask</value>
+                </entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>vpnsession</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
                 </entry>
             </job-data-map>
 
