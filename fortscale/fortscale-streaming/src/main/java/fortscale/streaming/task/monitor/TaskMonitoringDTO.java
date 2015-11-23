@@ -10,7 +10,7 @@ public class TaskMonitoringDTO {
     private Map<String, Integer> countFilterByCause;
     protected int countNotFilteredEvents;
 
-    //Map which contains the first and last event of each data source
+    //contains first and last event
     EventTimeRange eventTimeRange;
     private int totalAmountOfEventsInWindow; //Filtered and unfiltered events
 
@@ -25,7 +25,7 @@ public class TaskMonitoringDTO {
         totalAmountOfEventsInWindow++;
     }
 
-    public void addCause(String cause) {
+    public void increaseCauseCount(String cause) {
         Integer causeCount = countFilterByCause.get(cause);
         if (causeCount == null){
             causeCount = 1;

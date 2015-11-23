@@ -4,7 +4,6 @@ import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -75,7 +74,7 @@ public class TaskMonitoringHelper {
     public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause){
 
         TaskMonitoringDTO node = getNode(key);
-        node.addCause(cause);
+        node.increaseCauseCount(cause);
 
     }
 
