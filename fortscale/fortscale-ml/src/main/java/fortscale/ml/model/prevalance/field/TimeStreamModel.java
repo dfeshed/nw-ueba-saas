@@ -12,7 +12,7 @@ import fortscale.ml.model.prevalance.calibration.FeatureCalibration;
 
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
-public class TimeModel {
+public class TimeStreamModel {
 	private static final int MASK_SIZE = 10;
 	
 	private ArrayList<Double> buckets;
@@ -26,7 +26,7 @@ public class TimeModel {
 	
 	private FeatureCalibration calibration;
 	
-	public TimeModel(int timeResolution, int bucketSize){
+	public TimeStreamModel(int timeResolution, int bucketSize){
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
 		this.numOfBuckets = (int) Math.ceil(timeResolution/(double)bucketSize);

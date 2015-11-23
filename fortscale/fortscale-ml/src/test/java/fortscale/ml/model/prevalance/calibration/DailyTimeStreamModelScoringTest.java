@@ -7,17 +7,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import fortscale.ml.model.prevalance.field.DailyTimeModel;
+import fortscale.ml.model.prevalance.field.DailyTimeStreamModel;
 
 
 @RunWith(JUnit4.class)
-public class DailyTimeModelScoringTest {
+public class DailyTimeStreamModelScoringTest {
 
 	
 	
 	@Test
 	public void elementarycheck() throws Exception {
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		
 		long epochSeconds = 1000;
 		for (int i = 0; i < 100; i++) {
@@ -30,7 +30,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void elementarycheckWithIntegersAsEpochTime() throws Exception {
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		
 		Integer epochSeconds = new Integer(1000);
 		for (int i = 0; i < 100; i++) {
@@ -45,7 +45,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testNullValueScore(){
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		
 		Integer epochSeconds = new Integer(1000);
 		for (int i = 0; i < 100; i++) {
@@ -61,9 +61,9 @@ public class DailyTimeModelScoringTest {
 	@Test
 	public void testUniformlyRandomDistribution() throws Exception{
 		Random rnd = new Random(1);
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		for (int i = 0; i < 100; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * DailyTimeModel.TIME_RESOLUTION);
+			long epochSeconds = (long)(rnd.nextDouble( ) * DailyTimeStreamModel.TIME_RESOLUTION);
 			timeModel.update(epochSeconds);
 		}
 		
@@ -78,7 +78,7 @@ public class DailyTimeModelScoringTest {
 	@Test
 	public void testScoreOfIsolateTime() throws Exception{
 		Random rnd = new Random(1);
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		for (int i = 0; i < 50; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 6000);
 			timeModel.update(epochSeconds);
@@ -102,7 +102,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 		
 		timeModel.update(14000);
@@ -110,7 +110,7 @@ public class DailyTimeModelScoringTest {
 		Assert.assertEquals(99, score,1);
 	}
 	
-	private void initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(DailyTimeModel timeModel) throws Exception{
+	private void initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(DailyTimeStreamModel timeModel) throws Exception{
 		Random rnd = new Random(1);
 		for (int i = 0; i < 2; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 600);
@@ -130,7 +130,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster1() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 		
 		timeModel.update(11000);
@@ -140,7 +140,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster2() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 		
 		timeModel.update(10000);
@@ -150,7 +150,7 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster3() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 				
 		timeModel.update(9000);
@@ -163,7 +163,7 @@ public class DailyTimeModelScoringTest {
 	@Test
 	public void testScoresOfOneBigClusterAndManyDispersedTimes() throws Exception{
 		Random rnd = new Random(1);
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		for (int i = 0; i < 50; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 3000);
 			timeModel.update(epochSeconds);
@@ -208,7 +208,7 @@ public class DailyTimeModelScoringTest {
 	@Test
 	//This test is built on the scenario of issue FV-3738.
 	public void testNewWorkingTimeScore() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		int step = 200;
 		for (int i = 0; i < 5; i++) {
 			long epochSeconds = 0; //12AM UTC
@@ -259,7 +259,7 @@ public class DailyTimeModelScoringTest {
 	@Test
 	//This test is built on the scenario of issue FV-3738.
 	public void testNewWorkingTimeScore1() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		int step = 200;
 		for (int i = 0; i < 5; i++) {
 			long epochSeconds = 0; //12AM UTC
@@ -310,7 +310,7 @@ public class DailyTimeModelScoringTest {
 	@Test
 	//This test is built on the scenario of issue FV-3738.
 	public void testNewWorkingTimeScore2() throws Exception{
-		DailyTimeModel timeModel = new DailyTimeModel();
+		DailyTimeStreamModel timeModel = new DailyTimeStreamModel();
 		int step = 200;
 		for (int i = 0; i < 5; i++) {
 			long epochSeconds = 0; //12AM UTC
