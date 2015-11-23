@@ -12,16 +12,11 @@ import org.junit.Test;
 import java.io.IOException;
 
 public class ModelConfTest {
-    private JSONObject buildModelConfJSON(
-            String name, Integer buildIntervalInSeconds,
-            JSONObject selector, JSONObject retriever, JSONObject builder) {
+    private JSONObject buildModelConfJSON(String name, JSONObject selector, JSONObject retriever, JSONObject builder) {
 
         JSONObject result = new JSONObject();
         if (name != null) {
             result.put("name", name);
-        }
-        if (buildIntervalInSeconds != null) {
-            result.put("buildIntervalInSeconds", buildIntervalInSeconds);
         }
         if (selector != null) {
             result.put("selector", selector);
@@ -67,8 +62,8 @@ public class ModelConfTest {
     @Test
     public void shouldCreateModelConfWithTheGivenName() throws IOException {
         String name = "some name";
-        JSONObject modelConfJSON = buildModelConfJSON(name,
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                name,
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
                 buildBuilderJSON(null));
@@ -77,21 +72,9 @@ public class ModelConfTest {
     }
 
     @Test
-    public void shouldCreateModelConfWithTheGivenBuildIntervalInSeconds() throws IOException {
-        int buildIntervalInSeconds = 12345;
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                buildIntervalInSeconds,
-                buildSelectorJSON(),
-                buildRetrieverJSON(),
-                buildBuilderJSON(null));
-        ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-        Assert.assertEquals(buildIntervalInSeconds, modelConf.getBuildIntervalInSeconds());
-    }
-
-    @Test
     public void shouldCreateModelConfWithTheGivenModelBuilder() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                "some name",
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
                 buildBuilderJSON("continuous_histogram_model_builder_conf"));
@@ -101,8 +84,8 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfNameNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON(null,
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                null,
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
                 buildBuilderJSON(null));
@@ -111,8 +94,8 @@ public class ModelConfTest {
 
     @Test
     public void shouldNotFailIfSelectorNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                "some name",
                 null,
                 buildRetrieverJSON(),
                 buildBuilderJSON("continuous_histogram_model_builder_conf"));
@@ -120,19 +103,9 @@ public class ModelConfTest {
     }
 
     @Test(expected = Exception.class)
-    public void shouldFailIfBuildIntervalInSecondsNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                null,
-                buildSelectorJSON(),
-                buildRetrieverJSON(),
-                buildBuilderJSON(null));
-        (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-    }
-
-    @Test(expected = Exception.class)
     public void shouldFailIfRetrieverNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                "some name",
                 buildSelectorJSON(),
                 null,
                 buildBuilderJSON(null));
@@ -141,28 +114,18 @@ public class ModelConfTest {
 
     @Test(expected = Exception.class)
     public void shouldFailIfBuilderNotGiven() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                "some name",
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
                 null);
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 
-    @Test(expected = Exception.class)
-    public void shouldFailIfBuildIntervalInSecondsIsNegative() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                -1,
-                buildSelectorJSON(),
-                buildRetrieverJSON(),
-                buildBuilderJSON(null));
-        (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
-    }
-
     @Test(expected = JsonMappingException.class)
     public void shouldFailIfUnknownModelBuilderType() throws IOException {
-        JSONObject modelConfJSON = buildModelConfJSON("some name",
-                1,
+        JSONObject modelConfJSON = buildModelConfJSON(
+                "some name",
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
                 buildBuilderJSON("unknown model builder type"));

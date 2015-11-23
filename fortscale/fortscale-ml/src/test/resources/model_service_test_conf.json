@@ -2,7 +2,6 @@
   "ModelConfs": [
     {
       "name": "first_test_model_conf",
-      "buildIntervalInSeconds": 10,
       "selector": {
         "type": "feature_bucket_context_selector_conf",
         "featureBucketConfName": "selector_feature_bucket_conf"

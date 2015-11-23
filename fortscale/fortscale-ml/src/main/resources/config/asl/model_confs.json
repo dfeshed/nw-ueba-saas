@@ -2,7 +2,6 @@
   "ModelConfs": [
     {
       "name": "data_rate_normalized_username_vpn_session_daily",
-      "buildIntervalInSeconds": 86400,
       "selector": {
         "type": "feature_bucket_context_selector_conf",
         "featureBucketConfName": "normalized_username_vpn_session_daily"

@@ -13,8 +13,6 @@ import org.springframework.util.Assert;
 public class ModelConf {
     @JsonProperty("name")
     private String name;
-    @JsonProperty("buildIntervalInSeconds")
-    private long buildIntervalInSeconds;
     @JsonProperty("selector")
     private ContextSelectorConf contextSelectorConf;
     @JsonProperty("retriever")
@@ -24,27 +22,20 @@ public class ModelConf {
 
     @JsonCreator
     public ModelConf(@JsonProperty("name") String name,
-                     @JsonProperty("buildIntervalInSeconds") long buildIntervalInSeconds,
                      @JsonProperty("retriever") AbstractDataRetrieverConf dataRetrieverConf,
                      @JsonProperty("builder") IModelBuilderConf modelBuilderConf) {
 
         Assert.hasText(name);
-        Assert.isTrue(buildIntervalInSeconds > 0);
         Assert.notNull(dataRetrieverConf);
         Assert.notNull(modelBuilderConf);
 
         this.name = name;
-        this.buildIntervalInSeconds = buildIntervalInSeconds;
         this.dataRetrieverConf = dataRetrieverConf;
         this.modelBuilderConf = modelBuilderConf;
     }
 
     public String getName() {
         return name;
-    }
-
-    public long getBuildIntervalInSeconds() {
-        return buildIntervalInSeconds;
     }
 
     public ContextSelectorConf getContextSelectorConf() {
