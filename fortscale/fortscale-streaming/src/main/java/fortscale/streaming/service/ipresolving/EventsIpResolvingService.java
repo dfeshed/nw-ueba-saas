@@ -114,12 +114,12 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event)
+	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event, StreamingTaskDataSourceConfigKey key)
 	{
         boolean shouldFilterEvent = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
 
-        if (shouldFilterEvent){
-            taskMonitoringHelper.countNewFilteredEvents(eventResolvingConfig.getDataSource(), HOST_IS_EMPTY_LABEL);
+        if (shouldFilterEvent && key!=null){
+            taskMonitoringHelper.countNewFilteredEvents(key, HOST_IS_EMPTY_LABEL);
 
             return true;
         }

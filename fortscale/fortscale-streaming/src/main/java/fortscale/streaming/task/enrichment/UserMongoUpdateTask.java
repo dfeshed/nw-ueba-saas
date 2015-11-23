@@ -144,11 +144,11 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
-
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
 		if (timestampSeconds == null) {
-			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
@@ -157,7 +157,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
 		if (normalizedUsername == null) {
-			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_USERNAME_FIELD_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_USERNAME_FIELD_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains username in field {}", messageText, usernameField);
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
@@ -165,10 +165,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 
 		// Get relevant data source according to topic
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		
 		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
-			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_CONFIGURATION_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_CONFIGURATION_IN_MESSAGE_LABEL);
 			logger.error("No data source is defined for input topic {} ", configKey);
 			return;
 		}
@@ -176,13 +176,13 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		//get the actual username from the event - using for assigning to logusername
 		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
 		if (logUserNameFromEvent == null) {
-			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_LOG_USERNAME_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_LOG_USERNAME_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
 			return;
 		}
 
 
-		handleUnfilteredEvent(message);
+		handleUnfilteredEvent(message, configKey);
 		//in case that the success field is equal to #AnyRow# in the configuration file
 		//update the last activity for any row
 		// or check that the event represent successful login

@@ -152,14 +152,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // we are doing so, to prevent cases of 4769 events from a machine to itself.
             // most of the cases we can't resolve the host name in 4769 events are self connect.
             //TODO: in next versions we want to add extra check if this is the case or not.
-            if (!ipResolvingService.filterEventIfNeeded(eventResolvingConfig, message)) {
+            if (!ipResolvingService.filterEventIfNeeded(eventResolvingConfig,message,configKey)) {
 
                 try {
                     OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
                             new SystemStream(KAFKA_MESSAGE_QUEUE, ipResolvingService.getOutputTopic(configKey)),
                             ipResolvingService.getPartitionKey(configKey, message),
                             message.toJSONString());
-                    handleUnfilteredEvent(message);
+                    handleUnfilteredEvent(message,configKey);
                     collector.send(output);
                 } catch (Exception exception) {
                     throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), topic, ipResolvingService.getOutputTopic(configKey)), exception);

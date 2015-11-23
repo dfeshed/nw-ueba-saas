@@ -77,8 +77,16 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		try {
+			JSONObject message = parseJsonMessage(envelope);
+			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
+		} catch (Exception e){
+			//Do nothing
+		}
+
+
 		try{
-			taskMonitoringHelper.handleNewEvent();
+
 
 			String streamingTaskMessageState = resolveOutputMessageState();
 
@@ -148,13 +156,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	 * handleUnfilteredEvent
 	 * @param event
 	 */
-	protected void handleUnfilteredEvent(JSONObject event){
+	protected void handleUnfilteredEvent(JSONObject event, StreamingTaskDataSourceConfigKey key){
 
-		String dataSource  = getDataSource(event);
+
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTime, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime, eventTimeAsString);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {

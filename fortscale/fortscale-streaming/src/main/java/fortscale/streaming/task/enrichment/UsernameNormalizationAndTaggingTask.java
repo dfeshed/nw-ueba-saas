@@ -176,7 +176,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
 					String filteredEventLabel = "Message does not contains username in field " +
 							usernameNormalizationConfig.getUsernameField();
-					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,filteredEventLabel);
 					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
 				}
 
@@ -199,7 +199,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					}
 					// drop record
 					String filteredEventLabel = "User " + username + "does not exists";
-					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey, filteredEventLabel);
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);
@@ -216,7 +216,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
-			handleUnfilteredEvent(message);
+			handleUnfilteredEvent(message,configKey);
 		}
 	}
 
