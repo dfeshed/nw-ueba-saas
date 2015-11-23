@@ -70,7 +70,7 @@ public class ModelBuilderManager {
         }
 
         if (listener != null) {
-            listener.modelBuildingStatus(modelConf.getName(), contextId, success);
+            listener.modelBuildingStatus(modelConf.getName(), contextId, endTime, success);
         }
     }
 

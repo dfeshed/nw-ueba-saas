@@ -4,6 +4,7 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,13 +21,15 @@ public class KafkaModelBuildingListenerTest {
 
 		String modelConfName = "testModelConf";
 		String contextId = "testContextId";
+		DateTime endTime = DateTime.now();
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);
 		expectedJson.put("contextId", contextId);
+		expectedJson.put("endTime", endTime.toString());
 		expectedJson.put("success", true);
 
-		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, contextId, true);
+		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, contextId, endTime, true);
 		ArgumentCaptor<OutgoingMessageEnvelope> argumentCaptor = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
 		Mockito.verify(collector, Mockito.times(1)).send(argumentCaptor.capture());
 

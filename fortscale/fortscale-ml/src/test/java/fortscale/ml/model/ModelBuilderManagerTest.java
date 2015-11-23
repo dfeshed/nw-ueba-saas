@@ -101,7 +101,7 @@ public class ModelBuilderManagerTest {
         modelManager.process(listener, previousEndTime, currentEndTime);
 
         for (int i = 0; i < entityIds.length; i++) {
-            verify(listener).modelBuildingStatus(eq(modelConfName), eq(entityIds[i]), eq(successes[i]));
+            verify(listener).modelBuildingStatus(eq(modelConfName), eq(entityIds[i]), eq(currentEndTime), eq(successes[i]));
         }
         verifyNoMoreInteractions(listener);
     }

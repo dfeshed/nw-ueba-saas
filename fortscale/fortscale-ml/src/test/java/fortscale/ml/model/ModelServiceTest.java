@@ -13,6 +13,7 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -125,8 +126,9 @@ public class ModelServiceTest {
 		modelService.process(event);
 
 		// Assert listener
-		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", true);
-		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", true);
+		DateTime currentEndTime = new DateTime(currentEndTimeInMillis);
+		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
+		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
 		Assert.assertEquals(expectedStatuses, listener.getStatuses());
 
@@ -159,10 +161,11 @@ public class ModelServiceTest {
 		return featureBucket;
 	}
 
-	private static JSONObject buildStatus(String modelConfName, String contextId, boolean success) {
+	private static JSONObject buildStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
 		JSONObject statusJson = new JSONObject();
 		statusJson.put("modelConfName", modelConfName);
 		statusJson.put("contextId", contextId);
+		statusJson.put("endTime", endTime.toString());
 		statusJson.put("success", success);
 		return statusJson;
 	}
@@ -171,8 +174,8 @@ public class ModelServiceTest {
 		private List<JSONObject> statuses = new ArrayList<>();
 
 		@Override
-		public void modelBuildingStatus(String modelConfName, String contextId, boolean success) {
-			statuses.add(buildStatus(modelConfName, contextId, success));
+		public void modelBuildingStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
+			statuses.add(buildStatus(modelConfName, contextId, endTime, success));
 		}
 
 		public List<JSONObject> getStatuses() {
