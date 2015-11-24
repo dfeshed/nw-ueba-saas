@@ -296,6 +296,8 @@ public class VpnSession extends AbstractDocument{
 
 	private class CustomDateSerializer extends JsonDeserializer<DateTime> {
 
+		public CustomDateSerializer() {}
+
 		@Override
 		public DateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
 				throws IOException {
