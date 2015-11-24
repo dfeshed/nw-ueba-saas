@@ -5,6 +5,7 @@ import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
@@ -32,7 +33,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class FieldTaggingByListTask extends AbstractStreamTask {
 
 
-	private final static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
+	private final static String storeConfigKeyFormat = "fortscale.events.entry.%s.service.cache.store";
 
 	// Map between (update) input topic name and relevant field tagging service
 	protected static Map<String, FieldTaggingService> topicToServiceMap;
@@ -60,20 +61,22 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 
 			Map<String, ComputerTaggingConfig> configs = new HashMap<>();
 
-			//for each input topic create his own FieldTaggingService
-			Config configSubset = config.subset("fortscale.events.");
-			for (String configKey : Iterables.filter(configSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
+			// Get configuration properties
+			Config fieldsSubset = config.subset("fortscale.events.entry.name.");
 
-				String eventType = configKey.substring(0, configKey.indexOf(".input.topic"));
+			for (String dsSettings : fieldsSubset.keySet()) {
+				String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
+				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
+				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
 
-				String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-				String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
-				String filePath = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.file.path", eventType)));
-				String tagFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.tag.field.name", eventType)));
-				String taggingBaesdFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.tagging.based.field.name", eventType)));
+				String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", dsSettings));
+				String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
+				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings)));
+				String filePath = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.file.path", dsSettings)));
+				String tagFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings)));
+				String taggingBaesdFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings)));
 
-				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, eventType))),String.class);
+				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
 
 				FieldTaggingService fieldTaggingService = new FieldTaggingService(filePath,topicCache,tagFieldName,taggingBaesdFieldName,outputTopic,partitionField);
 				topicToServiceMap.put(inputTopic,fieldTaggingService);
