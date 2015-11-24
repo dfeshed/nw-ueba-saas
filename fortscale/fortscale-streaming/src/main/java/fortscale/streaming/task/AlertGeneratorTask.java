@@ -70,6 +70,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		createInputTopicMapping(config, context);
 		updateEsperFromCache();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 
