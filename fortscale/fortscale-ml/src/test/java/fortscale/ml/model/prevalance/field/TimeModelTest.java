@@ -63,18 +63,12 @@ public class TimeModelTest {
 		for (int i = 0; i < 50; i++) {
 			times.add((long)(rnd.nextDouble( ) * 6000));
 		}
-		long isolatedTime = 30000L;
-		times.add(isolatedTime);
-		assertScore(times, isolatedTime, 99);
-		isolatedTime = 40000L;
-		times.add(isolatedTime);
-		assertScore(times, isolatedTime, 93);
-		isolatedTime = 50000L;
-		times.add(isolatedTime);
-		assertScore(times, isolatedTime, 74);
-		isolatedTime = 60000L;
-		times.add(isolatedTime);
-		assertScore(times, isolatedTime, 43);
+		long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
+		double scores[] = new double[]{99, 93, 74, 43};
+		for (int i = 0; i < scores.length; i++) {
+			times.add(isolatedTimes[i]);
+			assertScore(times, isolatedTimes[i], scores[i]);
+		}
 		assertScore(times, 500, 0);
 	}
 
@@ -82,24 +76,19 @@ public class TimeModelTest {
 	public void testScoresInDifferentDistancesFromTheClusters() {
 		Random rnd = new Random(1);
 		List<Long> timesClustered = new ArrayList<>();
-		for (int i = 0; i < 2; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * 600);
-			timesClustered.add(epochSeconds);
+		int clusterSizes[] = new int[]{2, 2, 46};
+		int clusterSpans[] = new int[]{600, 600, 2400};
+		int clusterOffsets[] = new int[]{0, 6600, 2400};
+		for (int cluster = 0; cluster < clusterSizes.length; cluster++) {
+			for (int i = 0; i < clusterSizes[cluster]; i++) {
+				long epochSeconds = (long)(rnd.nextDouble( ) * clusterSpans[cluster] + clusterOffsets[cluster]);
+				timesClustered.add(epochSeconds);
+			}
 		}
 
-		for (int i = 0; i < 2; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * 600 + 6600);
-			timesClustered.add(epochSeconds);
-		}
-
-		for (int i = 0; i < 46; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * 2400 + 2400);
-			timesClustered.add(epochSeconds);
-		}
-
-		double[] scores = new double[]{99, 93, 65, 13};
 		long[] timesToScore = new long[]{14000, 11000, 10000, 9000};
-		for (int i = 0; i < scores.length; i++) {
+		double[] scores = new double[]{99, 93, 65, 13};
+		for (int i = 0; i < timesToScore.length; i++) {
 			List<Long> times = new ArrayList<>(timesClustered);
 			times.add(timesToScore[i]);
 			assertScore(times, timesToScore[i], scores[i]);
