@@ -25,7 +25,7 @@ public class SyncImpalaPartitionsJobTestInt {
 	@Autowired
 	private Scheduler jobScheduler;
 	
-	@Value("${hdfs.user.data.kerberosLogin.path}")
+	@Value("${hdfs.user.data.kerberos_logins.path}")
 	private String hdfsPath;
 	
 	private String tableName = "wmievents4769";

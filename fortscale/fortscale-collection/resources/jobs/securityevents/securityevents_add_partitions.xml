@@ -108,15 +108,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.data.kerberosLogin.path}</value>
+						<value>${hdfs.user.data.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.kerberosLogin.table.name}</value>
+						<value>${impala.data.kerberos_logins.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.kerberosLogin.table.partition.type}</value>
+						<value>${impala.data.kerberos_logins.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -137,15 +137,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.kerberosLogin.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.kerberosLogin.table.name}</value>
+						<value>${impala.score.kerberos_logins.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.kerberosLogin.top.table.partition.type}</value>
+						<value>${impala.score.kerberos_logins.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -165,15 +165,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.kerberosLogin.top.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_logins.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.kerberosLogin.top.table.name}</value>
+						<value>${impala.score.kerberos_logins.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.kerberosLogin.top.table.partition.type}</value>
+						<value>${impala.score.kerberos_logins.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -193,15 +193,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.enricheddata.kerberosLogin.path}</value>
+						<value>${hdfs.user.enricheddata.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.enricheddata.kerberosLogin.table.nam}</value>
+						<value>${impala.enricheddata.kerberos_logins.table.nam}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.enricheddata.kerberosLogin.table.partition.type}</value>
+						<value>${impala.enricheddata.kerberos_logins.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
