@@ -39,7 +39,7 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
-	@JsonDeserialize(using = DateTimeDeserializer.class)
+	@JsonDeserialize(using = CustomDateSerializer.class)
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
