@@ -15,7 +15,7 @@ public class TimeModel implements Model {
 	private Map<Integer, Double> bucketToSmoothedCounter;
 	private OccurrencesHistogram occurrencesHistogram;
 
-	public TimeModel(int timeResolution, int bucketSize, List<Long> times) {
+	public TimeModel(int timeResolution, int bucketSize, Map<Long, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
 		int numOfBuckets = (int) Math.ceil(timeResolution / (double) bucketSize);
@@ -26,22 +26,20 @@ public class TimeModel implements Model {
 
 		bucketToSmoothedCounter = new HashMap<>(numOfBuckets);
 		Set<Integer> bucketHits = new HashSet<>();
-		for (long time : times) {
-			int pivot = getBucketIndex(time);
+		for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+			int pivot = getBucketIndex(entry.getKey());
+			double counter = entry.getValue();
 			bucketHits.add(pivot);
-			double val = buckets.get(pivot) + 1;
-			buckets.set(pivot, val);
+			buckets.set(pivot, buckets.get(pivot) + counter);
 			int upIndex = pivot + 1;
 			int downIndex = pivot - 1 + numOfBuckets;
 			for (int i = 0; i < SMOOTHENING_DISTANCE; i++,upIndex++,downIndex--) {
-				double addVal = 1 - i/((double) SMOOTHENING_DISTANCE);
+				double addVal = counter * (1 - i / ((double) SMOOTHENING_DISTANCE));
 				int index = upIndex % numOfBuckets;
-				val = buckets.get(index) + addVal;
-				buckets.set(index, val);
+				buckets.set(index, buckets.get(index) + addVal);
 
 				index = downIndex % numOfBuckets;
-				val = buckets.get(index) + addVal;
-				buckets.set(index, val);
+				buckets.set(index, buckets.get(index) + addVal);
 			}
 		}
 

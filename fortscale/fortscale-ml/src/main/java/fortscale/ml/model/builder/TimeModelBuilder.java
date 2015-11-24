@@ -6,7 +6,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.prevalance.field.TimeModel;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
-import java.util.List;
+import java.util.Map;
 
 public class TimeModelBuilder implements IModelBuilder {
     private static final Logger logger = Logger.getLogger(TimeModelBuilder.class);
@@ -29,8 +29,8 @@ public class TimeModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        List<Long> times = castModelBuilderData(modelBuilderData);
-        TimeModel model = new TimeModel(timeResolution, bucketSize, times);
+        Map<Long, Double> timeToCounter = castModelBuilderData(modelBuilderData);
+        TimeModel model = new TimeModel(timeResolution, bucketSize, timeToCounter);
         return model;
     }
 
@@ -39,15 +39,15 @@ public class TimeModelBuilder implements IModelBuilder {
         return model.calculateScore(value);
     }
 
-    private List<Long> castModelBuilderData(Object modelBuilderData) {
+    private Map<Long, Double> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
         }
-        if (!(modelBuilderData instanceof List)) {
+        if (!(modelBuilderData instanceof Map)) {
             String errorMsg = "got illegal modelBuilderData type - probably bad ASL";
             logger.error(errorMsg);
             throw new IllegalArgumentException(errorMsg);
         }
-        return (List<Long>) modelBuilderData;
+        return (Map<Long, Double>) modelBuilderData;
     }
 }

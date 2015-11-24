@@ -5,9 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @RunWith(JUnit4.class)
 public class TimeModelTest {
@@ -15,7 +13,15 @@ public class TimeModelTest {
 	public static final int DAILY_BUCKET_SIZE = 60 * 10;
 
 	private double getScore(List<Long> times, long timeToScore) {
-		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, times).calculateScore(timeToScore);
+		Map<Long, Double> timeToCounter = new HashMap<>();
+		for (long time : times) {
+			Double counter = timeToCounter.get(time);
+			if (counter == null) {
+				counter = 0D;
+			}
+			timeToCounter.put(time, counter + 1);
+		}
+		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, timeToCounter).calculateScore(timeToScore);
 	}
 
 	private void assertScore(List<Long> times, long timeToScore, double expected) {
