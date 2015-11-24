@@ -70,7 +70,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		createEsperConfiguration(config);
 		createInputTopicMapping(config, context);
 		updateEsperFromCache();
-		mapper.registerModule(new JodaModule());
+		//mapper.registerModule(new JodaModule());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));

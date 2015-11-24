@@ -43,12 +43,13 @@ public class VpnSession extends AbstractDocument{
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
-
+	@JsonDeserialize(using = CustomDateSerializer.class)
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
 
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
+	@JsonDeserialize(using = CustomDateSerializer.class)
 	private DateTime modifiedAt;
 	
 	private String localIp;
