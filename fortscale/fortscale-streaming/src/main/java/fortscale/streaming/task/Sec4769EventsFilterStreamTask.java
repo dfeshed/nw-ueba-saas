@@ -61,26 +61,30 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	@Override
 	protected boolean acceptMessage(JSONObject message) {
 
-		StreamingTaskDataSourceConfigKey key = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			return false;
+		}
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
 				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
-			taskMonitoringHelper.countNewFilteredEvents(key,ACCOUNT_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
-			taskMonitoringHelper.countNewFilteredEvents(key,SERVICE_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,SERVICE_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 		
 		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
 		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
-			taskMonitoringHelper.countNewFilteredEvents(key,SERVICE_NAME_MATCH_COMPUTER_NAME);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,SERVICE_NAME_MATCH_COMPUTER_NAME);
 			return false;
 		}
 		

@@ -49,7 +49,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	private static final String storeName = "user-mongo-update";
 	public static final String NO_LOG_USERNAME_IN_MESSAGE_LABEL = "No log username in message";
-	public static final String NO_CONFIGURATION_IN_MESSAGE_LABEL = "No configuration in message";
 	public static final String NO_USERNAME_FIELD_IN_MESSAGE_LABEL = "No username field  in message";
 	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL = "No timestamp field in message";
 
@@ -144,7 +143,11 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			return;
+		}
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
 		if (timestampSeconds == null) {
@@ -168,7 +171,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		
 		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_CONFIGURATION_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
 			logger.error("No data source is defined for input topic {} ", configKey);
 			return;
 		}

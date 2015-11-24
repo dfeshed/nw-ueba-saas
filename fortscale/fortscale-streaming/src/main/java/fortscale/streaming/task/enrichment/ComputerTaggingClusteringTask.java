@@ -142,8 +142,17 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		} else {
 			// parse the message into json
 			JSONObject message = parseJsonMessage(envelope);
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			if (configKey == null){
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				return;
+			}
 			ComputerTaggingConfig config = configs.get(configKey);
+			if (configs == null) {
+				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+
+				return;
+			}
 
 			try {
 				message = computerTaggingService.enrichEvent(config, message);

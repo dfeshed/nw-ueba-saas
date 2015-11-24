@@ -157,13 +157,16 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
 
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			if (configKey == null){
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				return;
+			}
 
 			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
 
-			if (usernameNormalizationConfig == null)
-			{
-				throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message received from input topic " + inputTopic + ": " + message.toJSONString());
+			if (usernameNormalizationConfig == null){
+				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
 			}
 
 			// get the normalized username from input record

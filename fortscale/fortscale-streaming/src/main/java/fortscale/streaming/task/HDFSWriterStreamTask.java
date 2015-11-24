@@ -38,7 +38,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
-	public static final String NO_WRITER_CONFIGURATIONS_LABEL = "No Writer Configurations";
 	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_label = "No timestamp field in message";
 	public static final String FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL = "Failed to Send Event to Kafka";
 	public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "Event Older then NewestEvent";
@@ -180,14 +179,19 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		JSONObject message = parseJsonMessage(envelope);
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			return;
+		}
 
 		// Get all writers according to topic
 		List<WriterConfiguration> writerConfigurations = dataSourceToConfigsMap.get(configKey);
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_WRITER_CONFIGURATIONS_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+			return;
 		}
 
 		// go over all writers and write message
@@ -249,7 +253,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 	}
-
 
 
 	/**

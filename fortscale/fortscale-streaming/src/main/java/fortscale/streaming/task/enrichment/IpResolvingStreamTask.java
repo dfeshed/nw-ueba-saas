@@ -136,13 +136,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         } else {
             JSONObject message = parseJsonMessage(envelope);
 
-            StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+            StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+            if (configKey == null){
+                taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+                return;
+            }
 
             EventResolvingConfig eventResolvingConfig = dataSourceToConfigurationMap.get(configKey);
 
-            if (eventResolvingConfig == null)
-            {
-                throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message received from input topic " + topic + ": " + message.toJSONString());
+            if (eventResolvingConfig == null){
+                taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+                return;
             }
 
             message = ipResolvingService.enrichEvent(eventResolvingConfig, message);

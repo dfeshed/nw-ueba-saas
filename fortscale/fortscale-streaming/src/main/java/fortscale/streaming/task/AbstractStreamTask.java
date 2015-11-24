@@ -21,6 +21,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
+	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
+	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+	protected static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
+						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
+
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 
@@ -28,6 +33,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
+
+
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
 
@@ -176,6 +183,18 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 	}
 
+	//Get the data source and last state without excetion, return  null if cannot extract
+	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
+		StreamingTaskDataSourceConfigKey configKey;
+		try {
+			configKey = extractDataSourceConfigKey(message);
+		} catch (Exception e){
+			return null;
+		}
+		return configKey;
+	}
+
+
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
 		return taskMonitoringHelper;
 	}
@@ -193,4 +212,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			throw e;
 		}
 	}
+
+
 }
