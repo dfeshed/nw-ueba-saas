@@ -11,4 +11,5 @@ import fortscale.ml.model.Model;
 })
 public interface IModelBuilder {
         Model build(Object modelBuilderData);
+        double calculateScore(Object value, Model model);
 }

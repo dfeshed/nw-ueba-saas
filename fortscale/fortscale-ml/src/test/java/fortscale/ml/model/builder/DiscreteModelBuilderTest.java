@@ -4,38 +4,19 @@ import fortscale.ml.model.Model;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class DiscreteModelBuilderTest {
 	@Test
-	public void shouldBuildModelWithGivenIgnorePattern() {
-		String ignorePattern = "ignorePattern";
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(ignorePattern);
-		Model model = builder.build(Collections.emptyList());
-		Assert.assertEquals(ignorePattern, ((Pattern) Whitebox.getInternalState(model, "ignoreValues")).pattern());
-	}
-
-	@Test
-	public void shouldBuildModelWithIgnorePatternSetToNull() {
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(null);
-		Model model = builder.build(Collections.emptyList());
-		Assert.assertNull(Whitebox.getInternalState(model, "ignoreValues"));
-	}
-
-	@Test
 	public void shouldBuildUsingOnlyFeaturesThatAreNotIgnored() {
 		String ignore = "ignore";
-		String rareValue = "rareValue";
-		String commonValue = "commonValue";
 		List<String> modelBuilderData = new ArrayList<>();
-		modelBuilderData.add(rareValue);
+		modelBuilderData.add("rareValue");
 		for (int i = 0; i < 10; i++) {
-			modelBuilderData.add(commonValue);
+			modelBuilderData.add("commonValue");
 		}
 		DiscreteModelBuilder builderWithIgnore = new DiscreteModelBuilder(ignore);
 		DiscreteModelBuilder builderWithoutIgnore = new DiscreteModelBuilder(null);
@@ -45,9 +26,34 @@ public class DiscreteModelBuilderTest {
 		Model modelWithIgnoredValue = builderWithIgnore.build(modelBuilderData);
 		Model modelWithoutIgnoring = builderWithoutIgnore.build(modelBuilderData);
 
-		ImmutablePair<Object, Double> value = new ImmutablePair<Object, Double>(rareValue, 1d);
-		Assert.assertTrue(modelWithIgnoredValue.calculateScore(value) > modelWithoutIgnoring.calculateScore(value));
-		Assert.assertEquals(modelWithoutIgnoredValue.calculateScore(value), modelWithIgnoredValue.calculateScore(value), 0);
+		Double count = 1d;
+		Assert.assertTrue(modelWithIgnoredValue.calculateScore(count) > modelWithoutIgnoring.calculateScore(count));
+		Assert.assertEquals(modelWithoutIgnoredValue.calculateScore(count), modelWithIgnoredValue.calculateScore(count), 0);
+	}
+
+	@Test
+	public void shouldScore0ToEmptyString() throws Exception {
+		DiscreteModelBuilder builder = new DiscreteModelBuilder(null);
+		double score = builder.calculateScore(new ImmutablePair<Object, Double>("", 1d), null);
+		Assert.assertEquals(0d, score, 0.000001);
+	}
+
+	@Test
+	public void shouldScore0ToIgnoredValues() throws Exception {
+		final String ignore = "ignore";
+		DiscreteModelBuilder builder = new DiscreteModelBuilder(ignore);
+		double score = builder.calculateScore(new ImmutablePair<Object, Double>(ignore, 1d), null);
+		Assert.assertEquals(0d, score, 0.000001);
+	}
+
+	@Test
+	public void shouldDelegateNotIgnoredValuesToModel() throws Exception {
+		DiscreteModelBuilder builder = new DiscreteModelBuilder("ignore");
+		Model modelMock = Mockito.mock(Model.class);
+		double count = 1d;
+		double score = 95;
+		Mockito.when(modelMock.calculateScore(count)).thenReturn(score);
+		Assert.assertEquals(score, builder.calculateScore(new ImmutablePair<Object, Double>("do not ignore", count), modelMock), 0.000001);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.prevalance.field.DiscreteDataModel;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,19 +30,23 @@ public class DiscreteModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         List<Object> values = castModelBuilderData(modelBuilderData);
-        DiscreteDataModel model = new DiscreteDataModel(ignoreValues);
-        try {
-            model.setFeatureCounts(countFeatureValues(values, model));
-        } catch (Exception e) {
-            logger.error("got an exception while trying to build DiscreteDataModel", e);
-        }
-        return model;
+        return new DiscreteDataModel(countFeatureValues(values));
     }
 
-    private List<Double> countFeatureValues(List<Object> values, DiscreteDataModel model) {
+    @Override
+    public double calculateScore(Object value, Model model) {
+        Pair<Object, Double> featureAndCount = (Pair<Object, Double>) value;
+        String featureValue = getFeatureValue(featureAndCount.getKey());
+        if (featureValue == null) {
+            return 0;
+        }
+        return model.calculateScore(featureAndCount.getValue());
+    }
+
+    private List<Double> countFeatureValues(List<Object> values) {
         Map<String, Double> featureValueToCountMap = new HashMap<>();
         for (Object value : values) {
-            String featureValue = model.getFeatureValue(value);
+            String featureValue = getFeatureValue(value);
             if (featureValue != null) {
                 Double count = featureValueToCountMap.get(featureValue);
                 if (count == null) {
@@ -50,6 +56,17 @@ public class DiscreteModelBuilder implements IModelBuilder {
             }
         }
         return new ArrayList<>(featureValueToCountMap.values());
+    }
+
+    private String getFeatureValue(Object value){
+        if (value == null) {
+            return null;
+        }
+        String s = value.toString();
+        if (StringUtils.isBlank(s) || (ignoreValues != null && ignoreValues.matcher(s).matches())) {
+            return null;
+        }
+        return s;
     }
 
     private List<Object> castModelBuilderData(Object modelBuilderData) {
