@@ -7,6 +7,6 @@ public class EventsScoreStreamTaskService4769Test extends EventsScoreStreamTaskS
 
 	@Test
 	public void testSanity() throws Exception{
-		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("kerberosLogin", "Sec4769EventsFilterStreamTask"));
+		createEventsScoreStreamTaskService("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("kerberos_logins", "Sec4769EventsFilterStreamTask"));
 	}	
 }
