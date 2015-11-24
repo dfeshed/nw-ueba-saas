@@ -38,7 +38,6 @@ public class VpnSession extends AbstractDocument{
 	@Indexed
 	private String sessionId;
 
-	@JsonIgnore
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
