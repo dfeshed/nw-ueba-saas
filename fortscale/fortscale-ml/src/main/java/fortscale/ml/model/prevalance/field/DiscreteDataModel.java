@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
 
-import java.util.List;
+import java.util.Collection;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class DiscreteDataModel implements Model {
 	private OccurrencesHistogram occurrencesHistogram;
 
-	public DiscreteDataModel(List<Double> featureCounts) {
+	public DiscreteDataModel(Collection<Double> featureCounts) {
 		occurrencesHistogram = new OccurrencesHistogram(featureCounts);
 	}
 

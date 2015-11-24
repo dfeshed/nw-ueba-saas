@@ -8,10 +8,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class DiscreteModelBuilder implements IModelBuilder {
@@ -43,7 +40,7 @@ public class DiscreteModelBuilder implements IModelBuilder {
         return model.calculateScore(featureAndCount.getValue());
     }
 
-    private List<Double> countFeatureValues(List<Object> values) {
+    private Collection<Double> countFeatureValues(List<Object> values) {
         Map<String, Double> featureValueToCountMap = new HashMap<>();
         for (Object value : values) {
             String featureValue = getFeatureValue(value);
@@ -55,7 +52,7 @@ public class DiscreteModelBuilder implements IModelBuilder {
                 featureValueToCountMap.put(featureValue, count + 1);
             }
         }
-        return new ArrayList<>(featureValueToCountMap.values());
+        return featureValueToCountMap.values();
     }
 
     private String getFeatureValue(Object value){

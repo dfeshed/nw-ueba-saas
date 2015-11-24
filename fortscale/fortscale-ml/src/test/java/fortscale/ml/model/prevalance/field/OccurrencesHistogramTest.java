@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -13,7 +12,7 @@ import java.util.Random;
 @RunWith(JUnit4.class)
 public class OccurrencesHistogramTest {
 	private double calcScore(Map<String, Double> featureValueToCountMap, String feature) {
-		OccurrencesHistogram hist = new OccurrencesHistogram(new ArrayList<>(featureValueToCountMap.values()));
+		OccurrencesHistogram hist = new OccurrencesHistogram(featureValueToCountMap.values());
 		return hist.score(featureValueToCountMap.get(feature));
 	}
 

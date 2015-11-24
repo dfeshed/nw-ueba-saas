@@ -1,6 +1,7 @@
 package fortscale.ml.model.prevalance.field;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -15,7 +16,7 @@ public class OccurrencesHistogram {
 	private List<OccurrencesHistogramBucketScorer> bucketScorers;
 	private double maxBucketScore;
 
-	public OccurrencesHistogram(List<Double> featureOccurrences) {
+	public OccurrencesHistogram(Collection<Double> featureOccurrences) {
 		bucketScorers = new ArrayList<>(NUM_OF_BUCKETS);
 		for (int i = 0; i < NUM_OF_BUCKETS; i++) {
 			bucketScorers.add(new OccurrencesHistogramBucketScorer());
@@ -24,7 +25,7 @@ public class OccurrencesHistogram {
 		maxBucketScore = calcMaxBucketScore();
 	}
 
-	private void populateBucketScorers(List<Double> featureOccurrences) {
+	private void populateBucketScorers(Collection<Double> featureOccurrences) {
 		for (Double occurrence : featureOccurrences) {
 			if (occurrence >= 1) {
 				bucketScorers.get((int) getBucketIndex(occurrence)).addFeatureCount(occurrence);
