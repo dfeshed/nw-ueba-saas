@@ -85,15 +85,18 @@ public class MongoToKafkaJob extends FortscaleJob {
             Sort sort;
             if (direction.equalsIgnoreCase("desc")) {
                 sort = new Sort(Sort.Direction.DESC, field);
-            } else {
+            } else if (direction.equalsIgnoreCase("asc")) {
                 sort = new Sort(Sort.Direction.ASC, field);
+            } else {
+                logger.error("Bad sorting argument");
+                throw new JobExecutionException();
             }
             mongoQuery.with(sort);
         }
         streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
-			logger.error("No Mongo collection {} found", collection);
+			logger.error("No mongo collection {} found", collection);
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
@@ -114,7 +117,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		logger.debug("Running Mongo to Kafka job");
+		logger.debug("Running mongo to Kafka job");
         String collectionName = mongoCollection.getName();
         long totalItems = mongoTemplate.count(mongoQuery, collectionName);
         logger.debug("forwarding {} documents", totalItems);
