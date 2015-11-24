@@ -48,6 +48,7 @@ public class VpnSession extends AbstractDocument{
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
 
+	@JsonIgnore
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
