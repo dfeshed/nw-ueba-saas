@@ -6,23 +6,21 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DiscreteModelBuilderTest {
 	@Test
 	public void shouldBuildUsingOnlyFeaturesThatAreNotIgnored() {
 		String ignore = "ignore";
-		List<String> modelBuilderData = new ArrayList<>();
-		modelBuilderData.add("rareValue");
-		for (int i = 0; i < 10; i++) {
-			modelBuilderData.add("commonValue");
-		}
+		Map<String, Double> modelBuilderData = new HashMap<>();
+		modelBuilderData.put("rareValue", 1d);
+		modelBuilderData.put("commonValue", 10d);
 		DiscreteModelBuilder builderWithIgnore = new DiscreteModelBuilder(ignore);
 		DiscreteModelBuilder builderWithoutIgnore = new DiscreteModelBuilder(null);
 
 		Model modelWithoutIgnoredValue = builderWithIgnore.build(modelBuilderData);
-		modelBuilderData.add(ignore);
+		modelBuilderData.put(ignore, 1d);
 		Model modelWithIgnoredValue = builderWithIgnore.build(modelBuilderData);
 		Model modelWithoutIgnoring = builderWithoutIgnore.build(modelBuilderData);
 

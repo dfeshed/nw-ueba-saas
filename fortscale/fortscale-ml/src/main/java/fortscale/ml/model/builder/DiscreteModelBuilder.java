@@ -26,55 +26,39 @@ public class DiscreteModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        List<Object> values = castModelBuilderData(modelBuilderData);
-        return new DiscreteDataModel(countFeatureValues(values));
+        Map<String, Double> featureValueToCountMap = castModelBuilderData(modelBuilderData);
+        return new DiscreteDataModel(getUnignoredCounts(featureValueToCountMap));
     }
 
     @Override
     public double calculateScore(Object value, Model model) {
-        Pair<Object, Double> featureAndCount = (Pair<Object, Double>) value;
-        String featureValue = getFeatureValue(featureAndCount.getKey());
-        if (featureValue == null) {
-            return 0;
-        }
-        return model.calculateScore(featureAndCount.getValue());
+        Pair<String, Double> featureAndCount = (Pair<String, Double>) value;
+        return shouldIgnoreFeature(featureAndCount.getKey()) ? 0 : model.calculateScore(featureAndCount.getValue());
     }
 
-    private Collection<Double> countFeatureValues(List<Object> values) {
-        Map<String, Double> featureValueToCountMap = new HashMap<>();
-        for (Object value : values) {
-            String featureValue = getFeatureValue(value);
-            if (featureValue != null) {
-                Double count = featureValueToCountMap.get(featureValue);
-                if (count == null) {
-                    count = 0d;
-                }
-                featureValueToCountMap.put(featureValue, count + 1);
+    private Collection<Double> getUnignoredCounts(Map<String, Double> featureValueToCountMap) {
+        List<Double> counts = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : featureValueToCountMap.entrySet()) {
+            if (!shouldIgnoreFeature(entry.getKey())) {
+                counts.add(entry.getValue());
             }
         }
-        return featureValueToCountMap.values();
+        return counts;
     }
 
-    private String getFeatureValue(Object value){
-        if (value == null) {
-            return null;
-        }
-        String s = value.toString();
-        if (StringUtils.isBlank(s) || (ignoreValues != null && ignoreValues.matcher(s).matches())) {
-            return null;
-        }
-        return s;
+    private boolean shouldIgnoreFeature(String value){
+        return StringUtils.isBlank(value) || (ignoreValues != null && ignoreValues.matcher(value).matches());
     }
 
-    private List<Object> castModelBuilderData(Object modelBuilderData) {
+    private Map<String, Double> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
         }
-        if (!(modelBuilderData instanceof List)) {
+        if (!(modelBuilderData instanceof Map)) {
             String errorMsg = "got illegal modelBuilderData type - probably bad ASL";
             logger.error(errorMsg);
             throw new IllegalArgumentException(errorMsg);
         }
-        return (List<Object>) modelBuilderData;
+        return (Map<String, Double>) modelBuilderData;
     }
 }
