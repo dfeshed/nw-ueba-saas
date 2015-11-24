@@ -37,7 +37,7 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
-
+	@JsonSerialize(using = CustomDateSerializer.class)
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
@@ -101,7 +101,6 @@ public class VpnSession extends AbstractDocument{
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@JsonSerialize(using = CustomDateSerializer.class)
 	public DateTime getCreatedAt() {
 		return createdAt;
 	}
