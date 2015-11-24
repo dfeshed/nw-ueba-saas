@@ -37,6 +37,11 @@ public class TimeModelBuilder implements IModelBuilder {
         return model;
     }
 
+    @Override
+    public double calculateScore(Object value, Model model) {
+        return model.calculateScore(value);
+    }
+
     private List<Long> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
