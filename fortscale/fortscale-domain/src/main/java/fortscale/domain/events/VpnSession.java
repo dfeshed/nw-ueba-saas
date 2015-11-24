@@ -1,6 +1,8 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fortscale.domain.CustomDateSerializer;
 import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -8,7 +10,6 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
 
 
 @Document(collection=VpnSession.collectionName)
@@ -100,6 +101,7 @@ public class VpnSession extends AbstractDocument{
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonSerialize(using = CustomDateSerializer.class)
 	public DateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -286,4 +288,5 @@ public class VpnSession extends AbstractDocument{
 	public void setNormalizedUserName(String normalizedUserName) {
 		this.normalizedUserName = normalizedUserName;
 	}
+
 }
