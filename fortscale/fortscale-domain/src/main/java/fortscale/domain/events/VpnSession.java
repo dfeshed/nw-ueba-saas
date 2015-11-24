@@ -294,9 +294,7 @@ public class VpnSession extends AbstractDocument{
 		this.normalizedUserName = normalizedUserName;
 	}
 
-	private class CustomDateSerializer extends JsonDeserializer<DateTime> {
-
-		public CustomDateSerializer() {}
+	public class CustomDateSerializer extends JsonDeserializer<DateTime> {
 
 		@Override
 		public DateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
