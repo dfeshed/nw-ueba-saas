@@ -17,7 +17,15 @@ public class CustomDateSerializer extends JsonDeserializer<DateTime> {
     public DateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
             throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-        return new DateTime();
+        DateTime result;
+        if (node.has("millis")) {
+            result = new DateTime(node.get("millis").asLong());
+        } else if (node.has("$date")) {
+            result = new DateTime(node.get("$date").asText());
+        } else {
+            result = new DateTime();
+        }
+        return result;
     }
 
 }
