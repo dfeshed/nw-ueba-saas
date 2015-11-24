@@ -1,9 +1,11 @@
 package fortscale.collection.jobs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import fortscale.domain.core.Evidence;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;
@@ -15,6 +17,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,18 +103,26 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.debug("Running Mongo to Kafka job");
-        String collectionName = mongoCollection.getName();
+        //String collectionName = mongoCollection.getName();
         long totalItems = mongoCollection.count(mongoQuery);
         logger.debug("forwarding {} documents", totalItems);
         int counter = 0;
-        DBObject removeProjection = ignoreFields();
+        //DBObject removeProjection = ignoreFields();
+        Class clazz = Class.forName("fortscale.domain.core.Evidence");
         while (counter < totalItems) {
             logger.debug("handling items {} to {}", counter, batchSize + counter);
-            List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
-                    limit(batchSize).sort(sortQuery).toArray();
+            Query query = new Query();
+            query.limit(batchSize);
+            query.skip(counter);
+            List<Class> results = mongoTemplate.find(query, clazz);
+            /*List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
+                    limit(batchSize).sort(sortQuery).toArray();*/
             long lastMessageTime = 0;
-            for (DBObject result: results) {
-                String message = manipulateMessage(collectionName, result);
+            ObjectMapper objectMapper = new ObjectMapper();
+            for (Class object: results) {
+            //for (DBObject result: results) {
+                //String message = manipulateMessage(collectionName, result);
+                String message = objectMapper.writeValueAsString(object);
                 logger.debug("forwarding message - {}", message);
                 //TODO - partition index
                 for (KafkaEventsWriter streamWriter: streamWriters) {
@@ -122,7 +133,8 @@ public class MongoToKafkaJob extends FortscaleJob {
                         throw new JobExecutionException(ex);
                     }
                 }
-                lastMessageTime = Long.parseLong(result.get(dateField).toString());
+                lastMessageTime = object.getField(dateField).getLong(object);
+                //lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }
             if (lastMessageTime > 0) {
                 //throttling
