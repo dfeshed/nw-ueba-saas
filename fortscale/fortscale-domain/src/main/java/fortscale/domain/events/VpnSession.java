@@ -2,17 +2,13 @@ package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
+import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import fortscale.domain.core.AbstractDocument;
 
 
 
@@ -21,7 +17,6 @@ import fortscale.domain.core.AbstractDocument;
 	@CompoundIndex(name="usernameSourcIpIdx", def = "{'username': 1, 'sourceIp': 1}"),
 	@CompoundIndex(name="usernameCreatedAtEpochIdx", def = "{'username': 1, 'createdAtEpoch': -1}"),
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class VpnSession extends AbstractDocument{
 	/**
 	 * 
@@ -54,6 +49,7 @@ public class VpnSession extends AbstractDocument{
 	private Long closedAtEpoch;
 
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
+	@JsonIgnore
 	private DateTime modifiedAt;
 	
 	private String localIp;
