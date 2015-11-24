@@ -23,9 +23,9 @@ public class ModelDAO {
 	@Field(CREATION_TIME_FIELD)
 	private final Date creationTime;
 	@Field(MODEL_FIELD)
-	private final Model model;
+	private Model model;
 	@Field(END_TIME_FIELD)
-	private final Date endTime;
+	private Date endTime;
 
 	public ModelDAO(String sessionId, String contextId, Model model, Date endTime) {
 		this.sessionId = sessionId;
@@ -53,5 +53,13 @@ public class ModelDAO {
 
 	public Date getEndTime() {
 		return endTime;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }

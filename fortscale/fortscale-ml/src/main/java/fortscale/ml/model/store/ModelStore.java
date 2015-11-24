@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.Date;
 
@@ -22,18 +21,26 @@ public class ModelStore {
 	private MongoDbUtilService mongoDbUtilService;
 
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date endTime) {
-		String collectionName = COLLECTION_NAME_PREFIX + modelConf.getName();
+		String collectionName = getCollectionName(modelConf);
 		ensureCollectionExists(collectionName);
 
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+		ModelDAO modelDao = mongoTemplate.findOne(query, ModelDAO.class, collectionName);
 
-		Update update = new Update();
-		update.set(ModelDAO.MODEL_FIELD, model);
-		update.set(ModelDAO.END_TIME_FIELD, endTime);
+		if (modelDao == null) {
+			modelDao = new ModelDAO(sessionId, contextId, model, endTime);
+		} else {
+			modelDao.setModel(model);
+			modelDao.setEndTime(endTime);
+		}
 
-		mongoTemplate.upsert(query, update, collectionName);
+		mongoTemplate.save(modelDao, collectionName);
+	}
+
+	private String getCollectionName(ModelConf modelConf) {
+		return String.format("%s%s", COLLECTION_NAME_PREFIX, modelConf.getName());
 	}
 
 	private void ensureCollectionExists(String collectionName) {

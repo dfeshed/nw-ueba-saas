@@ -10,13 +10,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.Date;
 
@@ -76,8 +74,6 @@ public class ModelStoreTest {
     @Test
     public void shouldSaveTheModel() {
         mockCollectionExistence(collectionName, true);
-        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
-        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
 
         String contextId = "contextId";
         Date endTime = new Date();
@@ -86,12 +82,17 @@ public class ModelStoreTest {
         Query expectedQuery = new Query();
         expectedQuery.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(DEFAULT_SESSION_ID));
         expectedQuery.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
-        Update expectedUpdate = new Update();
-        expectedUpdate.set(ModelDAO.MODEL_FIELD, model);
-        expectedUpdate.set(ModelDAO.END_TIME_FIELD, endTime);
 
-        verify(mongoTemplate, times(1)).upsert(queryCaptor.capture(), updateCaptor.capture(), eq(collectionName));
-        Assert.assertEquals(expectedQuery, queryCaptor.getValue());
-        Assert.assertEquals(Whitebox.getInternalState(expectedUpdate, "modifierOps"), Whitebox.getInternalState(updateCaptor.getValue(), "modifierOps"));
+        verify(mongoTemplate, times(1)).findOne(eq(expectedQuery), eq(ModelDAO.class), eq(collectionName));
+        ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
+        verify(mongoTemplate, times(1)).save(modelDaoArgCaptor.capture(), eq(collectionName));
+        verifyNoMoreInteractions(mongoTemplate);
+
+        ModelDAO actualModelDao = modelDaoArgCaptor.getValue();
+        Assert.assertEquals(DEFAULT_SESSION_ID, actualModelDao.getSessionId());
+        Assert.assertEquals(contextId, actualModelDao.getContextId());
+        Assert.assertEquals(System.currentTimeMillis(), actualModelDao.getCreationTime().getTime(), 1000);
+        Assert.assertEquals(model, actualModelDao.getModel());
+        Assert.assertEquals(endTime, actualModelDao.getEndTime());
     }
 }

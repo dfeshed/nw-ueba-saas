@@ -19,12 +19,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 
@@ -134,42 +132,37 @@ public class ModelServiceTest {
 		Assert.assertEquals(expectedStatuses, listener.getStatuses());
 
 		// Assert built models
-		ArgumentCaptor<Query> queryArgumentCaptor = ArgumentCaptor.forClass(Query.class);
-		ArgumentCaptor<Update> updateArgumentCaptor = ArgumentCaptor.forClass(Update.class);
-		ArgumentCaptor<String> collectionNameArgumentCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mongoTemplate, times(2)).upsert(queryArgumentCaptor.capture(), updateArgumentCaptor.capture(), collectionNameArgumentCaptor.capture());
-
 		Query expectedId1Query = new Query();
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id1"));
-		Update expectedId1Update = new Update();
-		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
-		expectedId1Model.setParameters(96, 316.6666666666667, 81.22328620674138);
-		expectedId1Update.set(ModelDAO.MODEL_FIELD, expectedId1Model);
-		expectedId1Update.set(ModelDAO.END_TIME_FIELD, currentEndTime);
-
-		Query actualId1Query = queryArgumentCaptor.getAllValues().get(0);
-		Update actualId1Update = updateArgumentCaptor.getAllValues().get(0);
-		Assert.assertEquals(Whitebox.getInternalState(expectedId1Query, "criteria"), Whitebox.getInternalState(actualId1Query, "criteria"));
-		Assert.assertEquals(Whitebox.getInternalState(expectedId1Update, "modifierOps"), Whitebox.getInternalState(actualId1Update, "modifierOps"));
 
 		Query expectedId2Query = new Query();
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id2"));
-		Update expectedId2Update = new Update();
+
+		String expectedCollectionName = String.format("model_%s", modelConfName);
+		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
+		verify(mongoTemplate, times(1)).findOne(eq(expectedId2Query), eq(ModelDAO.class), eq(expectedCollectionName));
+		ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
+		verify(mongoTemplate, times(2)).save(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
+		verifyNoMoreInteractions(mongoTemplate);
+
+		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
+		expectedId1Model.setParameters(96, 316.6666666666667, 81.22328620674138);
 		ContinuousDataModel expectedId2Model = new ContinuousDataModel();
 		expectedId2Model.setParameters(75, 7.3192, 6.539804229485773);
-		expectedId2Update.set(ModelDAO.MODEL_FIELD, expectedId2Model);
-		expectedId2Update.set(ModelDAO.END_TIME_FIELD, currentEndTime);
 
-		Query actualId2Query = queryArgumentCaptor.getAllValues().get(1);
-		Update actualId2Update = updateArgumentCaptor.getAllValues().get(1);
-		Assert.assertEquals(Whitebox.getInternalState(expectedId2Query, "criteria"), Whitebox.getInternalState(actualId2Query, "criteria"));
-		Assert.assertEquals(Whitebox.getInternalState(expectedId2Update, "modifierOps"), Whitebox.getInternalState(actualId2Update, "modifierOps"));
+		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
+		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
+		Assert.assertEquals("id1", actualModelDao.getContextId());
+		Assert.assertEquals(expectedId1Model, actualModelDao.getModel());
+		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 
-		for (String collectionName : collectionNameArgumentCaptor.getAllValues()) {
-			Assert.assertEquals(String.format("model_%s", modelConfName), collectionName);
-		}
+		actualModelDao = modelDaoArgCaptor.getAllValues().get(1);
+		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
+		Assert.assertEquals("id2", actualModelDao.getContextId());
+		Assert.assertEquals(expectedId2Model, actualModelDao.getModel());
+		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 	}
 
 	private static FeatureBucket createFeatureBucketWithGenericHistogram(String featureName, GenericHistogram genericHistogram) {
