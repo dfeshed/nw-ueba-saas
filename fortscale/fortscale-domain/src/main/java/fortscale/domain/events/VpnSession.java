@@ -1,15 +1,15 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import fortscale.domain.CustomDateDeserializer;
-import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import fortscale.domain.core.AbstractDocument;
+
 
 
 @Document(collection=VpnSession.collectionName)
@@ -37,17 +37,16 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
-	@JsonDeserialize(using = CustomDateDeserializer.class)
+
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
-	@JsonDeserialize(using = CustomDateDeserializer.class)
+
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
 
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
-	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private DateTime modifiedAt;
 	
 	private String localIp;
@@ -288,5 +287,4 @@ public class VpnSession extends AbstractDocument{
 	public void setNormalizedUserName(String normalizedUserName) {
 		this.normalizedUserName = normalizedUserName;
 	}
-
 }
