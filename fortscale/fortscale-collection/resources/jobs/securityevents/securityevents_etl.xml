@@ -61,11 +61,11 @@
 				</entry>				
 				<entry>
 					<key>outputFieldsSecEvt4769</key>
-					<value>${impala.data.kerberosLogin.table.fields}</value>
+					<value>${impala.data.kerberos_logins.table.fields}</value>
 				</entry>
 				<entry>
 					<key>messageOutputFieldsSecEvt4769</key>
-					<value>${kafka.kerberosLogin.message.record.fields}</value>
+					<value>${kafka.kerberos_logins.message.record.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
@@ -77,11 +77,11 @@
 				</entry>
 				<entry>
 					<key>outputSeparatorSecEvt4769</key>
-					<value>${impala.data.kerberosLogin.table.delimiter}</value>
+					<value>${impala.data.kerberos_logins.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathSecEvt4769</key>
-					<value>${hdfs.user.data.kerberosLogin.path}</value>
+					<value>${hdfs.user.data.kerberos_logins.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameSecEvt4769</key>
@@ -89,7 +89,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableNameSecEvt4769</key>
-					<value>${impala.data.kerberosLogin.table.name}</value>
+					<value>${impala.data.kerberos_logins.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicSecEvt4769</key>
@@ -97,7 +97,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategySecEvt4769</key>
-                    <value>${impala.data.kerberosLogin.table.partition.type}</value>
+                    <value>${impala.data.kerberos_logins.table.partition.type}</value>
                 </entry>
 				
 				<!--  Login table parameters -->

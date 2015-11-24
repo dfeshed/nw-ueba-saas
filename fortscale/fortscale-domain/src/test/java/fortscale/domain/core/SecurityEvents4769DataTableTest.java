@@ -15,7 +15,7 @@ public class SecurityEvents4769DataTableTest {
 	@Test
 	public void testFieldMapping() throws IOException, PropertyNotExistException, IllegalStructuredProperty{
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.data.kerberosLogin.table.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.kerberos_logins.table.fields");
 				
 		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaTableFields);
 		Assert.assertEquals(ImpalaParser.getTableFieldNames(impalaTableFields).size(), expectedFieldsMap.size());
