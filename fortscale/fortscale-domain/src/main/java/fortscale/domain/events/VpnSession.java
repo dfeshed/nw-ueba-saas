@@ -2,6 +2,7 @@ package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import org.joda.time.DateTime;
@@ -20,6 +21,7 @@ import fortscale.domain.core.AbstractDocument;
 	@CompoundIndex(name="usernameSourcIpIdx", def = "{'username': 1, 'sourceIp': 1}"),
 	@CompoundIndex(name="usernameCreatedAtEpochIdx", def = "{'username': 1, 'createdAtEpoch': -1}"),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VpnSession extends AbstractDocument{
 	/**
 	 * 
