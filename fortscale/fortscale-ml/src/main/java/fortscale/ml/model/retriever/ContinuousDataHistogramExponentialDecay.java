@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.data.type.ContinuousDataHistogram;
 import fortscale.ml.model.data.type.IData;
-import org.joda.time.DateTime;
 
+import java.util.Date;
 import java.util.Map;
+
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 public class ContinuousDataHistogramExponentialDecay implements IDataRetrieverFunction {
@@ -23,11 +24,11 @@ public class ContinuousDataHistogramExponentialDecay implements IDataRetrieverFu
     }
 
     @Override
-    public ContinuousDataHistogram execute(IData data, DateTime currentTime) {
+    public ContinuousDataHistogram execute(IData data, Date currentTime) {
         ContinuousDataHistogram histogram = (ContinuousDataHistogram)data;
         ContinuousDataHistogram res = new ContinuousDataHistogram(data.getStartTime(), data.getEndTime());
 
-        long timeDifferenceInSeconds = convertToSeconds(currentTime.getMillis()) - convertToSeconds(data.getStartTime().getMillis());
+        long timeDifferenceInSeconds = convertToSeconds(currentTime.getTime()) - convertToSeconds(data.getStartTime().getTime());
         double decayFactor = Math.pow(base, Math.floor(timeDifferenceInSeconds / timeRangeIntervalInSeconds));
 
         for (Map.Entry<Double, Double> entry : histogram.getMap().entrySet()) {

@@ -1,16 +1,17 @@
 package fortscale.ml.model.data.type;
 
 import fortscale.utils.ConversionUtils;
-import org.joda.time.DateTime;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataHistogram implements IData {
-	private DateTime startTime;
-	private DateTime endTime;
+	private Date startTime;
+	private Date endTime;
 	private Map<Double, Double> histogram;
 
-	public ContinuousDataHistogram(DateTime startTime, DateTime endTime) {
+	public ContinuousDataHistogram(Date startTime, Date endTime) {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.histogram = new HashMap<>();
@@ -55,12 +56,12 @@ public class ContinuousDataHistogram implements IData {
 	}
 
 	@Override
-	public DateTime getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
 	@Override
-	public DateTime getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 

@@ -3,7 +3,6 @@ package fortscale.ml.model.store;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +17,8 @@ import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -58,7 +59,7 @@ public class ModelStoreTest {
         IndexOperations indexOperations = mock(IndexOperations.class);
         when(mongoTemplate.indexOps(collectionName)).thenReturn(indexOperations);
 
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, DateTime.now());
+        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date());
         verify(mongoDbUtilService).createCollection(collectionName);
         verify(indexOperations, times(2)).ensureIndex(any(IndexDefinition.class));
     }
@@ -67,7 +68,7 @@ public class ModelStoreTest {
     public void shouldNotCreateCollectionIfDoesExist() {
         mockCollectionExistence(collectionName, true);
 
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, DateTime.now());
+        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date());
         verify(mongoDbUtilService, times(0)).createCollection(collectionName);
         verify(mongoTemplate, times(0)).indexOps(anyString());
     }
@@ -79,7 +80,7 @@ public class ModelStoreTest {
         ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
 
         String contextId = "contextId";
-        DateTime endTime = DateTime.now();
+        Date endTime = new Date();
         modelStore.save(modelConf, DEFAULT_SESSION_ID, contextId, model, endTime);
 
         Query expectedQuery = new Query();

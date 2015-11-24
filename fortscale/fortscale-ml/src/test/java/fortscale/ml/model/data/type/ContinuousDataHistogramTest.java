@@ -1,15 +1,15 @@
 package fortscale.ml.model.data.type;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataHistogramTest {
-	private DateTime startTime = DateTime.now();
-	private DateTime endTime = startTime.plusDays(1);
+	private Date startTime = new Date(1420070400000L);
+	private Date endTime = new Date(1420156800000L);
 
 	private void assertHistogramCount(ContinuousDataHistogram histogram, double value, long expectedCount) {
 		Assert.assertEquals(expectedCount, Math.round(histogram.getCount(value)));

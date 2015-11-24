@@ -9,10 +9,10 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.data.type.ContinuousDataHistogram;
 import fortscale.utils.time.TimestampUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,10 +35,10 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public Object retrieve(String contextId, DateTime endTime) {
-		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getMillis());
+	public Object retrieve(String contextId, Date endTime) {
+		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
-		DateTime startTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
+		Date startTime = new Date(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
 				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
@@ -46,8 +46,8 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
-			DateTime featureBucketStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
-			DateTime featureBucketEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(featureBucket.getEndTime()));
+			Date featureBucketStartTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
+			Date featureBucketEndTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getEndTime()));
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				FeatureValue featureValue = aggregatedFeatures.get(featureName).getValue();

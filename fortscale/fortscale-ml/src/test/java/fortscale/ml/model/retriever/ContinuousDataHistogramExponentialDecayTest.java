@@ -1,20 +1,22 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.ml.model.data.type.ContinuousDataHistogram;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
+
 public class ContinuousDataHistogramExponentialDecayTest {
-    private DateTime startTime = new DateTime(1420070400000L);
-    private DateTime endTime = startTime.plusDays(1);
+    private Date startTime = new Date(1420070400000L);
+    private Date endTime = new Date(1420156800000L);
 
     @Test
     public void shouldReturnTheSameHistogramIfBaseIsOne() {
         ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
         histogram.add(1, 1);
 
-        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(1, 60).execute(histogram, startTime.plusSeconds(1000));
+        // Add to start time 1000 seconds
+        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(1, 60).execute(histogram, new Date(1420071400000L));
 
         Assert.assertEquals(histogram.getMap(), res.getMap());
     }
@@ -24,7 +26,8 @@ public class ContinuousDataHistogramExponentialDecayTest {
         ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
         histogram.add(1, 1);
 
-        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(0.9f, 60).execute(histogram, startTime.plusSeconds(0));
+        // Add to start time 0 seconds
+        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(0.9f, 60).execute(histogram, new Date(1420070400000L));
 
         Assert.assertEquals(histogram.getMap(), res.getMap());
     }
@@ -34,7 +37,8 @@ public class ContinuousDataHistogramExponentialDecayTest {
         ContinuousDataHistogram histogram = new ContinuousDataHistogram(startTime, endTime);
         histogram.add(1, 1);
 
-        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(0, 60).execute(histogram, startTime.plusSeconds(1000));
+        // Add to start time 1000 seconds
+        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(0, 60).execute(histogram, new Date(1420071400000L));
 
         Assert.assertEquals(0, res.getMap().size());
     }
@@ -47,7 +51,8 @@ public class ContinuousDataHistogramExponentialDecayTest {
         histogram.add(value, count);
 
         float base = 0.9f;
-        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(base, 60).execute(histogram, startTime.plusSeconds(61));
+        // Add to start time 61 seconds
+        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(base, 60).execute(histogram, new Date(1420070461000L));
 
         Assert.assertEquals(1, res.getMap().size());
         Assert.assertEquals(count * base, res.getCount(value), 0.001);
@@ -61,7 +66,8 @@ public class ContinuousDataHistogramExponentialDecayTest {
         histogram.add(value, count);
 
         float base = 0.9f;
-        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(base, 60).execute(histogram, startTime.plusSeconds(121));
+        // Add to start time 121 seconds
+        ContinuousDataHistogram res = new ContinuousDataHistogramExponentialDecay(base, 60).execute(histogram, new Date(1420070521000L));
 
         Assert.assertEquals(1, res.getMap().size());
         Assert.assertEquals(count * base * base, res.getCount(value), 0.001);

@@ -1,9 +1,10 @@
 package fortscale.ml.model.store;
 
 import fortscale.ml.model.Model;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.Date;
 
 public class ModelDAO {
 	public static final String SESSION_ID_FIELD = "sessionId";
@@ -20,18 +21,18 @@ public class ModelDAO {
 	@Field(CONTEXT_ID_FIELD)
 	private final String contextId;
 	@Field(CREATION_TIME_FIELD)
-	private final DateTime creationTime;
+	private final Date creationTime;
 	@Field(MODEL_FIELD)
 	private final Model model;
 	@Field(END_TIME_FIELD)
-	private final DateTime endTime;
+	private final Date endTime;
 
-	public ModelDAO(String sessionId, String contextId, Model model, DateTime endTime) {
+	public ModelDAO(String sessionId, String contextId, Model model, Date endTime) {
 		this.sessionId = sessionId;
 		this.contextId = contextId;
 		this.model = model;
 		this.endTime = endTime;
-		this.creationTime = new DateTime(System.currentTimeMillis());
+		this.creationTime = new Date(System.currentTimeMillis());
 	}
 
 	public String getSessionId() {
@@ -42,7 +43,7 @@ public class ModelDAO {
 		return contextId;
 	}
 
-	public DateTime getCreationTime() {
+	public Date getCreationTime() {
 		return creationTime;
 	}
 
@@ -50,7 +51,7 @@ public class ModelDAO {
 		return model;
 	}
 
-	public DateTime getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 }

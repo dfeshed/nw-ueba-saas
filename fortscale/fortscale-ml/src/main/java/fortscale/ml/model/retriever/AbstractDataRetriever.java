@@ -3,9 +3,9 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public abstract class AbstractDataRetriever {
@@ -32,5 +32,5 @@ public abstract class AbstractDataRetriever {
 		}
 	}
 
-	public abstract Object retrieve(String contextId, DateTime endTime);
+	public abstract Object retrieve(String contextId, Date endTime);
 }

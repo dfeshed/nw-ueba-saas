@@ -1,8 +1,9 @@
 package fortscale.ml.model.data.type;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 public interface IData {
-	public DateTime getStartTime();
-	public DateTime getEndTime();
+	public Date getStartTime();
+
+	public Date getEndTime();
 }

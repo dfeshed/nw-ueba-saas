@@ -9,12 +9,12 @@ import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.selector.FeatureBucketContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
 public class ModelBuilderManager {
@@ -39,13 +39,14 @@ public class ModelBuilderManager {
         modelBuilder = new ContinuousHistogramModelBuilder();
     }
 
-    public void process(IModelBuildingListener listener, String sessionId, DateTime previousEndTime, DateTime currentEndTime) {
+    public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
         Assert.notNull(currentEndTime);
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
-                previousEndTime = currentEndTime.minus(new Duration(TimestampUtils.convertToMilliSeconds(timeRangeInSeconds)));
+                long timeRangeInMillis = TimeUnit.SECONDS.toMillis(timeRangeInSeconds);
+                previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
             }
 
             for (String contextId : contextSelector.getContexts(previousEndTime, currentEndTime)) {
@@ -56,7 +57,7 @@ public class ModelBuilderManager {
         }
     }
 
-    public void build(IModelBuildingListener listener, String sessionId, String contextId, DateTime endTime) {
+    public void build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
         Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         Model model = modelBuilder.build(modelBuilderData);
 

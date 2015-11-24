@@ -13,7 +13,6 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,10 +26,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -131,7 +127,7 @@ public class ModelServiceTest {
 		modelService.process(event);
 
 		// Assert listener
-		DateTime currentEndTime = new DateTime(currentEndTimeInMillis);
+		Date currentEndTime = new Date(currentEndTimeInMillis);
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
 		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
@@ -183,7 +179,7 @@ public class ModelServiceTest {
 		return featureBucket;
 	}
 
-	private static JSONObject buildStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
+	private static JSONObject buildStatus(String modelConfName, String contextId, Date endTime, boolean success) {
 		JSONObject statusJson = new JSONObject();
 		statusJson.put("modelConfName", modelConfName);
 		statusJson.put("contextId", contextId);
@@ -196,7 +192,7 @@ public class ModelServiceTest {
 		private List<JSONObject> statuses = new ArrayList<>();
 
 		@Override
-		public void modelBuildingStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
+		public void modelBuildingStatus(String modelConfName, String contextId, Date endTime, boolean success) {
 			statuses.add(buildStatus(modelConfName, contextId, endTime, success));
 		}
 

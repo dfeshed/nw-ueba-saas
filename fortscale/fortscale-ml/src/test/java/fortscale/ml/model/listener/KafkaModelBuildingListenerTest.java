@@ -4,11 +4,12 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.util.Date;
 
 public class KafkaModelBuildingListenerTest {
 	@Test
@@ -21,7 +22,7 @@ public class KafkaModelBuildingListenerTest {
 
 		String modelConfName = "testModelConf";
 		String contextId = "testContextId";
-		DateTime endTime = DateTime.now();
+		Date endTime = new Date();
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);

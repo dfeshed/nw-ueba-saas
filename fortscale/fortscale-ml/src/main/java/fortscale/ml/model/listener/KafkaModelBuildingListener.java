@@ -4,8 +4,9 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
-import org.joda.time.DateTime;
 import org.springframework.util.Assert;
+
+import java.util.Date;
 
 public class KafkaModelBuildingListener implements IModelBuildingListener {
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
@@ -22,7 +23,7 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 	}
 
 	@Override
-	public void modelBuildingStatus(String modelConfName, String contextId, DateTime endTime, boolean success) {
+	public void modelBuildingStatus(String modelConfName, String contextId, Date endTime, boolean success) {
 		String statusAsJsonString = statusToJsonString(modelConfName, contextId, endTime, success);
 		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopicName), statusAsJsonString));
 	}
@@ -32,7 +33,7 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 		this.collector = collector;
 	}
 
-	private static String statusToJsonString(String modelConfName, String contextId, DateTime endTime, boolean success) {
+	private static String statusToJsonString(String modelConfName, String contextId, Date endTime, boolean success) {
 		JSONObject json = new JSONObject();
 
 		json.put(MODEL_CONF_NAME_JSON_FIELD, modelConfName);

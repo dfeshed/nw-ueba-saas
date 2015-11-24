@@ -6,7 +6,6 @@ import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.selector.ContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import junitparams.JUnitParamsRunner;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
+import java.util.Date;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(JUnitParamsRunner.class)
@@ -47,8 +48,8 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
-        DateTime currentEndTime = DateTime.now();
-        DateTime previousEndTime = currentEndTime.minusDays(1);
+        Date currentEndTime = new Date(1420156800000L);
+        Date previousEndTime = new Date(1420070400000L);
         String[] ids = {"user1", "user2"};
         Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
         boolean[] successes = {true, true};
@@ -65,7 +66,7 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreGlobalModel() {
-        DateTime currentEndTime = DateTime.now();
+        Date currentEndTime = new Date(1420156800000L);
         Model[] models = {new ContinuousDataModel()};
         boolean[] successes = {true};
 
@@ -81,8 +82,8 @@ public class ModelBuilderManagerTest {
         String modelConfName = "testModelConf";
         when(modelConf.getName()).thenReturn(modelConfName);
 
-        DateTime currentEndTime = DateTime.now();
-        DateTime previousEndTime = currentEndTime.minusDays(1);
+        Date currentEndTime = new Date(1420156800000L);
+        Date previousEndTime = new Date(1420070400000L);
         String[] entityIds = {"user1", "user2"};
         Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
         boolean[] successes = {true, false};
@@ -97,14 +98,14 @@ public class ModelBuilderManagerTest {
         verifyNoMoreInteractions(listener);
     }
 
-    private void mockBuild(String id, Model model, DateTime endTime, boolean success) {
+    private void mockBuild(String id, Model model, Date endTime, boolean success) {
         if (!success) {
             doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(endTime));
         }
     }
 
     private ModelBuilderManager createProcessScenario(
-            DateTime previousEndTime, DateTime currentEndTime, String[] ids, Model[] models, boolean[] successes) {
+            Date previousEndTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
 
         if (ids != null) {
             when(contextSelector.getContexts(previousEndTime, currentEndTime)).thenReturn(Arrays.asList(ids));
