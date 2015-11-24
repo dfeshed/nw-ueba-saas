@@ -24,29 +24,29 @@ public class TimeModel implements Model {
 			buckets.add(0d);
 		}
 
-		bucketToSmoothedCounter = new HashMap<>(numOfBuckets);
 		Set<Integer> bucketHits = new HashSet<>();
 		for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
-			int pivot = getBucketIndex(entry.getKey());
 			double counter = entry.getValue();
-			bucketHits.add(pivot);
-			buckets.set(pivot, buckets.get(pivot) + counter);
-			int upIndex = pivot + 1;
-			int downIndex = pivot - 1 + numOfBuckets;
-			for (int i = 0; i < SMOOTHENING_DISTANCE; i++,upIndex++,downIndex--) {
-				double addVal = counter * (1 - i / ((double) SMOOTHENING_DISTANCE));
-				int index = upIndex % numOfBuckets;
-				buckets.set(index, buckets.get(index) + addVal);
-
-				index = downIndex % numOfBuckets;
-				buckets.set(index, buckets.get(index) + addVal);
+			int bucketHit = getBucketIndex(entry.getKey());
+			bucketHits.add(bucketHit);
+			cyclicallyAddToBucket(buckets, bucketHit, counter);
+			for (int distance = 1; distance <= SMOOTHENING_DISTANCE; distance++) {
+				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHENING_DISTANCE));
+				cyclicallyAddToBucket(buckets, bucketHit + distance, addVal);
+				cyclicallyAddToBucket(buckets, bucketHit - distance, addVal);
 			}
 		}
 
+		bucketToSmoothedCounter = new HashMap<>(numOfBuckets);
 		for (int bucket : bucketHits) {
 			bucketToSmoothedCounter.put(bucket, buckets.get(bucket));
 		}
 		occurrencesHistogram = new OccurrencesHistogram(new ArrayList<>(bucketToSmoothedCounter.values()));
+	}
+
+	private void cyclicallyAddToBucket(ArrayList<Double> buckets, int index, double add) {
+		index = (index + buckets.size()) % buckets.size();
+		buckets.set(index, buckets.get(index) + add);
 	}
 
 	private int getBucketIndex(long epochSeconds) {
