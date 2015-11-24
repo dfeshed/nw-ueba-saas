@@ -4,9 +4,7 @@ import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
@@ -70,8 +68,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		createEsperConfiguration(config);
 		createInputTopicMapping(config, context);
 		updateEsperFromCache();
-		//mapper.registerModule(new JodaModule());
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 
