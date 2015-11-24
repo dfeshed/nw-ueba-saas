@@ -29,11 +29,8 @@ public class TimeModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        List<Long> values = castModelBuilderData(modelBuilderData);
-        TimeModel model = new TimeModel(timeResolution, bucketSize);
-        for (Long value : values) {
-            model.add(value);
-        }
+        List<Long> times = castModelBuilderData(modelBuilderData);
+        TimeModel model = new TimeModel(timeResolution, bucketSize, times);
         return model;
     }
 

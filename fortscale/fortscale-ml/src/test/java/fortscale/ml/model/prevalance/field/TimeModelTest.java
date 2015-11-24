@@ -5,348 +5,178 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
 public class TimeModelTest {
 	public static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
+	public static final int DAILY_BUCKET_SIZE = 60 * 10;
 
-	private TimeModel createDailyTimeModel() {
-		return new TimeModel(DAILY_TIME_RESOLUTION, 60 * 10);
+	private double getScore(List<Long> times, long timeToScore) {
+		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, times).calculateScore(timeToScore);
+	}
+
+	private void assertScore(List<Long> times, long timeToScore, double expected) {
+		Assert.assertEquals(expected, getScore(times, timeToScore), 0.00001);
 	}
 
 	@Test
-	public void elementarycheck() throws Exception {
-		TimeModel timeModel = createDailyTimeModel();
-		
+	public void elementaryCheck() {
+		List<Long> times = new ArrayList<>();
 		long epochSeconds = 1000;
 		for (int i = 0; i < 100; i++) {
-			timeModel.update(epochSeconds);
+			times.add(epochSeconds);
 		}
-		
-		double score = timeModel.calculateScore(epochSeconds);
-		Assert.assertEquals(0.0, score, 0.0);
+		assertScore(times, epochSeconds, 0);
 	}
 	
 	@Test
-	public void elementarycheckWithIntegersAsEpochTime() throws Exception {
-		TimeModel timeModel = createDailyTimeModel();
-		
-		Integer epochSeconds = new Integer(1000);
+	public void elementaryCheckWithOneOutlier() {
+		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			timeModel.add(epochSeconds);
+			times.add(1000L);
 		}
-		
-		epochSeconds = new Integer(6600);
-		timeModel.add(epochSeconds);
-		double score = timeModel.calculateScore(epochSeconds);
-		Assert.assertEquals(44.0, score, 0.0);
+		long epochSeconds = 6600;
+		times.add(epochSeconds);
+		assertScore(times, epochSeconds, 44);
 	}
-	
+
 	@Test
-	public void testNullValueScore(){
-		TimeModel timeModel = createDailyTimeModel();
-		
-		Integer epochSeconds = new Integer(1000);
-		for (int i = 0; i < 100; i++) {
-			timeModel.add(epochSeconds);
-		}
-		
-		epochSeconds = null;
-		timeModel.add(epochSeconds);
-		double score = timeModel.calculateScore(epochSeconds);
-		Assert.assertEquals(0.0, score, 0.0);
-	}
-	
-	@Test
-	public void testUniformlyRandomDistribution() throws Exception{
+	public void testUniformlyRandomDistribution() {
 		Random rnd = new Random(1);
-		TimeModel timeModel = createDailyTimeModel();
+		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * DAILY_TIME_RESOLUTION);
-			timeModel.update(epochSeconds);
+			times.add((long)(rnd.nextDouble( ) * DAILY_TIME_RESOLUTION));
 		}
-		
-		timeModel.update(10);
-		double score = timeModel.calculateScore(10);
-		Assert.assertEquals(0, score,1);
-		timeModel.update(24600);
-		score = timeModel.calculateScore(24600);
-		Assert.assertEquals(0, score,1);
+
+		for (int i = 0; i < times.size(); i++) {
+			assertScore(times, times.get(i), 0);
+		}
 	}
-	
+
 	@Test
-	public void testScoreOfIsolateTime() throws Exception{
+	public void testScoreOfIsolatedTimes() {
 		Random rnd = new Random(1);
-		TimeModel timeModel = createDailyTimeModel();
+		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * 6000);
-			timeModel.update(epochSeconds);
+			times.add((long)(rnd.nextDouble( ) * 6000));
 		}
-		
-		timeModel.update(30000);
-		double score = timeModel.calculateScore(30000);
-		Assert.assertEquals(99, score,1);
-		timeModel.update(40000);
-		score = timeModel.calculateScore(40000);
-		Assert.assertEquals(93, score,1);
-		timeModel.update(50000);
-		score = timeModel.calculateScore(50000);
-		Assert.assertEquals(74, score,1);
-		timeModel.update(60000);
-		score = timeModel.calculateScore(60000);
-		Assert.assertEquals(43, score,1);
-		score = timeModel.calculateScore(500);
-		Assert.assertEquals(0, score,1);
+		long isolatedTime = 30000L;
+		times.add(isolatedTime);
+		assertScore(times, isolatedTime, 99);
+		isolatedTime = 40000L;
+		times.add(isolatedTime);
+		assertScore(times, isolatedTime, 93);
+		isolatedTime = 50000L;
+		times.add(isolatedTime);
+		assertScore(times, isolatedTime, 74);
+		isolatedTime = 60000L;
+		times.add(isolatedTime);
+		assertScore(times, isolatedTime, 43);
+		assertScore(times, 500, 0);
 	}
-	
+
 	@Test
-	public void testScoresInDifferentDistancesFromTheCluster() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
-		
-		timeModel.update(14000);
-		double score = timeModel.calculateScore(14000);
-		Assert.assertEquals(99, score,1);
-	}
-	
-	private void initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(TimeModel timeModel) throws Exception{
+	public void testScoresInDifferentDistancesFromTheClusters() {
 		Random rnd = new Random(1);
+		List<Long> timesClustered = new ArrayList<>();
 		for (int i = 0; i < 2; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 600);
-			timeModel.update(epochSeconds);
+			timesClustered.add(epochSeconds);
 		}
-		
+
 		for (int i = 0; i < 2; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 600 + 6600);
-			timeModel.update(epochSeconds);
+			timesClustered.add(epochSeconds);
 		}
-		
+
 		for (int i = 0; i < 46; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 2400 + 2400);
-			timeModel.update(epochSeconds);
+			timesClustered.add(epochSeconds);
+		}
+
+		double[] scores = new double[]{99, 93, 65, 13};
+		long[] timesToScore = new long[]{14000, 11000, 10000, 9000};
+		for (int i = 0; i < scores.length; i++) {
+			List<Long> times = new ArrayList<>(timesClustered);
+			times.add(timesToScore[i]);
+			assertScore(times, timesToScore[i], scores[i]);
 		}
 	}
-	
+
 	@Test
-	public void testScoresInDifferentDistancesFromTheCluster1() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
-		
-		timeModel.update(11000);
-		double score = timeModel.calculateScore(11000);
-		Assert.assertEquals(93, score,1);
-	}
-	
-	@Test
-	public void testScoresInDifferentDistancesFromTheCluster2() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
-		
-		timeModel.update(10000);
-		double score = timeModel.calculateScore(10000);
-		Assert.assertEquals(65, score,1);
-	}
-	
-	@Test
-	public void testScoresInDifferentDistancesFromTheCluster3() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
-				
-		timeModel.update(9000);
-		double score = timeModel.calculateScore(9000);
-		Assert.assertEquals(13, score,1);
-		
-		
-	}
-	
-	@Test
-	public void testScoresOfOneBigClusterAndManyDispersedTimes() throws Exception{
+	public void testScoresOfOneBigClusterAndManyDispersedTimes() {
 		Random rnd = new Random(1);
-		TimeModel timeModel = createDailyTimeModel();
+		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 3000);
-			timeModel.update(epochSeconds);
+			times.add(epochSeconds);
 		}
-		
-		long dispersedTimes[] = new long[4];
-		int i = 0;
-		
-		long epochSeconds = 3000 + ((i+1) * 6000);
-		timeModel.update(epochSeconds);
-		dispersedTimes[i] = epochSeconds;
-		double score = timeModel.calculateScore(dispersedTimes[i]);
-		Assert.assertEquals(99, score, 1);
-		i++;
-		
-		epochSeconds = 3000 + ((i+1) * 6000);
-		timeModel.update(epochSeconds);
-		dispersedTimes[i] = epochSeconds;
-		score = timeModel.calculateScore(dispersedTimes[i]);
-		Assert.assertEquals(93, score, 1);
-		i++;
-		
-		epochSeconds = 3000 + ((i+1) * 6000);
-		timeModel.update(epochSeconds);
-		dispersedTimes[i] = epochSeconds;
-		score = timeModel.calculateScore(dispersedTimes[i]);
-		Assert.assertEquals(74, score, 1);
-		i++;
-		
-		epochSeconds = 3000 + ((i+1) * 6000);
-		timeModel.update(epochSeconds);
-		dispersedTimes[i] = epochSeconds;
-		i++;
-		
-		for (int j = 0; j < 4; j++) {
-			score = timeModel.calculateScore(dispersedTimes[j]);
-			Assert.assertEquals(44, score, 1);
+
+		double scores[] = new double[]{99, 92, 74, 44};
+		long dispersedTimes[] = new long[scores.length];
+		for (int i = 0; i < scores.length; i++) {
+			dispersedTimes[i] = 3000 + (i + 1) * 6000;
+			times.add(dispersedTimes[i]);
+			assertScore(times, dispersedTimes[i], scores[i]);
 		}
-		
-	}
-	
-	@Test
-	//This test is built on the scenario of issue FV-3738.
-	public void testNewWorkingTimeScore() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		int step = 200;
-		for (int i = 0; i < 5; i++) {
-			long epochSeconds = 0; //12AM UTC
-			for (int j = 0; j < 18; j++) {
-				timeModel.update(epochSeconds);
-				double score = timeModel.calculateScore(epochSeconds);
-				Assert.assertEquals(0, score, 0.1);
-				epochSeconds += step;
-			}
-		}
-		
-		step = 450;
-		int numberOfSteps = 16;
-		double prevCycleScores[] = new double[numberOfSteps];
-		long epochSeconds = 43200; //12PM UTC
-		double score = 100;
-		double prevScore = 100;
-		for (int j = 0; j < numberOfSteps; j++) {
-			timeModel.update(epochSeconds);
-			score = timeModel.calculateScore(epochSeconds);
-			Assert.assertTrue(prevScore >= score);
-			prevCycleScores[j] = score;
-			prevScore = score;
-			epochSeconds += step;
-		}
-		
-		for (int i = 0; i < 4; i++) {
-			epochSeconds = 43200; //12PM UTC
-			score = 100;
-			int j = 0;
-			for (; j < numberOfSteps-2; j++) {
-				timeModel.update(epochSeconds);
-				score = timeModel.calculateScore(epochSeconds);
-				Assert.assertTrue(prevCycleScores[j] >= score);
-				prevCycleScores[j] = score;
-				epochSeconds += step;
-			}
-			for (; j < numberOfSteps; j++) {
-				timeModel.update(epochSeconds);
-				score = timeModel.calculateScore(epochSeconds);
-				Assert.assertTrue(score <= 6);
-				prevCycleScores[j] = score;
-				epochSeconds += step;
-			}
+
+		for (int i = 0; i < scores.length; i++) {
+			assertScore(times, dispersedTimes[i], scores[scores.length - 1]);
 		}
 	}
-	
+
 	@Test
-	//This test is built on the scenario of issue FV-3738.
-	public void testNewWorkingTimeScore1() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		int step = 200;
-		for (int i = 0; i < 5; i++) {
-			long epochSeconds = 0; //12AM UTC
-			for (int j = 0; j < 18; j++) {
-				timeModel.update(epochSeconds);
-				double score = timeModel.calculateScore(epochSeconds);
-				Assert.assertEquals(0, score, 0.1);
-				epochSeconds += step;
+	// this test is built on the scenario of issue FV-3738.
+	public void testNewWorkingTimeScore() {
+		int scenarioSteps[] = new int[]{450, 900, 900};
+		int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
+		int scenarioScoreThresholds[] = new int[]{0, 0, 16};
+		for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
+			List<Long> times = new ArrayList<>();
+			int step = 200;
+			for (int i = 0; i < 5; i++) {
+				long epochSeconds = 0; //12AM UTC
+				for (int j = 0; j < 18; j++) {
+					times.add(epochSeconds);
+					assertScore(times, epochSeconds, 0);
+					epochSeconds += step;
+				}
 			}
-		}
-		
-		step = 900;
-		int numberOfSteps = 8;
-		double prevCycleScores[] = new double[numberOfSteps];
-		long epochSeconds = 43200; //12PM UTC
-		double score = 100;
-		double prevScore = 100;
-		for (int j = 0; j < numberOfSteps; j++) {
-			timeModel.update(epochSeconds);
-			score = timeModel.calculateScore(epochSeconds);
-			Assert.assertTrue(prevScore >= score);
-			prevCycleScores[j] = score;
-			prevScore = score;
-			epochSeconds += step;
-		}
-		
-		for (int i = 0; i < 4; i++) {
-			epochSeconds = 43200; //12PM UTC
-			score = 100;
-			int j = 0;
-			for (; j < numberOfSteps-2; j++) {
-				timeModel.update(epochSeconds);
-				score = timeModel.calculateScore(epochSeconds);
-				Assert.assertTrue(prevCycleScores[j] >= score);
+
+			step = scenarioSteps[scenario];
+			int numberOfSteps = scenarioNumberOfSteps[scenario];
+			double prevCycleScores[] = new double[numberOfSteps];
+			long epochSeconds = 43200; //12PM UTC
+			double score;
+			double prevScore = 100;
+			for (int j = 0; j < numberOfSteps; j++) {
+				times.add(epochSeconds);
+				score = getScore(times, epochSeconds);
+				Assert.assertTrue(prevScore >= score);
 				prevCycleScores[j] = score;
+				prevScore = score;
 				epochSeconds += step;
 			}
-			for (; j < numberOfSteps; j++) {
-				timeModel.update(epochSeconds);
-				score = timeModel.calculateScore(epochSeconds);
-				Assert.assertTrue(score <= 6);
-				prevCycleScores[j] = score;
-				epochSeconds += step;
-			}
-		}
-	}
-	
-	@Test
-	//This test is built on the scenario of issue FV-3738.
-	public void testNewWorkingTimeScore2() throws Exception{
-		TimeModel timeModel = createDailyTimeModel();
-		int step = 200;
-		for (int i = 0; i < 5; i++) {
-			long epochSeconds = 0; //12AM UTC
-			for (int j = 0; j < 18; j++) {
-				timeModel.update(epochSeconds);
-				double score = timeModel.calculateScore(epochSeconds);
-				Assert.assertEquals(0, score, 0.1);
-				epochSeconds += step;
-			}
-		}
-		
-		step = 900;
-		int numberOfSteps = 4;
-		double prevCycleScores[] = new double[numberOfSteps];
-		long epochSeconds = 43200; //12PM UTC
-		double score = 100;
-		double prevScore = 100;
-		for (int j = 0; j < numberOfSteps; j++) {
-			timeModel.update(epochSeconds);
-			score = timeModel.calculateScore(epochSeconds);
-			Assert.assertTrue(prevScore >= score);
-			prevCycleScores[j] = score;
-			prevScore = score;
-			epochSeconds += step;
-		}
-		
-		for (int i = 0; i < 4; i++) {
-			epochSeconds = 43200; //12PM UTC
-			score = 100;
-			int j = 0;
-			for (; j < numberOfSteps; j++) {
-				timeModel.update(epochSeconds);
-				score = timeModel.calculateScore(epochSeconds);
-				Assert.assertTrue(prevCycleScores[j] >= score);
-				prevCycleScores[j] = score;
-				epochSeconds += step;
+
+			for (int i = 0; i < 4; i++) {
+				epochSeconds = 43200; //12PM UTC
+				for (int j = 0; j < numberOfSteps; j++) {
+					times.add(epochSeconds);
+					score = getScore(times, epochSeconds);
+					Assert.assertTrue(prevCycleScores[j] >= score);
+					prevCycleScores[j] = score;
+					epochSeconds += step;
+				}
+				for (int j = numberOfSteps - 2; j < numberOfSteps; j++) {
+					times.add(epochSeconds);
+					score = getScore(times, epochSeconds);
+					Assert.assertTrue(score <= scenarioScoreThresholds[scenario]);
+					prevCycleScores[j] = score;
+					epochSeconds += step;
+				}
 			}
 		}
 	}

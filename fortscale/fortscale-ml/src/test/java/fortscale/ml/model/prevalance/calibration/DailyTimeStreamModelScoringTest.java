@@ -336,7 +336,7 @@ public class DailyTimeStreamModelScoringTest {
 			prevScore = score;
 			epochSeconds += step;
 		}
-		
+
 		for (int i = 0; i < 4; i++) {
 			epochSeconds = 43200; //12PM UTC
 			score = 100;
