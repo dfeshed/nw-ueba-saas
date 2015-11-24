@@ -2,7 +2,7 @@ package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import fortscale.domain.CustomDateDeserializers;
+import fortscale.domain.CustomDateDeserializer;
 import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -37,17 +37,17 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
-	@JsonDeserialize(using = CustomDateDeserializers.class)
+	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
-	@JsonDeserialize(using = CustomDateDeserializers.class)
+	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
 
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
-	@JsonDeserialize(using = CustomDateDeserializers.class)
+	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private DateTime modifiedAt;
 	
 	private String localIp;
