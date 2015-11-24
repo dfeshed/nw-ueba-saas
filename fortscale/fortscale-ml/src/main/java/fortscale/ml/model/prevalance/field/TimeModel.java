@@ -60,6 +60,6 @@ public class TimeModel implements Model {
 	public double calculateScore(Object value) {
 		int bucketIndex = getBucketIndex((Long) value);
 		Double smoothedCounter = bucketToSmoothedCounter.get(bucketIndex);
-		return occurrencesHistogram != null ? occurrencesHistogram.score(smoothedCounter) : 0;
+		return occurrencesHistogram.score(smoothedCounter);
 	}
 }
