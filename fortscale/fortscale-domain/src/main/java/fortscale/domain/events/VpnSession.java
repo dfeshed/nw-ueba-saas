@@ -1,6 +1,7 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import org.joda.time.DateTime;
@@ -40,7 +41,7 @@ public class VpnSession extends AbstractDocument{
 	@Indexed
 	private String sessionId;
 
-	@JsonDeserialize(using=DateTimeDeserializer.class)
+	@JsonIgnore
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
