@@ -124,10 +124,7 @@ public class AdFetchJob extends FortscaleJob {
 			for (String dcAddress: adConnection.getIpAddresses()) {
 				logger.debug("Trying to connect to domain controller at {}", dcAddress);
 				connected = true;
-
 				dcAddress = "ldap://" + dcAddress;
-
-
 				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
 				String password = adConnection.getDomainPassword();
 				password = fortscale.utils.EncryptionUtils.decrypt(password);
@@ -140,7 +137,7 @@ public class AdFetchJob extends FortscaleJob {
 				try {
 					context = new InitialLdapContext(environment, null);
 				} catch (javax.naming.CommunicationException ex) {
-					logger.debug("Connection failed - {}", ex.getMessage());
+					logger.error("Connection failed - {}", ex.getMessage());
 					connected = false;
 				}
 				if (connected) {
@@ -150,8 +147,8 @@ public class AdFetchJob extends FortscaleJob {
 			if (connected) {
 				logger.debug("Connection established");
 			} else {
-				logger.debug("Failed to connect to any domain controller for {}", adConnection.getDomainName());
-				throw new Exception ("Failed to connect to any domain controller for " + adConnection.getDomainName());
+				logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainName());
+				continue;
 			}
 			String baseSearch = adConnection.getDomainBaseSearch();
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
@@ -164,7 +161,7 @@ public class AdFetchJob extends FortscaleJob {
 			do {
 				NamingEnumeration<SearchResult> answer = context.search(baseSearch, _filter, searchControls);
 				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
-					SearchResult result = (SearchResult)answer.next();
+					SearchResult result = answer.next();
 					Attributes attributes = result.getAttributes();
 					handleAttributes(fileWriter, attributes);
 					records++;
@@ -185,7 +182,7 @@ public class AdFetchJob extends FortscaleJob {
 	private void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
 		if (attributes != null) {
             for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements();) {
-                Attribute atr = (Attribute)index.next();
+                Attribute atr = index.next();
                 String key = atr.getID();
                 NamingEnumeration<?> values = atr.getAll();
 				if (key.equals("member")) {
@@ -248,4 +245,5 @@ public class AdFetchJob extends FortscaleJob {
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
+
 }
