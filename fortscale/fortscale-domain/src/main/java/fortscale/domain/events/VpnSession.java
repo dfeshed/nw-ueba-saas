@@ -1,7 +1,6 @@
 package fortscale.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -42,13 +41,11 @@ public class VpnSession extends AbstractDocument{
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
 
-	@JsonIgnore
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
 
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
-	@JsonIgnore
 	private DateTime modifiedAt;
 	
 	private String localIp;
