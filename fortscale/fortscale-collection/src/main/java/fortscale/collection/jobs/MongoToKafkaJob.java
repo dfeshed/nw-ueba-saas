@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 04/10/2015.
@@ -133,7 +134,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                         throw new JobExecutionException(ex);
                     }
                 }
-                lastMessageTime = object.getClass().getField(dateField).getLong(object);
+                lastMessageTime = objectMapper.readTree(message).get(dateField).asLong();
                 //lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }
             if (lastMessageTime > 0) {
