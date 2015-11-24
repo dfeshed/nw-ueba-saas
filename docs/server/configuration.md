@@ -27,3 +27,8 @@ These are the system properties that can be overridden to configure the various 
 |Property|Default Value|Description|
 |--------|-------------|-----------|
 |websocket.sockjs.heartbeatInterval|10_000 (10 seconds)|The amount of time in milliseconds when the server has not sent any messages and after which the server should send a heartbeat frame to the client in order to keep the connection from breaking.|
+
+## Threats - Incident Options
+|Property|Default Value|Description|
+|--------|-------------|-----------|
+|threats.incident.controller.batchSize|300|The number of incidents to send, per message, when streaming the incident to a client.|

@@ -19,7 +19,8 @@ import echo from "sa/mirage/sockets/echo";
 import files from "sa/mirage/sockets/files";
 
 export default function() {
-    /* initalize the list of all apis that doesn't need mirage*/
+
+    // initialize the list of all apis that doesn't need mirage
     passthrough(this);
 
     this.namespace = "/api";
@@ -29,9 +30,12 @@ export default function() {
     users(this);
     info(this);
 
-    var server = initSockets();
-    connect(server);
-    disconnect(server);
-    echo(server);
-    files(server);
+    // initialize a mock server for each supported socket url
+    var servers = initSockets();
+    (servers || []).forEach(function(server){
+        connect(server);
+        disconnect(server);
+        echo(server);
+        files(server);
+    });
 }

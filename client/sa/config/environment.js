@@ -14,7 +14,7 @@ module.exports = function(environment) {
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
-    'socketURL': '/threats/socket',
+    'socketURLs': ['/threats/socket'],
     'socketDebug': false,
     'i18n': {
         defaultLocale:'en'

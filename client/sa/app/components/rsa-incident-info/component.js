@@ -13,7 +13,7 @@ export default Ember.Component.extend({
      * @type Object
      * @default null
      */
-    model: null,
+    incident: null,
 
     /**
      * User input for a new entry in the incident's journal.  This attribute will be updated automatically by bindings

@@ -1,36 +1,31 @@
-import Ember from 'ember';
-import Incidents from "sa/utils/cube/incidents";
+import Ember from "ember";
 
 export default Ember.Route.extend({
 
+    /**
+     * Submits a query and sets "model" to an Incidents cube that wraps the query's PromiseArray results.
+     * @returns {Promise}
+     */
     actions: {
 
-        /**
-         * Initialize the data and display of components for this route.
-         */
+        // Initiates data load upon user's arrival.
         didTransition: function(){
-            this.set("controller.path", [
-                {
-                    type: "incidents-queue",
-                    value: Incidents.create({websocket: this.websocket})
-                },
-                {
-                    type: "incident-info",
-                    value: null     // selected incident record will go here after user selects it
-                }
-            ]);
+            this.get("controller").fetchModel();
         },
 
-        /**
-         * Tear down the data.
-         */
+        // Tears down the data.
         willTransition: function(){
-            var path = this.get("controller.path"),
-                cube = path && path[0] && path[0].value;
+            var cube = this.get("controller.model");
             if (cube) {
-                cube.destroy();
+                this.set("controller.model", null);
+                var arr = cube.get("records");
+                if (arr && arr.cancel) {
+                    arr.cancel();
+                }
+                if (cube.destroy) {
+                    cube.destroy();
+                }
             }
         }
     }
-
 });

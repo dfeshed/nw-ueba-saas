@@ -35,9 +35,9 @@ public abstract class BaseCarlosRepository {
             MessageChannel<T> channel = endpoint.getMessageChannel(type);
 
             future.handle((ok, ex) -> {
-                    Closeables.closeQuietly(channel);
-                    return ok;
-                });
+                Closeables.closeQuietly(channel);
+                return ok;
+            });
 
             channel.sendRequest(message, new MessageChannelListener<T>() {
                 @Override

@@ -11,9 +11,7 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler;
-import org.springframework.messaging.support.AbstractSubscribableChannel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,10 +24,15 @@ import java.util.List;
  */
 public class TestingStompMessageHandler {
 
-    private final TestingMessageChannel outboundChannel = new TestingMessageChannel();
+    private final TestingMessageChannel outboundChannel;
     private final TestingAnnotationMethodMessageHandler messageHandler;
 
     public TestingStompMessageHandler(Object ... controllers) {
+        this(new TestingMessageChannel(), controllers);
+    }
+
+    public TestingStompMessageHandler(TestingMessageChannel outboundMessageChannel, Object ... controllers) {
+        this.outboundChannel = outboundMessageChannel;
         TestingMessageChannel inboundChannel = new TestingMessageChannel();
         messageHandler = new TestingAnnotationMethodMessageHandler(inboundChannel, outboundChannel,
                 new SimpMessagingTemplate(outboundChannel));
@@ -50,26 +53,8 @@ public class TestingStompMessageHandler {
         messageHandler.handleMessage(message);
     }
 
-    /**
-     * Returns the underlying outbound message queue.
-     */
-    public List<Message<?>> getOutboundMessages() {
-        return outboundChannel.getMessages();
-    }
-
-    /**
-     * Removes the first message from the outbound message queue.
-     */
-    public Message<?> popOutboundMessage() {
-        Preconditions.checkState(!outboundChannel.getMessages().isEmpty(), "No messages to retrieve");
-        return outboundChannel.getMessages().remove(0);
-    }
-
-    /**
-     * Removes the first message from the outbound message queue and casts it to the given type.
-     */
-    public <T> Message<T> popOutboundMessage(ParameterizedTypeReference<T> type) {
-        return (Message<T>) popOutboundMessage();
+    public TestingMessageChannel getOutboundChannel() {
+        return outboundChannel;
     }
 
     /**
@@ -88,22 +73,4 @@ public class TestingStompMessageHandler {
         }
     }
 
-    /**
-     * A {@link SubscribableChannel} that queues the messages to be sent in a list, instead of actually attempting
-     * to deliver them.  Messages can be retrieved from the queue easily for tests.
-     */
-    public static class TestingMessageChannel extends AbstractSubscribableChannel {
-
-        private final List<Message<?>> messages = new ArrayList<>();
-
-        public List<Message<?>> getMessages() {
-            return messages;
-        }
-
-        @Override
-        protected boolean sendInternal(Message<?> message, long timeout) {
-            messages.add(message);
-            return true;
-        }
-    }
 }

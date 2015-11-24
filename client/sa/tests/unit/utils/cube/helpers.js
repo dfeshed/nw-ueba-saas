@@ -54,7 +54,7 @@ export function includesCompare(cube, field, values, assert, errMessage) {
     }
     errMessage = errMessage || "";
 
-    var filter = cube.fields[field].get("filter");
+    var filter = cube.get("fields")[field].get("filter");
     assert.ok(filter, "Unable to create filter for cube field " + field);
     for (var j in values) {
         if (values.hasOwnProperty(j)) {
@@ -100,7 +100,7 @@ export function testSorting(sortField, orderField, fieldsCfg, records, assert, e
     // Instantiate the object and populate data.
     var obj = Cube.create({fieldsConfig: fieldsCfg});
     assert.ok(obj, "Unable to create object.");
-    obj.add(records);
+    obj.get("records").pushObjects(records);
 
     obj.sort(sortField, true);
     checkOrder(obj.get("results"), orderField, true, "Testing descending order.");
@@ -113,7 +113,7 @@ export function testSorting(sortField, orderField, fieldsCfg, records, assert, e
  * Compares the results and the expected results of a grouping operation for a given field of a given cube.
  */
 export function testGrouping(cube, field, expectedGroups, errMessage, assert) {
-    var foundGroups = cube.fields[field].get("groups");
+    var foundGroups = cube.get("fields")[field].get("groups");
     assert.ok(foundGroups, "Unable to fetch groups for field " + field + ". " + errMessage);
 
     if (expectedGroups) {

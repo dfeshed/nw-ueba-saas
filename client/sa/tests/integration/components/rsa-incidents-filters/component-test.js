@@ -18,28 +18,25 @@ moduleForComponent("rsa-incidents-filters", "Integration | Component | rsa incid
 test("it renders", function(assert) {
     assert.expect(5);
 
-    // Define a model for the component to try to talk to.
-    var model = Ember.Object.create({
+    this.setProperties({
 
-        // timeRangeUnit should get updated when we click on TimeRange DOM elements
-        timeRangeUnit: null,
-
-        // filter() should get called when we click on Priority DOM elements.
+        // Define a model for the component to try to talk to.
+        // The model's filter() should get called when we click on Priority DOM elements.
         // Fire an assert() to confirm it was called.
-        filter: function() {
+        "model": Ember.Object.create({
+            filter: function() {
+                assert.ok(true);
+            }
+        }),
+
+        // Define an action for the component to try to call when a time range is clicked.
+        "onTimeClick": function(){
             assert.ok(true);
         }
     });
 
-    // Listen for a change in timeRange and fire an assert to confirm it was called.
-    model.addObserver("timeRangeUnit", this, function(){
-        assert.equal(model.get("timeRangeUnit"), timeUtil.UNITS.HOUR,
-            "Click on Last Hour, but model was not updated correctly.");
-    });
-
-    // Initialize and render the component.
-    this.set("model", model);
-    this.render(hbs`{{rsa-incidents-filters cube=model}}`);
+    // Render the component.
+    this.render(hbs`{{rsa-incidents-filters cube=model timeRangeAction=onTimeClick}}`);
     assert.ok(this.$(".rsa-incidents-filters").length, "Could not find component DOM element.");
 
     // Click on one of the TimeRange DOM elements ("Last Hour")

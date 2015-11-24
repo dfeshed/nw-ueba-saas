@@ -34,13 +34,18 @@ export default Ember.Component.extend({
     includeCounts: true,
 
     /**
+     * Configurable action to be triggered when user clicks a time range from the UI.
+     * @type Function
+     */
+    timeRangeAction: null,
+
+    /**
      * Responds to clicks on the filter options in the UI by updating the cube's filter.
      * Supports SHIFT clicking for multiple selections.  Note that in order to support
      * such modifier keys, we must implement this behavior in the click handler rather than in an action.
      * @param {Object} e The click event object.
      */
     click: function(e) {
-
         var shiftKey = !!(e && e.shiftKey);
         Ember.run(this, "_selectFilter", e.target, shiftKey);
         return !shiftKey;

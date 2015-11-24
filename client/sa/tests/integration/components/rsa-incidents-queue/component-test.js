@@ -17,7 +17,7 @@ moduleForComponent("rsa-incidents-queue", "Integration | Component | rsa inciden
 test("it renders", function(assert) {
 
     var myCube = Cube.create({});
-    myCube.add([
+    myCube.get("records").pushObjects([
         {id: 1, assignee: "Person 1"},
         {id: 2, assignee: "Person 2"},
         {id: 3, assignee: "Person 3"}

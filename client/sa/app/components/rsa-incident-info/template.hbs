@@ -1,15 +1,15 @@
 <header>
-    <h2 title="{{if model (concat model.id ": " model.name) ""}}">
-        {{#if model}}
-            <span class="rsa-id">{{model.id}}:</span>
-            <span class="rsa-name">{{model.name}}</span>
+    <h2 title="{{if incident (concat incident.id ": " incident.name) ""}}">
+        {{#if incident}}
+            <span class="rsa-id">{{incident.id}}:</span>
+            <span class="rsa-name">{{incident.name}}</span>
         {{else}}
             {{t "respond.incidentDetails.title"}}
         {{/if}}
     </h2>
 </header>
 <section class="rsa-main">
-    {{#if model}}
+    {{#if incident}}
 
         <ul class="rsa-tile-list">
 
@@ -22,32 +22,32 @@
                     <ul class="rsa-stat-list">
 
                         {{#rsa-field class="rsa-stat rsa-alertCount" label=(t "incident.fields.alertCount")}}
-                            {{model.alertCount}}
+                            {{incident.alertCount}}
                         {{/rsa-field}}
 
                         {{#rsa-field class="rsa-stat rsa-quartile" label=(t "incident.fields.averageAlertRiskScore")
                             data-field="averageAlertRiskScore"
-                            data-value=(which-quartile model.averageAlertRiskScore)}}
-                            {{model.averageAlertRiskScore}}
+                            data-value=(which-quartile incident.averageAlertRiskScore)}}
+                            {{incident.averageAlertRiskScore}}
                         {{/rsa-field}}
 
                         {{#rsa-field class="rsa-stat rsa-quartile" label=(t "incident.fields.riskScore")
                             data-field="riskScore"
-                            data-value=(which-quartile model.riskScore)}}
-                            {{model.riskScore}}
+                            data-value=(which-quartile incident.riskScore)}}
+                            {{incident.riskScore}}
                         {{/rsa-field}}
 
                         {{#rsa-field class="rsa-stat rsa-quartile" label=(t "incident.fields.priority")
                             data-field="priority"
-                            data-value=model.prioritySort}}
-                            {{t (concat "incident.priority." model.prioritySort)}}
+                            data-value=incident.prioritySort}}
+                            {{t (concat "incident.priority." incident.prioritySort)}}
                         {{/rsa-field}}
 
                     </ul>
                     <ul class="rsa-stat-list">
 
                         {{#rsa-field class="rsa-stat rsa-description" label=(t "incident.fields.description")}}
-                            {{if model.summary model.summary (t "incident.description.none")}}
+                            {{if incident.summary incident.summary (t "incident.description.none")}}
                         {{/rsa-field}}
 
                     </ul>
@@ -63,27 +63,27 @@
                     <ul class="rsa-stat-list">
 
                         {{#rsa-field class="rsa-stat rsa-status" label=(t "incident.fields.status")}}
-                            {{t (concat "incident.status." model.statusSort)}}
+                            {{t (concat "incident.status." incident.statusSort)}}
                         {{/rsa-field}}
 
                     </ul>
                     <ul class="rsa-field-list">
 
                         {{#rsa-field class="rsa-assignee" label=(t "incident.fields.assignee")}}
-                            {{if model.assignee model.assignee.name (t "incident.assignee.none")}}
+                            {{if incident.assignee incident.assignee.name (t "incident.assignee.none")}}
                         {{/rsa-field}}
 
                         {{#rsa-field label=(t "incident.fields.lastUpdated")}}
-                            {{format-moment model.lastUpdated "YYYY/MM/DD H:mm.ss (Z)"}} {{#if model.lastUpdatedByUser.name}}{{t "respond.incidentDetails.by"}} {{model.lastUpdatedByUser.name}}{{/if}}
+                            {{format-moment incident.lastUpdated "YYYY/MM/DD H:mm.ss (Z)"}} {{#if incident.lastUpdatedByUser.name}}{{t "respond.incidentDetails.by"}} {{incident.lastUpdatedByUser.name}}{{/if}}
                         {{/rsa-field}}
 
                         {{#rsa-field label=(t "incident.fields.createdDate")}}
-                            {{format-moment model.created "YYYY/MM/DD H:mm.ss (Z)"}} {{#if model.createdBy}}{{t "respond.incidentDetails.by"}} {{model.createdBy}}{{/if}}
+                            {{format-moment incident.created "YYYY/MM/DD H:mm.ss (Z)"}} {{#if incident.createdBy}}{{t "respond.incidentDetails.by"}} {{incident.createdBy}}{{/if}}
                         {{/rsa-field}}
 
                         {{#rsa-field label=(t "incident.fields.sources")}}
                             <ul class="rsa-csv-list">
-                                {{#each model.sources as |source|}}
+                                {{#each incident.sources as |source|}}
                                     <li>{{source}}</li>
                                 {{/each}}
                             </ul>
@@ -91,7 +91,7 @@
 
                         {{#rsa-field label=(t "incident.fields.categories")}}
                             <ul class="rsa-tag-list">
-                                {{#each model.categories as |category|}}
+                                {{#each incident.categories as |category|}}
                                     <li class="rsa-tag"
                                         title="{{category.parent}} - {{category.name}}"
                                             >{{category.parent}} - {{category.name}}</li>
@@ -114,7 +114,7 @@
                 </header>
                 <section>
                     <ul class="rsa-journal-entry-list">
-                        {{#each model.notes as |note|}}
+                        {{#each incident.notes as |note|}}
                             {{rsa-journal-entry entry=note}}
                         {{/each}}
                     </ul>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,17 +19,32 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Request {
-
+    private String id;
     private Page page;
+    private Stream stream;
     private List<Sort> sort;
     private List<Filter> filter;
 
     public Request() {}
 
     private Request(Builder builder) {
+        setId(builder.id);
         setPage(builder.page);
+        setStream(builder.stream);
         setSort(builder.sort);
         setFilter(builder.filter);
+    }
+
+    public boolean hasId() {
+        return !Strings.isNullOrEmpty(id);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean hasPage() {
@@ -41,6 +57,18 @@ public class Request {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public boolean hasStream() {
+        return stream != null;
+    }
+
+    public Stream getStream() {
+        return stream;
+    }
+
+    public void setStream(Stream stream) {
+        this.stream = stream;
     }
 
     public boolean hasSort() {
@@ -70,7 +98,9 @@ public class Request {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
+                .add("id", id)
                 .add("page", page)
+                .add("stream", stream)
                 .add("sort", sort)
                 .add("filter", filter)
                 .toString();
@@ -80,15 +110,58 @@ public class Request {
         return new Builder();
     }
 
+    public static Builder newBuilder(Request request) {
+        return new Builder(request);
+    }
+
     /**
      * A builder for {@link Request} objects
      */
     public static final class Builder {
+        private String id;
         private Page page;
+        private Stream stream;
         private List<Sort> sort;
         private List<Filter> filter;
 
         private Builder() {}
+
+        private Builder(Request request) {
+            withId(request.id);
+
+            if (request.hasPage()) {
+                withPage(Page.newBuilder()
+                        .withIndex(request.page.index)
+                        .withSize(request.page.size));
+            }
+
+            if (request.hasStream()) {
+                withStream(Stream.newBuilder()
+                        .withLimit(request.stream.limit));
+            }
+
+            if (request.hasSort()) {
+                request.getSort().forEach((sort) -> withSort(Sort.newBuilder()
+                        .withField(sort.field)
+                        .withDescending(sort.descending)));
+            }
+
+            if (request.hasFilter()) {
+                request.getFilter().forEach((filter) -> withFilter(Filter.newBuilder()
+                        .withField(filter.field)
+                        .withNull(filter.isNull)
+                        .withValues(filter.values)
+                        .withValue(filter.value)
+                        .withRange(Filter.Range.newBuilder()
+                                .withFrom(filter.range.from)
+                                .withTo(filter.range.to))));
+            }
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder withPage(Page page) {
             this.page = page;
@@ -97,6 +170,15 @@ public class Request {
 
         public Builder withPage(Page.Builder builder) {
             return withPage(builder.build());
+        }
+
+        public Builder withStream(Stream stream) {
+            this.stream = stream;
+            return this;
+        }
+
+        public Builder withStream(Stream.Builder builder) {
+            return withStream(builder.build());
         }
 
         public Builder withSort(Sort sort) {
@@ -505,4 +587,61 @@ public class Request {
             }
         }
     }
+
+    /**
+     * Encapsulates streaming data
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Stream {
+        private Long limit;
+
+        public Stream() {}
+
+        private Stream(Builder builder) {
+            setLimit(builder.limit);
+        }
+
+        public boolean hasLimit() {
+            return limit != null;
+        }
+
+        public Long getLimit() {
+            return limit;
+        }
+
+        public void setLimit(Long limit) {
+            this.limit = limit;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toStringHelper(this)
+                    .add("limit", limit)
+                    .toString();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        /**
+         * A builder for {@link Page} objects
+         */
+        public static final class Builder {
+            private Long limit;
+
+            private Builder() {}
+
+            public Builder withLimit(Long limit) {
+                this.limit = limit;
+                return this;
+            }
+
+            public Stream build() {
+                return new Stream(this);
+            }
+        }
+    }
+
 }

@@ -5,5 +5,5 @@
 
 export default function(server) {
     //Create the authenticated users listed in factories/login.js
-    server.createList('login', 1);
+    server.createList('login', 4);
 }

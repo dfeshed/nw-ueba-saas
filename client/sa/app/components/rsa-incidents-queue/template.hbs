@@ -34,6 +34,7 @@
                     cube=dataSource
                     includeAssignee=(is-equal whichQueue "all")
                     includeCounts=true
+                    timeRangeAction=onSelectTimeRangeUnit
                 }}
         {{/rsa-popover}}
         {{#rsa-popover class="rsa-incidents-sort-popover"
@@ -50,8 +51,8 @@
 </section>
 <footer class="js-test-respond-incs-footer">
     <span>{{cube.results.length}} {{t "list.items"}}</span>
-    {{#unless (is-equal cube.progress 100)}}
-        <small>({{cube.progress}}%)</small>
+    {{#unless (is-equal cube.records.progress 100)}}
+        <small>({{cube.records.progress}}%)</small>
     {{/unless}}
 </footer>
 
