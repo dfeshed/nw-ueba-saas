@@ -23,7 +23,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
 	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
 	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
-	protected static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
+	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
 						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
 
 
