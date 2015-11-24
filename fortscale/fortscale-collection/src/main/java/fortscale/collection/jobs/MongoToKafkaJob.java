@@ -114,12 +114,12 @@ public class MongoToKafkaJob extends FortscaleJob {
             Query query = new Query();
             query.limit(batchSize);
             query.skip(counter);
-            List<Class> results = mongoTemplate.find(query, clazz);
+            List results = mongoTemplate.find(query, clazz);
             /*List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
                     limit(batchSize).sort(sortQuery).toArray();*/
             long lastMessageTime = 0;
             ObjectMapper objectMapper = new ObjectMapper();
-            for (Class object: results) {
+            for (Object object: results) {
             //for (DBObject result: results) {
                 //String message = manipulateMessage(collectionName, result);
                 String message = objectMapper.writeValueAsString(object);
@@ -133,7 +133,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                         throw new JobExecutionException(ex);
                     }
                 }
-                lastMessageTime = object.getField(dateField).getLong(object);
+                lastMessageTime = object.getClass().getField(dateField).getLong(object);
                 //lastMessageTime = Long.parseLong(result.get(dateField).toString());
             }
             if (lastMessageTime > 0) {
