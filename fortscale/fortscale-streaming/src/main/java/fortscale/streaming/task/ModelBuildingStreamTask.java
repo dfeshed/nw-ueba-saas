@@ -1,7 +1,9 @@
 package fortscale.streaming.task;
 
-import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.KafkaModelBuildingListener;
+import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.model.ModelBuildingRegistrationService;
+import fortscale.streaming.service.model.ModelBuildingSamzaStore;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -11,7 +13,7 @@ import org.springframework.util.Assert;
 
 public class ModelBuildingStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private KafkaModelBuildingListener modelBuildingListener;
-	private ModelService modelService;
+	private ModelBuildingRegistrationService modelBuildingRegistrationService;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -19,7 +21,8 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 		Assert.hasText(modelBuildingStatusOutputTopic);
 
 		modelBuildingListener = new KafkaModelBuildingListener(modelBuildingStatusOutputTopic);
-		modelService = new ModelService(modelBuildingListener);
+		ModelBuildingSamzaStore modelBuildingStore = new ModelBuildingSamzaStore(new ExtendedSamzaTaskContext(context, config));
+		modelBuildingRegistrationService = new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore);
 	}
 
 	@Override
@@ -31,8 +34,8 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 			modelBuildingListener.setMessageCollector(collector);
 		}
 
-		if (modelService != null) {
-			modelService.process(event);
+		if (modelBuildingRegistrationService != null) {
+			modelBuildingRegistrationService.process(event);
 		}
 	}
 
@@ -42,14 +45,14 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 			modelBuildingListener.setMessageCollector(collector);
 		}
 
-		if (modelService != null) {
-			modelService.window();
+		if (modelBuildingRegistrationService != null) {
+			modelBuildingRegistrationService.window();
 		}
 	}
 
 	@Override
 	protected void wrappedClose() throws Exception {
 		modelBuildingListener = null;
-		modelService = null;
+		modelBuildingRegistrationService = null;
 	}
 }
