@@ -9,15 +9,15 @@ import org.mockito.Mockito;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DiscreteModelBuilderTest {
+public class CategoryRarityModelBuilderTest {
 	@Test
 	public void shouldBuildUsingOnlyFeaturesThatAreNotIgnored() {
 		String ignore = "ignore";
 		Map<String, Double> modelBuilderData = new HashMap<>();
 		modelBuilderData.put("rareValue", 1d);
 		modelBuilderData.put("commonValue", 10d);
-		DiscreteModelBuilder builderWithIgnore = new DiscreteModelBuilder(ignore);
-		DiscreteModelBuilder builderWithoutIgnore = new DiscreteModelBuilder(null);
+		CategoryRarityModelBuilder builderWithIgnore = new CategoryRarityModelBuilder(ignore);
+		CategoryRarityModelBuilder builderWithoutIgnore = new CategoryRarityModelBuilder(null);
 
 		Model modelWithoutIgnoredValue = builderWithIgnore.build(modelBuilderData);
 		modelBuilderData.put(ignore, 1d);
@@ -31,7 +31,7 @@ public class DiscreteModelBuilderTest {
 
 	@Test
 	public void shouldScore0ToEmptyString() throws Exception {
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(null);
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(null);
 		double score = builder.calculateScore(new ImmutablePair<Object, Double>("", 1d), null);
 		Assert.assertEquals(0d, score, 0.000001);
 	}
@@ -39,14 +39,14 @@ public class DiscreteModelBuilderTest {
 	@Test
 	public void shouldScore0ToIgnoredValues() throws Exception {
 		final String ignore = "ignore";
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(ignore);
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(ignore);
 		double score = builder.calculateScore(new ImmutablePair<Object, Double>(ignore, 1d), null);
 		Assert.assertEquals(0d, score, 0.000001);
 	}
 
 	@Test
 	public void shouldDelegateNotIgnoredValuesToModel() throws Exception {
-		DiscreteModelBuilder builder = new DiscreteModelBuilder("ignore");
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder("ignore");
 		Model modelMock = Mockito.mock(Model.class);
 		double count = 1d;
 		double score = 95;
@@ -56,11 +56,11 @@ public class DiscreteModelBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new DiscreteModelBuilder(null).build(null);
+		new CategoryRarityModelBuilder(null).build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new DiscreteModelBuilder(null).build("");
+		new CategoryRarityModelBuilder(null).build("");
 	}
 }

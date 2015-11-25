@@ -7,13 +7,13 @@ import fortscale.ml.model.Model;
 import java.util.Collection;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class DiscreteDataModel implements Model {
-	public static final String MODEL_TYPE = "discrete_data_model";
+public class CategoryRarityModel implements Model {
+	public static final String MODEL_TYPE = "category_rarity_model";
 	private static final long serialVersionUID = 1683497340140662427L;
 
 	private OccurrencesHistogram occurrencesHistogram;
 
-	public DiscreteDataModel(Collection<Double> featureCounts) {
+	public CategoryRarityModel(Collection<Double> featureCounts) {
 		occurrencesHistogram = new OccurrencesHistogram(featureCounts);
 	}
 

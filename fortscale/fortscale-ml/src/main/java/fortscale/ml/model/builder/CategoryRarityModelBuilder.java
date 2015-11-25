@@ -3,7 +3,7 @@ package fortscale.ml.model.builder;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.DiscreteDataModel;
+import fortscale.ml.model.prevalance.field.CategoryRarityModel;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,14 +11,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class DiscreteModelBuilder implements IModelBuilder {
-    private static final Logger logger = Logger.getLogger(DiscreteModelBuilder.class);
-    public static final String MODEL_BUILDER_TYPE = "discrete";
+public class CategoryRarityModelBuilder implements IModelBuilder {
+    private static final Logger logger = Logger.getLogger(CategoryRarityModelBuilder.class);
+    public static final String MODEL_BUILDER_TYPE = "category_rarity";
 
     private Pattern ignoreValues;
 
     @JsonCreator
-    public DiscreteModelBuilder(@JsonProperty("ignorePattern") String ignorePattern) {
+    public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern) {
         if (ignorePattern != null) {
             ignoreValues = Pattern.compile(ignorePattern);
         }
@@ -27,7 +27,7 @@ public class DiscreteModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Double> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new DiscreteDataModel(getUnignoredCounts(featureValueToCountMap));
+        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap));
     }
 
     @Override
