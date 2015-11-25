@@ -193,6 +193,11 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
+        "dataSources": "streaming_models@@@modelName:::aggr_event_normalized_username_vpn_hourly_distinct_number_of_src_machines_vpn_hourly"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
         "dataSources": "alerts###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
