@@ -21,6 +21,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
+	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
+	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
+						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
+
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
 
@@ -28,6 +33,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
+
+
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
 
@@ -78,8 +85,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
-			taskMonitoringHelper.handleNewEvent();
-
+			countNewMessage(envelope);
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
@@ -91,6 +97,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		} catch(Exception exception){
 			logger.error("got an exception while processing stream message", exception);
 			processExceptionHandler.handleException(exception);
+		}
+	}
+
+	private void countNewMessage(IncomingMessageEnvelope envelope) {
+		try {
+			JSONObject message = parseJsonMessage(envelope);
+			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
+		} catch (Exception e){
+			//Do nothing
 		}
 	}
 
@@ -148,13 +163,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	 * handleUnfilteredEvent
 	 * @param event
 	 */
-	protected void handleUnfilteredEvent(JSONObject event){
+	protected void handleUnfilteredEvent(JSONObject event, StreamingTaskDataSourceConfigKey key){
 
-		String dataSource  = getDataSource(event);
+
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(dataSource, eventTime, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime, eventTimeAsString);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
@@ -167,6 +182,18 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 	}
+
+	//Get the data source and last state without excetion, return  null if cannot extract
+	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
+		StreamingTaskDataSourceConfigKey configKey;
+		try {
+			configKey = extractDataSourceConfigKey(message);
+		} catch (Exception e){
+			return null;
+		}
+		return configKey;
+	}
+
 
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
 		return taskMonitoringHelper;
@@ -185,4 +212,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			throw e;
 		}
 	}
+
+
 }

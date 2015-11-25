@@ -5,6 +5,7 @@ import fortscale.streaming.service.StreamingTaskConfigurationService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -114,12 +115,16 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 	/** Drop Event when resolving fail??
 	 *
 	 */
-	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event)
+	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event, StreamingTaskDataSourceConfigKey key)
 	{
         boolean shouldFilterEvent = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
 
         if (shouldFilterEvent){
-            taskMonitoringHelper.countNewFilteredEvents(eventResolvingConfig.getDataSource(), HOST_IS_EMPTY_LABEL);
+            if (key!=null) {
+                taskMonitoringHelper.countNewFilteredEvents(key, HOST_IS_EMPTY_LABEL);
+            } else { //Fallback handler - should not arrive here
+                taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, HOST_IS_EMPTY_LABEL);
+            }
 
             return true;
         }

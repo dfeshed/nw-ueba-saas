@@ -116,17 +116,17 @@ public class EventsIpResolvingServiceTest {
 	{
 		JSONObject event = new JSONObject();
 		event.put("hostname", null);
-		boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
+		boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event, null);
 		Assert.assertTrue(res);
 
 
-		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
+		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event, null);
 		Assert.assertTrue(res);
 
 		event.put("hostname", "");
 
 
-		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
+		res = service2.filterEventIfNeeded(configs.values().iterator().next(), event, null);
 		Assert.assertTrue(res);
 
 
@@ -137,12 +137,12 @@ public class EventsIpResolvingServiceTest {
     {
         JSONObject event = new JSONObject();
         event.put("hostname", null);
-        boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event);
+        boolean res = service.filterEventIfNeeded(configs.values().iterator().next(), event, null);
         Assert.assertTrue(res);
 
         event.put("hostname", "");
 
-        res = service2.filterEventIfNeeded(configs.values().iterator().next(), event);
+        res = service2.filterEventIfNeeded(configs.values().iterator().next(), event, null);
         Assert.assertTrue(res);
 
 
