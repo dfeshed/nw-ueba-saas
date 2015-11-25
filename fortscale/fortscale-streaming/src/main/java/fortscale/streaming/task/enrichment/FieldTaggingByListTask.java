@@ -36,7 +36,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	private final static String storeConfigKeyFormat = "fortscale.events.entry.%s.service.cache.store";
 
 	// Map between (update) input topic name and relevant field tagging service
-	protected static Map<String, FieldTaggingService> topicToServiceMap;
+	protected static Map<StreamingTaskDataSourceConfigKey, FieldTaggingService> topicToServiceMap;
 
 	/**
 	 * This method response to the initiation of the streaming job
@@ -68,8 +68,6 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
 				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
 				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
-
-				String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", dsSettings));
 				String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
 				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings)));
 				String filePath = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.file.path", dsSettings)));
@@ -79,7 +77,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
 
 				FieldTaggingService fieldTaggingService = new FieldTaggingService(filePath,topicCache,tagFieldName,taggingBaesdFieldName,outputTopic,partitionField);
-				topicToServiceMap.put(inputTopic,fieldTaggingService);
+				topicToServiceMap.put(configKey,fieldTaggingService);
 			}
 		}
 	}
@@ -102,11 +100,12 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		if (topicToServiceMap.containsKey(inputTopic)) {
-			String key = (String) envelope.getKey();
-			FieldTaggingService fieldTaggingService = topicToServiceMap.get(inputTopic);
-
 			// parse the message into json
 			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+
+
+			StreamingTaskDataSourceConfigKey key = this.extractDataSourceConfigKey(event);
+			FieldTaggingService fieldTaggingService = topicToServiceMap.get(key);
 
 			event = fieldTaggingService.enrichEvent(event);
 
