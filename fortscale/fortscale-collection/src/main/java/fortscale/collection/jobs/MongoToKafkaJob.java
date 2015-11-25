@@ -36,7 +36,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private final String DATE_DELIMITER = ":::";
     private final int DEFAULT_BATCH_SIZE = 100;
     private final int DEFAULT_CHECK_RETRIES = 60;
-    private final int MILLISECONDS_TO_WAIT = 1000 * 60;
+    private final int MILLISECONDS_TO_WAIT = 1000 * 60; //one minute
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -60,7 +60,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing MongoToKafka job");
+		logger.info("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch", DEFAULT_BATCH_SIZE);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
@@ -78,6 +78,7 @@ public class MongoToKafkaJob extends FortscaleJob {
         } else {
             mongoQuery = new Query();
         }
+        mongoQuery.limit(batchSize);
         if (map.containsKey("sort")) {
             String sortStr = jobDataMapExtension.getJobDataMapStringValue(map, "sort");
             String field = sortStr.split(GENERAL_DELIMITER)[0];
@@ -112,20 +113,19 @@ public class MongoToKafkaJob extends FortscaleJob {
             logger.error("No appropriate class {} found", className);
             throw new JobExecutionException();
         }
-        logger.debug("Job initialized");
+        logger.info("Job initialized");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
-		logger.debug("Running mongo to Kafka job");
+		logger.info("Running mongo to Kafka job");
         String collectionName = mongoCollection.getName();
         long totalItems = mongoTemplate.count(mongoQuery, collectionName);
-        logger.debug("forwarding {} documents", totalItems);
+        logger.info("forwarding {} documents", totalItems);
         int counter = 0;
         ObjectMapper objectMapper = new ObjectMapper();
         while (counter < totalItems) {
-            logger.debug("handling items {} to {}", counter, batchSize + counter);
-            mongoQuery.limit(batchSize);
+            logger.info("handling items {} to {}", counter, batchSize + counter);
             mongoQuery.skip(counter);
             List results = mongoTemplate.find(mongoQuery, clazz);
             long lastMessageTime = 0;
@@ -161,7 +161,7 @@ public class MongoToKafkaJob extends FortscaleJob {
         if (counter < totalItems) {
             logger.error("failed to forward all {} documents, forwarded only {}", counter, totalItems);
         } else {
-            logger.debug("forwarded all {} documents", totalItems);
+            logger.info("forwarded all {} documents", totalItems);
         }
         for (KafkaEventsWriter streamWriter: streamWriters) {
             streamWriter.close();
