@@ -181,6 +181,11 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
         "dataSources": "evidences@@@date:::startDate%%%evidenceType:::Tag"
       },
       {
