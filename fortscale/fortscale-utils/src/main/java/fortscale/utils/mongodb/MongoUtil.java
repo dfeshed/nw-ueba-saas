@@ -6,13 +6,11 @@ import fortscale.utils.ConversionUtils;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -27,7 +25,9 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
 
     private final String FILTERS_DELIMITER = "%%%";
     private final String KEYVALUE_DELIMITER = ":::";
+    private final String SPECIAL_DELIMITER = "!!!";
     private final String DATE_IDENTIFIER = "date";
+    private final String REGEX_IDENTIFIER = "regex";
     private final String BACKUP_SUFFIX = "_backup";
 
     @Autowired
@@ -69,6 +69,11 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
             String value = filters.split(KEYVALUE_DELIMITER)[1];
             if (field.equals(DATE_IDENTIFIER)) {
                 dateField = value;
+            } else if (field.equals(REGEX_IDENTIFIER)) {
+                String key = value.split(SPECIAL_DELIMITER)[0];
+                String innerValue = value.split(SPECIAL_DELIMITER)[1];
+                query.addCriteria(where(key).regex(innerValue));
+                hasCriteria = true;
             } else {
                 query.addCriteria(where(field).is(value));
                 hasCriteria = true;
