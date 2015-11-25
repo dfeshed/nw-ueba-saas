@@ -12,17 +12,17 @@ public class TimeModel implements Model {
 
 	private int timeResolution;
 	private int bucketSize;
-	private Map<Integer, Double> bucketToSmoothedCounter;
+	private List<Double> smoothedCounterBuckets;
 	private OccurrencesHistogram occurrencesHistogram;
 
 	public TimeModel(int timeResolution, int bucketSize, Map<Long, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
 		int numOfBuckets = (int) Math.ceil(timeResolution / (double) bucketSize);
-		List<Double> buckets = new ArrayList<>(numOfBuckets);
+		smoothedCounterBuckets = new ArrayList<>(numOfBuckets);
 		List<Boolean> bucketHits = new ArrayList<>(numOfBuckets);
 		for (int i = 0; i < numOfBuckets; i++) {
-			buckets.add(0d);
+			smoothedCounterBuckets.add(0d);
 			bucketHits.add(false);
 		}
 
@@ -30,21 +30,21 @@ public class TimeModel implements Model {
 			double counter = entry.getValue();
 			int bucketHit = getBucketIndex(entry.getKey());
 			bucketHits.set(bucketHit, true);
-			cyclicallyAddToBucket(buckets, bucketHit, counter);
+			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
 			for (int distance = 1; distance <= SMOOTHENING_DISTANCE; distance++) {
 				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHENING_DISTANCE));
-				cyclicallyAddToBucket(buckets, bucketHit + distance, addVal);
-				cyclicallyAddToBucket(buckets, bucketHit - distance, addVal);
+				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
+				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
 			}
 		}
 
-		bucketToSmoothedCounter = new HashMap<>(numOfBuckets);
+		List<Double> smoothedCountersThatWereHit = new ArrayList<>(numOfBuckets);
 		for (int i = 0; i < numOfBuckets; i++) {
 			if (bucketHits.get(i)) {
-				bucketToSmoothedCounter.put(i, buckets.get(i));
+				smoothedCountersThatWereHit.add(smoothedCounterBuckets.get(i));
 			}
 		}
-		occurrencesHistogram = new OccurrencesHistogram(new ArrayList<>(bucketToSmoothedCounter.values()));
+		occurrencesHistogram = new OccurrencesHistogram(smoothedCountersThatWereHit);
 	}
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {
@@ -59,7 +59,7 @@ public class TimeModel implements Model {
 	@Override
 	public double calculateScore(Object value) {
 		int bucketIndex = getBucketIndex((Long) value);
-		Double smoothedCounter = bucketToSmoothedCounter.get(bucketIndex);
+		Double smoothedCounter = smoothedCounterBuckets.get(bucketIndex);
 		return occurrencesHistogram.score(smoothedCounter);
 	}
 }
