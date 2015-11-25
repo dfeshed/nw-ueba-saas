@@ -40,7 +40,7 @@ public class SecEventsNitro673Test {
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.data.kerberosLogin.table.morphline.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.kerberos_logins.table.morphline.fields");
 		List<String> splunkSecEventsOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		List<String> splunkSecEventsOutputFieldsExcludingEnrichment = new ArrayList<>();
 		for(String field: splunkSecEventsOutputFields){
