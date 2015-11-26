@@ -16,7 +16,7 @@
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.score.vpnsession.table.name}</value>
+                    <value>${impala.score.vpn_session.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
@@ -32,11 +32,11 @@
 				</entry>
                 <entry>
                     <key>impalaTableFields</key>
-                    <value>${impala.score.vpnsession.table.fields}</value>
+                    <value>${impala.score.vpn_session.table.fields}</value>
                 </entry>
                 <entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.score.vpnsession.table.partition.type}</value>
+					<value>${impala.score.vpn_session.table.partition.type}</value>
 				</entry>
                 <entry>
                     <key>jobmonitor</key>
@@ -48,7 +48,7 @@
                 </entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>vpnsession</value>
+                    <value>vpn_session</value>
                 </entry>
                 <entry>
                     <key>lastState</key>

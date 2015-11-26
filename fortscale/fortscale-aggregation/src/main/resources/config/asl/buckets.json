@@ -466,7 +466,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "vpnsession"
+        "vpn_session"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -485,7 +485,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "vpnsession"
+        "vpn_session"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
