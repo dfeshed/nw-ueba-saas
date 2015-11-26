@@ -1,129 +1,65 @@
 package fortscale.ml.model.prevalance.field;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import fortscale.ml.model.Model;
 
-import fortscale.ml.model.prevalance.calibration.FeatureCalibration;
+import java.util.*;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+public class TimeModel implements Model {
+	private static final int SMOOTHENING_DISTANCE = 10;
 
-
-@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
-public class TimeModel {
-	private static final int MASK_SIZE = 10;
-	
-	private ArrayList<Double> buckets;
-	private ArrayList<Integer> bucketsRealCount;
-	private int total;
-	
 	private int timeResolution;
 	private int bucketSize;
-	private int numOfBuckets;
-	
-	
-	private FeatureCalibration calibration;
-	
-	public TimeModel(int timeResolution, int bucketSize){
+	private List<Double> smoothedCounterBuckets;
+	private OccurrencesHistogram occurrencesHistogram;
+
+	public TimeModel(int timeResolution, int bucketSize, Map<Long, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
-		this.numOfBuckets = (int) Math.ceil(timeResolution/(double)bucketSize);
-		init();
-	}
-	
-	public void init(){
-		buckets = new ArrayList<>(numOfBuckets);
-		for(int i = 0; i < numOfBuckets; i++){
-			buckets.add(0D);
+		int numOfBuckets = (int) Math.ceil(timeResolution / (double) bucketSize);
+		smoothedCounterBuckets = new ArrayList<>(numOfBuckets);
+		List<Boolean> bucketHits = new ArrayList<>(numOfBuckets);
+		for (int i = 0; i < numOfBuckets; i++) {
+			smoothedCounterBuckets.add(0d);
+			bucketHits.add(false);
 		}
-		bucketsRealCount = new ArrayList<>(numOfBuckets);
-		for(int i = 0; i < numOfBuckets; i++){
-			bucketsRealCount.add(0);
-		}
-		total = 0;
-	}
-	
-	public double score(long epochSeconds){
-		String bucketName = Integer.toString(getBucketIndex(epochSeconds));
-		
-		return calibration != null ? calibration.score(bucketName) : 0;
-	}
-	
-	public int getBucketIndex(long epochSeconds){
-		return (int) ( (epochSeconds % timeResolution) / bucketSize );
-	}
-			
-	public void update(long epochSeconds) throws Exception{
-		int pivot = getBucketIndex(epochSeconds);
-		bucketsRealCount.set(pivot, bucketsRealCount.get(pivot) + 1);
-		double val = buckets.get(pivot)+1;
-		buckets.set(pivot, val);
-		updateCalibration(pivot, val);
-		int upIndex = pivot + 1;
-		int downIndex = pivot - 1 + numOfBuckets;
-		for(int i = 0; i < MASK_SIZE; i++,upIndex++,downIndex--){
-			double addVal = 1 - i/((double)MASK_SIZE);
-			int index = upIndex % numOfBuckets;
-			val = buckets.get(index) + addVal;
-			buckets.set(index, val);
-			if(bucketsRealCount.get(index) > 0){
-				updateCalibration(index, val);
-			}
-			
-			index = downIndex % numOfBuckets;
-			val = buckets.get(index) + addVal;
-			buckets.set(index, val);
-			if(bucketsRealCount.get(index) > 0){
-				updateCalibration(index, val);
+
+		for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+			double counter = entry.getValue();
+			int bucketHit = getBucketIndex(entry.getKey());
+			bucketHits.set(bucketHit, true);
+			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
+			for (int distance = 1; distance <= SMOOTHENING_DISTANCE; distance++) {
+				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHENING_DISTANCE));
+				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
+				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
 			}
 		}
-		
-		total++;
-		
-		
-	}
-	
-	private void updateCalibration(int bucketIndex, double val) throws Exception{
-		if(calibration == null){
-			initCalibration();
-		} else{
-			calibration.updateFeatureValueCount(Integer.toString(bucketIndex), val);
-		}
-	}
-	
-	private void initCalibration() throws Exception{
-		calibration = new FeatureCalibration();
-		Map<String, Double> tmp = new HashMap<>();
-		
-		for(int i = 0; i < numOfBuckets; i++){
-			Double val = buckets.get(i);
-			if(val < 1){
-				continue;
+
+		List<Double> smoothedCountersThatWereHit = new ArrayList<>(numOfBuckets);
+		for (int i = 0; i < numOfBuckets; i++) {
+			if (bucketHits.get(i)) {
+				smoothedCountersThatWereHit.add(smoothedCounterBuckets.get(i));
 			}
-			
-			tmp.put(Integer.toString(i), val);
 		}
-		
-		calibration.init(tmp);
+		occurrencesHistogram = new OccurrencesHistogram(smoothedCountersThatWereHit);
 	}
 
-	public int getTotal() {
-		return total;
+	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {
+		index = (index + buckets.size()) % buckets.size();
+		buckets.set(index, buckets.get(index) + add);
 	}
 
-	public int getTimeResolution() {
-		return timeResolution;
+	private int getBucketIndex(long epochSeconds) {
+		return (int) ((epochSeconds % timeResolution) / bucketSize);
 	}
 
-	public int getBucketSize() {
-		return bucketSize;
+	@Override
+	public double calculateScore(Object value) {
+		int bucketIndex = getBucketIndex((Long) value);
+		Double smoothedCounter = smoothedCounterBuckets.get(bucketIndex);
+		return occurrencesHistogram.score(smoothedCounter);
 	}
-
-	public int getNumOfBuckets() {
-		return numOfBuckets;
-	}
-	
-	
 }
