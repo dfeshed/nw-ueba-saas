@@ -267,7 +267,7 @@ public abstract class DataQueryRunner {
         //this list will mark which data query in the sub query that need to remove from the list cause they are base entities
         List<DataQueryDTO> listToRemove = new ArrayList<>();
         //this list will mark which data query in the sub query  need to add to the list cause they are leaf entities
-        List<DataQueryDTO> listToAdd = new ArrayList<>();
+        List<DataQueryDTOImpl> listToAdd = new ArrayList<>();
 
         for (DataQueryDTO dataQueryDTO : subQuery.getDataQueries())
         {
@@ -296,7 +296,7 @@ public abstract class DataQueryRunner {
                         for (TreeNode<DataEntity> dataEntityTreeNode : children)
                         {
 
-							DataQueryDTO  leafSubQuery = new DataQueryDTOImpl(dataQueryDTO);
+							DataQueryDTOImpl  leafSubQuery = new DataQueryDTOImpl(dataQueryDTO);
 							String [] entity = new String[1];
 							entity[0] = dataEntityTreeNode.getData().getId();
 							leafSubQuery.setEntities(entity);
