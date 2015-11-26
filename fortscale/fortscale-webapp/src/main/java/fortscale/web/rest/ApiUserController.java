@@ -2,12 +2,10 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;

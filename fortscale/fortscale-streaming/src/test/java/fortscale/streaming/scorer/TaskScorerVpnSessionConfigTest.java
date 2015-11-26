@@ -1,9 +1,9 @@
 package fortscale.streaming.scorer;
 
-import java.io.IOException;
-
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class TaskScorerVpnSessionConfigTest extends TaskScorerConfigTest{
 
