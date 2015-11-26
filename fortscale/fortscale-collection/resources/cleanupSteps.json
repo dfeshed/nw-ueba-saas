@@ -94,11 +94,6 @@
         "technology": "MONGO",
         "strategy": "DELETE",
         "dataSources": "alerts@@@date:::startDate###evidences@@@date:::startDate%%%evidenceType:::Tag"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent"
       }
     ],
     "otherSteps": [
@@ -178,6 +173,16 @@
   },
   "AfterSingleIndicators": {
     "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      },
       {
         "technology": "MONGO",
         "strategy": "DELETE",
