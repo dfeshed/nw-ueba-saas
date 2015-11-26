@@ -33,6 +33,10 @@ public class ModelBuildingSamzaStore {
 		}
 	}
 
+	public void deleteRegistration(String sessionId, String modelConfName) {
+		modelBuildingStore.delete(getKey(sessionId, modelConfName));
+	}
+
 	public Iterator<ModelBuildingRegistration> getRegistrationsIterator() {
 		return new RegistrationsIterator();
 	}

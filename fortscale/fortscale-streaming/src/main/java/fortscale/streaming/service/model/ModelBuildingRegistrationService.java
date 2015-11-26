@@ -45,11 +45,10 @@ public class ModelBuildingRegistrationService {
 	public void process(JSONObject event) {
 		String sessionId = event.getAsString(SESSION_ID_JSON_FIELD);
 		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
-		Long endTimeInSeconds = ConversionUtils.convertToLong(event.get(END_TIME_IN_SECONDS_JSON_FIELD));
+		Long endTimeSec = ConversionUtils.convertToLong(event.get(END_TIME_IN_SECONDS_JSON_FIELD));
 
-		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) &&
-				endTimeInSeconds != null && endTimeInSeconds >= 0) {
-			Date endTime = new Date(TimestampUtils.convertToMilliSeconds(endTimeInSeconds));
+		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
+			Date endTime = endTimeSec < 0 ? null : new Date(TimestampUtils.convertToMilliSeconds(endTimeSec));
 
 			if (modelConfName.equalsIgnoreCase(ALL_MODELS_CONSTANT_VALUE)) {
 				for (ModelConf modelConf : modelConfService.getModelConfs()) {
@@ -79,6 +78,11 @@ public class ModelBuildingRegistrationService {
 	}
 
 	private void process(String sessionId, String modelConfName, Date endTime) {
+		if (endTime == null) {
+			modelBuildingStore.deleteRegistration(sessionId, modelConfName);
+			return;
+		}
+
 		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName);
 
 		if (registration == null) {
