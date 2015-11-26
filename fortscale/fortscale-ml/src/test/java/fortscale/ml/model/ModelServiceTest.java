@@ -63,7 +63,7 @@ public class ModelServiceTest {
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
 		listener = new ListModelBuildingListener();
-		modelService = new ModelService(listener);
+		modelService = testContextManager.getBean(ModelService.class);
 	}
 
 	@Test
@@ -114,18 +114,13 @@ public class ModelServiceTest {
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
 				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_2);
 
-		// Consistent with the name in the configuration
 		String sessionId = "test_session_id";
+		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
-
-		JSONObject event = new JSONObject();
-		event.put("sessionId", sessionId);
-		event.put("modelConfName", modelConfName);
-		event.put("endTimeInSeconds", currentEndTimeInSeconds);
-		modelService.process(event);
+		Date currentEndTime = new Date(currentEndTimeInMillis);
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime);
 
 		// Assert listener
-		Date currentEndTime = new Date(currentEndTimeInMillis);
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
 		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
