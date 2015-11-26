@@ -48,7 +48,7 @@
                 </entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>vpnsession</value>
+                    <value>vpn_session</value>
                 </entry>
                 <entry>
                     <key>lastState</key>
