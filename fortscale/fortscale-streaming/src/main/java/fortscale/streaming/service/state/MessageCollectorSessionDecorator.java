@@ -1,4 +1,4 @@
-package fortscale.streaming.service;
+package fortscale.streaming.service.state;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -7,36 +7,25 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Abstract decorator class of the default Samza MessageColletor.
- * Provides the ability to add additional fields to the message before sending them to the queue
+ * Decorator to add the 'session' notion to session events in the data-source field
  *
  * @author gils
- * Date: 10/11/2015
+ * Date: 19/11/2015
  */
-public abstract class MessageCollectorGenericDecorator implements MessageCollector {
+public class MessageCollectorSessionDecorator implements MessageCollector{
 
-    protected MessageCollector messageCollector;
+    private static final String DATA_SOURCE_FIELD = "data_source";
+    private static final String SESSION_SUFFIX = "session";
 
-    protected Map<String, Object> additionalKeyValueMap = new HashMap<>();
+    private MessageCollector messageCollector;
 
-    public MessageCollectorGenericDecorator(MessageCollector messageCollector) {
+    public MessageCollectorSessionDecorator(MessageCollector messageCollector) {
         this.messageCollector = messageCollector;
     }
 
     @Override
     public void send(OutgoingMessageEnvelope envelope) {
-
-        if (additionalKeyValueMap.isEmpty()) {
-            // nothing to decorate, send the original envelope
-            messageCollector.send(envelope);
-
-            return;
-        }
-
         // extract original envelope values
         SystemStream systemStream = envelope.getSystemStream();
         Object partitionKey = envelope.getPartitionKey();
@@ -50,12 +39,16 @@ public abstract class MessageCollectorGenericDecorator implements MessageCollect
             throw new RuntimeException("Could not parse message: " + messageText);
         }
 
-        for (Map.Entry<String, Object> keyValueEntry : additionalKeyValueMap.entrySet()) {
-            message.put(keyValueEntry.getKey(), keyValueEntry.getValue());
-        }
+        addSessionMarkToDataSourceField(message);
 
         OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
 
         messageCollector.send(outgoingMessageEnvelope);
+    }
+
+    private void addSessionMarkToDataSourceField(JSONObject message) {
+        String dataSource = (String) message.get(DATA_SOURCE_FIELD);
+
+        message.put(DATA_SOURCE_FIELD, dataSource + SESSION_SUFFIX);
     }
 }
