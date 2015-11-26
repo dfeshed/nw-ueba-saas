@@ -1,12 +1,12 @@
 package fortscale.ml.model.prevalance;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.apache.samza.config.Config;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.samza.config.Config;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 
