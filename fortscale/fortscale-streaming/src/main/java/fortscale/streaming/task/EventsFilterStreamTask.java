@@ -58,7 +58,9 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			}
 		}
 
-		handleUnfilteredEvent(message);
+		if (taskMonitoringHelper.isMonitoredTask()) {
+			handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+		}
 		processedNonFilterCount.inc(); //Count not filtered events total
 		
 	}
