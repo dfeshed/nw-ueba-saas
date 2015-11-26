@@ -35,6 +35,11 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         return model;
     }
 
+    @Override
+    public double calculateScore(Object value, Model model) {
+        return model.calculateScore(value);
+    }
+
     private Map<Double, Double> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
@@ -42,7 +47,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         if (!(modelBuilderData instanceof Map)) {
             String errorMsg = "got illegal modelBuilderData type - probably bad ASL";
             logger.error(errorMsg);
-            throw new ClassCastException(errorMsg);
+            throw new IllegalArgumentException(errorMsg);
         }
         return (Map<Double, Double>) modelBuilderData;
     }

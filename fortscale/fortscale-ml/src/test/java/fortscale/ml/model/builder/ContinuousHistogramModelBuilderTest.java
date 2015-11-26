@@ -29,7 +29,7 @@ public class ContinuousHistogramModelBuilderTest {
         modelBuilder.build(null);
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenIllegalInputType() {
         modelBuilder.build("");
     }
