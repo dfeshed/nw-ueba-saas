@@ -93,7 +93,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
-			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
 			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
