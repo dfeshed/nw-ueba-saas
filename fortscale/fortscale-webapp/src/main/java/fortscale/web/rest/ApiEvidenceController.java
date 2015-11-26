@@ -249,7 +249,7 @@ public class ApiEvidenceController extends DataQueryController {
 			dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
 
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
-					size);
+					size, DataQueryDTOImpl.class);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 		} else {
 			return null;

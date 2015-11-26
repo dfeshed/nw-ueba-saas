@@ -36,7 +36,7 @@ public abstract class DataQueryRunner {
      */
     public String generateTotalQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
         // Create a copy of the DataQueryDTO:
-        DataQueryDTO totalDataQueryDTO = new DataQueryDTO(dataQueryDTO);
+        DataQueryDTO totalDataQueryDTO = new DataQueryDTOImpl(dataQueryDTO);
 
         // Create the count(*) field:
         DataQueryField countField = new DataQueryField();
@@ -134,7 +134,7 @@ public abstract class DataQueryRunner {
                         for (TreeNode<DataEntity> dataEntityTreeNode : children)
                         {
 							//replace the main entity
-                            DataQueryDTO childDto = new DataQueryDTO(dto);
+                            DataQueryDTO childDto = new DataQueryDTOImpl(dto);
                             String[] entities = new String[1];
                             entities[0] = dataEntityTreeNode.getData().getId();
 							childDto.setEntities(entities);
@@ -296,7 +296,7 @@ public abstract class DataQueryRunner {
                         for (TreeNode<DataEntity> dataEntityTreeNode : children)
                         {
 
-							DataQueryDTO  leafSubQuery = new DataQueryDTO(dataQueryDTO);
+							DataQueryDTO  leafSubQuery = new DataQueryDTOImpl(dataQueryDTO);
 							String [] entity = new String[1];
 							entity[0] = dataEntityTreeNode.getData().getId();
 							leafSubQuery.setEntities(entity);
