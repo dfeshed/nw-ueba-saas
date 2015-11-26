@@ -13,6 +13,20 @@
             <job-class>fortscale.collection.jobs.MongoToKafkaJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>evidences</key>
+                    <value>fortscale.domain.core.Evidence</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__normalized_username_hourly</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__normalized_username_daily</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+            </job-data-map>
         </job>
     </schedule>
 
