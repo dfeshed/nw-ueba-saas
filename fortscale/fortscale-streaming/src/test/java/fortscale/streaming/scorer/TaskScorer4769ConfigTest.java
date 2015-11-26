@@ -10,7 +10,7 @@ public class TaskScorer4769ConfigTest extends TaskScorerConfigTest{
 	
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "kerberosLogin");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "kerberos_logins");
 	}
 	
 }
