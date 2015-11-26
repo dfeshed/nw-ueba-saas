@@ -1,6 +1,5 @@
 package fortscale.flume;
 
-import com.google.common.base.Charsets;
 import junit.framework.TestCase;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
@@ -9,24 +8,15 @@ import org.apache.flume.channel.ChannelProcessor;
 import org.apache.flume.channel.MemoryChannel;
 import org.apache.flume.channel.ReplicatingChannelSelector;
 import org.apache.flume.conf.Configurables;
-import org.apache.flume.source.*;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mozilla.universalchardet.UniversalDetector;
-import org.productivity.java.syslog4j.Syslog;
-import org.productivity.java.syslog4j.SyslogConfigIF;
-import org.productivity.java.syslog4j.SyslogIF;
-import org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Console;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
