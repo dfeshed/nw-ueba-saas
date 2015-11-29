@@ -45,8 +45,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String AMT_RESET_PASSWORD = "amt_reset_pwd";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
-	private static final String DATA_SOURCE_PARAMETER = "dataSource";
-	private static final String LAST_STATE_PARAMETER = "lastState";
 	private final String MIN_DATE = "minwhen";
 	private final String MAX_DATE = "maxwhen";
 	private final String DATE_TIME_UNIX = "date_time_unix";
@@ -68,8 +66,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
-	private String dataSource;
-	private String lastState;
 
 	private Long startTime;
 	private Long endTime;
