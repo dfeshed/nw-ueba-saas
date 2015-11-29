@@ -51,6 +51,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String MAX_DATE = "maxwhen";
 	private final String DATE_TIME_UNIX = "date_time_unix";
 
+	private final static String DATA_SOURCE_FIELD = "data_source";
+	private final static String LAST_STATE_FIELD = "last_state";
+
 	// job parameters:
 	private String notificationsToIgnore;
 	private String fetchType;
@@ -107,8 +110,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
-		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
-		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
@@ -177,9 +178,8 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 
-				//Add the last state and data source fields to the message
-				evidence.put("data_source", dataSource);
-				evidence.put("last_state", lastState);
+				evidence.put(DATA_SOURCE_FIELD, notification.getDataSource());
+				evidence.put(LAST_STATE_FIELD, this.getClass().getSimpleName());
 
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.info("Writing to topic evidence - {}", messageToWrite);

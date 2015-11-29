@@ -1,13 +1,11 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationFlag;
 import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.web.beans.DataBean;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -25,14 +23,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,10 +48,10 @@ public class ApiNotificationsControllerTest {
 		
 		// set up notification repository mocked behavior
 		List<Notification> notifications = new ArrayList<Notification>();
-		notifications.add(new Notification("1", 1, "a", "a", "a", "a", "a", "a", "a", "a", false, 0));
-		notifications.add(new Notification("2", 2, "b", "b", "b", "b", "b", "b", "b", "b", false, 0));
-		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "c", "c", "c", false, 0));
-		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "d", "d", "d", false, 0));
+		notifications.add(new Notification("1", 1, "a", "a", "a", "a", "a", "dataSourceX", "a", "a", "a", false, 0));
+		notifications.add(new Notification("2", 2, "b", "b", "b", "b", "b", "dataSourceX", "b", "b", "b", false, 0));
+		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "dataSourceX", "c", "c", "c", false, 0));
+		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "dataSourceX", "d", "d", "d", false, 0));
 		
 		when(notificationRepository.findByTsBetweenExcludeComments(anyLong(), anyLong(), any(Sort.class))).thenReturn(notifications);
 		
@@ -153,7 +147,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void commentOnNotification_should_increment_comments_count() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "dataSourceX", "uuid", "fsId", "type", false, 0);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 		when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 		
