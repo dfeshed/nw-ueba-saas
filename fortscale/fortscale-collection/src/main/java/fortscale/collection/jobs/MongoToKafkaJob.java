@@ -1,9 +1,7 @@
 package fortscale.collection.jobs;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;
@@ -14,10 +12,14 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Created by Amir Keren on 04/10/2015.
@@ -34,7 +36,7 @@ public class MongoToKafkaJob extends FortscaleJob {
     private final String DATE_DELIMITER = ":::";
     private final int DEFAULT_BATCH_SIZE = 100;
     private final int DEFAULT_CHECK_RETRIES = 60;
-    private final int MILLISECONDS_TO_WAIT = 1000 * 60;
+    private final int MILLISECONDS_TO_WAIT = 1000 * 60; //one minute
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -46,8 +48,7 @@ public class MongoToKafkaJob extends FortscaleJob {
 	@Value("${zookeeper.timeout}")
 	private int zookeeperTimeout;
 
-	private BasicDBObject mongoQuery;
-    private BasicDBObject sortQuery;
+	private Query mongoQuery;
 	private DBCollection mongoCollection;
 	private List<KafkaEventsWriter> streamWriters;
     private String jobToMonitor;
@@ -55,10 +56,11 @@ public class MongoToKafkaJob extends FortscaleJob {
     private String dateField;
     private int batchSize;
     private int checkRetries;
+    private Class clazz;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		logger.debug("Initializing MongoToKafka job");
+		logger.info("Initializing MongoToKafka job");
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batch", DEFAULT_BATCH_SIZE);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
@@ -74,46 +76,62 @@ public class MongoToKafkaJob extends FortscaleJob {
             }
         //filters are not mandatory, if not passed all documents in the provided collection will be forwarded
         } else {
-            mongoQuery = new BasicDBObject();
+            mongoQuery = new Query();
         }
-        sortQuery = new BasicDBObject();
+        mongoQuery.limit(batchSize);
         if (map.containsKey("sort")) {
-            String sort = jobDataMapExtension.getJobDataMapStringValue(map, "sort");
-            String field = sort.split(GENERAL_DELIMITER)[0];
-            String direction = sort.split(GENERAL_DELIMITER)[1];
+            String sortStr = jobDataMapExtension.getJobDataMapStringValue(map, "sort");
+            String field = sortStr.split(GENERAL_DELIMITER)[0];
+            String direction = sortStr.split(GENERAL_DELIMITER)[1];
+            Sort sort;
             if (direction.equalsIgnoreCase("desc")) {
-                sortQuery.put(field, -1);
+                sort = new Sort(Sort.Direction.DESC, field);
+            } else if (direction.equalsIgnoreCase("asc")) {
+                sort = new Sort(Sort.Direction.ASC, field);
             } else {
-                sortQuery.put(field, 1);
+                logger.error("Bad sorting argument");
+                throw new JobExecutionException();
             }
+            mongoQuery.with(sort);
         }
         streamWriters = buildTopicsList(jobDataMapExtension.getJobDataMapStringValue(map, "topics"));
 		String collection = jobDataMapExtension.getJobDataMapStringValue(map, "collection");
 		if (!mongoTemplate.collectionExists(collection)) {
-			logger.error("No Mongo collection {} found", collection);
+			logger.error("No mongo collection {} found", collection);
 			throw new JobExecutionException();
 		}
 		mongoCollection = mongoTemplate.getCollection(collection);
-		logger.debug("Job initialized");
+        String className = null;
+        try {
+            if (!jobDataMapExtension.isJobDataMapContainKey(map, collection)) {
+                logger.error("No appropriate class found in job properties for collection {}", collection);
+                throw new JobExecutionException();
+            }
+            className = jobDataMapExtension.getJobDataMapStringValue(map, collection);
+            clazz = Class.forName(className);
+        } catch (ClassNotFoundException ex) {
+            logger.error("No appropriate class {} found", className);
+            throw new JobExecutionException();
+        }
+        logger.info("Job initialized");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
-		logger.debug("Running Mongo to Kafka job");
+		logger.info("Running mongo to Kafka job");
         String collectionName = mongoCollection.getName();
-        long totalItems = mongoCollection.count(mongoQuery);
-        logger.debug("forwarding {} documents", totalItems);
+        long totalItems = mongoTemplate.count(mongoQuery, collectionName);
+        logger.info("forwarding {} documents", totalItems);
         int counter = 0;
-        DBObject removeProjection = ignoreFields();
+        ObjectMapper objectMapper = new ObjectMapper();
         while (counter < totalItems) {
-            logger.debug("handling items {} to {}", counter, batchSize + counter);
-            List<DBObject> results = mongoCollection.find(mongoQuery, removeProjection).skip(counter).
-                    limit(batchSize).sort(sortQuery).toArray();
+            logger.info("handling items {} to {}", counter, batchSize + counter);
+            mongoQuery.skip(counter);
+            List results = mongoTemplate.find(mongoQuery, clazz);
             long lastMessageTime = 0;
-            for (DBObject result: results) {
-                String message = manipulateMessage(collectionName, result);
+            for (Object object: results) {
+                String message = objectMapper.writeValueAsString(object);
                 logger.debug("forwarding message - {}", message);
-                //TODO - partition index
                 for (KafkaEventsWriter streamWriter: streamWriters) {
                     try {
                         streamWriter.send(null, message);
@@ -122,7 +140,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                         throw new JobExecutionException(ex);
                     }
                 }
-                lastMessageTime = Long.parseLong(result.get(dateField).toString());
+                lastMessageTime = objectMapper.readTree(message).get(dateField).asLong();
             }
             if (lastMessageTime > 0) {
                 //throttling
@@ -134,7 +152,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                 if (result == true) {
                     logger.info("last message in batch processed, moving to next batch");
                 } else {
-                    logger.error("last message not yet processed - timed out!");
+                    logger.error("last message not yet processed or timed out");
                     throw new JobExecutionException();
                 }
             }
@@ -143,40 +161,13 @@ public class MongoToKafkaJob extends FortscaleJob {
         if (counter < totalItems) {
             logger.error("failed to forward all {} documents, forwarded only {}", counter, totalItems);
         } else {
-            logger.debug("forwarded all {} documents", totalItems);
+            logger.info("forwarded all {} documents", totalItems);
         }
         for (KafkaEventsWriter streamWriter: streamWriters) {
             streamWriter.close();
         }
 		finishStep();
 	}
-
-    /***
-     *
-     * This method adds all fields to ignore in a Mongo document
-     *
-     * @return
-     */
-    private DBObject ignoreFields() {
-        //fields to ignore
-        DBObject removeProjection = new BasicDBObject("_id", 0);
-        removeProjection.put("_class", 0);
-        removeProjection.put("retentionDate", 0);
-        return removeProjection;
-    }
-
-    /***
-     *
-     * This method changes the message according to the collection name to fit the designated Kafka topic
-     *
-     * @param collection  the collection name
-     * @param message     the message to be altered
-     * @return
-     */
-    private String manipulateMessage(String collection, DBObject message) {
-        //TODO - manipulate according to collection name?
-        return message.toString();
-    }
 
     /***
 	 *
@@ -186,18 +177,23 @@ public class MongoToKafkaJob extends FortscaleJob {
      *                 is provided to determine operator in addition to key and value
 	 * @return
 	 */
-	private BasicDBObject buildQuery(String filters) {
-		BasicDBObject searchQuery = new BasicDBObject();
+	private Query buildQuery(String filters) {
+		Query searchQuery = new Query();
         for (String filter : filters.split(GENERAL_DELIMITER)) {
             if (filter.contains(DATE_DELIMITER)) {
                 String field = filter.split(DATE_DELIMITER)[0];
                 String operator = filter.split(DATE_DELIMITER)[1];
                 Long value = Long.parseLong(filter.split(DATE_DELIMITER)[2]);
-                searchQuery.put(field, BasicDBObjectBuilder.start("$" + operator, value).get());
+                switch (operator) {
+                    case "lt": searchQuery.addCriteria(where(field).lt(value)); break;
+                    case "lte": searchQuery.addCriteria(where(field).lte(value)); break;
+                    case "gt": searchQuery.addCriteria(where(field).gt(value)); break;
+                    case "gte": searchQuery.addCriteria(where(field).gte(value)); break;
+                }
             } else {
                 String field = filter.split(KEYVALUE_DELIMITER)[0];
                 String value = filter.split(KEYVALUE_DELIMITER)[1];
-                searchQuery.put(field, value);
+                searchQuery.addCriteria(where(field).is(value));
             }
         }
 		return searchQuery;

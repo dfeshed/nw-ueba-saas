@@ -142,19 +142,28 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		} else {
 			// parse the message into json
 			JSONObject message = parseJsonMessage(envelope);
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			if (configKey == null){
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				return;
+			}
 			ComputerTaggingConfig config = configs.get(configKey);
+			if (configs == null) {
+				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+
+				return;
+			}
 
 			try {
 				message = computerTaggingService.enrichEvent(config, message);
 			} catch (Exception e){
-				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),e.getMessage());
+				taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
 				throw e;
 			}
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(configKey)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
-				handleUnfilteredEvent(message);
+				handleUnfilteredEvent(message, configKey);
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);

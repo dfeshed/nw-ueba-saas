@@ -1,21 +1,18 @@
 package fortscale.streaming.task;
 
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
+import fortscale.domain.system.ServersListConfiguration;
+import fortscale.domain.system.ServersListConfigurationImpl;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.TaskContext;
 
-import fortscale.domain.system.ServersListConfiguration;
-import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.streaming.service.SpringService;
+import java.util.regex.Pattern;
+
+import static fortscale.utils.ConversionUtils.convertToBoolean;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";
@@ -59,26 +56,31 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	
 	@Override
 	protected boolean acceptMessage(JSONObject message) {
-				
+
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			return false;
+		}
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
 				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
-			taskMonitoringHelper.countNewFilteredEvents("",ACCOUNT_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
-			taskMonitoringHelper.countNewFilteredEvents("",SERVICE_NAME_MATCH_TO_REGEX);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,SERVICE_NAME_MATCH_TO_REGEX);
 			return false;
 		}
 		
 		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
 		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
-			taskMonitoringHelper.countNewFilteredEvents("",SERVICE_NAME_MATCH_COMPUTER_NAME);
+			taskMonitoringHelper.countNewFilteredEvents(configKey,SERVICE_NAME_MATCH_COMPUTER_NAME);
 			return false;
 		}
 		

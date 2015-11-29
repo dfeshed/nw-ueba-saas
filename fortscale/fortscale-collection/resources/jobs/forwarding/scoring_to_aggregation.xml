@@ -32,7 +32,7 @@
                 </entry>
                 <entry>
                     <key>impalaTableName-vpn_session</key>
-                    <value>${impala.score.vpnsession.table.name}</value>
+                    <value>${impala.score.vpn_session.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField-vpn_session</key>
@@ -40,11 +40,11 @@
                 </entry>
                 <entry>
                     <key>impalaTableFields-vpn_session</key>
-                    <value>${impala.score.vpnsession.table.fields}</value>
+                    <value>${impala.score.vpn_session.table.fields}</value>
                 </entry>
                 <entry>
                     <key>impalaTablePartitionType-vpn_session</key>
-                    <value>${impala.score.vpnsession.table.partition.type}</value>
+                    <value>${impala.score.vpn_session.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaTableName-ssh</key>
@@ -64,7 +64,7 @@
                 </entry>
                 <entry>
                     <key>impalaTableName-kerberos_logins</key>
-                    <value>${impala.score.kerberosLogin.table.name}</value>
+                    <value>${impala.score.kerberos_logins.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField-kerberos_logins</key>
@@ -72,11 +72,11 @@
                 </entry>
                 <entry>
                     <key>impalaTableFields-kerberos_logins</key>
-                    <value>${impala.score.kerberosLogin.table.fields}</value>
+                    <value>${impala.score.kerberos_logins.table.fields}</value>
                 </entry>
                 <entry>
                     <key>impalaTablePartitionType-kerberos_logins</key>
-                    <value>${impala.score.kerberosLogin.table.partition.type}</value>
+                    <value>${impala.score.kerberos_logins.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaTableName-amt</key>
