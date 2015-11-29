@@ -25,11 +25,11 @@
 				</entry>
 				<entry>
 					<key>hosts</key>
-					<value>ise.test_domain.com</value>
+					<value>fs-ise-02.fortscale.dom</value>
 				</entry>
 				<entry>
 					<key>userName</key>
-					<value>test_client</value>
+					<value>tomerd</value>
 				</entry>
 				<entry>
 					<key>group</key>
