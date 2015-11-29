@@ -96,7 +96,6 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
                 String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
-                String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
                 String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
                 String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.ip.field", configKey)));
                 String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.host.field", configKey)));

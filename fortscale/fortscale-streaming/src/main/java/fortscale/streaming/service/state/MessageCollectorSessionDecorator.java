@@ -16,7 +16,7 @@ import org.apache.samza.task.MessageCollector;
 public class MessageCollectorSessionDecorator implements MessageCollector{
 
     private static final String DATA_SOURCE_FIELD = "data_source";
-    private static final String SESSION_SUFFIX = "session";
+    private static final String SESSION_SUFFIX = "_session";
 
     private MessageCollector messageCollector;
 

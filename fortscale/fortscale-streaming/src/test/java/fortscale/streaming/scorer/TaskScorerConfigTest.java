@@ -1,27 +1,26 @@
 package fortscale.streaming.scorer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.ml.service.ModelService;
+import fortscale.streaming.TaskTestUtil;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
-
 import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
-import fortscale.ml.service.ModelService;
-import fortscale.streaming.TaskTestUtil;
-import fortscale.streaming.feature.extractor.FeatureExtractionService;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 
@@ -54,8 +53,8 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 	}
 
 	
-	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath, String dataSource) throws IOException{
-		Config dataSourceConfig = TaskTestUtil.buildPrevalenceTaskConfig(taskConfigPropertiesFilePath, dataSource);	
+	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath, StreamingTaskDataSourceConfigKey configKey) throws IOException{
+		Config dataSourceConfig = TaskTestUtil.buildPrevalenceTaskConfig(taskConfigPropertiesFilePath, configKey);
 
 		return buildScorersFromTaskConfig(dataSourceConfig);
 	}
