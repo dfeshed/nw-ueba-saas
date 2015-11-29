@@ -11,13 +11,11 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
-import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,7 +28,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(JUnitParamsRunner.class)
 public class ModelServiceTest {
 	private static ClassPathXmlApplicationContext testContextManager;
 
@@ -63,7 +60,7 @@ public class ModelServiceTest {
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
 		listener = new ListModelBuildingListener();
-		modelService = testContextManager.getBean(ModelService.class);
+		modelService = testContextManager.getBeanFactory().createBean(ModelService.class);
 	}
 
 	@Test

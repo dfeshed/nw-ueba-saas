@@ -4,11 +4,13 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class ModelService implements InitializingBean {
 	private static final Logger logger = Logger.getLogger(ModelService.class);
 
