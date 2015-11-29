@@ -11,10 +11,10 @@ public class CategoryRarityModel implements Model {
 	public static final String MODEL_TYPE = "category_rarity_model";
 	private static final long serialVersionUID = 1683497340140662427L;
 
-	private OccurrencesHistogram occurrencesHistogram;
+	private RarityScorer occurrencesHistogram;
 
-	public CategoryRarityModel(Collection<Double> featureCounts) {
-		occurrencesHistogram = new OccurrencesHistogram(featureCounts);
+	public CategoryRarityModel(Collection<Double> featureCounts, int maxPossibleRarity, double maxRaritySum) {
+		occurrencesHistogram = new RarityScorer(featureCounts, maxPossibleRarity, maxRaritySum);
 	}
 
 	@Override

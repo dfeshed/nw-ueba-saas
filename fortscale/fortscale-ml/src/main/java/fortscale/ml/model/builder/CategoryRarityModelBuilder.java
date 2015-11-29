@@ -7,6 +7,7 @@ import fortscale.ml.model.prevalance.field.CategoryRarityModel;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -16,9 +17,19 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     public static final String MODEL_BUILDER_TYPE = "category_rarity";
 
     private Pattern ignoreValues;
+    private int maxPossibleRarity;
+    private double maxRaritySum;
 
     @JsonCreator
-    public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern) {
+    public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern,
+                                      @JsonProperty("maxPossibleRarity") Integer maxPossibleRarity,
+                                      @JsonProperty("maxRaritySum") Double maxRaritySum) {
+        Assert.notNull(maxPossibleRarity);
+        Assert.isTrue(maxPossibleRarity > 0);
+        Assert.notNull(maxRaritySum);
+        Assert.isTrue(maxRaritySum > 0);
+        this.maxPossibleRarity = maxPossibleRarity;
+        this.maxRaritySum = maxRaritySum;
         if (ignorePattern != null) {
             ignoreValues = Pattern.compile(ignorePattern);
         }
@@ -27,7 +38,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Double> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap));
+        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap), maxPossibleRarity, maxRaritySum);
     }
 
     @Override
