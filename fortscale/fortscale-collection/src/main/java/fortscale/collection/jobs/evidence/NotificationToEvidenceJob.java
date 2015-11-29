@@ -49,7 +49,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String MAX_DATE = "maxwhen";
 	private final String DATE_TIME_UNIX = "date_time_unix";
 
-	private final static String DATA_SOURCE_FIELD = "data_source";
 	private final static String LAST_STATE_FIELD = "last_state";
 
 	// job parameters:
@@ -59,7 +58,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationScoreField;
 	private String notificationValueField;
 	private String normalizedUsernameField;
-	private String notificationEntityField;
+	private String notificationDataSourceField;
 	private String notificationStartTimestampField;
 	private String notificationEndTimestampField;
 	private String notificationTypeField;
@@ -95,7 +94,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
+		notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationDataSourceField");
 		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationStartTimestampField");
 		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
@@ -170,11 +169,10 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationEndTimestampField, getEndTimeStamp(notification));
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
-				evidence.put(notificationEntityField, getEntity(notification.getCause().toLowerCase()));
+				evidence.put(notificationDataSourceField, notification.getDataSource());
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 
-				evidence.put(DATA_SOURCE_FIELD, notification.getDataSource());
 				evidence.put(LAST_STATE_FIELD, this.getClass().getSimpleName());
 
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
@@ -259,23 +257,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		}
 		//default value
 		return notification.getCause();
-	}
-
-	private List<String> getEntity(String cause) {
-		List<String> result = new ArrayList();
-		if (cause.equalsIgnoreCase(VPN_OVERLAPPING)) {
-			result.add("vpn_session");
-			return result;
-		}
-		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
-		if (cause.contains("amt") || cause.equalsIgnoreCase(AMT_CHECKING_ON_YID)) {
-			result.add("amt");
-		} else if (cause.contains("vpn")) {
-			result.add("vpn");
-		} else {
-			result.add("active_directory");
-		}
-		return result;
 	}
 
 	private String getNormalizedUsername(Notification notification) {
