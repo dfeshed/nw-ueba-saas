@@ -54,6 +54,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String score;
 	@Value("${collection.evidence.notification.supportinginformation.field}")
 	private String notificationSupportingInformationField;
+	@Value("${collection.evidence.notification.datasource.field}")
+	private String dataSourceField;
+
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -178,6 +181,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationEntityField, entities);
 		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
 		evidence.put("index", index);
+		evidence.put(dataSourceField,NOTIFICATION_ENTITY);
 		logger.info("adding geo hopping notification with the index {}", index);
 
 		return evidence;
