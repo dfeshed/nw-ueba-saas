@@ -10,6 +10,11 @@ import java.util.Map;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
+	private void  assertScore(int maxPossibleRarity, double maxRaritySum, Map<String, Double> featureValueToCountMap, String feature, double expected) {
+		RarityScorer hist = new RarityScorer(featureValueToCountMap.values(), maxPossibleRarity, maxRaritySum);
+		Assert.assertEquals(expected, hist.score(featureValueToCountMap.get(feature)), 0.001);
+	}
+
 	private void  assertScoreRange(int maxPossibleRarity, double maxRaritySum, Map<String, Double> featureValueToCountMap, String feature, double expectedRangeMin, double expectedRangeMax) {
 		RarityScorer hist = new RarityScorer(featureValueToCountMap.values(), maxPossibleRarity, maxRaritySum);
 		double score = hist.score(featureValueToCountMap.get(feature));
@@ -20,7 +25,6 @@ public class RarityScorerTest {
 	@Test
 	public void shouldScore0ToFeatureCountsGreaterThanMaxPossibleRarity() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		featureValueToCountMap.put("veryCommon", 1000D);
 		String veryRareFeature = "veryRare";
 		double maxRaritySum = 10;
 		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
@@ -30,6 +34,17 @@ public class RarityScorerTest {
 				double rangeMax = (count == maxPossibleRarity + 1) ? 0 : 100;
 				assertScoreRange(maxPossibleRarity, maxRaritySum, featureValueToCountMap, veryRareFeature, rangeMin, rangeMax);
 			}
+		}
+	}
+
+	@Test
+	public void shouldScore99ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
+		Map<String, Double> featureValueToCountMap = new HashMap<>();
+		String veryRareFeature = "veryRare";
+		featureValueToCountMap.put(veryRareFeature, 1D);
+		double maxRaritySum = 100;
+		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
+			assertScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, veryRareFeature, 99);
 		}
 	}
 }

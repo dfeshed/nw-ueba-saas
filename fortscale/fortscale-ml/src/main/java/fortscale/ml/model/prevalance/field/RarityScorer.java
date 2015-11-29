@@ -8,33 +8,27 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class RarityScorer {
-	private static final double EPSILON = 0.01;
+	private static final double SMALLEST_POSSIBLE_SCORE = 1;
+	private static final int POSSIBLE_RARITY_NORMALIZED_RANGE = 3;
+	private static final double STEEPNESS = Math.log(1 / (SMALLEST_POSSIBLE_SCORE / 100) - 1) / Math.log(POSSIBLE_RARITY_NORMALIZED_RANGE);
 	private double rarityGauge;
 	private double maxPossibleRarity;
 
 	public RarityScorer(Collection<Double> featureOccurrences, int maxPossibleRarity, double maxRaritySum) {
 		this.maxPossibleRarity = maxPossibleRarity;
 		double raritySum = 0;
-		double factor = getFactor();
 		for (double occurrence : featureOccurrences) {
-			raritySum += occurrence * calcCommonnessDiscounting(occurrence, factor);
+			raritySum += occurrence * calcCommonnessDiscounting(occurrence);
 		}
 		rarityGauge = Math.min(1, Math.pow(raritySum, 2) / maxRaritySum);
 	}
 
-	private double calcCommonnessDiscounting(double occurrence, double factor) {
-		return Math.pow(1.0 / factor, occurrence);
-	}
-
-	private double getFactor() {
-		return 1.0 / (Math.pow(EPSILON, 1.0 / (maxPossibleRarity + 1)));
+	private double calcCommonnessDiscounting(double occurrence) {
+		return 1 / (1 + Math.pow((occurrence - 1) * POSSIBLE_RARITY_NORMALIZED_RANGE / maxPossibleRarity, STEEPNESS));
 	}
 
 	public double score(Double featureCount) {
-		if (rarityGauge == 1) {
-			return 0;
-		}
-		double featureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount, getFactor());
+		double featureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount);
 		return (int) (100 * featureRarity);
 	}
 }
