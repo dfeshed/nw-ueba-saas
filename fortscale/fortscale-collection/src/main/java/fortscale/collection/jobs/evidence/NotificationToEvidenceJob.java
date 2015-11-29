@@ -242,15 +242,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private String getSupportingInformation(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
-		//TODO - get attributes as a whole and not just raw_events object
-		if (attributes != null && attributes.containsKey("raw_events")) {
-			switch (notification.getCause()){
-			case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: 	return  attributes.get("raw_events");
-			case VPN_OVERLAPPING: return "[" + attributes.get("raw_events") + "]";
-			default: return "";
-			}
-		}
 
+		if (attributes != null && attributes.containsKey("raw_events")) {
+			return  attributes.get("raw_events");
+
+		}
+		logger.warn("no raw events - and therefore no supporting information for notification: ", notification.toString());
 		return "";
 	}
 
