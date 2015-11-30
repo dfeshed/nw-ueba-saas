@@ -62,20 +62,28 @@ public class RarityScorerTest {
 		return scores;
 	}
 
-	private void assertMonotonicity(@Nonnull double[][][] scores, int overIndex, @Nullable Boolean shouldIncrease) {
+	private enum PARAMETER {
+		MAX_POSSIBLE_RARITY,
+		MAX_RARITY_SUM,
+		FEATURE_COUNT
+	}
+
+	private void assertMonotonicity(@Nonnull double[][][] scores, PARAMETER overParameter, @Nullable Boolean shouldIncrease) {
 		boolean hasStrongMonotonicity = false;
-		for (int i = 0; i < scores.length; i++) {
-			for (int j = 0; j < scores[0].length; j++) {
-				for (int k = 0; k < scores[0][0].length; k++) {
+		for (int maxPossibleRarityInd = 0; maxPossibleRarityInd < scores.length; maxPossibleRarityInd++) {
+			for (int maxRaritySumInd = 0; maxRaritySumInd < scores[0].length; maxRaritySumInd++) {
+				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
 					double scoresDelta;
-					if (overIndex == 0 && i == 0 || overIndex == 1 && j == 0 || overIndex == 2 && k == 0) {
+					if (overParameter == PARAMETER.MAX_POSSIBLE_RARITY && maxPossibleRarityInd == 0 ||
+							overParameter == PARAMETER.MAX_RARITY_SUM && maxRaritySumInd == 0 ||
+							overParameter == PARAMETER.FEATURE_COUNT && featureCountInd == 0) {
 						scoresDelta = 0;
-					} else if (overIndex == 0) {
-						scoresDelta = scores[i][j][k] - scores[i - 1][j][k];
-					} else if (overIndex == 1) {
-						scoresDelta = scores[i][j][k] - scores[i][j - 1][k];
+					} else if (overParameter == PARAMETER.MAX_POSSIBLE_RARITY) {
+						scoresDelta = scores[maxPossibleRarityInd][maxRaritySumInd][featureCountInd] - scores[maxPossibleRarityInd - 1][maxRaritySumInd][featureCountInd];
+					} else if (overParameter == PARAMETER.MAX_RARITY_SUM) {
+						scoresDelta = scores[maxPossibleRarityInd][maxRaritySumInd][featureCountInd] - scores[maxPossibleRarityInd][maxRaritySumInd - 1][featureCountInd];
 					} else {
-						scoresDelta = scores[i][j][k] - scores[i][j][k - 1];
+						scoresDelta = scores[maxPossibleRarityInd][maxRaritySumInd][featureCountInd] - scores[maxPossibleRarityInd][maxRaritySumInd][featureCountInd - 1];
 					}
 					if (shouldIncrease == null) {
 						Assert.assertTrue(scoresDelta == 0);
@@ -84,13 +92,13 @@ public class RarityScorerTest {
 					}
 
 					double firstValueInMonotonicSeries = scores
-							[overIndex == 0 ? 0 : i]
-							[overIndex == 1 ? 0 : j]
-							[overIndex == 2 ? 0 : k];
+							[overParameter == PARAMETER.MAX_POSSIBLE_RARITY ? 0 : maxPossibleRarityInd]
+							[overParameter == PARAMETER.MAX_RARITY_SUM ? 0 : maxRaritySumInd]
+							[overParameter == PARAMETER.FEATURE_COUNT ? 0 : featureCountInd];
 					double lastValueInMonotonicSeries = scores
-							[overIndex == 0 ? scores.length - 1 : i]
-							[overIndex == 1 ? scores[0].length - 1 : j]
-							[overIndex == 2 ? scores[0][0].length - 1 : k];
+							[overParameter == PARAMETER.MAX_POSSIBLE_RARITY ? scores.length - 1 : maxPossibleRarityInd]
+							[overParameter == PARAMETER.MAX_RARITY_SUM ? scores[0].length - 1 : maxRaritySumInd]
+							[overParameter == PARAMETER.FEATURE_COUNT ? scores[0][0].length - 1 : featureCountInd];
 					hasStrongMonotonicity = hasStrongMonotonicity || lastValueInMonotonicSeries - firstValueInMonotonicSeries != 0;
 				}
 			}
@@ -103,12 +111,12 @@ public class RarityScorerTest {
 
 	@Test
 	public void shouldScoreDecreasinglyWhenFeatureCountIncreases() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 2, false);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.FEATURE_COUNT, false);
 	}
 
 	@Test
 	public void shouldScoreIncreasinglyWhenMaxPossibleRarityIncreases() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 0, true);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_POSSIBLE_RARITY, true);
 	}
 
 	@Test
@@ -116,12 +124,12 @@ public class RarityScorerTest {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		String veryRareFeature = "veryRare";
 		featureValueToCountMap.put(veryRareFeature, 1D);
-		assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 100, 10, 10), 1, true);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 100, 10, 10), PARAMETER.MAX_RARITY_SUM, true);
 	}
 
 	@Test
 	public void shouldScoreConstantlyWhenMaxRaritySumIncreasesButModelDataIsEmpty() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 1, null);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_RARITY_SUM, null);
 	}
 
 	@Test
