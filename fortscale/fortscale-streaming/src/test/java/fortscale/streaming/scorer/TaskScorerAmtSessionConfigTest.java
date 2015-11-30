@@ -1,15 +1,15 @@
 package fortscale.streaming.scorer;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
+import java.io.IOException;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TaskScorerAmtSessionConfigTest extends TaskScorerConfigTest{
 	
@@ -40,12 +40,12 @@ public class TaskScorerAmtSessionConfigTest extends TaskScorerConfigTest{
 	
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "amtsession");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("amtsession", "AMTSessionizeStreamTask"));
 	}
 	
 	@Test
 	public void testAmtHostScore() throws Exception{
-		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", "amtsession");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("amtsession", "AMTSessionizeStreamTask"));
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_USER_FIELD_NAME, AMT_SESSION_USER_CONTEXT);
 		addToEventMessage(eventMessage, HOST_FIELD_NAME, AMT_SESSION_HOST_CONTEXT);

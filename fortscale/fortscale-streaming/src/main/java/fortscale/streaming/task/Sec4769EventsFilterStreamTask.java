@@ -1,22 +1,18 @@
 package fortscale.streaming.task;
 
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
+import fortscale.domain.system.ServersListConfiguration;
+import fortscale.domain.system.ServersListConfigurationImpl;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.TaskContext;
 
-import fortscale.domain.system.ServersListConfiguration;
-import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.streaming.service.SpringService;
+import java.util.regex.Pattern;
+
+import static fortscale.utils.ConversionUtils.convertToBoolean;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";

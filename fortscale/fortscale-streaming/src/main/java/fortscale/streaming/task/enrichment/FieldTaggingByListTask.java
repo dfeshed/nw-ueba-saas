@@ -1,6 +1,5 @@
 package fortscale.streaming.task.enrichment;
 
-import com.google.common.collect.Iterables;
 import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -9,7 +8,6 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;

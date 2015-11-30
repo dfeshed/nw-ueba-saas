@@ -93,7 +93,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
-			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
 			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
@@ -113,7 +112,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(inputTopic, outputTopic,
+			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
