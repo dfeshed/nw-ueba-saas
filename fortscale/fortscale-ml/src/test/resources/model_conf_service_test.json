@@ -1,0 +1,38 @@
+{
+  "ModelConfs": [
+    {
+      "name": "name1",
+      "selector": {
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "featureBucketConfName1"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever_conf",
+        "timeRangeInSeconds": 1,
+        "functions": [],
+        "featureBucketConfName": "featureBucketConfName1",
+        "featureName": "featureName1"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder_conf"
+      }
+    },
+    {
+      "name": "name2",
+      "selector": {
+        "type": "feature_bucket_context_selector_conf",
+        "featureBucketConfName": "featureBucketConfName1"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever_conf",
+        "timeRangeInSeconds": 1,
+        "functions": [],
+        "featureBucketConfName": "featureBucketConfName1",
+        "featureName": "featureName1"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder_conf"
+      }
+    }
+  ]
+}
