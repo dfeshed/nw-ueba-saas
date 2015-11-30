@@ -9,7 +9,7 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -74,7 +74,7 @@ public class SupportingInformationServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(mySqlQueryRunner);
+        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTOImpl.class))).thenReturn(mySqlQueryRunner);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class SupportingInformationServiceTest {
 
 
 		try {
-			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTOImpl.class))).thenReturn(dataQueryRunner);
 		}
 		catch (Exception e)
 		{

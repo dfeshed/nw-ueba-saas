@@ -169,7 +169,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationEndTimestampField, getEndTimeStamp(notification));
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
-				evidence.put(notificationDataSourceField, notification.getDataSource());
+				evidence.put(notificationDataSourceField, Collections.singletonList(notification.getDataSource()));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 

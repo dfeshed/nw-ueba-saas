@@ -134,7 +134,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         }
 
 
-        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
+        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1, DataQueryDTOImpl.class);
 
         //Remove the alias from the query fields so the context types and values will match the query result (match to field id and not field display name )
         dataQueryHelper.removeAlias(dataQueryObject);

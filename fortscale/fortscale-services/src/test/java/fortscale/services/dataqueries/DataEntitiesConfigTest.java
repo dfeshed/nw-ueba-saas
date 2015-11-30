@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,8 +54,8 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
     public void setUp() throws Exception {
 
 
-        dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
-        joinDTO = mapper.readValue(joinDTOJson, DataQueryDTO.class);
+        dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTOImpl.class);
+        joinDTO = mapper.readValue(joinDTOJson, DataQueryDTOImpl.class);
 		dataEntitiesConfig.setEmbeddedValueResolver(stringValueResolver);
 
 		/*
