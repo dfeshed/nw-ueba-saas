@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.MultipleDataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +27,11 @@ public class MySqlMultipleQueryGeneratorTest extends DataQueryGeneratorTest {
         mySqlQueryRunner = Mockito.mock(MySqlQueryRunner.class);
         mySqlMultipleQueryGenerator.setMySqlQueryRunner(mySqlQueryRunner);
 
-        dataQueryDto_UnionAll = mapper.readValue(subQueryUnionAllDtoJson, DataQueryDTO.class);
+        dataQueryDto_UnionAll = mapper.readValue(subQueryUnionAllDtoJson, DataQueryDTOImpl.class);
         subQueryDto_UnionAll = dataQueryDto_UnionAll.getSubQuery();
 
         subQueryDto_UnionDistinct = dataQueryDto_UnionDistinct.getSubQuery();
-        Mockito.when(mySqlQueryRunner.generateQuery(Mockito.any(DataQueryDTO.class))).thenReturn("[query]");
+        Mockito.when(mySqlQueryRunner.generateQuery(Mockito.any(DataQueryDTOImpl.class))).thenReturn("[query]");
     }
 
     @Test

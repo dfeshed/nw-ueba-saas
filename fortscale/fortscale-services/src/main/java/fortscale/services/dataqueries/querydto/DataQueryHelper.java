@@ -45,10 +45,15 @@ public class DataQueryHelper {
      * @return
      */
     //TODO - Enable to create DataQueryDTO without sort order
-    public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<QuerySort> querySortList, int dataEntityLimit){
+    public DataQueryDTO createDataQuery(String dataEntityId, String defaultFieldsString, List<Term> termsList, List<QuerySort> querySortList, int dataEntityLimit, Class clazz) {
         //entity to forward
-        DataQueryDTO dataQueryDTO = new DataQueryDTO();
-            String[] entities = { dataEntityId };
+        DataQueryDTO dataQueryDTO = null;
+        try {
+            dataQueryDTO = (DataQueryDTO)clazz.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        String[] entities = { dataEntityId };
             dataQueryDTO.setEntities(entities);
 
             //fields to forward - we don't necessarily want all the fields
