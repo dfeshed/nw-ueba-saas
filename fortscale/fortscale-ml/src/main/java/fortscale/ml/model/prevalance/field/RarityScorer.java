@@ -9,8 +9,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class RarityScorer {
 	private static final double MIN_POSSIBLE_SCORE = 1;
 	private static final int MAX_POSSIBLE_SCORE = 100;
+	private static final double RARITY_SUM_EXPONENT = 1.8;
 	private static final int LOGISTIC_FUNCTION_DOMAIN = 3;
-	// STEEPNESS makes sure that at the end of the domain (LOGISTIC_FUNCTION_DOMAIN) the function gets 0.5 * MIN_POSSIBLE_SCORE - so once we multiply by MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
+	// STEEPNESS makes sure that at the end of the domain (LOGISTIC_FUNCTION_DOMAIN)
+	// the function gets 0.5 * MIN_POSSIBLE_SCORE - so once we multiply by
+	// MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
 	private static final double STEEPNESS = Math.log(1 / (0.5 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
 
 	private double rarityGauge;
@@ -22,7 +25,7 @@ public class RarityScorer {
 		for (double occurrence : featureOccurrences) {
 			raritySum += occurrence * calcCommonnessDiscounting(occurrence);
 		}
-		rarityGauge = calcRaritySumDiscounting(raritySum, maxRaritySum);
+		rarityGauge = Math.min(1, Math.pow(raritySum, RARITY_SUM_EXPONENT) / maxRaritySum);
 	}
 
 	/**
@@ -51,10 +54,6 @@ public class RarityScorer {
 	 */
 	private double applyLogisticFunc(double x, double maxXValue) {
 		return 1 / (1 + Math.pow(x * LOGISTIC_FUNCTION_DOMAIN / maxXValue, STEEPNESS));
-	}
-
-	private double calcRaritySumDiscounting(double raritySum, double maxRaritySum) {
-		return 1 - applyLogisticFunc(raritySum, maxRaritySum);
 	}
 
 	private double calcCommonnessDiscounting(double occurrence) {
