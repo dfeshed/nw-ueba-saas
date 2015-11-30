@@ -59,7 +59,7 @@ There are currently two backend services:
 Gradle makes starting a service easy: 
 ```
 $ cd server/threats
-$ ../../gradlew run
+$ ../../gradlew bootRun
 ```
 
 That will start the service with all the defaults.  You can pass a `-D` flag to override the default properties. 
@@ -71,7 +71,7 @@ You can override the default host and port of the Incident Management service, b
 following system properties:
 ```
 $ cd server/threats
-$ ../../gradlew run -D'appliances[0].host=111.222.333.444' -D'endpoints[0].port=50040'
+$ ../../gradlew bootRun -D'appliances[0].host=111.222.333.444' -D'endpoints[0].port=50040'
 ```
 
 The host will most likely be your Docker host that's running the IM service.  More information on Docker can 

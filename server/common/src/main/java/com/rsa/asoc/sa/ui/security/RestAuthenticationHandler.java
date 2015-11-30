@@ -61,6 +61,7 @@ public class RestAuthenticationHandler implements
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                         AuthenticationException exception) throws IOException, ServletException {
+        httpServletResponse.addHeader("X-Authentication-Exception", exception.getClass().getName());
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
     }
 

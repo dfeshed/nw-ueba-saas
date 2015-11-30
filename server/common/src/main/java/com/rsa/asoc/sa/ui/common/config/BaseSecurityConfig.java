@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.asoc.sa.ui.security.RestAuthenticationHandler;
 import com.rsa.asoc.sa.ui.security.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,9 +15,7 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
  *
  * @author athielke
  */
-@Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public abstract class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_PATH = "/api/user/login";
     private static final String LOGOUT_PATH = "/api/user/logout";
@@ -54,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                     .logoutUrl(LOGOUT_PATH)
                     .logoutSuccessHandler(restAuthenticationHandler())
-                    .deleteCookies("JSESSIONID")
+                    .deleteCookies(WebConfig.SESSION_COOKIE_NAME)
                     .and()
                 .httpBasic()
                     .and()
@@ -67,12 +61,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers(LOGIN_PATH).permitAll()
                     .anyRequest().authenticated();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin").password("netwitness").roles("ADMIN", "USER").and()
-                .withUser("user").password("netwitness").roles("USER");
     }
 }

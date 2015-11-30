@@ -33,6 +33,11 @@ subprojects {
     bootRun {
         systemProperties = System.properties
 
+        // When running locally, activate the 'development' Spring profile if one is not provided
+        if (!systemProperties.containsKey("spring.profiles.active")) {
+            systemProperties.put("spring.profiles.active", "development");
+        }
+
         // When running locally, skip all findbugs and checkstyle tasks for improved startup time
         gradle.taskGraph.whenReady { graph ->
             graph.getAllTasks().each { task ->

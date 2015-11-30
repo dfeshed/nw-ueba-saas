@@ -32,3 +32,11 @@ These are the system properties that can be overridden to configure the various 
 |Property|Default Value|Description|
 |--------|-------------|-----------|
 |threats.incident.controller.batchSize|300|The number of incidents to send, per message, when streaming the incident to a client.|
+
+## Security
+
+### Authentication
+|Property|Default Value|Description|
+|--------|-------------|-----------|
+|security.auth.server.url|https://localhost/api/auth/login|The URL to the authentication service|
+|security.auth.server.allowInsecureSsl|false|If false, the SSL certificate from the authentication service will be rejected if is not trusted and/or the host name do not match.  Otherwise, an "insecure" SSL connection is allowed.|

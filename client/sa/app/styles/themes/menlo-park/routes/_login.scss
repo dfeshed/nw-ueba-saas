@@ -13,4 +13,13 @@
         @include menlo-park-light-on-dark-btn(false, false);
         margin: $base-padding-y * 2 0;
     }
+    .#{$ns}login-error {
+        padding: $base-padding-y 3px;
+    }
+    .#{$ns}login-error-message {
+        padding: $base-padding-y $base-padding-x;
+        background-color: $menlo-park-error-bg;
+        color: $menlo-park-error-fg;
+        font-weight: bold;
+    }
 }

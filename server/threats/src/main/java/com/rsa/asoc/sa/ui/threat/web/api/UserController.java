@@ -13,8 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
+
     @RequestMapping("/api/user")
     public Object user(Authentication authentication) {
         return authentication.getPrincipal();
+    }
+
+    @RequestMapping("/api/user/details")
+    public Authentication userDetails(Authentication authentication) {
+        return authentication;
     }
 }

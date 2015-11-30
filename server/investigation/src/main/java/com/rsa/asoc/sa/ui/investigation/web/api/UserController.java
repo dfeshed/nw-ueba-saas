@@ -17,4 +17,9 @@ public class UserController {
     public Object user(Authentication authentication) {
         return authentication.getPrincipal();
     }
+
+    @RequestMapping("/api/user/details")
+    public Authentication userDetails(Authentication authentication) {
+        return authentication;
+    }
 }

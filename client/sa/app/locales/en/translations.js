@@ -56,7 +56,11 @@ export default {
         errorPrompt: "Login failed",
         unAuthorized: "Bad credentials",
         genericError: "There was an error processing your request. Please try again",
-        logoutTitle: "Logout"
+        logoutTitle: "Logout",
+        userLocked: "User account is locked",
+        userDisabled: "User account is disabled",
+        badCredentials: "Invalid username and/or password",
+        authServerNotFound: "There was an error while authenticating your credentials."
     },
     about: {
         title: "About",

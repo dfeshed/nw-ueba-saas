@@ -74,8 +74,7 @@ export default Ember.Controller.extend({
 
             var me = this,
                 credentials = this.getProperties("username", "password"),
-                session = this.get("session"),
-                i18nHelper = this.get("i18n");
+                session = this.get("session");
             if (session) {
 
                 // Calls the authenticate function specified in ENV['simple-auth']
@@ -89,11 +88,22 @@ export default Ember.Controller.extend({
 
                     // Auth failed
                     function(message) {
-                        me.set("errorMessage",
-                            i18nHelper.t(
-                                (message && message.status === 401) ?
-                                    "login.unAuthorized" : "login.genericError"
-                            ));
+                        var errorMessage = "login.genericError";
+
+                        var exception = message.jqXHR.getResponseHeader("x-authentication-exception");
+                        if ( exception ) {
+                            if ( exception.indexOf("BadCredentials") !== -1) {
+                                errorMessage = "login.badCredentials";
+                            } else if (exception.indexOf("Locked") !== -1) {
+                                errorMessage = "login.userLocked";
+                            } else if (exception.indexOf("Disabled") !== -1) {
+                                errorMessage = "login.userDisabled";
+                            } else if (exception.indexOf("AuthenticationService") !== -1) {
+                                errorMessage = "login.authServerNotFound";
+                            }
+                        }
+
+                        me.set("errorMessage", errorMessage);
                         me.set("status", _STATUS.ERROR);
                         Ember.Logger.log("Authentication error:", message);
                     });

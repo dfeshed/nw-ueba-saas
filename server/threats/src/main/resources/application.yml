@@ -24,3 +24,6 @@ endpoints:
     applianceId: 555d9a6ce4b0d37c827d4029
     version: 10.6.0.0.867
 
+security:
+  auth:
+    server.url: https://localhost/api/auth/login
