@@ -32,7 +32,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	public static final String START_TIME = "start_time";
 	public static final String END_TIME = "end_time";
 
-	private static final String NOTIFICATION_ENTITY = "vpn";
+	private static final String DATA_SOURCE_NAME = "vpn";
 
 	@Value("${collection.evidence.notification.score.field}")
 	private String notificationScoreField;
@@ -40,8 +40,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String notificationValueField;
 	@Value("${collection.evidence.notification.normalizedusername.field}")
 	private String normalizedUsernameField;
-	@Value("${collection.evidence.notification.entity.field}")
-	private String notificationEntityField;
+	@Value("${collection.evidence.notification.data.source.field}")
+	private String notificationDataSourceField;
 	@Value("${collection.evidence.notification.starttimestamp.field}")
 	private String notificationStartTimestampField;
 	@Value("${collection.evidence.notification.endtimestamp.field}")
@@ -177,8 +177,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationNumOfEventsField, vpnSessions.size());
 		evidence.put(notificationSupportingInformationField, vpnSessions);
 		List<String> entities = new ArrayList();
-		entities.add(NOTIFICATION_ENTITY);
-		evidence.put(notificationEntityField, entities);
+		entities.add(DATA_SOURCE_NAME);
+		evidence.put(notificationDataSourceField, entities);
 		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
 		evidence.put("index", index);
 		evidence.put(dataSourceField,NOTIFICATION_ENTITY);

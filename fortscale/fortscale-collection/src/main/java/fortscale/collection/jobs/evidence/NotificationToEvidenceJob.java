@@ -45,11 +45,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private final String AMT_RESET_PASSWORD = "amt_reset_pwd";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
-	private static final String DATA_SOURCE_PARAMETER = "dataSource";
-	private static final String LAST_STATE_PARAMETER = "lastState";
 	private final String MIN_DATE = "minwhen";
 	private final String MAX_DATE = "maxwhen";
 	private final String DATE_TIME_UNIX = "date_time_unix";
+
+	private final static String LAST_STATE_FIELD = "last_state";
 
 	// job parameters:
 	private String notificationsToIgnore;
@@ -58,15 +58,13 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private String notificationScoreField;
 	private String notificationValueField;
 	private String normalizedUsernameField;
-	private String notificationEntityField;
+	private String notificationDataSourceField;
 	private String notificationStartTimestampField;
 	private String notificationEndTimestampField;
 	private String notificationTypeField;
 	private String notificationSupportingInformationField;
 	private String score;
 	private Map<String, List<String>> notificationAnomalyMap;
-	private String dataSource;
-	private String lastState;
 
 	private Long startTime;
 	private Long endTime;
@@ -96,7 +94,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-		notificationEntityField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationEntityField");
+		notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationDataSourceField");
 		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationStartTimestampField");
 		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
@@ -107,8 +105,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
 		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationAnomalyMap"));
-		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
-		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
@@ -173,13 +169,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 				evidence.put(notificationEndTimestampField, getEndTimeStamp(notification));
 				evidence.put(notificationTypeField, notification.getCause());
 				evidence.put(notificationValueField, getAnomalyField(notification));
-				evidence.put(notificationEntityField, getEntity(notification.getCause().toLowerCase()));
+				evidence.put(notificationDataSourceField, Collections.singletonList(notification.getDataSource()));
 				evidence.put(normalizedUsernameField, getNormalizedUsername(notification));
 				evidence.put(notificationSupportingInformationField, getSupportingInformation(notification));
 
-				//Add the last state and data source fields to the message
-				evidence.put("data_source", dataSource);
-				evidence.put("last_state", lastState);
+				evidence.put(LAST_STATE_FIELD, this.getClass().getSimpleName());
 
 				String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
 				logger.info("Writing to topic evidence - {}", messageToWrite);
@@ -242,15 +236,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private String getSupportingInformation(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
-		//TODO - get attributes as a whole and not just raw_events object
-		if (attributes != null && attributes.containsKey("raw_events")) {
-			switch (notification.getCause()){
-			case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: 	return  attributes.get("raw_events");
-			case VPN_OVERLAPPING: return "[" + attributes.get("raw_events") + "]";
-			default: return "";
-			}
-		}
 
+		if (attributes != null && attributes.containsKey("raw_events")) {
+			return  attributes.get("raw_events");
+
+		}
+		logger.warn("no raw events - and therefore no supporting information for notification: ", notification.toString());
 		return "";
 	}
 
@@ -263,23 +254,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		}
 		//default value
 		return notification.getCause();
-	}
-
-	private List<String> getEntity(String cause) {
-		List<String> result = new ArrayList();
-		if (cause.equalsIgnoreCase(VPN_OVERLAPPING)) {
-			result.add("vpn_session");
-			return result;
-		}
-		//TODO - add map from notification cause to entityId once we have more types of notification based evidence
-		if (cause.contains("amt") || cause.equalsIgnoreCase(AMT_CHECKING_ON_YID)) {
-			result.add("amt");
-		} else if (cause.contains("vpn")) {
-			result.add("vpn");
-		} else {
-			result.add("active_directory");
-		}
-		return result;
 	}
 
 	private String getNormalizedUsername(Notification notification) {
