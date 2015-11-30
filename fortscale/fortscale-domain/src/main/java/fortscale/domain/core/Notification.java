@@ -109,6 +109,10 @@ public class Notification extends AbstractDocument implements Serializable {
 		return dataSource;
 	}
 
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	public String getFsId() {
 		return fsId;
 	}
