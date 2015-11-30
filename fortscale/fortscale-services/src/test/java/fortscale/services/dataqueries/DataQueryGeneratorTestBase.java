@@ -3,6 +3,7 @@ package fortscale.services.dataqueries;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlFieldGenerator;
@@ -41,15 +42,15 @@ public class DataQueryGeneratorTestBase<T> {
 
     public void setUp()
             throws Exception {
-        dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
-        complexWhereDTO = mapper.readValue(complexWhereDTOJson, DataQueryDTO.class);
-        bug_FV_5557DTO = mapper.readValue(bug_FV_5557DTO_Json, DataQueryDTO.class);
-        bug_FV_5557_top_DTO = mapper.readValue(bug_FV_5557_top_DTO_Json, DataQueryDTO.class);
-        betweenPartitionDTO = mapper.readValue(betweenPartitionDTOJson, DataQueryDTO.class);
-        joinDTO = mapper.readValue(joinDTOJson, DataQueryDTO.class);
-        noJoinDTO = mapper.readValue(noJoinDTOJson, DataQueryDTO.class);
-        dataQueryDto_UnionDistinct = mapper.readValue(subQueryUnionDistinctDtoJson, DataQueryDTO.class);
-        tokenizedExpression = mapper.readValue(tokenizedExpressionJson, DataQueryDTO.class);
+        dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTOImpl.class);
+        complexWhereDTO = mapper.readValue(complexWhereDTOJson, DataQueryDTOImpl.class);
+        bug_FV_5557DTO = mapper.readValue(bug_FV_5557DTO_Json, DataQueryDTOImpl.class);
+        bug_FV_5557_top_DTO = mapper.readValue(bug_FV_5557_top_DTO_Json, DataQueryDTOImpl.class);
+        betweenPartitionDTO = mapper.readValue(betweenPartitionDTOJson, DataQueryDTOImpl.class);
+        joinDTO = mapper.readValue(joinDTOJson, DataQueryDTOImpl.class);
+        noJoinDTO = mapper.readValue(noJoinDTOJson, DataQueryDTOImpl.class);
+        dataQueryDto_UnionDistinct = mapper.readValue(subQueryUnionDistinctDtoJson, DataQueryDTOImpl.class);
+        tokenizedExpression = mapper.readValue(tokenizedExpressionJson, DataQueryDTOImpl.class);
 
         dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
         mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
@@ -58,7 +59,7 @@ public class DataQueryGeneratorTestBase<T> {
         mySqlFieldGenerator.setDataEntitiesConfig(dataEntitiesConfig);
         mySqlFieldGenerator.setDataQueryDtoHelper(dataQueryDtoHelper);
 
-        Mockito.when(dataQueryDtoHelper.getEntityId(Mockito.any(DataQueryDTO.class))).thenReturn("kerberos_logins");
+        Mockito.when(dataQueryDtoHelper.getEntityId(Mockito.any(DataQueryDTOImpl.class))).thenReturn("kerberos_logins");
 
         if (generator != null) {
             generator.setDataEntitiesConfig(dataEntitiesConfig);

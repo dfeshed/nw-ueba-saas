@@ -1,134 +1,46 @@
 package fortscale.services.dataqueries.querydto;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DTO for data query representation
+ * Created by rans on 26/11/15.
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-public class DataQueryDTO {
+public interface DataQueryDTO {
 
-    public DataQueryDTO(){}
+    public List<DataQueryField> getFields();
 
-    /**
-     * Constructor for shallow copying another DataQueryDTO
-     * @param anotherDataQueryDTO
-     */
-    public DataQueryDTO(DataQueryDTO anotherDataQueryDTO){
+    public void setFields(List<DataQueryField> fields);
 
-		if (anotherDataQueryDTO.getFields() != null) {
-			this.fields = new ArrayList<>(anotherDataQueryDTO.getFields());
-		}
-		if (anotherDataQueryDTO.getConditions() != null) {
-			this.conditions = new ConditionTerm(anotherDataQueryDTO.getConditions());
-		}
-        this.entities = anotherDataQueryDTO.getEntities();
-		if (anotherDataQueryDTO.getSubQuery() != null) {
-			this.subQuery = new MultipleDataQueryDTO(anotherDataQueryDTO.getSubQuery());
-		}
-		if (anotherDataQueryDTO.getJoin() != null) {
-			this.join = new ArrayList<>();
-			for (DataQueryJoin dataQueryJoin : anotherDataQueryDTO.getJoin())
-			{
-				this.join.add(new DataQueryJoin(dataQueryJoin));
-			}
+    public ConditionTerm getConditions();
 
+    public void setConditions(ConditionTerm conditions);
 
-		}
-		if(anotherDataQueryDTO.getGroupBy() != null) {
-			this.groupBy = new ArrayList<>(anotherDataQueryDTO.getGroupBy());
-		}
-		if (anotherDataQueryDTO.getSort() != null) {
-			this.sort = new ArrayList<>(anotherDataQueryDTO.getSort());
-		}
-        this.limit = anotherDataQueryDTO.getLimit();
-        this.offset = anotherDataQueryDTO.getOffset();
-    }
+    public String[] getEntities();
 
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-    private List<DataQueryField> fields;
-    private ConditionTerm conditions;
-    private String[] entities;
-    private MultipleDataQueryDTO subQuery;
-    private List<DataQueryJoin> join;
-    private List<DataQueryField> groupBy;
-    private List<QuerySort> sort;
-    private int limit = 10;
-    private int offset = 0;
+    public void setEntities(String[] entities);
 
+    public List<DataQueryField> getGroupBy();
 
-    public List<DataQueryField> getFields() {
-        return fields;
-    }
+    public void setGroupBy(List<DataQueryField> groupBy);
 
-    public void setFields(List<DataQueryField> fields) {
-        this.fields = fields;
-    }
+    public List<QuerySort> getSort();
 
-    public ConditionTerm getConditions() {
-        return conditions;
-    }
+    public void setSort(List<QuerySort> sort);
 
-    public void setConditions(ConditionTerm conditions) {
-        this.conditions = conditions;
-    }
+    public int getLimit();
 
-    public String[] getEntities() {
-        return entities;
-    }
+    public void setLimit(int limit);
 
-    public void setEntities(String[] entities) {
-        this.entities = entities;
-    }
+    public int getOffset();
 
-    public List<DataQueryField> getGroupBy() {
-        return groupBy;
-    }
+    public void setOffset(int offset);
 
-    public void setGroupBy(List<DataQueryField> groupBy) {
-        this.groupBy = groupBy;
-    }
+    public List<DataQueryJoin> getJoin();
 
-    public List<QuerySort> getSort() {
-        return sort;
-    }
+    public void setJoin(List<DataQueryJoin> join);
 
-    public void setSort(List<QuerySort> sort) {
-        this.sort = sort;
-    }
+    public MultipleDataQueryDTO getSubQuery();
 
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public List<DataQueryJoin> getJoin() {
-        return join;
-    }
-
-    public void setJoin(List<DataQueryJoin> join) {
-        this.join = join;
-    }
-
-    public MultipleDataQueryDTO getSubQuery() {
-        return subQuery;
-    }
-
-    public void setSubQuery(MultipleDataQueryDTO subQuery) {
-        this.subQuery = subQuery;
-    }
+    public void setSubQuery(MultipleDataQueryDTO subQuery);
 }
+
