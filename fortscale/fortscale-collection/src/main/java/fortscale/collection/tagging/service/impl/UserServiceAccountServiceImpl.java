@@ -46,6 +46,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	private UserTagEnum tag = UserTagEnum.service;
 
+
 	@Override
 	public boolean isUserTagged(String username) {
 

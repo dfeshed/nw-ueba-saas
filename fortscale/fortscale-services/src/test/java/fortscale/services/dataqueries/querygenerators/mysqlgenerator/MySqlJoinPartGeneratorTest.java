@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -24,7 +25,7 @@ public class MySqlJoinPartGeneratorTest extends DataQueryGeneratorTest {
 
         super.setUp();
 
-        doubleJoinDTO = mapper.readValue(doubleJoinDTOJson, DataQueryDTO.class);
+        doubleJoinDTO = mapper.readValue(doubleJoinDTOJson, DataQueryDTOImpl.class);
 
         entityId = "kerberos_logins";
         entityTable = "authentication_scores";
