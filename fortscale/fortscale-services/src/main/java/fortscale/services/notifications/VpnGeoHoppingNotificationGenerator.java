@@ -70,7 +70,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	 * this, in order to separate execution levels in bdp - instead of sending them directly to the next topic.
 	 * @param vpnSessions
 	 */
-	public void createNotifications(List<VpnSession> vpnSessions){
+	public void createNotification(List<VpnSession> vpnSessions){
 		if (vpnSessions.size() < 2) {
 			return;
 		}
@@ -95,6 +95,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 		notification.setName(vpnSessions.get(0).getNormalizedUserName());
 		notification.setCause(VPN_GEO_HOPPING_CAUSE);
+		notification.setDataSource(DATA_SOURCE_NAME);
 		notification.setUuid(UUID.randomUUID().toString());
 		if(user != null){
 			notification.setDisplayName(user.getDisplayName());
@@ -181,7 +182,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationDataSourceField, entities);
 		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
 		evidence.put("index", index);
-		evidence.put(dataSourceField,NOTIFICATION_ENTITY);
+		evidence.put(dataSourceField,DATA_SOURCE_NAME);
 		logger.info("adding geo hopping notification with the index {}", index);
 
 		return evidence;
