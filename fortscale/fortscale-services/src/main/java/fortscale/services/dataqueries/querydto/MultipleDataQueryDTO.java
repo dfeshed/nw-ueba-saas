@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Yossi on 22/12/2014.
  */
 public class MultipleDataQueryDTO {
-    private List<DataQueryDTO> dataQueries;
+    private List<DataQueryDTOImpl> dataQueries;
     private DataQueryCombineMethod combineMethod;
 
 	public MultipleDataQueryDTO (){}
@@ -17,11 +17,11 @@ public class MultipleDataQueryDTO {
 		this. combineMethod = other.combineMethod;
 	}
 
-    public List<DataQueryDTO> getDataQueries() {
+    public List<DataQueryDTOImpl> getDataQueries() {
         return dataQueries;
     }
 
-    public void setDataQueries(List<DataQueryDTO> dataQueries) {
+    public void setDataQueries(List<DataQueryDTOImpl> dataQueries) {
         this.dataQueries = dataQueries;
     }
 

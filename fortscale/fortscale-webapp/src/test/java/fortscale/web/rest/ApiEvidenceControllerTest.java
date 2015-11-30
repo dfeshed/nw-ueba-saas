@@ -8,6 +8,7 @@ import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.DataQueryHelper;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -119,8 +120,8 @@ public class ApiEvidenceControllerTest {
 		evidence.setStartDate(System.currentTimeMillis());
 		evidence.setEndDate(System.currentTimeMillis());
 		when(repository.findById(EVIDENCE_ID)).thenReturn(evidence);
-		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt())).
-				thenReturn(new DataQueryDTO());
+		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt(), any(Class.class))).
+				thenReturn(new DataQueryDTOImpl());
 		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

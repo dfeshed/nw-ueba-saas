@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -26,7 +27,7 @@ public abstract class MySqlFunctionTest {
         if (dtoJson == null)
             throw new NullPointerException("Missing DTO JSON for function text.");
 
-        dataQueryDTO = mapper.readValue(dtoJson, DataQueryDTO.class);
+        dataQueryDTO = mapper.readValue(dtoJson, DataQueryDTOImpl.class);
         dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
         dataQueryDtoHelper = Mockito.mock(DataQueryDtoHelper.class);
         Mockito.when(dataQueryDtoHelper.getEntityId(dataQueryDTO)).thenReturn(dataQueryDTO.getEntities()[0]);

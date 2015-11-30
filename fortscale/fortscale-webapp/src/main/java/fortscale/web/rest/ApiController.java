@@ -6,6 +6,7 @@ import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.utils.logging.Logger;
@@ -425,7 +426,7 @@ public class ApiController extends DataQueryController {
                                                          @RequestParam(defaultValue="20") Integer pageSize){
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			DataQueryDTO dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			DataQueryDTO dataQueryObject = mapper.readValue(dataQuery, DataQueryDTOImpl.class);
 		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, pageSize);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);

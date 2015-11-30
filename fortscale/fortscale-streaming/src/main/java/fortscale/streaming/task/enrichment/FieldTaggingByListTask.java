@@ -94,17 +94,15 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 		// get message
 		String messageText = (String) envelope.getMessage();
 
-		// Get the input topic
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
-		if (topicToServiceMap.containsKey(inputTopic)) {
-			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+		// parse the message into json
+		JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
 
 
-			StreamingTaskDataSourceConfigKey key = this.extractDataSourceConfigKey(event);
+		StreamingTaskDataSourceConfigKey key = this.extractDataSourceConfigKeySafe(event);
+
+		if (key != null && topicToServiceMap.containsKey(key)) {
+
 			FieldTaggingService fieldTaggingService = topicToServiceMap.get(key);
-
 			event = fieldTaggingService.enrichEvent(event);
 
 			// construct outgoing message
@@ -112,7 +110,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", fieldTaggingService.getOutPutTopic()), fieldTaggingService.getPartitionKey(event), event.toJSONString());
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after field tagging by list", inputTopic, fieldTaggingService.getOutPutTopic()), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from State %s to output topic %s after field tagging by list", key, fieldTaggingService.getOutPutTopic()), exception);
 			}
 		}
 
