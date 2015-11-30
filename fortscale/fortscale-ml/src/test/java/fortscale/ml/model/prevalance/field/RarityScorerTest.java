@@ -11,8 +11,12 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
 	private double calcScore(int maxPossibleRarity, double maxRaritySum, Map<String, Double> featureValueToCountMap, String feature) {
+		return calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureValueToCountMap.get(feature));
+	}
+
+	private double calcScore(int maxPossibleRarity, double maxRaritySum, Map<String, Double> featureValueToCountMap, double featureCount) {
 		RarityScorer hist = new RarityScorer(featureValueToCountMap.values(), maxPossibleRarity, maxRaritySum);
-		return hist.score(featureValueToCountMap.get(feature));
+		return hist.score(featureCount);
 	}
 
 	private void assertScore(int maxPossibleRarity, double maxRaritySum, Map<String, Double> featureValueToCountMap, String feature, double expected) {
@@ -52,6 +56,57 @@ public class RarityScorerTest {
 		}
 	}
 
+	@Test
+	public void shouldScoreMonotonicallyDecreasingWhenFeatureCountIncreases() {
+		Map<String, Double> featureValueToCountMap = new HashMap<>();
+		String veryRareFeature = "veryRare";
+		featureValueToCountMap.put(veryRareFeature, 1D);
+		for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
+			for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
+				double lastScore = 100;
+				for (double featureCount = 1; featureCount < 10; featureCount++) {
+					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
+					Assert.assertTrue(currScore <= lastScore);
+					lastScore = currScore;
+				}
+			}
+		}
+	}
+
+	@Test
+	public void shouldScoreMonotonicallyIncreasingWhenMaxRaritySumIncreases() {
+		Map<String, Double> featureValueToCountMap = new HashMap<>();
+		String veryRareFeature = "veryRare";
+		featureValueToCountMap.put(veryRareFeature, 1D);
+		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
+			for (double featureCount = 1; featureCount < 10; featureCount++) {
+				double lastScore = 0;
+				for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
+					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
+					Assert.assertTrue(currScore >= lastScore);
+					lastScore = currScore;
+				}
+			}
+		}
+	}
+
+	@Test
+	public void shouldScoreMonotonicallyIncreasingWhenMaxPossibleRarityIncreases() {
+		Map<String, Double> featureValueToCountMap = new HashMap<>();
+		String veryRareFeature = "veryRare";
+		featureValueToCountMap.put(veryRareFeature, 1D);
+		for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
+			for (double featureCount = 1; featureCount < 10; featureCount++) {
+				double lastScore = 0;
+				for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
+					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
+					Assert.assertTrue(currScore >= lastScore);
+					lastScore = currScore;
+				}
+			}
+		}
+	}
+
 	private void printMaxRaritySumEffect() throws Exception {
 		int maxPossibleRarity = 30;
 		int maxRaritySums[] = new int[]{5, 10, 15, 20, 30, 40, 50};
@@ -73,8 +128,8 @@ public class RarityScorerTest {
 
 		System.out.println("count -> maxRaritySum (each column has numOfFeatures from 1 to " + maxNumOfFeatures + ")");
 		for (int count = 1; count < maxCount; count++) {
-			for (int maxRaritySumInd = 0; maxRaritySumInd < maxRaritySums.length; maxRaritySumInd++) {
-				System.out.print(count + "->" + maxRaritySums[maxRaritySumInd] + "\t");
+			for (int maxRaritySum : maxRaritySums) {
+				System.out.print(count + "->" + maxRaritySum + "\t");
 			}
 		}
 		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
