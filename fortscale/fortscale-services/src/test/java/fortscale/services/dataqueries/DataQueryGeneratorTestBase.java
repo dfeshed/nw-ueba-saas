@@ -24,15 +24,15 @@ public class DataQueryGeneratorTestBase<T> {
     protected static String noJoinDTOJson = "{\"fields\":[{\"entity\":\"kerberos_logins\",\"allFields\":true},{\"entity\":\"users\",\"id\":\"displayName\"},{\"entity\":\"users\",\"id\":\"id\"},{\"entity\":\"users\",\"id\":\"is_user_administrator\"},{\"entity\":\"users\",\"id\":\"is_user_executive\"},{\"entity\":\"users\",\"id\":\"accountIsDisabled\"},{\"entity\":\"users\",\"id\":\"is_user_service\"},{\"entity\":\"users\",\"id\":\"followed\"}],\"conditions\":{\"type\":\"term\",\"logicalOperator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":1418209915,\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":1418296315,\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"sort\":[],\"limit\":50,\"offset\":0}";
     protected static String tokenizedExpressionJson = "{\"fields\":[{\"entity\":\"vpn_session\",\"allFields\":true},{\"entity\":\"users\",\"allFields\":true}],\"entities\":[\"vpn_session\"],\"sort\":[{\"field\":{\"id\":\"start_time\"},\"direction\":\"DESC\"}],\"conditions\":{\"type\":\"term\",\"logicalOperator\":\"AND\",\"terms\":[{\"field\":{\"entity\":\"vpn_session\",\"id\":\"session_time_utc\"},\"queryOperator\":\"between\",\"type\":\"field\",\"value\":\"1427407200,1430168399\"},{\"field\":{\"entity\":\"vpn_session\",\"id\":\"session_score\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50}]},\"limit\":20,\"offset\":0,\"join\":[{\"type\":\"LEFT\",\"entity\":\"users\",\"left\":{\"entity\":\"vpn_session\",\"field\":\"normalized_username\"},\"right\":{\"entity\":\"users\",\"field\":\"normalized_username\"}}]}";
 
-    protected DataQueryDTO dataQueryDTO1;
-    protected DataQueryDTO complexWhereDTO;
-    protected DataQueryDTO bug_FV_5557DTO;
-    protected DataQueryDTO bug_FV_5557_top_DTO;
-    protected DataQueryDTO betweenPartitionDTO;
-    protected DataQueryDTO joinDTO;
-    protected DataQueryDTO noJoinDTO;
-    protected DataQueryDTO dataQueryDto_UnionDistinct;
-    protected DataQueryDTO tokenizedExpression;
+    protected DataQueryDTOImpl dataQueryDTO1;
+    protected DataQueryDTOImpl complexWhereDTO;
+    protected DataQueryDTOImpl bug_FV_5557DTO;
+    protected DataQueryDTOImpl bug_FV_5557_top_DTO;
+    protected DataQueryDTOImpl betweenPartitionDTO;
+    protected DataQueryDTOImpl joinDTO;
+    protected DataQueryDTOImpl noJoinDTO;
+    protected DataQueryDTOImpl dataQueryDto_UnionDistinct;
+    protected DataQueryDTOImpl tokenizedExpression;
 
     protected QueryPartGenerator generator;
     protected ObjectMapper mapper = new ObjectMapper();

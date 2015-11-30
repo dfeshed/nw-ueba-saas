@@ -18,7 +18,7 @@ public abstract class MySqlFunctionTest {
     protected DataEntitiesConfig dataEntitiesConfig;
     protected DataQueryDtoHelper dataQueryDtoHelper;
     protected MySqlFieldFunction function;
-    protected DataQueryDTO dataQueryDTO;
+    protected DataQueryDTOImpl dataQueryDTO;
 
     @Before
     public void setUp()
