@@ -46,7 +46,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
+	public void shouldScore99ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		String veryRareFeature = "veryRare";
 		featureValueToCountMap.put(veryRareFeature, 1D);
@@ -56,55 +56,69 @@ public class RarityScorerTest {
 		}
 	}
 
-	@Test
-	public void shouldScoreMonotonicallyDecreasingWhenFeatureCountIncreases() {
+	private double[][][] calcScoresOverConfigurationMatrix(int maxMaxRaritySum, int maxMaxPossibleRarity, int maxFeatureCount) {
 		Map<String, Double> featureValueToCountMap = new HashMap<>();
 		String veryRareFeature = "veryRare";
 		featureValueToCountMap.put(veryRareFeature, 1D);
-		for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
-			for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
-				double lastScore = 100;
-				for (double featureCount = 1; featureCount < 10; featureCount++) {
-					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
-					Assert.assertTrue(currScore <= lastScore);
-					lastScore = currScore;
+		double[][][] scores = new double[maxMaxPossibleRarity][][];
+		for (int maxPossibleRarity = 1; maxPossibleRarity <= maxMaxPossibleRarity; maxPossibleRarity++) {
+			scores[maxPossibleRarity - 1] = new double[maxMaxRaritySum][];
+			for (int maxRaritySum = 1; maxRaritySum <= maxMaxRaritySum; maxRaritySum++) {
+				scores[maxPossibleRarity - 1][maxRaritySum - 1] = new double[maxFeatureCount];
+				for (int featureCount = 1; featureCount <= maxFeatureCount; featureCount++) {
+					scores[maxPossibleRarity - 1][maxRaritySum - 1][featureCount - 1] = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
 				}
 			}
 		}
+		return scores;
+	}
+
+	private void assertMonotonicity(double[][][] scores, int overIndex, boolean shouldIncrease) {
+		boolean hasStrongMonotonicity = false;
+		for (int i = 0; i < scores.length; i++) {
+			for (int j = 0; j < scores[0].length; j++) {
+				for (int k = 0; k < scores[0][0].length; k++) {
+					double scoresDelta;
+					if (overIndex == 0 && i == 0 || overIndex == 1 && j == 0 || overIndex == 2 && k == 0) {
+						scoresDelta = 0;
+					} else if (overIndex == 0) {
+						scoresDelta = scores[i][j][k] - scores[i - 1][j][k];
+					} else if (overIndex == 1) {
+						scoresDelta = scores[i][j][k] - scores[i][j - 1][k];
+					} else {
+						scoresDelta = scores[i][j][k] - scores[i][j][k - 1];
+					}
+					Assert.assertTrue(shouldIncrease && scoresDelta >= 0 || !shouldIncrease && scoresDelta <= 0);
+
+					double firstValueInMonotonicSeries = scores
+							[overIndex == 0 ? 0 : i]
+							[overIndex == 1 ? 0 : j]
+							[overIndex == 2 ? 0 : k];
+					double lastValueInMonotonicSeries = scores
+							[overIndex == 0 ? scores.length - 1 : i]
+							[overIndex == 1 ? scores[0].length - 1 : j]
+							[overIndex == 2 ? scores[0][0].length - 1 : k];
+					hasStrongMonotonicity = hasStrongMonotonicity || lastValueInMonotonicSeries - firstValueInMonotonicSeries != 0;
+				}
+			}
+		}
+		// it's ok that some series are constant, but if all of them are - the model probably has a bug
+		Assert.assertTrue(hasStrongMonotonicity);
 	}
 
 	@Test
-	public void shouldScoreMonotonicallyIncreasingWhenMaxRaritySumIncreases() {
-		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		String veryRareFeature = "veryRare";
-		featureValueToCountMap.put(veryRareFeature, 1D);
-		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
-			for (double featureCount = 1; featureCount < 10; featureCount++) {
-				double lastScore = 0;
-				for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
-					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
-					Assert.assertTrue(currScore >= lastScore);
-					lastScore = currScore;
-				}
-			}
-		}
+	public void shouldScoreDecreasinglyWhenFeatureCountIncreases() {
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 2, false);
 	}
 
 	@Test
-	public void shouldScoreMonotonicallyIncreasingWhenMaxPossibleRarityIncreases() {
-		Map<String, Double> featureValueToCountMap = new HashMap<>();
-		String veryRareFeature = "veryRare";
-		featureValueToCountMap.put(veryRareFeature, 1D);
-		for (double maxRaritySum = 1; maxRaritySum < 100; maxRaritySum++) {
-			for (double featureCount = 1; featureCount < 10; featureCount++) {
-				double lastScore = 0;
-				for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
-					double currScore = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
-					Assert.assertTrue(currScore >= lastScore);
-					lastScore = currScore;
-				}
-			}
-		}
+	public void shouldScoreIncreasinglyWhenMaxRaritySumIncreases() {
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 1, true);
+	}
+
+	@Test
+	public void shouldScoreIncreasinglyWhenMaxPossibleRarityIncreases() {
+		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), 0, true);
 	}
 
 	private void printMaxRaritySumEffect() throws Exception {
