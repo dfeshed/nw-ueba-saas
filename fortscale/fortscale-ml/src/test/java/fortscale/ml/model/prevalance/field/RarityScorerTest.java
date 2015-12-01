@@ -132,8 +132,27 @@ public class RarityScorerTest {
 		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_RARITY_SUM, null);
 	}
 
-	@Test
-	public void printMaxRaritySumEffect() throws Exception {
+//	@Test
+	public void printMaxPossibleRarityEffect() {
+		int maxRaritySum = 10;
+		int maxMaxPossibleRarity = 10;
+		int maxFeatureCount = maxMaxPossibleRarity + 1;
+		double[][][] scores = calcScoresOverConfigurationMatrix(maxRaritySum, maxMaxPossibleRarity, maxFeatureCount);
+
+		System.out.println("maxPossibleRarity (each column has constant maxPossibleRarity, and varying featureCount from 1 to " + maxFeatureCount + "). maxRaritySum is always " + maxRaritySum);
+		for (int maxPossibleRarity = 1; maxPossibleRarity <= scores.length; maxPossibleRarity++) {
+			System.out.print(maxPossibleRarity + "\t");
+		}
+		for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
+			System.out.println();
+			for (int maxPossibleRarity = 0; maxPossibleRarity < scores[0].length; maxPossibleRarity++) {
+				System.out.print(scores[maxPossibleRarity][maxRaritySum - 1][featureCount] + "\t");
+			}
+		}
+	}
+
+//	@Test
+	public void printMaxRaritySumEffect() {
 		int maxPossibleRarity = 15;
 		int maxRaritySums[] = new int[]{5, 10, 15, 20, 30, 40, 50};
 		int counts[] = new int[]{1,4};
@@ -152,7 +171,7 @@ public class RarityScorerTest {
 			}
 		}
 
-		System.out.println("count -> maxRaritySum (each column has numOfFeatures from 1 to " + maxNumOfFeatures + ")");
+		System.out.println("count -> maxRaritySum (each column has constant count and maxRaritySum, and varying numOfFeatures from 1 to " + maxNumOfFeatures + ")");
 		for (int countInd = 0; countInd < counts.length; countInd++) {
 			for (int maxRaritySum : maxRaritySums) {
 				System.out.print(counts[countInd] + "->" + maxRaritySum + "\t");
