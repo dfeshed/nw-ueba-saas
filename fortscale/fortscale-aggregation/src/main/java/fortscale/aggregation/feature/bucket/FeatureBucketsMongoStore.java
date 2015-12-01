@@ -122,6 +122,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.DESC).unique(Duplicates.DROP));
+			
+			// Context ID + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
+					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
 			// Strategy ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
@@ -137,9 +142,32 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
+		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+
+		Criteria endTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(endTime));
+
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+		return mongoTemplate.getCollection(getCollectionName(featureBucketConf)).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+	}
 
 	private String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
+	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds, long endTimeInSeconds) {
+		String collectionName = getCollectionName(featureBucketConf);
+
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
+			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
+			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
+			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
+			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		} else {
+			return Collections.emptyList();
+		}
+	}
 }
