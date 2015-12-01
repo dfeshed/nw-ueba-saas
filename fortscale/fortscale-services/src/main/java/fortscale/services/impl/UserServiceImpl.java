@@ -1108,6 +1108,22 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public void updateUserTagList(List<String> tags, String username)
+	{
+		userRepository.syncTags(username, tags);
+		//also update the tags cache with the new updates
+		List<String> currentTags = userTagsCache.get(username);
+		if (currentTags == null) {
+			currentTags = new ArrayList();
+		} else {
+			currentTags.clear();
+		}
+		currentTags.addAll(tags);
+		//Update user tag cache
+		userTagsCache.put(username, tags);
+	}
+
+	@Override
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId)
 	{
 

@@ -57,22 +57,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			//read all users from the file
 			for (String line : FileUtils.readLines(usersFile)) {
 				String regex = line.split(CSV_DELIMITER)[0];
-				String[] tags = line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER);
+				List<String> tags = Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER));
 				List<User> users = userRepository.findByUsernameRegex(regex);
 				for (User user: users) {
-					user.setTags(Arrays.asList(tags));
+					user.setTags(tags);
+					//sync mongo and cache with the user's tags
+					userService.updateUserTagList(tags, user.getUsername());
 				}
-				/*boolean removeFlag = line.startsWith(deletionSymbol);
-				String username = (removeFlag)? line.substring(1).toLowerCase() : line.toLowerCase();
-				List<String> tagsToAdd = new ArrayList<>();
-				List<String> tagsToRemove = new ArrayList<>();
-				if (removeFlag)
-					tagsToRemove.add(getTag().getId());
-				else
-					tagsToAdd.add(getTag().getId());
-
-				//sync mongo and cache with the user's tags
-				userService.updateUserTagList(tagsToAdd, tagsToRemove, username, getTag().getId());*/
 			}
 		} else {
 			logger.error("Custom tag list file not accessible in path {}", filePath);
