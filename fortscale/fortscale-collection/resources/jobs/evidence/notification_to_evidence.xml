@@ -51,10 +51,6 @@
                     <value>${collection.evidence.notification.normalizedusername.field}</value>
                 </entry>
                 <entry>
-                    <key>notificationDataSourceField</key>
-                    <value>${collection.evidence.notification.data.source.field}</value>
-                </entry>
-                <entry>
                     <key>notificationSupportingInformationField</key>
                     <value>${collection.evidence.notification.supportinginformation.field}</value>
                 </entry>

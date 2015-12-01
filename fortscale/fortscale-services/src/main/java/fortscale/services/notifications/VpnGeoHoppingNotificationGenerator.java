@@ -40,8 +40,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private String notificationValueField;
 	@Value("${collection.evidence.notification.normalizedusername.field}")
 	private String normalizedUsernameField;
-	@Value("${collection.evidence.notification.data.source.field}")
-	private String notificationDataSourceField;
 	@Value("${collection.evidence.notification.starttimestamp.field}")
 	private String notificationStartTimestampField;
 	@Value("${collection.evidence.notification.endtimestamp.field}")
@@ -154,6 +152,11 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		return attributes;
 	}
 
+	/**
+	 * create indicator (evidence) that will continue to streaming (as opposed to notification that is saved in mongo)
+	 * @param vpnSessions
+	 * @return
+	 */
 	public JSONObject createIndicator(List<VpnSession> vpnSessions){
 		if (vpnSessions.size() < 2) {
 			return null;
@@ -179,10 +182,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationSupportingInformationField, vpnSessions);
 		List<String> entities = new ArrayList();
 		entities.add(DATA_SOURCE_NAME);
-		evidence.put(notificationDataSourceField, entities);
+		evidence.put(dataSourceField, entities);
 		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
 		evidence.put("index", index);
-		evidence.put(dataSourceField,DATA_SOURCE_NAME);
 		logger.info("adding geo hopping notification with the index {}", index);
 
 		return evidence;
