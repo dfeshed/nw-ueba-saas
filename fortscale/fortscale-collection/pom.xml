@@ -30,10 +30,6 @@
 			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
-			<id>pxGrid</id>
-			<url>${project.basedir}/src/lib</url>
-		</repository>
-		<repository>
             <!--
 				all remote repos are here: cloudera, spring, splunk, etc.
 				adding more:
@@ -370,16 +366,22 @@
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-gcl</artifactId>
 			<version>1.0.2.35</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/lib/pxgrid-gcl-1.0.2.35.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-client</artifactId>
 			<version>1.0.2.35</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/lib/pxgrid-isemetadata-client-stub-1.0.2.35.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-model</artifactId>
 			<version>1.0.2.35</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/lib/pxgrid-isemetadata-model-1.0.2.35.jar</systemPath>
 		</dependency>
 
 	</dependencies>
