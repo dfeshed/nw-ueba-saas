@@ -12,9 +12,9 @@ public class RarityScorer {
 	private static final double RARITY_SUM_EXPONENT = 1.8;
 	private static final int LOGISTIC_FUNCTION_DOMAIN = 3;
 	// STEEPNESS makes sure that at the end of the domain (LOGISTIC_FUNCTION_DOMAIN)
-	// the function gets 0.5 * MIN_POSSIBLE_SCORE - so once we multiply by
+	// the function gets 0.99999 * MIN_POSSIBLE_SCORE - so once we multiply by
 	// MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
-	private static final double STEEPNESS = Math.log(1 / (0.5 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
+	private static final double STEEPNESS = Math.log(1 / (0.99999 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
 
 	private double rarityGauge;
 	private double maxPossibleRarity;
