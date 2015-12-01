@@ -10,6 +10,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -18,16 +19,21 @@ import java.util.Iterator;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingRegistrationService {
-	private static final String SESSION_ID_JSON_FIELD = "sessionId";
-	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
-	private static final String END_TIME_IN_SECONDS_JSON_FIELD = "endTimeInSeconds";
-	private static final String ALL_MODELS_CONSTANT_VALUE = "ALL_MODELS";
 	private static final Logger logger = Logger.getLogger(ModelBuildingRegistrationService.class);
 
 	@Autowired
 	private ModelConfService modelConfService;
 	@Autowired
 	private ModelService modelService;
+
+	@Value("${fortscale.model.session.id.json.field}")
+	private String sessionIdJsonField;
+	@Value("${fortscale.model.model.conf.name.json.field}")
+	private String modelConfNameJsonField;
+	@Value("${fortscale.model.end.time.in.seconds.json.field}")
+	private String endTimeInSecondsJsonField;
+	@Value("${fortscale.model.all.models.constant.value}")
+	private String allModelsConstantValue;
 
 	private IModelBuildingListener modelBuildingListener;
 	private ModelBuildingSamzaStore modelBuildingStore;
@@ -43,14 +49,14 @@ public class ModelBuildingRegistrationService {
 	}
 
 	public void process(JSONObject event) {
-		String sessionId = event.getAsString(SESSION_ID_JSON_FIELD);
-		String modelConfName = event.getAsString(MODEL_CONF_NAME_JSON_FIELD);
-		Long endTimeSec = ConversionUtils.convertToLong(event.get(END_TIME_IN_SECONDS_JSON_FIELD));
+		String sessionId = event.getAsString(sessionIdJsonField);
+		String modelConfName = event.getAsString(modelConfNameJsonField);
+		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			Date endTime = endTimeSec < 0 ? null : new Date(TimestampUtils.convertToMilliSeconds(endTimeSec));
 
-			if (modelConfName.equalsIgnoreCase(ALL_MODELS_CONSTANT_VALUE)) {
+			if (modelConfName.equalsIgnoreCase(allModelsConstantValue)) {
 				for (ModelConf modelConf : modelConfService.getModelConfs()) {
 					process(sessionId, modelConf.getName(), endTime);
 				}

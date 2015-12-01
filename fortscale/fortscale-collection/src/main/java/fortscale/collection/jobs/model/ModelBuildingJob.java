@@ -6,13 +6,12 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ModelBuildingJob extends FortscaleJob {
@@ -23,11 +22,14 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String DELIMITER = ",";
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
 
-	// Kafka topic event constants
-	private static final String SESSION_ID_JSON_FIELD = "sessionId";
-	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
-	private static final String END_TIME_IN_SECONDS_JSON_FIELD = "endTimeInSeconds";
-	private static final String ALL_MODELS_CONSTANT_VALUE = "ALL_MODELS";
+	@Value("${fortscale.model.session.id.json.field}")
+	private String sessionIdJsonField;
+	@Value("${fortscale.model.model.conf.name.json.field}")
+	private String modelConfNameJsonField;
+	@Value("${fortscale.model.end.time.in.seconds.json.field}")
+	private String endTimeInSecondsJsonField;
+	@Value("${fortscale.model.all.models.constant.value}")
+	private String allModelsConstantValue;
 
 	private String sessionId;
 	private boolean buildAllModels;
@@ -47,9 +49,8 @@ public class ModelBuildingJob extends FortscaleJob {
 					BUILD_ALL_MODELS_KEY_NAME, MODELS_TO_BUILD_KEY_NAME);
 			Assert.isTrue(jobDataMapExtension.isJobDataMapContainKey(jobDataMap, MODELS_TO_BUILD_KEY_NAME), errorMsg);
 
-			String joinedModelsToBuild = jobDataMapExtension.getJobDataMapStringValue(
-					jobDataMap, MODELS_TO_BUILD_KEY_NAME, StringUtils.EMPTY);
-			modelsToBuild = Arrays.asList(StringUtils.split(joinedModelsToBuild, DELIMITER));
+			modelsToBuild = jobDataMapExtension.getJobDataMapListOfStringsValue(
+					jobDataMap, MODELS_TO_BUILD_KEY_NAME, DELIMITER);
 
 			for (String modelToBuild : modelsToBuild) {
 				Assert.hasText(modelToBuild, String.format("Invalid model conf name %s.", modelToBuild));
@@ -77,17 +78,17 @@ public class ModelBuildingJob extends FortscaleJob {
 		int counter = 0;
 
 		JSONObject event = new JSONObject();
-		event.put(SESSION_ID_JSON_FIELD, sessionId);
+		event.put(sessionIdJsonField, sessionId);
 		long currTimeSec = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		event.put(END_TIME_IN_SECONDS_JSON_FIELD, currTimeSec);
+		event.put(endTimeInSecondsJsonField, currTimeSec);
 
 		if (buildAllModels) {
-			event.put(MODEL_CONF_NAME_JSON_FIELD, ALL_MODELS_CONSTANT_VALUE);
+			event.put(modelConfNameJsonField, allModelsConstantValue);
 			kafkaEventsWriter.send(sessionId, event.toJSONString(JSONStyle.NO_COMPRESS));
 			counter++;
 		} else {
 			for (String modelToBuild : modelsToBuild) {
-				event.put(MODEL_CONF_NAME_JSON_FIELD, modelToBuild);
+				event.put(modelConfNameJsonField, modelToBuild);
 				kafkaEventsWriter.send(sessionId, event.toJSONString(JSONStyle.NO_COMPRESS));
 				counter++;
 			}
