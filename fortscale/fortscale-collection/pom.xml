@@ -30,10 +30,6 @@
 			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
-			<id>pxGrid</id>
-			<url>${project.basedir}/src/lib</url>
-		</repository>
-		<repository>
             <!--
 				all remote repos are here: cloudera, spring, splunk, etc.
 				adding more:
@@ -65,6 +61,11 @@
 			<id>snapshots</id>
 			<name>plugins-snapshot</name>
 			<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>pxGrid</id>
+			<name>pxGrid</name>
+			<url>${project.basedir}/src/lib</url>
 		</pluginRepository>
 	</pluginRepositories>
 
