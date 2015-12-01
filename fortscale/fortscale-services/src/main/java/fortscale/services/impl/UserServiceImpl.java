@@ -1108,7 +1108,7 @@ public class UserServiceImpl implements UserService{
 			tagsToRemove.add(userTagEnumId);
 		}
 
-		updateUserTagList(tagsToAdd, tagsToRemove, username, userTagEnumId);
+		updateUserTagList(tagsToAdd,tagsToRemove,username,userTagEnumId);
 
 	}
 
