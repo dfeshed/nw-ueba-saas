@@ -1,5 +1,7 @@
 package fortscale.collection.tagging.service.impl;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
@@ -16,8 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service("customTag")
 public class CustomTagServiceImpl implements UserTagService, InitializingBean {
@@ -33,11 +34,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	private UserTaggingService userTaggingService;
 	@Autowired
 	protected UserService userService;
-
 	@Value("${user.list.custom_tags.path:}")
 	private String filePath;
 
 	private UserTagEnum tag = UserTagEnum.custom;
+	private Set<String> tagsToIgnore = ImmutableSet.of(UserTagEnum.admin.getId(), UserTagEnum.service.getId(),
+			UserTagEnum.executive.getId(), UserTagEnum.LR.getId());
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -57,12 +59,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			//read all users from the file
 			for (String line : FileUtils.readLines(usersFile)) {
 				String regex = line.split(CSV_DELIMITER)[0];
-				List<String> tags = Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER));
+				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].
+						split(VALUE_DELIMITER)));
 				List<User> users = userRepository.findByUsernameRegex(regex);
 				for (User user: users) {
-					user.setTags(tags);
+					Set<String> existingTags = user.getTags();
+					//ignore the static type tags
+					existingTags = Sets.difference(existingTags, tagsToIgnore);
+					List<String> tagsToAdd = new ArrayList(Sets.difference(tags, existingTags));
+					List<String> tagsToRemove = new ArrayList(Sets.difference(existingTags, tags));
 					//sync mongo and cache with the user's tags
-					userService.updateUserTagList(tags, user.getUsername());
+					userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername(), getTag().getId());
 				}
 			}
 		} else {
