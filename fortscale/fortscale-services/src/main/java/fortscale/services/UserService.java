@@ -128,6 +128,8 @@ public interface UserService extends CachingService{
 
 	public Map<String, Long> groupByTags();
 
+	public List<String> getAllTags();
+
 	/**
 	 * Count how many users exists in the USERS table with the same display name.
 	 * @param displayNames - Set of the display names to query

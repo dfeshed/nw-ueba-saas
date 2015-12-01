@@ -149,6 +149,17 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
+	@RequestMapping(value="/userTags", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<String>> getAllTags() {
+		List<String> result = userService.getAllTags();
+		DataBean<List<String>> ret = new DataBean();
+		ret.setData(result);
+		ret.setTotal(result.size());
+		return ret;
+	}
+
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
