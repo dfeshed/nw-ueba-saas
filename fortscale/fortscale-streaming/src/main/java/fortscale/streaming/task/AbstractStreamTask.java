@@ -95,7 +95,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
-			logger.error("got an exception while processing stream message", exception);
+			String messageText = (String) envelope.getMessage();
+			logger.error("got an exception while processing stream message. Message text = {}. Exception: {}", messageText, exception);
+
 			processExceptionHandler.handleException(exception);
 		}
 	}

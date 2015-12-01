@@ -34,6 +34,7 @@ public class AmtResetPwdNotificationGenerator  implements InitializingBean {
 	private static final String AMT_RESET_PWD_MSG_FOR_SINGLE = " reset password without an appropriate action path";
 	private static final String AMT_RESET_PWD_MSG_FOR_AGG = AMT_RESET_PWD_MSG_FOR_SINGLE;
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+	private static final String AMT_DATA_SOURCE="amt";
 
 
 
@@ -80,6 +81,7 @@ public class AmtResetPwdNotificationGenerator  implements InitializingBean {
 		notification.setDisplayName(user.getDisplayName());
 		notification.setFsId(user.getId());
 		notification.setName(user.getUsername());
+		notification.setDataSource(AMT_DATA_SOURCE);
 
 		notification.setAttributes(getAmtEventsAttributes(record));
 
