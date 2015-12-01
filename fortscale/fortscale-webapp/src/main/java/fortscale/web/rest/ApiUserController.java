@@ -3,6 +3,8 @@ package fortscale.web.rest;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
@@ -17,8 +19,11 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.web.exceptions.InvalidParameterException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -196,6 +201,30 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
 		User user = userRepository.findOne(id);
 		return getUserDetail(user);
+	}
+
+	/**
+	 * API to update user tags
+	 * @param body
+	 * @return
+	 */
+	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@LogException
+	@ResponseBody
+	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
+		User user = userRepository.findOne(id);
+		JSONObject params = new JSONObject(body);
+		List<String> tagsToAdd = null;
+		List<String> tagsToRemove = null;
+		if (params.has("add")) {
+			tagsToAdd = new ArrayList();
+			tagsToAdd.add(params.getString("add"));
+
+		} else if (params.has("remove")) {
+			tagsToRemove = new ArrayList();
+			tagsToRemove.add(params.getString("remove"));
+		}
+		userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername(), "");
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
