@@ -4,7 +4,8 @@ public enum UserTagEnum {
 	admin("admin","Administrator Account"),
 	executive("executive","Executive Account"),
 	service("service","Service Account"),
-	LR("LR", "LR");
+	LR("LR", "LR"),
+	custom("Custom", "Custom");
 
 	private String id;
 	private String displayName;

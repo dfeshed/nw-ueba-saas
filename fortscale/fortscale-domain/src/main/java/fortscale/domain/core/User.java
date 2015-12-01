@@ -1,13 +1,6 @@
 package fortscale.domain.core;
 
-import static com.google.common.base.Preconditions.checkNotNull; 
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import fortscale.domain.events.LogEventsEnum;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
@@ -18,7 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
-import fortscale.domain.events.LogEventsEnum;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 
 @Document(collection=User.collectionName)
@@ -283,6 +278,12 @@ public class User extends AbstractDocument {
 	public void removeTag(String tag) {
 		checkNotNull(tag);
 		tags.remove(tag);
+	}
+
+	public void setTags(Collection<String> tags) {
+		checkNotNull(tags);
+		this.tags.clear();
+		this.tags.addAll(tags);
 	}
 	
 	public Set<String> getTags(){

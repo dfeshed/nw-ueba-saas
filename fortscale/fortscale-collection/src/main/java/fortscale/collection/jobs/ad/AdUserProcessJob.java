@@ -177,6 +177,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		userTaggingService.update(UserTagEnum.admin.getId());
 		userTaggingService.update(UserTagEnum.service.getId());
 		userTaggingService.update(UserTagEnum.LR.getId());
+		userTaggingService.update(UserTagEnum.custom.getId());
 		if(!StringUtils.isEmpty(ouUsersFilter)){
 			if(addUsers == true){
 				updateUsersWhoBelongtoOUOrGroup();
