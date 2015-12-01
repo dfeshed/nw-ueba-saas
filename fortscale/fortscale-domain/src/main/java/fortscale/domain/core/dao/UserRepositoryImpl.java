@@ -448,13 +448,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return mongoTemplate.count(query, User.class);
 	}
 
-	public void syncTags(String username, List<String> tags) {
-		//construct the criteria to filter according to user name
-		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
-		// perform the update on mongodb
-		mongoTemplate.updateFirst(usernameCriteria, Update.update(User.tagsField, tags), User.class);
-	}
-	
+
 	public void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
 		// construct the criteria to filter according to user name
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
