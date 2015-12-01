@@ -68,8 +68,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					existingTags = Sets.difference(existingTags, tagsToIgnore);
 					List<String> tagsToAdd = new ArrayList(Sets.difference(tags, existingTags));
 					List<String> tagsToRemove = new ArrayList(Sets.difference(existingTags, tags));
-					//sync mongo and cache with the user's tags
-					userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername(), getTag().getId());
+					//if we need to remove or add tags
+					if (!tagsToAdd.isEmpty() || !tagsToRemove.isEmpty()) {
+						//sync mongo and cache with the user's tags
+						userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername(), getTag().getId());
+					}
 				}
 			}
 		} else {
@@ -79,8 +82,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public boolean isUserTagged(String username) {
-		//TODO - implement
-		return false;
+		Set<String> tags = userRepository.getUserTags(username);
+		//ignore the static type tags
+		tags = Sets.difference(tags, tagsToIgnore);
+		//if the user contains a custom tag
+		return !tags.isEmpty();
 	}
 
 	@Override
