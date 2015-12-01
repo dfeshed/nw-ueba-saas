@@ -36,6 +36,7 @@ public interface UserRepositoryCustom {
 	public List<User> findAllUsers(Pageable pageable);
 	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable);
 	public Map<String, Long> groupByTags();
+	public List<String> getAllTags();
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	

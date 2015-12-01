@@ -322,12 +322,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		final String DISABLED = "disabled";
 		final String INACTIVE = "inactive";
 		//group by the user's tag field and count results
-		Aggregation agg = newAggregation(
-			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
-			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
-		);
-		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
-		List<TagCount> groups = groupResults.getMappedResults();
+		List<TagCount> groups = getTagCounts();
 		Map<String, Long> result = new HashMap();
 		//create the map to be returned
 		for (TagCount group: groups) {
@@ -344,6 +339,23 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return result;
 	}
 
+	private List<TagCount> getTagCounts() {
+		Aggregation agg = newAggregation(
+			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
+			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
+		);
+		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
+		return groupResults.getMappedResults();
+	}
+
+	@Override
+	public List<String> getAllTags() {
+		Set<String> result = new HashSet();
+		for (TagCount tagCount: getTagCounts()) {
+			result.addAll(tagCount.getTags());
+		}
+		return new ArrayList(result);
+	}
 
 	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable) {

@@ -1081,6 +1081,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public List<String> getAllTags() {
+		return userRepository.getAllTags();
+	}
+
+	@Override
 	public Map<String, Long> groupByTags() {
 		final String TAGS = "tags";
 		Map<String, Long> items = groupByTagsCache.get(TAGS);
@@ -1103,7 +1108,7 @@ public class UserServiceImpl implements UserService{
 			tagsToRemove.add(userTagEnumId);
 		}
 
-		updateUserTagList(tagsToAdd,tagsToRemove,username,userTagEnumId);
+		updateUserTagList(tagsToAdd, tagsToRemove, username, userTagEnumId);
 
 	}
 
