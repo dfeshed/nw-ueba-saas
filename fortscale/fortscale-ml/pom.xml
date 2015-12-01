@@ -60,7 +60,7 @@
 	</pluginRepositories>
 
 	<properties>
-		<samza.version>0.7.0</samza.version>
+		<samza.version>0.9.0</samza.version>
 	</properties>
 
 	<dependencies>

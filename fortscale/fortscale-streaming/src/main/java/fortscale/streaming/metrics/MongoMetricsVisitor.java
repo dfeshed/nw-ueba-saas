@@ -6,6 +6,7 @@ import org.apache.samza.metrics.MetricsVisitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
+import org.apache.samza.metrics.Timer;
 
 public class MongoMetricsVisitor extends MetricsVisitor {
 
@@ -30,6 +31,11 @@ public class MongoMetricsVisitor extends MetricsVisitor {
 	@Override
 	public <T> void gauge(Gauge<T> gauge) {
 		// ignore as we do not support reporting data currently in the mongo monitor for gauge
+	}
+
+	@Override
+	public void timer(Timer timer) {
+		// ignore. we do not support timer for metrics visitor
 	}
 
 }
