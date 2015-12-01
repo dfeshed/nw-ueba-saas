@@ -3,15 +3,15 @@ package fortscale.collection.jobs;
 import com.cisco.pxgrid.GridConnection;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
-import com.cisco.pxgrid.model.net.Session;
-import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
-import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
-import com.cisco.pxgrid.stub.identity.SessionIterator;
+import com.cisco.pxgrid.model.ise.metadata.EndpointProfile;
+import com.cisco.pxgrid.stub.isemetadata.EndpointProfileClientStub;
+import com.cisco.pxgrid.stub.isemetadata.EndpointProfileQuery;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by tomerd on 27/11/2015.
@@ -28,18 +28,15 @@ public class PxGridFetchJob extends FortscaleJob {
 	private String truststorePassphrase;
 	private int connectionRetryMillisecond;
 
-	@Override
-	protected int getTotalNumOfSteps() {
+	@Override protected int getTotalNumOfSteps() {
 		return 3;
 	}
 
-	@Override
-	protected boolean shouldReportDataReceived() {
+	@Override protected boolean shouldReportDataReceived() {
 		return true;
 	}
 
-	@Override
-	protected void runSteps() throws Exception {
+	@Override protected void runSteps() throws Exception {
 
 		// configure the connection properties
 		TLSConfiguration config = createConfigObject();
@@ -50,19 +47,23 @@ public class PxGridFetchJob extends FortscaleJob {
 		recon.setRetryMillisecond(connectionRetryMillisecond);
 		recon.start();
 
-		// construct a date range and request those sessions
-		Calendar begin = Calendar.getInstance();
-		begin.set(Calendar.HOUR, begin.get(Calendar.HOUR) - 1);
-		Calendar end = Calendar.getInstance();
+		// Wait for the connection to establish
+		while (!con.isConnected()) {
+			Thread.sleep(100);
+		}
 
-		SessionDirectoryQuery query = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator = query.getSessionsByTime(begin, end);
-		iterator.open();
+		// create query we'll use to make call
 
-		Session session = iterator.next();
-		while (session != null) {
-			System.out.println("received session: " + session.getGid());
-			session = iterator.next();
+		EndpointProfileClientStub stub = new EndpointProfileClientStub(con);
+		EndpointProfileQuery query = stub.createEndpointProfileQuery();
+
+		List<EndpointProfile> dps = query.getEndpointProfiles();
+		if (dps != null) {
+			EndpointProfile dp;
+			for (Iterator<EndpointProfile> it = dps.iterator(); it.hasNext(); ) {
+				dp = it.next();
+				System.out.println("Endpoint Profile : id=" + dp.getId() + ", name=" + dp.getName() + ", fqname " + dp.getFqname());
+			}
 		}
 
 		// disconnect from pxGrid
@@ -83,9 +84,9 @@ public class PxGridFetchJob extends FortscaleJob {
 		connectionRetryMillisecond = jobDataMapExtension.getJobDataMapIntValue(map, "connectionRetryMillisecond");
 	}
 
-	private TLSConfiguration createConfigObject(){
+	private TLSConfiguration createConfigObject() {
 		TLSConfiguration config = new TLSConfiguration();
-		config.setHosts(new String[]{hosts});
+		config.setHosts(new String[] { hosts });
 		config.setUserName(userName);
 		config.setGroup(group);
 		config.setKeystorePath(keystorePath);
@@ -93,6 +94,6 @@ public class PxGridFetchJob extends FortscaleJob {
 		config.setTruststorePath(truststorePath);
 		config.setTruststorePassphrase(truststorePassphrase);
 
-		return  config;
+		return config;
 	}
 }

@@ -37,19 +37,19 @@
 				</entry>
 				<entry>
 					<key>keystorePath</key>
-					<value>/root/testKeystore.jks</value>
+					<value>${pxgrid.keystorePath}</value>
 				</entry>
 				<entry>
 					<key>keystorePassphrase</key>
-					<value>test_password</value>
+					<value>cisco</value>
 				</entry>
 				<entry>
 					<key>truststorePath</key>
-					<value>/root/testTruststore.jks</value>
+					<value>${pxgrid.truststorePath}</value>
 				</entry>
 				<entry>
 					<key>truststorePassphrase</key>
-					<value>test_password</value>
+					<value>cisco</value>
 				</entry>
 				<entry>
 					<key>connectionRetryMillisecond</key>
