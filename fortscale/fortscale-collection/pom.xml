@@ -43,6 +43,11 @@
 			<name>remote-repos</name>
 			<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
 		</repository>
+		<repository>
+			<id>mirror.fortscale.dom</id>
+			<name>mirror.fortscale.dom-releases</name>
+			<url>http://mirror.fortscale.dom/artifactory/cisco-pxGrid</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -363,19 +368,9 @@
   			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.cisco</groupId>
-			<artifactId>pxgrid</artifactId>
-			<version>pxgrid-gcl</version>
-		</dependency>
-		<dependency>
-			<groupId>com.cisco</groupId>
-			<artifactId>pxgrid</artifactId>
-			<version>pxgrid-isemetadata-client-stub</version>
-		</dependency>
-		<dependency>
-			<groupId>com.cisco</groupId>
-			<artifactId>pxgrid</artifactId>
-			<version>pxgrid-isemetadata-model</version>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-gcl</artifactId>
+			<version>1.0.2.35</version>
 		</dependency>
 
 	</dependencies>
