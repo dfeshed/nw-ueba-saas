@@ -3,10 +3,8 @@ package fortscale.web.rest;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.AlertFeedback;
-import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.Tag;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScore;
@@ -20,7 +18,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.web.exceptions.InvalidParameterException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.json.JSONException;
@@ -209,7 +206,7 @@ public class ApiUserController extends BaseController{
 	 * @param body
 	 * @return
 	 */
-	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
+	@RequestMapping(value="{id}", method = RequestMethod.POST)
 	@LogException
 	@ResponseBody
 	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
@@ -291,7 +288,7 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/userTags", method=RequestMethod.GET)
+	@RequestMapping(value="/user_tags", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Tag>> getAllTags() {
@@ -299,7 +296,10 @@ public class ApiUserController extends BaseController{
 		List<Tag> result = new ArrayList();
 		DataBean<List<Tag>> ret = new DataBean();
 		for (String tag: tags) {
-			result.add(new Tag(tag, tag));
+			Tag _tag = new Tag();
+			_tag.setName(tag);
+			_tag.setDisplayName(tag);
+			result.add(_tag);
 		}
 		ret.setData(result);
 		ret.setTotal(result.size());
