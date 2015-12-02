@@ -356,9 +356,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 
-			SecurityUsernameNormalizationService
+			/*SecurityUsernameNormalizationService
 			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=login
-			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true
+			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true*/
 
 
 
