@@ -33,7 +33,7 @@ public class RarityScorerTest {
 
 	/*************************************************************************************
 	 *************************************************************************************
-	 *************** TEST BASIC MODEL BEHAVIOUR WHEN PARAMETERS ARE ISOLATED *************
+	 ************ TEST BASIC MODEL BEHAVIOUR WHEN MODEL PARAMETERS ARE ISOLATED **********
 	 *************************************************************************************
 	 *************************************************************************************/
 
@@ -265,5 +265,26 @@ public class RarityScorerTest {
 				}
 			}
 		}
+	}
+
+
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 ****************** TEST VARIOUS SCENARIOS - FROM BASIC TO ADVANCED ******************
+	 ***** (BUT NOT AS BASIC AS THE TESTS WHICH TRY TO ISOLATE THE MODEL PARAMETERS ******
+	 *************************************************************************************
+	 *************************************************************************************/
+
+	@Test
+	public void shouldScoreVeryRareFeatureTheSameWhenBuildingWithVeryCommonValuesAndWithoutThem() {
+		int maxPossibleRarity = 10;
+		double maxRaritySum = 30;
+		double veryRareFeatureCount = 1;
+		int veryCommonFeatureCount = 10000;
+		double scoreWithCommon = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(10, veryCommonFeatureCount), veryRareFeatureCount);
+		double scoreWithoutCommon = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(0, 0), veryRareFeatureCount);
+		Assert.assertEquals(scoreWithoutCommon, scoreWithCommon, 1);
+		Assert.assertTrue(scoreWithoutCommon >= 99);
 	}
 }
