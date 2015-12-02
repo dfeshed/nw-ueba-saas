@@ -1,24 +1,20 @@
 package fortscale.collection.jobs;
 
 import fortscale.utils.logging.Logger;
-import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Scanner;
 
 /**
  * Created by idanp on 12/1/2015.
  */
-public class NewGDSconfiguration extends FortscaleJob {
+public class NewGDSconfigurationJob extends FortscaleJob {
 
-    private static Logger logger = Logger.getLogger(NewGDSconfiguration.class);
+    private static Logger logger = Logger.getLogger(NewGDSconfigurationJob.class);
+
+	private  String dataSourceName;
 
     @Value("${fortscale.data.source}")
     private String currentDataSources;
@@ -35,12 +31,21 @@ public class NewGDSconfiguration extends FortscaleJob {
     protected void runSteps() throws Exception {
 
         logger.debug("Running Configuration GDS Job");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		System.out.println("Please enter the new data source name: ");
+		this.dataSourceName = br.readLine();
 
 
         startNewStep("Init Configuration");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         initPartConfiguration(br);
         finishStep();
+
+		startNewStep("Init Configuration");
+		streamingConfiguration(br);
+		finishStep();
+
+
     }
 
     /**
@@ -61,9 +66,7 @@ public class NewGDSconfiguration extends FortscaleJob {
 
             Boolean result = false;
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
-            System.out.println("Please enter the new data source name: ");
 
-            String dataSourceName = br.readLine();
 
             fileWriter.write("\r\n");
             fileWriter.write("\r\n");
@@ -95,7 +98,7 @@ public class NewGDSconfiguration extends FortscaleJob {
                 fileWriter.write("\r\n");
                 fileWriter.write(String.format("########### Data Schema",dataSourceName));
                 fileWriter.write("\r\n");
-                System.out.println(String.format("Please enter the fields for %s data schema csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
+                System.out.println(String.format("Please enter the fields for %s data schema at csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
                 String fields = br.readLine();
 
                 fileWriter.write(String.format("impala.data.%s.table.fields=%s",dataSourceName,fields));
@@ -248,6 +251,142 @@ public class NewGDSconfiguration extends FortscaleJob {
 
     }
 
+
+	/**
+	 * This method will configure the entire streaming configuration - Enrich , Single model/score, Aggregation
+	 * @param br - Will hold the scanner for tracing the user input
+	 */
+	public void streamingConfiguration(BufferedReader br)
+	{
+
+		// Open the fortscale-collection-overriding.properties in append mode for adding the new configuration
+		//TODO - CHANGE IT TO REALTIVE PATH
+		String configFilesPath = "fortscale-streaming/config/";
+		Boolean result = false;
+
+		try {
+
+
+			System.out.println(String.format("Dose %s need to pass through enrich steps at the Streaming (y/n) ?", dataSourceName));
+			result = br.readLine().toLowerCase().equals("y");
+
+			if (result)
+				//Enrich part
+				enrichStereamingConfiguration(br, configFilesPath);
+		}
+
+		catch (Exception e)
+		{
+
+		}
+
+
+
+	}
+
+
+	private void enrichStereamingConfiguration(BufferedReader br,String configFilesPath)
+	{
+
+
+		File file = null;
+		FileWriter fileWriter=null;
+		Boolean result = false;
+
+		try {
+
+			//Normalized User Name and user Tagging task
+			file = new File(configFilesPath + "username-normalization-tagging-task.properties");
+			fileWriter = new FileWriter(file, true);
+
+			fileWriter.write("\r\n");
+			fileWriter.write("\r\n");
+
+			fileWriter.write(String.format("# %s",this.dataSourceName));
+			fileWriter.write("\r\n");
+
+			fileWriter.write(String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask",this.dataSourceName,this.dataSourceName));
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s",this.dataSourceName,this.dataSourceName));
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl",this.dataSourceName));
+
+
+
+			// configure new Topic to the data source or use the GDS general topic
+			System.out.println(String.format("Dose %s use the general GDS streaming topology   (y/n) ?",dataSourceName));
+			result = br.readLine().toLowerCase().equals("y");
+
+			//GDS general topology
+			if(result) {
+				fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName));
+				fileWriter.write("\r\n");
+			}
+			else{
+
+				System.out.println("Not supported yet via  this configuration tool ");
+				//TODO - Need to add the topic configuration  also for task.inputs and fortscale.events.entry.<dataSource>_UsernameNormalizationAndTaggingTask.output.topic
+
+			}
+
+			//User name field
+			System.out.println(String.format("Please enter the username field (i.e account_name for kerberos): "));
+			String usernameField = br.readLine();
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", usernameField));
+			fileWriter.write("\r\n");
+
+			//Domain Field
+			System.out.println(String.format("Please enter the domain field (i.e account_domain for kerberos): "));
+			String domainField = br.readLine();
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", domainField));
+			fileWriter.write("\r\n");
+
+			//Normalized_username field
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}"));
+			fileWriter.write("\r\n");
+
+			//partition field name  (today we use for all the username)
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s",usernameField));
+			fileWriter.write("\r\n");
+
+			//partition field name  (today we use for all the username)
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s",usernameField));
+			fileWriter.write("\r\n");
+
+
+
+
+
+
+			SecurityUsernameNormalizationService
+			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=login
+			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true
+
+
+
+
+			//Ip Resolving task
+
+
+			//Computer tagging task
+
+
+			//Geo location task
+
+
+			//User Mongo update task
+
+		}
+
+		catch(Exception e)
+		{
+
+		}
+
+
+
+
+
+	}
+
     @Override
     protected int getTotalNumOfSteps() { return 1; }
 
@@ -263,7 +402,7 @@ public class NewGDSconfiguration extends FortscaleJob {
         //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/fortscale-global-config-context.xml");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        NewGDSconfiguration simulator = new NewGDSconfiguration();
+        NewGDSconfigurationJob simulator = new NewGDSconfigurationJob();
         simulator.initPartConfiguration(br);
 
 
