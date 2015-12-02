@@ -363,19 +363,19 @@
   			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.cisco.pxgrid</groupId>
-			<artifactId>pxgrid-gcl</artifactId>
-			<version>1.0.2.35</version>
+			<groupId>com.cisco</groupId>
+			<artifactId>pxgrid</artifactId>
+			<version>pxgrid-gcl</version>
 		</dependency>
 		<dependency>
-			<groupId>com.cisco.pxgrid</groupId>
-			<artifactId>pxgrid-isemetadata-client</artifactId>
-			<version>1.0.2.35</version>
+			<groupId>com.cisco</groupId>
+			<artifactId>pxgrid</artifactId>
+			<version>pxgrid-isemetadata-client-stub</version>
 		</dependency>
 		<dependency>
-			<groupId>com.cisco.pxgrid</groupId>
-			<artifactId>pxgrid-isemetadata-model</artifactId>
-			<version>1.0.2.35</version>
+			<groupId>com.cisco</groupId>
+			<artifactId>pxgrid</artifactId>
+			<version>pxgrid-isemetadata-model</version>
 		</dependency>
 
 	</dependencies>
