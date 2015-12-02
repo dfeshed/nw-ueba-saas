@@ -7,10 +7,7 @@ import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserService;
-import fortscale.services.UserServiceFacade;
+import fortscale.services.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
@@ -41,6 +38,9 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
+
+	@Autowired
+	private TagService tagService;
 
 	@Autowired
 	private UserService userService;
@@ -292,15 +292,8 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<Tag>> getAllTags() {
-		List<String> tags = userService.getAllTags();
-		List<Tag> result = new ArrayList();
+		List<Tag> result = tagService.getAllTags();
 		DataBean<List<Tag>> ret = new DataBean();
-		for (String tag: tags) {
-			Tag _tag = new Tag();
-			_tag.setName(tag);
-			_tag.setDisplayName(tag);
-			result.add(_tag);
-		}
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;
