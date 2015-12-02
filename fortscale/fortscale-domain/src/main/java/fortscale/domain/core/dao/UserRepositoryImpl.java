@@ -459,8 +459,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
 		return mongoTemplate.count(query, User.class);
 	}
-	
-	
+
+
 	public void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
 		// construct the criteria to filter according to user name
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
