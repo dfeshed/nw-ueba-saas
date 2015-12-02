@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
-	private static final int SMOOTHENING_DISTANCE = 10;
+	public static final String MODEL_TYPE = "time_model";
+	private static final long serialVersionUID = 5006807217250354329L;
+	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
 	private int bucketSize;
@@ -31,8 +35,8 @@ public class TimeModel implements Model {
 			int bucketHit = getBucketIndex(entry.getKey());
 			bucketHits.set(bucketHit, true);
 			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
-			for (int distance = 1; distance <= SMOOTHENING_DISTANCE; distance++) {
-				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHENING_DISTANCE));
+			for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
+				double addVal = counter * (1 - (distance - 1) / ((double)SMOOTHING_DISTANCE));
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
 			}

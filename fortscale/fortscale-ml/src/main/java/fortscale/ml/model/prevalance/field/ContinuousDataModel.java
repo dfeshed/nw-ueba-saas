@@ -7,6 +7,8 @@ import org.apache.commons.math3.distribution.TDistribution;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ContinuousDataModel implements Model {
+	public static final String MODEL_TYPE = "continuous_data_model";
+	private static final long serialVersionUID = 3652648455392651680L;
 	public static final int SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY = 1;
 
 	private long N; // population size
