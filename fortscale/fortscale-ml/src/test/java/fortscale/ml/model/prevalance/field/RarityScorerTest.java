@@ -132,6 +132,48 @@ public class RarityScorerTest {
 		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_RARITY_SUM, null);
 	}
 
+	@Test
+	public void shouldScoreLessWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
+		for (int maxPossibleRarity = 1; maxPossibleRarity < 30; maxPossibleRarity++) {
+			for (int maxRaritySum = 1; maxRaritySum < 100; maxRaritySum += 5) {
+				for (int featureCount = 1; featureCount <= maxPossibleRarity; featureCount++) {
+					for (int numOfFeatures = 1; numOfFeatures < 10; numOfFeatures++) {
+						double scoreBeforeCountIncreases = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount), featureCount);
+						double scoreAfterCountIncreases = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount + 1), featureCount + 1);
+						String msg = String.format("score isn't decreasing in the following configuration:\nmaxPossibleRarity = %d\nmaxRaritySum = %d\nfeatureCount = %d -> %d\nnumOfFeatures = %d", maxPossibleRarity, maxRaritySum, featureCount, featureCount + 1, numOfFeatures);
+						Assert.assertTrue(msg, scoreAfterCountIncreases <= scoreBeforeCountIncreases);
+					}
+				}
+			}
+		}
+	}
+
+	private double[][][] calcScoresOverConfigurationMatrix(int maxPossibleRarity, int[] maxRaritySums, int[] counts, int maxNumOfFeatures) {
+		double[][][] res = new double[counts.length][][];
+		for (int countInd = 0; countInd < counts.length; countInd++) {
+			res[countInd] = new double[maxRaritySums.length][];
+			for (int maxRaritySumInd = 0; maxRaritySumInd < maxRaritySums.length; maxRaritySumInd++) {
+				res[countInd][maxRaritySumInd] = new double[maxNumOfFeatures + 1];
+				for (int numOfFeatures = 0; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
+					res[countInd][maxRaritySumInd][numOfFeatures] = calcScore(
+							maxPossibleRarity,
+							maxRaritySums[maxRaritySumInd],
+							createFeatureValueToCountWithConstantCount(numOfFeatures, counts[countInd]),
+							counts[countInd]);
+				}
+			}
+		}
+		return res;
+	}
+
+	private Map<String, Double> createFeatureValueToCountWithConstantCount(int numOfFeatures, double count) {
+		Map<String, Double> res = new HashMap<>(numOfFeatures);
+		while (numOfFeatures-- > 0) {
+			res.put("feature-" + numOfFeatures, count);
+		}
+		return res;
+	}
+
 //	@Test
 	public void printMaxPossibleRarityEffect() {
 		int maxRaritySum = 10;
@@ -152,36 +194,56 @@ public class RarityScorerTest {
 	}
 
 //	@Test
-	public void printMaxRaritySumEffect() {
+	public void printMaxRaritySumEffect1() {
 		int maxPossibleRarity = 15;
-		int maxRaritySums[] = new int[]{5, 10, 15, 20, 30, 40, 50};
+		int maxRaritySums[] = new int[]{5, 7, 9, 11, 13, 15};
 		int counts[] = new int[]{1,4};
-		int maxNumOfFeatures = 30;
-		double[][][] res = new double[counts.length][][];
-		for (int countInd = 0; countInd < counts.length; countInd++) {
-			res[countInd] = new double[maxRaritySums.length][];
-			for (int maxRaritySumInd = 0; maxRaritySumInd < maxRaritySums.length; maxRaritySumInd++) {
-				res[countInd][maxRaritySumInd] = new double[maxNumOfFeatures];
-				Map<String, Double> featureValueToCountMap = new HashMap<>();
-				for (int numOfFeatures = 0; numOfFeatures < maxNumOfFeatures; numOfFeatures++) {
-					String feature = "feature-" + numOfFeatures;
-					res[countInd][maxRaritySumInd][numOfFeatures] = calcScore(maxPossibleRarity, maxRaritySums[maxRaritySumInd], featureValueToCountMap, counts[countInd]);
-					featureValueToCountMap.put(feature, (double) counts[countInd]);
-				}
-			}
-		}
+		int maxNumOfFeatures = maxPossibleRarity;
+		double[][][] scores = calcScoresOverConfigurationMatrix(maxPossibleRarity, maxRaritySums, counts, maxNumOfFeatures);
 
-		System.out.println("count -> maxRaritySum (each column has constant count and maxRaritySum, and varying numOfFeatures from 1 to " + maxNumOfFeatures + ")");
+		System.out.println("count -> maxRaritySum (each column has constant count and maxRaritySum, and varying numOfFeatures from 0 to " + maxNumOfFeatures + ")");
 		for (int countInd = 0; countInd < counts.length; countInd++) {
 			for (int maxRaritySum : maxRaritySums) {
 				System.out.print(counts[countInd] + "->" + maxRaritySum + "\t");
 			}
 		}
-		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
+		for (int numOfFeatures = 0; numOfFeatures < scores[0][0].length; numOfFeatures++) {
 			System.out.println();
 			for (int countInd = 0; countInd < counts.length; countInd++) {
 				for (int maxRaritySumInd = 0; maxRaritySumInd < maxRaritySums.length; maxRaritySumInd++) {
-					System.out.print(res[countInd][maxRaritySumInd][numOfFeatures - 1] + "\t");
+					System.out.print(scores[countInd][maxRaritySumInd][numOfFeatures] + "\t");
+				}
+			}
+		}
+	}
+
+//	@Test
+	public void printMaxRaritySumEffect2() {
+		int maxPossibleRarity = 15;
+		int maxRaritySums[] = new int[]{5, 10, 15, 20, 30, 40, 50};
+		int counts[] = new int[maxPossibleRarity + 1];
+		for (int i = 0; i < counts.length; i++) {
+			counts[i] = i + 1;
+		}
+		int maxNumOfFeatures = 5;
+		double[][][] scores = calcScoresOverConfigurationMatrix(maxPossibleRarity, maxRaritySums, counts, maxNumOfFeatures);
+
+		String countsStr = String.valueOf(counts[0]);
+		for (int i = 1; i < counts.length; i++) {
+			countsStr += ", " + counts[i];
+		}
+		System.out.println("numOfFeatures -> maxRaritySum (each column has constant numOfFeatures and maxRaritySum, and varying featureCount of " +  countsStr + ")");
+		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
+			for (int maxRaritySum : maxRaritySums) {
+				System.out.print(numOfFeatures + "->" + maxRaritySum + "\t");
+			}
+		}
+
+		for (int countInd = 0; countInd < counts.length; countInd++) {
+			System.out.println();
+			for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
+				for (int maxRaritySumInd = 0; maxRaritySumInd < maxRaritySums.length; maxRaritySumInd++) {
+					System.out.print(scores[countInd][maxRaritySumInd][numOfFeatures] + "\t");
 				}
 			}
 		}
