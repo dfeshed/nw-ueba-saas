@@ -23,6 +23,20 @@ public class RarityScorerTest {
 		Assert.assertTrue(score <= expectedRangeMax);
 	}
 
+	private Map<String, Double> createFeatureValueToCountWithConstantCount(int numOfFeatures, double count) {
+		Map<String, Double> res = new HashMap<>(numOfFeatures);
+		while (numOfFeatures-- > 0) {
+			res.put("feature-" + numOfFeatures, count);
+		}
+		return res;
+	}
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 *************** TEST BASIC MODEL BEHAVIOUR WHEN PARAMETERS ARE ISOLATED *************
+	 *************************************************************************************
+	 *************************************************************************************/
+
 	@Test
 	public void shouldScore0ToFeatureCountsGreaterThanMaxPossibleRarity() throws Exception {
 		double maxRaritySum = 10;
@@ -36,11 +50,11 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore99ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
+	public void shouldScore100ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
 		double maxRaritySum = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
-			Assert.assertEquals(100, calcScore(maxPossibleRarity, maxRaritySum, new HashMap<String, Double>(), veryRareFeatureCount), 0.0001);
+			assertScoreRange(maxPossibleRarity, maxRaritySum, new HashMap<String, Double>(), veryRareFeatureCount, 99, 100);
 		}
 	}
 
@@ -148,6 +162,18 @@ public class RarityScorerTest {
 		}
 	}
 
+
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 *********** GRAPHS SHOWING HOW MODEL BEHAVES WHEN PARAMETERS ARE ISOLATED ***********
+	 ****** JUST UNCOMMENT THE "@Test" LINE IN ORDER TO RUN A GRAPH GENERATING TEST ******
+	 ************** THEN, COPY THE RESULTS INTO THE CORRESPONDING GOOGLE SHEET ***********
+	 ********************** (WITH THE NAME MATCHING THE TEST'S NAME) *********************
+	 * https://docs.google.com/spreadsheets/d/1eNqu2K3mIUCH3b-NXeQM5VqBkcaEqwcSxiNWZ-FzdHg/edit#gid=513658611&vpid=A1 *
+	 *************************************************************************************
+	 *************************************************************************************/
+
 	private double[][][] calcScoresOverConfigurationMatrix(int maxPossibleRarity, int[] maxRaritySums, int[] counts, int maxNumOfFeatures) {
 		double[][][] res = new double[counts.length][][];
 		for (int countInd = 0; countInd < counts.length; countInd++) {
@@ -162,14 +188,6 @@ public class RarityScorerTest {
 							counts[countInd]);
 				}
 			}
-		}
-		return res;
-	}
-
-	private Map<String, Double> createFeatureValueToCountWithConstantCount(int numOfFeatures, double count) {
-		Map<String, Double> res = new HashMap<>(numOfFeatures);
-		while (numOfFeatures-- > 0) {
-			res.put("feature-" + numOfFeatures, count);
 		}
 		return res;
 	}
