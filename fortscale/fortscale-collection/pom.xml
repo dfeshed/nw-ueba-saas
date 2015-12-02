@@ -366,22 +366,16 @@
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-gcl</artifactId>
 			<version>1.0.2.35</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/lib/pxgrid-gcl-1.0.2.35.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-client</artifactId>
 			<version>1.0.2.35</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/lib/pxgrid-isemetadata-client-stub-1.0.2.35.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-model</artifactId>
 			<version>1.0.2.35</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/lib/pxgrid-isemetadata-model-1.0.2.35.jar</systemPath>
 		</dependency>
 
 	</dependencies>
