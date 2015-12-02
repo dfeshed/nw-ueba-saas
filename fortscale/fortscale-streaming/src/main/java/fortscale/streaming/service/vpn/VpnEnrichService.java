@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -233,16 +234,20 @@ import static fortscale.utils.ConversionUtils.*;
 		if (curVpnSession.getClosedAt() == null) {
 			List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
 			if (curVpnSession.getGeoHopping()) {
-				vpnSessions.add(curVpnSession);
+				// put curVpnSession first in the list - important for createIndicator
+				List<VpnSession> notificationList = new ArrayList<>();
+				notificationList.add(curVpnSession);
+				for (VpnSession vpnSession : vpnSessions) {
+					notificationList.add(vpnSession);
+				}
 				//create notifications for the vpn sessions
 				if (!isBDPRunning) {
-					return vpnGeoHoppingNotificationGenerator.createIndicator(vpnSessions);
+					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
 				}
-				vpnGeoHoppingNotificationGenerator.createNotification(vpnSessions);
+				vpnGeoHoppingNotificationGenerator.createNotification(notificationList);
 			}
 
 		}
-
 		return null;
 
 	}
