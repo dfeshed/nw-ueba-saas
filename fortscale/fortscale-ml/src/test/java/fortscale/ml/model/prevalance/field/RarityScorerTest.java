@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
@@ -286,5 +287,26 @@ public class RarityScorerTest {
 		double scoreWithoutCommon = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(0, 0), veryRareFeatureCount);
 		Assert.assertEquals(scoreWithoutCommon, scoreWithCommon, 1);
 		Assert.assertTrue(scoreWithoutCommon >= 99);
+	}
+
+	@Test
+	public void simpleInputOutputForOccurrencesHistogram() throws Exception {
+		int maxPossibleRarity = 6;
+		double maxRaritySum = 5;
+
+		Random rnd = new Random(1);
+		Map<String, Double> featureValueToCountMap = new HashMap<>();
+		for (int i = 0; i < 2; i++) {
+			double val = Math.min( 100.0, rnd.nextDouble( ) * 100 + 8);
+			featureValueToCountMap.put(String.format("test%d", i), val);
+		}
+
+		double[] counts = new double[]{1, 2, 3, 4};
+//		double[] scores = new double[]{99, 93, 61, 18};
+		double[] scores = new double[]{99, 94, 49, 15};
+		for (int i = 0; i < scores.length; i++) {
+			double score = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, counts[i]);
+			Assert.assertEquals(scores[i], score, 1);
+		}
 	}
 }
