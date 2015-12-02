@@ -6,6 +6,7 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.User;
+import fortscale.domain.core.dao.Tag;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScore;
@@ -293,9 +294,13 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/userTags", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<String>> getAllTags() {
-		List<String> result = userService.getAllTags();
-		DataBean<List<String>> ret = new DataBean();
+	public DataBean<List<Tag>> getAllTags() {
+		List<String> tags = userService.getAllTags();
+		List<Tag> result = new ArrayList();
+		DataBean<List<Tag>> ret = new DataBean();
+		for (String tag: tags) {
+			result.add(new Tag(tag, tag));
+		}
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;
