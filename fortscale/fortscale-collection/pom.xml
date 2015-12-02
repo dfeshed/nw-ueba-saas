@@ -372,6 +372,16 @@
 			<artifactId>pxgrid-gcl</artifactId>
 			<version>1.0.2.35</version>
 		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-client-stub</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
 
 	</dependencies>
 
