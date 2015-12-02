@@ -93,7 +93,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
-			String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
 			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
@@ -113,7 +112,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(inputTopic, outputTopic,
+			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
@@ -157,13 +156,16 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
 
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			if (configKey == null){
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				return;
+			}
 
 			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
 
-			if (usernameNormalizationConfig == null)
-			{
-				throw new IllegalStateException("No configuration found for config key " + configKey + ". Could not process message received from input topic " + inputTopic + ": " + message.toJSONString());
+			if (usernameNormalizationConfig == null){
+				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
 			}
 
 			// get the normalized username from input record
@@ -176,7 +178,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
 					String filteredEventLabel = "Message does not contains username in field " +
 							usernameNormalizationConfig.getUsernameField();
-					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message),filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,filteredEventLabel);
 					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
 				}
 
@@ -199,7 +201,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					}
 					// drop record
 					String filteredEventLabel = "User " + username + "does not exists";
-					taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey, filteredEventLabel);
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);
@@ -216,7 +218,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
-			handleUnfilteredEvent(message);
+			handleUnfilteredEvent(message,configKey);
 		}
 	}
 

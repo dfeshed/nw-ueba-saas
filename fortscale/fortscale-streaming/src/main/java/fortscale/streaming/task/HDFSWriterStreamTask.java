@@ -38,7 +38,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
-	public static final String NO_WRITER_CONFIGURATIONS_LABEL = "No Writer Configurations";
 	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_label = "No timestamp field in message";
 	public static final String FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL = "Failed to Send Event to Kafka";
 	public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "Event Older then NewestEvent";
@@ -180,14 +179,19 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		JSONObject message = parseJsonMessage(envelope);
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			return;
+		}
 
 		// Get all writers according to topic
 		List<WriterConfiguration> writerConfigurations = dataSourceToConfigsMap.get(configKey);
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
-			taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_WRITER_CONFIGURATIONS_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+			return;
 		}
 
 		// go over all writers and write message
@@ -198,7 +202,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
-				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
 				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
 
@@ -227,12 +231,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
-								handleUnfilteredEvent(message);
+								handleUnfilteredEvent(message, configKey);
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
-								taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
+								taskMonitoringHelper.countNewFilteredEvents(configKey, FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output key %s after HDFS write",
 										  configKey, outputTopic), exception);
@@ -245,11 +249,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
 			} else {//Event filter becuase of  barrier
-				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
 	}
-
 
 
 	/**
@@ -259,7 +262,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message)) {
-				taskMonitoringHelper.countNewFilteredEvents(getDataSource(message), "MessageFilter: "+filter.getName());
+				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), "MessageFilter: "+filter.getName());
 				return true;
 			}
 		}

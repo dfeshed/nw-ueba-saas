@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -234,17 +233,12 @@ import static fortscale.utils.ConversionUtils.*;
 		if (curVpnSession.getClosedAt() == null) {
 			List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
 			if (curVpnSession.getGeoHopping()) {
-				List<VpnSession> notificationList = new ArrayList<>();
-				notificationList.add(curVpnSession);
-				for (VpnSession vpnSession : vpnSessions) {
-					notificationList.add(vpnSession);
-				}
-
+				vpnSessions.add(curVpnSession);
 				//create notifications for the vpn sessions
 				if (!isBDPRunning) {
-					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
+					return vpnGeoHoppingNotificationGenerator.createIndicator(vpnSessions);
 				}
-				vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				vpnGeoHoppingNotificationGenerator.createNotification(vpnSessions);
 			}
 
 		}

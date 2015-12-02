@@ -51,13 +51,14 @@
                     <value>${collection.evidence.notification.normalizedusername.field}</value>
                 </entry>
                 <entry>
-                    <key>notificationEntityField</key>
-                    <value>${collection.evidence.notification.entity.field}</value>
-                </entry>
-                <entry>
                     <key>notificationSupportingInformationField</key>
                     <value>${collection.evidence.notification.supportinginformation.field}</value>
                 </entry>
+                <entry>
+                    <key>dataSourceField</key>
+                    <value>${collection.evidence.notification.datasource.field}</value>
+                </entry>
+
                 <entry>
                     <key>notificationAnomalyMap</key>
                     <value>${collection.evidence.notification.anomaly.map}</value>

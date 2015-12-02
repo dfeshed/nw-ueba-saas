@@ -2,12 +2,10 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
@@ -64,7 +62,9 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "disabled_since") String disabledSince,
 			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
 			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
-			@RequestParam(required = false, value = "inactive_since") String inactiveSince) {
+			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
+			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
+			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
 
 
 		// Create sorting
@@ -122,7 +122,7 @@ public class ApiUserController extends BaseController{
 		}
 
 		if (isDisabledWithActivity != null && isDisabledWithActivity) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(true));
+			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabledWithActivity));
 			criteriaList.add(new Criteria() {
 				@Override
 				public DBObject getCriteriaObject() {
@@ -131,6 +131,14 @@ public class ApiUserController extends BaseController{
 					return obj;
 				}
 			});
+		}
+
+		if (isServiceAccount != null && isServiceAccount) {
+			criteriaList.add(where("userServiceAccount").is(isServiceAccount));
+		}
+
+		if (searchFieldContains != null) {
+			criteriaList.add(where("sf").regex(searchFieldContains));
 		}
 
 

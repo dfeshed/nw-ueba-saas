@@ -4,6 +4,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 
 		super.setUp();
 
-		dataQueryDTO2 = mapper.readValue(dto1, DataQueryDTO.class);
+		dataQueryDTO2 = mapper.readValue(dto1, DataQueryDTOImpl.class);
 		ArrayList<DataQueryField> groupBy = new ArrayList<>();
 		DataQueryField field = new DataQueryField();
 		field.setId("aaa");
@@ -36,7 +37,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 		groupBy.add(field);
 		dataQueryDTO2.setGroupBy(groupBy);
 
-        dataQueryDtoWithGroupByLogicalField = mapper.readValue(dto1, DataQueryDTO.class);
+        dataQueryDtoWithGroupByLogicalField = mapper.readValue(dto1, DataQueryDTOImpl.class);
 
         groupBy = new ArrayList<>();
         field = new DataQueryField();

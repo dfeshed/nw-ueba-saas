@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.services.exceptions.InvalidValueException;
 import org.junit.Before;
@@ -126,7 +127,7 @@ public class DataQueryRunnerTest implements EmbeddedValueResolverAware {
 		dataEntitiesConfig.setEmbeddedValueResolver(stringValueResolver);
 		//warm up the entities cache
 		dataEntitiesConfig.getAllLogicalEntities();
-		dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
+		dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTOImpl.class);
 
 
 
@@ -145,20 +146,20 @@ public class DataQueryRunnerTest implements EmbeddedValueResolverAware {
 		}
 
 		List<DataQueryDTO> excpectedResult = new ArrayList<>();
-		DataQueryDTO dto1 = new DataQueryDTO(dataQueryDTO1);
+		DataQueryDTO dto1 = new DataQueryDTOImpl(dataQueryDTO1);
 		String[] entites1 = new String[1];
 		entites1[0] = "kerberos_logins";
 		dto1.setEntities(entites1);
 		excpectedResult.add(dto1);
 
-		DataQueryDTO dto2 = new DataQueryDTO(dataQueryDTO1);
+		DataQueryDTO dto2 = new DataQueryDTOImpl(dataQueryDTO1);
 		String[] entites2 = new String[1];
 		entites2[0] = "ssh";
 		dto2.setEntities(entites2);
 		excpectedResult.add(dto2);
 
 
-		DataQueryDTO dto3 = new DataQueryDTO(dataQueryDTO1);
+		DataQueryDTO dto3 = new DataQueryDTOImpl(dataQueryDTO1);
 		String[] entites3 = new String[1];
 		entites3[0] = "vpn";
 		dto3.setEntities(entites3);

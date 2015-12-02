@@ -9,13 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
-public class DailyTimeModel extends TimeModel implements FieldModel{
-	private static Logger logger = Logger.getLogger(DailyTimeModel.class);
+public class DailyTimeStreamModel extends TimeStreamModel implements FieldModel{
+	private static Logger logger = Logger.getLogger(DailyTimeStreamModel.class);
 	
 	public static final int TIME_RESOLUTION = 60 * 60 * 24 ;
 	private static final int BUCKET_SIZE = 60 * 10;
 	
-	public DailyTimeModel(){
+	public DailyTimeStreamModel(){
 		super(TIME_RESOLUTION, BUCKET_SIZE);
 	}
 	
