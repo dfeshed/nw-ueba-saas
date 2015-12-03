@@ -5,6 +5,7 @@ package fortscale.utils.cloudera;
  */
 
 import com.cloudera.api.ClouderaManagerClientBuilder;
+import com.cloudera.api.DataView;
 import com.cloudera.api.model.*;
 import com.cloudera.api.v10.RootResourceV10;
 import com.cloudera.api.v10.ServicesResourceV10;
@@ -119,10 +120,21 @@ public class ClouderaUtils {
      */
     public boolean validateServiceStartedOrStopped(String serviceName, boolean isStop) {
         ApiRoleState validationValue = isStop ? ApiRoleState.STOPPED : ApiRoleState.STARTED;
+        boolean serviceInstalled = false;
         logger.debug("checking if service {} is {}", serviceName, validationValue);
-        for (ApiRole role : servicesRes.getRolesResource(serviceName).readRoles() ){
-            if (servicesRes.getRolesResource(serviceName).readRole(role.getName()).getRoleState() != validationValue) {
-                return false;
+        ApiServiceList apiServices = servicesRes.readServices(DataView.SUMMARY);
+
+        for (ApiService apiService : apiServices){
+            if (apiService.getName().equals(serviceName)){
+                serviceInstalled = true;
+            }
+        }
+
+        if (serviceInstalled){ //do not try to stop a service that is not installed
+            for (ApiRole role : servicesRes.getRolesResource(serviceName).readRoles() ){
+                if (servicesRes.getRolesResource(serviceName).readRole(role.getName()).getRoleState() != validationValue) {
+                    return false;
+                }
             }
         }
         return true;
