@@ -26,12 +26,18 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public void addTag(Tag tag) {
-		tagRepository.addTag(tag);
+		try {
+			tagRepository.addTag(tag);
+		} catch (Exception ex) {
+			logger.debug("failed to add tag {}", tag);
+		}
 	}
 
 	@Override
 	public void addTags(List<Tag> tags) {
-		tagRepository.addTags(tags);
+		for (Tag tag: tags) {
+			addTag(tag);
+		}
 	}
 
 }

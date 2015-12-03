@@ -26,6 +26,18 @@ public class Tag extends AbstractDocument{
 		createsIndicator = false;
 	}
 
+	public Tag(String name, String displayName) {
+		this.name = name;
+		this.displayName = displayName;
+		createsIndicator = false;
+	}
+
+	public Tag(String name, String displayName, Boolean createsIndicator) {
+		this.name = name;
+		this.displayName = displayName;
+		this.createsIndicator = createsIndicator;
+	}
+
 	private String name;
 
 	private String displayName;
