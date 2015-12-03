@@ -66,11 +66,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				String regex = line.split(CSV_DELIMITER)[0];
 				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].
 						split(VALUE_DELIMITER)));
-				List<Tag> tagsToAddToCollection = new ArrayList();
 				for (String tagStr: tags) {
-					tagsToAddToCollection.add(new Tag(tagStr));
+					tagService.addTag(new Tag(tagStr));
 				}
-				tagService.addTags(tagsToAddToCollection);
 				List<User> users = userRepository.findByUsernameRegex(regex);
 				for (User user: users) {
 					Set<String> existingTags = user.getTags();

@@ -33,11 +33,4 @@ public class TagServiceImpl implements TagService {
 		}
 	}
 
-	@Override
-	public void addTags(List<Tag> tags) {
-		for (Tag tag: tags) {
-			addTag(tag);
-		}
-	}
-
 }
