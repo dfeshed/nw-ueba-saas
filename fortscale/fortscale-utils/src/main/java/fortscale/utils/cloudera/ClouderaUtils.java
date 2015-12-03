@@ -126,16 +126,19 @@ public class ClouderaUtils {
 
         for (ApiService apiService : apiServices){
             if (apiService.getName().equals(serviceName)){
-                serviceInstalled = true;
+                serviceInstalled = true; break;
             }
         }
 
         if (serviceInstalled){ //do not try to stop a service that is not installed
             for (ApiRole role : servicesRes.getRolesResource(serviceName).readRoles() ){
                 if (servicesRes.getRolesResource(serviceName).readRole(role.getName()).getRoleState() != validationValue) {
+                    logger.error("service {} is not {}", serviceName, validationValue);
                     return false;
                 }
             }
+        } else {
+            logger.warn("Service {} is not installed", serviceName);
         }
         return true;
     }
