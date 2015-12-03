@@ -18,18 +18,18 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
 
     private Pattern ignoreValues;
     private int maxPossibleRarity;
-    private int maxRaritySum;
+    private int maxNumOfRareFeatures;
 
     @JsonCreator
     public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern,
                                       @JsonProperty("maxPossibleRarity") Integer maxPossibleRarity,
-                                      @JsonProperty("maxRaritySum") Integer maxRaritySum) {
+                                      @JsonProperty("maxNumOfRareFeatures") Integer maxNumOfRareFeatures) {
         Assert.notNull(maxPossibleRarity);
         Assert.isTrue(maxPossibleRarity > 0);
-        Assert.notNull(maxRaritySum);
-        Assert.isTrue(maxRaritySum > 0);
+        Assert.notNull(maxNumOfRareFeatures);
+        Assert.isTrue(maxNumOfRareFeatures > 0);
         this.maxPossibleRarity = maxPossibleRarity;
-        this.maxRaritySum = maxRaritySum;
+        this.maxNumOfRareFeatures = maxNumOfRareFeatures;
         if (ignorePattern != null) {
             ignoreValues = Pattern.compile(ignorePattern);
         }
@@ -38,7 +38,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Integer> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap), maxPossibleRarity, maxRaritySum);
+        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap), maxPossibleRarity, maxNumOfRareFeatures);
     }
 
     @Override
