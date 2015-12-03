@@ -3,7 +3,9 @@ package fortscale.collection.tagging.service.impl;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -23,13 +25,15 @@ import java.util.List;
 import java.util.Set;
 
 @Service("userServiceAccountService")
-public class UserServiceAccountServiceImpl implements UserTagService, InitializingBean {
+public class UserServiceAccountServiceImpl implements InitializingBean, UserTagService {
 
 	@Autowired
 	protected UserService userService;
 
 	@Autowired
 	private UserTaggingService userTaggingService;
+	@Autowired
+	private TagService tagService;
 
 	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 
@@ -63,6 +67,9 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		throws Exception {
 
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
+		Tag tag = new Tag(UserTagEnum.service.getId());
+		tag.setCreatesIndicator(true);
+		tagService.addTag(tag);
 		refreshServiceAccounts();
 	}
 

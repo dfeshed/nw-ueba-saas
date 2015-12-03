@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service("tagService")
@@ -21,6 +22,16 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public List<Tag> getAllTags() {
 		return tagRepository.findAll();
+	}
+
+	@Override
+	public void addTag(Tag tag) {
+		tagRepository.addTag(tag);
+	}
+
+	@Override
+	public void addTags(List<Tag> tags) {
+		tagRepository.addTags(tags);
 	}
 
 }

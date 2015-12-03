@@ -8,7 +8,6 @@ import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.DeletedUserRepository;
-import fortscale.domain.core.dao.TagRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -65,9 +64,6 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private TagRepository tagRepository;
 
 	@Autowired
 	private DeletedUserRepository duplicatedUserRepository;
@@ -1085,11 +1081,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<String> getAllTags() {
-		return userRepository.getAllTags();
-	}
-
-	@Override
 	public Map<String, Long> groupByTags() {
 		final String TAGS = "tags";
 		Map<String, Long> items = groupByTagsCache.get(TAGS);
@@ -1128,22 +1119,14 @@ public class UserServiceImpl implements UserService{
 			tags = new ArrayList<String>();
 		}
 
-		List<Tag> updateTags = new ArrayList();
-
 		//Add the new tags to the user
 		if (tagsToAdd != null &&  tagsToAdd.size()>0) {
 			for (String tag : tagsToAdd) {
 				if (!tags.contains(tag)) {
-					updateTags.add(new Tag(tag));
 					tags.add(tag);
 				}
 			}
 		}
-
-		if (!updateTags.isEmpty()) {
-
-		}
-
 		//Remove tags
 		if (tagsToRemove != null && tagsToRemove.size()>0)
 		{

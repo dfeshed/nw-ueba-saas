@@ -3,6 +3,8 @@ package fortscale.collection.tagging.service.impl;
 import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.domain.core.Tag;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -16,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import java.io.File;
 import java.util.*;
 
-public abstract class UserTagServiceAbstract implements UserTagService, InitializingBean {
+public abstract class UserTagServiceAbstract implements InitializingBean, UserTagService {
 
 	private static Logger logger = Logger.getLogger(UserTagServiceAbstract.class);
 
@@ -25,6 +27,8 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 
 	@Autowired
 	private UserTaggingService userTaggingService;
+	@Autowired
+	private TagService tagService;
 
 	@Value("${user.tag.service.abstract.page.size:1000}")
 	private int pageSize;
@@ -56,6 +60,9 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		throws Exception {
 
 		userTaggingService.putUserTagService(getTag().getId(), this);
+		Tag tag = new Tag(getTag().getId());
+		tag.setCreatesIndicator(true);
+		tagService.addTag(tag);
 		refresh();
 	}
 

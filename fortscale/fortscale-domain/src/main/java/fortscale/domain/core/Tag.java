@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -52,6 +54,27 @@ public class Tag extends AbstractDocument{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 31).
+				append(name).
+				toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Tag)) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		Tag tag = (Tag)obj;
+		return new EqualsBuilder().
+				append(name, tag.name).
+				isEquals();
 	}
 
 }
