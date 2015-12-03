@@ -29,6 +29,8 @@ public class PxGridFetchJob extends FortscaleJob {
 	private String truststorePassphrase;
 	private int connectionRetryMillisecond;
 
+	private boolean connected;
+
 	@Override protected int getTotalNumOfSteps() {
 		return 3;
 	}
