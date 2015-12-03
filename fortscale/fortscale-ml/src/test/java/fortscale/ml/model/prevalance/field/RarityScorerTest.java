@@ -183,12 +183,25 @@ public class RarityScorerTest {
 	/*************************************************************************************
 	 *************************************************************************************
 	 *********** GRAPHS SHOWING HOW MODEL BEHAVES WHEN PARAMETERS ARE ISOLATED ***********
-	 ****** JUST UNCOMMENT THE "@Test" LINE IN ORDER TO RUN A GRAPH GENERATING TEST ******
-	 ************** THEN, COPY THE RESULTS INTO THE CORRESPONDING GOOGLE SHEET ***********
-	 ********************** (WITH THE NAME MATCHING THE TEST'S NAME) *********************
-	 * https://docs.google.com/spreadsheets/d/1eNqu2K3mIUCH3b-NXeQM5VqBkcaEqwcSxiNWZ-FzdHg/edit#gid=513658611&vpid=A1 *
+	 ************************** JUST PUT "PRINT_GRAPHS = true" ***************************
 	 *************************************************************************************
 	 *************************************************************************************/
+
+	private static final boolean PRINT_GRAPHS = false;
+
+	private void print(String msg) {
+		if (PRINT_GRAPHS) {
+			System.out.print(msg);
+		}
+	}
+
+	private void println(String msg) {
+		print(msg + "\n");
+	}
+
+	private void println() {
+		println("");
+	}
 
 	private double[][][] calcScoresOverConfigurationMatrix(int maxRareCount, int[] maxNumOfRareFeaturess, int[] counts, int maxNumOfFeatures) {
 		double[][][] res = new double[counts.length][][];
@@ -208,23 +221,24 @@ public class RarityScorerTest {
 		return res;
 	}
 
-	private void printNewLineOrHeader(boolean printedHeader, int fromCount, int toCount) {
+	private void printNewLineOrHeader(boolean printedHeader, String googleSheetName, int fromCount, int toCount) {
 		int counts[] = new int[toCount - fromCount + 1];
 		for (int i = 0; i < counts.length; i++) {
 			counts[i] = fromCount + i;
 		}
-		printNewLineOrHeader(printedHeader, counts);
+		printNewLineOrHeader(printedHeader, googleSheetName, counts);
 	}
 
-	private void printNewLineOrHeader(boolean printedHeader, int counts[]) {
+	private void printNewLineOrHeader(boolean printedHeader, String googleSheetName, int counts[]) {
 		if (printedHeader) {
-			System.out.println();
+			println();
 		} else {
 			String featureCountsStr = "featureCount";
 			for (int count : counts) {
 				featureCountsStr += "\t" + count;
 			}
-			System.out.println(featureCountsStr);
+			println("\n\n\nCopy the following output into \"" + googleSheetName + "\" sheet in the following URL: https://docs.google.com/spreadsheets/d/1eNqu2K3mIUCH3b-NXeQM5VqBkcaEqwcSxiNWZ-FzdHg/edit#gid=1047563136&vpid=A1\n");
+			println(featureCountsStr);
 		}
 	}
 
@@ -237,11 +251,11 @@ public class RarityScorerTest {
 
 		boolean printedHeader = false;
 		for (int maxRareCount = 0; maxRareCount < scores[0].length; maxRareCount++) {
-			printNewLineOrHeader(printedHeader, 1, maxFeatureCount);
+			printNewLineOrHeader(printedHeader, "maxRareCountEffect", 1, maxFeatureCount);
 			printedHeader = true;
-			System.out.print(maxRareCount + "\t");
+			print(maxRareCount + "\t");
 			for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
-				System.out.print(scores[maxRareCount][maxNumOfRareFeatures - 1][featureCount] + "\t");
+				print(scores[maxRareCount][maxNumOfRareFeatures - 1][featureCount] + "\t");
 			}
 		}
 	}
@@ -257,11 +271,11 @@ public class RarityScorerTest {
 		boolean printedHeader = false;
 		for (int countInd = 0; countInd < counts.length; countInd++) {
 			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
-				printNewLineOrHeader(printedHeader, 0, maxNumOfFeatures - 1);
+				printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect1", 0, maxNumOfFeatures - 1);
 				printedHeader = true;
-				System.out.print(counts[countInd] + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
+				print(counts[countInd] + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
 				for (int numOfFeatures = 0; numOfFeatures < scores[0][0].length; numOfFeatures++) {
-					System.out.print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
+					print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
 				}
 			}
 		}
@@ -281,11 +295,11 @@ public class RarityScorerTest {
 		boolean printedHeader = false;
 		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
 			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
-				printNewLineOrHeader(printedHeader, counts);
+				printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect2", counts);
 				printedHeader = true;
-				System.out.print(numOfFeatures + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
+				print(numOfFeatures + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
 				for (int countInd = 0; countInd < counts.length; countInd++) {
-					System.out.print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
+					print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
 				}
 			}
 		}
@@ -299,9 +313,9 @@ public class RarityScorerTest {
 
 		boolean printedHeader = false;
 		for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
-			printNewLineOrHeader(printedHeader, 0, maxFeatureCount);
+			printNewLineOrHeader(printedHeader, "lessRareFeatureEffect", 0, maxFeatureCount);
 			printedHeader = true;
-			System.out.print(maxRareCount + "\t");
+			print(maxRareCount + "\t");
 			double lastScore = 0;
 			for (int featureCount = 0; featureCount <= maxFeatureCount; featureCount++) {
 				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount), 1);
@@ -309,7 +323,7 @@ public class RarityScorerTest {
 					Assert.assertTrue(score >= lastScore);
 				}
 				lastScore = score;
-				System.out.print(score + "\t");
+				print(score + "\t");
 			}
 		}
 	}
