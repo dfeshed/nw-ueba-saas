@@ -16,10 +16,10 @@ public class RarityScorer {
 	// MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
 	private static final double STEEPNESS = Math.log(1 / (0.99999 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
 
-	private double maxRaritySum;
+	private int maxRaritySum;
 	private double[] buckets;
 
-	public RarityScorer(Collection<Integer> featureOccurrences, int maxPossibleRarity, double maxRaritySum) {
+	public RarityScorer(Collection<Integer> featureOccurrences, int maxPossibleRarity, int maxRaritySum) {
 		this.maxRaritySum = maxRaritySum;
 		buckets = new double[maxPossibleRarity * 2];
 		for (int occurrence : featureOccurrences) {
@@ -76,7 +76,7 @@ public class RarityScorer {
 		for (int i = featureCount; i < featureCount + getMaxPossibleRarity(); i++) {
 			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 1);
 		}
-		double rarityGauge = Math.min(1, Math.pow(raritySum / maxRaritySum, RARITY_SUM_EXPONENT));
+		double rarityGauge = Math.min(1, Math.pow(raritySum / (maxRaritySum + 1), RARITY_SUM_EXPONENT));
 		double rarityGaugeDiscountedByFeatureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount);
 		return (int) (MAX_POSSIBLE_SCORE * rarityGaugeDiscountedByFeatureRarity);
 	}

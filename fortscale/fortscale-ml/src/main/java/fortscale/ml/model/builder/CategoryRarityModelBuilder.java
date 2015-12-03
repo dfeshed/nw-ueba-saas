@@ -18,12 +18,12 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
 
     private Pattern ignoreValues;
     private int maxPossibleRarity;
-    private double maxRaritySum;
+    private int maxRaritySum;
 
     @JsonCreator
     public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern,
                                       @JsonProperty("maxPossibleRarity") Integer maxPossibleRarity,
-                                      @JsonProperty("maxRaritySum") Double maxRaritySum) {
+                                      @JsonProperty("maxRaritySum") Integer maxRaritySum) {
         Assert.notNull(maxPossibleRarity);
         Assert.isTrue(maxPossibleRarity > 0);
         Assert.notNull(maxRaritySum);

@@ -13,15 +13,15 @@ import java.util.Random;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
-	private double calcScore(int maxPossibleRarity, double maxRaritySum, Map<String, Integer> featureValueToCountMap, int featureCount) {
+	private double calcScore(int maxPossibleRarity, int maxRaritySum, Map<String, Integer> featureValueToCountMap, int featureCount) {
 		RarityScorer hist = new RarityScorer(featureValueToCountMap.values(), maxPossibleRarity, maxRaritySum);
 		return hist.score(featureCount);
 	}
 
-	private void assertScoreRange(int maxPossibleRarity, double maxRaritySum, Map<String, Integer> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
+	private void assertScoreRange(int maxPossibleRarity, int maxRaritySum, Map<String, Integer> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
 		double score = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap, featureCount);
-		Assert.assertTrue(score >= expectedRangeMin);
-		Assert.assertTrue(score <= expectedRangeMax);
+		Assert.assertTrue(String.format("score (%e) >= expectedRangeMin (%e) does not hold", score, expectedRangeMin), score >= expectedRangeMin);
+		Assert.assertTrue(String.format("score (%e) <= expectedRangeMax (%e) does not hold", score, expectedRangeMax), score <= expectedRangeMax);
 	}
 
 	private Map<String, Integer> createFeatureValueToCountWithConstantCount(int numOfFeatures, int count) {
@@ -40,8 +40,8 @@ public class RarityScorerTest {
 
 	@Test
 	public void shouldScore0ToFeatureCountsGreaterThanMaxPossibleRarity() throws Exception {
-		double maxRaritySum = 10;
-		for (int maxPossibleRarity = 1; maxPossibleRarity < 8; maxPossibleRarity++) {
+		int maxRaritySum = 10;
+		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
 			for (int count = 1; count <= maxPossibleRarity + 1; count++) {
 				double rangeMin = (count == maxPossibleRarity + 1) ? 0 : 1;
 				double rangeMax = (count == maxPossibleRarity + 1) ? 0 : 100;
@@ -52,10 +52,23 @@ public class RarityScorerTest {
 
 	@Test
 	public void shouldScore100ToVeryRareFeatureNoMatterWhatIsMaxPossibleRarity() throws Exception {
-		double maxRaritySum = 10;
+		int maxRaritySum = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxPossibleRarity = 1; maxPossibleRarity < 10; maxPossibleRarity++) {
 			assertScoreRange(maxPossibleRarity, maxRaritySum, new HashMap<String, Integer>(), veryRareFeatureCount, 99, 100);
+		}
+	}
+
+	@Test
+	public void shouldScore0WhenThereAreMoreThanMaxRaritySumRareFeatures() throws Exception {
+		int maxPossibleRarity = 100;
+		int count = 1;
+		for (int maxRaritySum = 1; maxRaritySum < 10; maxRaritySum++) {
+			for (int numOfFeatures = 0; numOfFeatures <= maxRaritySum + 1; numOfFeatures++) {
+				double rangeMin = (numOfFeatures == maxRaritySum + 1) ? 0 : 1;
+				double rangeMax = (numOfFeatures == maxRaritySum + 1) ? 0 : 100;
+				assertScoreRange(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(numOfFeatures, count), count, rangeMin, rangeMax);
+			}
 		}
 	}
 
@@ -147,7 +160,7 @@ public class RarityScorerTest {
 		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_RARITY_SUM, null);
 	}
 
-//	@Test
+	@Test
 	public void shouldScoreLessWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
 		for (int maxPossibleRarity = 1; maxPossibleRarity < 30; maxPossibleRarity++) {
 			for (int maxRaritySum = 1; maxRaritySum < 100; maxRaritySum += 5) {
@@ -193,7 +206,7 @@ public class RarityScorerTest {
 		return res;
 	}
 
-//	@Test
+	@Test
 	public void printMaxPossibleRarityEffect() {
 		int maxRaritySum = 10;
 		int maxMaxPossibleRarity = 10;
@@ -212,12 +225,12 @@ public class RarityScorerTest {
 		}
 	}
 
-//	@Test
+	@Test
 	public void printMaxRaritySumEffect1() {
 		int maxPossibleRarity = 15;
 		int maxRaritySums[] = new int[]{5, 7, 9, 11, 13, 15};
 		int counts[] = new int[]{1,4};
-		int maxNumOfFeatures = maxPossibleRarity;
+		int maxNumOfFeatures = maxPossibleRarity + 1;
 		double[][][] scores = calcScoresOverConfigurationMatrix(maxPossibleRarity, maxRaritySums, counts, maxNumOfFeatures);
 
 		System.out.println("count -> maxRaritySum (each column has constant count and maxRaritySum, and varying numOfFeatures from 0 to " + maxNumOfFeatures + ")");
@@ -236,7 +249,7 @@ public class RarityScorerTest {
 		}
 	}
 
-//	@Test
+	@Test
 	public void printMaxRaritySumEffect2() {
 		int maxPossibleRarity = 15;
 		int maxRaritySums[] = new int[]{5, 10, 15, 20, 30, 40, 50};
@@ -280,7 +293,7 @@ public class RarityScorerTest {
 	@Test
 	public void shouldScoreVeryRareFeatureTheSameWhenBuildingWithVeryCommonValuesAndWithoutThem() {
 		int maxPossibleRarity = 10;
-		double maxRaritySum = 30;
+		int maxRaritySum = 30;
 		int veryRareFeatureCount = 1;
 		int veryCommonFeatureCount = 10000;
 		double scoreWithCommon = calcScore(maxPossibleRarity, maxRaritySum, createFeatureValueToCountWithConstantCount(10, veryCommonFeatureCount), veryRareFeatureCount);
@@ -292,7 +305,7 @@ public class RarityScorerTest {
 	@Test
 	public void simpleInputOutputForOccurrencesHistogram() throws Exception {
 		int maxPossibleRarity = 6;
-		double maxRaritySum = 5;
+		int maxRaritySum = 5;
 
 		Random rnd = new Random(1);
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
@@ -309,4 +322,26 @@ public class RarityScorerTest {
 			Assert.assertEquals(scores[i], score, 1);
 		}
 	}
+
+//	@Test
+//	public void shouldScoreWithFixedRatioGivenModelsBuiltWithDifferentData() throws Exception {
+//		int maxPossibleRarity = 6;
+//		double maxRaritySum = 10;
+//		Map<String, Double> featureValueToCountMap1 = new HashMap<>();
+//		Map<String, Double> featureValueToCountMap2 = new HashMap<>();
+//		for (double i = 1; i <= maxPossibleRarity; i++) {
+//			featureValueToCountMap1.put("feature-" + i, i);
+//			featureValueToCountMap2.put("feature-" + i, i * 2);
+//		}
+//		double[] ratios = new double[maxPossibleRarity];
+//		for (int count = 1; count <= maxPossibleRarity; count++) {
+//			double score1 = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap1, count);
+//			double score2 = calcScore(maxPossibleRarity, maxRaritySum, featureValueToCountMap2, count);
+//			ratios[count - 1] = score2 / score1;
+//		}
+//		for (int i = 1; i < ratios.length; i++) {
+//			System.out.println(ratios[i]);
+//			Assert.assertEquals(ratios[i], ratios[i - 1], 0.01);
+//		}
+//	}
 }
