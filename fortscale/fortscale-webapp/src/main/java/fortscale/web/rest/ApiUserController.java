@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.UserMachine;
