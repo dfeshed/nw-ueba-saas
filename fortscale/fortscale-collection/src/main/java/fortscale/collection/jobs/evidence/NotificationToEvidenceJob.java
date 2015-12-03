@@ -94,7 +94,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
 		notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
 		normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-		notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationDataSourceField");
+		notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "dataSourceField");
 		notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationStartTimestampField");
 		notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,
