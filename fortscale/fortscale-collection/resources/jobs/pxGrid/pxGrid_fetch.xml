@@ -41,7 +41,7 @@
 				</entry>
 				<entry>
 					<key>keystorePassphrase</key>
-					<value>cisco</value>
+					<value>cisco123</value>
 				</entry>
 				<entry>
 					<key>truststorePath</key>
@@ -49,7 +49,7 @@
 				</entry>
 				<entry>
 					<key>truststorePassphrase</key>
-					<value>cisco</value>
+					<value>cisco123</value>
 				</entry>
 				<entry>
 					<key>connectionRetryMillisecond</key>
