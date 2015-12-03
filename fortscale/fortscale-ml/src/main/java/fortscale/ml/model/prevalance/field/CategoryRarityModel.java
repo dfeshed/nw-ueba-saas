@@ -13,8 +13,8 @@ public class CategoryRarityModel implements Model {
 
 	private RarityScorer occurrencesHistogram;
 
-	public CategoryRarityModel(Collection<Integer> featureCounts, int maxPossibleRarity, int maxNumOfRareFeatures) {
-		occurrencesHistogram = new RarityScorer(featureCounts, maxPossibleRarity, maxNumOfRareFeatures);
+	public CategoryRarityModel(Collection<Integer> featureCounts, int maxRareCount, int maxNumOfRareFeatures) {
+		occurrencesHistogram = new RarityScorer(featureCounts, maxRareCount, maxNumOfRareFeatures);
 	}
 
 	@Override

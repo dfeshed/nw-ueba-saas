@@ -19,9 +19,9 @@ public class RarityScorer {
 	private int maxNumOfRareFeatures;
 	private double[] buckets;
 
-	public RarityScorer(Collection<Integer> featureOccurrences, int maxPossibleRarity, int maxNumOfRareFeatures) {
+	public RarityScorer(Collection<Integer> featureOccurrences, int maxRareCount, int maxNumOfRareFeatures) {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
-		buckets = new double[maxPossibleRarity * 2];
+		buckets = new double[maxRareCount * 2];
 		for (int occurrence : featureOccurrences) {
 			if (occurrence <= buckets.length) {
 				buckets[occurrence - 1]++;
@@ -58,22 +58,22 @@ public class RarityScorer {
 	}
 
 	private double calcCommonnessDiscounting(double occurrence) {
-		return applyLogisticFunc(occurrence - 1, getMaxPossibleRarity());
+		return applyLogisticFunc(occurrence - 1, getMaxRareCount());
 	}
 
-	private int getMaxPossibleRarity() {
+	private int getMaxRareCount() {
 		return buckets.length / 2;
 	}
 
 	public double score(int featureCount) {
-		if (featureCount > getMaxPossibleRarity()) {
+		if (featureCount > getMaxRareCount()) {
 			return 0;
 		}
 		double raritySum = 0;
 		for (int i = 0; i < featureCount; i++) {
 			raritySum += buckets[i];
 		}
-		for (int i = featureCount; i < featureCount + getMaxPossibleRarity(); i++) {
+		for (int i = featureCount; i < featureCount + getMaxRareCount(); i++) {
 			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 1);
 		}
 		double rarityGauge = Math.min(1, Math.pow(raritySum / (maxNumOfRareFeatures + 1), RARITY_SUM_EXPONENT));
