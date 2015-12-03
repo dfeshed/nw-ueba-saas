@@ -14,9 +14,9 @@ import java.util.Random;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
-	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCount) {
+	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
 		RarityScorer hist = new RarityScorer(featureValueToCountMap.values(), maxRareCount, maxNumOfRareFeatures);
-		return hist.score(featureCount);
+		return hist.score(featureCountToScore);
 	}
 
 	private void assertScoreRange(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
@@ -75,18 +75,18 @@ public class RarityScorerTest {
 		}
 	}
 
-	private double[][][] calcScoresOverConfigurationMatrix(int maxMaxNumOfRareFeatures, int maxMaxRareCount, int maxFeatureCount) {
-		return calcScoresOverConfigurationMatrix(new HashMap<String, Integer>(), maxMaxNumOfRareFeatures, maxMaxRareCount, maxFeatureCount);
+	private double[][][] calcScoresOverConfigurationMatrix(int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
+		return calcScoresOverConfigurationMatrix(new HashMap<String, Integer>(), maxMaxRareCount, maxMaxNumOfRareFeatures, maxFeatureCountToScore);
 	}
 
-	private double[][][] calcScoresOverConfigurationMatrix(Map<String, Integer> featureValueToCountMap, int maxMaxNumOfRareFeatures, int maxMaxRareCount, int maxFeatureCount) {
+	private double[][][] calcScoresOverConfigurationMatrix(Map<String, Integer> featureValueToCountMap, int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
 		double[][][] scores = new double[maxMaxRareCount][][];
 		for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
 			scores[maxRareCount - 1] = new double[maxMaxNumOfRareFeatures][];
 			for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures <= maxMaxNumOfRareFeatures; maxNumOfRareFeatures++) {
-				scores[maxRareCount - 1][maxNumOfRareFeatures - 1] = new double[maxFeatureCount];
-				for (int featureCount = 1; featureCount <= maxFeatureCount; featureCount++) {
-					scores[maxRareCount - 1][maxNumOfRareFeatures - 1][featureCount - 1] = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCount);
+				scores[maxRareCount - 1][maxNumOfRareFeatures - 1] = new double[maxFeatureCountToScore];
+				for (int featureCountToScore = 1; featureCountToScore <= maxFeatureCountToScore; featureCountToScore++) {
+					scores[maxRareCount - 1][maxNumOfRareFeatures - 1][featureCountToScore - 1] = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore);
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class RarityScorerTest {
 
 	@Test
 	public void shouldScoreDecreasinglyWhenFeatureCountIncreases() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.FEATURE_COUNT, false);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.FEATURE_COUNT, false);
 	}
 
 	@Test
@@ -150,12 +150,12 @@ public class RarityScorerTest {
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
 		String veryRareFeature = "veryRare";
 		featureValueToCountMap.put(veryRareFeature, 1);
-		assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 100, 10, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
 	}
 
 	@Test
 	public void shouldScoreConstantlyWhenMaxNumOfRareFeaturesIncreasesButModelDataIsEmpty() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
+		assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
 	}
 
 
@@ -235,8 +235,8 @@ public class RarityScorerTest {
 	@Test
 	public void shouldScoreIncreasinglyWhenMaxRareCountIncreases() {
 		int maxMaxRareCount = 10;
-		int maxFeatureCount = maxMaxRareCount + 1;
-		double[][][] scores = calcScoresOverConfigurationMatrix(100, maxMaxRareCount, maxFeatureCount);
+		int maxFeatureCountToScore = maxMaxRareCount + 1;
+		double[][][] scores = calcScoresOverConfigurationMatrix(maxMaxRareCount, 100, maxFeatureCountToScore);
 
 		assertMonotonicity(scores, PARAMETER.MAX_RARE_COUNT, true);
 
