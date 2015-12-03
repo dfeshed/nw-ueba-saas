@@ -58,7 +58,7 @@ public class RarityScorerTest {
 		int maxNumOfRareFeatures = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
-			assertScoreRange(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), veryRareFeatureCount, 99, 100);
+			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), veryRareFeatureCount), 0.0001);
 		}
 	}
 
@@ -72,6 +72,15 @@ public class RarityScorerTest {
 				double rangeMax = (numOfFeatures == maxNumOfRareFeatures) ? 0 : 100;
 				assertScoreRange(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, count), count, rangeMin, rangeMax);
 			}
+		}
+	}
+
+	@Test
+	public void shouldScore100ToVeryRareFeatureAndEmptyBuildDataNoMatterWhatIsMaxNumOfRareFeatures() throws Exception {
+		int maxRareCount = 10;
+		int veryRareFeatureCount = 1;
+		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
+			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), veryRareFeatureCount), 0.0001);
 		}
 	}
 
@@ -274,7 +283,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void printMaxNumOfRareFeaturesEffect2() {
+	public void shouldScoreLessWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
 		int maxNumOfFeaturesToPrint = 2;
 		int maxRareCountToPrint = 15;
 		int maxNumOfRareFeaturessToPrint[] = new int[]{5, 10, 15, 20, 30, 40, 50};
