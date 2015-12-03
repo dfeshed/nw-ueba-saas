@@ -5,8 +5,10 @@ import com.google.common.collect.Sets;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +35,10 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Autowired
 	private UserTaggingService userTaggingService;
 	@Autowired
-	protected UserService userService;
+	private UserService userService;
+	@Autowired
+	private TagService tagService;
+
 	@Value("${user.list.custom_tags.path:}")
 	private String filePath;
 
@@ -61,6 +66,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				String regex = line.split(CSV_DELIMITER)[0];
 				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].
 						split(VALUE_DELIMITER)));
+				List<Tag> tagsToAddToCollection = new ArrayList();
+				for (String tagStr: tags) {
+					tagsToAddToCollection.add(new Tag(tagStr));
+				}
+				tagService.addTags(tagsToAddToCollection);
 				List<User> users = userRepository.findByUsernameRegex(regex);
 				for (User user: users) {
 					Set<String> existingTags = user.getTags();
