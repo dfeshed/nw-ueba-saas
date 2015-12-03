@@ -208,6 +208,26 @@ public class RarityScorerTest {
 		return res;
 	}
 
+	private void printNewLineOrHeader(boolean printedHeader, int fromCount, int toCount) {
+		int counts[] = new int[toCount - fromCount + 1];
+		for (int i = 0; i < counts.length; i++) {
+			counts[i] = fromCount + i;
+		}
+		printNewLineOrHeader(printedHeader, counts);
+	}
+
+	private void printNewLineOrHeader(boolean printedHeader, int counts[]) {
+		if (printedHeader) {
+			System.out.println();
+		} else {
+			String featureCountsStr = "featureCount";
+			for (int count : counts) {
+				featureCountsStr += "\t" + count;
+			}
+			System.out.println(featureCountsStr);
+		}
+	}
+
 	@Test
 	public void printMaxRareCountEffect() {
 		int maxNumOfRareFeatures = 10;
@@ -215,13 +235,12 @@ public class RarityScorerTest {
 		int maxFeatureCount = maxMaxRareCount + 1;
 		double[][][] scores = calcScoresOverConfigurationMatrix(maxNumOfRareFeatures, maxMaxRareCount, maxFeatureCount);
 
-		System.out.println("maxRareCount (each column has constant maxRareCount, and varying featureCount from 1 to " + maxFeatureCount + "). maxNumOfRareFeatures is always " + maxNumOfRareFeatures);
-		for (int maxRareCount = 1; maxRareCount <= scores.length; maxRareCount++) {
+		boolean printedHeader = false;
+		for (int maxRareCount = 0; maxRareCount < scores[0].length; maxRareCount++) {
+			printNewLineOrHeader(printedHeader, 1, maxFeatureCount);
+			printedHeader = true;
 			System.out.print(maxRareCount + "\t");
-		}
-		for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
-			System.out.println();
-			for (int maxRareCount = 0; maxRareCount < scores[0].length; maxRareCount++) {
+			for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
 				System.out.print(scores[maxRareCount][maxNumOfRareFeatures - 1][featureCount] + "\t");
 			}
 		}
@@ -235,16 +254,13 @@ public class RarityScorerTest {
 		int maxNumOfFeatures = maxRareCount + 1;
 		double[][][] scores = calcScoresOverConfigurationMatrix(maxRareCount, maxNumOfRareFeaturess, counts, maxNumOfFeatures);
 
-		System.out.println("count -> maxNumOfRareFeatures (each column has constant count and maxNumOfRareFeatures, and varying numOfFeatures from 0 to " + maxNumOfFeatures + ")");
-		for (int count : counts) {
-			for (int maxNumOfRareFeatures : maxNumOfRareFeaturess) {
-				System.out.print(count + "->" + maxNumOfRareFeatures + "\t");
-			}
-		}
-		for (int numOfFeatures = 0; numOfFeatures < scores[0][0].length; numOfFeatures++) {
-			System.out.println();
-			for (int countInd = 0; countInd < counts.length; countInd++) {
-				for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
+		boolean printedHeader = false;
+		for (int countInd = 0; countInd < counts.length; countInd++) {
+			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
+				printNewLineOrHeader(printedHeader, 0, maxNumOfFeatures - 1);
+				printedHeader = true;
+				System.out.print(counts[countInd] + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
+				for (int numOfFeatures = 0; numOfFeatures < scores[0][0].length; numOfFeatures++) {
 					System.out.print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
 				}
 			}
@@ -262,21 +278,13 @@ public class RarityScorerTest {
 		int maxNumOfFeatures = 5;
 		double[][][] scores = calcScoresOverConfigurationMatrix(maxRareCount, maxNumOfRareFeaturess, counts, maxNumOfFeatures);
 
-		String countsStr = String.valueOf(counts[0]);
-		for (int i = 1; i < counts.length; i++) {
-			countsStr += ", " + counts[i];
-		}
-		System.out.println("numOfFeatures -> maxNumOfRareFeatures (each column has constant numOfFeatures and maxNumOfRareFeatures, and varying featureCount of " +  countsStr + ")");
+		boolean printedHeader = false;
 		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
-			for (int maxNumOfRareFeatures : maxNumOfRareFeaturess) {
-				System.out.print(numOfFeatures + "->" + maxNumOfRareFeatures + "\t");
-			}
-		}
-
-		for (int countInd = 0; countInd < counts.length; countInd++) {
-			System.out.println();
-			for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
-				for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
+			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
+				printNewLineOrHeader(printedHeader, counts);
+				printedHeader = true;
+				System.out.print(numOfFeatures + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
+				for (int countInd = 0; countInd < counts.length; countInd++) {
 					System.out.print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
 				}
 			}
@@ -287,27 +295,20 @@ public class RarityScorerTest {
 	public void shouldScoreIncreasinglyWhenLessRareFeatureComparedToVeryRareFeatureBecomesEvenLessRare() {
 		int maxNumOfRareFeatures = 1;
 		int maxMaxRareCount = 10;
-		int counts[] = new int[maxMaxRareCount + 1];
-		for (int i = 0; i < counts.length; i++) {
-			counts[i] = i + 1;
-		}
+		int maxFeatureCount = maxMaxRareCount + 1;
 
-		String countsStr = String.valueOf(counts[0]);
-		for (int i = 1; i < counts.length; i++) {
-			countsStr += ", " + counts[i];
-		}
-		System.out.println("maxRareCount (each column has constant maxRareCount, and varying featureCount of " + countsStr + ")");
+		boolean printedHeader = false;
 		for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
+			printNewLineOrHeader(printedHeader, 0, maxFeatureCount);
+			printedHeader = true;
 			System.out.print(maxRareCount + "\t");
-		}
-		for (int featureCount = 0; featureCount <= maxMaxRareCount + 1; featureCount++) {
-			System.out.println();
-			for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
+			double lastScore = 0;
+			for (int featureCount = 0; featureCount <= maxFeatureCount; featureCount++) {
 				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount), 1);
 				if (featureCount > 1) {
-					double lastScore = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount - 1), 1);
 					Assert.assertTrue(score >= lastScore);
 				}
+				lastScore = score;
 				System.out.print(score + "\t");
 			}
 		}
