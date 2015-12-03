@@ -32,6 +32,7 @@
 
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
+    <mockito:mock id="tagService" class="fortscale.services.impl.TagServiceImpl"/>
 
     <context:spring-configured />
     <context:annotation-config />
