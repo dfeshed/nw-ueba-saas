@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service("userServiceAccountService")
-public class UserServiceAccountServiceImpl implements InitializingBean, UserTagService {
+public class UserServiceAccountServiceImpl implements UserTagService, InitializingBean {
 
 	@Autowired
 	protected UserService userService;
