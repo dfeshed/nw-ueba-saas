@@ -6,8 +6,8 @@ package fortscale.utils.cloudera;
 
 import com.cloudera.api.ClouderaManagerClientBuilder;
 import com.cloudera.api.model.*;
-import com.cloudera.api.v6.RootResourceV6;
-import com.cloudera.api.v6.ServicesResourceV6;
+import com.cloudera.api.v10.RootResourceV10;
+import com.cloudera.api.v10.ServicesResourceV10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +16,8 @@ public class ClouderaUtils {
     private static Logger logger = LoggerFactory.getLogger(ClouderaUtils.class);
 
     private static final int DEFAULT_TIMEOUT = 30;
-    private static RootResourceV6 apiRoot;
-    private static ServicesResourceV6 servicesRes;
+    private static RootResourceV10 apiRoot;
+    private static ServicesResourceV10 servicesRes;
 
     static class ClouderaManagerClientBuilderFactoryHelper {
         ClouderaManagerClientBuilder makeClouderaManagerClientBuilder(){
@@ -38,7 +38,7 @@ public class ClouderaUtils {
     }
     private void init(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass) {
         logger.debug("initializing cloudera manager utils");
-        apiRoot = factoryHelper.makeClouderaManagerClientBuilder().withHost(serverHost).withUsernamePassword(cmAdminUser, cmAdminPass).build().getRootV6();
+        apiRoot = factoryHelper.makeClouderaManagerClientBuilder().withHost(serverHost).withUsernamePassword(cmAdminUser, cmAdminPass).build().getRootV10();
         servicesRes = apiRoot.getClustersResource().getServicesResource(clusterName);
     }
 
