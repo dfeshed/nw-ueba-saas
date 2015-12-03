@@ -1,5 +1,6 @@
 package fortscale.ml.model.prevalance.field;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,11 +146,6 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScoreIncreasinglyWhenMaxRareCountIncreases() {
-		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_RARE_COUNT, true);
-	}
-
-	@Test
 	public void shouldScoreIncreasinglyWhenMaxNumOfRareFeaturesIncreases() {
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
 		String veryRareFeature = "veryRare";
@@ -160,22 +156,6 @@ public class RarityScorerTest {
 	@Test
 	public void shouldScoreConstantlyWhenMaxNumOfRareFeaturesIncreasesButModelDataIsEmpty() {
 		assertMonotonicity(calcScoresOverConfigurationMatrix(100, 10, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
-	}
-
-	@Test
-	public void shouldScoreLessWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
-		for (int maxRareCount = 1; maxRareCount < 30; maxRareCount++) {
-			for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 100; maxNumOfRareFeatures += 5) {
-				for (int featureCount = 1; featureCount <= maxRareCount; featureCount++) {
-					for (int numOfFeatures = 1; numOfFeatures < 10; numOfFeatures++) {
-						double scoreBeforeCountIncreases = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount), featureCount);
-						double scoreAfterCountIncreases = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount + 1), featureCount + 1);
-						String msg = String.format("score isn't decreasing in the following configuration:\nmaxRareCount = %d\nmaxNumOfRareFeatures = %d\nfeatureCount = %d -> %d\nnumOfFeatures = %d", maxRareCount, maxNumOfRareFeatures, featureCount, featureCount + 1, numOfFeatures);
-						Assert.assertTrue(msg, scoreAfterCountIncreases <= scoreBeforeCountIncreases);
-					}
-				}
-			}
-		}
 	}
 
 
@@ -189,8 +169,18 @@ public class RarityScorerTest {
 
 	private static final boolean PRINT_GRAPHS = false;
 
+	private boolean printingOffOverride = false;
+
+	private void turnOffPrinting() {
+		printingOffOverride = true;
+	}
+
+	private void revertPrinting() {
+		printingOffOverride = false;
+	}
+
 	private void print(String msg) {
-		if (PRINT_GRAPHS) {
+		if (PRINT_GRAPHS && !printingOffOverride) {
 			System.out.print(msg);
 		}
 	}
@@ -243,19 +233,21 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void printMaxRareCountEffect() {
-		int maxNumOfRareFeatures = 10;
+	public void shouldScoreIncreasinglyWhenMaxRareCountIncreases() {
 		int maxMaxRareCount = 10;
 		int maxFeatureCount = maxMaxRareCount + 1;
-		double[][][] scores = calcScoresOverConfigurationMatrix(maxNumOfRareFeatures, maxMaxRareCount, maxFeatureCount);
+		double[][][] scores = calcScoresOverConfigurationMatrix(100, maxMaxRareCount, maxFeatureCount);
 
+		assertMonotonicity(scores, PARAMETER.MAX_RARE_COUNT, true);
+
+		int maxNumOfRareFeaturesToPrint = 10;
 		boolean printedHeader = false;
-		for (int maxRareCount = 0; maxRareCount < scores[0].length; maxRareCount++) {
-			printNewLineOrHeader(printedHeader, "maxRareCountEffect", 1, maxFeatureCount);
+		for (int maxRareCount = 0; maxRareCount < scores.length; maxRareCount++) {
+			printNewLineOrHeader(printedHeader, "maxRareCountEffect", 1, scores[0][0].length);
 			printedHeader = true;
 			print(maxRareCount + "\t");
 			for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
-				print(scores[maxRareCount][maxNumOfRareFeatures - 1][featureCount] + "\t");
+				print(scores[maxRareCount][maxNumOfRareFeaturesToPrint - 1][featureCount] + "\t");
 			}
 		}
 	}
@@ -283,23 +275,32 @@ public class RarityScorerTest {
 
 	@Test
 	public void printMaxNumOfRareFeaturesEffect2() {
-		int maxRareCount = 15;
-		int maxNumOfRareFeaturess[] = new int[]{5, 10, 15, 20, 30, 40, 50};
-		int counts[] = new int[maxRareCount + 1];
-		for (int i = 0; i < counts.length; i++) {
-			counts[i] = i + 1;
-		}
-		int maxNumOfFeatures = 5;
-		double[][][] scores = calcScoresOverConfigurationMatrix(maxRareCount, maxNumOfRareFeaturess, counts, maxNumOfFeatures);
+		int maxNumOfFeaturesToPrint = 2;
+		int maxRareCountToPrint = 15;
+		int maxNumOfRareFeaturessToPrint[] = new int[]{5, 10, 15, 20, 30, 40, 50};
 
 		boolean printedHeader = false;
-		for (int numOfFeatures = 1; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
-			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
-				printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect2", counts);
-				printedHeader = true;
-				print(numOfFeatures + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
-				for (int countInd = 0; countInd < counts.length; countInd++) {
-					print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
+		for (int maxRareCount = 1; maxRareCount < 30; maxRareCount++) {
+			for (int numOfFeatures = 1; numOfFeatures < 10; numOfFeatures++) {
+				for (int maxNumOfRareFeatures = 5; maxNumOfRareFeatures < 100; maxNumOfRareFeatures += 5) {
+					if (numOfFeatures <= maxNumOfFeaturesToPrint && maxRareCount == maxRareCountToPrint && ArrayUtils.contains(maxNumOfRareFeaturessToPrint, maxNumOfRareFeatures)) {
+						revertPrinting();
+						printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect2", 1, maxRareCount);
+						printedHeader = true;
+					} else {
+						turnOffPrinting();
+					}
+					print(numOfFeatures + "->" + maxNumOfRareFeatures + "\t");
+					double lastScore = 100;
+					for (int featureCount = 1; featureCount <= maxRareCount; featureCount++) {
+						double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount), featureCount);
+						if (featureCount > 1) {
+							String msg = String.format("score isn't decreasing in the following configuration:\nmaxRareCount = %d\nmaxNumOfRareFeatures = %d\nfeatureCount = %d -> %d\nnumOfFeatures = %d", maxRareCount, maxNumOfRareFeatures, featureCount - 1, featureCount, numOfFeatures);
+							Assert.assertTrue(msg, score <= lastScore);
+						}
+						lastScore = score;
+						print(score + "\t");
+					}
 				}
 			}
 		}
