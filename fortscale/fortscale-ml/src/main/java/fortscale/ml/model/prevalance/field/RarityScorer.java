@@ -19,10 +19,10 @@ public class RarityScorer {
 	private double rarityGauge;
 	private double maxPossibleRarity;
 
-	public RarityScorer(Collection<Double> featureOccurrences, int maxPossibleRarity, double maxRaritySum) {
+	public RarityScorer(Collection<Integer> featureOccurrences, int maxPossibleRarity, double maxRaritySum) {
 		this.maxPossibleRarity = maxPossibleRarity;
 		double raritySum = 0;
-		for (double occurrence : featureOccurrences) {
+		for (int occurrence : featureOccurrences) {
 			raritySum += occurrence * calcCommonnessDiscounting(occurrence);
 		}
 		rarityGauge = Math.min(1, Math.pow(raritySum, RARITY_SUM_EXPONENT) / maxRaritySum);

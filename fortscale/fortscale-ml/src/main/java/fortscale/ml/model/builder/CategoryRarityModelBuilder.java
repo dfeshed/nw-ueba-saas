@@ -37,7 +37,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        Map<String, Double> featureValueToCountMap = castModelBuilderData(modelBuilderData);
+        Map<String, Integer> featureValueToCountMap = castModelBuilderData(modelBuilderData);
         return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap), maxPossibleRarity, maxRaritySum);
     }
 
@@ -47,9 +47,9 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return shouldIgnoreFeature(featureAndCount.getKey()) ? 0 : model.calculateScore(featureAndCount.getValue());
     }
 
-    private Collection<Double> getUnignoredCounts(Map<String, Double> featureValueToCountMap) {
-        List<Double> counts = new ArrayList<>();
-        for (Map.Entry<String, Double> entry : featureValueToCountMap.entrySet()) {
+    private Collection<Integer> getUnignoredCounts(Map<String, Integer> featureValueToCountMap) {
+        List<Integer> counts = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : featureValueToCountMap.entrySet()) {
             if (!shouldIgnoreFeature(entry.getKey())) {
                 counts.add(entry.getValue());
             }
@@ -61,7 +61,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return StringUtils.isBlank(value) || (ignoreValues != null && ignoreValues.matcher(value).matches());
     }
 
-    private Map<String, Double> castModelBuilderData(Object modelBuilderData) {
+    private Map<String, Integer> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
         }
@@ -70,6 +70,6 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
             logger.error(errorMsg);
             throw new IllegalArgumentException(errorMsg);
         }
-        return (Map<String, Double>) modelBuilderData;
+        return (Map<String, Integer>) modelBuilderData;
     }
 }
