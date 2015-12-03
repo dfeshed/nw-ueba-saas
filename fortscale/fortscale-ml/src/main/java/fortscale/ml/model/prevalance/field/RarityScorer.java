@@ -16,16 +16,17 @@ public class RarityScorer {
 	// MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
 	private static final double STEEPNESS = Math.log(1 / (0.99999 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
 
-	private double rarityGauge;
-	private double maxPossibleRarity;
+	private double maxRaritySum;
+	private double[] buckets;
 
 	public RarityScorer(Collection<Integer> featureOccurrences, int maxPossibleRarity, double maxRaritySum) {
-		this.maxPossibleRarity = maxPossibleRarity;
-		double raritySum = 0;
+		this.maxRaritySum = maxRaritySum;
+		buckets = new double[maxPossibleRarity * 2];
 		for (int occurrence : featureOccurrences) {
-			raritySum += occurrence * calcCommonnessDiscounting(occurrence);
+			if (occurrence <= buckets.length) {
+				buckets[occurrence - 1]++;
+			}
 		}
-		rarityGauge = Math.min(1, Math.pow(raritySum, RARITY_SUM_EXPONENT) / maxRaritySum);
 	}
 
 	/**
@@ -57,10 +58,25 @@ public class RarityScorer {
 	}
 
 	private double calcCommonnessDiscounting(double occurrence) {
-		return applyLogisticFunc(occurrence - 1, maxPossibleRarity);
+		return applyLogisticFunc(occurrence - 1, getMaxPossibleRarity());
 	}
 
-	public double score(Double featureCount) {
+	private int getMaxPossibleRarity() {
+		return buckets.length / 2;
+	}
+
+	public double score(int featureCount) {
+		if (featureCount > getMaxPossibleRarity()) {
+			return 0;
+		}
+		double raritySum = 0;
+		for (int i = 0; i < featureCount; i++) {
+			raritySum += buckets[i];
+		}
+		for (int i = featureCount; i < featureCount + getMaxPossibleRarity(); i++) {
+			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 1);
+		}
+		double rarityGauge = Math.min(1, Math.pow(raritySum / maxRaritySum, RARITY_SUM_EXPONENT));
 		double rarityGaugeDiscountedByFeatureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount);
 		return (int) (MAX_POSSIBLE_SCORE * rarityGaugeDiscountedByFeatureRarity);
 	}
