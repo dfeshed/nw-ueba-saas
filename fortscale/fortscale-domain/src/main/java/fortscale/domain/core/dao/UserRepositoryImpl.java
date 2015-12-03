@@ -454,7 +454,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
 
 		// construct the update that adds and removes tags
-		if (!tagsToAdd.isEmpty()) {
+		if (tagsToAdd != null && !tagsToAdd.isEmpty()) {
             EachAddToSetUpdate update = new EachAddToSetUpdate();
             update.addToSetEach(User.tagsField, tagsToAdd);
 
@@ -462,7 +462,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             mongoTemplate.updateFirst(usernameCriteria, update, User.class);
         }
 
-		if (!tagsToRemove.isEmpty()) {
+		if (tagsToRemove != null && !tagsToRemove.isEmpty()) {
             EachAddToSetUpdate update = new EachAddToSetUpdate();
             update.pullAll(User.tagsField, tagsToRemove.toArray());
 

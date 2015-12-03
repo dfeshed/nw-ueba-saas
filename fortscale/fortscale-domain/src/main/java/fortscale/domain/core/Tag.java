@@ -17,6 +17,7 @@ public class Tag extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String displayNameField = "displayName";
 	public static final String createsIndicatorField = "createsIndicator";
+	public static final String isFixedField = "isFixed";
 
 	public Tag() {}
 
@@ -24,18 +25,21 @@ public class Tag extends AbstractDocument{
 		this.name = name;
 		displayName = name;
 		createsIndicator = false;
+		isFixed = false;
 	}
 
-	public Tag(String name, String displayName) {
+	public Tag(String name, String displayName, Boolean isFixed) {
 		this.name = name;
 		this.displayName = displayName;
+		this.isFixed = isFixed;
 		createsIndicator = false;
 	}
 
-	public Tag(String name, String displayName, Boolean createsIndicator) {
+	public Tag(String name, String displayName, Boolean createsIndicator, Boolean isFixed) {
 		this.name = name;
 		this.displayName = displayName;
 		this.createsIndicator = createsIndicator;
+		this.isFixed = isFixed;
 	}
 
 	private String name;
@@ -43,6 +47,8 @@ public class Tag extends AbstractDocument{
 	private String displayName;
 
 	private Boolean createsIndicator;
+
+	private Boolean isFixed;
 
 	public String getDisplayName() {
 		return displayName;
@@ -66,6 +72,14 @@ public class Tag extends AbstractDocument{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Boolean getIsFixed() {
+		return isFixed;
+	}
+
+	public void setIsFixed(Boolean isFixed) {
+		this.isFixed = isFixed;
 	}
 
 	@Override
