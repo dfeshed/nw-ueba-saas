@@ -356,6 +356,20 @@ public class RarityScorerTest {
 	}
 
 	@Test
+	public void elementarycheckForOccurrencesHistogram() throws Exception {
+		int maxRareCount = 15;
+		int maxNumOfRareFeatures = 5;
+
+		int count = 100;
+		Map<String, Integer> featureValueToCountMap = new HashMap<>();
+		for (int i = 0; i < 100; i++) {
+			featureValueToCountMap.put(String.format("test%d", i), count);
+		}
+		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, count);
+		Assert.assertEquals(0.0, score, 0.0);
+	}
+
+	@Test
 	public void simpleInputOutputForOccurrencesHistogram() throws Exception {
 		int maxRareCount = 6;
 		int maxNumOfRareFeatures = 5;
@@ -375,26 +389,4 @@ public class RarityScorerTest {
 			Assert.assertEquals(scores[i], score, 0);
 		}
 	}
-
-//	@Test
-//	public void shouldScoreWithFixedRatioGivenModelsBuiltWithDifferentData() throws Exception {
-//		int maxRareCount = 6;
-//		double maxNumOfRareFeatures = 10;
-//		Map<String, Double> featureValueToCountMap1 = new HashMap<>();
-//		Map<String, Double> featureValueToCountMap2 = new HashMap<>();
-//		for (double i = 1; i <= maxRareCount; i++) {
-//			featureValueToCountMap1.put("feature-" + i, i);
-//			featureValueToCountMap2.put("feature-" + i, i * 2);
-//		}
-//		double[] ratios = new double[maxRareCount];
-//		for (int count = 1; count <= maxRareCount; count++) {
-//			double score1 = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap1, count);
-//			double score2 = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap2, count);
-//			ratios[count - 1] = score2 / score1;
-//		}
-//		for (int i = 1; i < ratios.length; i++) {
-//			System.out.println(ratios[i]);
-//			Assert.assertEquals(ratios[i], ratios[i - 1], 0.01);
-//		}
-//	}
 }
