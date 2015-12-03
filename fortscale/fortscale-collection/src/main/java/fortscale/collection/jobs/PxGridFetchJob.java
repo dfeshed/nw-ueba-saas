@@ -1,6 +1,7 @@
 package fortscale.collection.jobs;
 
 import com.cisco.pxgrid.GridConnection;
+import com.cisco.pxgrid.GridConnection.Listener;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
 import com.cisco.pxgrid.model.ise.metadata.EndpointProfile;
@@ -43,7 +44,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 		// establishing a connection with the pxGrid controller
 		GridConnection con = new GridConnection(config);
-		con.addListener(new SampleConnectionListener());
+		con.addListener(new MyListener());
 
 		ReconnectionManager recon = new ReconnectionManager(con);
 		recon.setRetryMillisecond(connectionRetryMillisecond);
@@ -97,5 +98,50 @@ public class PxGridFetchJob extends FortscaleJob {
 		config.setTruststorePassphrase(truststorePassphrase);
 
 		return config;
+	}
+
+	private class MyListener implements Listener {
+
+		@Override
+		public void beforeConnect() {
+			System.out.println("Connecting...");
+		}
+
+		@Override
+		public void onConnected() {
+			System.out.println("Connected");
+			synchronized (PxGridFetchJob.this) {
+				connected = true;
+				PxGridFetchJob.this.notify();
+			}
+		}
+
+		@Override
+		public void onDisconnected() {
+			if (connected) {
+				System.out.println("Connection closed");
+				connected = false;
+			}
+		}
+
+		@Override
+		public void onDeleted() {
+			System.out.println("Account deleted");
+		}
+
+		@Override
+		public void onDisabled() {
+			System.out.println("Account disabled");
+		}
+
+		@Override
+		public void onEnabled() {
+			System.out.println("Account enabled");
+		}
+
+		@Override
+		public void onAuthorizationChanged() {
+			System.out.println("Authorization changed");
+		}
 	}
 }
