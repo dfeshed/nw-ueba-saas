@@ -45,4 +45,9 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
 		mongoTemplate.remove(tag);
 	}
 
+	@Override
+	public List<Tag> findAll() {
+		return mongoTemplate.findAll(Tag.class);
+	}
+
 }

@@ -14,5 +14,6 @@ public interface TagRepositoryCustom {
 	void addTag(Tag tag);
 	void addTags(List<Tag> tags);
 	void removeTag(Tag tag);
+	List<Tag> findAll();
 
 }

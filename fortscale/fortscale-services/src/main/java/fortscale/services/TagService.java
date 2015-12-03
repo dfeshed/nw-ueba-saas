@@ -10,4 +10,5 @@ public interface TagService {
 	List<Tag> getAllTags();
 	void addTag(Tag tag);
 	void addTags(List<Tag> tags);
+
 }
