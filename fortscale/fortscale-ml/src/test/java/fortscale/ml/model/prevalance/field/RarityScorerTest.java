@@ -202,24 +202,6 @@ public class RarityScorerTest {
 		println("");
 	}
 
-	private double[][][] calcScoresOverConfigurationMatrix(int maxRareCount, int[] maxNumOfRareFeaturess, int[] counts, int maxNumOfFeatures) {
-		double[][][] res = new double[counts.length][][];
-		for (int countInd = 0; countInd < counts.length; countInd++) {
-			res[countInd] = new double[maxNumOfRareFeaturess.length][];
-			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
-				res[countInd][maxNumOfRareFeaturesInd] = new double[maxNumOfFeatures + 1];
-				for (int numOfFeatures = 0; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
-					res[countInd][maxNumOfRareFeaturesInd][numOfFeatures] = calcScore(
-							maxRareCount,
-							maxNumOfRareFeaturess[maxNumOfRareFeaturesInd],
-							createFeatureValueToCountWithConstantCount(numOfFeatures, counts[countInd]),
-							counts[countInd]);
-				}
-			}
-		}
-		return res;
-	}
-
 	private void printNewLineOrHeader(boolean printedHeader, String googleSheetName, int fromCount, int toCount) {
 		int counts[] = new int[toCount - fromCount + 1];
 		for (int i = 0; i < counts.length; i++) {
@@ -262,21 +244,35 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void printMaxNumOfRareFeaturesEffect1() {
-		int maxRareCount = 15;
+	public void shouldScoreDecreasinglyWhenNumberOfRareFeaturesWithSameCountIncreases() {
+		int maxRareCountToPrint = 15;
 		int maxNumOfRareFeaturess[] = new int[]{5, 7, 9, 11, 13, 15};
 		int counts[] = new int[]{1,4};
-		int maxNumOfFeatures = maxRareCount + 1;
-		double[][][] scores = calcScoresOverConfigurationMatrix(maxRareCount, maxNumOfRareFeaturess, counts, maxNumOfFeatures);
 
 		boolean printedHeader = false;
-		for (int countInd = 0; countInd < counts.length; countInd++) {
-			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < maxNumOfRareFeaturess.length; maxNumOfRareFeaturesInd++) {
-				printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect1", 0, maxNumOfFeatures - 1);
-				printedHeader = true;
-				print(counts[countInd] + "->" + maxNumOfRareFeaturess[maxNumOfRareFeaturesInd] + "\t");
-				for (int numOfFeatures = 0; numOfFeatures < scores[0][0].length; numOfFeatures++) {
-					print(scores[countInd][maxNumOfRareFeaturesInd][numOfFeatures] + "\t");
+		for (int maxRareCount = 1; maxRareCount < 20; maxRareCount++) {
+			for (int count : counts) {
+				for (int maxNumOfRareFeatures : maxNumOfRareFeaturess) {
+					int maxNumOfFeatures = maxRareCount + 1;
+					if (maxRareCount == maxRareCountToPrint) {
+						revertPrinting();
+						printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect1", 0, maxNumOfFeatures - 1);
+						printedHeader = true;
+					} else {
+						turnOffPrinting();
+					}
+					print(count + "->" + maxNumOfRareFeatures + "\t");
+					double lastScore = 100;
+					for (int numOfFeatures = 0; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
+						double score = calcScore(
+								maxRareCount,
+								maxNumOfRareFeatures,
+								createFeatureValueToCountWithConstantCount(numOfFeatures, count),
+								count);
+						Assert.assertTrue(score <= lastScore);
+						lastScore = score;
+						print(score + "\t");
+					}
 				}
 			}
 		}
