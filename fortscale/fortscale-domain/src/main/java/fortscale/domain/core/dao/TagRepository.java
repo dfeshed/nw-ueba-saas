@@ -9,6 +9,5 @@ public interface TagRepository extends MongoRepository<Tag, String>, TagReposito
 
 	Tag findByName(String name);
 	List<Tag> findByCreatesIndicator(Boolean createsIndicator);
-	List<Tag> findAll();
 
 }
