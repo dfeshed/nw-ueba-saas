@@ -43,6 +43,8 @@ public class PxGridFetchJob extends FortscaleJob {
 
 		// establishing a connection with the pxGrid controller
 		GridConnection con = new GridConnection(config);
+		con.addListener(new SampleConnectionListener());
+
 		ReconnectionManager recon = new ReconnectionManager(con);
 		recon.setRetryMillisecond(connectionRetryMillisecond);
 		recon.start();
