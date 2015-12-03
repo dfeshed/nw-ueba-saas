@@ -63,6 +63,14 @@ public class RarityScorerTest {
 	}
 
 	@Test
+	public void shouldScore100ToVeryRareFeatureEvenWhenThereAreCommonFeatures() throws Exception {
+		int maxRareCount = 35;
+		int maxNumOfRareFeatures = 100;
+		int veryRareFeatureCount = 1;
+		Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(10000, maxRareCount + 2), veryRareFeatureCount), 0.0001);
+	}
+
+	@Test
 	public void shouldScore0WhenThereAreMoreThanMaxNumOfRareFeaturesRareFeatures() throws Exception {
 		int maxRareCount = 100;
 		int count = 1;
