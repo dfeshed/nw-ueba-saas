@@ -60,8 +60,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		throws Exception {
 
 		userTaggingService.putUserTagService(getTag().getId(), this);
-		Tag tag = new Tag(getTag().getId());
-		tag.setCreatesIndicator(true);
+		Tag tag = new Tag(getTag().getId(), getTag().getDisplayName(), true);
 		tagService.addTag(tag);
 		refresh();
 	}

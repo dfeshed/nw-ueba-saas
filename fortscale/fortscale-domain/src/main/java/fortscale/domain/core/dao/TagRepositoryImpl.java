@@ -36,11 +36,6 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 	}
 
 	@Override
-	public void addTags(List<Tag> tags) {
-		mongoTemplate.insert(tags);
-	}
-
-	@Override
 	public void removeTag(Tag tag) {
 		mongoTemplate.remove(tag);
 	}

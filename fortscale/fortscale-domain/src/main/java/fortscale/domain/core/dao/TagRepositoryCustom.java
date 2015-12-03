@@ -12,7 +12,6 @@ public interface TagRepositoryCustom {
 	void updateCreatesIndicator(String name, boolean createsIndicator);
 	void updateTag(Tag tag);
 	void addTag(Tag tag);
-	void addTags(List<Tag> tags);
 	void removeTag(Tag tag);
 	List<Tag> findAll();
 
