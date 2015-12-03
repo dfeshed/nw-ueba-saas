@@ -26,8 +26,10 @@ public class RarityScorerTest {
 
 	private Map<String, Integer> createFeatureValueToCountWithConstantCount(int numOfFeatures, int count) {
 		Map<String, Integer> res = new HashMap<>(numOfFeatures);
-		while (numOfFeatures-- > 0) {
-			res.put("feature-" + numOfFeatures, count);
+		if (count > 0) {
+			while (numOfFeatures-- > 0) {
+				res.put("feature-" + numOfFeatures, count);
+			}
 		}
 		return res;
 	}
@@ -64,9 +66,9 @@ public class RarityScorerTest {
 		int maxRareCount = 100;
 		int count = 1;
 		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
-			for (int numOfFeatures = 0; numOfFeatures <= maxNumOfRareFeatures + 1; numOfFeatures++) {
-				double rangeMin = (numOfFeatures == maxNumOfRareFeatures + 1) ? 0 : 1;
-				double rangeMax = (numOfFeatures == maxNumOfRareFeatures + 1) ? 0 : 100;
+			for (int numOfFeatures = 0; numOfFeatures <= maxNumOfRareFeatures; numOfFeatures++) {
+				double rangeMin = (numOfFeatures == maxNumOfRareFeatures) ? 0 : 1;
+				double rangeMax = (numOfFeatures == maxNumOfRareFeatures) ? 0 : 100;
 				assertScoreRange(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, count), count, rangeMin, rangeMax);
 			}
 		}
@@ -281,6 +283,36 @@ public class RarityScorerTest {
 		}
 	}
 
+	@Test
+	public void shouldScoreIncreasinglyWhenLessRareFeatureComparedToVeryRareFeatureBecomesEvenLessRare() {
+		int maxNumOfRareFeatures = 1;
+		int maxMaxRareCount = 10;
+		int counts[] = new int[maxMaxRareCount + 1];
+		for (int i = 0; i < counts.length; i++) {
+			counts[i] = i + 1;
+		}
+
+		String countsStr = String.valueOf(counts[0]);
+		for (int i = 1; i < counts.length; i++) {
+			countsStr += ", " + counts[i];
+		}
+		System.out.println("maxRareCount (each column has constant maxRareCount, and varying featureCount of " + countsStr + ")");
+		for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
+			System.out.print(maxRareCount + "\t");
+		}
+		for (int featureCount = 0; featureCount <= maxMaxRareCount + 1; featureCount++) {
+			System.out.println();
+			for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
+				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount), 1);
+				if (featureCount > 1) {
+					double lastScore = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount - 1), 1);
+					Assert.assertTrue(score >= lastScore);
+				}
+				System.out.print(score + "\t");
+			}
+		}
+	}
+
 
 
 	/*************************************************************************************
@@ -316,10 +348,10 @@ public class RarityScorerTest {
 
 		int[] counts = new int[]{1, 2, 3, 4};
 //		double[] scores = new double[]{99, 93, 61, 18};
-		double[] scores = new double[]{99, 94, 49, 15};
+		double[] scores = new double[]{100, 94, 50, 15};
 		for (int i = 0; i < scores.length; i++) {
 			double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, counts[i]);
-			Assert.assertEquals(scores[i], score, 1);
+			Assert.assertEquals(scores[i], score, 0);
 		}
 	}
 

@@ -74,9 +74,9 @@ public class RarityScorer {
 			raritySum += buckets[i];
 		}
 		for (int i = featureCount; i < featureCount + getMaxRareCount(); i++) {
-			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 1);
+			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 2);
 		}
-		double rarityGauge = Math.min(1, Math.pow(raritySum / (maxNumOfRareFeatures + 1), RARITY_SUM_EXPONENT));
+		double rarityGauge = Math.min(1, Math.pow(raritySum / maxNumOfRareFeatures, RARITY_SUM_EXPONENT));
 		double rarityGaugeDiscountedByFeatureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount);
 		return (int) (MAX_POSSIBLE_SCORE * rarityGaugeDiscountedByFeatureRarity);
 	}
