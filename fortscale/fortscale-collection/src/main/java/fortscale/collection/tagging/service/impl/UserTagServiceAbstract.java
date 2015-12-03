@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import java.io.File;
 import java.util.*;
 
-public abstract class UserTagServiceAbstract implements InitializingBean, UserTagService {
+public abstract class UserTagServiceAbstract implements UserTagService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(UserTagServiceAbstract.class);
 
