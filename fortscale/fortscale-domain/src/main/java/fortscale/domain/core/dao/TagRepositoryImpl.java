@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Amir Keren on 02/12/15.
  */
-public class TagRepositoryCustomImpl implements TagRepositoryCustom {
+public class TagRepositoryImpl implements TagRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
