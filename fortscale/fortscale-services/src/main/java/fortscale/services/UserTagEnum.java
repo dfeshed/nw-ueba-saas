@@ -1,4 +1,4 @@
-package fortscale.collection.tagging.service;
+package fortscale.services;
 
 public enum UserTagEnum {
 	admin("admin","Administrator Account"),

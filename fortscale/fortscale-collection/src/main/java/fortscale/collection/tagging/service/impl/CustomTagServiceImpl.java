@@ -2,9 +2,9 @@ package fortscale.collection.tagging.service.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -78,7 +78,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					for (String tagStr: tagsDifference) {
 						if (fixedTags.contains(tagStr)) {
 							UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.addUserTag(user.getUsername());
+							userTagService.addUserTag(user.getUsername(), null);
 						} else {
 							tagsToAdd.add(tagStr);
 							tagService.addTag(new Tag(tagStr));
@@ -89,7 +89,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					for (String tagStr: tagsDifference) {
 						if (fixedTags.contains(tagStr)) {
 							UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.removeUserTag(user.getUsername());
+							userTagService.removeUserTag(user.getUsername(), null);
 						} else {
 							tagsToRemove.add(tagStr);
 						}
@@ -121,9 +121,19 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		return User.tagsField;
 	}
 
-	@Override public void addUserTag(String userName) {}
+	@Override
+	public void addUserTag(String userName, String tag) {
+		List tagsToAdd = new ArrayList();
+		tagsToAdd.add(tag);
+		userService.updateUserTagList(tagsToAdd, null, userName);
+	}
 
-	@Override public void removeUserTag(String userName) {}
+	@Override
+	public void removeUserTag(String userName, String tag) {
+		List tagsToRemove = new ArrayList();
+		tagsToRemove.add(tag);
+		userService.updateUserTagList(null, tagsToRemove, userName);
+	}
 
 	@Override
 	public UserTagEnum getTag(){

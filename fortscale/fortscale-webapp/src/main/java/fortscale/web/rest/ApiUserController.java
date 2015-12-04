@@ -36,6 +36,9 @@ public class ApiUserController extends BaseController{
 	private TagService tagService;
 
 	@Autowired
+	private UserTaggingService userTaggingService;
+
+	@Autowired
 	private UserService userService;
 	
 	@Autowired
@@ -98,17 +101,23 @@ public class ApiUserController extends BaseController{
 	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
 		User user = userRepository.findOne(id);
 		JSONObject params = new JSONObject(body);
-		List<String> tagsToAdd = null;
-		List<String> tagsToRemove = null;
+		String tag;
+		boolean addTag;
 		if (params.has("add")) {
-			tagsToAdd = new ArrayList();
-			tagsToAdd.add(params.getString("add"));
-
+			tag = params.getString("add");
+			addTag = true;
 		} else if (params.has("remove")) {
-			tagsToRemove = new ArrayList();
-			tagsToRemove.add(params.getString("remove"));
+			tag = params.getString("remove");
+			addTag = false;
+		} else {
+			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
-		userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername());
+		UserTagService userTagService = userTaggingService.getUserTagService(tag);
+		if (addTag) {
+			userTagService.addUserTag(user.getUsername(), tag);
+		} else {
+			userTagService.removeUserTag(user.getUsername(), tag);
+		}
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
