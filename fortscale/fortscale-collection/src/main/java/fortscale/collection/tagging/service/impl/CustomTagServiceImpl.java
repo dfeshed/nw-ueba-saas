@@ -68,9 +68,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				if (line.split(CSV_DELIMITER).length > 1) {
 					tags.addAll(Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER)));
 				}
-				for (String tagStr: tags) {
-					tagService.addTag(new Tag(tagStr));
-				}
 				List<User> users = userRepository.findByUsernameRegex(regex);
 				for (User user: users) {
 					Set<String> existingTags = user.getTags();
@@ -78,6 +75,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					existingTags = Sets.difference(existingTags, tagsToIgnore);
 					List<String> tagsToAdd = new ArrayList(Sets.difference(tags, existingTags));
 					tagsToAdd = new ArrayList(Sets.difference(new HashSet(tagsToAdd), tagsToIgnore));
+					for (String tagStr: tagsToAdd) {
+						tagService.addTag(new Tag(tagStr));
+					}
 					List<String> tagsToRemove = new ArrayList(Sets.difference(existingTags, tags));
 					//if we need to remove or add tags
 					if (!tagsToAdd.isEmpty() || !tagsToRemove.isEmpty()) {
