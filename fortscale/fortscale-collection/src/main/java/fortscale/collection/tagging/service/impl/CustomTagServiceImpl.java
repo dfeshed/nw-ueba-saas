@@ -41,6 +41,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Value("${user.list.custom_tags.path:}")
 	private String filePath;
+	@Value("${collection.fetch.finish.data.path}")
+	private String finishPath;
 
 	private UserTagEnum tag = UserTagEnum.custom;
 	private Set<String> tagsToIgnore = ImmutableSet.of(UserTagEnum.admin.getId(), UserTagEnum.service.getId(),
@@ -59,10 +61,10 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			logger.warn("No custom tag user list file configured, skipping tagging users");
 			return;
 		}
-		File usersFile = new File(filePath);
-		if (usersFile.exists() && usersFile.isFile() && usersFile.canRead()) {
+		File tagsFile = new File(filePath);
+		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			//read all users from the file
-			for (String line : FileUtils.readLines(usersFile)) {
+			for (String line : FileUtils.readLines(tagsFile)) {
 				String regex = line.split(CSV_DELIMITER)[0];
 				Set<String> tags = new HashSet();
 				if (line.split(CSV_DELIMITER).length > 1) {
@@ -86,6 +88,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					}
 				}
 			}
+			moveFileToFolder(tagsFile, finishPath);
 		} else {
 			logger.error("Custom tag list file not accessible in path {}", filePath);
 		}
@@ -108,6 +111,25 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public UserTagEnum getTag(){
 		return tag;
+	}
+
+	private void moveFileToFolder(File file, String path) {
+		File renamed;
+		if (path.endsWith(File.separator)) {
+			renamed = new File(path + file.getName());
+		} else {
+			renamed = new File(path + File.separator + file.getName());
+		}
+		// create parent file if not exists
+		if (!renamed.getParentFile().exists()) {
+			if (!renamed.getParentFile().mkdirs()) {
+				logger.error("cannot create path {}", path);
+				return;
+			}
+		}
+		if (!file.renameTo(renamed)) {
+			logger.error("failed moving file {} to path {}", file.getName(), path);
+		}
 	}
 
 }
