@@ -1,4 +1,4 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;

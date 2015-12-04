@@ -38,7 +38,7 @@
     <context:annotation-config />
     <context:component-scan base-package="fortscale.services.users,fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.global,fortscale.utils,fortscale.collection,fortscale.services.notifications" />
 
-    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
     <bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />

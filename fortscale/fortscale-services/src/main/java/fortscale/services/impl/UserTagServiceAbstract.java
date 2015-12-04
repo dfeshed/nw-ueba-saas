@@ -1,11 +1,10 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
-import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
-import fortscale.services.UserTagService;
-import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +44,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		return pageSize;
 	}
 
-	protected void setPageSize(int pageSize) {
+	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
 
