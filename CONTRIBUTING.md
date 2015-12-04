@@ -36,10 +36,10 @@ dashes for word separators and have a prefix:
 
 Please ensure all code adheres to the guidelines for each language:
 
-- [JavaScript](https://wiki.na.rsa.net/display/NextGenWeb/JavaScript+Guidelines) 
-- [HTML](https://wiki.na.rsa.net/display/NextGenWeb/HTML+Guidelines)
-- [CSS](https://wiki.na.rsa.net/display/NextGenWeb/CSS+Guidelines)
-- [Java](https://wiki.na.rsa.net/display/NextGenWeb/Java+Guidelines)
+- [JavaScript](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/javascript-guidelines.md) 
+- [HTML](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/html-guidelines.md)
+- [CSS](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/css-guidelines.md)
+- [Java](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/README.md)
 
 ## Prepare Your Commit
 
