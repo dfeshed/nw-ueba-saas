@@ -217,12 +217,12 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	}
 
 	@Override
-	public void addUserTag(String userName) {
+	public void addUserTag(String userName, String tag) {
 		tagServiceAccount(userName);
 	}
 
 	@Override
-	public void removeUserTag(String userName) {
+	public void removeUserTag(String userName, String tag) {
 		removeTagFromUser(userName);
 	}
 
