@@ -77,6 +77,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					//ignore the static type tags
 					existingTags = Sets.difference(existingTags, tagsToIgnore);
 					List<String> tagsToAdd = new ArrayList(Sets.difference(tags, existingTags));
+					tagsToAdd = new ArrayList(Sets.difference(new HashSet(tagsToAdd), tagsToIgnore));
 					List<String> tagsToRemove = new ArrayList(Sets.difference(existingTags, tags));
 					//if we need to remove or add tags
 					if (!tagsToAdd.isEmpty() || !tagsToRemove.isEmpty()) {
