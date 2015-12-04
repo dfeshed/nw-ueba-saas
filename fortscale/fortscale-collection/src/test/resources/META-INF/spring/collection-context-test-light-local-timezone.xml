@@ -36,12 +36,11 @@
 
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
-    <mockito:mock id="tagService" class="fortscale.services.impl.TagServiceImpl"/>
 
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 
 
-    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
     <bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />

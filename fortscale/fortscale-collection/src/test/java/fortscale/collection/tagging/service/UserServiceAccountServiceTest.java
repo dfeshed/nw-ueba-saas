@@ -2,7 +2,7 @@
 
 package fortscale.collection.tagging.service;
 
-import fortscale.collection.tagging.service.impl.UserServiceAccountServiceImpl;
+import fortscale.services.impl.UserServiceAccountServiceImpl;
 import fortscale.services.UserService;
 import fortscale.services.impl.UsernameNormalizer;
 import org.junit.Before;

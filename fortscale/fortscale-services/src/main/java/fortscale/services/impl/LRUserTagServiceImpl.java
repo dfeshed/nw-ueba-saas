@@ -1,4 +1,4 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
 import fortscale.services.UserTagEnum;
 import fortscale.services.UserTagService;
