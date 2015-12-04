@@ -222,7 +222,7 @@ public class ApiUserController extends BaseController{
 			tagsToRemove = new ArrayList();
 			tagsToRemove.add(params.getString("remove"));
 		}
-		userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername(), "");
+		userService.updateUserTagList(tagsToAdd, tagsToRemove, user.getUsername());
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {

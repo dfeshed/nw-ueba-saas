@@ -266,6 +266,15 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		return taggedUsers;
 	}
 
+	@Override
+	public void addUserTag(String userName) {
+		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
+	}
+
+	@Override
+	public void removeUserTag(String userName) {
+		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
+	}
 	
 	public void setTaggedUsers(Set<String> taggedUsers) {
 	

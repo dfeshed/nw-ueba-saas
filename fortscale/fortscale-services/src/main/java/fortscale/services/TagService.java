@@ -9,5 +9,6 @@ public interface TagService {
 
 	List<Tag> getAllTags();
 	void addTag(Tag tag);
+	void removeTag(Tag tag);
 
 }
