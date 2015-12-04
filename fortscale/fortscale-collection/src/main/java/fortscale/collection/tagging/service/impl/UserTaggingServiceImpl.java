@@ -21,6 +21,11 @@ public class UserTaggingServiceImpl implements UserTaggingService{
 	}
 
 	@Override
+	public UserTagService getUserTagService(String tag){
+		return userTagServiceMap.get(tag);
+	}
+
+	@Override
 	public void update(String tag) throws Exception {
 		UserTagService userTagService = userTagServiceMap.get(tag);
 		if(userTagService != null){

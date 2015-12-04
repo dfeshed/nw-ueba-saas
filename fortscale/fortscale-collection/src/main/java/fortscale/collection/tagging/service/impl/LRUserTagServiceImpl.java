@@ -99,7 +99,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 
 
 				//Sync mongo and cache with the user's tags
-				userService.updateUserTagList(tagsToAdd,tagsToRemove,username,getTag().getId());
+				userService.updateUserTagList(tagsToAdd,tagsToRemove,username);
 			}
 		} else {
 			logger.warn("LR tag user list file not accessible in path {}", filePath);
@@ -110,6 +110,12 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	public String getTagMongoField() {
 		return User.tagsField;
 	}
+
+	@Override
+	public void addUserTag(String userName) {}
+
+	@Override
+	public void removeUserTag(String userName) {}
 
 	@Override
 	public UserTagEnum getTag(){
