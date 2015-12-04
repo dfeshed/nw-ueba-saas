@@ -8,10 +8,10 @@
             "id": "INC-109",
             "alertCount": 4,
             "assignee": {
-                "emailAddress": "Ian@rsa.com",
-                "name": "Ian RSA",
+                "emailAddress": "admin@rsa.com",
+                "name": "Administrator",
                 "id": "3",
-                "login": "Ian"
+                "login": "admin"
             },
             "averageAlertRiskScore": 100,
             "breachExportStatus": "NONE",

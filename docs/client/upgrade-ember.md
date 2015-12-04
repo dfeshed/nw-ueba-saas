@@ -27,17 +27,21 @@ Once the upgrade is successful,
 
 
 # List of addons used by SA
+* [crossfilter](https://github.com/square/crossfilter)
 * [ember-cli-blanket](https://github.com/sglanzer/ember-cli-blanket)
 * [ember-cli-mirage](https://github.com/samselikoff/ember-cli-mirage)
-* [ember-cli-simple-auth](https://github.com/simplabs/ember-cli-simple-auth)
-* [ember-cli-simple-auth-testing](https://github.com/simplabs/ember-cli-simple-auth-testing)
+* [ember-cli-sass](https://github.com/aexmachina/ember-cli-sass)
 * [ember-i18n](https://github.com/jamesarosen/ember-i18n)
+* [ember-simple-auth](https://github.com/simplabs/ember-simple-auth)
 * [liquid-fire](https://github.com/ef4/liquid-fire)
 * [mock-socket](https://github.com/thoov/mock-socket)
+* [moment](https://github.com/moment/moment/)
 * [pretender](https://github.com/pretenderjs/pretender)
 * [sockjs](https://github.com/sockjs)
 * [stomp-websocket](https://github.com/jmesnil/stomp-websocket)
+* [tether-drop](http://github.hubspot.com/drop/)
+* [phantomjs](http://phantomjs.org)
 
 # List of addons used by dashboard
-* [foundation-apps](https://github.com/zurb/foundation-apps)
+* [ember-cli-sass](https://github.com/aexmachina/ember-cli-sass)
 * [highlightjs](https://highlightjs.org)

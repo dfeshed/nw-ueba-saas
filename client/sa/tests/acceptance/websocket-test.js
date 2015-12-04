@@ -1,19 +1,8 @@
-import Ember from "ember";
-import { module, test, skip } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 import websocket from "sa/websocket/service";
 
-var application;
-
-module("Acceptance | theme", {
-    beforeEach: function() {
-        application = startApp();
-    },
-
-    afterEach: function() {
-        Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | websocket');
 
 test("fetch data using websocket service", function(assert) {
     assert.expect(1);
@@ -59,4 +48,3 @@ test("fetch data using websocket service", function(assert) {
         */
     });
 });
-

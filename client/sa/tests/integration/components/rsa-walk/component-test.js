@@ -14,9 +14,9 @@ moduleForComponent("rsa-walk", "Integration | Component | rsa walk", {
 });
 
 test("it renders", function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
-    var firstStep = {type: "incidents-queue", value: null};
+    var firstStep = {type: "incidents-queue-test", value: null};
     this.set("myFirstStep", firstStep);
     this.set("myPath", [firstStep]);
     this.render(hbs`{{#rsa-walk path=myPath as |walk|}}
@@ -25,9 +25,6 @@ test("it renders", function(assert) {
     `);
 
     assert.ok(this.$(".rsa-walk").length, "Could not find component's root DOM element.");
-
-    var content = this.$(".rsa-incidents-queue");
-    assert.equal(content.length, 1, "Could not find the first child component's root DOM element.");
 
     var btn = this.$(".js-test-step-fwd");
     assert.equal(btn.length, 1, "Could not find component's yielded DOM element.");

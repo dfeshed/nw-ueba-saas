@@ -36,7 +36,7 @@ test("it renders", function(assert) {
             }
         }
     });
-    this.render(hbs`{{rsa-incidents-queue cube=myCube onselect=(action "onclickedrecord")}}`);
+    this.render(hbs`{{rsa-incidents-queue cube=myCube onselect=(action "onclickedrecord") onSelectTimeRangeUnit=(action set "timeRangeUnit")}}`);
     assert.ok(this.$(".rsa-incidents-queue").length, "Could not find component DOM element.");
 
     var content = this.$(".rsa-incidents-queue .js-test-respond-incs-all-inc-btn");

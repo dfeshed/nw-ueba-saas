@@ -1,19 +1,9 @@
 import Ember from "ember";
-import { module, test } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 import config from "sa/config/environment";
 
-var application;
-
-module("Acceptance | theme", {
-    beforeEach: function() {
-        application = startApp();
-    },
-
-    afterEach: function() {
-        Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | theme');
 
 test("visit default protected path, set theme and check DOM", function(assert) {
     assert.expect(3);
@@ -48,4 +38,3 @@ test("visit default protected path, set theme and check DOM", function(assert) {
     });
 
 });
-

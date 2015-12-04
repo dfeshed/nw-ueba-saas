@@ -1,7 +1,6 @@
 import Ember from "ember";
 import { module, test } from "qunit";
 import IncidentsCube from "sa/utils/cube/incidents";
-import timeUtil from "sa/utils/time";
 
 module("Unit | Utility | crossfilter/incidents");
 

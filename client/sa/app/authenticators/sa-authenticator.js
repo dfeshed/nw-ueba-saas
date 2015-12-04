@@ -6,17 +6,13 @@
 */
 
 import Ember from "ember";
-import ajax, {raw} from "ic-ajax";
+import {raw} from "ic-ajax";
 import config from '../config/environment';
-import Base from "simple-auth/authenticators/base";
+import Base from "ember-simple-auth/authenticators/base";
 
 export default Base.extend({
 
-    localStorageCsrf: config["simple-auth"].csrfLocalstorageKey,
-
-    getInfo: function() {
-        return ajax("/api/info");
-    },
+    localStorageCsrf: config["ember-simple-auth"].csrfLocalstorageKey,
 
     /**
      * Responsible for restoring the session after a page reload, given the persisted data from the session.
@@ -27,13 +23,14 @@ export default Base.extend({
      * @returns {Ember.RSVP.Promise} A Promise that resolves with the session data to be persisted in local storage.
      */
     restore: function(data) {
-
         // We don't want to lose the persisted session data in localStorage, so we merge it on top of whatever other
         // info we need to fetch here.
-        // @todo Not sure why we need to call getInfo here? Do we need that info persisted into localStorage?
-        // If not, we could skip the getInfo call here and just return a Promise that resolves with the given "data".
-        return this.getInfo().then(function(response) {
-            return Ember.merge(response, data);
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            if (!Ember.isEmpty(data.username)) {
+                resolve(data);
+            } else {
+                reject();
+            }
         });
     },
     /**

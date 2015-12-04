@@ -93,7 +93,7 @@ export default Ember.Component.extend({
 
         function setQueue(){
             var assignee = (this.get("whichQueue") === ENUM_QUEUES.ALL) ?
-                    null : this.get("session.content.secure.username"),
+                    null : this.get("session.session.content.authenticated.username"),
                 cube = this.get("cube");
             if (cube && cube.filter) {
                 cube.filter("assignee", assignee, null, false);

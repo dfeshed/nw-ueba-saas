@@ -148,9 +148,8 @@ export default Ember.Object.extend({
         if (desc !== null) {
             props.sortDesc = !!desc;
         }
-        return this
-            .setProperties(props)
-            .recalc();
+        this.setProperties(props);
+        return this.recalc();
     },
 
     /**
@@ -357,5 +356,3 @@ export default Ember.Object.extend({
         this._super();
     }
 });
-
-

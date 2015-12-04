@@ -1,18 +1,7 @@
-import Ember from "ember";
-import { module, test } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 
-var application;
-
-module("Acceptance | admin", {
-    beforeEach: function() {
-        application = startApp();
-    },
-
-    afterEach: function() {
-        Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | admin');
 
 test("visiting /do/admin and check DOM", function(assert) {
     visit("/do/admin");

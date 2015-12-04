@@ -1,11 +1,11 @@
 import Ember from 'ember';
 import config from './config/environment';
 
-var Router = Ember.Router.extend({
+const Router = Ember.Router.extend({
     location: config.locationType
 });
 
-Router.map(function () {
+Router.map(function() {
     this.route('project');
     this.route('styleguide', function() {
         this.route('style', function() {
@@ -15,6 +15,7 @@ Router.map(function () {
             this.route('button');
         });
     });
+
 });
 
 export default Router;

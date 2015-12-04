@@ -1,18 +1,7 @@
-import Ember from "ember";
-import { module, test } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 
-var application;
-
-module("Acceptance | monitor", {
-    beforeEach: function() {
-    application = startApp();
-    },
-
-    afterEach: function() {
-    Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | monitor');
 
 test("visiting /do/monitor and check DOM", function(assert) {
     visit("/do/monitor");
@@ -23,4 +12,3 @@ test("visiting /do/monitor and check DOM", function(assert) {
     });
 
 });
-

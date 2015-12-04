@@ -2,7 +2,6 @@ import { moduleForComponent, test } from "ember-qunit";
 import hbs from "htmlbars-inline-precompile";
 import Ember from "ember";
 import initializer from "sa/instance-initializers/ember-i18n";
-import timeUtil from "sa/utils/time";
 
 moduleForComponent("rsa-incidents-filters", "Integration | Component | rsa incidents filters", {
     integration: true,
