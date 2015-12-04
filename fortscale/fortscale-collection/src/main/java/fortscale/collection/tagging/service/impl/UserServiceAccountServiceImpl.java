@@ -1,8 +1,8 @@
 package fortscale.collection.tagging.service.impl;
 
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.services.TagService;

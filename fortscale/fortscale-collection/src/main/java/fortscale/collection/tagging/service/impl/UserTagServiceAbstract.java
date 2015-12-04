@@ -1,8 +1,8 @@
 package fortscale.collection.tagging.service.impl;
 
 import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
@@ -267,12 +267,12 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	}
 
 	@Override
-	public void addUserTag(String userName) {
+	public void addUserTag(String userName, String tag) {
 		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
 	}
 
 	@Override
-	public void removeUserTag(String userName) {
+	public void removeUserTag(String userName, String tag) {
 		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
 	}
 	

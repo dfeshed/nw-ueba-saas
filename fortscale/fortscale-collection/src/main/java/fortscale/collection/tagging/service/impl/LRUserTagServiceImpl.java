@@ -1,8 +1,8 @@
 package fortscale.collection.tagging.service.impl;
 
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -112,10 +112,18 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	@Override
-	public void addUserTag(String userName) {}
+	public void addUserTag(String userName, String tag) {
+		List<String> tagsToAdd = new ArrayList();
+		tagsToAdd.add(getTag().getId());
+		userService.updateUserTagList(tagsToAdd, null, userName);
+	}
 
 	@Override
-	public void removeUserTag(String userName) {}
+	public void removeUserTag(String userName, String tag) {
+		List<String> tagsToRemove = new ArrayList();
+		tagsToRemove.add(getTag().getId());
+		userService.updateUserTagList(null, tagsToRemove, userName);
+	}
 
 	@Override
 	public UserTagEnum getTag(){
