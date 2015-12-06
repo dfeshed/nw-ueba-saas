@@ -117,7 +117,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	}
 
-	private void createConfig(Config config, String configKeyStr) {
+	private void createConfig(Config config, String configKey) {
 			List<String> anomalyFields = null;
 		String scoreField = null;
 		String  anomalyValueField = null;
@@ -126,75 +126,75 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String postProcessClassField = null;
 		String lastState=null;
 		String dataSource=null;
+		String configKeyStr = null;
 
 
-		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKeyStr)));
+		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKey)));
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyFields", configKeyStr))) {
-			anomalyFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.anomalyFields", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey))) {
+			anomalyFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey));
 		}
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.last.state", configKeyStr))&&
-				isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKeyStr))) {
-			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKeyStr));
-			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.last.state", configKey))&&
+				isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKey))) {
+			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			configKeyStr= new StreamingTaskDataSourceConfigKey(dataSource,lastState).getConfigKeyStr();
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.scoreField", configKeyStr))) {
-			scoreField = getConfigString(config, String.format("fortscale.events.entry.%s.scoreField", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.scoreField", configKey))) {
+			scoreField = getConfigString(config, String.format("fortscale.events.entry.%s.scoreField", configKey));
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyValueField", configKeyStr))) {
-			anomalyValueField = getConfigString(config, String.format("fortscale.events.entry.%s.anomalyValueField", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyValueField", configKey))) {
+			anomalyValueField = getConfigString(config, String.format("fortscale.events.entry.%s.anomalyValueField", configKey));
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyTypeField", configKeyStr))) {
-			anomalyTypeField = getConfigString(config, String.format("fortscale.events.entry.%s.anomalyTypeField", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyTypeField", configKey))) {
+			anomalyTypeField = getConfigString(config, String.format("fortscale.events.entry.%s.anomalyTypeField", configKey));
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.preprocess.class", configKeyStr))) {
-			preProcessClassField = getConfigString(config, String.format("fortscale.events.entry.%s.preprocess.class", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.preprocess.class", configKey))) {
+			preProcessClassField = getConfigString(config, String.format("fortscale.events.entry.%s.preprocess.class", configKey));
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.postprocess.class", configKeyStr))) {
-			postProcessClassField = getConfigString(config, String.format("fortscale.events.entry.%s.postprocess.class", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.postprocess.class", configKey))) {
+			postProcessClassField = getConfigString(config, String.format("fortscale.events.entry.%s.postprocess.class", configKey));
 		}
-		EntityType entityType = EntityType.valueOf(getConfigString(config, String.format("fortscale.events.entry.%s.entityType", configKeyStr)));
-		String entityNameField = getConfigString(config, String.format("fortscale.events.entry.%s.entityName.field", configKeyStr));
-		String startTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.startTimestamp.field", configKeyStr));
-		String endTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.endTimestamp.field", configKeyStr));
-		String partitionField = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKeyStr));
-		EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.entry.%s.evidence.type", configKeyStr)));
+		EntityType entityType = EntityType.valueOf(getConfigString(config, String.format("fortscale.events.entry.%s.entityType", configKey)));
+		String entityNameField = getConfigString(config, String.format("fortscale.events.entry.%s.entityName.field", configKey));
+		String startTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.startTimestamp.field", configKey));
+		String endTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.endTimestamp.field", configKey));
+		String partitionField = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey));
+		EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.entry.%s.evidence.type", configKey)));
 		List<String> dataEntitiesIds = null;
 		String dataEntitiesIdsField = null;
 		String totalFieldPath = null;
 		String entitySupportingInformationPopulatorClass = null;
 		//if dataEntitiesIds is a field name and not a value
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.dataEntitiesIds.field", configKeyStr))) {
-			dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.entry.%s.dataEntitiesIds.field", configKeyStr));
-		} else if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.dataEntitiesIds", configKeyStr))) {
-			dataEntitiesIds = getConfigStringList(config, String.format("fortscale.events.entry.%s.dataEntitiesIds", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.dataEntitiesIds.field", configKey))) {
+			dataEntitiesIdsField = getConfigString(config, String.format("fortscale.events.entry.%s.dataEntitiesIds.field", configKey));
+		} else if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.dataEntitiesIds", configKey))) {
+			dataEntitiesIds = getConfigStringList(config, String.format("fortscale.events.entry.%s.dataEntitiesIds", configKey));
 		}
 		List<String> defaultFields = null;
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.defaultFields", configKeyStr))) {
-			defaultFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.addDefaultFields", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.defaultFields", configKey))) {
+			defaultFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.addDefaultFields", configKey));
 		}
 
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.total.field.path", configKeyStr))) {
-			totalFieldPath = getConfigString(config, String.format("fortscale.events.entry.%s.total.field.path", configKeyStr));
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.total.field.path", configKey))) {
+			totalFieldPath = getConfigString(config, String.format("fortscale.events.entry.%s.total.field.path", configKey));
 		}
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.supportinginformation.populator",
-				configKeyStr))) {
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.supportinginformation.populator", configKey))) {
 			entitySupportingInformationPopulatorClass = getConfigString(config,
-					String.format("fortscale.events.entry.%s.supportinginformation.populator", configKeyStr));
+					String.format("fortscale.events.entry.%s.supportinginformation.populator", configKey));
 		}
-		topicToDataSourceMap.put(configKeyStr , new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
+		topicToDataSourceMap.put(configKeyStr, new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
 				dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
 				entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
 				preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
 				entitySupportingInformationPopulatorClass));
 
-		logger.info("Finished loading configuration for data source {}", configKeyStr);
+		logger.info("Finished loading configuration for data source {}", configKey);
 	}
 
 	@Override
