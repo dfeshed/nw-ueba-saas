@@ -126,7 +126,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String postProcessClassField = null;
 		String lastState=null;
 		String dataSource=null;
-		StreamingTaskDataSourceConfigKey configKey = null;
+
 
 		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKeyStr)));
 
@@ -137,7 +137,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKeyStr))) {
 			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKeyStr));
 			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKeyStr));
-			configKey= new StreamingTaskDataSourceConfigKey(dataSource,lastState);
+			configKeyStr= new StreamingTaskDataSourceConfigKey(dataSource,lastState).getConfigKeyStr();
 		}
 
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.scoreField", configKeyStr))) {
@@ -188,7 +188,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			entitySupportingInformationPopulatorClass = getConfigString(config,
 					String.format("fortscale.events.entry.%s.supportinginformation.populator", configKeyStr));
 		}
-		topicToDataSourceMap.put(configKey.getConfigKeyStr() , new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
+		topicToDataSourceMap.put(configKeyStr , new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
 				dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
 				entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
 				preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
