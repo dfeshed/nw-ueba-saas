@@ -30,6 +30,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	private static final String CSV_DELIMITER = ",";
 	private static final String VALUE_DELIMITER = "\\|";
 	private static final String DELETION_SYMBOL = "-";
+	private static final String FINISH_PATH = "./finish";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -42,8 +43,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Value("${user.list.custom_tags.path:}")
 	private String filePath;
-	@Value("${collection.fetch.finish.data.path}")
-	private String finishPath;
 
 	private UserTagEnum tag = UserTagEnum.custom;
 	private Set<String> fixedTags = ImmutableSet.of(UserTagEnum.admin.getId(), UserTagEnum.service.getId(),
@@ -109,7 +108,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					}
 				}
 			}
-			moveFileToFolder(tagsFile, finishPath);
+			moveFileToFolder(tagsFile, FINISH_PATH);
 		} else {
 			logger.error("Custom tag list file not accessible in path {}", filePath);
 		}
