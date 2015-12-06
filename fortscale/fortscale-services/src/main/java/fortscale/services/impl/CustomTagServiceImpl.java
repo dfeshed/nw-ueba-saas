@@ -73,10 +73,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					Set<String> existingTags = user.getTags();
 					List<String> tagsToAdd = new ArrayList();
 					Set<String> tagsDifference = Sets.difference(tags, existingTags);
+					//for now - ignore adding fixed tags
 					for (String tagStr: tagsDifference) {
 						if (fixedTags.contains(tagStr)) {
-							UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.addUserTag(user.getUsername(), null);
+							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
+							userTagService.addUserTag(user.getUsername(), null);*/
+							continue;
 						} else {
 							tagsToAdd.add(tagStr);
 							tagService.addTag(new Tag(tagStr));
@@ -84,10 +86,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					}
 					List<String> tagsToRemove = new ArrayList();
 					tagsDifference = Sets.difference(existingTags, tags);
+					//for now - ignore adding fixed tags
 					for (String tagStr: tagsDifference) {
 						if (fixedTags.contains(tagStr)) {
-							UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.removeUserTag(user.getUsername(), null);
+							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
+							userTagService.removeUserTag(user.getUsername(), null);*/
+							continue;
 						} else {
 							tagsToRemove.add(tagStr);
 						}
