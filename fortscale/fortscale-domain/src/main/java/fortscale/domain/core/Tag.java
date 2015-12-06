@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @CompoundIndexes({
 		// index for making sure our evidence is unique
 		@CompoundIndex(name="unique_tag_name", def = "{'" + Tag.nameField + "': 1}", unique = true),
-		@CompoundIndex(name="unique_tag_name", def = "{'" + Tag.displayNameField + "': 1}", unique = true)
+		@CompoundIndex(name="unique_tag_display_name", def = "{'" + Tag.displayNameField + "': 1}", unique = true)
 })
 public class Tag extends AbstractDocument{
 
