@@ -132,7 +132,7 @@ public class RarityScorerTest {
 					Assert.assertTrue(scoresDelta * (shouldIncrease ? 1 : -1) >= 0);
 				}
 			}
-			hasStrongMonotonicity = hasStrongMonotonicity || scores.get(scores.size() - 1) != scores.get(0);
+			hasStrongMonotonicity = hasStrongMonotonicity || Math.abs(scores.get(scores.size() - 1) - scores.get(0)) > 0.0001;
 		}
 		if (shouldIncrease != null) {
 			// it's ok that some series are constant, but if all of them are - the model probably has a bug
@@ -181,8 +181,8 @@ public class RarityScorerTest {
 	@Test
 	public void shouldScoreIncreasinglyWhenMaxNumOfRareFeaturesIncreases() {
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		String veryRareFeature = "veryRare";
-		featureValueToCountMap.put(veryRareFeature, 1);
+		featureValueToCountMap.put("veryRareFeature", 1);
+		featureValueToCountMap.put("veryCommonFeature", 1000);
 		assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
 	}
 
@@ -373,7 +373,7 @@ public class RarityScorerTest {
 	 *************************************************************************************/
 
 	@Test
-	public void shouldScoreVeryRareFeatureTheSameWhenBuildingWithVeryCommonValuesAndWithoutThem() {
+	public void shouldScoreFirstSeenVeryRareFeatureTheSameWhenBuildingWithVeryCommonFeaturesAndWithoutThem() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 30;
 		int veryRareFeatureCount = 1;
@@ -385,7 +385,21 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void elementarycheckForOccurrencesHistogram() throws Exception {
+	public void shouldScoreSecondSeenVeryRareFeatureIncreasinglyWhenCommonFeatureCountIncreases() {
+		int maxRareCount = 10;
+		int maxNumOfRareFeatures = 30;
+		int veryRareFeatureCount = 1;
+		List<Double> scores = new ArrayList<>();
+		for (int commonFeatureCount = 20; commonFeatureCount < 1000; commonFeatureCount += 10) {
+			scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
+		}
+		List<List<Double>> scoresSeries = new ArrayList<>(1);
+		scoresSeries.add(scores);
+		assertMonotonicity(scoresSeries, true);
+	}
+
+	@Test
+	public void elementaryCheck() throws Exception {
 		int maxRareCount = 15;
 		int maxNumOfRareFeatures = 5;
 
@@ -399,7 +413,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void simpleInputOutputForOccurrencesHistogram() throws Exception {
+	public void simpleInputOutput() throws Exception {
 		int maxRareCount = 6;
 		int maxNumOfRareFeatures = 5;
 
