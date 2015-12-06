@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.selector.ContextSelector;
@@ -28,6 +29,9 @@ public class ModelBuilderManager {
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
+    private long numOfSuccesses;
+    private long numOfFailures;
+
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
@@ -41,6 +45,8 @@ public class ModelBuilderManager {
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
         Assert.notNull(currentEndTime);
+        numOfSuccesses = 0;
+        numOfFailures = 0;
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
@@ -55,27 +61,58 @@ public class ModelBuilderManager {
         } else {
             build(listener, sessionId, null, currentEndTime);
         }
-    }
 
-    public void build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
-        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
-        Model model = modelBuilder.build(modelBuilderData);
-
-        boolean success = true;
-        try {
-            modelStore.save(modelConf, sessionId, contextId, model, endTime);
-        } catch (Exception e) {
-            logger.error(String.format("Failed to save model %s, with end time %s, for context ID %s.",
-                    modelConf.getName(), endTime.toString(), contextId), e);
-            success = false;
-        }
-
-        if (listener != null) {
-            listener.modelBuildingStatus(modelConf.getName(), contextId, endTime, success);
-        }
+        logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
+                modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
     }
 
     public void setContextSelector(ContextSelector contextSelector) {
         this.contextSelector = contextSelector;
+    }
+
+    private void build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
+        ModelBuildingStatus status = ModelBuildingStatus.SUCCESS;
+        Exception exception = null;
+
+        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
+        if (modelBuilderData == null) {
+            status = ModelBuildingStatus.RETRIEVER_FAILURE;
+        } else {
+            Model model = modelBuilder.build(modelBuilderData);
+            if (model == null) {
+                status = ModelBuildingStatus.BUILDER_FAILURE;
+            } else {
+                try {
+                    modelStore.save(modelConf, sessionId, contextId, model, endTime);
+                } catch (Exception e) {
+                    status = ModelBuildingStatus.STORE_FAILURE;
+                    exception = e;
+                }
+            }
+        }
+
+        // Update metrics
+        if (status.equals(ModelBuildingStatus.SUCCESS)) {
+            numOfSuccesses++;
+        } else {
+            numOfFailures++;
+            // Log if model building failed
+            String message = String.format("%s. modelConfName: %s, sessionId: %s, contextId: %s, endTime: %s.",
+                    status.getMessage(), modelConf.getName(), sessionId, contextId, endTime.toString());
+            logError(message, exception);
+        }
+
+        // Inform listener
+        if (listener != null) {
+            listener.modelBuildingStatus(modelConf.getName(), sessionId, contextId, endTime, status);
+        }
+    }
+
+    private static void logError(String errorMsg, Exception exception) {
+        if (exception == null) {
+            logger.error(errorMsg);
+        } else {
+            logger.error(errorMsg, exception);
+        }
     }
 }
