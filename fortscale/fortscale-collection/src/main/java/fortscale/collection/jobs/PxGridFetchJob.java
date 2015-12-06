@@ -11,6 +11,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,6 +91,19 @@ public class PxGridFetchJob extends FortscaleJob {
 		truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
 		truststorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePassphrase");
 		connectionRetryMillisecond = jobDataMapExtension.getJobDataMapIntValue(map, "connectionRetryMillisecond");
+
+		try {
+			keystoreLoadTest(keystorePath, keystorePassphrase);
+			keystoreLoadTest(truststorePath, truststorePassphrase);
+		}
+		catch (Exception e){
+			throw new JobExecutionException("Error loading keys; Error: " + e.getMessage());
+		}
+	}
+
+	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
+		KeyStore ks = KeyStore.getInstance("JKS");
+		ks.load(new FileInputStream(filename), password.toCharArray());
 	}
 
 	private TLSConfiguration createConfigObject() {
