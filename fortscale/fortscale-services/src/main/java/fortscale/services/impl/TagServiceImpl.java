@@ -41,4 +41,9 @@ public class TagServiceImpl implements TagService {
 		return true;
 	}
 
+	@Override
+	public Tag getTag(String name) {
+		return tagRepository.findByName(name);
+	}
+
 }
