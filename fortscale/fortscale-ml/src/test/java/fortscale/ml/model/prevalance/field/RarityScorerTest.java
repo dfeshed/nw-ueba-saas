@@ -8,9 +8,7 @@ import org.junit.runners.JUnit4;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
@@ -116,45 +114,59 @@ public class RarityScorerTest {
 		FEATURE_COUNT
 	}
 
-	private void assertMonotonicity(@Nonnull double[][][] scores, PARAMETER overParameter, @Nullable Boolean shouldIncrease) {
+	private void assertMonotonicity(List<List<Double>> scoresSeries, @Nullable Boolean shouldIncrease) {
 		boolean hasStrongMonotonicity = false;
-		for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
-			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
-				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
-					double scoresDelta;
-					if (overParameter == PARAMETER.MAX_RARE_COUNT && maxRareCountInd == 0 ||
-							overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES && maxNumOfRareFeaturesInd == 0 ||
-							overParameter == PARAMETER.FEATURE_COUNT && featureCountInd == 0) {
-						scoresDelta = 0;
-					} else if (overParameter == PARAMETER.MAX_RARE_COUNT) {
-						scoresDelta = scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd] - scores[maxRareCountInd - 1][maxNumOfRareFeaturesInd][featureCountInd];
-					} else if (overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES) {
-						scoresDelta = scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd] - scores[maxRareCountInd][maxNumOfRareFeaturesInd - 1][featureCountInd];
-					} else {
-						scoresDelta = scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd] - scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd - 1];
-					}
-					if (shouldIncrease == null) {
-						Assert.assertTrue(scoresDelta == 0);
-					} else {
-						Assert.assertTrue(shouldIncrease && scoresDelta >= 0 || !shouldIncrease && scoresDelta <= 0);
-					}
-
-					double firstValueInMonotonicSeries = scores
-							[overParameter == PARAMETER.MAX_RARE_COUNT ? 0 : maxRareCountInd]
-							[overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES ? 0 : maxNumOfRareFeaturesInd]
-							[overParameter == PARAMETER.FEATURE_COUNT ? 0 : featureCountInd];
-					double lastValueInMonotonicSeries = scores
-							[overParameter == PARAMETER.MAX_RARE_COUNT ? scores.length - 1 : maxRareCountInd]
-							[overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES ? scores[0].length - 1 : maxNumOfRareFeaturesInd]
-							[overParameter == PARAMETER.FEATURE_COUNT ? scores[0][0].length - 1 : featureCountInd];
-					hasStrongMonotonicity = hasStrongMonotonicity || lastValueInMonotonicSeries - firstValueInMonotonicSeries != 0;
+		for (List<Double> scores : scoresSeries) {
+			if (scores.isEmpty()) {
+				continue;
+			}
+			for (int i = 1; i < scores.size(); i++) {
+				double scoresDelta = scores.get(i) - scores.get(i - 1);
+				if (shouldIncrease == null) {
+					Assert.assertTrue(scoresDelta == 0);
+				} else {
+					Assert.assertTrue(scoresDelta * (shouldIncrease ? 1 : -1) >= 0);
 				}
 			}
+			hasStrongMonotonicity = hasStrongMonotonicity || scores.get(scores.size() - 1) != scores.get(0);
 		}
 		if (shouldIncrease != null) {
 			// it's ok that some series are constant, but if all of them are - the model probably has a bug
 			Assert.assertTrue(hasStrongMonotonicity);
 		}
+	}
+
+	private void assertMonotonicity(@Nonnull double[][][] scores, PARAMETER overParameter, @Nullable Boolean shouldIncrease) {
+		List<List<Double>> scoresSeries = new ArrayList<>();
+		if (overParameter == PARAMETER.MAX_RARE_COUNT) {
+			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
+				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
+					scoresSeries.add(new ArrayList<Double>());
+					for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
+						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+					}
+				}
+			}
+		} else if (overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES) {
+			for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
+				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
+					scoresSeries.add(new ArrayList<Double>());
+					for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
+						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+					}
+				}
+			}
+		} else {
+			for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
+				for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
+					scoresSeries.add(new ArrayList<Double>());
+					for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
+						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+					}
+				}
+			}
+		}
+		assertMonotonicity(scoresSeries, shouldIncrease);
 	}
 
 	@Test
@@ -258,6 +270,7 @@ public class RarityScorerTest {
 		int counts[] = new int[]{1,4};
 
 		boolean printedHeader = false;
+		List<List<Double>> scoresSeries = new ArrayList<>();
 		for (int maxRareCount = 1; maxRareCount < 20; maxRareCount++) {
 			for (int count : counts) {
 				for (int maxNumOfRareFeatures : maxNumOfRareFeaturess) {
@@ -270,28 +283,30 @@ public class RarityScorerTest {
 						turnOffPrinting();
 					}
 					print(count + "->" + maxNumOfRareFeatures + "\t");
-					double lastScore = 100;
+					List<Double> scores = new ArrayList<>(maxNumOfFeatures + 1);
 					for (int numOfFeatures = 0; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
 						double score = calcScore(
 								maxRareCount,
 								maxNumOfRareFeatures,
 								createFeatureValueToCountWithConstantCount(numOfFeatures, count),
 								count);
-						Assert.assertTrue(score <= lastScore);
-						lastScore = score;
+						scores.add(score);
 						print(score + "\t");
 					}
+					scoresSeries.add(scores);
 				}
 			}
 		}
+		assertMonotonicity(scoresSeries, false);
 	}
 
 	@Test
-	public void shouldScoreLessWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
+	public void shouldScoreDecreasinglyWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
 		int maxNumOfFeaturesToPrint = 2;
 		int maxRareCountToPrint = 15;
 		int maxNumOfRareFeaturessToPrint[] = new int[]{5, 10, 15, 20, 30, 40, 50};
 
+		List<List<Double>> scoresSeries = new ArrayList<>();
 		boolean printedHeader = false;
 		for (int maxRareCount = 1; maxRareCount < 30; maxRareCount++) {
 			for (int numOfFeatures = 1; numOfFeatures < 10; numOfFeatures++) {
@@ -304,19 +319,19 @@ public class RarityScorerTest {
 						turnOffPrinting();
 					}
 					print(numOfFeatures + "->" + maxNumOfRareFeatures + "\t");
-					double lastScore = 100;
+					List<Double> scores = new ArrayList<>(maxRareCount - 1);
 					for (int featureCount = 1; featureCount <= maxRareCount; featureCount++) {
 						double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(numOfFeatures, featureCount), featureCount);
 						if (featureCount > 1) {
-							String msg = String.format("score isn't decreasing in the following configuration:\nmaxRareCount = %d\nmaxNumOfRareFeatures = %d\nfeatureCount = %d -> %d\nnumOfFeatures = %d", maxRareCount, maxNumOfRareFeatures, featureCount - 1, featureCount, numOfFeatures);
-							Assert.assertTrue(msg, score <= lastScore);
+							scores.add(score);
 						}
-						lastScore = score;
 						print(score + "\t");
 					}
+					scoresSeries.add(scores);
 				}
 			}
 		}
+		assertMonotonicity(scoresSeries, false);
 	}
 
 	@Test
@@ -325,21 +340,23 @@ public class RarityScorerTest {
 		int maxMaxRareCount = 10;
 		int maxFeatureCount = maxMaxRareCount + 1;
 
+		List<List<Double>> scoresSeries = new ArrayList<>(maxFeatureCount + 1);
 		boolean printedHeader = false;
 		for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
 			printNewLineOrHeader(printedHeader, "lessRareFeatureEffect", 0, maxFeatureCount);
 			printedHeader = true;
 			print(maxRareCount + "\t");
-			double lastScore = 0;
+			List<Double> scores = new ArrayList<>(maxFeatureCount + 1);
 			for (int featureCount = 0; featureCount <= maxFeatureCount; featureCount++) {
 				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCount(1, featureCount), 1);
-				if (featureCount > 1) {
-					Assert.assertTrue(score >= lastScore);
+				if (featureCount > 0) {
+					scores.add(score);
 				}
-				lastScore = score;
 				print(score + "\t");
 			}
+			scoresSeries.add(scores);
 		}
+		assertMonotonicity(scoresSeries, true);
 	}
 
 
