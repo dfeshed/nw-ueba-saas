@@ -55,6 +55,9 @@ public class AddCustomTags extends FortscaleJob{
 				boolean createsIndicator = Boolean.parseBoolean(line.split(CSV_DELIMITER)[2]);
 				tagService.addTag(new Tag(name, displayName, createsIndicator, false));
 			}
+			logger.info("tags loaded");
+		} else {
+			logger.error("No tag file found");
 		}
 	}
 
