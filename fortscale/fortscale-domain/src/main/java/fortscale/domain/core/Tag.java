@@ -28,18 +28,18 @@ public class Tag extends AbstractDocument{
 		isFixed = false;
 	}
 
-	public Tag(String name, String displayName, Boolean isFixed) {
+	public Tag(String name, String displayName, boolean setIsFixed) {
 		this.name = name;
 		this.displayName = displayName;
-		this.isFixed = isFixed;
+		isFixed = setIsFixed ? true : false;
 		createsIndicator = false;
 	}
 
-	public Tag(String name, String displayName, Boolean createsIndicator, Boolean isFixed) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean setIsFixed) {
 		this.name = name;
 		this.displayName = displayName;
-		this.createsIndicator = createsIndicator;
-		this.isFixed = isFixed;
+		isFixed = setIsFixed ? true : false;
+		createsIndicator = setCreatesIndicator ? true : false;
 	}
 
 	private String name;
