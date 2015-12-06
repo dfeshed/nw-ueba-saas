@@ -18,14 +18,20 @@ public class RarityScorer {
 
 	private int maxNumOfRareFeatures;
 	private double[] buckets;
+	private int totalEvents;
 
 	public RarityScorer(Collection<Integer> featureOccurrences, int maxRareCount, int maxNumOfRareFeatures) {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
+		totalEvents = 0;
 		for (int occurrence : featureOccurrences) {
 			if (occurrence <= buckets.length) {
 				buckets[occurrence - 1]++;
 			}
+			totalEvents += occurrence;
+		}
+		if (totalEvents == 0) {
+			totalEvents = 1;
 		}
 	}
 
@@ -69,15 +75,20 @@ public class RarityScorer {
 		if (featureCount > getMaxRareCount()) {
 			return 0;
 		}
-		double raritySum = 0;
+		double numRareEvents = 0;
+		double numRareFeatures = 0;
 		for (int i = 0; i < featureCount; i++) {
-			raritySum += buckets[i];
+			numRareEvents += (i + 1) * buckets[i];
+			numRareFeatures += buckets[i];
 		}
 		for (int i = featureCount; i < featureCount + getMaxRareCount(); i++) {
-			raritySum += buckets[i] * calcCommonnessDiscounting(i - featureCount + 2);
+			double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2);
+			numRareEvents += (i + 1) * buckets[i] * commonnessDiscount;
+			numRareFeatures += buckets[i] * commonnessDiscount;
 		}
-		double rarityGauge = Math.min(1, Math.pow(raritySum / maxNumOfRareFeatures, RARITY_SUM_EXPONENT));
-		double rarityGaugeDiscountedByFeatureRarity = (1 - rarityGauge) * calcCommonnessDiscounting(featureCount);
-		return (int) (MAX_POSSIBLE_SCORE * rarityGaugeDiscountedByFeatureRarity);
+		double commonEventProbability = 1 - numRareEvents / totalEvents;
+		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numRareFeatures / maxNumOfRareFeatures, RARITY_SUM_EXPONENT));
+		double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
+		return (int) (MAX_POSSIBLE_SCORE * score);
 	}
 }
