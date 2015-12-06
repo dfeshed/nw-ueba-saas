@@ -88,7 +88,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 							} else {
 								//if the tag to add exists in the available tags collection
 								if (availableTags.contains(new Tag(tagStr))) {
-									tagsToRemove.add(tagStr);
+									tagsToAdd.add(tagStr);
 								} else {
 									logger.error("tag {} not found in the available tag list", tagStr);
 								}
