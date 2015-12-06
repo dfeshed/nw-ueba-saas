@@ -10,6 +10,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -202,8 +203,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String messageText = (String) envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		String dataSource = getDataSource(message);
-		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(dataSource, inputTopic);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey.getConfigKeyStr(), inputTopic);
 		if (dataSourceConfiguration == null)
 			return;
         //Get the total events amount if exist
@@ -241,17 +242,17 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	/**
 	 * try to get configuration from the data source. if data source doesn't exist - get it from the input topic.
-	 * @param dataSource
+	 * @param configKeyString
 	 * @param inputTopic
 	 * @return
 	 */
-	private DataSourceConfiguration getDataSourceConfiguration(String dataSource, String inputTopic) {
-		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(dataSource);
+	private DataSourceConfiguration getDataSourceConfiguration(String configKeyString, String inputTopic) {
+		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(configKeyString);
 		if(dataSourceConfiguration == null) {
 			// Get relevant data source according to topic
 			dataSourceConfiguration = topicToDataSourceMap.get(inputTopic);
 			if (dataSourceConfiguration == null) {
-				logger.error("No configuration is defined for data source {} or input topic {} ",dataSource, inputTopic);
+				logger.error("No configuration is defined for data source {} or input topic {} ",configKeyString, inputTopic);
 				return null;
 			}
 		}
