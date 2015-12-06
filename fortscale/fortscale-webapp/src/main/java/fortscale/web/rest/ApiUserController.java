@@ -144,9 +144,8 @@ public class ApiUserController extends BaseController{
 		}
 
 		if (dataEntities != null) {
-			List<String> dataEntitiesList = Arrays.asList(dataEntities.split(","));
             List<Criteria> wheres = new ArrayList<Criteria>();
-            for (String dataEntityName : dataEntitiesList) {
+            for (String dataEntityName : dataEntities.split(",")) {
                 if (entityMinScore != null) {
                     wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
                 } else {
