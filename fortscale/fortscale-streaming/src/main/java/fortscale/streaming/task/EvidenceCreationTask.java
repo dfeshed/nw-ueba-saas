@@ -106,7 +106,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			for(String topic: inputTopics.keySet() ){
 			if( !isConfigContainKey(config,String.format("fortscale.events.entry.name.%s",topic))){ // if no data source available
 				//create configuration by input
-				createConfig(config, topic);
+				createConfig(config, getConfigString(config,String.format("fortscale.events.entry.input.topic.%s",topic)));
 			}
 		}
 
