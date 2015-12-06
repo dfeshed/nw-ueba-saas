@@ -126,7 +126,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String postProcessClassField = null;
 		String lastState=null;
 		String dataSource=null;
-		String configKeyStr = null;
+		String configKeyStr =configKey;
 
 
 		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKey)));
