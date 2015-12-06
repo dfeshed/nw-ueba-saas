@@ -29,6 +29,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String VALUE_DELIMITER = "\\|";
+	private static final String DELETION_SYMBOL = "-";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -63,37 +64,41 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			//read all users from the file
 			for (String line : FileUtils.readLines(tagsFile)) {
-				String regex = line.split(CSV_DELIMITER)[0];
-				Set<String> tags = new HashSet();
-				if (line.split(CSV_DELIMITER).length > 1) {
-					tags.addAll(Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER)));
-				}
+				boolean removeFlag = line.startsWith(DELETION_SYMBOL);
+				String regex = removeFlag ? line.substring(1).split(CSV_DELIMITER)[0] : line.split(CSV_DELIMITER)[0];
+				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER)));
 				List<User> users = userRepository.findByUsernameRegex(regex);
+				List<String> tagsToAdd = new ArrayList();
+				List<String> tagsToRemove = new ArrayList();
 				for (User user: users) {
 					Set<String> existingTags = user.getTags();
-					List<String> tagsToAdd = new ArrayList();
-					Set<String> tagsDifference = Sets.difference(tags, existingTags);
-					//for now - ignore adding fixed tags
-					for (String tagStr: tagsDifference) {
-						if (fixedTags.contains(tagStr)) {
+					Set<String> tagsDifference;
+					if (removeFlag) {
+						tagsToAdd = new ArrayList();
+						tagsDifference = Sets.difference(tags, existingTags);
+						for (String tagStr: tagsDifference) {
+							//for now - ignore adding fixed tags
+							if (fixedTags.contains(tagStr)) {
 							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
 							userTagService.addUserTag(user.getUsername(), null);*/
-							continue;
-						} else {
-							tagsToAdd.add(tagStr);
-							tagService.addTag(new Tag(tagStr));
+								continue;
+							} else {
+								tagsToAdd.add(tagStr);
+								tagService.addTag(new Tag(tagStr));
+							}
 						}
-					}
-					List<String> tagsToRemove = new ArrayList();
-					tagsDifference = Sets.difference(existingTags, tags);
-					//for now - ignore removing fixed tags
-					for (String tagStr: tagsDifference) {
-						if (fixedTags.contains(tagStr)) {
+					} else {
+						tagsToRemove = new ArrayList();
+						tagsDifference = Sets.difference(existingTags, tags);
+						for (String tagStr: tagsDifference) {
+							//for now - ignore removing fixed tags
+							if (fixedTags.contains(tagStr)) {
 							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
 							userTagService.removeUserTag(user.getUsername(), null);*/
-							continue;
-						} else {
-							tagsToRemove.add(tagStr);
+								continue;
+							} else {
+								tagsToRemove.add(tagStr);
+							}
 						}
 					}
 					//if we need to remove or add tags
