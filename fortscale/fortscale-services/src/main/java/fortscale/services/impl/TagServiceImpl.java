@@ -25,17 +25,20 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public void addTag(Tag tag) {
+	public boolean addTag(Tag tag) {
 		try {
 			tagRepository.addTag(tag);
 		} catch (Exception ex) {
 			logger.debug("failed to add tag {}", tag);
+			return false;
 		}
+		return true;
 	}
 
 	@Override
-	public void removeTag(Tag tag) {
+	public boolean removeTag(Tag tag) {
 		tagRepository.removeTag(tag);
+		return true;
 	}
 
 }

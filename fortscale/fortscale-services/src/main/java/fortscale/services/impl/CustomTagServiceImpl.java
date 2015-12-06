@@ -89,6 +89,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 								//if the tag to add exists in the available tags collection
 								if (availableTags.contains(new Tag(tagStr))) {
 									tagsToRemove.add(tagStr);
+								} else {
+									logger.error("tag {} not found in the available tag list", tagStr);
 								}
 							}
 						}
@@ -114,7 +116,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			}
 			moveFileToFolder(tagsFile, FINISH_PATH);
 		} else {
-			logger.error("Custom tag list file not accessible in path {}", filePath);
+			logger.error("Custom user tag list file not accessible in path {}", filePath);
 		}
 	}
 

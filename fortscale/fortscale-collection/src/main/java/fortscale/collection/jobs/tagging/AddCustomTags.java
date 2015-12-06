@@ -49,15 +49,18 @@ public class AddCustomTags extends FortscaleJob{
 		}
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			for (String line : FileUtils.readLines(tagsFile)) {
-				logger.info("adding tag {}", line);
 				String name = line.split(CSV_DELIMITER)[0];
 				String displayName = line.split(CSV_DELIMITER)[1];
 				boolean createsIndicator = Boolean.parseBoolean(line.split(CSV_DELIMITER)[2]);
-				tagService.addTag(new Tag(name, displayName, createsIndicator, false));
+				if (tagService.addTag(new Tag(name, displayName, createsIndicator, false))) {
+					logger.info("adding tag {}", line);
+				} else {
+					logger.info("fail to add tag tag {}", line);
+				}
 			}
 			logger.info("tags loaded");
 		} else {
-			logger.error("No tag file found");
+			logger.error("Custom tag list file not accessible in path {}", tagFilePath);
 		}
 	}
 

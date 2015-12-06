@@ -8,7 +8,7 @@ import java.util.List;
 public interface TagService {
 
 	List<Tag> getAllTags();
-	void addTag(Tag tag);
-	void removeTag(Tag tag);
+	boolean addTag(Tag tag);
+	boolean removeTag(Tag tag);
 
 }
