@@ -101,8 +101,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			createConfig(config, configKey);
 		}
 		//manage configuration by input topics (those which don't have data-source : Notifications, aggregated)
-		Config inputTopics = config.subset("fortscale.events.entry.input.topic.");//TODO change it to regex  fortscale.events.entry.w*.input.topic
-		for(String topic: inputTopics.keySet() ){
+		Config inputTopics = config.subset("fortscale.events.entry.input.topic.");
+			for(String topic: inputTopics.keySet() ){
 			if( !isConfigContainKey(config,String.format("fortscale.events.entry.name.%s",topic))){ // if no data source available
 				//create configuration by input
 				createConfig(config, topic);
@@ -117,9 +117,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	}
 
 	private void createConfig(Config config, String configKey) {
-		String inputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.input.topic", configKey));
-		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKey)));
-		List<String> anomalyFields = null;
+			List<String> anomalyFields = null;
 		String scoreField = null;
 		String  anomalyValueField = null;
 		String anomalyTypeField = null;
@@ -127,6 +125,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String postProcessClassField = null;
 		String lastState=null;
 		String dataSource=null;
+		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKey)));
+
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey))) {
 			anomalyFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey));
 		}
@@ -134,7 +134,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 		}
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKey))) {
-			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 		}
 
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.scoreField", configKey))) {
@@ -160,7 +160,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String entityNameField = getConfigString(config, String.format("fortscale.events.entry.%s.entityName.field", configKey));
 		String startTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.startTimestamp.field", configKey));
 		String endTimestampField = getConfigString(config, String.format("fortscale.events.entry.%s.endTimestamp.field", configKey));
-		String partitionField = getConfigString(config, String.format("fortscale.events.entry..%spartition.field", configKey));
+		String partitionField = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey));
 		EvidenceType evidenceType = EvidenceType.valueOf(getConfigString(config, String.format("fortscale.events.entry.%s.evidence.type", configKey)));
 		List<String> dataEntitiesIds = null;
 		String dataEntitiesIdsField = null;
@@ -185,7 +185,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			entitySupportingInformationPopulatorClass = getConfigString(config,
 					String.format("fortscale.events.entry.%s.supportinginformation.populator", configKey));
 		}
-		topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(evidenceType, scoreThreshold,
+		topicToDataSourceMap.put(configKey , new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
 				dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
 				entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
 				preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
@@ -476,8 +476,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public List<String> defaultFields;
 		public String totalFieldPath;
 		public String entitySupportingInformationPopulatorClass;
+		public String dataSource;
+		public String lastState;
 
-		public DataSourceConfiguration(EvidenceType evidenceType,int scoreThreshold, List<String> dataEntitiesIds,
+
+		public DataSourceConfiguration(EvidenceType evidenceType,String dataSource, String lastState , int scoreThreshold, List<String> dataEntitiesIds,
 									   String dataEntitiesIdsField, String startTimestampField,
 									   String endTimestampField, EntityType entityType, String entityNameField,
 									   String partitionField, List<String> anomalyFields, String scoreField,
@@ -502,6 +505,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			this.defaultFields = defaultFields;
 			this.totalFieldPath = totalFieldPath;
 			this.entitySupportingInformationPopulatorClass = entitySupportingInformationPopulatorClass;
+			this.dataSource = dataSource;
+			this.lastState = lastState;
+
 		}
 
 	}
