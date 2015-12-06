@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection=Tag.collectionName)
 @CompoundIndexes({
 		// index for making sure our evidence is unique
-		@CompoundIndex(name="unique_tag", def = "{'" + Tag.nameField + "': 1}", unique = true)
+		@CompoundIndex(name="unique_tag_name", def = "{'" + Tag.nameField + "': 1}", unique = true),
+		@CompoundIndex(name="unique_tag_display_name", def = "{'" + Tag.displayNameField + "': 1}", unique = true)
 })
 public class Tag extends AbstractDocument{
 
@@ -28,18 +29,18 @@ public class Tag extends AbstractDocument{
 		isFixed = false;
 	}
 
-	public Tag(String name, String displayName, Boolean isFixed) {
+	public Tag(String name, String displayName, boolean setIsFixed) {
 		this.name = name;
 		this.displayName = displayName;
-		this.isFixed = isFixed;
+		isFixed = setIsFixed ? true : false;
 		createsIndicator = false;
 	}
 
-	public Tag(String name, String displayName, Boolean createsIndicator, Boolean isFixed) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean setIsFixed) {
 		this.name = name;
 		this.displayName = displayName;
-		this.createsIndicator = createsIndicator;
-		this.isFixed = isFixed;
+		isFixed = setIsFixed ? true : false;
+		createsIndicator = setCreatesIndicator ? true : false;
 	}
 
 	private String name;

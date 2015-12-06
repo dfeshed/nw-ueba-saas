@@ -40,7 +40,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Autowired
 	private TagService tagService;
 
-	@Value("${user.list.custom_tags.path:}")
+	@Value("${user.list.user_custom_tags.path:}")
 	private String filePath;
 	@Value("${user.list.custom_tags.deletion_symbol:-}")
 	private String deletionSymbol;
@@ -64,6 +64,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		}
 		File tagsFile = new File(filePath);
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
+			List<Tag> availableTags = tagService.getAllTags();
 			//read all users from the file
 			for (String line : FileUtils.readLines(tagsFile)) {
 				boolean removeFlag = line.startsWith(deletionSymbol);
@@ -85,8 +86,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 							userTagService.addUserTag(user.getUsername(), null);*/
 								continue;
 							} else {
-								tagsToAdd.add(tagStr);
-								tagService.addTag(new Tag(tagStr));
+								//if the tag to add exists in the available tags collection
+								if (availableTags.contains(new Tag(tagStr))) {
+									tagsToAdd.add(tagStr);
+								} else {
+									logger.error("tag {} not found in the available tag list", tagStr);
+								}
 							}
 						}
 					} else {
@@ -111,7 +116,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			}
 			moveFileToFolder(tagsFile, FINISH_PATH);
 		} else {
-			logger.error("Custom tag list file not accessible in path {}", filePath);
+			logger.error("Custom user tag list file not accessible in path {}", filePath);
 		}
 	}
 
