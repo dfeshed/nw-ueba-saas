@@ -210,7 +210,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
-		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey.getConfigKeyStr(), inputTopic);
+		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey, inputTopic);
 		if (dataSourceConfiguration == null)
 			return;
         //Get the total events amount if exist
@@ -248,17 +248,20 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	/**
 	 * try to get configuration from the data source. if data source doesn't exist - get it from the input topic.
-	 * @param configKeyString
+	 * @param configKey
 	 * @param inputTopic
 	 * @return
 	 */
-	private DataSourceConfiguration getDataSourceConfiguration(String configKeyString, String inputTopic) {
-		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(configKeyString);
+	private DataSourceConfiguration getDataSourceConfiguration(StreamingTaskDataSourceConfigKey configKey, String inputTopic) {
+		DataSourceConfiguration dataSourceConfiguration = null;
+		if(configKey != null) {
+			dataSourceConfiguration = topicToDataSourceMap.get(configKey.getConfigKeyStr());
+		}
 		if(dataSourceConfiguration == null) {
 			// Get relevant data source according to topic
 			dataSourceConfiguration = topicToDataSourceMap.get(inputTopic);
 			if (dataSourceConfiguration == null) {
-				logger.error("No configuration is defined for data source {} or input topic {} ",configKeyString, inputTopic);
+				logger.error("No configuration is defined for data source {} or input topic {} ",configKey, inputTopic);
 				return null;
 			}
 		}
