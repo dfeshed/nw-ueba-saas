@@ -55,7 +55,7 @@ public class AddCustomTags extends FortscaleJob{
 				if (tagService.addTag(new Tag(name, displayName, createsIndicator, false))) {
 					logger.info("adding tag {}", line);
 				} else {
-					logger.info("fail to add tag tag {}", line);
+					logger.warn("fail to add tag tag {}", line);
 				}
 			}
 			logger.info("tags loaded");
