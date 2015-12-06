@@ -106,7 +106,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			for(String topic: inputTopics.keySet() ){
 			if( !isConfigContainKey(config,String.format("fortscale.events.entry.name.%s",topic))){ // if no data source available
 				//create configuration by input
-				createConfig(config, getConfigString(config,String.format("fortscale.events.entry.input.topic.%s",topic)));
+				createConfig(config, topic);
 			}
 		}
 
@@ -126,19 +126,23 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		String postProcessClassField = null;
 		String lastState=null;
 		String dataSource=null;
-		String configKeyStr =configKey;
+		String key = null;
 
+		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.last.state", configKey))&&
+				isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKey))) {
+			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+			key= new StreamingTaskDataSourceConfigKey(dataSource,lastState).getConfigKeyStr();
+
+		}
+		else{
+			key = getConfigString(config, String.format("fortscale.events.entry.input.topic.%s", configKey));
+		}
 
 		int scoreThreshold = Integer.parseInt(getConfigString(config, String.format("fortscale.events.entry.%s.score.threshold", configKey)));
 
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey))) {
 			anomalyFields = getConfigStringList(config, String.format("fortscale.events.entry.%s.anomalyFields", configKey));
-		}
-		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.last.state", configKey))&&
-				isConfigContainKey(config, String.format("fortscale.events.entry.%s.data.source", configKey))) {
-			lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
-			dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
-			configKeyStr= new StreamingTaskDataSourceConfigKey(dataSource,lastState).getConfigKeyStr();
 		}
 
 		if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.scoreField", configKey))) {
@@ -188,7 +192,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			entitySupportingInformationPopulatorClass = getConfigString(config,
 					String.format("fortscale.events.entry.%s.supportinginformation.populator", configKey));
 		}
-		topicToDataSourceMap.put(configKeyStr, new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
+		topicToDataSourceMap.put(key, new DataSourceConfiguration(evidenceType,dataSource,lastState,scoreThreshold,
 				dataEntitiesIds, dataEntitiesIdsField, startTimestampField, endTimestampField, entityType,
 				entityNameField, partitionField, anomalyFields, scoreField, anomalyValueField, anomalyTypeField,
 				preProcessClassField, postProcessClassField, defaultFields, totalFieldPath,
