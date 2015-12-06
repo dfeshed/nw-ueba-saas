@@ -227,6 +227,9 @@ public class ApiUserController extends BaseController{
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
 		UserTagService userTagService = userTaggingService.getUserTagService(tag);
+		if (userTagService == null) {
+			userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
+		}
 		if (addTag) {
 			userTagService.addUserTag(user.getUsername(), tag);
 		} else {
