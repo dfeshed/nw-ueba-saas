@@ -412,6 +412,11 @@
 			<version>1.0.2.35</version>
 		</dependency>
 		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-tdanalysis-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
 			<groupId>org.igniterealtime.smack</groupId>
 			<artifactId>smack-core</artifactId>
 			<version>4.1.0</version>
