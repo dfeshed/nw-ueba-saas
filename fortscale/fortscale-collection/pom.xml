@@ -387,9 +387,9 @@
 			<version>1.0.2.35</version>
 		</dependency>
 		<dependency>
-			<groupId>com.cisco</groupId>
-			<artifactId>pxgrid</artifactId>
-			<version>pxgrid-net-model</version>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-net-model</artifactId>
+			<version>1.0.2.35</version>
 		</dependency>
 		<dependency>
 			<groupId>org.igniterealtime.smack</groupId>
