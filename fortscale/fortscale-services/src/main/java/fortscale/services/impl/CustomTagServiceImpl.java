@@ -75,7 +75,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				for (User user: users) {
 					Set<String> existingTags = user.getTags();
 					Set<String> tagsDifference;
-					if (removeFlag) {
+					if (!removeFlag) {
 						tagsToAdd = new ArrayList();
 						tagsDifference = Sets.difference(tags, existingTags);
 						for (String tagStr: tagsDifference) {
