@@ -295,7 +295,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		try {
 
+
+
 			//Normalized User Name and user Tagging task
+			System.out.println(String.format("Going gto configure the Normalized Username and tagging task for %s",dataSourceName));
+
+			//open the task properties file
 			file = new File(configFilesPath + "username-normalization-tagging-task.properties");
 			fileWriter = new FileWriter(file, true);
 
@@ -352,12 +357,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			fileWriter.write("\r\n");
 
 
+			//classifier value
+			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s",this.dataSourceName.toLowerCase()));
+			fileWriter.write("\r\n");
 
 
 
 
 			/*SecurityUsernameNormalizationService
-			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=login
+
 			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true*/
 
 
