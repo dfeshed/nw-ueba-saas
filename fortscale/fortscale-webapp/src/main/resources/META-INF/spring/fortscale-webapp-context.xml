@@ -72,7 +72,15 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+	<bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
+
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
+
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 

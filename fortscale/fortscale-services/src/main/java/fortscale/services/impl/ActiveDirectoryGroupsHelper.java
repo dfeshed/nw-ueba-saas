@@ -1,4 +1,4 @@
-package fortscale.collection.tagging.service;
+package fortscale.services.impl;
 
 import java.util.List;
 

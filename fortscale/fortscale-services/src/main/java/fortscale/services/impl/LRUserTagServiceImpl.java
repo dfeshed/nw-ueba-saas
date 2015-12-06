@@ -1,10 +1,12 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +33,8 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	private UserTaggingService userTaggingService;
 	@Autowired
 	protected UserService userService;
+	@Autowired
+	protected TagService tagService;
 
 	@Value("${user.list.lr_tags.path:}")
 	private String filePath;
@@ -57,6 +61,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		// register the LR tag service with the user tagging service
 		userTaggingService.putUserTagService(UserTagEnum.LR.getId(), this);
+		tagService.addTag(new Tag(UserTagEnum.LR.getId(), UserTagEnum.LR.getDisplayName(), true));
 		refreshAboutToLeave();
 	}
 
@@ -94,7 +99,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 
 
 				//Sync mongo and cache with the user's tags
-				userService.updateUserTagList(tagsToAdd,tagsToRemove,username,getTag().getId());
+				userService.updateUserTagList(tagsToAdd,tagsToRemove,username);
 			}
 		} else {
 			logger.warn("LR tag user list file not accessible in path {}", filePath);
@@ -104,6 +109,20 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public String getTagMongoField() {
 		return User.tagsField;
+	}
+
+	@Override
+	public void addUserTag(String userName, String tag) {
+		List<String> tagsToAdd = new ArrayList();
+		tagsToAdd.add(getTag().getId());
+		userService.updateUserTagList(tagsToAdd, null, userName);
+	}
+
+	@Override
+	public void removeUserTag(String userName, String tag) {
+		List<String> tagsToRemove = new ArrayList();
+		tagsToRemove.add(getTag().getId());
+		userService.updateUserTagList(null, tagsToRemove, userName);
 	}
 
 	@Override
