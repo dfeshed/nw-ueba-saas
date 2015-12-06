@@ -91,8 +91,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						}
 					} else {
 						tagsToRemove = new ArrayList();
-						tagsDifference = Sets.difference(existingTags, tags);
-						for (String tagStr: tagsDifference) {
+						for (String tagStr: tags) {
 							//for now - ignore removing fixed tags
 							if (fixedTags.contains(tagStr)) {
 							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
