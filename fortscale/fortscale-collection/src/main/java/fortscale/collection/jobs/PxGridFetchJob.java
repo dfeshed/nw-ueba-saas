@@ -69,7 +69,7 @@ public class PxGridFetchJob extends FortscaleJob {
 		// create query we'll use to make call
 
 		Calendar begin = Calendar.getInstance();
-		begin.set(Calendar.HOUR, begin.get(Calendar.HOUR) - 1);
+		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
 		SessionDirectoryQuery query = SessionDirectoryFactory.createSessionDirectoryQuery(con);
 		SessionIterator iterator = query.getSessionsByTime(begin, end);
