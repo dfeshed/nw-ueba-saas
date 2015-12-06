@@ -29,7 +29,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String VALUE_DELIMITER = "\\|";
-	private static final String DELETION_SYMBOL = "-";
 	private static final String FINISH_PATH = "./finish";
 
 	@Autowired
@@ -43,6 +42,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Value("${user.list.custom_tags.path:}")
 	private String filePath;
+	@Value("${user.list.custom_tags.deletion_symbol:-}")
+	private String deletionSymbol;
 
 	private UserTagEnum tag = UserTagEnum.custom;
 	private Set<String> fixedTags = ImmutableSet.of(UserTagEnum.admin.getId(), UserTagEnum.service.getId(),
@@ -65,7 +66,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			//read all users from the file
 			for (String line : FileUtils.readLines(tagsFile)) {
-				boolean removeFlag = line.startsWith(DELETION_SYMBOL);
+				boolean removeFlag = line.startsWith(deletionSymbol);
 				String regex = removeFlag ? line.substring(1).split(CSV_DELIMITER)[0] : line.split(CSV_DELIMITER)[0];
 				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER)));
 				List<User> users = userRepository.findByUsernameRegex(regex);
