@@ -90,6 +90,7 @@ public class CategoryRarityModelBuilderTest {
 	public void shouldBuildAccordingToMaxRareCount() {
 		Map<String, Integer> modelBuilderData = new HashMap<>();
 		int rareCount = 4;
+		modelBuilderData.put("commonValue", 1000);
 		modelBuilderData.put("rareValue", rareCount);
 		int maxNumOfRareFeatures = 10;
 		CategoryRarityModelBuilder builderWithSmallMaxRareCount = new CategoryRarityModelBuilder(null, rareCount - 1, maxNumOfRareFeatures);
@@ -105,6 +106,7 @@ public class CategoryRarityModelBuilderTest {
 		Map<String, Integer> modelBuilderData = new HashMap<>();
 		int maxRareCount = 10;
 		int rareCount = 1;
+		modelBuilderData.put("commonValue", 1000);
 		modelBuilderData.put("rareValue", rareCount);
 		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, maxRareCount, 10000);
 		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, maxRareCount, 5);
