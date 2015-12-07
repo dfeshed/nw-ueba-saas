@@ -1,8 +1,10 @@
 package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.domain.core.Tag;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
@@ -13,6 +15,9 @@ import java.util.regex.Pattern;
  * Created by idanp on 7/10/2014.
  */
 public class UseServerDesktopTagImpl implements ServiceAccountTagging {
+
+    @Autowired
+    private fortscale.services.TagService tagService;
 
     @Value("${ServerDesktop.rate.threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
@@ -29,7 +34,7 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
     private Pattern ServerRegExpPattern;
     private Pattern DesktopsRegExpPattern;
 
-
+    private static final String endpointTag = "Endpoint";
 
     public UseServerDesktopTagImpl() {
 
@@ -37,6 +42,10 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
             ServerRegExpPattern = Pattern.compile(ServerRegExpMachines);
         if(DesktopsRegExpMachines != null)
             DesktopsRegExpPattern = Pattern.compile(DesktopsRegExpMachines);
+
+        tagService.addTag(new Tag(ComputerUsageType.Server.toString().toLowerCase(),
+                ComputerUsageType.Server.toString(), false, true));
+        tagService.addTag(new Tag(endpointTag.toLowerCase(), endpointTag, false, true));
 
     }
 
