@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
 
-import java.util.Collection;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements Model {
@@ -13,8 +13,8 @@ public class CategoryRarityModel implements Model {
 
 	private RarityScorer occurrencesHistogram;
 
-	public CategoryRarityModel(Collection<Integer> featureCounts, int maxRareCount, int maxNumOfRareFeatures) {
-		occurrencesHistogram = new RarityScorer(featureCounts, maxRareCount, maxNumOfRareFeatures);
+	public CategoryRarityModel(Map<Integer, Double> occurrencesToNumOfFeatures, int maxRareCount, int maxNumOfRareFeatures) {
+		occurrencesHistogram = new RarityScorer(occurrencesToNumOfFeatures, maxRareCount, maxNumOfRareFeatures);
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Integer> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new CategoryRarityModel(getUnignoredCounts(featureValueToCountMap), maxRareCount, maxNumOfRareFeatures);
+        return new CategoryRarityModel(getUnignoredOccurrencesToNumOfFeatures(featureValueToCountMap), maxRareCount, maxNumOfRareFeatures);
     }
 
     @Override
@@ -47,14 +47,19 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return shouldIgnoreFeature(featureAndCount.getKey()) ? 0 : model.calculateScore(featureAndCount.getValue());
     }
 
-    private Collection<Integer> getUnignoredCounts(Map<String, Integer> featureValueToCountMap) {
-        List<Integer> counts = new ArrayList<>();
+    private Map<Integer, Double> getUnignoredOccurrencesToNumOfFeatures(Map<String, Integer> featureValueToCountMap) {
+        Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
         for (Map.Entry<String, Integer> entry : featureValueToCountMap.entrySet()) {
             if (!shouldIgnoreFeature(entry.getKey())) {
-                counts.add(entry.getValue());
+                int count = entry.getValue();
+                Double numOfFeatures = occurrencesToNumOfFeatures.get(count);
+                if (numOfFeatures == null) {
+                    numOfFeatures = 0D;
+                }
+                occurrencesToNumOfFeatures.put(count, numOfFeatures + 1);
             }
         }
-        return counts;
+        return occurrencesToNumOfFeatures;
     }
 
     private boolean shouldIgnoreFeature(String value){

@@ -13,7 +13,15 @@ import java.util.*;
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
 	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
-		RarityScorer rarityScorer = new RarityScorer(featureValueToCountMap.values(), maxRareCount, maxNumOfRareFeatures);
+		Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
+		for (int count : featureValueToCountMap.values()) {
+			Double lastCount = occurrencesToNumOfFeatures.get(count);
+			if (lastCount == null) {
+				lastCount = 0D;
+			}
+			occurrencesToNumOfFeatures.put(count, lastCount + 1);
+		}
+		RarityScorer rarityScorer = new RarityScorer(occurrencesToNumOfFeatures, maxRareCount, maxNumOfRareFeatures);
 		return rarityScorer.score(featureCountToScore);
 	}
 

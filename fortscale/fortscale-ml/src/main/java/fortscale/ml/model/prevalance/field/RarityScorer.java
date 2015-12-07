@@ -1,6 +1,7 @@
 package fortscale.ml.model.prevalance.field;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -20,15 +21,17 @@ public class RarityScorer {
 	private double[] buckets;
 	private int totalEvents;
 
-	public RarityScorer(Collection<Integer> featureOccurrences, int maxRareCount, int maxNumOfRareFeatures) {
+	public RarityScorer(Map<Integer, Double> occurrencesToNumOfFeatures, int maxRareCount, int maxNumOfRareFeatures) {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
 		totalEvents = 0;
-		for (int occurrence : featureOccurrences) {
-			if (occurrence <= buckets.length) {
-				buckets[occurrence - 1]++;
+		for (Map.Entry<Integer, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
+			int occurrences = entry.getKey();
+			double numOfFeatures = entry.getValue();
+			if (occurrences <= buckets.length) {
+				buckets[occurrences - 1] = numOfFeatures;
 			}
-			totalEvents += occurrence;
+			totalEvents += numOfFeatures * occurrences;
 		}
 		if (totalEvents == 0) {
 			totalEvents = 1;
@@ -56,6 +59,10 @@ public class RarityScorer {
 	 *    |                                      ........
 	 *   _|______________________________________________
 	 *    |                                          (maxXValue)
+	 *
+	 * For more info, look into
+	 * 		https://www.google.co.il/search?q=1%2F(1%2B(x%2B1.5)%5E4.18)&oq=1%2F(1%2B(x%2B1.5)%5E4.18)&aqs=chrome..69i57j69i59l2.239j0j7&sourceid=chrome&es_sm=0&ie=UTF-8#q=1%2F(1%2Bx%5E4.182667533025268)
+	 *
 	 * @param x the function input.
 	 * @param maxXValue values above maxXValue will get approximately 0 as output (as shown in the fine ascii art).
 	 */
