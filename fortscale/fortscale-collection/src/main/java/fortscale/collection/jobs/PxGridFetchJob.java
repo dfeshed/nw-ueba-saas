@@ -87,15 +87,26 @@ public class PxGridFetchJob extends FortscaleJob {
 		Calendar begin = Calendar.getInstance();
 		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
+		IdentityGroupQuery query = SessionDirectoryFactory.createIdentityGroupQuery(con);
+		Iterator<User> iterator = query.getIdentityGroups();
+		iterator.open();
+		User u = iterator.next();
+		while (u != null)
+		{
+			System.out.println("received user: " + u.getName());
+			u = iterator.next();
+		}
+
+		/*
 		SessionDirectoryQuery query = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator2 = query.getSessionsByTime(begin, end);
+		SessionIterator iterator2 = query.getSessionsByTime();
 		iterator2.open();
 
 		Session session = iterator2.next();
 		while (session != null) {
 			System.out.println("received session: " + session.getGid());
 			session = iterator2.next();
-		}
+		}*/
 
 		// disconnect from pxGrid
 		recon.stop();
