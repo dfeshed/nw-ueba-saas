@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
@@ -29,9 +31,6 @@ public class ModelBuilderManager {
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
-    private long numOfSuccesses;
-    private long numOfFailures;
-
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
@@ -45,8 +44,7 @@ public class ModelBuilderManager {
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
         Assert.notNull(currentEndTime);
-        numOfSuccesses = 0;
-        numOfFailures = 0;
+        List<String> contextIds;
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
@@ -55,11 +53,24 @@ public class ModelBuilderManager {
                 previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
             }
 
-            for (String contextId : contextSelector.getContexts(previousEndTime, currentEndTime)) {
-                build(listener, sessionId, contextId, currentEndTime);
-            }
+            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
         } else {
-            build(listener, sessionId, null, currentEndTime);
+            contextIds = new ArrayList<>();
+            contextIds.add(null);
+        }
+
+        boolean success;
+        long numOfSuccesses = 0;
+        long numOfFailures = 0;
+
+        for (String contextId : contextIds) {
+            success = build(listener, sessionId, contextId, currentEndTime);
+
+            if (success) {
+                numOfSuccesses++;
+            } else {
+                numOfFailures++;
+            }
         }
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
@@ -70,9 +81,8 @@ public class ModelBuilderManager {
         this.contextSelector = contextSelector;
     }
 
-    private void build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
+    private boolean build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
         ModelBuildingStatus status = ModelBuildingStatus.SUCCESS;
-        Exception exception = null;
 
         Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         if (modelBuilderData == null) {
@@ -86,33 +96,14 @@ public class ModelBuilderManager {
                     modelStore.save(modelConf, sessionId, contextId, model, endTime);
                 } catch (Exception e) {
                     status = ModelBuildingStatus.STORE_FAILURE;
-                    exception = e;
                 }
             }
         }
 
-        // Update metrics
-        if (status.equals(ModelBuildingStatus.SUCCESS)) {
-            numOfSuccesses++;
-        } else {
-            numOfFailures++;
-            // Log if model building failed
-            String message = String.format("%s. modelConfName: %s, sessionId: %s, contextId: %s, endTime: %s.",
-                    status.getMessage(), modelConf.getName(), sessionId, contextId, endTime.toString());
-            logError(message, exception);
-        }
-
-        // Inform listener
         if (listener != null) {
             listener.modelBuildingStatus(modelConf.getName(), sessionId, contextId, endTime, status);
         }
-    }
 
-    private static void logError(String errorMsg, Exception exception) {
-        if (exception == null) {
-            logger.error(errorMsg);
-        } else {
-            logger.error(errorMsg, exception);
-        }
+        return status.equals(ModelBuildingStatus.SUCCESS);
     }
 }
