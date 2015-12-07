@@ -70,7 +70,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 		// create query we'll use to make call
 
-		
+/*
 		IdentityGroupQuery sd = SessionDirectoryFactory.createIdentityGroupQuery(con);
 		Iterator<User> iterator = sd.getIdentityGroups();
 		iterator.open();
@@ -81,7 +81,7 @@ public class PxGridFetchJob extends FortscaleJob {
 			System.out.println("user=" + s.getName() + " groups=" + s.getGroupList().getObjects().get(0).getName());
 			count++;
 		}
-		iterator.close();
+		iterator.close();*/
 
 
 		Calendar begin = Calendar.getInstance();
