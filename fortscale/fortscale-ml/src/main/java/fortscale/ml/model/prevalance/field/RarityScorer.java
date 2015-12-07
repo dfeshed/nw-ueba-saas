@@ -20,11 +20,13 @@ public class RarityScorer {
 	// MAX_POSSIBLE_SCORE (inside score function) we get a rounded score of 0
 	private static final double STEEPNESS = Math.log(1 / (0.99999 * MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) - 1) / Math.log(LOGISTIC_FUNCTION_DOMAIN);
 
-	private int maxNumOfRareFeatures;
 	private double[] buckets;
+	private int minEvents;
 	private int totalEvents;
+	private int maxNumOfRareFeatures;
 
-	public RarityScorer(int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
+	public RarityScorer(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
+		this.minEvents = minEvents;
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
 		totalEvents = 0;
@@ -35,9 +37,6 @@ public class RarityScorer {
 				buckets[occurrences - 1] = numOfFeatures;
 			}
 			totalEvents += numOfFeatures * occurrences;
-		}
-		if (totalEvents == 0) {
-			totalEvents = 1;
 		}
 	}
 
@@ -81,9 +80,12 @@ public class RarityScorer {
 		return buckets.length / 2;
 	}
 
-	public double score(int featureCount) {
+	public Double score(int featureCount) {
+		if (totalEvents < minEvents) {
+			return null;
+		}
 		if (featureCount > getMaxRareCount()) {
-			return 0;
+			return 0D;
 		}
 		double numRareEvents = 0;
 		double numRareFeatures = 0;
@@ -99,6 +101,6 @@ public class RarityScorer {
 		double commonEventProbability = 1 - numRareEvents / totalEvents;
 		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numRareFeatures / maxNumOfRareFeatures, RARITY_SUM_EXPONENT));
 		double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
-		return (int) (MAX_POSSIBLE_SCORE * score);
+		return Math.floor(MAX_POSSIBLE_SCORE * score);
 	}
 }

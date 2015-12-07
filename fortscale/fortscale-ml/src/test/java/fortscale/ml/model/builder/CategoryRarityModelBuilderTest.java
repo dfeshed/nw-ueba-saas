@@ -12,37 +12,47 @@ import java.util.Map;
 public class CategoryRarityModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsMaxRareCount() {
-		new CategoryRarityModelBuilder(null, null, 1);
+		new CategoryRarityModelBuilder(null, 1, null, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNegativeAsMaxRareCount() {
-		new CategoryRarityModelBuilder(null, -1, 1);
+		new CategoryRarityModelBuilder(null, 1, -1, 1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNullAsMinEvents() {
+		new CategoryRarityModelBuilder(null, null, 1, 1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNegativeAsMinEvents() {
+		new CategoryRarityModelBuilder(null, -1, 1, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsMaxNumOfRareFeatures() {
-		new CategoryRarityModelBuilder(null, 1, null);
+		new CategoryRarityModelBuilder(null, 1, 1, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
-		new CategoryRarityModelBuilder(null, 1, -1);
+		new CategoryRarityModelBuilder(null, 1, 1, -1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new CategoryRarityModelBuilder(null, 10, 10000).build(null);
+		new CategoryRarityModelBuilder(null, 1, 10, 10000).build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new CategoryRarityModelBuilder(null, 10, 10000).build("");
+		new CategoryRarityModelBuilder(null, 1, 10, 10000).build("");
 	}
 
 	@Test
 	public void shouldScore0ToEmptyString() throws Exception {
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(null, 10, 10000);
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(null, 1, 10, 10000);
 		double score = builder.calculateScore(new ImmutablePair<Object, Integer>("", 1), null);
 		Assert.assertEquals(0d, score, 0.000001);
 	}
@@ -50,19 +60,36 @@ public class CategoryRarityModelBuilderTest {
 	@Test
 	public void shouldScore0ToIgnoredValues() throws Exception {
 		final String ignore = "ignore";
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(ignore, 10, 10000);
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(ignore, 1, 10, 10000);
 		double score = builder.calculateScore(new ImmutablePair<Object, Integer>(ignore, 1), null);
 		Assert.assertEquals(0d, score, 0.000001);
 	}
 
 	@Test
 	public void shouldDelegateNotIgnoredValuesToModel() throws Exception {
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder("ignore", 10, 10000);
+		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder("ignore", 1, 10, 10000);
 		Model modelMock = Mockito.mock(Model.class);
 		Integer count = 1;
 		double score = 95;
 		Mockito.when(modelMock.calculateScore(count)).thenReturn(score);
 		Assert.assertEquals(score, builder.calculateScore(new ImmutablePair<Object, Integer>("do not ignore", count), modelMock), 0.000001);
+	}
+
+	@Test
+	public void shouldBuildUsingMinEvents() {
+		Map<String, Integer> modelBuilderData = new HashMap<>();
+		int rareFeatureCount = 2;
+		modelBuilderData.put("rareFeatureValue", rareFeatureCount);
+		int maxRareCount = rareFeatureCount + 1;
+		int maxNumOfRareFeatures = 10;
+		CategoryRarityModelBuilder builderWithSmallMinEvents = new CategoryRarityModelBuilder(null, rareFeatureCount, maxRareCount, maxNumOfRareFeatures);
+		CategoryRarityModelBuilder builderWithBigMinEvents = new CategoryRarityModelBuilder(null, rareFeatureCount + 1, maxRareCount, maxNumOfRareFeatures);
+
+		Model modelWithSmallMinEvents = builderWithSmallMinEvents.build(modelBuilderData);
+		Model modelWithBigMinEvents = builderWithBigMinEvents.build(modelBuilderData);
+
+		Assert.assertNotNull(modelWithSmallMinEvents.calculateScore(rareFeatureCount));
+		Assert.assertNull(modelWithBigMinEvents.calculateScore(rareFeatureCount));
 	}
 
 	@Test
@@ -73,8 +100,8 @@ public class CategoryRarityModelBuilderTest {
 		modelBuilderData.put("commonValue", 10);
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 10;
-		CategoryRarityModelBuilder builderWithIgnore = new CategoryRarityModelBuilder(ignore, maxRareCount, maxNumOfRareFeatures);
-		CategoryRarityModelBuilder builderWithoutIgnore = new CategoryRarityModelBuilder(null, maxRareCount, maxNumOfRareFeatures);
+		CategoryRarityModelBuilder builderWithIgnore = new CategoryRarityModelBuilder(ignore, 1, maxRareCount, maxNumOfRareFeatures);
+		CategoryRarityModelBuilder builderWithoutIgnore = new CategoryRarityModelBuilder(null, 1, maxRareCount, maxNumOfRareFeatures);
 
 		Model modelWithoutIgnoredValue = builderWithIgnore.build(modelBuilderData);
 		modelBuilderData.put(ignore, 1);
@@ -93,8 +120,8 @@ public class CategoryRarityModelBuilderTest {
 		modelBuilderData.put("commonValue", 1000);
 		modelBuilderData.put("rareValue", rareCount);
 		int maxNumOfRareFeatures = 10;
-		CategoryRarityModelBuilder builderWithSmallMaxRareCount = new CategoryRarityModelBuilder(null, rareCount - 1, maxNumOfRareFeatures);
-		CategoryRarityModelBuilder builderWithBigMaxRareCount = new CategoryRarityModelBuilder(null, rareCount + 1, maxNumOfRareFeatures);
+		CategoryRarityModelBuilder builderWithSmallMaxRareCount = new CategoryRarityModelBuilder(null, 1, rareCount - 1, maxNumOfRareFeatures);
+		CategoryRarityModelBuilder builderWithBigMaxRareCount = new CategoryRarityModelBuilder(null, 1, rareCount + 1, maxNumOfRareFeatures);
 
 		double scoreWithBigMaxRareCount = builderWithBigMaxRareCount.build(modelBuilderData).calculateScore(rareCount);
 		double scoreWithSmallMaxRareCount = builderWithSmallMaxRareCount.build(modelBuilderData).calculateScore(rareCount);
@@ -108,8 +135,8 @@ public class CategoryRarityModelBuilderTest {
 		int rareCount = 1;
 		modelBuilderData.put("commonValue", 1000);
 		modelBuilderData.put("rareValue", rareCount);
-		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, maxRareCount, 10000);
-		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, maxRareCount, 5);
+		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, 10000);
+		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, 5);
 
 		double scoreWithBigMaxNumOfRareFeatures = builderWithBigMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);
 		double scoreWithSmallMaxNumOfRareFeatures = builderWithSmallMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);

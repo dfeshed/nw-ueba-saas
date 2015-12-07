@@ -12,7 +12,7 @@ import java.util.*;
 
 @RunWith(JUnit4.class)
 public class RarityScorerTest {
-	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
+	private Double calcScore(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
 		Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
 		for (int count : featureValueToCountMap.values()) {
 			Double lastCount = occurrencesToNumOfFeatures.get(count);
@@ -21,9 +21,14 @@ public class RarityScorerTest {
 			}
 			occurrencesToNumOfFeatures.put(count, lastCount + 1);
 		}
-		RarityScorer rarityScorer = new RarityScorer(maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
+		RarityScorer rarityScorer = new RarityScorer(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
 		return rarityScorer.score(featureCountToScore);
 	}
+
+	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
+		return calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore);
+	}
+
 
 	private void assertScoreRange(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCount);
@@ -32,6 +37,9 @@ public class RarityScorerTest {
 	}
 
 	private Map<String, Integer> createFeatureValueToCountWithConstantCounts(int... numOfFeaturesAndCounts) {
+		if (numOfFeaturesAndCounts.length % 2 == 1) {
+			throw new IllegalArgumentException("should get an even number of parameters");
+		}
 		Map<String, Integer> res = new HashMap<>();
 		for (int i = 0; i < numOfFeaturesAndCounts.length; i += 2) {
 			int numOfFeatures = numOfFeaturesAndCounts[i];
@@ -52,23 +60,35 @@ public class RarityScorerTest {
 	 *************************************************************************************/
 
 	@Test
+	public void shouldScoreNullWhenGivenNotEnoughOfData() {
+		int count = 10;
+		int maxRareCount = 5;
+		int maxNumOfRareFeatures = 15;
+		Map<String, Integer> featureValueToCountWithConstantCounts = createFeatureValueToCountWithConstantCounts(1, count);
+		int featureCountToScore = 1;
+
+		Assert.assertNull(calcScore(count + 1, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
+		Assert.assertNotNull(calcScore(count, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
+	}
+
+	@Test
 	public void shouldScore0ToFeatureCountsGreaterThanMaxRareCount() throws Exception {
 		int maxNumOfRareFeatures = 10;
 		for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
 			for (int count = 1; count <= maxRareCount + 1; count++) {
 				double rangeMin = (count == maxRareCount + 1) ? 0 : 1;
 				double rangeMax = (count == maxRareCount + 1) ? 0 : 100;
-				assertScoreRange(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), count, rangeMin, rangeMax);
+				assertScoreRange(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 10000), count, rangeMin, rangeMax);
 			}
 		}
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureNoMatterWhatIsMaxRareCount() throws Exception {
+	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxRareCount() throws Exception {
 		int maxNumOfRareFeatures = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
-			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), veryRareFeatureCount), 0.0001);
+			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 10000), veryRareFeatureCount), 0.0001);
 		}
 	}
 
@@ -94,16 +114,16 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureAndEmptyBuildDataNoMatterWhatIsMaxNumOfRareFeatures() throws Exception {
+	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxNumOfRareFeatures() throws Exception {
 		int maxRareCount = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
-			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, new HashMap<String, Integer>(), veryRareFeatureCount), 0.0001);
+			Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 10000), veryRareFeatureCount), 0.0001);
 		}
 	}
 
 	private double[][][] calcScoresOverConfigurationMatrix(int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
-		return calcScoresOverConfigurationMatrix(new HashMap<String, Integer>(), maxMaxRareCount, maxMaxNumOfRareFeatures, maxFeatureCountToScore);
+		return calcScoresOverConfigurationMatrix(createFeatureValueToCountWithConstantCounts(1, 10000), maxMaxRareCount, maxMaxNumOfRareFeatures, maxFeatureCountToScore);
 	}
 
 	private double[][][] calcScoresOverConfigurationMatrix(Map<String, Integer> featureValueToCountMap, int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
@@ -360,7 +380,7 @@ public class RarityScorerTest {
 			print(maxRareCount + "\t");
 			List<Double> scores = new ArrayList<>(maxFeatureCount + 1);
 			for (int featureCount = 0; featureCount <= maxFeatureCount; featureCount++) {
-				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, featureCount), 1);
+				double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, featureCount, 1, 10000), 1);
 				if (featureCount > 0) {
 					scores.add(score);
 				}
@@ -386,10 +406,10 @@ public class RarityScorerTest {
 		int maxNumOfRareFeatures = 30;
 		int veryRareFeatureCount = 1;
 		int veryCommonFeatureCount = 10000;
-		double scoreWithCommon = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(10, veryCommonFeatureCount), veryRareFeatureCount);
-		double scoreWithoutCommon = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(0, 0), veryRareFeatureCount);
-		Assert.assertEquals(scoreWithoutCommon, scoreWithCommon, 1);
-		Assert.assertTrue(scoreWithoutCommon >= 99);
+		double scoreWithManyCommons = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(10, veryCommonFeatureCount), veryRareFeatureCount);
+		double scoreWithOneCommon = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryCommonFeatureCount), veryRareFeatureCount);
+		Assert.assertEquals(scoreWithOneCommon, scoreWithManyCommons, 1);
+		Assert.assertTrue(scoreWithOneCommon >= 99);
 	}
 
 	@Test

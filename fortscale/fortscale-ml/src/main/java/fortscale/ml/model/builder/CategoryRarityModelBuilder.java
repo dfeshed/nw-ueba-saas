@@ -17,17 +17,22 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     public static final String MODEL_BUILDER_TYPE = "category_rarity";
 
     private Pattern ignoreValues;
+    private int minEvents;
     private int maxRareCount;
     private int maxNumOfRareFeatures;
 
     @JsonCreator
     public CategoryRarityModelBuilder(@JsonProperty("ignorePattern") String ignorePattern,
+                                      @JsonProperty("minEvents") Integer minEvents,
                                       @JsonProperty("maxRareCount") Integer maxRareCount,
                                       @JsonProperty("maxNumOfRareFeatures") Integer maxNumOfRareFeatures) {
+        Assert.notNull(minEvents);
+        Assert.isTrue(minEvents > 0);
         Assert.notNull(maxRareCount);
         Assert.isTrue(maxRareCount > 0);
         Assert.notNull(maxNumOfRareFeatures);
         Assert.isTrue(maxNumOfRareFeatures > 0);
+        this.minEvents = minEvents;
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
         if (ignorePattern != null) {
@@ -38,7 +43,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Integer> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new CategoryRarityModel(maxRareCount, maxNumOfRareFeatures, getUnignoredOccurrencesToNumOfFeatures(featureValueToCountMap));
+        return new CategoryRarityModel(minEvents, maxRareCount, maxNumOfRareFeatures, getUnignoredOccurrencesToNumOfFeatures(featureValueToCountMap));
     }
 
     @Override

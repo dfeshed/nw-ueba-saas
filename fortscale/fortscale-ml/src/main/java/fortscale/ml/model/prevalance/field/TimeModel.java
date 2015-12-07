@@ -61,7 +61,7 @@ public class TimeModel implements Model {
 	}
 
 	@Override
-	public double calculateScore(Object value) {
+	public Double calculateScore(Object value) {
 		int bucketIndex = getBucketIndex((Long) value);
 		Double smoothedCounter = smoothedCounterBuckets.get(bucketIndex);
 		return occurrencesHistogram.score(smoothedCounter);
