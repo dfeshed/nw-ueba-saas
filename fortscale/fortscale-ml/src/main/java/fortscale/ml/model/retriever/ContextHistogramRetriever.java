@@ -11,6 +11,7 @@ import fortscale.ml.model.data.type.ContinuousDataHistogram;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
@@ -26,12 +27,15 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private FeatureBucketConf featureBucketConf;
 	private String featureName;
 
-	public ContextHistogramRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
-		super(dataRetrieverConf);
-		ContextHistogramRetrieverConf contextHistogramRetrieverConf = (ContextHistogramRetrieverConf)dataRetrieverConf;
-		String featureBucketConfName = contextHistogramRetrieverConf.getFeatureBucketConfName();
+	public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
+		super(config);
+
+		String featureBucketConfName = config.getFeatureBucketConfName();
 		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		featureName = contextHistogramRetrieverConf.getFeatureName();
+		Assert.notNull(featureBucketConf);
+
+		featureName = config.getFeatureName();
+		Assert.hasText(featureName);
 	}
 
 	@Override

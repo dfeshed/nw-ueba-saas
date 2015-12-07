@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.utils.factory.FactoryConfig;
 import net.minidev.json.JSONObject;
 import org.springframework.util.Assert;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = ContextHistogramRetrieverConf.class, name = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER_CONF)
 })
-public abstract class AbstractDataRetrieverConf {
+public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
 

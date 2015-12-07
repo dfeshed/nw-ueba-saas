@@ -29,6 +29,11 @@ public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 		this.featureName = featureName;
 	}
 
+	@Override
+	public String getFactoryName() {
+		return CONTEXT_HISTOGRAM_RETRIEVER_CONF;
+	}
+
 	public String getFeatureBucketConfName() {
 		return featureBucketConfName;
 	}

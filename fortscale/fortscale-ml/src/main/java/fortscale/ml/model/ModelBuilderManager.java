@@ -1,13 +1,11 @@
 package fortscale.ml.model;
 
-import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.selector.ContextSelector;
-import fortscale.ml.model.selector.FeatureBucketContextSelector;
+import fortscale.ml.model.selector.ContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,14 @@ public class ModelBuilderManager {
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
-    public ModelBuilderManager(ModelConf modelConf) {
+    public ModelBuilderManager(ModelConf modelConf, ModelService modelService) {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
 
-        if (modelConf.getContextSelectorConf() != null) {
-            contextSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
-        }
-        dataRetriever = new ContextHistogramRetriever(modelConf.getDataRetrieverConf());
-        modelBuilder = new ContinuousHistogramModelBuilder();
+        ContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
+        contextSelector = contextSelectorConf == null ? null : modelService.getContextSelector(contextSelectorConf);
+        dataRetriever = modelService.getDataRetriever(modelConf.getDataRetrieverConf());
+        modelBuilder = modelService.getModelBuilder(modelConf.getModelBuilderConf());
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
@@ -59,14 +56,11 @@ public class ModelBuilderManager {
             contextIds.add(null);
         }
 
-        boolean success;
         long numOfSuccesses = 0;
         long numOfFailures = 0;
 
         for (String contextId : contextIds) {
-            success = build(listener, sessionId, contextId, currentEndTime);
-
-            if (success) {
+            if (build(listener, sessionId, contextId, currentEndTime)) {
                 numOfSuccesses++;
             } else {
                 numOfFailures++;
