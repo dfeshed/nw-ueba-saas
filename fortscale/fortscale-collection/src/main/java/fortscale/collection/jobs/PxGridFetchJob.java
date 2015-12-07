@@ -82,31 +82,19 @@ public class PxGridFetchJob extends FortscaleJob {
 		}
 		iterator.close();
 
-		/*
+
 		Calendar begin = Calendar.getInstance();
 		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
 		SessionDirectoryQuery query = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator = query.getSessionsByTime(begin, end);
-		iterator.open();
+		SessionIterator iterator2 = query.getSessionsByTime(begin, end);
+		iterator2.open();
 
-		Session session = iterator.next();
+		Session session = iterator2.next();
 		while (session != null) {
 			System.out.println("received session: " + session.getGid());
-			session = iterator.next();
+			session = iterator2.next();
 		}
-
-		EndpointProfileClientStub stub = new EndpointProfileClientStub(con);
-		EndpointProfileQuery query = stub.createEndpointProfileQuery();
-
-		List<EndpointProfile> dps = query.getEndpointProfiles();
-		if (dps != null) {
-			EndpointProfile dp;
-			for (Iterator<EndpointProfile> it = dps.iterator(); it.hasNext(); ) {
-				dp = it.next();
-				System.out.println("Endpoint Profile : id=" + dp.getId() + ", name=" + dp.getName() + ", fqname " + dp.getFqname());
-			}
-		}*/
 
 		// disconnect from pxGrid
 		recon.stop();
@@ -120,7 +108,7 @@ public class PxGridFetchJob extends FortscaleJob {
 		userName = jobDataMapExtension.getJobDataMapStringValue(map, "userName");
 		group = jobDataMapExtension.getJobDataMapStringValue(map, "group");
 		//keystorePath = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePath");
-		keystorePath = "resources/certificates/pxGrid/clientSample2.jks";
+		keystorePath = "resources/certificates/pxGrid/clientSample1.jks";
 		keystorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePassphrase");
 		//truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
 		truststorePath = "resources/certificates/pxGrid/rootSample.jks";
