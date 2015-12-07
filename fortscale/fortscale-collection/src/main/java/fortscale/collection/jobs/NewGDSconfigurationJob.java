@@ -289,11 +289,18 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	{
 
 
-		File file = null;
-		FileWriter fileWriter=null;
+
+		File taskPropertiesFile = null;
+		FileWriter taskPropertiesFileWriter=null;
 		Boolean result = false;
 
 		try {
+
+
+			//Open the streaming overriding file
+			File streamingOverridingFile = new File (configFilesPath + "fortscale-overriding-streaming.properties");
+			FileWriter streamingOverridingFileWriter =  new FileWriter(streamingOverridingFile, true);
+
 
 
 
@@ -301,29 +308,29 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			System.out.println(String.format("Going gto configure the Normalized Username and tagging task for %s",dataSourceName));
 
 			//open the task properties file
-			file = new File(configFilesPath + "username-normalization-tagging-task.properties");
-			fileWriter = new FileWriter(file, true);
+			taskPropertiesFile = new File(configFilesPath + "username-normalization-tagging-task.properties");
+			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-			fileWriter.write("\r\n");
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\r\n");
 
-			fileWriter.write(String.format("# %s",this.dataSourceName));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("# %s", this.dataSourceName));
+			taskPropertiesFileWriter.write("\r\n");
 
-			fileWriter.write(String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask",this.dataSourceName,this.dataSourceName));
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s",this.dataSourceName,this.dataSourceName));
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl",this.dataSourceName));
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask", this.dataSourceName, this.dataSourceName));
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s", this.dataSourceName, this.dataSourceName));
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl", this.dataSourceName));
 
 
 
 			// configure new Topic to the data source or use the GDS general topic
 			System.out.println(String.format("Dose %s use the general GDS streaming topology   (y/n) ?",dataSourceName));
-			result = br.readLine().toLowerCase().equals("y");
+			result = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
 			//GDS general topology
 			if(result) {
-				fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName));
-				fileWriter.write("\r\n");
+				taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName));
+				taskPropertiesFileWriter.write("\r\n");
 			}
 			else{
 
@@ -335,31 +342,31 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//User name field
 			System.out.println(String.format("Please enter the username field (i.e account_name for kerberos): "));
 			String usernameField = br.readLine();
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", usernameField));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", usernameField));
+			taskPropertiesFileWriter.write("\r\n");
 
 			//Domain Field
 			System.out.println(String.format("Please enter the domain field (i.e account_domain for kerberos): "));
 			String domainField = br.readLine();
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", domainField));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", domainField));
+			taskPropertiesFileWriter.write("\r\n");
 
 			//Normalized_username field
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}"));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}"));
+			taskPropertiesFileWriter.write("\r\n");
 
 			//partition field name  (today we use for all the username)
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s",usernameField));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s", usernameField));
+			taskPropertiesFileWriter.write("\r\n");
 
 			//partition field name  (today we use for all the username)
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s",usernameField));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s", usernameField));
+			taskPropertiesFileWriter.write("\r\n");
 
 
 			//classifier value
-			fileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s",this.dataSourceName.toLowerCase()));
-			fileWriter.write("\r\n");
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName.toLowerCase()));
+			taskPropertiesFileWriter.write("\r\n");
 
 
 
