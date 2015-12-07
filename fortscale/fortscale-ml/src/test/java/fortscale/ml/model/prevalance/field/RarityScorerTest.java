@@ -21,7 +21,7 @@ public class RarityScorerTest {
 			}
 			occurrencesToNumOfFeatures.put(count, lastCount + 1);
 		}
-		RarityScorer rarityScorer = new RarityScorer(occurrencesToNumOfFeatures, maxRareCount, maxNumOfRareFeatures);
+		RarityScorer rarityScorer = new RarityScorer(maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
 		return rarityScorer.score(featureCountToScore);
 	}
 

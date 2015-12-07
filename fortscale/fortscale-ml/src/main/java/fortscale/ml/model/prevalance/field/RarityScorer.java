@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+/**
+ * For documentation and explanation of how this model works - refer to https://fortscale.atlassian.net/wiki/display/FSC/category+rarity+model
+ */
 public class RarityScorer {
 	private static final double MIN_POSSIBLE_SCORE = 1;
 	private static final int MAX_POSSIBLE_SCORE = 100;
@@ -21,7 +24,7 @@ public class RarityScorer {
 	private double[] buckets;
 	private int totalEvents;
 
-	public RarityScorer(Map<Integer, Double> occurrencesToNumOfFeatures, int maxRareCount, int maxNumOfRareFeatures) {
+	public RarityScorer(int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
 		totalEvents = 0;
