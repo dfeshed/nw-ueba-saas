@@ -29,7 +29,7 @@ public class TagServiceImpl implements TagService {
 		try {
 			tagRepository.addTag(tag);
 		} catch (Exception ex) {
-			logger.error("failed to add tag {} - {}", tag, ex);
+			logger.debug("failed to add tag {} - {}", tag, ex);
 			return false;
 		}
 		return true;
