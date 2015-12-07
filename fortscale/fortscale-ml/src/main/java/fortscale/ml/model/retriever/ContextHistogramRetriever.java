@@ -62,6 +62,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 			}
 		}
 
-		return reductionHistogram.getMap();
+		Map<Double, Double> map = reductionHistogram.getMap();
+		return map.size() > 0 ? map : null;
 	}
 }

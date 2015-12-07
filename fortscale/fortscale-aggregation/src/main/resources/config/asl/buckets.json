@@ -475,6 +475,13 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
+        },
+        {
+          "name": "data_bucket_histogram",
+          "featureNamesMap": {
+            "groupBy": ["databucket"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
