@@ -26,9 +26,8 @@
 
     <context:spring-configured/>
     <context:annotation-config/>
-    <context:component-scan base-package="
-        fortscale.collection,fortscale.domain,fortscale.flume,fortscale.geoip,fortscale.global,
-        fortscale.monitor,fortscale.services,fortscale.streaming,fortscale.utils,fortscale.web"/>
+    <context:component-scan base-package="fortscale.domain,fortscale.geoip,fortscale.global,
+        fortscale.monitor,fortscale.services,fortscale.streaming,fortscale.utils"/>
 
     <!-- List of Tagging service implementation -->
     <bean id="sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"/>

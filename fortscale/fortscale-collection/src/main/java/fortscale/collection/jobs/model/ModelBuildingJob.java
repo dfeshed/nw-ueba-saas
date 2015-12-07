@@ -22,13 +22,13 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String DELIMITER = ",";
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
 
-	@Value("${fortscale.model.session.id.json.field}")
+	@Value("${fortscale.model.build.message.field.session.id}")
 	private String sessionIdJsonField;
-	@Value("${fortscale.model.model.conf.name.json.field}")
+	@Value("${fortscale.model.build.message.field.model.conf.name}")
 	private String modelConfNameJsonField;
-	@Value("${fortscale.model.end.time.in.seconds.json.field}")
+	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
 	private String endTimeInSecondsJsonField;
-	@Value("${fortscale.model.all.models.constant.value}")
+	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
 	private String sessionId;
