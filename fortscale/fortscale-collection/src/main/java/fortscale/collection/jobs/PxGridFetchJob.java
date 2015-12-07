@@ -108,11 +108,9 @@ public class PxGridFetchJob extends FortscaleJob {
 		hosts = jobDataMapExtension.getJobDataMapStringValue(map, "hosts");
 		userName = jobDataMapExtension.getJobDataMapStringValue(map, "userName");
 		group = jobDataMapExtension.getJobDataMapStringValue(map, "group");
-		//keystorePath = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePath");
-		keystorePath = "resources/certificates/pxGrid/clientSample1.jks";
+		keystorePath = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePath");
 		keystorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePassphrase");
-		//truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
-		truststorePath = "resources/certificates/pxGrid/rootSample.jks";
+		truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
 		truststorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePassphrase");
 		connectionRetryMillisecond = jobDataMapExtension.getJobDataMapIntValue(map, "connectionRetryMillisecond");
 
