@@ -1,7 +1,7 @@
 package fortscale.services;
 
 public enum UserTagEnum {
-	admin("admin","Administrator"),
+	admin("admin","Admin"),
 	executive("executive","Executive"),
 	service("service","Service"),
 	LR("LR", "LR"),
