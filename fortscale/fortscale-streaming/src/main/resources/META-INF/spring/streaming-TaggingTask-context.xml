@@ -24,19 +24,16 @@
 
     <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 
+    <context:spring-configured/>
+    <context:annotation-config/>
+    <context:component-scan base-package="fortscale.domain,fortscale.geoip,fortscale.global,
+        fortscale.monitor,fortscale.services,fortscale.streaming,fortscale.utils"/>
 
-
-    <context:spring-configured />
-    <context:annotation-config />
-    <context:component-scan base-package="fortscale" />
-
-    <!--List of Tagging service implementation -->
-    <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
-    <bean id = "serverUsageImpl" class="fortscale.streaming.service.tagging.UseServerDesktopTagImpl"></bean>
-    <bean id = "sensitiveImpl" class="fortscale.streaming.service.tagging.IsSensetiveTagImpl"></bean>
-    <bean id = "IsFixedImpl" class="fortscale.streaming.service.tagging.IsFixSourceTagImpl"></bean>
-    <!--****************************************-->
-
+    <!-- List of Tagging service implementation -->
+    <bean id="sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"/>
+    <bean id="serverUsageImpl" class="fortscale.streaming.service.tagging.UseServerDesktopTagImpl"/>
+    <bean id="sensitiveImpl" class="fortscale.streaming.service.tagging.IsSensetiveTagImpl"/>
+    <bean id="IsFixedImpl" class="fortscale.streaming.service.tagging.IsFixSourceTagImpl"/>
 
     <!-- ip resolving caches that uses memory based implementation are injected here -->
     <bean id="dnsResolverCache" class="fortscale.services.cache.MemoryBasedCache">
