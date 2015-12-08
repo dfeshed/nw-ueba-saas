@@ -233,6 +233,22 @@ public class RarityScorerTest {
 		assertMonotonicity(scoresSeries, true);
 	}
 
+	@Test
+	public void shouldScoreIncreasinglyWhenProbabilityForRareFeatureIncreases() {
+		int maxRareCount = 10;
+		int maxNumOfRareFeatures = 6;
+
+		int veryRareFeatureCount = 1;
+		int commonFeatureCount = maxRareCount * 2;
+		List<Double> scores = new ArrayList<>();
+		for (int numOfCommonFeatures = 1; numOfCommonFeatures < 10; numOfCommonFeatures++) {
+			scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, numOfCommonFeatures, commonFeatureCount), veryRareFeatureCount));
+		}
+		List<List<Double>> scoresSeries = new ArrayList<>();
+		scoresSeries.add(scores);
+		assertMonotonicity(scoresSeries, true);
+	}
+
 
 
 
@@ -243,7 +259,7 @@ public class RarityScorerTest {
 	 *************************************************************************************
 	 *************************************************************************************/
 
-	private static final boolean PRINT_GRAPHS = false;
+	private static final boolean PRINT_GRAPHS = true;
 
 	private boolean printingOffOverride = false;
 
@@ -335,7 +351,7 @@ public class RarityScorerTest {
 						double score = calcScore(
 								maxRareCount,
 								maxNumOfRareFeatures,
-								createFeatureValueToCountWithConstantCounts(numOfFeatures, count, 1, 10000),
+								createFeatureValueToCountWithConstantCounts(numOfFeatures, count, 10, 1000),
 								count);
 						scores.add(score);
 						print(score + "\t");
@@ -368,7 +384,7 @@ public class RarityScorerTest {
 					print(numOfFeatures + "->" + maxNumOfRareFeatures + "\t");
 					List<Double> scores = new ArrayList<>(maxRareCount - 1);
 					for (int featureCount = 1; featureCount <= maxRareCount; featureCount++) {
-						double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(numOfFeatures, featureCount, 1, 10000), featureCount);
+						double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(numOfFeatures, featureCount, 10, 1000), featureCount);
 						if (featureCount > 1) {
 							scores.add(score);
 						}
@@ -475,7 +491,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValueWithValuesIncreasingByTime() throws Exception {
+	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValuesWithValuesIncreasingByTime() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -483,9 +499,11 @@ public class RarityScorerTest {
 		String rareFeature = "rareFeature";
 		int[] rareCounts = new int[]{1, 2, 3, 4, 8, 9};
 		int[] commonCounts = new int[]{50, 100, 150, 200, 400, 450};
-		double[] scores = new double[]{94, 93, 84, 57, 4, 2};
+		double[] scores = new double[]{95, 95, 85, 58, 4, 2};
 		for (int i = 0; i < scores.length; i++) {
-			featureValueToCountMap.put("commonFeature", commonCounts[i]);
+			for (int j = 0; j < maxNumOfRareFeatures - 1; j++) {
+				featureValueToCountMap.put("commonFeature-" + j, commonCounts[i]);
+			}
 			featureValueToCountMap.put(rareFeature, rareCounts[i]);
 			double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareCounts[i]);
 			Assert.assertEquals(scores[i], score, 0);
@@ -493,12 +511,11 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception {
+	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValues() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		featureValueToCountMap.put("commonFeature", 20000);
+		Map<String, Integer> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(10, 2000);
 		int rareFeatureCountA = 1;
 		featureValueToCountMap.put("rareFeatureA", rareFeatureCountA);
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountA);
@@ -521,12 +538,11 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValue() throws Exception {
+	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValues() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		featureValueToCountMap.put("veryCommonFeatureValue", 20000);
+		Map<String, Integer> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(10, 2000);
 		int veryRareFeatureCount = 1;
 		featureValueToCountMap.put("veryRareFeatureValue", veryRareFeatureCount);
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, 1);
@@ -546,24 +562,23 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValue() throws Exception {
+	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValues() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		featureValueToCountMap.put("mediumFeatureValue", 15);
+		Map<String, Integer> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, 15);
 
 		int rareFeatureCountA = 2;
 		featureValueToCountMap.put("rareFeatureValue-A", rareFeatureCountA);
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountA);
-		Assert.assertEquals(84, score, 1);
+		Assert.assertEquals(92, score, 1);
 
 		int rareFeatureCountB = 3;
 		featureValueToCountMap.put("rareFeatureValue-B", rareFeatureCountB);
 		score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountA);
-		Assert.assertEquals(64, score, 1);
+		Assert.assertEquals(80, score, 1);
 
-		double[] scores = new double[]{41, 26};
+		double[] scores = new double[]{57, 40};
 		for (int i = 0; i < scores.length; i++) {
 			int rareFeatureCount3 = 3;
 			featureValueToCountMap.put("newRareFeatureValue-" + i, rareFeatureCount3);
@@ -589,7 +604,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValueAcrossTime() throws Exception {
+	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValuesAcrossTime() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -597,9 +612,12 @@ public class RarityScorerTest {
 
 		int[] rareFeatureValues = new int[]{2, 4};
 		int[] mediumFeatureValues = new int[]{8, 10};
-		double[] rareFeatureScores = new double[]{69, 38};
+//		double[] rareFeatureScores = new double[]{69, 38};
+		double[] rareFeatureScores = new double[]{79, 47};
 		for (int i = 0; i < rareFeatureScores.length; i++) {
-			featureValueToCountMap.put("mediumFeatureValue", mediumFeatureValues[i]);
+			for (int j =  0; j < 10; j++) {
+				featureValueToCountMap.put("mediumFeatureValue-" + j, mediumFeatureValues[i]);
+			}
 			featureValueToCountMap.put("rareFeatureValue", rareFeatureValues[i]);
 			double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureValues[i]);
 			Assert.assertEquals(rareFeatureScores[i], score, 1);
@@ -607,19 +625,17 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValue() throws Exception {
+	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValues() throws Exception {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-
 		int mediumLargeFeatureCount = 13;
-		featureValueToCountMap.put("mediumLargeFeatureValue", mediumLargeFeatureCount);
+		Map<String, Integer> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, mediumLargeFeatureCount);
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, mediumLargeFeatureCount);
 		Assert.assertEquals(0, score, 0);
 
 		int[] rareFeatureCounts = new int[]{1, 2, 3, 4, 5, 8};
-		double[] rareFeatureScores = new double[]{89, 82, 69, 43, 21, 2};
+		double[] rareFeatureScores = new double[]{95, 93, 80, 53, 28, 2};
 		for (int i = 0; i < rareFeatureScores.length; i++) {
 			featureValueToCountMap.put("rareFeature", rareFeatureCounts[i]);
 			score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCounts[i]);
