@@ -1,5 +1,7 @@
 package fortscale.streaming.service.tagging;
 
+import fortscale.services.*;
+import fortscale.services.TagService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +67,10 @@ public class IsSensetiveTagImpl implements ServiceAccountTagging {
         }
     }
 
+    @Override
+    public void addTagToMongo(TagService tagService) {
+        //TODO - add tag to mongo when needed
+    }
 
     private boolean isTheAccountIsTagged(AccountMachineAccess account)
     {
