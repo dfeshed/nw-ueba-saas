@@ -8,7 +8,6 @@ import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
@@ -55,7 +54,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+
 
         // initialize the ip resolving service only once for all streaming task instances. Since we can
         // host several task instances in this process, we want all of them to share the same ip resolving cache
@@ -174,9 +173,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         }
     }
 
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
-		return resolver.resolveStringValue(getConfigString(config, string));
-	}
+
 
 
     @Override
