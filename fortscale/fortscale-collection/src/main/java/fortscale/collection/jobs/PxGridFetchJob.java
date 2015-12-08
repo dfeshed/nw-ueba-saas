@@ -12,7 +12,7 @@ import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileClientStub;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileQuery;
-import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
+import com.cisco.pxgrid.stub.identity.Iterator;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -71,7 +70,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 		// create query we'll use to make call
 
-
+		/*
 		EndpointProfileClientStub stub = new EndpointProfileClientStub(con);
 		EndpointProfileQuery query = stub.createEndpointProfileQuery();
 
@@ -82,11 +81,11 @@ public class PxGridFetchJob extends FortscaleJob {
 				dp = it.next();
 				System.out.println("Endpoint Profile : id=" + dp.getId() + ", name=" +  dp.getName() + ", fqname " + dp.getFqname());
 			}
-		}
+		}*/
 
 
 
-		/*
+
 		IdentityGroupQuery sd = SessionDirectoryFactory.createIdentityGroupQuery(con);
 		Iterator<User> iterator = sd.getIdentityGroups();
 		iterator.open();
@@ -100,7 +99,7 @@ public class PxGridFetchJob extends FortscaleJob {
 		iterator.close();
 
 
-
+		/*
 		Calendar begin = Calendar.getInstance();
 		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
