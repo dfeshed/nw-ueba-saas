@@ -39,7 +39,13 @@ public class KafkaUtils extends CleanupDeletionUtil {
         List<ApiConfig> apiConfigList = servicesRes.getRoleConfigGroupsResource("kafka").readConfig("kafka-KAFKA_BROKER-BASE", DataView.FULL).getConfigs();
         for (ApiConfig apiConfig : apiConfigList){
             if (apiConfig.getName().equals("log.dirs")){
-                kafkaDataFolder = apiConfig.getValue();
+                if (!StringUtils.isEmpty(apiConfig.getValue())) {
+                    //user defined value for kafka data location
+                    kafkaDataFolder = apiConfig.getValue();
+                } else {
+                    //Default value for kafka data location
+                    kafkaDataFolder = apiConfig.getDefaultValue();
+                }
                 break;
             }
         }
