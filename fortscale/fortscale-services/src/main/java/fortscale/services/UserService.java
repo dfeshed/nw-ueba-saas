@@ -5,11 +5,9 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
-import org.joda.time.DateTime;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -46,11 +44,7 @@ public interface UserService extends CachingService{
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
 
-	public String getTableName(LogEventsEnum eventId);
-
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
-
-	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username,	DateTime dateTime);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
@@ -59,8 +53,6 @@ public interface UserService extends CachingService{
 	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
-
-	public void updateUserLastActivity(String username, DateTime dateTime);
 	
 	public void updateTags(String username, Map<String, Boolean> tagSettings);
 	

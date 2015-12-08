@@ -199,20 +199,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username, DateTime dateTime){
-		Update update = new Update();
-		update.set(User.getLogLastActivityField(eventId), dateTime);
-		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
-	}
-	
-	@Override
-	public void updateUserLastActivity(String username, DateTime maxTime){
-		Update update = new Update();
-		update.set(User.lastActivityField, maxTime);
-		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
-	}
-
-	@Override
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 
 
@@ -760,26 +746,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean findIfUserExists(String username) {
 		return userRepository.findIfUserExists(username);
-	}
-
-	@Override
-	public String getTableName(LogEventsEnum eventId){
-		String tablename = null;
-		switch(eventId){
-		case login:
-			tablename = loginDAO.getTableName();
-			break;
-		case ssh:
-			tablename = sshDAO.getTableName();
-			break;
-		case vpn:
-			tablename = vpnDAO.getTableName();
-			break;
-		default:
-			break;
-		}
-		
-		return tablename;
 	}
 	
 	@Override
