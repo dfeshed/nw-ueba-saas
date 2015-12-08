@@ -551,7 +551,6 @@ public class CleanJob extends FortscaleJob {
 	 * @param serviceName
 	 */
 	private boolean checkAndStopService(String serviceName, boolean stopped) {
-//		boolean stopped = true;
 		//if service is not started/stopped
 		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
 			if (stopped) {
