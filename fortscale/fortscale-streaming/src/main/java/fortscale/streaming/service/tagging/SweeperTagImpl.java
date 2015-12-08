@@ -1,9 +1,10 @@
 package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.Tag;
-import fortscale.services.*;
+import fortscale.services.TagService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
+import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,10 +15,6 @@ import java.util.regex.Pattern;
  * Created by idanp on 7/7/2014.
  */
 public class SweeperTagImpl implements ServiceAccountTagging {
-
-
-    @Autowired
-    private fortscale.services.TagService tagService;
 
     @Value("${sweeper.min.destinations.count.threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
@@ -38,13 +35,12 @@ public class SweeperTagImpl implements ServiceAccountTagging {
         if(this.regExpMachines != null)
             regExpPattern =  Pattern.compile(this.regExpMachines); // generate the reg excretion pattern
 
-        Tag tag = new Tag(SweeperTag.toLowerCase(), SweeperTag, false, true);
-        tagService.addTag(tag);
-
     }
 
-
-
+    @Override
+    public void addTagToMongo(TagService tagService) {
+        tagService.addTag(new Tag(SweeperTag.toLowerCase(), SweeperTag, false, true));
+    }
 
 
 
