@@ -149,9 +149,9 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> topics = getAllEntities();
         logger.debug("found {} topics to delete", topics.size());
-        boolean foldersSuccess = cleanKafakDataFolders(doValidate);
+//        boolean foldersSuccess = cleanKafakDataFolders(doValidate);
         boolean topicSuccess = deleteEntities(topics, doValidate);
-        return topicSuccess && foldersSuccess;
+        return topicSuccess;
     }
 
     /***
@@ -161,7 +161,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
      * @param validate  flag to determine should we perform validations
      * @return
      */
-    private boolean cleanKafakDataFolders(boolean validate) {
+    /*private boolean cleanKafakDataFolders(boolean validate) {
         File directory = new File(kafkaDataFolder);
         if (!directory.exists() || !directory.isDirectory()) {
             logger.error("no kafka data folder {} found", kafkaDataFolder);
@@ -179,7 +179,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         }
         logger.info("all kafka data folders deleted");
         return true;
-    }
+    }*/
 
     /***
      *
