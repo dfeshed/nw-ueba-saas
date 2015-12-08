@@ -207,7 +207,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line,fileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
-			//hadfs path
+			//hdfs path
 			line = String.format("hdfs.user.processeddata.%s.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
 			writeLineToFile(line,fileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
@@ -256,16 +256,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				
 				//partition startegy
 				line=String.format("impala.score.%s.top.table.partition.type=daily",dataSourceName);
-				fileWriter.write(line);
-				streamingOverridingfileWriter.write(line);
-				fileWriter.write("\r\n");
-				streamingOverridingfileWriter.write("\r\n");
+				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
             }
 
 
             fileWriter.flush();
+			streamingOverridingfileWriter.flush();
 
         }
         catch (Exception exception)
@@ -287,6 +286,19 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                }
 
             }
+
+			if (streamingOverridingfileWriter != null)
+			{
+				try {
+					streamingOverridingfileWriter.close();
+				}
+				catch (IOException exception)
+				{
+					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getMessage());
+
+				}
+
+			}
         }
 
 
@@ -331,6 +343,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	{
 
 
+		String line="";
+		//Open the streaming overriding file
+		File streamingOverridingFile = new File (configFilesPath + "fortscale-overriding-streaming.properties");
+		FileWriter streamingOverridingFileWriter = null;
+
 
 		File taskPropertiesFile = null;
 		FileWriter taskPropertiesFileWriter=null;
@@ -339,15 +356,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		try {
 
 
-			//Open the streaming overriding file
-			File streamingOverridingFile = new File (configFilesPath + "fortscale-overriding-streaming.properties");
-			FileWriter streamingOverridingFileWriter =  new FileWriter(streamingOverridingFile, true);
 
+			streamingOverridingFileWriter =  new FileWriter(streamingOverridingFile, true);
 
 
 
 			//Normalized User Name and user Tagging task
-			System.out.println(String.format("Going gto configure the Normalized Username and tagging task for %s",dataSourceName));
+			System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s",dataSourceName));
 
 			//open the task properties file
 			taskPropertiesFile = new File(configFilesPath + "username-normalization-tagging-task.properties");
@@ -356,12 +371,18 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			taskPropertiesFileWriter.write("\r\n");
 			taskPropertiesFileWriter.write("\r\n");
 
-			taskPropertiesFileWriter.write(String.format("# %s", this.dataSourceName));
-			taskPropertiesFileWriter.write("\r\n");
+			line = String.format("# %s", this.dataSourceName);
 
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask", this.dataSourceName, this.dataSourceName));
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s", this.dataSourceName, this.dataSourceName));
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl", this.dataSourceName));
+			writeLineToFile(line,taskPropertiesFileWriter,true);
+
+
+			line = String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask", this.dataSourceName, this.dataSourceName);
+			writeLineToFile(line,taskPropertiesFileWriter,true);
+			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s", this.dataSourceName, this.dataSourceName);
+			writeLineToFile(line,taskPropertiesFileWriter,true);
+			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl", this.dataSourceName);
+			writeLineToFile(line,taskPropertiesFileWriter,true);
+
 
 
 
@@ -371,8 +392,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//GDS general topology
 			if(result) {
-				taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName));
-				taskPropertiesFileWriter.write("\r\n");
+				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName);
+				writeLineToFile(line,taskPropertiesFileWriter,true);
 			}
 			else{
 
