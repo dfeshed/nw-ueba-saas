@@ -2,10 +2,13 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -295,15 +298,15 @@ public class ContinuousDataDistributionTest {
 		String json = mapper.writeValueAsString(distribution);
 
 		Assert.assertNotNull(json);
-		Assert.assertTrue(json.contains("\"distribution\":{\"38.4\":2,\"19.2\":1}"));
-		Assert.assertTrue(json.contains("\"continuousDataModel\":{\"type\":\"continuous_data_model\",\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}"));
+		String expected = "{\"@class\":\"fortscale.ml.model.prevalance.field.ContinuousDataDistribution\",\"bucketSize\":19.2,\"minDistinctValues\":2,\"maxDistinctValues\":2,\"minBucketSize\":0.3,\"maxBucketSize\":0.3,\"distribution\":{\"19.2\":1,\"38.4\":2},\"totalCount\":3,\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}}";
+		JSONAssert.assertEquals(expected, json, false);
 	}
 
 	@Test
 	public void model_should_deserialize_from_json() throws Exception {
 		String classNameJson = "\"@class\":\"fortscale.ml.model.prevalance.field.ContinuousDataDistribution\"";
 		String distributionJson = "\"distribution\":{\"38.4\":2,\"19.2\":1}";
-		String modelJson = "\"continuousDataModel\":{\"type\":\"continuous_data_model\",\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
+		String modelJson = "\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
 		String otherFieldsJson = "\"bucketSize\":19.2,\"minDistinctValues\":2,\"maxDistinctValues\":2,\"minBucketSize\":0.3,\"maxBucketSize\":0.3,\"totalCount\":3";
 		byte[] json = String.format("{%s,%s,%s,%s}", classNameJson, otherFieldsJson, distributionJson, modelJson).getBytes("UTF-8");
 
