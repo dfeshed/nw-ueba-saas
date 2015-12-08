@@ -1,20 +1,5 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Update;
-
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -23,6 +8,14 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.fe.Classifier;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 
@@ -53,19 +46,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Autowired
 	SamAccountNameService samAccountNameService;
 
-
-
-
 	private boolean isLazy = true;
-	
-	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String vpnToAdUsernameRegexFormat;
-	
-	@Value("${auth.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String authToAdUsernameRegexFormat;
-	
-	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String sshToAdUsernameRegexFormat;
 
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
@@ -80,20 +61,12 @@ public class UsernameService implements InitializingBean, CachingService{
 		usernameServicePageSize = pageSize;
 	}
 
-	public void setLazy(boolean isLazy) {
-		this.isLazy = isLazy;
-	}
-	
 	public String getAuthLogUsername(LogEventsEnum eventId, User user){
 		return getLogUsername(eventId, user);
 	}
 	
 	public String getLogUsername(LogEventsEnum eventId, User user){
 		return user.getLogUsernameMap().get(getLogname(eventId));
-	}
-		
-	public User findByLogUsername(LogEventsEnum eventId, String username){
-		return userRepository.findByLogUsername(getLogname(eventId), username);
 	}
 
 	public String getTableName(LogEventsEnum eventId) {
@@ -127,7 +100,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		return getTableName(eventId);
 	}
 	
-	public List<String> getFollowedUsersUsername(LogEventsEnum eventId){
+	public List<String> getFollowedUsersUsername(){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){
 			String username = user.getUsername();
@@ -160,76 +133,6 @@ public class UsernameService implements InitializingBean, CachingService{
 		return usernames;
 	}
 	
-	public User findByAuthUsername(LogEventsEnum eventId, String username){
-		if(StringUtils.isEmpty(username)){
-			return null;
-		}
-		
-		User user = findByLogUsername(eventId, username);
-		
-		if(user == null && username.contains("@")){
-			user = userRepository.findByUsername(username);
-		}
-		
-		if(user == null){
-			String usernameSplit[] = StringUtils.split(username, '@');
-			user = userRepository.findByNoDomainUsername(usernameSplit[0]);
-			
-			if(user == null){
-				//tried to avoid this call since its performance is bad.
-				user = findByUsername(generateUsernameRegexByAuthUsername(eventId, usernameSplit[0]), username);
-			}
-		}
-		
-		return user;
-	}
-	
-	private User findByUsername(String regex, String username){
-		if(StringUtils.isEmpty(regex)){
-			return null;
-		}
-		
-		List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-		if(tmpUsers == null || tmpUsers.size() == 0){
-			return null;
-		}
-		
-		if(tmpUsers.size() == 1){
-			return tmpUsers.get(0);
-		}
-		
-		for(User tmpUser: tmpUsers){
-			if(tmpUser.getUsername().equalsIgnoreCase(username)){
-				return tmpUser;
-			}
-		}
-		
-		return null;
-	}
-	
-	private String generateUsernameRegexByAuthUsername(LogEventsEnum eventId, String authUsername){
-		String regexFormat = null;
-		switch(eventId){
-		case login:
-			regexFormat = authToAdUsernameRegexFormat;
-			break;
-		case ssh:
-			regexFormat = sshToAdUsernameRegexFormat;
-			break;
-		case vpn:
-			regexFormat = vpnToAdUsernameRegexFormat;
-			break;
-		default:
-			break;
-		}
-		
-		if(StringUtils.isEmpty(regexFormat)){
-			return null;
-		}
-
-		return String.format(regexFormat, authUsername);
-	}
-	
 	public String getVpnLogUsername(User user){
 		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn));
 	}
@@ -238,11 +141,6 @@ public class UsernameService implements InitializingBean, CachingService{
 		update.set(User.getLogUserNameField(getLogname(eventId)), username);
 	}
 
-
-	public void fillUpdateAppUsername(Update update, User user, Classifier classifier) {
-		fillUpdateAppUsername(update, user.getApplicationUserDetails().get(classifier.getUserApplication().getId()), classifier);
-	}
-	
 	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, Classifier classifier) {
 		update.set(User.getAppField(classifier.getUserApplication().getId()), applicationUserDetails);
 	}
@@ -374,7 +272,7 @@ public class UsernameService implements InitializingBean, CachingService{
 			logUsernameSetList.add(new HashSet<String>());
 			logUsernameToUserIdMapList.add(new HashMap<String,String>());
 		}
-		
+
 		if(!isLazy){
 			update();
 		}

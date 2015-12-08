@@ -21,7 +21,6 @@ import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -207,78 +206,10 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUsersLastActivityOfType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap){
-		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
-		while(entries.hasNext()){
-			Entry<String, Long> entry = entries.next();
-			updateUserLastActivityOfType(eventId, entry.getKey(), new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue())));
-		}
-	}
-	
-	@Override
 	public void updateUserLastActivity(String username, DateTime maxTime){
 		Update update = new Update();
 		update.set(User.lastActivityField, maxTime);
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
-	}
-
-	@Deprecated
-	@Override
-	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap){
-		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
-		while(entries.hasNext()){
-			Entry<String, Long> entry = entries.next();
-			User user = userRepository.getLastActivityAndLogUserNameByUserName(entry.getKey());
-			if(user == null){
-				return;
-			}
-			DateTime userCurrLast = user.getLastActivity();
-			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
-			if(userCurrLast == null || currTime.isAfter(userCurrLast)){
-				updateUserLastActivity(entry.getKey(), currTime);
-			}
-		}
-	}
-
-	@Override
-	@Deprecated
-	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap) {
-
-		// Go over map of updates
-		for (Entry<String, Long> entry : userLastActivityMap.entrySet()) {
-
-			// get user by username
-			String username = entry.getKey();
-			User user = userRepository.getLastActivityByUserName(eventId, username);
-			if (user == null) {
-				continue;
-			}
-
-			// get the time of the event
-			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
-
-			Update update = null;
-
-			// last activity
-			DateTime userCurrLast = user.getLastActivity();
-			if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
-				update = new Update();
-				update.set(User.lastActivityField, currTime);
-			}
-
-			// Last activity of data source
-			userCurrLast = user.getLogLastActivity(eventId);
-			if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
-				if (update == null) update = new Update();
-				update.set(User.getLogLastActivityField(eventId), currTime);
-			}
-
-			// update user
-			if (update != null) {
-				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
-			}
-		}
-
 	}
 
 	@Override
@@ -851,18 +782,6 @@ public class UserServiceImpl implements UserService{
 		return tablename;
 	}
 	
-	
-	
-	
-	
-	@Override
-	public User findByUserId(String userId){
-		return userRepository.findOne(userId);
-	}
-	
-	
-	
-	
 	@Override
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave){
 		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
@@ -890,13 +809,6 @@ public class UserServiceImpl implements UserService{
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username) {
 		return new ApplicationUserDetails(userApplication.getId(), username);
 	}
-	
-	@Override
-	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication) {
-		return user.getApplicationUserDetails().get(userApplication.getId());
-	}
-
-	
 
 	@Override
 	public List<User> findByApplicationUserName(
@@ -949,19 +861,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 	}
-	
-	
 
-	@Override
-	public void fillUpdateUserScore(Update update, User user, Classifier classifier) {
-		update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
-	}
-
-	@Override
-	public DateTime findLastActiveTime(LogEventsEnum eventId){
-		User user = userRepository.findLastActiveUser(eventId);
-		return user == null ? null : user.getLogLastActivity(eventId);
-	}
 	
 	
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {

@@ -28,8 +28,6 @@ public interface UserService extends CachingService{
 		
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
-	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);
-	
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 			
 	public void removeClassifierFromAllUsers(String classifierId);
@@ -42,28 +40,17 @@ public interface UserService extends CachingService{
 
 	public boolean findIfUserExists(String username);
 
-	public User findByUserId(String userId);
-
 	public String getUserId(String username);
 
 	public User createUser(UserApplication userApplication, String username, String appUsername);
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
-	
-	public void fillUpdateUserScore(Update update, User user, Classifier classifier);
-	
+
 	public String getTableName(LogEventsEnum eventId);
 
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
 	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username,	DateTime dateTime);
-	
-	public void updateUsersLastActivityOfType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
-	
-	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap);
-
-	@Deprecated
-	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
@@ -74,8 +61,6 @@ public interface UserService extends CachingService{
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
 
 	public void updateUserLastActivity(String username, DateTime dateTime);
-
-	public DateTime findLastActiveTime(LogEventsEnum eventId);
 	
 	public void updateTags(String username, Map<String, Boolean> tagSettings);
 	

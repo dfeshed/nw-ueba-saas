@@ -1,25 +1,5 @@
 package fortscale.services.fe.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.IntRange;
-import org.apache.commons.lang.math.Range;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -30,15 +10,21 @@ import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.services.fe.Classifier;
-import fortscale.services.fe.ClassifierService;
-import fortscale.services.fe.IClassifierScoreDistribution;
-import fortscale.services.fe.IScoreDistribution;
-import fortscale.services.fe.ISuspiciousUserInfo;
+import fortscale.services.fe.*;
 import fortscale.services.impl.SeverityElement;
 import fortscale.services.impl.UsernameService;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService{
@@ -261,7 +247,7 @@ public class ClassifierServiceImpl implements ClassifierService{
 
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersUsername(eventId);
+			usernames = usernameService.getFollowedUsersUsername();
 			if(usernames.isEmpty()){
 				return 0;
 			}
@@ -303,7 +289,7 @@ public class ClassifierServiceImpl implements ClassifierService{
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersUsername(eventId);
+			usernames = usernameService.getFollowedUsersUsername();
 			if(usernames.isEmpty()){
 				return Collections.emptyList();
 			}
