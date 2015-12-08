@@ -1,6 +1,5 @@
 package fortscale.ml.model.prevalance.field;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -23,7 +22,7 @@ public class RarityScorer {
 	private double[] buckets;
 	private int minEvents;
 	private int totalEvents;
-	private int totalFeatures;
+	private int totalDistinctFeatures;
 	private int maxNumOfRareFeatures;
 
 	public RarityScorer(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
@@ -31,7 +30,7 @@ public class RarityScorer {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
 		totalEvents = 0;
-		totalFeatures = 0;
+		totalDistinctFeatures = 0;
 		for (Map.Entry<Integer, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
 			int occurrences = entry.getKey();
 			double numOfFeatures = entry.getValue();
@@ -39,7 +38,7 @@ public class RarityScorer {
 				buckets[occurrences - 1] = numOfFeatures;
 			}
 			totalEvents += numOfFeatures * occurrences;
-			totalFeatures += numOfFeatures;
+			totalDistinctFeatures += numOfFeatures;
 		}
 	}
 
@@ -91,18 +90,18 @@ public class RarityScorer {
 			return 0D;
 		}
 		double numRareEvents = 0;
-		double numRareFeatures = 0;
+		double numDistinctRareFeatures = 0;
 		for (int i = 0; i < featureCount; i++) {
 			numRareEvents += (i + 1) * buckets[i];
-			numRareFeatures += buckets[i];
+			numDistinctRareFeatures += buckets[i];
 		}
 		for (int i = featureCount; i < featureCount + getMaxRareCount(); i++) {
 			double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2);
 			numRareEvents += (i + 1) * buckets[i] * commonnessDiscount;
-			numRareFeatures += buckets[i] * commonnessDiscount;
+			numDistinctRareFeatures += buckets[i] * commonnessDiscount;
 		}
 		double commonEventProbability = 1 - numRareEvents / totalEvents;
-		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numRareFeatures / Math.min(totalFeatures, maxNumOfRareFeatures), RARITY_SUM_EXPONENT));
+		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numDistinctRareFeatures / Math.min(totalDistinctFeatures, maxNumOfRareFeatures), RARITY_SUM_EXPONENT));
 		double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
 		return Math.floor(MAX_POSSIBLE_SCORE * score);
 	}
