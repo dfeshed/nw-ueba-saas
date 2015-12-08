@@ -2,6 +2,8 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
@@ -29,9 +31,11 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private Counter lastTimestampCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
+
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 
 		Config fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
