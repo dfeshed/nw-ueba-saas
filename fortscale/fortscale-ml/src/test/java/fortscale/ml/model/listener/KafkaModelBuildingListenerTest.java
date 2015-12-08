@@ -21,16 +21,19 @@ public class KafkaModelBuildingListenerTest {
 		kafkaModelBuildingListener.setMessageCollector(collector);
 
 		String modelConfName = "testModelConf";
+		String sessionId = "mySession";
 		String contextId = "testContextId";
 		Date endTime = new Date();
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);
+		expectedJson.put("sessionId", sessionId);
 		expectedJson.put("contextId", contextId);
 		expectedJson.put("endTime", endTime.toString());
 		expectedJson.put("success", true);
+		expectedJson.put("message", ModelBuildingStatus.SUCCESS.getMessage());
 
-		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, contextId, endTime, true);
+		kafkaModelBuildingListener.modelBuildingStatus(modelConfName, sessionId, contextId, endTime, ModelBuildingStatus.SUCCESS);
 		ArgumentCaptor<OutgoingMessageEnvelope> argumentCaptor = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
 		Mockito.verify(collector, Mockito.times(1)).send(argumentCaptor.capture());
 

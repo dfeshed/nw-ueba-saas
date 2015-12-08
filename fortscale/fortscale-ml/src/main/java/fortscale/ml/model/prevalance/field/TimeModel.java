@@ -10,8 +10,6 @@ import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
-	public static final String MODEL_TYPE = "time_model";
-	private static final long serialVersionUID = 5006807217250354329L;
 	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
@@ -36,7 +34,7 @@ public class TimeModel implements Model {
 			bucketHits.set(bucketHit, true);
 			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
 			for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
-				double addVal = counter * (1 - (distance - 1) / ((double)SMOOTHING_DISTANCE));
+				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHING_DISTANCE));
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
 			}
