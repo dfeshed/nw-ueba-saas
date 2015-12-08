@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -67,7 +68,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteEntities(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        String[] topicsArray = (String[]) topics.toArray();
+        Object[] objectsArray = topics.toArray();
+        String[] topicsArray = Arrays.copyOf(objectsArray, objectsArray.length, String[].class);
 
         TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(topicsArray);
         try {
