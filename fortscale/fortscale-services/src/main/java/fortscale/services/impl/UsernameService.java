@@ -46,7 +46,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Autowired
 	SamAccountNameService samAccountNameService;
 
-	private boolean isLazy = true;
+	private boolean isLazyUsernameCachesUpdate = true;
 
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
@@ -64,7 +64,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	public String getAuthLogUsername(LogEventsEnum eventId, User user){
 		return getLogUsername(eventId, user);
 	}
-	
+
 	public String getLogUsername(LogEventsEnum eventId, User user){
 		return user.getLogUsernameMap().get(getLogname(eventId));
 	}
@@ -73,24 +73,24 @@ public class UsernameService implements InitializingBean, CachingService{
 		String tableName = null;
 
 		switch (eventId) {
-		case login:
-			tableName = loginDAO.getTableName();
-			break;
-		case ssh:
-			tableName = sshDAO.getTableName();
-			break;
-		case vpn:
-			tableName = vpnDAO.getTableName();
-			break;
-		case amt:
-			tableName = amtDAO.getTableName();
-			break;
-		case amtsession:
-			tableName = amtsessionDAO.getTableName();
-			break;
+			case login:
+				tableName = loginDAO.getTableName();
+				break;
+			case ssh:
+				tableName = sshDAO.getTableName();
+				break;
+			case vpn:
+				tableName = vpnDAO.getTableName();
+				break;
+			case amt:
+				tableName = amtDAO.getTableName();
+				break;
+			case amtsession:
+				tableName = amtsessionDAO.getTableName();
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		return tableName;
@@ -99,7 +99,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	public String getLogname(LogEventsEnum eventId){
 		return getTableName(eventId);
 	}
-	
+
 	public List<String> getFollowedUsersUsername(){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){
@@ -110,7 +110,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 		return usernames;
 	}
-	
+
 	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){
@@ -121,7 +121,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 		return usernames;
 	}
-	
+
 	public List<String> getFollowedUsersVpnLogUsername(){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){
@@ -132,11 +132,11 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 		return usernames;
 	}
-	
+
 	public String getVpnLogUsername(User user){
 		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn));
 	}
-	
+
 	public void fillUpdateLogUsername(Update update, String username, LogEventsEnum eventId) {
 		update.set(User.getLogUserNameField(getLogname(eventId)), username);
 	}
@@ -144,13 +144,13 @@ public class UsernameService implements InitializingBean, CachingService{
 	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, Classifier classifier) {
 		update.set(User.getAppField(classifier.getUserApplication().getId()), applicationUserDetails);
 	}
-	
+
 	public void updateLogUsername(User user, LogEventsEnum eventId, String username) {
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
 
-	
+
 	public boolean isUsernameExist(String username){
 		return isUsernameExist(username, null);
 	}
@@ -166,7 +166,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		User user = userRepository.findByUsername(username);
 		return updateUsernameCache(user);
 	}
-		
+
 	public String getUserId(String username,LogEventsEnum eventId){
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
@@ -211,12 +211,12 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		return false;
 	}
-	
+
 	private String formatUserIdWithLogUsername(String userId, String logUsername){
 		return String.format("%s%s", userId, logUsername);
 	}
 
-	public void update() {
+	public void updateUsernameCaches() {
 		// Get number of users and calculate number of pages
 		long count = userRepository.count();
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
@@ -259,11 +259,11 @@ public class UsernameService implements InitializingBean, CachingService{
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
 		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
 	}
-	
+
 	public void addLogUsername(LogEventsEnum eventId, String logUsername, String userId){
 		logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
-	
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		logUsernameSetList = new ArrayList<>(LogEventsEnum.values().length);
@@ -273,12 +273,12 @@ public class UsernameService implements InitializingBean, CachingService{
 			logUsernameToUserIdMapList.add(new HashMap<String,String>());
 		}
 
-		if(!isLazy){
-			update();
+		if(!isLazyUsernameCachesUpdate){
+			updateUsernameCaches();
 		}
 	}
 
-	@Override public CacheHandler getCache() {
+	@Override public CacheHandler<String, String> getCache() {
 		return usernameToUserIdCache;
 	}
 

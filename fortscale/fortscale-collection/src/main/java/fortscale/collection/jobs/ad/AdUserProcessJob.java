@@ -3,7 +3,6 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.services.users.SupportedUsersService;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;
@@ -12,6 +11,7 @@ import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
 import fortscale.services.impl.UsersMachinesFilterEnum;
+import fortscale.services.users.SupportedUsersService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kitesdk.morphline.api.Record;
@@ -188,7 +188,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		}
 
 		//update the username serivice cahce with the user that was updated in the User collection at the mongo
-		usernameService.update();
+		usernameService.updateUsernameCaches();
 		finishStep();
 	}
 }
