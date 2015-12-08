@@ -9,6 +9,7 @@ import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
@@ -66,6 +67,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 
 
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 		// initialize the computer tagging service only once for all streaming task instances. Since we can
 		// host several task instances in this process, we want all of them to share the same computer and tagging cache
 		// instances. To do so, we can have the ComputerTaggingService defined as a static member and be shared
@@ -91,7 +93,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 				String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
-				String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
+				String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey), res);
 
 				List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigs = new ArrayList<>();
 				Config fieldsSubset = config.subset(String.format("fortscale.events.entry.%s.", configKey));
@@ -99,13 +101,13 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 					String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
-					String hostnameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.hostname.field", configKey, tagType),res);
-					String classificationField =resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.classification.field", configKey, tagType),res);
-					String clusteringField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.clustering.field", configKey, tagType),res);
+					String hostnameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.hostname.field", configKey, tagType), res);
+					String classificationField =resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.classification.field", configKey, tagType), res);
+					String clusteringField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.clustering.field", configKey, tagType), res);
 					String isSensitiveMachineField = null;
 					String isSensitiveMachineFieldKey = String.format("fortscale.events.entry.%s.%s.is-sensitive-machine.field", configKey, tagType);
 					if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
-						isSensitiveMachineField = resolveStringValue(config, isSensitiveMachineFieldKey,res);
+						isSensitiveMachineField = resolveStringValue(config, isSensitiveMachineFieldKey, res);
 					}
 					boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.entry.%s.%s.create-new-computer-instances", configKey, tagType));
 					computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
