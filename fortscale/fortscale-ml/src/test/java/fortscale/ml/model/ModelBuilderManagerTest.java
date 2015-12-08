@@ -1,6 +1,12 @@
 package fortscale.ml.model;
 
+import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
+import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.selector.ContextSelector;
@@ -14,6 +20,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -33,11 +41,35 @@ public class ModelBuilderManagerTest {
 
     @Before
     public void setUp() {
-        modelConf = mock(ModelConf.class);
-        contextSelector = mock(ContextSelector.class);
-        modelStore = testContextManager.getBean(ModelStore.class);
+        // Mock retriever conf
+        ContextHistogramRetrieverConf retrieverConf = mock(ContextHistogramRetrieverConf.class);
+        String featureName = "myFeature";
+        when(retrieverConf.getFeatureName()).thenReturn(featureName);
 
-        when(modelConf.getDataRetrieverConf()).thenReturn(mock(ContextHistogramRetrieverConf.class));
+        // Mock model conf
+        modelConf = mock(ModelConf.class);
+        when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
+
+        // Mock selector
+        contextSelector = mock(ContextSelector.class);
+
+        // Create default feature bucket
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add(100.0, 1.0);
+        Map<String, Feature> aggregatedFeatures = new HashMap<>();
+        aggregatedFeatures.put(featureName, new Feature(featureName, histogram));
+        FeatureBucket featureBucket = new FeatureBucket();
+        featureBucket.setStartTime(1420070400);
+        featureBucket.setEndTime(1420074000);
+        featureBucket.setAggregatedFeatures(aggregatedFeatures);
+
+        // Mock reader service
+        FeatureBucketsReaderService readerService = testContextManager.getBean(FeatureBucketsReaderService.class);
+        when(readerService.getFeatureBucketsByContextIdAndTimeRange(any(FeatureBucketConf.class), anyString(), anyLong(), anyLong()))
+                .thenReturn(Arrays.asList(featureBucket));
+
+        // Mock store
+        modelStore = testContextManager.getBean(ModelStore.class);
         reset(modelStore);
     }
 
@@ -51,7 +83,7 @@ public class ModelBuilderManagerTest {
         Date currentEndTime = new Date(1420156800000L);
         Date previousEndTime = new Date(1420070400000L);
         String[] ids = {"user1", "user2"};
-        Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
+        Model[] models = {getDefaultModel(), getDefaultModel()};
         boolean[] successes = {true, true};
 
         ModelBuilderManager modelBuilderManager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
@@ -67,7 +99,7 @@ public class ModelBuilderManagerTest {
     @Test
     public void shouldBuildAndStoreGlobalModel() {
         Date currentEndTime = new Date(1420156800000L);
-        Model[] models = {new ContinuousDataModel()};
+        Model[] models = {getDefaultModel()};
         boolean[] successes = {true};
 
         ModelBuilderManager modelBuilderManager = createProcessScenario(null, currentEndTime, null, models, successes);
@@ -85,7 +117,7 @@ public class ModelBuilderManagerTest {
         Date currentEndTime = new Date(1420156800000L);
         Date previousEndTime = new Date(1420070400000L);
         String[] entityIds = {"user1", "user2"};
-        Model[] models = {new ContinuousDataModel(), new ContinuousDataModel()};
+        Model[] models = {getDefaultModel(), getDefaultModel()};
         boolean[] successes = {true, false};
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
@@ -93,9 +125,16 @@ public class ModelBuilderManagerTest {
         modelManager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         for (int i = 0; i < entityIds.length; i++) {
-            verify(listener).modelBuildingStatus(eq(modelConfName), eq(entityIds[i]), eq(currentEndTime), eq(successes[i]));
+            ModelBuildingStatus status = successes[i] ? ModelBuildingStatus.SUCCESS : ModelBuildingStatus.STORE_FAILURE;
+            verify(listener).modelBuildingStatus(eq(modelConfName), eq(DEFAULT_SESSION_ID), eq(entityIds[i]), eq(currentEndTime), eq(status));
         }
         verifyNoMoreInteractions(listener);
+    }
+
+    private Model getDefaultModel() {
+        ContinuousDataModel model = new ContinuousDataModel();
+        model.setParameters(1, 100, 0);
+        return model;
     }
 
     private void mockBuild(String id, Model model, Date endTime, boolean success) {

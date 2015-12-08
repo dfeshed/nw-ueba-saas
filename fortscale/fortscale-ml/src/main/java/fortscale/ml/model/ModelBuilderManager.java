@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.selector.ContextSelector;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
@@ -41,6 +44,7 @@ public class ModelBuilderManager {
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
         Assert.notNull(currentEndTime);
+        List<String> contextIds;
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
@@ -49,33 +53,57 @@ public class ModelBuilderManager {
                 previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
             }
 
-            for (String contextId : contextSelector.getContexts(previousEndTime, currentEndTime)) {
-                build(listener, sessionId, contextId, currentEndTime);
-            }
+            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
         } else {
-            build(listener, sessionId, null, currentEndTime);
-        }
-    }
-
-    public void build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
-        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
-        Model model = modelBuilder.build(modelBuilderData);
-
-        boolean success = true;
-        try {
-            modelStore.save(modelConf, sessionId, contextId, model, endTime);
-        } catch (Exception e) {
-            logger.error(String.format("Failed to save model %s, with end time %s, for context ID %s.",
-                    modelConf.getName(), endTime.toString(), contextId), e);
-            success = false;
+            contextIds = new ArrayList<>();
+            contextIds.add(null);
         }
 
-        if (listener != null) {
-            listener.modelBuildingStatus(modelConf.getName(), contextId, endTime, success);
+        boolean success;
+        long numOfSuccesses = 0;
+        long numOfFailures = 0;
+
+        for (String contextId : contextIds) {
+            success = build(listener, sessionId, contextId, currentEndTime);
+
+            if (success) {
+                numOfSuccesses++;
+            } else {
+                numOfFailures++;
+            }
         }
+
+        logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
+                modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
     }
 
     public void setContextSelector(ContextSelector contextSelector) {
         this.contextSelector = contextSelector;
+    }
+
+    private boolean build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
+        ModelBuildingStatus status = ModelBuildingStatus.SUCCESS;
+
+        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
+        if (modelBuilderData == null) {
+            status = ModelBuildingStatus.RETRIEVER_FAILURE;
+        } else {
+            Model model = modelBuilder.build(modelBuilderData);
+            if (model == null) {
+                status = ModelBuildingStatus.BUILDER_FAILURE;
+            } else {
+                try {
+                    modelStore.save(modelConf, sessionId, contextId, model, endTime);
+                } catch (Exception e) {
+                    status = ModelBuildingStatus.STORE_FAILURE;
+                }
+            }
+        }
+
+        if (listener != null) {
+            listener.modelBuildingStatus(modelConf.getName(), sessionId, contextId, endTime, status);
+        }
+
+        return status.equals(ModelBuildingStatus.SUCCESS);
     }
 }
