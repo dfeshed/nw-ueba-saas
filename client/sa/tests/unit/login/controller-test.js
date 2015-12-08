@@ -13,7 +13,7 @@ test('it exists', function(assert) {
 
 
 test('login controller test', function(assert) {
-    expect(0);
+    assert.expect(0);
     var controller = this.subject();
     controller.send('authenticate');
 });

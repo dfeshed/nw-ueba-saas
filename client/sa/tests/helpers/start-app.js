@@ -1,24 +1,19 @@
 import Ember from 'ember';
 import Application from '../../app';
-//import Router from '../../router';
 import config from '../../config/environment';
-import initializeTestHelpers from 'simple-auth-testing/test-helpers';
-import Test from 'simple-auth-testing/authenticators/test';
-
-initializeTestHelpers();
-
+import './authenticate-session';
 export default function startApp(attrs) {
-  var application;
+  let application;
 
-  var attributes = Ember.merge({}, config.APP);
+  let attributes = Ember.merge({}, config.APP);
   attributes = Ember.merge(attributes, attrs); // use defaults, but you can override;
 
-  Ember.run(function() {
+  Ember.run(() => {
     application = Application.create(attributes);
     application.setupForTesting();
     application.injectTestHelpers();
-    authenticateSession();
     localStorage.setItem("rsa-i18n-default-locale", "en");
+    authenticateSession();
   });
 
   return application;

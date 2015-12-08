@@ -1,18 +1,7 @@
-import Ember from "ember";
-import { module, test, skip } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { skip } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 
-var application;
-
-module("Acceptance | respond", {
-    beforeEach: function() {
-    application = startApp();
-    },
-
-    afterEach: function() {
-    Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | respond');
 
 skip("visiting /do/respond and check DOM", function(assert) {
     assert.expect(2);
@@ -25,4 +14,3 @@ skip("visiting /do/respond and check DOM", function(assert) {
     });
 
 });
-

@@ -5,6 +5,7 @@
  */
 /* global Stomp */
 /* global MockServer */
+import Ember from "ember";
 import config from "../config/environment";
 
 /**
@@ -88,11 +89,13 @@ export default function initSockets(){
             // According to mock-socket docs, we must first create a mock server before creating any mock sockets.
             // So create a simple server here, and later subsequent code can enhance it to handle whatever socket
             // requests we decide to mock elsewhere.
-            var server = new MockServer(url);
-            server.initHandlers();
-            servers.push(
-                (new MockServer(url)).initHandlers()
-            );
+            try{
+                servers.push(
+                    (new MockServer(url)).initHandlers()
+                );
+            } catch(e){
+                Ember.Logger.error("Unable to create MockServer for " + url);
+            }
         });
     }
 

@@ -3,7 +3,7 @@
  * Container for all sub-routes that require authentication.
  */
 import Ember from "ember";
-import AuthenticatedRouteMixin from "simple-auth/mixins/authenticated-route-mixin";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this

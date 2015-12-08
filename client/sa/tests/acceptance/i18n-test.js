@@ -1,18 +1,7 @@
-import Ember from "ember";
-import { module, test } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
 
-var application;
-
-module("Acceptance | i18n", {
-    beforeEach: function() {
-        application = startApp();
-    },
-
-    afterEach: function() {
-        Ember.run(application, "destroy");
-    }
-});
+moduleForAcceptance('Acceptance | i18n');
 
 test("visit default protected path, change locale and check DOM", function(assert) {
     assert.expect(3);
@@ -45,4 +34,3 @@ test("visit default protected path, change locale and check DOM", function(asser
     });
 
 });
-

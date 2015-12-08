@@ -36,10 +36,9 @@ module.exports = function(environment) {
         // Default theme to be applied when no theme preference is found in localeStorage.
         defaultTheme: "menlo-park"
     },
-    'simple-auth': {
+    'ember-simple-auth': {
         authenticate: 'authenticator:sa-authenticator',
         authorizer: 'authorizer:sa-authorizer',
-        store: 'simple-auth-session-store:local-storage',
         /* Local storage key that holds the CSRF token returned by the server */
         csrfLocalstorageKey: "rsa-x-csrf-token"
     },
@@ -73,8 +72,6 @@ module.exports = function(environment) {
 
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
-
-    ENV['simple-auth'].store = 'simple-auth-session-store:ephemeral';
 
     ENV['ember-cli-mirage'].enabled = true;
     ENV['ember-cli-mock-socket'].enabled = true;

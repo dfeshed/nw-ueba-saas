@@ -1,18 +1,8 @@
-import Ember from "ember";
-import { module, test } from "qunit";
-import startApp from "sa/tests/helpers/start-app";
+import { test } from "qunit";
+import moduleForAcceptance from "sa/tests/helpers/module-for-acceptance";
+import { currentSession, invalidateSession } from 'sa/tests/helpers/ember-simple-auth';
 
-var application;
-
-module("Acceptance | login", {
-  beforeEach: function() {
-    application = startApp();
-  },
-
-  afterEach: function() {
-    Ember.run(application, "destroy");
-  }
-});
+moduleForAcceptance('Acceptance | login');
 
 /* @todo Figure out why this test below fails.
 test("click logout link and check protected route (explore) not accessible", function(assert) {
@@ -34,7 +24,7 @@ test("click logout link and check protected route (explore) not accessible", fun
 
 test("login form submit", function(assert) {
     assert.expect(0);
-    invalidateSession();
+    invalidateSession(this.application);
     visit("/login");
     andThen(function() {
         fillIn(".js-test-username-input", "admin");
@@ -45,7 +35,7 @@ test("login form submit", function(assert) {
 
 test("invalidate session and check protected route (explore) not accessible", function(assert) {
     assert.expect(1);
-    invalidateSession();
+    invalidateSession(this.application);
     visit("/do/explore");
 
     andThen(function() {
@@ -55,8 +45,8 @@ test("invalidate session and check protected route (explore) not accessible", fu
 
 test("authenticate session and check protected route (explore) is accessible", function(assert) {
     assert.expect(1);
-    authenticateSession();
-    currentSession().set("currentProject", "some test project");
+    authenticateSession(this.application);
+    currentSession(this.application).set("currentProject", "some test project");
     visit("/do/explore");
 
     andThen(function() {

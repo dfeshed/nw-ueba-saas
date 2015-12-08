@@ -347,10 +347,11 @@ export default Ember.Service.extend({
 
         // Define an array to store the results.
         var me = this,
-            results = Ember.A().setProperties({
-                "isStreaming": true,
-                "progress": 0,
-                "params": params
+            results = [];
+            Ember.setProperties(results, {
+                    "isStreaming": true,
+                    "progress": 0,
+                    "params": params
             });
         results.cancel = function() {
             if (this.get("isStreaming")) {

@@ -4,9 +4,8 @@
 * @author Srividhya Mahalingam
 */
 
-import config from '../config/environment';
-import Ember from 'ember';
-
+import Ember from "ember";
+import config from "../config/environment";
 /**
  * Enumeration of authentication status.
  * @private
@@ -20,7 +19,6 @@ var _STATUS = {
 };
 
 export default Ember.Controller.extend({
-
     /**
      * Username.
      * The user's inputted id from the login UI. Is set at run-time as user types.
@@ -75,10 +73,10 @@ export default Ember.Controller.extend({
             var me = this,
                 credentials = this.getProperties("username", "password"),
                 session = this.get("session");
-            if (session) {
 
-                // Calls the authenticate function specified in ENV['simple-auth']
-                session.authenticate(config["simple-auth"].authenticate, credentials).then(
+            if (session) {
+                // Calls the custom sa-authenticator app/authenticators/sa-authenticator
+                session.authenticate(config["ember-simple-auth"].authenticate, credentials).then(
 
                     // Auth succeeded
                     function() {
