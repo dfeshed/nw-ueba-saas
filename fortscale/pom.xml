@@ -104,7 +104,7 @@
 		<java-lang-config.version>1.7</java-lang-config.version>
 		<java-lang-config.version>1.8</java-lang-config.version>
 		<scala.version>2.10.2</scala.version>
-		<kafka.version>0.8.2.0</kafka.version>
+		<kafka.version>0.8.2.1</kafka.version>
 		<scala-kafka.version>2.10</scala-kafka.version>
 		<hadoop.version>2.3.0-cdh5.0.2</hadoop.version>
 		<hadoop-core.version>2.3.0-mr1-cdh5.0.2</hadoop-core.version>
