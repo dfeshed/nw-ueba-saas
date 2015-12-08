@@ -218,6 +218,22 @@ public class RarityScorerTest {
 		assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
 	}
 
+	@Test
+	public void shouldScoreIncreasinglyWhenProbabilityForRareFeatureEventsIncreases() {
+		int maxRareCount = 10;
+		int maxNumOfRareFeatures = 6;
+
+		int veryRareFeatureCount = 1;
+		List<Double> scores = new ArrayList<>();
+		for (int commonFeatureCount = 10; commonFeatureCount < 100; commonFeatureCount += 10) {
+			scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
+		}
+		List<List<Double>> scoresSeries = new ArrayList<>();
+		scoresSeries.add(scores);
+		assertMonotonicity(scoresSeries, true);
+	}
+
+
 
 
 	/*************************************************************************************
