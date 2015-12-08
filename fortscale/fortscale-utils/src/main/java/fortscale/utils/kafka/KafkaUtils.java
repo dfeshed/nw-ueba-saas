@@ -4,8 +4,11 @@ import com.cloudera.api.DataView;
 import com.cloudera.api.model.ApiConfig;
 import com.cloudera.api.v10.RootResourceV10;
 import com.cloudera.api.v10.ServicesResourceV10;
+import com.sun.xml.internal.fastinfoset.util.StringArray;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
+import kafka.admin.AdminOperationException;
+import kafka.admin.TopicCommand;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.io.FileUtils;
@@ -14,6 +17,9 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,18 +71,31 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteEntities(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        for (String topic: topics) {
-            if (deleteTopic(topic, zkClient, doValidate)) {
-                numberOfTopicsDeleted++;
-            }
+        String[] topicsArray = (String[]) topics.toArray();
+
+        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(topicsArray);
+        try {
+            TopicCommand.deleteTopic(zkClient, opts);
+        } catch (AdminOperationException ex){
+            logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
+            logger.error(ex.toString());
+            return false;
         }
-        zkClient.close();
-        if (numberOfTopicsDeleted == topics.size()) {
+
+//        for (String topic: topics) {
+//            topicsList.add(topic);
+//
+//            if (deleteTopic(topic, zkClient, doValidate)) {
+//                numberOfTopicsDeleted++;
+//            }
+//        }
+//        zkClient.close();
+//        if (numberOfTopicsDeleted == topics.size()) {
             logger.info("dropped all {} topics", topics.size());
             return true;
-        }
-        logger.error("failed to drop all {} topics, dropped only {}", topics.size(), numberOfTopicsDeleted);
-        return false;
+//        }
+//        logger.error("failed to drop all {} topics, dropped only {}", topics.size(), numberOfTopicsDeleted);
+//        return false;
     }
 
     /***
