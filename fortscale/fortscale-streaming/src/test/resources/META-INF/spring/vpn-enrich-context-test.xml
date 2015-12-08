@@ -20,6 +20,7 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
 		<!--<property name="localOverride" value="true"/>-->
 	</bean>
+    
 
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:fortscale-overriding-streaming-test.properties"/>
