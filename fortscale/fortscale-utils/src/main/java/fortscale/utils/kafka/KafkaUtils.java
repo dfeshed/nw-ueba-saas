@@ -4,7 +4,6 @@ import com.cloudera.api.DataView;
 import com.cloudera.api.model.ApiConfig;
 import com.cloudera.api.v10.RootResourceV10;
 import com.cloudera.api.v10.ServicesResourceV10;
-import com.sun.xml.internal.fastinfoset.util.StringArray;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
 import kafka.admin.AdminOperationException;
@@ -17,9 +16,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
