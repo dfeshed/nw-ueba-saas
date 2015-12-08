@@ -115,8 +115,18 @@
                 	<groupId>org.apache.zookeeper</groupId>
                 	<artifactId>zookeeper</artifactId>
                 </exclusion>
+				<exclusion>
+					<groupId>com.101tec</groupId>
+					<artifactId>zkclient</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.7</version>
+		</dependency>
+
 		<!-- scala library required for kafka client -->
 		<dependency>
     		<groupId>org.scala-lang</groupId>
