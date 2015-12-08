@@ -18,11 +18,6 @@ public class ClouderaUtils {
 
     private static final int DEFAULT_TIMEOUT = 30;
     private static RootResourceV10 apiRoot;
-
-    public static ServicesResourceV10 getServicesRes() {
-        return servicesRes;
-    }
-
     private static ServicesResourceV10 servicesRes;
 
     static class ClouderaManagerClientBuilderFactoryHelper {

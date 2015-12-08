@@ -257,7 +257,6 @@ public class CleanJob extends FortscaleJob {
 				success = handleDeletion(toDelete, doValidate, storeUtils);
 				break;
 			} case KAFKA: {
-				kafkaUtils.init(clouderaUtils.getServicesRes());
 				success = handleDeletion(toDelete, doValidate, kafkaUtils);
 				break;
 			}
