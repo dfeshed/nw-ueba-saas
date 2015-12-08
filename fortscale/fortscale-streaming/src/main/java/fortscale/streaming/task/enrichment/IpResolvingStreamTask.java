@@ -54,6 +54,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
+
+
         // initialize the ip resolving service only once for all streaming task instances. Since we can
         // host several task instances in this process, we want all of them to share the same ip resolving cache
         // instances. To do so, we can have the events ip resolving service defined as a static member and be shared
@@ -97,14 +99,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
                 String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
-                String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.ip.field", configKey)));
-                String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.host.field", configKey)));
-                String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey)));
+                String ipField = resolveStringValue(config, String.format("fortscale.events.entry.%s.ip.field", configKey),res);
+                String hostField = resolveStringValue(config, String.format("fortscale.events.entry.%s.host.field", configKey),res);
+                String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey),res);
                 boolean restrictToADName = config.getBoolean(String.format("fortscale.events.entry.%s.restrictToADName", configKey));
                 boolean shortName = config.getBoolean(String.format("fortscale.events.entry.%s.shortName", configKey));
                 boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.entry.%s.isRemoveLastDot", configKey));
                 boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.entry.%s.dropWhenFail", configKey));
-                String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey)));
+                String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
                 boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.entry.%s.overrideIPWithHostname", configKey));
                 boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.entry.%s.resolveOnlyReserved", configKey), defaultResolveOnlyReservedIp);
 
@@ -170,6 +172,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             }
         }
     }
+
+
 
 
     @Override
