@@ -1,8 +1,12 @@
 package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.domain.core.Tag;
+import fortscale.services.*;
+import fortscale.services.TagService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
@@ -29,7 +33,7 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
     private Pattern ServerRegExpPattern;
     private Pattern DesktopsRegExpPattern;
 
-
+    private static final String endpointTag = "Endpoint";
 
     public UseServerDesktopTagImpl() {
 
@@ -106,6 +110,12 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
         }
 
 
+    }
+
+    @Override public void addTagToMongo(TagService tagService) {
+        tagService.addTag(new Tag(ComputerUsageType.Server.toString().toLowerCase(),
+                ComputerUsageType.Server.toString(), false, true));
+        tagService.addTag(new Tag(endpointTag.toLowerCase(), endpointTag, false, true));
     }
 
     private void tagPerType(AccountMachineAccess account)
