@@ -130,13 +130,17 @@ public class CategoryRarityModelBuilderTest {
 
 	@Test
 	public void shouldBuildAccordingToMaxNumOfRareFeatures() {
-		Map<String, Integer> modelBuilderData = new HashMap<>();
 		int maxRareCount = 10;
 		int rareCount = 1;
-		modelBuilderData.put("commonValue", 1000);
+		int commonCount = 1000;
+		int numOfFeatures = 20;
+		Map<String, Integer> modelBuilderData = new HashMap<>();
 		modelBuilderData.put("rareValue", rareCount);
-		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, 10000);
-		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, 5);
+		for (int i = 0; i < numOfFeatures; i += 2) {
+			modelBuilderData.put("commonValue-" + i, commonCount);
+		}
+		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, numOfFeatures - 10);
+		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, numOfFeatures - 15);
 
 		double scoreWithBigMaxNumOfRareFeatures = builderWithBigMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);
 		double scoreWithSmallMaxNumOfRareFeatures = builderWithSmallMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);
