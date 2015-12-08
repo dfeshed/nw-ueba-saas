@@ -69,6 +69,8 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
 			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
 			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
+			@RequestParam(required = false, value = "data_entities") String dataEntities,
+			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
 			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
 			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
 
@@ -147,6 +149,19 @@ public class ApiUserController extends BaseController{
 			criteriaList.add(where("sf").regex(searchFieldContains));
 		}
 
+		if (dataEntities != null) {
+            List<Criteria> wheres = new ArrayList<Criteria>();
+            for (String dataEntityName : dataEntities.split(",")) {
+                if (entityMinScore != null) {
+                    wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
+                } else {
+                    wheres.add(where("scores." + dataEntityName).exists(true));
+                }
+			}
+            criteriaList.add(
+					new Criteria().orOperator(wheres.toArray(new Criteria[0]))
+			);
+		}
 
 		// Get users
 		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);

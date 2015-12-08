@@ -425,7 +425,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
 		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent,
-				startDate, endDate);
+				TimestampUtils.convertToSeconds(startDate),
+				TimestampUtils.convertToSeconds(endDate));
 
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,

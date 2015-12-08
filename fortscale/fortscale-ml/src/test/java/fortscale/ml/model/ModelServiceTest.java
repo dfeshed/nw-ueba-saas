@@ -8,16 +8,15 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
-import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,7 +29,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(JUnitParamsRunner.class)
 public class ModelServiceTest {
 	private static ClassPathXmlApplicationContext testContextManager;
 
@@ -63,7 +61,7 @@ public class ModelServiceTest {
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
 		listener = new ListModelBuildingListener();
-		modelService = new ModelService(listener);
+		modelService = testContextManager.getBeanFactory().createBean(ModelService.class);
 	}
 
 	@Test
@@ -114,18 +112,13 @@ public class ModelServiceTest {
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
 				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_2);
 
-		// Consistent with the name in the configuration
 		String sessionId = "test_session_id";
+		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
-
-		JSONObject event = new JSONObject();
-		event.put("sessionId", sessionId);
-		event.put("modelConfName", modelConfName);
-		event.put("endTimeInSeconds", currentEndTimeInSeconds);
-		modelService.process(event);
+		Date currentEndTime = new Date(currentEndTimeInMillis);
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime);
 
 		// Assert listener
-		Date currentEndTime = new Date(currentEndTimeInMillis);
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
 		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
@@ -185,8 +178,8 @@ public class ModelServiceTest {
 		private List<JSONObject> statuses = new ArrayList<>();
 
 		@Override
-		public void modelBuildingStatus(String modelConfName, String contextId, Date endTime, boolean success) {
-			statuses.add(buildStatus(modelConfName, contextId, endTime, success));
+		public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status) {
+			statuses.add(buildStatus(modelConfName, contextId, endTime, status.equals(ModelBuildingStatus.SUCCESS)));
 		}
 
 		public List<JSONObject> getStatuses() {
