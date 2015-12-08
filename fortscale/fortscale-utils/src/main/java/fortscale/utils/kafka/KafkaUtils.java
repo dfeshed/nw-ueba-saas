@@ -1,15 +1,21 @@
 package fortscale.utils.kafka;
 
+import com.cloudera.api.DataView;
+import com.cloudera.api.model.ApiConfig;
+import com.cloudera.api.v10.RootResourceV10;
+import com.cloudera.api.v10.ServicesResourceV10;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -23,7 +29,24 @@ public class KafkaUtils extends CleanupDeletionUtil {
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
     @Value("${kafka.data.folder}")
+    private String kafkaDataFolderConfig;
+
     private String kafkaDataFolder;
+    private static RootResourceV10 apiRoot;
+    private static ServicesResourceV10 servicesRes;
+
+    public void init(ServicesResourceV10 servicesRes) {
+        List<ApiConfig> apiConfigList = servicesRes.getRoleConfigGroupsResource("kafka").readConfig("kafka-KAFKA_BROKER-BASE", DataView.FULL).getConfigs();
+        for (ApiConfig apiConfig : apiConfigList){
+            if (apiConfig.getName().equals("log.dirs")){
+                kafkaDataFolder = apiConfig.getValue();
+                break;
+            }
+        }
+        if (StringUtils.isEmpty(kafkaDataFolder)){
+            kafkaDataFolder = kafkaDataFolderConfig;
+        }
+    }
 
     /***
      *
