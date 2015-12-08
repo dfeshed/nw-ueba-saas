@@ -7,12 +7,9 @@ import com.cisco.pxgrid.TLSConfiguration;
 import com.cisco.pxgrid.model.ise.metadata.EndpointProfile;
 import com.cisco.pxgrid.model.net.Session;
 import com.cisco.pxgrid.model.net.User;
-import com.cisco.pxgrid.stub.identity.IdentityGroupQuery;
-import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
-import com.cisco.pxgrid.stub.identity.SessionIterator;
+import com.cisco.pxgrid.stub.identity.*;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileClientStub;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileQuery;
-import com.cisco.pxgrid.stub.identity.Iterator;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -85,7 +82,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 
 
-
+		/*
 		IdentityGroupQuery sd = SessionDirectoryFactory.createIdentityGroupQuery(con);
 		Iterator<User> iterator = sd.getIdentityGroups();
 		iterator.open();
@@ -97,9 +94,9 @@ public class PxGridFetchJob extends FortscaleJob {
 			count++;
 		}
 		iterator.close();
+*/
 
-
-		/*
+		
 		Calendar begin = Calendar.getInstance();
 		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
@@ -112,16 +109,6 @@ public class PxGridFetchJob extends FortscaleJob {
 			System.out.println("received user: " + u.getName());
 			u = iterator.next();
 		}
-
-		SessionDirectoryQuery query = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator2 = query.getSessionsByTime();
-		iterator2.open();
-
-		Session session = iterator2.next();
-		while (session != null) {
-			System.out.println("received session: " + session.getGid());
-			session = iterator2.next();
-		}*/
 
 		// disconnect from pxGrid
 		recon.stop();
