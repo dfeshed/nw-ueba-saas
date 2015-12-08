@@ -9,5 +9,6 @@ import fortscale.streaming.model.tagging.AccountMachineAccess;
 public interface ServiceAccountTagging {
 
     public void tag(AccountMachineAccess account);
+    public void addTagToMongo(fortscale.services.TagService tagService);
 
 }
