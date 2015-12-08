@@ -102,11 +102,23 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 line = String.format("########### Data Schema",dataSourceName);
 				writeLineToFile(line,fileWriter,true);
 
+
+				//fields
                 System.out.println(String.format("Please enter the fields for %s data schema at csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
                 String fields = br.readLine();
-
 				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,fields);
 				writeLineToFile(line,fileWriter,true);
+
+
+
+				//username filed
+				System.out.println(String.format("Please enter the username field name  (i.e ussername or account_name)"));
+				String usernameFiledName = br.readLine();
+
+				line = String.format("impala.data.%s.table.field.username=%s",this.dataSourceName,usernameFiledName);
+				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,streamingOverridingfileWriter,true);
+
 
                 System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
                 String delimiter = br.readLine();
@@ -392,7 +404,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//GDS general topology
 			if(result) {
-				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.genericDataAccess.struct.topic", this.dataSourceName);
+				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.output.topic=kafka.fortscale-generic-data-access-normalized-tagged-event", this.dataSourceName);
 				writeLineToFile(line,taskPropertiesFileWriter,true);
 			}
 			else{
@@ -403,9 +415,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//User name field
-			System.out.println(String.format("Please enter the username field (i.e account_name for kerberos): "));
-			String usernameField = br.readLine();
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", usernameField));
+
+			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=", this.dataSourceName));
 			taskPropertiesFileWriter.write("\r\n");
 
 			//Domain Field
@@ -419,11 +430,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			taskPropertiesFileWriter.write("\r\n");
 
 			//partition field name  (today we use for all the username)
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s", usernameField));
+			//taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s",this.dataSourceName.toLowerCase(), usernameField));
 			taskPropertiesFileWriter.write("\r\n");
 
 			//partition field name  (today we use for all the username)
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s", usernameField));
+			//taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s",this.dataSourceName.toLowerCase(), usernameField));
 			taskPropertiesFileWriter.write("\r\n");
 
 
