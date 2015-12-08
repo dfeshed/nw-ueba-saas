@@ -44,9 +44,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	private CacheHandler<String, String> usernameToUserIdCache;
 
 	@Autowired
-	SamAccountNameService samAccountNameService;
-
-	private boolean isLazyUsernameCachesUpdate = true;
+	private SamAccountNameService samAccountNameService;
 
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
@@ -221,10 +219,10 @@ public class UsernameService implements InitializingBean, CachingService{
 		long count = userRepository.count();
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
 
-		// Initialize a map from LogEventsEnum to a set of UserIdWithLogUsername
-		Map<LogEventsEnum, Set<String>> map = new HashMap<>();
+		// Initialize a logEventIdToUsernamesMap from LogEventsEnum to a set of UserIdWithLogUsername
+		Map<LogEventsEnum, Set<String>> logEventIdToUsernamesMap = new HashMap<>();
 		for (LogEventsEnum logEventsEnum : LogEventsEnum.values())
-			map.put(logEventsEnum, new HashSet<String>());
+			logEventIdToUsernamesMap.put(logEventsEnum, new HashSet<String>());
 
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
@@ -243,7 +241,7 @@ public class UsernameService implements InitializingBean, CachingService{
 				}
 
 
-				for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet()) {
+				for (Map.Entry<LogEventsEnum, Set<String>> entry : logEventIdToUsernamesMap.entrySet()) {
 					String logUsername = getLogUsername(entry.getKey(), user);
 					if (logUsername != null)
 						entry.getValue().add(formatUserIdWithLogUsername(userId, logUsername));
@@ -252,7 +250,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 
 		// Update logUsername sets
-		for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet())
+		for (Map.Entry<LogEventsEnum, Set<String>> entry : logEventIdToUsernamesMap.entrySet())
 			logUsernameSetList.set(entry.getKey().ordinal(), entry.getValue());
 	}
 
@@ -268,13 +266,10 @@ public class UsernameService implements InitializingBean, CachingService{
 	public void afterPropertiesSet() throws Exception {
 		logUsernameSetList = new ArrayList<>(LogEventsEnum.values().length);
 		logUsernameToUserIdMapList = new ArrayList<>(LogEventsEnum.values().length);
-		for(@SuppressWarnings("unused") LogEventsEnum logEventsEnum: LogEventsEnum.values()){
+
+		for (int i = 0; i < LogEventsEnum.values().length; i++) {
 			logUsernameSetList.add(new HashSet<String>());
 			logUsernameToUserIdMapList.add(new HashMap<String,String>());
-		}
-
-		if(!isLazyUsernameCachesUpdate){
-			updateUsernameCaches();
 		}
 	}
 
