@@ -17,7 +17,7 @@ public class ContinuousHistogramModelBuilderFactory implements InitializingBean,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		modelBuilderFactoryService.register(ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER_CONF, this);
+		modelBuilderFactoryService.register(ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER, this);
 	}
 
 	@Override

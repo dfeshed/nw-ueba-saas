@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 public class FeatureBucketContextSelectorConf implements IContextSelectorConf {
-	public static final String FEATURE_BUCKET_CONTEXT_SELECTOR_CONF = "feature_bucket_context_selector_conf";
+	public static final String FEATURE_BUCKET_CONTEXT_SELECTOR = "feature_bucket_context_selector";
 	public static final String FEATURE_BUCKET_CONF_NAME_PROPERTY = "featureBucketConfName";
 
 	private String featureBucketConfName;
@@ -20,7 +20,7 @@ public class FeatureBucketContextSelectorConf implements IContextSelectorConf {
 
 	@Override
 	public String getFactoryName() {
-		return FEATURE_BUCKET_CONTEXT_SELECTOR_CONF;
+		return FEATURE_BUCKET_CONTEXT_SELECTOR;
 	}
 
 	public String getFeatureBucketConfName() {

@@ -15,7 +15,7 @@ public class FeatureBucketContextSelectorFactory implements InitializingBean, Fa
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		contextSelectorFactoryService.register(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR_CONF, this);
+		contextSelectorFactoryService.register(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR, this);
 	}
 
 	@Override

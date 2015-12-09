@@ -15,7 +15,7 @@ public class ContextHistogramRetrieverFactory implements InitializingBean, Facto
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		dataRetrieverFactoryService.register(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER_CONF, this);
+		dataRetrieverFactoryService.register(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER, this);
 	}
 
 	@Override
