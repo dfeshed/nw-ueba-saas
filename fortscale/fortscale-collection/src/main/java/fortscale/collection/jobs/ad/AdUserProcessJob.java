@@ -1,13 +1,13 @@
 package fortscale.collection.jobs.ad;
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTaggingService;
 import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
 import fortscale.services.impl.UsersMachinesFilterEnum;
