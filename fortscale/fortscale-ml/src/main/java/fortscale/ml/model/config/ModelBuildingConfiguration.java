@@ -3,7 +3,7 @@ package fortscale.ml.model.config;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ public class ModelBuildingConfiguration {
 	}
 
 	@Bean
-	public FactoryService<ContextSelector> contextSelectorFactoryService() {
+	public FactoryService<IContextSelector> contextSelectorFactoryService() {
 		return new FactoryService<>();
 	}
 

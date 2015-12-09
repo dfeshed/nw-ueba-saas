@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Configurable(preConstruction = true)
-public class FeatureBucketContextSelector implements ContextSelector {
+public class FeatureBucketContextSelector implements IContextSelector {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired

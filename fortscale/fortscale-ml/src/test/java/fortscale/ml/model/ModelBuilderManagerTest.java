@@ -6,7 +6,7 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.ContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import org.junit.Before;
@@ -24,7 +24,7 @@ public class ModelBuilderManagerTest {
     private static final String DEFAULT_SESSION_ID = "testSessionId";
 
     private ModelConf modelConf;
-    private ContextSelector selector;
+    private IContextSelector selector;
     private AbstractDataRetriever retriever;
     private IModelBuilder builder;
     private ModelStore store;
@@ -39,7 +39,7 @@ public class ModelBuilderManagerTest {
     @Before
     public void setUp() {
         modelConf = mock(ModelConf.class);
-        selector = mock(ContextSelector.class);
+        selector = mock(IContextSelector.class);
         retriever = mock(AbstractDataRetriever.class);
         builder = mock(IModelBuilder.class);
 

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
-public class FeatureBucketContextSelectorFactory implements InitializingBean, Factory<ContextSelector> {
+public class FeatureBucketContextSelectorFactory implements InitializingBean, Factory<IContextSelector> {
 	@Autowired
-	private FactoryService<ContextSelector> contextSelectorFactoryService;
+	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -19,7 +19,7 @@ public class FeatureBucketContextSelectorFactory implements InitializingBean, Fa
 	}
 
 	@Override
-	public ContextSelector getProduct(FactoryConfig factoryConfig) {
+	public IContextSelector getProduct(FactoryConfig factoryConfig) {
 		FeatureBucketContextSelectorConf config = (FeatureBucketContextSelectorConf)factoryConfig;
 		return new FeatureBucketContextSelector(config);
 	}

@@ -5,7 +5,7 @@ import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.ContextSelectorConf;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
@@ -23,7 +23,7 @@ public class ModelService {
 	@Autowired
 	private ModelConfService modelConfService;
 	@Autowired
-	private FactoryService<ContextSelector> contextSelectorFactoryService;
+	private FactoryService<IContextSelector> contextSelectorFactoryService;
 	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 	@Autowired
@@ -31,7 +31,7 @@ public class ModelService {
 
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
 
-	public ContextSelector getContextSelector(ContextSelectorConf conf) {
+	public IContextSelector getContextSelector(ContextSelectorConf conf) {
 		return contextSelectorFactoryService.getProduct(conf);
 	}
 

@@ -4,7 +4,7 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.ContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
@@ -25,7 +25,7 @@ public class ModelBuilderManager {
     private ModelStore modelStore;
 
     private ModelConf modelConf;
-    private ContextSelector contextSelector;
+    private IContextSelector contextSelector;
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
