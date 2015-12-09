@@ -61,7 +61,7 @@ public class ModelServiceTest {
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
 		listener = new ListModelBuildingListener();
-		modelService = testContextManager.getBeanFactory().createBean(ModelService.class);
+		modelService = testContextManager.getBean(ModelService.class);
 	}
 
 	@Test

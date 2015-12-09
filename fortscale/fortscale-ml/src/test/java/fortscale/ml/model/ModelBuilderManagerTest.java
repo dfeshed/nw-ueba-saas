@@ -1,112 +1,103 @@
 package fortscale.ml.model;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.ContextSelector;
+import fortscale.ml.model.selector.ContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
-import junitparams.JUnitParamsRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(JUnitParamsRunner.class)
 public class ModelBuilderManagerTest {
-    private static final String DEFAULT_SESSION_ID = "testSessionId";
     private static ClassPathXmlApplicationContext testContextManager;
+    private static final String DEFAULT_SESSION_ID = "testSessionId";
 
     private ModelConf modelConf;
-    private ContextSelector contextSelector;
-    private ModelStore modelStore;
+    private ContextSelector selector;
+    private AbstractDataRetriever retriever;
+    private IModelBuilder builder;
+    private ModelStore store;
+    private ModelService modelService;
 
     @BeforeClass
     public static void setUpClass() {
-        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/model_builder_manager_test_context.xml");
+        testContextManager = new ClassPathXmlApplicationContext(
+                "classpath*:META-INF/spring/model_builder_manager_test_context.xml");
     }
 
     @Before
     public void setUp() {
-        // Mock retriever conf
-        ContextHistogramRetrieverConf retrieverConf = mock(ContextHistogramRetrieverConf.class);
-        String featureName = "myFeature";
-        when(retrieverConf.getFeatureName()).thenReturn(featureName);
-
-        // Mock model conf
         modelConf = mock(ModelConf.class);
-        when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
+        selector = mock(ContextSelector.class);
+        retriever = mock(AbstractDataRetriever.class);
+        builder = mock(IModelBuilder.class);
 
-        // Mock selector
-        contextSelector = mock(ContextSelector.class);
+        // ModelStore is auto wired in ModelBuilderManager
+        store = testContextManager.getBean(ModelStore.class);
+        reset(store);
 
-        // Create default feature bucket
-        GenericHistogram histogram = new GenericHistogram();
-        histogram.add(100.0, 1.0);
-        Map<String, Feature> aggregatedFeatures = new HashMap<>();
-        aggregatedFeatures.put(featureName, new Feature(featureName, histogram));
-        FeatureBucket featureBucket = new FeatureBucket();
-        featureBucket.setStartTime(1420070400);
-        featureBucket.setEndTime(1420074000);
-        featureBucket.setAggregatedFeatures(aggregatedFeatures);
-
-        // Mock reader service
-        FeatureBucketsReaderService readerService = testContextManager.getBean(FeatureBucketsReaderService.class);
-        when(readerService.getFeatureBucketsByContextIdAndTimeRange(any(FeatureBucketConf.class), anyString(), anyLong(), anyLong()))
-                .thenReturn(Arrays.asList(featureBucket));
-
-        // Mock store
-        modelStore = testContextManager.getBean(ModelStore.class);
-        reset(modelStore);
+        modelService = mock(ModelService.class);
+        when(modelService.getContextSelector(any(ContextSelectorConf.class))).thenReturn(selector);
+        when(modelService.getDataRetriever(any(AbstractDataRetrieverConf.class))).thenReturn(retriever);
+        when(modelService.getModelBuilder(any(IModelBuilderConf.class))).thenReturn(builder);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfConstructedWithoutModelConf() {
-        new ModelBuilderManager(null);
+        new ModelBuilderManager(null, modelService);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailIfConstructedWithoutModelService() {
+        new ModelBuilderManager(modelConf, null);
     }
 
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
-        Date currentEndTime = new Date(1420156800000L);
         Date previousEndTime = new Date(1420070400000L);
+        Date currentEndTime = new Date(1420156800000L);
         String[] ids = {"user1", "user2"};
-        Model[] models = {getDefaultModel(), getDefaultModel()};
+        Model[] models = {mock(Model.class), mock(Model.class)};
         boolean[] successes = {true, true};
 
-        ModelBuilderManager modelBuilderManager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
-        modelBuilderManager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
+        manager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
-        verify(contextSelector, times(1)).getContexts(previousEndTime, currentEndTime);
+        verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
+        verify(builder, times(ids.length)).build(any());
         for (int i = 0; i < ids.length; i++) {
-            verify(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentEndTime));
+            verify(retriever).retrieve(eq(ids[i]), eq(currentEndTime));
+            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentEndTime));
         }
-        verifyNoMoreInteractions(modelStore);
+
+        verifyNoMoreInteractions(selector, retriever, builder, store);
     }
 
     @Test
     public void shouldBuildAndStoreGlobalModel() {
         Date currentEndTime = new Date(1420156800000L);
-        Model[] models = {getDefaultModel()};
+        Model[] models = {mock(Model.class)};
         boolean[] successes = {true};
 
-        ModelBuilderManager modelBuilderManager = createProcessScenario(null, currentEndTime, null, models, successes);
-        modelBuilderManager.process(null, DEFAULT_SESSION_ID, null, currentEndTime);
+        ModelBuilderManager manager = createProcessScenario(null, currentEndTime, null, models, successes);
+        manager.process(null, DEFAULT_SESSION_ID, null, currentEndTime);
 
-        verify(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentEndTime));
-        verifyNoMoreInteractions(modelStore);
+        verify(retriever).retrieve(isNull(String.class), eq(currentEndTime));
+        verify(builder).build(any());
+        verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentEndTime));
+
+        verifyNoMoreInteractions(selector, retriever, builder, store);
     }
 
     @Test
@@ -114,32 +105,32 @@ public class ModelBuilderManagerTest {
         String modelConfName = "testModelConf";
         when(modelConf.getName()).thenReturn(modelConfName);
 
-        Date currentEndTime = new Date(1420156800000L);
         Date previousEndTime = new Date(1420070400000L);
-        String[] entityIds = {"user1", "user2"};
-        Model[] models = {getDefaultModel(), getDefaultModel()};
+        Date currentEndTime = new Date(1420156800000L);
+        String[] ids = {"user1", "user2"};
+        Model[] models = {mock(Model.class), mock(Model.class)};
         boolean[] successes = {true, false};
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
-        ModelBuilderManager modelManager = createProcessScenario(previousEndTime, currentEndTime, entityIds, models, successes);
-        modelManager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
+        manager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
-        for (int i = 0; i < entityIds.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             ModelBuildingStatus status = successes[i] ? ModelBuildingStatus.SUCCESS : ModelBuildingStatus.STORE_FAILURE;
-            verify(listener).modelBuildingStatus(eq(modelConfName), eq(DEFAULT_SESSION_ID), eq(entityIds[i]), eq(currentEndTime), eq(status));
+            verify(listener).modelBuildingStatus(
+                    eq(modelConfName), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(currentEndTime), eq(status));
         }
+
         verifyNoMoreInteractions(listener);
     }
 
-    private Model getDefaultModel() {
-        ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters(1, 100, 0);
-        return model;
-    }
+    private void mockBuild(String id, Date endTime, Model model, boolean success) {
+        Object data = mock(Object.class);
+        when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(data);
+        when(builder.build(eq(data))).thenReturn(model);
 
-    private void mockBuild(String id, Model model, Date endTime, boolean success) {
         if (!success) {
-            doThrow(Exception.class).when(modelStore).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(endTime));
+            doThrow(Exception.class).when(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(endTime));
         }
     }
 
@@ -147,17 +138,16 @@ public class ModelBuilderManagerTest {
             Date previousEndTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
 
         if (ids != null) {
-            when(contextSelector.getContexts(previousEndTime, currentEndTime)).thenReturn(Arrays.asList(ids));
+            when(modelConf.getContextSelectorConf()).thenReturn(mock(ContextSelectorConf.class));
+            when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
+
             for (int i = 0; i < ids.length; i++) {
-                mockBuild(ids[i], models[i], currentEndTime, successes[i]);
+                mockBuild(ids[i], currentEndTime, models[i], successes[i]);
             }
         } else {
-            mockBuild(null, models[0], currentEndTime, successes[0]);
-            contextSelector = null;
+            mockBuild(null, currentEndTime, models[0], successes[0]);
         }
 
-        ModelBuilderManager modelBuilderManager = new ModelBuilderManager(modelConf);
-        modelBuilderManager.setContextSelector(contextSelector);
-        return modelBuilderManager;
+        return new ModelBuilderManager(modelConf, modelService);
     }
 }

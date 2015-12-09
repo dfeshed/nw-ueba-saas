@@ -31,6 +31,7 @@ public class ModelBuilderManager {
 
     public ModelBuilderManager(ModelConf modelConf, ModelService modelService) {
         Assert.notNull(modelConf);
+        Assert.notNull(modelService);
         this.modelConf = modelConf;
 
         ContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
@@ -69,10 +70,6 @@ public class ModelBuilderManager {
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
                 modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
-    }
-
-    public void setContextSelector(ContextSelector contextSelector) {
-        this.contextSelector = contextSelector;
     }
 
     private boolean build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
