@@ -1,5 +1,8 @@
 package fortscale.ml.model.prevalance.field;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,6 +11,8 @@ import org.junit.runners.JUnit4;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @RunWith(JUnit4.class)
@@ -25,7 +30,7 @@ public class RarityScorerTest {
 		return rarityScorer.score(featureCountToScore);
 	}
 
-	private double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
+	private Double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
 		return calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore);
 	}
 
@@ -71,7 +76,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore0ToFeatureCountsGreaterThanMaxRareCount() throws Exception {
+	public void shouldScore0ToFeatureCountsGreaterThanMaxRareCount() {
 		int maxNumOfRareFeatures = 10;
 		for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
 			for (int count = 1; count <= maxRareCount + 1; count++) {
@@ -83,7 +88,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxRareCount() throws Exception {
+	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxRareCount() {
 		int maxNumOfRareFeatures = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
@@ -92,7 +97,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureEvenWhenThereAreCommonFeatures() throws Exception {
+	public void shouldScore100ToVeryRareFeatureEvenWhenThereAreCommonFeatures() {
 		int maxRareCount = 35;
 		int maxNumOfRareFeatures = 100;
 		int veryRareFeatureCount = 1;
@@ -100,7 +105,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore0WhenThereAreMoreThanMaxNumOfRareFeaturesRareFeatures() throws Exception {
+	public void shouldScore0WhenThereAreMoreThanMaxNumOfRareFeaturesRareFeatures() {
 		int maxRareCount = 100;
 		int count = 1;
 		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
@@ -113,7 +118,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxNumOfRareFeatures() throws Exception {
+	public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxNumOfRareFeatures() {
 		int maxRareCount = 10;
 		int veryRareFeatureCount = 1;
 		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
@@ -460,7 +465,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void elementaryCheck() throws Exception {
+	public void elementaryCheck() {
 		int maxRareCount = 15;
 		int maxNumOfRareFeatures = 5;
 
@@ -474,7 +479,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void simpleInputOutput() throws Exception {
+	public void simpleInputOutput() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -492,7 +497,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValuesWithValuesIncreasingByTime() throws Exception {
+	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValuesWithValuesIncreasingByTime() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -512,7 +517,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValues() throws Exception {
+	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValues() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -539,7 +544,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValues() throws Exception {
+	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValues() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -563,7 +568,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValues() throws Exception {
+	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValues() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -589,7 +594,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfOnlyRareFeatureValues() throws Exception {
+	public void testingScoreOfOnlyRareFeatureValues() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -605,7 +610,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValuesAcrossTime() throws Exception {
+	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValuesAcrossTime() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -613,7 +618,6 @@ public class RarityScorerTest {
 
 		int[] rareFeatureValues = new int[]{2, 4};
 		int[] mediumFeatureValues = new int[]{8, 10};
-//		double[] rareFeatureScores = new double[]{69, 38};
 		double[] rareFeatureScores = new double[]{79, 47};
 		for (int i = 0; i < rareFeatureScores.length; i++) {
 			for (int j =  0; j < 10; j++) {
@@ -626,7 +630,7 @@ public class RarityScorerTest {
 	}
 
 	@Test
-	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValues() throws Exception {
+	public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValues() {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
@@ -641,6 +645,42 @@ public class RarityScorerTest {
 			featureValueToCountMap.put("rareFeature", rareFeatureCounts[i]);
 			score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCounts[i]);
 			Assert.assertEquals(rareFeatureScores[i], score, 1);
+		}
+	}
+
+	private static class TestEvent {
+		public String normalized_src_machine;
+		public int normalized_src_machine_score;
+		public int expected_rarity_scorer_score;
+	}
+
+	private List<TestEvent> readEventsFromCsv(String csvFileName) throws IOException {
+		File csvFile = new File(getClass().getClassLoader().getResource(csvFileName).getFile());
+		CsvSchema schema = CsvSchema.emptySchema().withHeader().withSkipFirstDataRow(true).withColumnSeparator(',');
+		MappingIterator<TestEvent> it = new CsvMapper().reader(TestEvent.class).with(schema).readValues(csvFile);
+		List<TestEvent> res = new ArrayList<>();
+		while (it.hasNext()){
+			res.add(it.next());
+		}
+		return res;
+	}
+
+	@Test
+	public void testRealScenarioCici() throws IOException {
+		int maxRareCount = 10;
+		int maxNumOfRareFeatures = 6;
+		Map<String, Integer> featureValueToCountMapUsedForBuilding = new HashMap<>();
+		for (TestEvent event : readEventsFromCsv("cici-ssh-src-machine.csv")) {
+			Integer eventFeatureCount = featureValueToCountMapUsedForBuilding.get(event.normalized_src_machine);
+			if (eventFeatureCount == null) {
+				eventFeatureCount = 0;
+			}
+			Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapUsedForBuilding, eventFeatureCount + 1);
+			if (score != null) {
+				Assert.assertEquals(event.expected_rarity_scorer_score, score, 0);
+			}
+//			System.out.println(event.normalized_src_machine + ":\t\t" + score + "\t(old: " + event.normalized_src_machine_score + ")\t\tnumOfFeatures: " + featureValueToCountMapUsedForBuilding.size());
+			featureValueToCountMapUsedForBuilding.put(event.normalized_src_machine, eventFeatureCount + 1);
 		}
 	}
 }
