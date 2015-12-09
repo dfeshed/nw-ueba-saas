@@ -7,15 +7,18 @@ import com.cisco.pxgrid.TLSConfiguration;
 import com.cisco.pxgrid.model.core.GenericAttribute;
 import com.cisco.pxgrid.model.core.GenericAttributeValueType;
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
-import com.cisco.pxgrid.model.ise.metadata.EndpointProfile;
 import com.cisco.pxgrid.model.net.*;
-import com.cisco.pxgrid.stub.identity.*;
-import com.cisco.pxgrid.stub.isemetadata.EndpointProfileClientStub;
-import com.cisco.pxgrid.stub.isemetadata.EndpointProfileQuery;
+import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
+import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
+import com.cisco.pxgrid.stub.identity.SessionIterator;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,13 +27,24 @@ import java.security.KeyStore;
 import java.util.Calendar;
 import java.util.List;
 
-
 /**
  * Created by tomerd on 27/11/2015.
  */
 public class PxGridFetchJob extends FortscaleJob {
 
+	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
+
+	// time limits sends to pxGrid
+	private String earliest;
+	private String latest;
+
+	//the type (data source) to bring saved configuration for.
+	private String type;
+
+	// The output file format
 	private String filenameFormat;
+
+	// pxGrid params
 	private String hosts;
 	private String userName;
 	private String group;
@@ -40,7 +54,15 @@ public class PxGridFetchJob extends FortscaleJob {
 	private String truststorePassphrase;
 	private int connectionRetryMillisecond;
 
+	@Value("${collection.fetch.data.path}")
+	private String outputPath;
+
+	// Flag to indicate whether connection is established to the grid
 	private boolean connected;
+
+	// Hold the connection to the grid
+	GridConnection con;
+	ReconnectionManager recon;
 
 	@Override protected int getTotalNumOfSteps() {
 		return 3;
@@ -51,69 +73,37 @@ public class PxGridFetchJob extends FortscaleJob {
 	}
 
 	@Override protected void runSteps() throws Exception {
+		try {
+			// establishing a connection with the pxGrid controller
+			logger.debug("establishing a connection with the pxGrid controller");
+			connectToGrid();
 
-		// configure the connection properties
-		TLSConfiguration config = createConfigObject();
+			// ensure output path exists
+			logger.debug("creating output file at {}", outputPath);
+			monitor.startStep(getMonitorId(), "Prepare sink file", 1);
+			File outputDir = ensureOutputDirectoryExists(outputPath);
 
-		// establishing a connection with the pxGrid controller
-		GridConnection con = new GridConnection(config);
-		con.addListener(new MyListener());
+			// create query we'll use to make call
+			Calendar begin = Calendar.getInstance();
+			begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
+			Calendar end = Calendar.getInstance();
+			SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
+			SessionIterator iterator = sd.getSessionsByTime(begin, end);
+			iterator.open();
 
-		ReconnectionManager recon = new ReconnectionManager(con);
-		recon.setRetryMillisecond(connectionRetryMillisecond);
-		recon.start();
-
-		// Wait for the connection to establish
-		while (!con.isConnected()) {
-			Thread.sleep(100);
-		}
-
-		// create query we'll use to make call
-
-		/*
-		EndpointProfileClientStub stub = new EndpointProfileClientStub(con);
-		EndpointProfileQuery query = stub.createEndpointProfileQuery();
-
-		List<EndpointProfile> dps = query.getEndpointProfiles();
-		if (dps != null) {
-			EndpointProfile dp;
-			for (Iterator<EndpointProfile> it = dps.iterator(); it.hasNext();) {
-				dp = it.next();
-				System.out.println("Endpoint Profile : id=" + dp.getId() + ", name=" +  dp.getName() + ", fqname " + dp.getFqname());
+			Session s;
+			while ((s = iterator.next()) != null) {
+				print(s);
 			}
-		}*/
 
+			iterator.close();
 
-
-
-		IdentityGroupQuery id = SessionDirectoryFactory.createIdentityGroupQuery(con);
-		Iterator<User> iterator = id.getIdentityGroups();
-		iterator.open();
-
-		int count = 0;
-		User u;
-		while ((u = iterator.next()) != null) {
-			System.out.println("user=" + u.getName() + " groups=" + u.getGroupList().getObjects().get(0).getName());
-			count++;
+		} finally {
+			if (recon != null && con.isConnected()) {
+				// disconnect from pxGrid
+				recon.stop();
+			}
 		}
-		iterator.close();
-
-
-		Calendar begin = Calendar.getInstance();
-		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
-		Calendar end = Calendar.getInstance();
-		SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator2 = sd.getSessionsByTime(begin, end);
-		iterator2.open();
-
-		Session s;
-		while ((s = iterator2.next()) != null) {
-			print(s);
-		}
-		iterator.close();
-
-		// disconnect from pxGrid
-		recon.stop();
 	}
 
 	private void print(Session session) {
@@ -122,12 +112,13 @@ public class PxGridFetchJob extends FortscaleJob {
 		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
 		System.out.print("ip=[");
 		for (int i = 0; i < intfIDs.size(); i++) {
-			if (i > 0) System.out.print(",");
+			if (i > 0)
+				System.out.print(",");
 			System.out.print(intfIDs.get(i).getIpAddress());
 		}
 		System.out.print("]");
 
-		System.out.print(", Audit Session Id=" +session.getGid());
+		System.out.print(", Audit Session Id=" + session.getGid());
 		User user = session.getUser();
 		if (user != null) {
 			System.out.print(", User Name=" + user.getName());
@@ -145,8 +136,8 @@ public class PxGridFetchJob extends FortscaleJob {
 		System.out.print(", Session state=" + session.getState());
 		//System.out.print(", Epsstatus=" + session.getEPSStatus());
 		System.out.print(", ANCstatus=" + session.getANCStatus());
-		System.out.print(", Security Group=" +  session.getSecurityGroup());
-		System.out.print(", Endpoint Profile=" +  session.getEndpointProfile());
+		System.out.print(", Security Group=" + session.getSecurityGroup());
+		System.out.print(", Endpoint Profile=" + session.getEndpointProfile());
 
 		// Port and NAS Ip information
 		DevicePortIdentifier deviceAttachPt = session.getInterface().getDeviceAttachPt();
@@ -164,8 +155,8 @@ public class PxGridFetchJob extends FortscaleJob {
 		List<RADIUSAVPair> radiusAVPairs = session.getRADIUSAttrs();
 		if (radiusAVPairs != null && !radiusAVPairs.isEmpty()) {
 			System.out.print(", RADIUSAVPairs=[");
-			for(RADIUSAVPair p : radiusAVPairs) {
-				System.out.print(" " + p.getAttrName() + "=" + p.getAttrValue() );
+			for (RADIUSAVPair p : radiusAVPairs) {
+				System.out.print(" " + p.getAttrName() + "=" + p.getAttrValue());
 			}
 			System.out.print("]");
 		}
@@ -175,20 +166,20 @@ public class PxGridFetchJob extends FortscaleJob {
 		if (postures != null && postures.size() > 0) {
 			System.out.print(", Posture Status=" + postures.get(0).getStatus());
 
-			Calendar cal  = postures.get(0).getLastUpdateTime();
-			System.out.print(", Posture Timestamp=" + ((cal != null) ? cal.getTime(): ""));
+			Calendar cal = postures.get(0).getLastUpdateTime();
+			System.out.print(", Posture Timestamp=" + ((cal != null) ? cal.getTime() : ""));
 
 		}
 		System.out.print(", Session Last Update Time=" + session.getLastUpdateTime().getTime());
 		//Get Generic Attributes
-		List<GenericAttribute> attributes= session.getExtraAttributes();
-		for(GenericAttribute attrib: attributes) {
+		List<GenericAttribute> attributes = session.getExtraAttributes();
+		for (GenericAttribute attrib : attributes) {
 
 			System.out.print(", Session attributeName=" + attrib.getName());
-			if(attrib.getType()== GenericAttributeValueType.STRING) {
+			if (attrib.getType() == GenericAttributeValueType.STRING) {
 				String attribValue = null;
 				try {
-					attribValue = new String(attrib.getValue(),"UTF-8");
+					attribValue = new String(attrib.getValue(), "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 
 					e.printStackTrace();
@@ -215,9 +206,40 @@ public class PxGridFetchJob extends FortscaleJob {
 		try {
 			keystoreLoadTest(keystorePath, keystorePassphrase);
 			keystoreLoadTest(truststorePath, truststorePassphrase);
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			throw new JobExecutionException("Error loading keys; Error: " + e.getMessage());
+		}
+
+		// get parameters values from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map,"type")){
+			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+		}
+		else{
+			//calculate query run times from mongo in the case not provided as job params
+			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			getRunTimeFrameFromMongo(map);
+		}
+	}
+
+	private void connectToGrid() throws Exception {
+
+		// configure the connection properties
+		TLSConfiguration config = createConfigObject();
+
+		con = new GridConnection(config);
+		//con.addListener(new MyListener());
+
+		recon = new ReconnectionManager(con);
+		recon.setRetryMillisecond(connectionRetryMillisecond);
+		recon.start();
+
+		// Wait for the connection to establish
+		while (!con.isConnected()) {
+			Thread.sleep(100);
 		}
 	}
 
@@ -241,13 +263,11 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	private class MyListener implements Listener {
 
-		@Override
-		public void beforeConnect() {
+		@Override public void beforeConnect() {
 			System.out.println("Connecting...");
 		}
 
-		@Override
-		public void onConnected() {
+		@Override public void onConnected() {
 			System.out.println("Connected");
 			synchronized (PxGridFetchJob.this) {
 				connected = true;
@@ -255,31 +275,26 @@ public class PxGridFetchJob extends FortscaleJob {
 			}
 		}
 
-		@Override
-		public void onDisconnected() {
+		@Override public void onDisconnected() {
 			if (connected) {
 				System.out.println("Connection closed");
 				connected = false;
 			}
 		}
 
-		@Override
-		public void onDeleted() {
+		@Override public void onDeleted() {
 			System.out.println("Account deleted");
 		}
 
-		@Override
-		public void onDisabled() {
+		@Override public void onDisabled() {
 			System.out.println("Account disabled");
 		}
 
-		@Override
-		public void onEnabled() {
+		@Override public void onEnabled() {
 			System.out.println("Account enabled");
 		}
 
-		@Override
-		public void onAuthorizationChanged() {
+		@Override public void onAuthorizationChanged() {
 			System.out.println("Authorization changed");
 		}
 	}
