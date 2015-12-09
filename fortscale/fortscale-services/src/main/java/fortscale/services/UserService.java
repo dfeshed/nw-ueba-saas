@@ -118,7 +118,7 @@ public interface UserService extends CachingService{
 	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
 
 	public User findByUsername(String username);
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId);
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username);
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
