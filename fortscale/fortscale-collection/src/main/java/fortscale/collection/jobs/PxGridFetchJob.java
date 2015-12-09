@@ -107,6 +107,8 @@ public class PxGridFetchJob extends FortscaleJob {
 		int count = 0;
 		Session s;
 		while ((s = iterator.next()) != null) {
+			User u = s.getUser();
+			System.out.println("user=" + u.getName() + " groups=" + u.getGroupList().getObjects().get(0).getName());
 			count++;
 		}
 		iterator.close();
