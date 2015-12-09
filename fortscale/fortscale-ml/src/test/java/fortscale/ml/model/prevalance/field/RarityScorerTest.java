@@ -693,10 +693,12 @@ public class RarityScorerTest {
 		String COLOR_NORMAL = "\033[0m";
 		String BAR_COLORS[] = new String[]{"\033[36m", "\033[32m", "\033[33m", "\033[31m"};
 
-		for (Map.Entry<String, Integer> featureValueToCount : featureValueToCountMap.entrySet()) {
+		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
+		for (int featureValueInd = 0; featureValueInd < featureValues.size(); featureValueInd++) {
+			String featureValue = featureValues.get(featureValueInd);
+			int count = featureValueToCountMap.get(featureValue);
 			String bar = "";
 			int base = 0;
-			int count = featureValueToCount.getValue();
 			int barLength = count;
 			while (barLength > 0) {
 				String color = BAR_COLORS[Math.min(base, BAR_COLORS.length - 1)];
@@ -708,31 +710,32 @@ public class RarityScorerTest {
 				base++;
 			}
 			bar += COLOR_NORMAL;
-			String featureValue = featureValueToCount.getKey();
 			String featureColor = getFeatureColor(featureValue);
-			System.out.println(String.format("%s%s%s: %-7d\t%s",
+			System.out.println(String.format("#%-3d%s%s%s: %-7d\t%s",
+					featureValueInd,
 					featureColor,
-					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? "(empty string)" : featureValue, 30),
+					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? "(empty string)" : featureValue, 40),
 					COLOR_NORMAL,
 					count,
 					bar));
 		}
 		System.out.println();
-		System.out.println(String.format("\tscoring %s%s%s",
+		int featureValueIndex = featureValues.indexOf(eventsBatch.normalized_src_machine);
+		System.out.println(String.format("\tscoring %s%s%s %s",
 				getFeatureColor(eventsBatch.normalized_src_machine),
-				StringUtils.rightPad(eventsBatch.normalized_src_machine, 30),
-				COLOR_NORMAL));
+				eventsBatch.normalized_src_machine,
+				COLOR_NORMAL,
+				featureValueIndex == -1 ? "" : "(#" + featureValueIndex + ")"));
 		System.out.println(String.format("\told model: %d", eventsBatch.normalized_src_machine_score));
 		System.out.println(String.format("\tnew model: %d", score.intValue()));
 		System.out.println("\n");
 	}
 
-	@Test
-	public void testRealScenarioCici() throws IOException {
+	private void testRealScenario(String filePath, int minInterestingScore) throws IOException {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMapUsedForBuilding = new HashMap<>();
-		for (TestEventsBatch eventsBatch : readEventsFromCsv("cici-ssh-src-machine-CN_1064463971.csv")) {
+		for (TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
 			for (int i = 0; i < eventsBatch.numOfEvents; i++) {
 				Integer eventFeatureCount = featureValueToCountMapUsedForBuilding.get(eventsBatch.normalized_src_machine);
 				if (eventFeatureCount == null) {
@@ -741,12 +744,17 @@ public class RarityScorerTest {
 				Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapUsedForBuilding, eventFeatureCount + 1);
 				if (score != null) {
 //					Assert.assertEquals(eventsBatch.expected_rarity_scorer_score, score, 0);
-					if (eventsBatch.normalized_src_machine_score > 0 || score > 0) {
+					if (eventsBatch.normalized_src_machine_score > minInterestingScore || score > minInterestingScore) {
 						printEvent(featureValueToCountMapUsedForBuilding, eventsBatch, score);
 					}
 				}
 				featureValueToCountMapUsedForBuilding.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
 			}
 		}
+	}
+
+	@Test
+	public void testRealScenarioCiciSshSrcMachineCN_1064463971() throws IOException {
+		testRealScenario("cici-ssh-src-machine-CN_1064463971.csv", 0);
 	}
 }
