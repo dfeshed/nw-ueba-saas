@@ -58,7 +58,7 @@ public class JobDataMapExtension {
 	 * get all job data map keys that start with the given prefix.
 	 */
 	public Iterable<String> getJobDataMapKeysStartingWith(JobDataMap map, String keyPrefix) {
-		List<String> keys = new LinkedList<String>();
+		List<String> keys = new LinkedList<>();
 		for (String key : map.keySet()) {
 			if (key.startsWith(keyPrefix))
 				keys.add(key);
@@ -78,7 +78,37 @@ public class JobDataMapExtension {
 		value = getEnvPropertyValue(value, key);
 		return value;
 	}
-	
+
+	public List<String> getJobDataMapListOfStringsValue(JobDataMap map, String key, String delimiter) throws JobExecutionException {
+		String errorMsg;
+
+		if (!map.containsKey(key)) {
+			errorMsg = String.format("JobDataMap does not contain key %s", key);
+			logger.error(errorMsg);
+			throw new JobExecutionException(errorMsg);
+		}
+
+		String joinedValues = map.getString(key);
+		if (StringUtils.isEmpty(joinedValues)) {
+			errorMsg = String.format("JobDataMap key %s does not have a value", key);
+			logger.error(errorMsg);
+			throw new JobExecutionException(errorMsg);
+		}
+
+		if (delimiter == null) {
+			errorMsg = "delimiter cannot be null";
+			logger.error(errorMsg);
+			throw new JobExecutionException(errorMsg);
+		}
+
+		List<String> values = new LinkedList<>();
+		for (String value : StringUtils.split(joinedValues, delimiter)) {
+			values.add(getEnvPropertyValue(value, key));
+		}
+
+		return values;
+	}
+
 	public boolean getJobDataMapBooleanValue(JobDataMap map, String key, boolean defaultValue) {
 		if (!map.containsKey(key))
 			return defaultValue;
@@ -239,9 +269,7 @@ public class JobDataMapExtension {
 		
 		value = getEnvPropertyValue(value, key);
 		
-		Resource resource = resourceLoader.getResource(value);
-		
-		return resource;
+		return resourceLoader.getResource(value);
 	}
 	
 	/**

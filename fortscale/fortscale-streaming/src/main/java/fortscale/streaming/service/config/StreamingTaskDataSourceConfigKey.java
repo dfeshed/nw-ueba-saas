@@ -23,6 +23,10 @@ public class StreamingTaskDataSourceConfigKey {
         return lastState;
     }
 
+    public String getConfigKeyStr(){
+        return dataSource +"_" + lastState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -234,21 +234,20 @@ import static fortscale.utils.ConversionUtils.*;
 		if (curVpnSession.getClosedAt() == null) {
 			List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
 			if (curVpnSession.getGeoHopping()) {
+				// put curVpnSession first in the list - important for createIndicator
 				List<VpnSession> notificationList = new ArrayList<>();
 				notificationList.add(curVpnSession);
 				for (VpnSession vpnSession : vpnSessions) {
 					notificationList.add(vpnSession);
 				}
-
 				//create notifications for the vpn sessions
 				if (!isBDPRunning) {
 					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
 				}
-				vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				vpnGeoHoppingNotificationGenerator.createNotification(notificationList);
 			}
 
 		}
-
 		return null;
 
 	}

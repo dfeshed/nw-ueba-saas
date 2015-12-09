@@ -10,9 +10,11 @@ import java.util.Date;
 
 public class KafkaModelBuildingListener implements IModelBuildingListener {
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
+	private static final String SESSION_ID_JSON_FIELD = "sessionId";
 	private static final String CONTEXT_ID_JSON_FIELD = "contextId";
 	private static final String END_TIME_JSON_FIELD = "endTime";
 	private static final String SUCCESS_JSON_FIELD = "success";
+	private static final String MESSAGE_JSON_FIELD = "message";
 
 	private String outputTopicName;
 	private MessageCollector collector;
@@ -23,9 +25,14 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 	}
 
 	@Override
-	public void modelBuildingStatus(String modelConfName, String contextId, Date endTime, boolean success) {
-		String statusAsJsonString = statusToJsonString(modelConfName, contextId, endTime, success);
-		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopicName), statusAsJsonString));
+	public void modelBuildingStatus(String modelConfName, String sessionId, String contextId,
+			Date endTime, ModelBuildingStatus status) {
+
+		boolean success = status.equals(ModelBuildingStatus.SUCCESS);
+		String statusAsJsonString = statusToJsonString(modelConfName, sessionId, contextId,
+				endTime, success, status.getMessage());
+		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopicName),
+				statusAsJsonString));
 	}
 
 	public void setMessageCollector(MessageCollector collector) {
@@ -33,14 +40,16 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 		this.collector = collector;
 	}
 
-	private static String statusToJsonString(String modelConfName, String contextId, Date endTime, boolean success) {
-		JSONObject json = new JSONObject();
+	private static String statusToJsonString(String modelConfName, String sessionId, String contextId,
+			Date endTime, boolean success, String message) {
 
+		JSONObject json = new JSONObject();
 		json.put(MODEL_CONF_NAME_JSON_FIELD, modelConfName);
+		json.put(SESSION_ID_JSON_FIELD, sessionId);
 		json.put(CONTEXT_ID_JSON_FIELD, contextId);
 		json.put(END_TIME_JSON_FIELD, endTime.toString());
 		json.put(SUCCESS_JSON_FIELD, success);
-
+		json.put(MESSAGE_JSON_FIELD, message);
 		return json.toJSONString();
 	}
 }

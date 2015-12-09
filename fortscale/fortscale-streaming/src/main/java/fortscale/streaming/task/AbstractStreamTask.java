@@ -185,7 +185,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 	}
 
-	//Get the data source and last state without excetion, return  null if cannot extract
+	//Get the data source and last state without exception, return  null if cannot extract
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
 		StreamingTaskDataSourceConfigKey configKey;
 		try {
