@@ -8,6 +8,7 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.fe.Classifier;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,15 @@ import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 
-	private List<Set<String>> logUsernameSetList;
-	private List<HashMap<String, String>> logUsernameToUserIdMapList;
+	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
+
+	// maps log event id to user representation combined of the user id and the log username, e.g. :
+	// vpn -> {12345678###gils@fortscale.com, 33333333###ami@fortscale.com}
+	private Map<String, Set<String>> logEventIdToUsers = new HashMap<>();
+
+	// maps log event id to map of username to user id , e.g. :
+	// vpn -> {gils -> 12345678, ami -> 33333}
+	private Map<String, Map<String, String>> logEventIdToUserIdMap = new HashMap<>();
 
 	@Autowired
 	private UserRepository userRepository;
@@ -60,41 +68,39 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public String getAuthLogUsername(LogEventsEnum eventId, User user){
-		return getLogUsername(eventId, user);
+		return getLogUsername(eventId.getId(), user);
 	}
 
-	public String getLogUsername(LogEventsEnum eventId, User user){
+	public String getLogUsername(String eventId, User user){
 		return user.getLogUsernameMap().get(getLogname(eventId));
 	}
 
-	public String getTableName(LogEventsEnum eventId) {
-		String tableName = null;
+	public String getTableName(String eventId) {
+		boolean eventIdExist = EnumUtils.isValidEnum(LogEventsEnum.class, eventId);
 
-		switch (eventId) {
-			case login:
-				tableName = loginDAO.getTableName();
-				break;
-			case ssh:
-				tableName = sshDAO.getTableName();
-				break;
-			case vpn:
-				tableName = vpnDAO.getTableName();
-				break;
-			case amt:
-				tableName = amtDAO.getTableName();
-				break;
-			case amtsession:
-				tableName = amtsessionDAO.getTableName();
-				break;
+		if (eventIdExist) {
+			LogEventsEnum logEventIdType = LogEventsEnum.valueOf(eventId);
 
-			default:
-				break;
+			switch (logEventIdType) {
+				case login:
+					return loginDAO.getTableName();
+				case ssh:
+					return sshDAO.getTableName();
+				case vpn:
+					return vpnDAO.getTableName();
+				case amt:
+					return amtDAO.getTableName();
+				case amtsession:
+					return amtsessionDAO.getTableName();
+				default:
+					break;
+			}
 		}
 
-		return tableName;
+		return eventId;
 	}
 
-	public String getLogname(LogEventsEnum eventId){
+	public String getLogname(String eventId){
 		return getTableName(eventId);
 	}
 
@@ -132,11 +138,11 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public String getVpnLogUsername(User user){
-		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn));
+		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn.name()));
 	}
 
 	public void fillUpdateLogUsername(Update update, String username, LogEventsEnum eventId) {
-		update.set(User.getLogUserNameField(getLogname(eventId)), username);
+		update.set(User.getLogUserNameField(getLogname(eventId.getId())), username);
 	}
 
 	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, Classifier classifier) {
@@ -144,7 +150,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public void updateLogUsername(User user, LogEventsEnum eventId, String username) {
-		user.addLogUsername(getLogname(eventId), username);
+		user.addLogUsername(getLogname(eventId.getId()), username);
 	}
 
 
@@ -157,7 +163,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (usernameToUserIdCache.containsKey(username))
 			return true;
 
-		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
+		if(eventId != null && logEventIdToUserIdMap.get(eventId.getId()).containsKey(username))
 			return true;
 
 		// resort to lookup mongodb and save the user id in cache
@@ -172,12 +178,12 @@ public class UsernameService implements InitializingBean, CachingService{
 		return false;
 	}
 
-	public String getUserId(String username,LogEventsEnum eventId){
+	public String getUserId(String username, LogEventsEnum eventId){
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
-			return logUsernameToUserIdMapList.get(eventId.ordinal()).get(username);
+		if(eventId != null && logEventIdToUserIdMap.get(eventId.getId()).containsKey(username))
+			return logEventIdToUserIdMap.get(eventId.getId()).get(username);
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
@@ -199,14 +205,14 @@ public class UsernameService implements InitializingBean, CachingService{
 
 
 
-	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId) {
+	public boolean isLogUsernameExist(String eventId, String logUsername, String userId) {
 
-		if (logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername)))
+		if (logEventIdToUsers.get(eventId).contains(formatUserIdWithLogUsername(userId, logUsername)))
 			return true;
 
 		User user = userRepository.findOne(userId);
 		if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))) {
-			logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
+			logEventIdToUsers.get(eventId).add(formatUserIdWithLogUsername(userId, logUsername));
 			return true;
 		}
 
@@ -217,7 +223,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	private String formatUserIdWithLogUsername(String userId, String logUsername){
-		return String.format("%s%s", userId, logUsername);
+		return String.format("%s" + USER_ID_TO_LOG_USERNAME_DELIMITER + "%s", userId, logUsername);
 	}
 
 	public void updateUsernameCaches() {
@@ -226,9 +232,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
 
 		// Initialize a logEventIdToUsernamesMap from LogEventsEnum to a set of UserIdWithLogUsername
-		Map<LogEventsEnum, Set<String>> logEventIdToUsernamesMap = new HashMap<>();
-		for (LogEventsEnum logEventsEnum : LogEventsEnum.values())
-			logEventIdToUsernamesMap.put(logEventsEnum, new HashSet<String>());
+		Map<String, Set<String>> logEventIdToUsernamesMap = new HashMap<>();
+
 
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
@@ -246,37 +251,33 @@ public class UsernameService implements InitializingBean, CachingService{
 					samAccountNameService.updateSamAccountnameCache(user);
 				}
 
+				Map<String, String> logUsernameMap = user.getLogUsernameMap();
 
-				for (Map.Entry<LogEventsEnum, Set<String>> entry : logEventIdToUsernamesMap.entrySet()) {
-					String logUsername = getLogUsername(entry.getKey(), user);
-					if (logUsername != null)
-						entry.getValue().add(formatUserIdWithLogUsername(userId, logUsername));
+				for (Map.Entry<String, String> logUsernameEntry : logUsernameMap.entrySet()) {
+					String entryKey = logUsernameEntry.getKey();
+
+					String logEventId = getLogUsername(entryKey, user);
+
+					if (!logEventIdToUsers.containsKey(logEventId)) {
+						logEventIdToUsers.put(logEventId, new HashSet<String>());
+					}
+
+					logEventIdToUsers.get(logEventId).add(formatUserIdWithLogUsername(userId, logUsernameEntry.getValue()));
 				}
 			}
 		}
-
-		// Update logUsername sets
-		for (Map.Entry<LogEventsEnum, Set<String>> entry : logEventIdToUsernamesMap.entrySet())
-			logUsernameSetList.set(entry.getKey().ordinal(), entry.getValue());
 	}
 
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
-		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
+		logEventIdToUserIdMap.get(eventId.getId()).put(username, userId);
 	}
 
-	public void addLogUsername(LogEventsEnum eventId, String logUsername, String userId){
-		logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
+	public void addLogUsernameToCache(String eventId, String logUsername, String userId){
+		logEventIdToUsers.get(eventId).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logUsernameSetList = new ArrayList<>(LogEventsEnum.values().length);
-		logUsernameToUserIdMapList = new ArrayList<>(LogEventsEnum.values().length);
-
-		for (int i = 0; i < LogEventsEnum.values().length; i++) {
-			logUsernameSetList.add(new HashSet<String>());
-			logUsernameToUserIdMapList.add(new HashMap<String,String>());
-		}
 	}
 
 	@Override public CacheHandler<String, String> getCache() {

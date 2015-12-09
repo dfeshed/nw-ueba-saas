@@ -91,8 +91,10 @@ public class UsernameServiceTest {
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
-			for (LogEventsEnum value : LogEventsEnum.values())
-				assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
+
+			for (LogEventsEnum value : LogEventsEnum.values()) {
+				assertTrue(usernameService.isLogUsernameExist(value.getId(), getDataSourceUsername(value, user), user.getId()));
+			}
 		}
 	}
 
