@@ -162,7 +162,14 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		// resort to lookup mongodb and save the user id in cache
 		User user = userRepository.findByUsername(username);
-		return updateUsernameCache(user);
+
+		if (user != null) {
+			updateUsernameInCache(user);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public String getUserId(String username,LogEventsEnum eventId){
@@ -174,21 +181,20 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
-		if (updateUsernameCache(user)) {
+
+		if (user != null) {
+			updateUsernameInCache(user);
+
 			return user.getId();
 		}
 
 		return null;
 	}
 
-	public boolean updateUsernameCache(User user){
-		if (user!=null) {
-			if (! usernameToUserIdCache.containsKey(user.getUsername())) {
-				usernameToUserIdCache.put(user.getUsername(), user.getId());
-				return true;
-			}
+	public void updateUsernameInCache(User user){
+		if (!usernameToUserIdCache.containsKey(user.getUsername())) {
+			usernameToUserIdCache.put(user.getUsername(), user.getId());
 		}
-		return false;
 	}
 
 

@@ -30,9 +30,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -202,7 +200,7 @@ public class UserServiceTest {
 			verify(userRepository, times(3)).save(subList);
 
 		for (User user : listOfUsers) {
-			verify(usernameService, times(3)).updateUsernameCache(user);
+			verify(usernameService, times(3)).updateUsernameInCache(user);
 			assertTrue(user.getTags().size() == 0);
 			assertTrue(user.getScores().isEmpty());
 		}
@@ -245,7 +243,7 @@ public class UserServiceTest {
 
 		// Assert
 		verify(userRepository, times(numOfUsers)).save(any(User.class));
-		verify(usernameService, times(numOfUsers)).updateUsernameCache(any(User.class));
+		verify(usernameService, times(numOfUsers)).updateUsernameInCache(any(User.class));
 		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
 	}
 
