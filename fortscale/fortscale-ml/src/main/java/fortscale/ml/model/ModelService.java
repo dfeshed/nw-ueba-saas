@@ -6,7 +6,7 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
-import fortscale.ml.model.selector.ContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class ModelService {
 
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
 
-	public IContextSelector getContextSelector(ContextSelectorConf conf) {
+	public IContextSelector getContextSelector(IContextSelectorConf conf) {
 		return contextSelectorFactoryService.getProduct(conf);
 	}
 

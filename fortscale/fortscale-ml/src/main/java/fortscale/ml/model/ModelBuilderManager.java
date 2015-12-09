@@ -5,7 +5,7 @@ import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
-import fortscale.ml.model.selector.ContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ModelBuilderManager {
         Assert.notNull(modelService);
         this.modelConf = modelConf;
 
-        ContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
+        IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
         contextSelector = contextSelectorConf == null ? null : modelService.getContextSelector(contextSelectorConf);
         dataRetriever = modelService.getDataRetriever(modelConf.getDataRetrieverConf());
         modelBuilder = modelService.getModelBuilder(modelConf.getModelBuilderConf());

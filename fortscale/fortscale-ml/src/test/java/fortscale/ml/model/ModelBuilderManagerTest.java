@@ -7,7 +7,7 @@ import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
-import fortscale.ml.model.selector.ContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,7 +48,7 @@ public class ModelBuilderManagerTest {
         reset(store);
 
         modelService = mock(ModelService.class);
-        when(modelService.getContextSelector(any(ContextSelectorConf.class))).thenReturn(selector);
+        when(modelService.getContextSelector(any(IContextSelectorConf.class))).thenReturn(selector);
         when(modelService.getDataRetriever(any(AbstractDataRetrieverConf.class))).thenReturn(retriever);
         when(modelService.getModelBuilder(any(IModelBuilderConf.class))).thenReturn(builder);
     }
@@ -138,7 +138,7 @@ public class ModelBuilderManagerTest {
             Date previousEndTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
 
         if (ids != null) {
-            when(modelConf.getContextSelectorConf()).thenReturn(mock(ContextSelectorConf.class));
+            when(modelConf.getContextSelectorConf()).thenReturn(mock(IContextSelectorConf.class));
             when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
 
             for (int i = 0; i < ids.length; i++) {

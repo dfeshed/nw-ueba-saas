@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.selector.ContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -14,7 +14,7 @@ public class ModelConf {
     @JsonProperty("name")
     private String name;
     @JsonProperty("selector")
-    private ContextSelectorConf contextSelectorConf;
+    private IContextSelectorConf contextSelectorConf;
     @JsonProperty("retriever")
     private AbstractDataRetrieverConf dataRetrieverConf;
     @JsonProperty("builder")
@@ -38,7 +38,7 @@ public class ModelConf {
         return name;
     }
 
-    public ContextSelectorConf getContextSelectorConf() {
+    public IContextSelectorConf getContextSelectorConf() {
         return contextSelectorConf;
     }
 

@@ -8,4 +8,4 @@ import fortscale.utils.factory.FactoryConfig;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = FeatureBucketContextSelectorConf.class, name = FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR_CONF)
 })
-public interface ContextSelectorConf extends FactoryConfig {}
+public interface IContextSelectorConf extends FactoryConfig {}
