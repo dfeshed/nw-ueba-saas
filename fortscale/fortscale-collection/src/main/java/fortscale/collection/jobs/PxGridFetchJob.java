@@ -4,9 +4,11 @@ import com.cisco.pxgrid.GridConnection;
 import com.cisco.pxgrid.GridConnection.Listener;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
+import com.cisco.pxgrid.model.core.GenericAttribute;
+import com.cisco.pxgrid.model.core.GenericAttributeValueType;
+import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
 import com.cisco.pxgrid.model.ise.metadata.EndpointProfile;
-import com.cisco.pxgrid.model.net.Session;
-import com.cisco.pxgrid.model.net.User;
+import com.cisco.pxgrid.model.net.*;
 import com.cisco.pxgrid.stub.identity.*;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileClientStub;
 import com.cisco.pxgrid.stub.isemetadata.EndpointProfileQuery;
@@ -16,6 +18,7 @@ import org.quartz.JobExecutionException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Calendar;
@@ -82,38 +85,120 @@ public class PxGridFetchJob extends FortscaleJob {
 
 
 
-		
-		IdentityGroupQuery sd = SessionDirectoryFactory.createIdentityGroupQuery(con);
-		Iterator<User> iterator = sd.getIdentityGroups();
+
+		IdentityGroupQuery id = SessionDirectoryFactory.createIdentityGroupQuery(con);
+		Iterator<User> iterator = id.getIdentityGroups();
 		iterator.open();
 
 		int count = 0;
-		User s;
-		while ((s = iterator.next()) != null) {
-			System.out.println("user=" + s.getName() + " groups=" + s.getGroupList().getObjects().get(0).getName());
+		User u;
+		while ((u = iterator.next()) != null) {
+			System.out.println("user=" + u.getName() + " groups=" + u.getGroupList().getObjects().get(0).getName());
 			count++;
 		}
 		iterator.close();
 
-		/*
+
 		Calendar begin = Calendar.getInstance();
 		begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 		Calendar end = Calendar.getInstance();
 		SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-		SessionIterator iterator = sd.getSessionsByTime(begin, end);
-		iterator.open();
+		SessionIterator iterator2 = sd.getSessionsByTime(begin, end);
+		iterator2.open();
 
-		int count = 0;
 		Session s;
-		while ((s = iterator.next()) != null) {
-			User u = s.getUser();
-			System.out.println("user=" + u.getName() + " groups=" + u.getGroupList().getObjects().get(0).getName());
-			count++;
+		while ((s = iterator2.next()) != null) {
+			User u2 = s.getUser();
+			System.out.println("user=" + u2.getName() + " groups=" + u2.getGroupList().getObjects().get(0).getName());
+			print(s);
 		}
-		iterator.close();*/
+		iterator.close();
 
 		// disconnect from pxGrid
 		recon.stop();
+	}
+
+	private void print(Session session) {
+		System.out.print("Session={");
+
+		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
+		System.out.print("ip=[");
+		for (int i = 0; i < intfIDs.size(); i++) {
+			if (i > 0) System.out.print(",");
+			System.out.print(intfIDs.get(i).getIpAddress());
+		}
+		System.out.print("]");
+
+		System.out.print(", Audit Session Id=" +session.getGid());
+		User user = session.getUser();
+		if (user != null) {
+			System.out.print(", User Name=" + user.getName());
+			System.out.print(", AD User DNS Domain=" + user.getADUserDNSDomain());
+			System.out.print(", AD Host DNS Domain=" + user.getADHostDNSDomain());
+			System.out.print(", AD User NetBIOS Name=" + user.getADUserNetBIOSName());
+			System.out.print(", AD Host NETBIOS Name=" + user.getADHostNetBIOSName());
+		}
+
+		List<String> macs = session.getInterface().getMacAddresses();
+		if (macs != null && macs.size() > 0) {
+			System.out.print(", Calling station id=" + macs.get(0));
+		}
+
+		System.out.print(", Session state=" + session.getState());
+		//System.out.print(", Epsstatus=" + session.getEPSStatus());
+		System.out.print(", ANCstatus=" + session.getANCStatus());
+		System.out.print(", Security Group=" +  session.getSecurityGroup());
+		System.out.print(", Endpoint Profile=" +  session.getEndpointProfile());
+
+		// Port and NAS Ip information
+		DevicePortIdentifier deviceAttachPt = session.getInterface().getDeviceAttachPt();
+		if (deviceAttachPt != null) {
+			IPInterfaceIdentifier deviceMgmtIntfID = deviceAttachPt.getDeviceMgmtIntfID();
+			if (deviceMgmtIntfID != null) {
+				System.out.print(", NAS IP=" + deviceAttachPt.getDeviceMgmtIntfID().getIpAddress());
+			}
+			Port port = deviceAttachPt.getPort();
+			if (port != null) {
+				System.out.print(", NAS Port=" + port.getPortId());
+			}
+		}
+
+		List<RADIUSAVPair> radiusAVPairs = session.getRADIUSAttrs();
+		if (radiusAVPairs != null && !radiusAVPairs.isEmpty()) {
+			System.out.print(", RADIUSAVPairs=[");
+			for(RADIUSAVPair p : radiusAVPairs) {
+				System.out.print(" " + p.getAttrName() + "=" + p.getAttrValue() );
+			}
+			System.out.print("]");
+		}
+
+		// Posture Info
+		List<PostureAssessment> postures = session.getAssessedPostureEvents();
+		if (postures != null && postures.size() > 0) {
+			System.out.print(", Posture Status=" + postures.get(0).getStatus());
+
+			Calendar cal  = postures.get(0).getLastUpdateTime();
+			System.out.print(", Posture Timestamp=" + ((cal != null) ? cal.getTime(): ""));
+
+		}
+		System.out.print(", Session Last Update Time=" + session.getLastUpdateTime().getTime());
+		//Get Generic Attributes
+		List<GenericAttribute> attributes= session.getExtraAttributes();
+		for(GenericAttribute attrib: attributes) {
+
+			System.out.print(", Session attributeName=" + attrib.getName());
+			if(attrib.getType()== GenericAttributeValueType.STRING) {
+				String attribValue = null;
+				try {
+					attribValue = new String(attrib.getValue(),"UTF-8");
+				} catch (UnsupportedEncodingException e) {
+
+					e.printStackTrace();
+				}
+				System.out.print(", Session attributeValue=" + attribValue);
+			}
+		}
+		System.out.println("}");
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
