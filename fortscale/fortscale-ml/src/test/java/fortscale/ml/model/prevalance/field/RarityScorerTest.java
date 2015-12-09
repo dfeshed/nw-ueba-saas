@@ -648,6 +648,18 @@ public class RarityScorerTest {
 		}
 	}
 
+	@Test
+	public void testRareToMediumFeatureValueAgainstRareFeatureValueAndMediumFeatureValue() {
+		int maxRareCount = 10;
+		int maxNumOfRareFeatures = 6;
+
+		double[] scores = new double[]{76, 61, 50, 34, 17, 8, 4, 2, 1, 0};
+		for (int rareFeatureCount = 1; rareFeatureCount < 11; rareFeatureCount++) {
+			double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 4, 1, 15), rareFeatureCount);
+			Assert.assertEquals(scores[rareFeatureCount - 1], score, 1);
+		}
+	}
+
 	private static class TestEvent {
 		public String normalized_src_machine;
 		public int normalized_src_machine_score;
