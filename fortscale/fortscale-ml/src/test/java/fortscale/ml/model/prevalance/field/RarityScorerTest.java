@@ -300,6 +300,10 @@ public class RarityScorerTest {
 		printNewLineOrHeader(printedHeader, googleSheetName, counts);
 	}
 
+	private void printGoogleSheetsExplaination(String googleSheetName) {
+		println("\n\n\nCopy the following output into \"" + googleSheetName + "\" sheet in the following URL: https://docs.google.com/spreadsheets/d/1eNqu2K3mIUCH3b-NXeQM5VqBkcaEqwcSxiNWZ-FzdHg/edit#gid=1047563136&vpid=A1\n");
+	}
+
 	private void printNewLineOrHeader(boolean printedHeader, String googleSheetName, int counts[]) {
 		if (printedHeader) {
 			println();
@@ -308,7 +312,7 @@ public class RarityScorerTest {
 			for (int count : counts) {
 				featureCountsStr += "\t" + count;
 			}
-			println("\n\n\nCopy the following output into \"" + googleSheetName + "\" sheet in the following URL: https://docs.google.com/spreadsheets/d/1eNqu2K3mIUCH3b-NXeQM5VqBkcaEqwcSxiNWZ-FzdHg/edit#gid=1047563136&vpid=A1\n");
+			printGoogleSheetsExplaination(googleSheetName);
 			println(featureCountsStr);
 		}
 	}
@@ -689,6 +693,7 @@ public class RarityScorerTest {
 		return featureValueToColor.get(featureValue);
 	}
 
+	private final static String EMPTY_STRING = "(empty string)";
 	private void printEvent(Map<String, Integer> featureValueToCountMap, TestEventsBatch eventsBatch, Double score) {
 		String COLOR_NORMAL = "\033[0m";
 		String BAR_COLORS[] = new String[]{"\033[36m", "\033[32m", "\033[33m", "\033[31m"};
@@ -714,7 +719,7 @@ public class RarityScorerTest {
 			System.out.println(String.format("#%-3d%s%s%s: %-7d\t%s",
 					featureValueInd,
 					featureColor,
-					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? "(empty string)" : featureValue, 40),
+					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue, 40),
 					COLOR_NORMAL,
 					count,
 					bar));
@@ -731,25 +736,54 @@ public class RarityScorerTest {
 		System.out.println("\n");
 	}
 
+	private static class ScoredFeature {
+		public String featureValue;
+		public Double score;
+
+		public ScoredFeature(String featureValue, Double score) {
+			this.featureValue = featureValue;
+			this.score = score;
+		}
+	}
+
 	private void testRealScenario(String filePath, int minInterestingScore) throws IOException {
+		if (PRINT_GRAPHS == false) {
+			return;
+		}
+
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
-		Map<String, Integer> featureValueToCountMapUsedForBuilding = new HashMap<>();
-		for (TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
+		Map<String, Integer> featureValueToCountMap = new HashMap<>();
+		List<ScoredFeature> featureValueAndScores = new ArrayList<>();
+		for (final TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
 			for (int i = 0; i < eventsBatch.numOfEvents; i++) {
-				Integer eventFeatureCount = featureValueToCountMapUsedForBuilding.get(eventsBatch.normalized_src_machine);
+				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_src_machine);
 				if (eventFeatureCount == null) {
 					eventFeatureCount = 0;
 				}
-				Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapUsedForBuilding, eventFeatureCount + 1);
-				if (score != null) {
+				final Double score = calcScore(30, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
+				if (score != null && (eventsBatch.normalized_src_machine_score > minInterestingScore || score > minInterestingScore)) {
 //					Assert.assertEquals(eventsBatch.expected_rarity_scorer_score, score, 0);
-					if (eventsBatch.normalized_src_machine_score > minInterestingScore || score > minInterestingScore) {
-						printEvent(featureValueToCountMapUsedForBuilding, eventsBatch, score);
+					if ((score != null && score > minInterestingScore)) {
+						featureValueAndScores.add(new ScoredFeature(eventsBatch.normalized_src_machine, score));
 					}
+					printEvent(featureValueToCountMap, eventsBatch, score);
 				}
-				featureValueToCountMapUsedForBuilding.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
+				featureValueToCountMap.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
 			}
+		}
+
+		printGoogleSheetsExplaination(filePath);
+		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
+		for (String featureValue : featureValues) {
+			System.out.print((StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue) + "\t");
+		}
+		System.out.println();
+		for (ScoredFeature scoredFeature : featureValueAndScores) {
+			for (int i = 0; !featureValues.get(i).equals(scoredFeature.featureValue); i++) {
+				System.out.print("\t");
+			}
+			System.out.println(scoredFeature.score);
 		}
 	}
 
