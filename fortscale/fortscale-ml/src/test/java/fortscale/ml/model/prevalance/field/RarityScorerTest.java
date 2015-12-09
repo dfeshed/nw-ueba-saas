@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -660,21 +661,70 @@ public class RarityScorerTest {
 		}
 	}
 
-	private static class TestEvent {
+	private static class TestEventsBatch {
+		public int numOfEvents;
 		public String normalized_src_machine;
 		public int normalized_src_machine_score;
 		public int expected_rarity_scorer_score;
 	}
 
-	private List<TestEvent> readEventsFromCsv(String csvFileName) throws IOException {
+	private List<TestEventsBatch> readEventsFromCsv(String csvFileName) throws IOException {
 		File csvFile = new File(getClass().getClassLoader().getResource(csvFileName).getFile());
 		CsvSchema schema = CsvSchema.emptySchema().withHeader().withSkipFirstDataRow(true).withColumnSeparator(',');
-		MappingIterator<TestEvent> it = new CsvMapper().reader(TestEvent.class).with(schema).readValues(csvFile);
-		List<TestEvent> res = new ArrayList<>();
+		MappingIterator<TestEventsBatch> it = new CsvMapper().reader(TestEventsBatch.class).with(schema).readValues(csvFile);
+		List<TestEventsBatch> res = new ArrayList<>();
 		while (it.hasNext()){
 			res.add(it.next());
 		}
 		return res;
+	}
+
+	private static Map<String, String> featureValueToColor = new HashMap<>();
+	private String getFeatureColor(String featureValue) {
+		String FEATURE_COLORS[] = new String[]{"\033[34m", "\033[35m", "\033[32m", "\033[33m", "\033[36m", "\033[31m"};
+
+		if (featureValueToColor.get(featureValue) == null) {
+			featureValueToColor.put(featureValue, FEATURE_COLORS[featureValueToColor.size() % FEATURE_COLORS.length]);
+		}
+		return featureValueToColor.get(featureValue);
+	}
+
+	private void printEvent(Map<String, Integer> featureValueToCountMap, TestEventsBatch eventsBatch, Double score) {
+		String COLOR_NORMAL = "\033[0m";
+		String BAR_COLORS[] = new String[]{"\033[36m", "\033[32m", "\033[33m", "\033[31m"};
+
+		for (Map.Entry<String, Integer> featureValueToCount : featureValueToCountMap.entrySet()) {
+			String bar = "";
+			int base = 0;
+			int count = featureValueToCount.getValue();
+			int barLength = count;
+			while (barLength > 0) {
+				String color = BAR_COLORS[Math.min(base, BAR_COLORS.length - 1)];
+				bar += color;
+				for (int i = 0; i < 10 && barLength > 0; i++) {
+					bar += base;
+					barLength -= Math.pow(10, base);
+				}
+				base++;
+			}
+			bar += COLOR_NORMAL;
+			String featureValue = featureValueToCount.getKey();
+			String featureColor = getFeatureColor(featureValue);
+			System.out.println(String.format("%s%s%s: %-7d\t%s",
+					featureColor,
+					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? "(empty string)" : featureValue, 30),
+					COLOR_NORMAL,
+					count,
+					bar));
+		}
+		System.out.println();
+		System.out.println(String.format("\tscoring %s%s%s",
+				getFeatureColor(eventsBatch.normalized_src_machine),
+				StringUtils.rightPad(eventsBatch.normalized_src_machine, 30),
+				COLOR_NORMAL));
+		System.out.println(String.format("\told model: %d", eventsBatch.normalized_src_machine_score));
+		System.out.println(String.format("\tnew model: %d", score.intValue()));
+		System.out.println("\n");
 	}
 
 	@Test
@@ -682,17 +732,21 @@ public class RarityScorerTest {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMapUsedForBuilding = new HashMap<>();
-		for (TestEvent event : readEventsFromCsv("cici-ssh-src-machine.csv")) {
-			Integer eventFeatureCount = featureValueToCountMapUsedForBuilding.get(event.normalized_src_machine);
-			if (eventFeatureCount == null) {
-				eventFeatureCount = 0;
+		for (TestEventsBatch eventsBatch : readEventsFromCsv("cici-ssh-src-machine-CN_1064463971.csv")) {
+			for (int i = 0; i < eventsBatch.numOfEvents; i++) {
+				Integer eventFeatureCount = featureValueToCountMapUsedForBuilding.get(eventsBatch.normalized_src_machine);
+				if (eventFeatureCount == null) {
+					eventFeatureCount = 0;
+				}
+				Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapUsedForBuilding, eventFeatureCount + 1);
+				if (score != null) {
+//					Assert.assertEquals(eventsBatch.expected_rarity_scorer_score, score, 0);
+					if (eventsBatch.normalized_src_machine_score > 0 || score > 0) {
+						printEvent(featureValueToCountMapUsedForBuilding, eventsBatch, score);
+					}
+				}
+				featureValueToCountMapUsedForBuilding.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
 			}
-			Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapUsedForBuilding, eventFeatureCount + 1);
-			if (score != null) {
-				Assert.assertEquals(event.expected_rarity_scorer_score, score, 0);
-			}
-//			System.out.println(event.normalized_src_machine + ":\t\t" + score + "\t(old: " + event.normalized_src_machine_score + ")\t\tnumOfFeatures: " + featureValueToCountMapUsedForBuilding.size());
-			featureValueToCountMapUsedForBuilding.put(event.normalized_src_machine, eventFeatureCount + 1);
 		}
 	}
 }
