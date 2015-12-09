@@ -1,9 +1,10 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
-import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.domain.core.Tag;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +26,8 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 
 	@Autowired
 	private UserTaggingService userTaggingService;
+	@Autowired
+	private TagService tagService;
 
 	@Value("${user.tag.service.abstract.page.size:1000}")
 	private int pageSize;
@@ -41,7 +44,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		return pageSize;
 	}
 
-	protected void setPageSize(int pageSize) {
+	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
 
@@ -56,6 +59,8 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		throws Exception {
 
 		userTaggingService.putUserTagService(getTag().getId(), this);
+		Tag tag = new Tag(getTag().getId(), getTag().getDisplayName(), true, true);
+		tagService.addTag(tag);
 		refresh();
 	}
 
@@ -260,6 +265,15 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		return taggedUsers;
 	}
 
+	@Override
+	public void addUserTag(String userName, String tag) {
+		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
+	}
+
+	@Override
+	public void removeUserTag(String userName, String tag) {
+		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
+	}
 	
 	public void setTaggedUsers(Set<String> taggedUsers) {
 	

@@ -969,12 +969,12 @@ public class UserServiceImpl implements UserService{
 			tagsToRemove.add(userTagEnumId);
 		}
 
-		updateUserTagList(tagsToAdd,tagsToRemove,username,userTagEnumId);
+		updateUserTagList(tagsToAdd,tagsToRemove,username);
 
 	}
 
 	@Override
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username, String userTagEnumId)
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
 	{
 
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
