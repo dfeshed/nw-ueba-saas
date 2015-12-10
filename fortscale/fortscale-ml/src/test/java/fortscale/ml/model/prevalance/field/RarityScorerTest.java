@@ -726,11 +726,18 @@ public class RarityScorerTest {
 		}
 		System.out.println();
 		int featureValueIndex = featureValues.indexOf(eventsBatch.normalized_src_machine);
-		System.out.println(String.format("\tscoring %s%s%s %s",
+		int totalNumOfEvents = 1;
+		for (int count : featureValueToCountMap.values()) {
+			totalNumOfEvents += count;
+		}
+		System.out.println(String.format("\tscoring %s%s%s%s which has %d events. In total there are %d events spread across %d features.",
 				getFeatureColor(eventsBatch.normalized_src_machine),
 				eventsBatch.normalized_src_machine,
 				COLOR_NORMAL,
-				featureValueIndex == -1 ? "" : "(#" + featureValueIndex + ")"));
+				featureValueIndex == -1 ? "" : " (#" + featureValueIndex + ")",
+				featureValueIndex == -1 ? 1 : featureValueToCountMap.get(eventsBatch.normalized_src_machine) + 1,
+				totalNumOfEvents,
+				featureValueToCountMap.size()));
 		System.out.println(String.format("\told model: %d", eventsBatch.normalized_src_machine_score));
 		System.out.println(String.format("\tnew model: %d", score.intValue()));
 		System.out.println("\n");
@@ -755,6 +762,7 @@ public class RarityScorerTest {
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
 		List<ScoredFeature> featureValueAndScores = new ArrayList<>();
+		boolean oldModelAndNewModelAreWarmedUp = false;
 		for (final TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
 			for (int i = 0; i < eventsBatch.numOfEvents; i++) {
 				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_src_machine);
@@ -762,11 +770,13 @@ public class RarityScorerTest {
 					eventFeatureCount = 0;
 				}
 				final Double score = calcScore(30, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
-				if (score != null && (eventsBatch.normalized_src_machine_score > minInterestingScore || score > minInterestingScore)) {
+				if (eventsBatch.normalized_src_machine_score > 0 && score != null) {
+					oldModelAndNewModelAreWarmedUp = true;
+				}
+				boolean eventIsInteresting = eventsBatch.normalized_src_machine_score > minInterestingScore || (score != null && score > minInterestingScore);
+				if (oldModelAndNewModelAreWarmedUp && eventIsInteresting) {
 //					Assert.assertEquals(eventsBatch.expected_rarity_scorer_score, score, 0);
-					if ((score != null && score > minInterestingScore)) {
-						featureValueAndScores.add(new ScoredFeature(eventsBatch.normalized_src_machine, score));
-					}
+					featureValueAndScores.add(new ScoredFeature(eventsBatch.normalized_src_machine, score));
 					printEvent(featureValueToCountMap, eventsBatch, score);
 				}
 				featureValueToCountMap.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
@@ -789,6 +799,6 @@ public class RarityScorerTest {
 
 	@Test
 	public void testRealScenarioCiciSshSrcMachineCN_1064463971() throws IOException {
-		testRealScenario("cici-ssh-src-machine-CN_1064463971.csv", 0);
+		testRealScenario("cici-ssh-src-machine-CN_1064463971.csv", 5);
 	}
 }
