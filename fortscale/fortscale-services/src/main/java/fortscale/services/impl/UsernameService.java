@@ -278,9 +278,7 @@ public class UsernameService implements InitializingBean, CachingService{
 				Map<String, String> logUsernameMap = user.getLogUsernameMap();
 
 				for (Map.Entry<String, String> logUsernameEntry : logUsernameMap.entrySet()) {
-					String entryKey = logUsernameEntry.getKey();
-
-					String logEventId = getLogUsername(entryKey, user);
+					String logEventId = logUsernameEntry.getKey();
 
 					if (!logEventIdToUsers.containsKey(logEventId)) {
 						logEventIdToUsers.put(logEventId, new HashSet<String>());
