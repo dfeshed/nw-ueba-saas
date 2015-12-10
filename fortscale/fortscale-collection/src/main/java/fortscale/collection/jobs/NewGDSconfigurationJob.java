@@ -108,35 +108,46 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 String fields = br.readLine();
 				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,fields);
 				writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
-
-				//username filed
-				System.out.println(String.format("Please enter the username field name  (i.e ussername or account_name)"));
-				String usernameFiledName = br.readLine();
-
-				line = String.format("impala.data.%s.table.field.username=%s",this.dataSourceName,usernameFiledName);
-				writeLineToFile(line,fileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
+                //write the username configuration at the streaming overriding for the enrich part
+                System.out.println(String.format("Please enter the \"username\" field name (i.e account_name or user_id ):"));
+                String usernameFieldName =  br.readLine().toLowerCase();
+                line=String.format("impala.data.%s.table.field.username=%s",dataSourceName,usernameFieldName);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
+                //delimiter
                 System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
                 String delimiter = br.readLine();
-
                 line = String.format("impala.data.%s.table.delimiter=%s",dataSourceName,delimiter);
 				writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
 
+                //table name
                 System.out.println(String.format("Please enter the %s data table name  (i.e sshdata )",dataSourceName));
                 String dataTableName = br.readLine();
-
                 line = String.format("impala.data.%s.table.name=%s",dataSourceName,dataTableName);
 				writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
+                //hdfs paths
                 line = String.format("hdfs.user.data.%s.path=${hdfs.user.data.path}/%s",dataSourceName,dataSourceName);
 				writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
+
+                //partition type
                 line = String.format("impala.data.%s.table.partition.type=monthly",dataSourceName);
 				writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
+
+
+
+
+
+
 
 
             }
@@ -275,6 +286,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             }
 
 
+
+
+
             fileWriter.flush();
 			streamingOverridingfileWriter.flush();
 
@@ -388,10 +402,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line,taskPropertiesFileWriter,true);
 
 
+            //name
 			line = String.format("fortscale.events.entry.name.%s_UsernameNormalizationAndTaggingTask=%s_UsernameNormalizationAndTaggingTask", this.dataSourceName, this.dataSourceName);
 			writeLineToFile(line,taskPropertiesFileWriter,true);
+
+            //data source
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.data.source=%s", this.dataSourceName, this.dataSourceName);
 			writeLineToFile(line,taskPropertiesFileWriter,true);
+
+            //last state
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.last.state=etl", this.dataSourceName);
 			writeLineToFile(line,taskPropertiesFileWriter,true);
 
@@ -415,39 +434,63 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//User name field
+            System.out.println(String.format("Please enter the \"username\" field name (i.e account_name or user_id ):"));
+            String usernameFieldName =  br.readLine().toLowerCase();
+            line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", this.dataSourceName,usernameFieldName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
 
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=", this.dataSourceName));
-			taskPropertiesFileWriter.write("\r\n");
+            //Domain field  - for the enrich part
+            System.out.println(String.format("Please enter the Domain field name (i.e account_domain) in case %s data source doesn't have domain field please enter \"fake\":",dataSourceName));
+            String domainFieldName =  br.readLine().toLowerCase();
+            line=String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s",dataSourceName,domainFieldName);
+            writeLineToFile(line,taskPropertiesFileWriter,true);
 
-			//Domain Field
-			System.out.println(String.format("Please enter the domain field (i.e account_domain for kerberos): "));
-			String domainField = br.readLine();
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", domainField));
-			taskPropertiesFileWriter.write("\r\n");
+            //In case of fake domain - enter the actual domain value the PS want
+            System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty valuefor keeping the name without domain): "));
+            String domainValue =  br.readLine().toLowerCase();
+            line=String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.fake=%s",dataSourceName,domainValue);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//Normalized_username field
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}"));
-			taskPropertiesFileWriter.write("\r\n");
+            line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}");
+            writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//partition field name  (today we use for all the username)
-			//taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s",this.dataSourceName.toLowerCase(), usernameField));
-			taskPropertiesFileWriter.write("\r\n");
+            line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s",this.dataSourceName, usernameFieldName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
 
-			//partition field name  (today we use for all the username)
-			//taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalization.service=%s",this.dataSourceName.toLowerCase(), usernameField));
-			taskPropertiesFileWriter.write("\r\n");
+
+            //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds 
+			//Normalizing service
+            System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):"));
+            Boolean updateOnly =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+
+            if(updateOnly)
+            {
+                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService",this.dataSourceName)
+                writeLineToFile(line, taskPropertiesFileWriter, true);
+                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true",this.dataSourceName);
+                writeLineToFile(line, taskPropertiesFileWriter, true);
+            }
+
+            else {
+
+                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=genericUsernameNormalizationService",this.dataSourceName)
+                writeLineToFile(line, taskPropertiesFileWriter, true);
+                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=false",this.dataSourceName);
+                writeLineToFile(line, taskPropertiesFileWriter, true);
+            }
 
 
 			//classifier value
-			taskPropertiesFileWriter.write(String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName.toLowerCase()));
-			taskPropertiesFileWriter.write("\r\n");
+			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName,this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+
+            writeLineToFile("\r\n", taskPropertiesFileWriter, true);
+            writeLineToFile("#############", taskPropertiesFileWriter, true);
 
 
 
-
-			/*SecurityUsernameNormalizationService
-
-			fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true*/
 
 
 
