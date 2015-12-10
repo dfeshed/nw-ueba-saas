@@ -141,40 +141,40 @@ public class UserServiceImpl implements UserService{
 	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
 	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
 	@Override
-	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
+	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 		if(StringUtils.isEmpty(normalizedUsername)){
-			logger.warn("got a empty string {} username", classifier);
+			logger.warn("got a empty string {} username", classifierId);
 			return;
 		}
 
-		String eventId = usernameService.getLogEventName(classifier);
-		String userApplication = usernameService.getUserApplication(classifier);
+		String logEventName = usernameService.getLogEventName(classifierId);
+		String userApplication = usernameService.getUserApplication(classifierId);
 
-		String userId = usernameService.getUserId(normalizedUsername, eventId);
+		String userId = usernameService.getUserId(normalizedUsername, logEventName);
 		if(userId == null && onlyUpdate){
 			return;
 		}
 			
 		if(userId != null){
-			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId)){
+			if(!usernameService.isLogUsernameExist(logEventName, logUsername, userId)){
 				Update update = new Update();
-				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
+				usernameService.fillUpdateLogUsername(update, logUsername, logEventName);
 				if(updateAppUsername){
 					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplication, logUsername), userApplication);
 				}
 			
 				updateUser(userId, update);
-				usernameService.addLogUsernameToCache(eventId, logUsername, userId);
+				usernameService.addLogUsernameToCache(logEventName, logUsername, userId);
 			}
         } else{
 			User user = createUser(userApplication, normalizedUsername, logUsername);
-			usernameService.updateLogUsername(user, eventId, logUsername);
+			usernameService.updateLogUsername(user, logEventName, logUsername);
 			saveUser(user);
 			if(user == null || user.getId() == null){
-				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, normalizedUsername, logUsername);
+				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			} else{
-				usernameService.addLogNormalizedUsername(eventId, user.getId(), normalizedUsername);
-				usernameService.addLogUsernameToCache(eventId, logUsername, user.getId());
+				usernameService.addLogNormalizedUsername(logEventName, user.getId(), normalizedUsername);
+				usernameService.addLogUsernameToCache(logEventName, logUsername, user.getId());
 			}
 		}		
 	}

@@ -102,16 +102,16 @@ public class UsernameService implements InitializingBean, CachingService{
 		return eventId;
 	}
 
-	public String getLogEventName(String classifier) {
-		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifier);
+	public String getLogEventName(String classifierId) {
+		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifierId);
 
 		if (classifierExist) {
-			Classifier classifierType = Classifier.valueOf(classifier);
+			Classifier classifierType = Classifier.valueOf(classifierId);
 
 			return classifierType.getLogEventsEnum().getId();
 		}
 
-		return classifier;
+		return classifierId;
 	}
 
 	public String getUserApplication(String classifier) {
@@ -204,12 +204,12 @@ public class UsernameService implements InitializingBean, CachingService{
 		return false;
 	}
 
-	public String getUserId(String username, String eventId){
+	public String getUserId(String username, String logEventName){
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(eventId != null && logEventIdToUserIdMap.get(eventId).containsKey(username))
-			return logEventIdToUserIdMap.get(eventId).get(username);
+		if(logEventName != null && logEventIdToUserIdMap.get(logEventName).containsKey(username))
+			return logEventIdToUserIdMap.get(logEventName).get(username);
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);

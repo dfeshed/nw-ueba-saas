@@ -57,11 +57,11 @@ public class UsernameNormalizer implements InitializingBean{
 		return ret;
 	}
 
-	public String postNormalize(String username, String suffix, String classifier, boolean updateOnly) {
+	public String postNormalize(String username, String suffix, String classifierId, boolean updateOnly) {
 		String ret = username + "@" + suffix;
 		ret = ret.toLowerCase();
 		//update or create user in mongo
-		userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly,
+		userService.updateOrCreateUserWithClassifierUsername(classifierId, ret, ret, updateOnly,
 				true);
 		logger.debug("Saved normalized user - {}", ret);
 		return ret;

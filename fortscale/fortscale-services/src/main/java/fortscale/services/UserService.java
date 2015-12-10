@@ -43,7 +43,7 @@ public interface UserService extends CachingService{
 
 	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
 
-	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed

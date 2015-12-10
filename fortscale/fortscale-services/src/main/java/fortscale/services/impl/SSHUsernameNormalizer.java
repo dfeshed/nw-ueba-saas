@@ -48,7 +48,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String postNormalize(String username, String targetMachine, String classifier, boolean
+	public String postNormalize(String username, String targetMachine, String classifierId, boolean
 			updateOnly) {
 		String ret;
 		logger.debug("Normalizing according to target machine - {}", targetMachine);
@@ -63,7 +63,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		}
 		ret = ret.toLowerCase();
 		//update or create user in mongo
-		userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly,
+		userService.updateOrCreateUserWithClassifierUsername(classifierId, ret, ret, updateOnly,
 				true);
 		logger.debug("Saved normalized user - {}", ret);
 		return ret;
