@@ -167,8 +167,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn.name()));
 	}
 
-	public void fillUpdateLogUsername(Update update, String username, String eventId) {
-		update.set(User.getLogUserNameField(getLogname(eventId)), username);
+	public void fillUpdateLogUsername(Update update, String username, String logEventName) {
+		update.set(User.getLogUserNameField(getLogname(logEventName)), username);
 	}
 
 	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, String userApplication) {
@@ -232,14 +232,20 @@ public class UsernameService implements InitializingBean, CachingService{
 
 
 
-	public boolean isLogUsernameExist(String eventId, String logUsername, String userId) {
+	public boolean isLogUsernameExist(String logEventName, String logUsername, String userId) {
 
-		if (logEventIdToUsers.get(eventId).contains(formatUserIdWithLogUsername(userId, logUsername)))
+		if (logEventIdToUsers.containsKey(logEventName) && logEventIdToUsers.get(logEventName).contains(formatUserIdWithLogUsername(userId, logUsername))) {
 			return true;
+		}
 
 		User user = userRepository.findOne(userId);
-		if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))) {
-			logEventIdToUsers.get(eventId).add(formatUserIdWithLogUsername(userId, logUsername));
+		if(user != null && logUsername.equals(user.getLogUserName(getLogname(logEventName)))) {
+			if (!logEventIdToUsers.containsKey(logEventName)) {
+				logEventIdToUsers.put(logEventName, new HashSet<String>());
+			}
+
+			logEventIdToUsers.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
+
 			return true;
 		}
 
