@@ -30,6 +30,7 @@ public class TagService {
     private Long daysBackForArchive;
 
     private UserService userService;
+    private fortscale.services.TagService tagService;
 
     public TagService(KeyValueStore<String, AccountMachineAccess> store, long daysBack) {
 
@@ -39,6 +40,11 @@ public class TagService {
         //retrieve the implementation list from spring
        this.implementationList = SpringService.getInstance().resolveAll(ServiceAccountTagging.class);
        this.userService = SpringService.getInstance().resolve(UserService.class);
+       this.tagService = SpringService.getInstance().resolve(fortscale.services.TagService.class);
+
+       for (ServiceAccountTagging serviceAccountTagging: implementationList) {
+           serviceAccountTagging.addTagToMongo(tagService);
+       }
     }
 
     public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine ) throws LevelDbException
