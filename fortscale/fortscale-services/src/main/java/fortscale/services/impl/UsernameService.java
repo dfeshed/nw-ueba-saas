@@ -102,7 +102,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		return eventId;
 	}
 
-	public String getLogEventName(String classifierId) {
+	public static String getLogEventName(String classifierId) {
 		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifierId);
 
 		if (classifierExist) {

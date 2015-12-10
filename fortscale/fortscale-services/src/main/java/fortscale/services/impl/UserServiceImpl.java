@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 
-		String logEventName = usernameService.getLogEventName(classifierId);
+		String logEventName = UsernameService.getLogEventName(classifierId);
 		String userApplication = usernameService.getUserApplication(classifierId);
 
 		String userId = usernameService.getUserId(normalizedUsername, logEventName);

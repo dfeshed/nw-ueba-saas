@@ -17,7 +17,6 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -89,9 +88,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 
 	protected Map<String,Boolean> updateOnlyPerClassifier = new HashMap<>();
-
-	@Autowired
-	private UsernameService usernameService;
 
 
 	/**
@@ -217,7 +213,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		UserInfoForUpdate dataSourceToUserInfo = store.get(normalizedUsername);
 
-		String logEventName = usernameService.getLogEventName(classifierId);
+		String logEventName = UsernameService.getLogEventName(classifierId);
 
 		//in case that the user doesnt exist in the LevelDB
 		if (dataSourceToUserInfo == null) {
