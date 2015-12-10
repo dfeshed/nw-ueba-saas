@@ -57,6 +57,8 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
 
+	private boolean isLazyUsernameCachesUpdate = true;
+
 	// For unit tests only
 	protected int getPageSize() {
 		return usernameServicePageSize;
@@ -300,6 +302,13 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		if (!isLazyUsernameCachesUpdate) {
+			updateUsernameCaches();
+		}
+	}
+
+	public void setLazyUsernameCachesUpdate(boolean isLazyUsernameCachesUpdate) {
+		this.isLazyUsernameCachesUpdate = isLazyUsernameCachesUpdate;
 	}
 
 	@Override public CacheHandler<String, String> getCache() {
