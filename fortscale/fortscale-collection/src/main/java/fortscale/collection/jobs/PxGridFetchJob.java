@@ -11,11 +11,16 @@ import com.cisco.pxgrid.model.net.*;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
+import fortscale.domain.fetch.FetchConfiguration;
+import fortscale.domain.fetch.FetchConfigurationRepository;
+import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -25,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +43,17 @@ public class PxGridFetchJob extends FortscaleJob {
 	// time limits sends to pxGrid
 	private String earliest;
 	private String latest;
+
+	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
+	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
+	private int fetchIntervalInSeconds = -1;
+
+	// time limits as dates to allow easy paging - will be used in continues run
+	private Date earliestDate;
+	private Date latestDate;
+
+	//indicate if still have more pages to go over and fetch
+	private boolean keepFetching = false;
 
 	//the type (data source) to bring saved configuration for.
 	private String type;
@@ -56,6 +73,12 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}")
 	private String outputPath;
+
+	private File outputTempFile;
+	private File outputFile;
+
+	@Autowired
+	private FetchConfigurationRepository fetchConfigurationRepository;
 
 	// Flag to indicate whether connection is established to the grid
 	private boolean connected;
@@ -83,10 +106,30 @@ public class PxGridFetchJob extends FortscaleJob {
 			monitor.startStep(getMonitorId(), "Prepare sink file", 1);
 			File outputDir = ensureOutputDirectoryExists(outputPath);
 
+			Calendar begin;
+			Calendar end;
+
+			do {
+
+				// preparer fetch page params
+				if  (fetchIntervalInSeconds != -1 ) {
+					preparerFetchPageParams();
+				}
+
+				// try to create output file
+				createOutputFile(outputDir);
+				logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
+				monitor.finishStep(getMonitorId(), "Prepare sink file");
+
+				//begin.setTime(earliest);
+
+			} while(keepFetching);
+
+
 			// create query we'll use to make call
-			Calendar begin = Calendar.getInstance();
+			begin = Calendar.getInstance();
 			begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
-			Calendar end = Calendar.getInstance();
+			end = Calendar.getInstance();
 			SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
 			SessionIterator iterator = sd.getSessionsByTime(begin, end);
 			iterator.open();
@@ -190,6 +233,25 @@ public class PxGridFetchJob extends FortscaleJob {
 		System.out.println("}");
 	}
 
+	private void createOutputFile(File outputDir) throws JobExecutionException {
+		// generate filename according to the job name and time
+		String filename = String.format(filenameFormat, (new Date()).getTime());
+
+		outputTempFile = new File(outputDir, filename + ".part");
+		outputFile = new File(outputDir, filename);
+
+		try {
+			if (!outputTempFile.createNewFile()) {
+				logger.error("cannot create output file {}", outputTempFile);
+				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+			}
+
+		} catch (IOException e) {
+			logger.error("error creating file " + outputTempFile.getPath(), e);
+			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+		}
+	}
+
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
@@ -222,6 +284,55 @@ public class PxGridFetchJob extends FortscaleJob {
 			//calculate query run times from mongo in the case not provided as job params
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);
+		}
+	}
+
+	private void preparerFetchPageParams(){
+		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
+		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
+		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
+		latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
+		//set for next page
+		earliestDate = pageLatestDate;
+	}
+
+	private void updateMongoWithCurrentFetchProgress(){
+		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
+		if(fetchConfiguration == null){
+			fetchConfiguration = new FetchConfiguration(type, latest);
+		}
+		else {
+			fetchConfiguration.setLastFetchTime(latest);
+		}
+		fetchConfigurationRepository.save(fetchConfiguration);
+
+		if (earliestDate != null && latestDate != null) {
+			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
+				keepFetching = false;
+			}
+		}
+	}
+
+	private void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException{
+		type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+		//time back (default 1 hour)
+		fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
+		int ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
+		int fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
+		//set fetch until the ceiling of now (according to the given interval
+		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
+		//shift the date by the configured diff
+		latestDate = DateUtils.addSeconds(latestDate,-1*fetchDiffInSeconds);
+		keepFetching = true;
+
+		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+		if (fetchConfiguration != null) {
+			earliest = fetchConfiguration.getLastFetchTime();
+			earliestDate = new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
+		}
+		else {
+			earliestDate = DateUtils.addSeconds(latestDate,-1*fetchIntervalInSeconds);
 		}
 	}
 

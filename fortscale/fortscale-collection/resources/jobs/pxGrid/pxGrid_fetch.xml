@@ -19,6 +19,19 @@
 					<key>type</key>
 					<value>pxGrid</value>
 				</entry>
+				<!-- HOUR = 10, MINUTE = 12, SECOND = 13, DATE = 5 -->
+				<entry>
+					<key>ceilingTimePartInt</key>
+					<value>12</value>
+				</entry>
+				<entry>
+					<key>fetchIntervalInSeconds</key>
+					<value>900</value>
+				</entry>
+				<entry>
+					<key>fetchDiffInSeconds</key>
+					<value>960</value>
+				</entry>
 				<entry>
 					<key>filenameFormat</key>
 					<value>PXGRID_%d.csv</value>
