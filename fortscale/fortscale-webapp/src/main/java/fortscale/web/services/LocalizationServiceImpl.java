@@ -4,6 +4,7 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,7 +22,8 @@ public class LocalizationServiceImpl implements  LocalizationService{
     @Override
     public Map<String, String> getAllLocalizationStrings(Locale locale) {
         locale = getLocaleOrDefaultLocale(locale);
-        return SpringPropertiesUtil.getPropertyMapByPrefix(FORTSCALE_MESSAGES_PREFIX);
+        Map<String, String> messages = normalizeResultKey(SpringPropertiesUtil.getPropertyMapByPrefix(FORTSCALE_MESSAGES_PREFIX));
+        return messages;
     }
 
     @Override
@@ -29,16 +31,23 @@ public class LocalizationServiceImpl implements  LocalizationService{
 
         locale = getLocaleOrDefaultLocale(locale);
         String fullPrefix = normalizeKey(prefix);
-        return SpringPropertiesUtil.getPropertyMapByPrefix(fullPrefix);
+        Map<String, String> messages = normalizeResultKey(SpringPropertiesUtil.getPropertyMapByPrefix(fullPrefix));
+        return messages;
 
     }
 
     @Override
-    public Map<String, String> getAllLocalizationStringBykEY(String prefix, Locale locale) {
+    public String getAllLocalizationStringByKey(String key, Locale locale) {
         locale = getLocaleOrDefaultLocale(locale);
-        String fullPrefix = normalizeKey(prefix);
-        return SpringPropertiesUtil.getPropertyMapByPrefix(fullPrefix);
+        String fullPrefix = normalizeKey(key);
 
+        String message = SpringPropertiesUtil.getProperty(key);
+        return message;
+
+    }
+
+    public Locale getDefaultLocale(){
+        return DEFAULT_LOCALE;
     }
 
 
@@ -66,8 +75,22 @@ public class LocalizationServiceImpl implements  LocalizationService{
         return  locale;
     }
 
-    public Locale getDefaultLocale(){
-        return DEFAULT_LOCALE;
+    /**
+     * remove the common prefix from all messages, FORTSCALE_MESSAGES_PREFIX
+     * so the UI will not have to be familiar with it
+     * @param messages
+     * @return
+     */
+    private Map<String, String> normalizeResultKey(Map<String, String> messages){
+        Map<String, String> results = new HashMap<>();
+        for (Map.Entry<String, String> message :  messages.entrySet()){
+            String normalizedKey = StringUtils.removeStart(message.getKey(), FORTSCALE_MESSAGES_PREFIX+FORTSCALE_MESSAGES_SEPERATOR);
+            results.put(normalizedKey,message.getValue());
+
+        }
+        return  results;
     }
+
+
 
 }

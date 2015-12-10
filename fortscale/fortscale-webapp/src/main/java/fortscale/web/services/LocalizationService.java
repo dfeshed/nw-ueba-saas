@@ -31,7 +31,7 @@ interface  LocalizationService {
      * @param locale - the languge that we like to present
      * @return
      */
-    Map<String, String> getAllLocalizationStringBykEY(String key, Locale locale);
+    String getAllLocalizationStringByKey(String key, Locale locale);
 
     /**
      * Get the default system locale
