@@ -364,22 +364,22 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getSshLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh.name()));
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn.name()));
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login.name()));
 	}
 
 	@Override
 	public Long getAmtLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.amt));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.amt.name()));
 	}
 
 }
