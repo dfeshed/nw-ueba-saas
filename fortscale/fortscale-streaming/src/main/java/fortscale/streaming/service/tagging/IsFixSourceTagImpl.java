@@ -27,8 +27,6 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
     private Pattern regExpPattern;
 
     private static final String FixTag = "Fixed Source";
-    private static final String FixTagId = "fixed_source";
-
 
     public IsFixSourceTagImpl() {
 
@@ -106,7 +104,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
 
     @Override
     public void addTagToMongo(TagService tagService) {
-        tagService.addTag(new Tag(FixTagId, FixTag, false, true));
+        tagService.addTag(new Tag(FixTag, FixTag, false, true));
     }
 
 }
