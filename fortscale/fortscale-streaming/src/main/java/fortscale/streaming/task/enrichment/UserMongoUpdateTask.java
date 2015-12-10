@@ -2,6 +2,7 @@ package fortscale.streaming.task.enrichment;
 
 
 import fortscale.services.UserService;
+import fortscale.services.impl.UsernameService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
@@ -16,6 +17,7 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -86,7 +88,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * Map between classifier id to updateonly flag
 	 */
 
-	protected Map<String,Boolean> updateOnlyPerClassifire = new HashMap<>();
+	protected Map<String,Boolean> updateOnlyPerClassifier = new HashMap<>();
+
+	@Autowired
+	private UsernameService usernameService;
 
 
 	/**
@@ -123,7 +128,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			usernameField  =getConfigString(config, String.format("fortscale.events.entry.%s.username.field", dsSettings));
 
 			dataSourceConfigs.put(configKey, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue, udpateOnlyFlag, logUserNameField));
-			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
+			updateOnlyPerClassifier.put(classifier, udpateOnlyFlag);
 		}
 
 	}
@@ -177,10 +182,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		}
 
 		//get the actual username from the event - using for assigning to logusername
-		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
+		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.getLogUserNameField()));
 		if (logUserNameFromEvent == null) {
 			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_LOG_USERNAME_IN_MESSAGE_LABEL);
-			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
+			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.getLogUserNameField());
 			return;
 		}
 
@@ -189,10 +194,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		//in case that the success field is equal to #AnyRow# in the configuration file
 		//update the last activity for any row
 		// or check that the event represent successful login
-		if (dataSourceConfiguration.successField.equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
+		if (dataSourceConfiguration.getSuccessField().equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.getSuccessField())).equalsIgnoreCase(dataSourceConfiguration.getSuccessValue())) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 			//update the logusername if needed
-			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
+			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.getClassifierId(), logUserNameFromEvent);
 
 		}
 
@@ -208,17 +213,18 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * @param normalizedUsername    the user
 	 * @param classifierId	The classifier in Mongo for this data-source
 	 */
-	private void updateUserInfoInStore(Long timestamp, String normalizedUsername, String classifierId,String logUserNameFromEvent) {
+	private void updateUserInfoInStore(Long timestamp, String normalizedUsername, String classifierId, String logUserNameFromEvent) {
 
 		UserInfoForUpdate dataSourceToUserInfo = store.get(normalizedUsername);
 
+		String logEventName = usernameService.getLogEventName(classifierId);
 
 		//in case that the user doesnt exist in the LevelDB
 		if (dataSourceToUserInfo == null) {
 			dataSourceToUserInfo = new UserInfoForUpdate();
 			// Since the same user will be always on the same partition, no need to synchronize this
 			Map<String,JksonSerilaizablePair<Long,String>> dataSourceToUserInfoHashMap  = new HashMap<>();
-			dataSourceToUserInfoHashMap.put(classifierId,new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
+			dataSourceToUserInfoHashMap.put(logEventName, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 
 			dataSourceToUserInfo.setUserInfo(dataSourceToUserInfoHashMap);
 
@@ -226,22 +232,22 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		}
 
 		//in case the user have no entry for the current data source
-		if (dataSourceToUserInfo.getUserInfo().get(classifierId) == null)
+		if (dataSourceToUserInfo.getUserInfo().get(logEventName) == null)
 		{
 
-			dataSourceToUserInfo.getUserInfo().put(classifierId,new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(logEventName, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 
 		}
 
 
-		Long userLastActivity = dataSourceToUserInfo.getUserInfo().get(classifierId).getKey();
+		Long userLastActivity = dataSourceToUserInfo.getUserInfo().get(logEventName).getKey();
 
 
 		//update in case that last activity need to be update
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity and logusername  in level DB
-			dataSourceToUserInfo.getUserInfo().put(classifierId, new JksonSerilaizablePair<Long, String>(timestamp, logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(logEventName, new JksonSerilaizablePair<Long, String>(timestamp, logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
@@ -289,7 +295,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		while (iter.hasNext()) {
 			Entry<String, UserInfoForUpdate> user = iter.next();
 			// update user in mongo
-			userService.updateUsersInfo(user.getKey(), user.getValue().getUserInfo(),updateOnlyPerClassifire );
+			userService.updateUsersInfo(user.getKey(), user.getValue().getUserInfo(), updateOnlyPerClassifier);
 			usernames.add(user.getKey());
 		}
 		iter.close();
@@ -305,22 +311,40 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * Private class for saving data-source specific configuration in-memory
 	 */
 	protected static class DataSourceConfiguration {
+		private String classifierId;
+		private String successField;
+		private String successValue;
+		private boolean dataSourceUpdateOnlyFlag;
+		private String logUserNameField;
 
-		protected DataSourceConfiguration(String mongoClassifierId, String successField, String successValue,
+		protected DataSourceConfiguration(String classifierId, String successField, String successValue,
 				boolean udpateOnlyFlag, String logUserNameField) {
-			this.mongoClassifierId = mongoClassifierId;
+			this.classifierId = classifierId;
 			this.successField = successField;
 			this.successValue = successValue;
 			this.dataSourceUpdateOnlyFlag = udpateOnlyFlag;
 			this.logUserNameField = logUserNameField;
-
 		}
 
-		public String mongoClassifierId;
-		public String successField;
-		public String successValue;
-		public boolean dataSourceUpdateOnlyFlag;
-		public String logUserNameField;
+		public String getClassifierId() {
+			return classifierId;
+		}
+
+		public String getSuccessField() {
+			return successField;
+		}
+
+		public String getSuccessValue() {
+			return successValue;
+		}
+
+		public boolean isDataSourceUpdateOnlyFlag() {
+			return dataSourceUpdateOnlyFlag;
+		}
+
+		public String getLogUserNameField() {
+			return logUserNameField;
+		}
 	}
 
 
