@@ -185,11 +185,11 @@ public class UsernameService implements InitializingBean, CachingService{
 		return isUsernameExist(username, null);
 	}
 
-	public boolean isUsernameExist(String username, LogEventsEnum eventId){
+	public boolean isUsernameExist(String username, LogEventsEnum logEventsEnum){
 		if (usernameToUserIdCache.containsKey(username))
 			return true;
 
-		if(eventId != null && logEventIdToUserIdMap.get(eventId.getId()).containsKey(username))
+		if(logEventsEnum != null && logEventIdToUserIdMap.containsKey(logEventsEnum.getId()) && logEventIdToUserIdMap.get(logEventsEnum.getId()).containsKey(username))
 			return true;
 
 		// resort to lookup mongodb and save the user id in cache
@@ -208,8 +208,9 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(logEventName != null && logEventIdToUserIdMap.get(logEventName).containsKey(username))
+		if(logEventName != null && logEventIdToUserIdMap.containsKey(logEventName) && logEventIdToUserIdMap.get(logEventName).containsKey(username)) {
 			return logEventIdToUserIdMap.get(logEventName).get(username);
+		}
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
@@ -292,12 +293,20 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 	}
 
-	public void addLogNormalizedUsername(String eventId, String userId, String username){
-		logEventIdToUserIdMap.get(eventId).put(username, userId);
+	public void addLogNormalizedUsername(String logEventName, String userId, String username){
+		if (!logEventIdToUserIdMap.containsKey(logEventName)) {
+			logEventIdToUserIdMap.put(logEventName, new HashMap<String, String>());
+		}
+
+		logEventIdToUserIdMap.get(logEventName).put(username, userId);
 	}
 
-	public void addLogUsernameToCache(String eventId, String logUsername, String userId){
-		logEventIdToUsers.get(eventId).add(formatUserIdWithLogUsername(userId, logUsername));
+	public void addLogUsernameToCache(String logEventName, String logUsername, String userId){
+		if (!logEventIdToUsers.containsKey(logEventName)) {
+			logEventIdToUsers.put(logEventName, new HashSet<String>());
+		}
+
+		logEventIdToUsers.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
 
 	@Override
