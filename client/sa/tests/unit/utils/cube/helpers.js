@@ -1,8 +1,9 @@
 /**
  * @file Cube test helpers.
  * Utilities for unit testing for Cube.
+ * @public
  */
-import Cube from "sa/utils/cube/base";
+import Cube from 'sa/utils/cube/base';
 
 /**
  * Compares the length of a given array, and its values, with a given length & set of values.
@@ -14,29 +15,30 @@ import Cube from "sa/utils/cube/base";
  * tests are skipped.
  * @param {function} assert The assert function to be invoked with the test results.
  * @param {string} [errMessage] Option error msg to be appended to messages that are passed to assert.
+ * @public
  */
-export function arrayCompare (arr, length, field, values, assert, errMessage) {
-    if (!assert) {
-        return;
-    }
-    errMessage = errMessage || "";
+export function arrayCompare(arr, length, field, values, assert, errMessage) {
+  if (!assert) {
+    return;
+  }
+  errMessage = errMessage || '';
 
-    // Compare the array length.
-    if (length !== null) {
-        assert.equal(arr && arr.length, length, "Unexpected results size. " + errMessage);
-    }
+  // Compare the array length.
+  if (length !== null) {
+    assert.equal(arr && arr.length, length, `Unexpected results size.${errMessage}`);
+  }
 
-    // Compare the values at given indices of the array.
-    if (arr && field && values) {
-        for (var k in values) {
-            if (values.hasOwnProperty(k)) {
-                var idx = parseInt(k, 10),
-                    found = arr[idx] && arr[idx][field],
-                    expected = values[idx];
-                assert.equal(found, expected, "Unexpected value in result at index: " + idx + ". " + errMessage);
-            }
-        }
+  // Compare the values at given indices of the array.
+  if (arr && field && values) {
+    for (let k in values) {
+      if (values.hasOwnProperty(k)) {
+        let idx = parseInt(k, 10),
+            found = arr[idx] && arr[idx][field],
+            expected = values[idx];
+        assert.equal(found, expected, `Unexpected value in result at index: ${idx}${errMessage}`);
+      }
     }
+  }
 }
 
 /**
@@ -47,25 +49,26 @@ export function arrayCompare (arr, length, field, values, assert, errMessage) {
  * @param {Object} values Map of expected values; maps an input argument for filter.includes() to an expected return value.
  * @param {function} assert The assert function to be invoked with the test results.
  * @param {string} [errMessage] Option error msg to be appended to messages that are passed to assert.
+ * @public
  */
 export function includesCompare(cube, field, values, assert, errMessage) {
-    if (!cube || !assert || !field || !values) {
-        return;
-    }
-    errMessage = errMessage || "";
+  if (!cube || !assert || !field || !values) {
+    return;
+  }
+  errMessage = errMessage || '';
 
-    var filter = cube.get("fields")[field].get("filter");
-    assert.ok(filter, "Unable to create filter for cube field " + field);
-    for (var j in values) {
-        if (values.hasOwnProperty(j)) {
-            var val = isNaN(Number(j)) ? j : Number(j);
-            assert.equal(
-                filter.includes(val),
-                values[j],
-                "Unexpected filter.includes() for: " + val + ". " + errMessage
-            );
-        }
+  let filter = cube.get('fields')[field].get('filter');
+  assert.ok(filter, `Unable to create filter for cube field ${field}`);
+  for (let j in values) {
+    if (values.hasOwnProperty(j)) {
+      let val = isNaN(Number(j)) ? j : Number(j);
+      assert.equal(
+        filter.includes(val),
+        values[j],
+        `Unexpected filter.includes() for: + ${val} . ${errMessage}`
+      );
     }
+  }
 }
 
 /**
@@ -79,63 +82,66 @@ export function includesCompare(cube, field, values, assert, errMessage) {
  * @param {[*]} records The data records to be used for populating the cube.
  * @param {function} assert The assert function to be invoked with the test results.
  * @param {string} [errMessage] Option error msg to be appended to messages that are passed to assert.
+ * @public
  */
 export function testSorting(sortField, orderField, fieldsCfg, records, assert, errMessage) {
-    var len = records && records.length;
-    if (!len || !assert) {
-        return;
+  let len = records && records.length;
+  if (!len || !assert) {
+    return;
+  }
+  errMessage = errMessage || '';
+
+  function checkOrder(arr, field, descending) {
+    for (let i = 0; i < len; i++) {
+      assert.equal(
+          arr[i] && arr[i][field],
+          descending ? len - i - 1 : i,
+          `Unexpected sort order at index: ${i}.${errMessage}`
+      );
     }
-    errMessage = errMessage || "";
+  }
 
-    function checkOrder(arr, field, descending) {
-        for (var i = 0; i < len; i++) {
-            assert.equal(
-                arr[i] && arr[i][field],
-                descending ? len - i - 1: i,
-                "Unexpected sort order at index: " + i + ". " + errMessage
-            );
-        }
-    }
+  // Instantiate the object and populate data.
+  let obj = Cube.create({ fieldsConfig: fieldsCfg });
+  assert.ok(obj, 'Unable to create object.');
+  obj.get('records').pushObjects(records);
 
-    // Instantiate the object and populate data.
-    var obj = Cube.create({fieldsConfig: fieldsCfg});
-    assert.ok(obj, "Unable to create object.");
-    obj.get("records").pushObjects(records);
+  obj.sort(sortField, true);
+  checkOrder(obj.get('results'), orderField, true, 'Testing descending order.');
 
-    obj.sort(sortField, true);
-    checkOrder(obj.get("results"), orderField, true, "Testing descending order.");
-
-    obj.sort(sortField, false);
-    checkOrder(obj.get("results"), orderField, false, "Testing ascending order.");
+  obj.sort(sortField, false);
+  checkOrder(obj.get('results'), orderField, false, 'Testing ascending order.');
 }
 
 /**
  * Compares the results and the expected results of a grouping operation for a given field of a given cube.
+ * @public
  */
 export function testGrouping(cube, field, expectedGroups, errMessage, assert) {
-    var foundGroups = cube.get("fields")[field].get("groups");
-    assert.ok(foundGroups, "Unable to fetch groups for field " + field + ". " + errMessage);
+  let foundGroups = cube.get('fields')[field].get('groups');
+  assert.ok(foundGroups, `Unable to fetch groups for field${ field}.${errMessage}`);
 
-    if (expectedGroups) {
-        for (var i = 0, len = (foundGroups && foundGroups.length) || 0; i < len; i++) {
-            assert.equal(foundGroups[i].value, expectedGroups[foundGroups[i].key], errMessage);
-        }
+  if (expectedGroups) {
+    for (let i = 0, len = (foundGroups && foundGroups.length) || 0; i < len; i++) {
+      assert.equal(foundGroups[i].value, expectedGroups[foundGroups[i].key], errMessage);
     }
+  }
 }
 
 /**
  * Compares the length of a given array, and its values, with a given length & set of values.
  * Also calls a field's filter.includes() with a given set of values and compares the results.
+ * @public
  */
 export function checkCubeResults(obj, size, indexField, indices, includeField, includes, assert, errMessage) {
-    arrayCompare(obj.get("results"), size, indexField, indices, assert, errMessage);
-    includesCompare(obj, includeField || indexField, includes, assert, errMessage);
+  arrayCompare(obj.get('results'), size, indexField, indices, assert, errMessage);
+  includesCompare(obj, includeField || indexField, includes, assert, errMessage);
 }
 
 export default {
-    arrayCompare: arrayCompare,
-    includesCompare: includesCompare,
-    testSorting: testSorting,
-    testGrouping: testGrouping,
-    checkCubeResults: checkCubeResults
+  arrayCompare,
+  includesCompare,
+  testSorting,
+  testGrouping,
+  checkCubeResults
 };

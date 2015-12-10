@@ -1,8 +1,8 @@
 /**
  * @description creates mock API route for /api/devices.
- * @author Srividhya Mahalingam
+ * @public
  */
 
 export default function(config) {
-    config.get('/devices');
+  config.get('/devices');
 }

@@ -1,6 +1,6 @@
 /* globals blanket, module */
 
-var options = {
+const options = {
   modulePrefix: 'sa',
   filter: '//.*sa/.*/',
   antifilter: '//.*(tests|template|config|mirage|instance-initializers|components/liquid-|components/lf-|components/lm-).*/',

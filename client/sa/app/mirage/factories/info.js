@@ -1,10 +1,10 @@
 /**
  * @description Holds the list of valid credentials to authenticate to our system
- * @author Srividhya Mahalingam
+ * @public
  */
 
-import Mirage  from "ember-cli-mirage";
+import Mirage  from 'ember-cli-mirage';
 
 export default Mirage.Factory.extend({
-    versionNumber: "10.6"
+  versionNumber: '10.6'
 });
