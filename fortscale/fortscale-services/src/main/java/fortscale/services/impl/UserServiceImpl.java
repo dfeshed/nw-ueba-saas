@@ -9,7 +9,6 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.DeletedUserRepository;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.services.UserApplication;
@@ -246,7 +245,8 @@ public class UserServiceImpl implements UserService{
 
 				// get the time of the event
 				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
-				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
+
+				String logEventsName = UsernameService.getLogEventName(classifierId);
 				String logUsernameValue = userInfo.get(classifierId).getValue();
 
 
@@ -259,23 +259,23 @@ public class UserServiceImpl implements UserService{
 				}
 
 				// Last activity of data source
-				DateTime userCurrLastOfType = user.getLogLastActivity(logEventsEnum);
+				DateTime userCurrLastOfType = user.getLogLastActivity(logEventsName);
 				if (userCurrLastOfType == null || currTime.isAfter(userCurrLastOfType)) {
 					if (update == null)
 						update = new Update();
-					update.set(User.getLogLastActivityField(logEventsEnum), currTime);
+					update.set(User.getLogLastActivityField(logEventsName), currTime);
 				}
 
 
 				//update the logusername if needed
-				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventsEnum.getId()));
+				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventsName));
 
 				if (!isLogUserNameExist)
 				{
 
 					if (update == null)
 						update = new Update();
-					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsEnum.getId())), logUsernameValue);
+					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsName)), logUsernameValue);
 				}
 
 			}
