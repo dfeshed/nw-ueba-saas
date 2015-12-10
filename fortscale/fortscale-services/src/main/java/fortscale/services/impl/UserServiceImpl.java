@@ -128,12 +128,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User createUser(UserApplication userApplication, String username, String appUsername){
+	public User createUser(String userApplication, String username, String appUsername){
 		User user = new User();
 		user.setUsername(username);
 		user.setSearchField(createSearchField(null, username));
 		user.setWhenCreated(new Date());
-		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), appUsername), false);
+		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication, appUsername), false);
 		return user;
 	}
 	
@@ -141,38 +141,40 @@ public class UserServiceImpl implements UserService{
 	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
 	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
 	@Override
-	public void updateOrCreateUserWithClassifierUsername(final Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
+	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 		if(StringUtils.isEmpty(normalizedUsername)){
 			logger.warn("got a empty string {} username", classifier);
 			return;
 		}
 
-		LogEventsEnum eventId = classifier.getLogEventsEnum();
+		String eventId = usernameService.getLogEventName(classifier);
+		String userApplication = usernameService.getUserApplication(classifier);
+
 		String userId = usernameService.getUserId(normalizedUsername, eventId);
 		if(userId == null && onlyUpdate){
 			return;
 		}
 			
 		if(userId != null){
-			if(!usernameService.isLogUsernameExist(eventId.getId(), logUsername, userId)){
+			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId)){
 				Update update = new Update();
 				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
 				if(updateAppUsername){
-					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(classifier.getUserApplication(), logUsername), classifier);
+					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplication, logUsername), userApplication);
 				}
 			
 				updateUser(userId, update);
-				usernameService.addLogUsernameToCache(eventId.getId(), logUsername, userId);
+				usernameService.addLogUsernameToCache(eventId, logUsername, userId);
 			}
         } else{
-			User user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
+			User user = createUser(userApplication, normalizedUsername, logUsername);
 			usernameService.updateLogUsername(user, eventId, logUsername);
 			saveUser(user);
 			if(user == null || user.getId() == null){
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, normalizedUsername, logUsername);
 			} else{
 				usernameService.addLogNormalizedUsername(eventId, user.getId(), normalizedUsername);
-				usernameService.addLogUsernameToCache(eventId.getId(), logUsername, user.getId());
+				usernameService.addLogUsernameToCache(eventId, logUsername, user.getId());
 			}
 		}		
 	}
@@ -220,7 +222,7 @@ public class UserServiceImpl implements UserService{
 
 
 			// need to create the user at mongo
-			user = createUser(classifier.getUserApplication(), username, logUsernameValue);
+			user = createUser(classifier.getUserApplication().getId(), username, logUsernameValue);
 
 			saveUser(user);
 			if(user == null || user.getId() == null) {
@@ -319,7 +321,6 @@ public class UserServiceImpl implements UserService{
 	 */
 	private Classifier getFirstClassifier(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
 	{
-		Classifier result = null;
 		Entry<String, JksonSerilaizablePair<Long,String>> earlierEntry = null;
 
 		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
@@ -331,8 +332,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 
-		result = earlierEntry != null ? Classifier.valueOf(earlierEntry.getKey()) : null;
-		return result;
+		return earlierEntry != null ? Classifier.valueOf(earlierEntry.getKey()) : null;
 	}
 
 	@Override
@@ -749,12 +749,12 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave){
+	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave){
 		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
 	}
 	
-	private ApplicationUserDetails createNewApplicationUserDetails(UserApplication userApplication, String username){
-		return new ApplicationUserDetails(userApplication.getId(), username);
+	private ApplicationUserDetails createNewApplicationUserDetails(String userApplication, String username){
+		return new ApplicationUserDetails(userApplication, username);
 	}
 	
 	public boolean createNewApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {

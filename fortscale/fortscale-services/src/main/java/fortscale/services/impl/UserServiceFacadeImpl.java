@@ -1,27 +1,17 @@
 package fortscale.services.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.IFeature;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserApplication;
-import fortscale.services.UserScoreService;
-import fortscale.services.UserService;
-import fortscale.services.UserServiceFacade;
-import fortscale.services.UserUpdateScoreService;
-import fortscale.services.fe.Classifier;
+import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service("userServiceFacade")
 public class UserServiceFacadeImpl implements UserServiceFacade{
@@ -122,7 +112,7 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
+	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate, updateAppUsername);
 	}
 

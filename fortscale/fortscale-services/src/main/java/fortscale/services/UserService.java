@@ -5,7 +5,6 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
-import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +39,11 @@ public interface UserService extends CachingService{
 
 	public String getUserId(String username);
 
-	public User createUser(UserApplication userApplication, String username, String appUsername);
+	public User createUser(String userApplication, String username, String appUsername);
 
-	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
+	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
 
-	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed

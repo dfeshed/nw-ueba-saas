@@ -89,7 +89,7 @@ public class UserServiceTest {
 		UserApplication userApplication = UserApplication.active_directory;
 		String username = "usernameTest";
 		when(userRepository.save(user)).thenReturn(user);
-		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication, username, true);
+		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication.getId(), username, true);
 		assertEquals(true, isNewVal);
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, times(1)).save(user);
@@ -102,7 +102,7 @@ public class UserServiceTest {
 		String username = "usernameTest";
 		ApplicationUserDetails applicationUserDetails = new ApplicationUserDetails(userApplication.getId(), username);
 		user.addApplicationUserDetails(applicationUserDetails);
-		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication, "differntName", true);
+		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication.getId(), "differntName", true);
 		assertEquals(false, isNewVal);
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, never()).save((User)any());

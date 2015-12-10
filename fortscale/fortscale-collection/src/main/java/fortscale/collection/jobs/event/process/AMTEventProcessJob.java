@@ -35,7 +35,7 @@ public class AMTEventProcessJob extends EventProcessJob {
 		if(classifier != null){
 			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
 			String logUsername = extractUsernameFromRecord(record);
-			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
+			userService.updateOrCreateUserWithClassifierUsername(classifier.getId(), normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
 		}
 	}
 

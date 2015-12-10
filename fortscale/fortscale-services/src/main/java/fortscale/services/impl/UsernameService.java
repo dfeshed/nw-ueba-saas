@@ -100,6 +100,30 @@ public class UsernameService implements InitializingBean, CachingService{
 		return eventId;
 	}
 
+	public String getLogEventName(String classifier) {
+		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifier);
+
+		if (classifierExist) {
+			Classifier classifierType = Classifier.valueOf(classifier);
+
+			return classifierType.getLogEventsEnum().getId();
+		}
+
+		return classifier;
+	}
+
+	public String getUserApplication(String classifier) {
+		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifier);
+
+		if (classifierExist) {
+			Classifier classifierType = Classifier.valueOf(classifier);
+
+			return classifierType.getUserApplication().getId();
+		}
+
+		return classifier;
+	}
+
 	public String getLogname(String eventId){
 		return getTableName(eventId);
 	}
@@ -141,16 +165,16 @@ public class UsernameService implements InitializingBean, CachingService{
 		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn.name()));
 	}
 
-	public void fillUpdateLogUsername(Update update, String username, LogEventsEnum eventId) {
-		update.set(User.getLogUserNameField(getLogname(eventId.getId())), username);
+	public void fillUpdateLogUsername(Update update, String username, String eventId) {
+		update.set(User.getLogUserNameField(getLogname(eventId)), username);
 	}
 
-	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, Classifier classifier) {
-		update.set(User.getAppField(classifier.getUserApplication().getId()), applicationUserDetails);
+	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, String userApplication) {
+		update.set(User.getAppField(userApplication), applicationUserDetails);
 	}
 
-	public void updateLogUsername(User user, LogEventsEnum eventId, String username) {
-		user.addLogUsername(getLogname(eventId.getId()), username);
+	public void updateLogUsername(User user, String eventId, String username) {
+		user.addLogUsername(getLogname(eventId), username);
 	}
 
 
@@ -178,12 +202,12 @@ public class UsernameService implements InitializingBean, CachingService{
 		return false;
 	}
 
-	public String getUserId(String username, LogEventsEnum eventId){
+	public String getUserId(String username, String eventId){
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(eventId != null && logEventIdToUserIdMap.get(eventId.getId()).containsKey(username))
-			return logEventIdToUserIdMap.get(eventId.getId()).get(username);
+		if(eventId != null && logEventIdToUserIdMap.get(eventId).containsKey(username))
+			return logEventIdToUserIdMap.get(eventId).get(username);
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
@@ -268,8 +292,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 	}
 
-	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
-		logEventIdToUserIdMap.get(eventId.getId()).put(username, userId);
+	public void addLogNormalizedUsername(String eventId, String userId, String username){
+		logEventIdToUserIdMap.get(eventId).put(username, userId);
 	}
 
 	public void addLogUsernameToCache(String eventId, String logUsername, String userId){
