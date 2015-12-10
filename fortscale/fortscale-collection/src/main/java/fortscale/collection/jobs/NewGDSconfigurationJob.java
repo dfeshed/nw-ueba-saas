@@ -460,14 +460,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
-            //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds 
+            //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
 			//Normalizing service
             System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):"));
             Boolean updateOnly =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
             if(updateOnly)
             {
-                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService",this.dataSourceName)
+                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService",this.dataSourceName);
                 writeLineToFile(line, taskPropertiesFileWriter, true);
                 line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true",this.dataSourceName);
                 writeLineToFile(line, taskPropertiesFileWriter, true);
@@ -475,7 +475,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
             else {
 
-                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=genericUsernameNormalizationService",this.dataSourceName)
+                line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=genericUsernameNormalizationService",this.dataSourceName);
                 writeLineToFile(line, taskPropertiesFileWriter, true);
                 line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=false",this.dataSourceName);
                 writeLineToFile(line, taskPropertiesFileWriter, true);
