@@ -506,6 +506,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//User Mongo update task
 
+
+            //HDFS Write
+
+         
 		}
 
 		catch(Exception e)
