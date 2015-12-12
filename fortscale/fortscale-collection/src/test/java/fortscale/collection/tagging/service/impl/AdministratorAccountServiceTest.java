@@ -1,8 +1,9 @@
 package fortscale.collection.tagging.service.impl;
 
-import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
+import fortscale.services.impl.ActiveDirectoryGroupsHelper;
 import fortscale.domain.core.User;
 import fortscale.services.UserService;
+import fortscale.services.impl.AdministratorAccountServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

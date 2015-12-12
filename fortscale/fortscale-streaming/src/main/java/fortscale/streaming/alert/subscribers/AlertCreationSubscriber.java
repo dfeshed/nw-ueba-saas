@@ -27,6 +27,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private UserService userService;
 
+	@Autowired private TagService tagService;
+
 	@Autowired private UserSupportingInformationService userSupportingInformationService;
 
 	/**
@@ -79,10 +81,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 					//if this is a statement containing tags
 					if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
-						String tag = (String) insertStreamOutput.get("tag");
-						Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
-								Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tag);
-						evidences.add(tagEvidence);
+						String tagStr = (String) insertStreamOutput.get("tag");
+						Tag tag = tagService.getTag(tagStr);
+						if (tag != null && tag.getCreatesIndicator()) {
+							Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
+									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
+							evidences.add(tagEvidence);
+						}
 					}
 					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, evidences.size(),
 							roundScore,	severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
