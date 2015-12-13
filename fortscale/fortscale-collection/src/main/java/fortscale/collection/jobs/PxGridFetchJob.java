@@ -121,25 +121,24 @@ public class PxGridFetchJob extends FortscaleJob {
 				logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 				monitor.finishStep(getMonitorId(), "Prepare sink file");
 
-				//begin.setTime(earliest);
+				// create query we'll use to make call
+				begin = Calendar.getInstance();
+				//begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
+				begin.setTimeInMillis(Long.parseLong(earliest));
+				end = Calendar.getInstance();
+				end.setTimeInMillis(Long.parseLong(latest));
+				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
+				SessionIterator iterator = sd.getSessionsByTime(begin, end);
+				iterator.open();
+
+				Session s;
+				while ((s = iterator.next()) != null) {
+					print(s);
+				}
+
+				iterator.close();
 
 			} while(keepFetching);
-
-
-			// create query we'll use to make call
-			begin = Calendar.getInstance();
-			begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
-			end = Calendar.getInstance();
-			SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
-			SessionIterator iterator = sd.getSessionsByTime(begin, end);
-			iterator.open();
-
-			Session s;
-			while ((s = iterator.next()) != null) {
-				print(s);
-			}
-
-			iterator.close();
 
 		} finally {
 			if (recon != null && con.isConnected()) {
