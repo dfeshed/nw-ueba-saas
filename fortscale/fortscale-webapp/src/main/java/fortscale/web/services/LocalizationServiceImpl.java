@@ -37,7 +37,7 @@ public class LocalizationServiceImpl implements  LocalizationService{
     }
 
     @Override
-    public String getAllLocalizationStringByKey(String key, Locale locale) {
+    public String getLocalizationStringByKey(String key, Locale locale) {
         locale = getLocaleOrDefaultLocale(locale);
         String fullPrefix = normalizeKey(key);
 

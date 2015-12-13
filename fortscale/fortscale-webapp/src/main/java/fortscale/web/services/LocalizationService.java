@@ -28,10 +28,10 @@ interface  LocalizationService {
 
     /**
      * @param key - the specific key
-     * @param locale - the languge that we like to present
+     * @param locale - the language that we like to present
      * @return
      */
-    String getAllLocalizationStringByKey(String key, Locale locale);
+    String getLocalizationStringByKey(String key, Locale locale);
 
     /**
      * Get the default system locale

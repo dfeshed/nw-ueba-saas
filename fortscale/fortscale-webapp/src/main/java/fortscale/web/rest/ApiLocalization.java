@@ -1,11 +1,9 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.Alert;
+
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.services.LocalizationServiceImpl;
-import org.apache.commons.lang.LocaleUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,13 +28,12 @@ public class ApiLocalization {
 
     /**
      * the api to return all localization messages. GET: /api/messages
-     * * Get all localizations according to default language
+     * * Get all localizations according to selected language
      * @param httpRequest
      * @param httpResponse
      * @return
      */
     @RequestMapping(value="/{locale}", method = RequestMethod.GET)
-    //@RequestMapping(method = RequestMethod.GET)
     @LogException
     public @ResponseBody
     DataBean<Map<String, String>> getMessages(HttpServletRequest httpRequest, HttpServletResponse httpResponse,

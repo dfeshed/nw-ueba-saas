@@ -1,6 +1,5 @@
 package fortscale.utils.spring;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -57,8 +56,6 @@ public class SpringPropertiesUtil extends PropertyPlaceholderConfigurer {
      * @return value of the prperty
      */
     public static Map<String, String> getPropertyMapByPrefix(String prefix) {
-
-
         Map<String, String> subSet = new HashMap<>();
         for (Map.Entry<String, String> prop : propertiesMap.entrySet()){
             if (StringUtils.startsWith(prop.getKey(), prefix)){
