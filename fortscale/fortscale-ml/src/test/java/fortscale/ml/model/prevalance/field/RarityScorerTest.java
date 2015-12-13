@@ -665,6 +665,11 @@ public class RarityScorerTest {
 	}
 
 	private static Map<String, String> featureValueToColor = new HashMap<>();
+
+	/**
+	 * Get a color string (used within System.out.print) for the given feature value.
+	 * It's promised that if called with the same feature value, the same color will be returned.
+	 */
 	private String getFeatureColor(String featureValue) {
 		String FEATURE_COLORS[] = new String[]{"\033[34m", "\033[35m", "\033[32m", "\033[33m", "\033[36m", "\033[31m"};
 
@@ -675,11 +680,55 @@ public class RarityScorerTest {
 	}
 
 	private final static String EMPTY_STRING = "(empty string)";
-	private void printEvent(Map<String, Integer> featureValueToCountMap, TestEventsBatch eventsBatch, Double score) {
-		String COLOR_NORMAL = "\033[0m";
+	private final static String COLOR_NORMAL = "\033[0m";
+
+	/**
+	 * Print info about the context available when the given feature value was scored, e.g.:
+	 * #0  hostname_36643275                       : 4356   	0000000000111111111122222222223333
+	 * #1  hostname_16101171                       : 226    	0000000000111111111122
+	 * #2  service_name_177266206                  : 397    	00000000001111111111222
+	 *
+	 * 		scoring hostname_74957113 which has 1 events. In total there are 4980 events spread across 3 features.
+	 * 		score: 100
+	 *
+	 * @param featureValue the feature value who's been scored.
+	 * @param score the score the feature value got.
+	 * @param featureValueToCountMap context info - what feature values were encountered in the past, and how often.
+	 */
+	private void printEvent(String featureValue, Double score, Map<String, Integer> featureValueToCountMap) {
+		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
+		printFeatureValuesHistogram(featureValues, featureValueToCountMap);
+		int featureValueIndex = featureValues.indexOf(featureValue);
+		int totalNumOfEvents = 1;
+		for (int count : featureValueToCountMap.values()) {
+			totalNumOfEvents += count;
+		}
+		println(String.format("\n\tscoring %s%s%s%s which has %d events. In total there are %d events spread across %d features.",
+				getFeatureColor(featureValue),
+				featureValue,
+				COLOR_NORMAL,
+				featureValueIndex == -1 ? "" : " (#" + featureValueIndex + ")",
+				featureValueIndex == -1 ? 1 : featureValueToCountMap.get(featureValue) + 1,
+				totalNumOfEvents,
+				featureValueToCountMap.size()));
+		println(String.format("\tscore: %d", score.intValue()));
+		println("\n");
+	}
+
+	/**
+	 * Print the histogram of the distribution over feature values, e.g.:
+	 * #0  hostname_36643275                       : 4356   	0000000000111111111122222222223333
+	 * #1  hostname_16101171                       : 226    	0000000000111111111122
+	 * #2  service_name_177266206                  : 397    	00000000001111111111222
+	 *
+	 * @param featureValues the available feature values in the distribution.
+	 *                      The histogram's bars will be ordered according to featureValues.
+	 * @param featureValueToCountMap the distribution of feature values.
+	 *                               The keys of this map are the feature values contained in featureValues.
+	 */
+	private void printFeatureValuesHistogram(List<String> featureValues, Map<String, Integer> featureValueToCountMap) {
 		String BAR_COLORS[] = new String[]{"\033[36m", "\033[32m", "\033[33m", "\033[31m"};
 
-		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
 		for (int featureValueInd = 0; featureValueInd < featureValues.size(); featureValueInd++) {
 			String featureValue = featureValues.get(featureValueInd);
 			int count = featureValueToCountMap.get(featureValue);
@@ -697,7 +746,7 @@ public class RarityScorerTest {
 			}
 			bar += COLOR_NORMAL;
 			String featureColor = getFeatureColor(featureValue);
-			System.out.println(String.format("#%-3d%s%s%s: %-7d\t%s",
+			println(String.format("#%-3d%s%s%s: %-7d\t%s",
 					featureValueInd,
 					featureColor,
 					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue, 40),
@@ -705,22 +754,6 @@ public class RarityScorerTest {
 					count,
 					bar));
 		}
-		System.out.println();
-		int featureValueIndex = featureValues.indexOf(eventsBatch.feature_value);
-		int totalNumOfEvents = 1;
-		for (int count : featureValueToCountMap.values()) {
-			totalNumOfEvents += count;
-		}
-		System.out.println(String.format("\tscoring %s%s%s%s which has %d events. In total there are %d events spread across %d features.",
-				getFeatureColor(eventsBatch.feature_value),
-				eventsBatch.feature_value,
-				COLOR_NORMAL,
-				featureValueIndex == -1 ? "" : " (#" + featureValueIndex + ")",
-				featureValueIndex == -1 ? 1 : featureValueToCountMap.get(eventsBatch.feature_value) + 1,
-				totalNumOfEvents,
-				featureValueToCountMap.size()));
-		System.out.println(String.format("\tscore: %d", score.intValue()));
-		System.out.println("\n");
 	}
 
 	private static class ScoredFeature {
@@ -733,8 +766,17 @@ public class RarityScorerTest {
 		}
 	}
 
-	private List<ScoredFeature> runRealScenario(String filePath, int minInterestingScore, boolean printDebugInfo) throws IOException {
-		if (printDebugInfo) {
+	/**
+	 * Run a real data scenario.
+	 * The first 90% of the events won't be scored (they are only used for building the model).
+	 * @param filePath a path of the csv containing the data which has been queried from impala.
+	 * @param minInterestingScore scores smaller than this number are considered not interesting, and won't be included in the result.
+	 * @param printContextInfo if true, context info will be printed (aids in understanding the result scores).
+	 * @return a list of all the events which got high scores. The list is ordered chronologically.
+	 * @throws IOException
+	 */
+	private List<ScoredFeature> runRealScenario(String filePath, int minInterestingScore, boolean printContextInfo) throws IOException {
+		if (printContextInfo) {
 			println("\nrunning scenario " + filePath);
 		}
 		int maxRareCount = 10;
@@ -755,14 +797,14 @@ public class RarityScorerTest {
 				Double score = calcScore(numOfEvents * 9 / 10, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
 				if (score != null && score > minInterestingScore) {
 					featureValueAndScores.add(new ScoredFeature(eventsBatch.feature_value, score));
-					if (printDebugInfo) {
-						printEvent(featureValueToCountMap, eventsBatch, score);
+					if (printContextInfo) {
+						printEvent(eventsBatch.feature_value, score, featureValueToCountMap);
 					}
 				}
 				featureValueToCountMap.put(eventsBatch.feature_value, eventFeatureCount + 1);
 			}
 		}
-		if (printDebugInfo) {
+		if (printContextInfo) {
 			println("first time events:");
 			for (int firstTimeEventIndex : firstTimeEventIndices) {
 				println("\t" + firstTimeEventIndex);
@@ -780,6 +822,11 @@ public class RarityScorerTest {
 		return numOfEvents;
 	}
 
+	/**
+	 * Given the results of running a real data scenario, print a graph of the results.
+	 * @param googleSheetName the name of the google sheet which is capable of displaying the results of this function.
+	 * @param featureValueAndScores the result of running a real data scenario.
+	 */
 	private void printRealScenarioGraph(String googleSheetName, List<ScoredFeature> featureValueAndScores) {
 		printGoogleSheetsExplaination("real-scenario-" + googleSheetName);
 		Set<String> featureValuesSet = new HashSet<>();
@@ -788,19 +835,19 @@ public class RarityScorerTest {
 		}
 		List<String> featureValues = new ArrayList<>(featureValuesSet);
 		for (String featureValue : featureValues) {
-			System.out.print((StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue) + "\t");
+			print((StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue) + "\t");
 		}
-		System.out.println();
+		println();
 		String tabs = "";
 		for (int i = 0; i < featureValues.size(); i++) {
 			tabs += "\t";
 		}
 		for (ScoredFeature scoredFeature : featureValueAndScores) {
 			int featureValueIndex = featureValues.indexOf(scoredFeature.featureValue);
-			System.out.print(tabs.substring(0, featureValueIndex));
-			System.out.print(scoredFeature.score);
-			System.out.print(tabs.substring(0, featureValues.size() - featureValueIndex));
-			System.out.println();
+			print(tabs.substring(0, featureValueIndex));
+			print("" + scoredFeature.score);
+			print(tabs.substring(0, featureValues.size() - featureValueIndex));
+			println();
 		}
 	}
 
@@ -851,6 +898,7 @@ public class RarityScorerTest {
 		}
 		List<Map.Entry<String, Integer>> sortedScenariosByNumOfEvents = sortMapByValues(scenarioToNumOfEvents);
 
+		// run all the scenarios and create some statistics:
 		Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics = new HashMap<>();
 		for (Map.Entry<String, Integer> scenario : sortedScenariosByNumOfEvents) {
 			List<ScoredFeature> featureValueAndScores = runRealScenario(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/" + scenario.getKey(), 50, true);
@@ -867,6 +915,8 @@ public class RarityScorerTest {
 				usersStatistics.numOfRegularUsers++;
 			}
 		}
+
+		// analyze the results:
 		println(String.format("\n%s: <anomalous users / <total users> -> followed by a list of the anomalous users", StringUtils.rightPad("<number of events>", 20)));
 		int totalAnomalousUsers = 0;
 		for (Map.Entry<Integer, UsersStatistics> entry : logNumOfEventsToUsersStatistics.entrySet()) {
