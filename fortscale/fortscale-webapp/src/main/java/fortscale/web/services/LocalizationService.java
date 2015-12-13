@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by shays on 09/12/2015.
  */
 
-interface  LocalizationService {
+public interface  LocalizationService {
 
     /**
      *
