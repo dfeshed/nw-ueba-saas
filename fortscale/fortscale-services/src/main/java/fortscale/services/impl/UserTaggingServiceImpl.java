@@ -1,16 +1,15 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
+
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
+import fortscale.utils.logging.Logger;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.utils.logging.Logger;
-
 @Service("userTaggingService")
-public class UserTaggingServiceImpl implements UserTaggingService{
+public class UserTaggingServiceImpl implements UserTaggingService {
 	private static Logger logger = Logger.getLogger(UserTaggingServiceImpl.class);
 
 	private Map<String, UserTagService> userTagServiceMap = new HashMap<>();
@@ -18,6 +17,11 @@ public class UserTaggingServiceImpl implements UserTaggingService{
 	@Override
 	public void putUserTagService(String tag, UserTagService userTagService){
 		userTagServiceMap.put(tag, userTagService);
+	}
+
+	@Override
+	public UserTagService getUserTagService(String tag){
+		return userTagServiceMap.get(tag);
 	}
 
 	@Override

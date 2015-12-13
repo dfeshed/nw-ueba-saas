@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.ad;
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTaggingService;
 import fortscale.services.users.SupportedUsersService;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
@@ -177,6 +177,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		userTaggingService.update(UserTagEnum.admin.getId());
 		userTaggingService.update(UserTagEnum.service.getId());
 		userTaggingService.update(UserTagEnum.LR.getId());
+		userTaggingService.update(UserTagEnum.custom.getId());
 		if(!StringUtils.isEmpty(ouUsersFilter)){
 			if(addUsers == true){
 				updateUsersWhoBelongtoOUOrGroup();
