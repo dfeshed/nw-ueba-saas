@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +25,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	private UsernameService usernameService;
 
 	@Override
-	public void updateUserWithCurrentADInfo() {
-		userService.updateUserWithCurrentADInfo();
-	}
-
-	@Override
-	public void updateUserWithADInfo(Long timestampepoch) {
-		userService.updateUserWithADInfo(timestampepoch);
-	}
-
-	@Override
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
 		return userService.findBySearchFieldContaining(prefix, page, size);
 	}
@@ -51,21 +40,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 	
 	@Override
-	public void removeClassifierFromAllUsers(String classifierId) {
-		userService.removeClassifierFromAllUsers(classifierId);
-	}
-	
-	@Override
-	public List<String> getFollowedUsersVpnLogUsername() {
-		return usernameService.getFollowedUsersVpnLogUsername();
-	}
-	
-	@Override
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId) {
-		return usernameService.getFollowedUsersAuthLogUsername(eventId);
-	}
-	
-	@Override
 	public String getUserThumbnail(User user) {
 		return userService.getUserThumbnail(user);
 	}
@@ -73,16 +47,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
 		userService.updateUserWithADInfo(adUser);
-	}
-
-	@Override
-	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids) {
-		return userScoreService.getUsersScoresByIds(uids);
-	}
-
-	@Override
-	public Map<User, List<IUserScore>> getFollowedUsersScores() {
-		return userScoreService.getFollowedUsersScores();
 	}
 
 	@Override
@@ -109,11 +73,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	@Override
 	public void updateUserTotalScore() {
 		userUpdateScoreService.updateUserTotalScore();
-	}
-
-	@Override
-	public void updateOrCreateUserWithClassifierUsername(String classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
-		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate, updateAppUsername);
 	}
 
 	@Override
@@ -161,8 +120,4 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	public String findByNormalizedUserName(String normalizedUsername) {
 		return userService.findByNormalizedUserName(normalizedUsername);
 	}
-
-
-
-
 }
