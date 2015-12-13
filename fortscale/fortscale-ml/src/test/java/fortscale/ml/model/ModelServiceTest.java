@@ -62,6 +62,7 @@ public class ModelServiceTest {
 
 		listener = new ListModelBuildingListener();
 		modelService = testContextManager.getBean(ModelService.class);
+		modelService.init();
 	}
 
 	@Test

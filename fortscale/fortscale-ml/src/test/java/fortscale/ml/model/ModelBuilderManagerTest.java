@@ -9,6 +9,7 @@ import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.factory.FactoryService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,11 +25,11 @@ public class ModelBuilderManagerTest {
     private static final String DEFAULT_SESSION_ID = "testSessionId";
 
     private ModelConf modelConf;
+    private FactoryService factoryService;
     private IContextSelector selector;
     private AbstractDataRetriever retriever;
     private IModelBuilder builder;
     private ModelStore store;
-    private ModelService modelService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -39,28 +40,28 @@ public class ModelBuilderManagerTest {
     @Before
     public void setUp() {
         modelConf = mock(ModelConf.class);
+        factoryService = testContextManager.getBean(FactoryService.class);
+        reset(factoryService);
+
         selector = mock(IContextSelector.class);
         retriever = mock(AbstractDataRetriever.class);
         builder = mock(IModelBuilder.class);
 
-        // ModelStore is auto wired in ModelBuilderManager
+        AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
+        when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
+        when(factoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
+
+        IModelBuilderConf builderConf = mock(IModelBuilderConf.class);
+        when(modelConf.getModelBuilderConf()).thenReturn(builderConf);
+        when(factoryService.getProduct(eq(builderConf))).thenReturn(builder);
+
         store = testContextManager.getBean(ModelStore.class);
         reset(store);
-
-        modelService = mock(ModelService.class);
-        when(modelService.getContextSelector(any(IContextSelectorConf.class))).thenReturn(selector);
-        when(modelService.getDataRetriever(any(AbstractDataRetrieverConf.class))).thenReturn(retriever);
-        when(modelService.getModelBuilder(any(IModelBuilderConf.class))).thenReturn(builder);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfConstructedWithoutModelConf() {
-        new ModelBuilderManager(null, modelService);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfConstructedWithoutModelService() {
-        new ModelBuilderManager(modelConf, null);
+        new ModelBuilderManager(null);
     }
 
     @Test
@@ -138,7 +139,9 @@ public class ModelBuilderManagerTest {
             Date previousEndTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
 
         if (ids != null) {
-            when(modelConf.getContextSelectorConf()).thenReturn(mock(IContextSelectorConf.class));
+            IContextSelectorConf selectorConf = mock(IContextSelectorConf.class);
+            when(modelConf.getContextSelectorConf()).thenReturn(selectorConf);
+            when(factoryService.getProduct(eq(selectorConf))).thenReturn(selector);
             when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
 
             for (int i = 0; i < ids.length; i++) {
@@ -148,6 +151,6 @@ public class ModelBuilderManagerTest {
             mockBuild(null, currentEndTime, models[0], successes[0]);
         }
 
-        return new ModelBuilderManager(modelConf, modelService);
+        return new ModelBuilderManager(modelConf);
     }
 }
