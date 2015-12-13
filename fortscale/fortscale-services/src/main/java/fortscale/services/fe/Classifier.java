@@ -2,7 +2,6 @@ package fortscale.services.fe;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
-import fortscale.services.exceptions.InvalidValueException;
 
 public enum Classifier {
 	vpn("vpn", "VPN", LogEventsEnum.vpn, UserApplication.vpn),
@@ -20,7 +19,7 @@ public enum Classifier {
 	Classifier(String id, String displayName, LogEventsEnum logEventsEnum, UserApplication userApplication) {
 		this.id = id;
 		this.displayName = displayName;
-		this.setLogEventsEnum(logEventsEnum);
+		this.logEventsEnum = logEventsEnum;
 		this.userApplication = userApplication;
 	}
 
@@ -31,40 +30,12 @@ public enum Classifier {
 	public String getDisplayName() {
 		return displayName;
 	}
-	
-	public static void validateClassifierId(String classifierId){
-		boolean isExist = false;
-		for(Classifier classifier: Classifier.values()){
-			if(classifierId.equals(classifier.getId())){
-				isExist = true;
-				break;
-			}
-		}
-		if(!isExist){
-			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
-		}
-	}
 
 	public LogEventsEnum getLogEventsEnum() {
 		return logEventsEnum;
 	}
 
-	public void setLogEventsEnum(LogEventsEnum logEventsEnum) {
-		this.logEventsEnum = logEventsEnum;
-	}
-
 	public UserApplication getUserApplication() {
 		return userApplication;
 	}
-
-	public void setUserApplication(UserApplication userApplication) {
-		this.userApplication = userApplication;
-	}
-	
-	
-	
-	
-//	public static String getAdClassifierUniqueName(){
-//		return "active_directory";
-//	}
 }

@@ -137,7 +137,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 	@Override
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift){
-		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
