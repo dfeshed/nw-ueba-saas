@@ -1,6 +1,5 @@
 package fortscale.services.classifier;
 
-import fortscale.services.fe.Classifier;
 import org.apache.commons.lang3.EnumUtils;
 
 /**

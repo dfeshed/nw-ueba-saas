@@ -22,7 +22,8 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
 
-	private static final int MAX_USER_ELEMENTS_IN_CACHE = 100000;
+	@Value("${max.user.elements.in.cache:100000}")
+	private int maxUserElementsInCache;
 
 	// maps log event id to user representation combined of the user id and the log username, e.g. :
 	// vpn -> {1111111###gils@fortscale.com, 2222222222###gabi@cbs.com, 33333333###ami@nbc.com}
@@ -69,40 +70,6 @@ public class UsernameService implements InitializingBean, CachingService{
 	// For unit tests only
 	protected void setPageSize(int pageSize) {
 		usernameServicePageSize = pageSize;
-	}
-
-	public String getAuthLogUsername(LogEventsEnum eventId, User user){
-		return getLogUsername(eventId.getId(), user);
-	}
-
-	public String getLogUsername(String eventId, User user){
-		return user.getLogUsernameMap().get(getLogname(eventId));
-	}
-
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getAuthLogUsername(eventId, user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-
-	public List<String> getFollowedUsersVpnLogUsername(){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getVpnLogUsername(user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-
-	public String getVpnLogUsername(User user){
-		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn.name()));
 	}
 
 	public void fillUpdateLogUsername(Update update, String username, String logEventName) {
@@ -272,13 +239,13 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	private void createLogEventIdToUserEntry(String logEventName) {
-		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(MAX_USER_ELEMENTS_IN_CACHE));
+		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxUserElementsInCache));
 
 		logEventIdToUsersRep.put(logEventName, usersSet);
 	}
 
 	private void createLogEventToUserIdMap(String logEventName) {
-		Map<String, String> usersMap = new SimpleLRUCache<>(MAX_USER_ELEMENTS_IN_CACHE);
+		Map<String, String> usersMap = new SimpleLRUCache<>(maxUserElementsInCache);
 
 		logEventIdToUserIdMapping.put(logEventName, usersMap);
 	}

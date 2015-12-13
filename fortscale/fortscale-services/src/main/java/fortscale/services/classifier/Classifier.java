@@ -1,4 +1,4 @@
-package fortscale.services.fe;
+package fortscale.services.classifier;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;

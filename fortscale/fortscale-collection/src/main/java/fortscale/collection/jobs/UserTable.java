@@ -4,7 +4,7 @@ import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.*;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;

@@ -5,7 +5,7 @@ import fortscale.domain.analyst.ScoreConfiguration;
 import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.analyst.dao.FortscaleConfigurationRepository;
 import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import fortscale.services.impl.SeverityElement;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
