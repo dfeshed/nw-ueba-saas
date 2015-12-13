@@ -90,12 +90,12 @@ public class SshSymantecTest {
         return	$(
         		$ (
         		"Successful Authentication",
-						"Dec 01 00:38:07 3.3.3.3 vsftpd: pam_unix(vsftpd:session): session opened for user username by (uid=0)\" (service map: <eventmap version=\"2\"><field name=\"vendor_severity\">info</field><field name=\"TimeOffset\">0</field><field name=\"facility\">security</field><field name=\"event_dt\">1448923087452</field><field name=\"reporting_sensor\">sensorname</field><field name=\"proxy_machine_ip\">3.3.3.3</field><field name=\"proxy_machine\">hostname</field></eventmap>)",
+						"Dec 01 06:00:02 1.1.1.1 Dec  1 06:00:02 server sshd[6150]: Accepted publickey for root from 1.1.1.1 port 62460 ssh2\" (service map: <eventmap version=\"2\"><field name=\"vendor_severity\">info</field><field name=\"TimeOffset\">0</field><field name=\"facility\">security</field><field name=\"event_dt\">1448942402321</field><field name=\"reporting_sensor\">sensor</field><field name=\"proxy_machine_ip\">1.1.1.1</field><field name=\"proxy_machine\">proxy_machine</field></eventmap>)",
 						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
 				),
         		$ (
         		"Failed Authentication",
-						"Dec 01 01:50:43 3.3.3.3 vsftpd: pam_unix(vsftpd:auth): authentication failure; logname= uid=0 euid=0 tty=ftp ruser=username rhost=1.1.1.1\" (service map: <eventmap version=\"2\"><field name=\"vendor_severity\">notice</field><field name=\"TimeOffset\">0</field><field name=\"facility\">security</field><field name=\"event_dt\">1448927443453</field><field name=\"reporting_sensor\">sensorname</field><field name=\"proxy_machine_ip\">3.3.3.3</field><field name=\"proxy_machine\">hostname</field></eventmap>)",
+						"</field><field name=\"TimeOffset\">0</field><field name=\"facility\">security</field><field name=\"event_dt\">1446708582725</field><field name=\"reporting_sensor\">sensor</field><field name=\"proxy_machine_ip\">3.3.3.3</field><field name=\"proxy_machine\">hostname</field></eventmap>)Nov 11 10:44:09 1.1.1.1 sshd[4855]: Failed password for root from 1.1.1.1 port 42450 ssh2\" (service map: <eventmap version=\"2\"><field name=\"vendor_severity\">info</field><field name=\"TimeOffset\">0</field><field name=\"facility\">security</field><field name=\"event_dt\">1447231449132</field><field name=\"reporting_sensor\">sensor</field><field name=\"proxy_machine_ip\">1.1.1.1</field><field name=\"proxy_machine\">proxy_machine</field></eventmap>)",
 						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,,,,")
         );
     }
