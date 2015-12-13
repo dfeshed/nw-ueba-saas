@@ -1,21 +1,15 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.utils.factory.Factory;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
-import fortscale.utils.factory.FactoryService;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
-public class ContextHistogramRetrieverFactory implements InitializingBean, Factory<AbstractDataRetriever> {
-	@Autowired
-	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
-
+public class ContextHistogramRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		dataRetrieverFactoryService.register(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER, this);
+	public String getFactoryName() {
+		return ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER;
 	}
 
 	@Override

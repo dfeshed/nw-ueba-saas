@@ -1,21 +1,15 @@
 package fortscale.ml.model.selector;
 
-import fortscale.utils.factory.Factory;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
-import fortscale.utils.factory.FactoryService;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
-public class FeatureBucketContextSelectorFactory implements InitializingBean, Factory<IContextSelector> {
-	@Autowired
-	private FactoryService<IContextSelector> contextSelectorFactoryService;
-
+public class FeatureBucketContextSelectorFactory extends AbstractServiceAutowiringFactory<IContextSelector> {
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		contextSelectorFactoryService.register(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR, this);
+	public String getFactoryName() {
+		return FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR;
 	}
 
 	@Override
