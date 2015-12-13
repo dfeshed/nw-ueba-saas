@@ -9,7 +9,7 @@ import org.apache.commons.lang3.EnumUtils;
  */
 public class ClassifierHelper {
 
-    public static String getLogEventName(String classifierId) {
+    public static String getLogEventId(String classifierId) {
         boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifierId);
 
         if (classifierExist) {
@@ -21,7 +21,7 @@ public class ClassifierHelper {
         return classifierId;
     }
 
-    public static String getUserApplication(String classifierId) {
+    public static String getUserApplicationId(String classifierId) {
         boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifierId);
 
         if (classifierExist) {

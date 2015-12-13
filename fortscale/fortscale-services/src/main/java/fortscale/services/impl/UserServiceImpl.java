@@ -16,7 +16,6 @@ import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.classifier.ClassifierHelper;
 import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
@@ -147,34 +146,34 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 
-		String logEventName = ClassifierHelper.getLogEventName(classifierId);
-		String userApplication = ClassifierHelper.getUserApplication(classifierId);
+		String logEventId = ClassifierHelper.getLogEventId(classifierId);
+		String userApplicationId = ClassifierHelper.getUserApplicationId(classifierId);
 
-		String userId = usernameService.getUserId(normalizedUsername, logEventName);
+		String userId = usernameService.getUserId(normalizedUsername, logEventId);
 		if(userId == null && onlyUpdate){
 			return;
 		}
 			
 		if(userId != null){
-			if(!usernameService.isLogUsernameExist(logEventName, logUsername, userId)){
+			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
 				Update update = new Update();
-				usernameService.fillUpdateLogUsername(update, logUsername, logEventName);
+				usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
 				if(updateAppUsername){
-					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplication, logUsername), userApplication);
+					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
 				}
 			
 				updateUser(userId, update);
-				usernameService.addLogUsernameToCache(logEventName, logUsername, userId);
+				usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 			}
         } else{
-			User user = createUser(userApplication, normalizedUsername, logUsername);
-			usernameService.updateLogUsername(user, logEventName, logUsername);
+			User user = createUser(userApplicationId, normalizedUsername, logUsername);
+			usernameService.updateLogUsername(user, logEventId, logUsername);
 			saveUser(user);
 			if(user == null || user.getId() == null){
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			} else{
-				usernameService.addLogNormalizedUsername(logEventName, user.getId(), normalizedUsername);
-				usernameService.addLogUsernameToCache(logEventName, logUsername, user.getId());
+				usernameService.addLogNormalizedUsername(logEventId, user.getId(), normalizedUsername);
+				usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
 			}
 		}		
 	}
@@ -217,16 +216,16 @@ public class UserServiceImpl implements UserService{
 				return;
 			}
 
-			Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
-			String logUsernameValue = userInfo.get(classifier.getId()).getValue();
+			String classifierId = getFirstClassifierId(userInfo, dataSourceUpdateOnlyFlagMap);
+			String logUsernameValue = userInfo.get(classifierId).getValue();
 
 
 			// need to create the user at mongo
-			user = createUser(classifier.getUserApplication().getId(), username, logUsernameValue);
+			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
 
 			saveUser(user);
 			if(user == null || user.getId() == null) {
-				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, username, logUsernameValue);
+				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
 			}
 
 
@@ -247,7 +246,7 @@ public class UserServiceImpl implements UserService{
 				// get the time of the event
 				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
 
-				String logEventsName = ClassifierHelper.getLogEventName(classifierId);
+				String logEventId = ClassifierHelper.getLogEventId(classifierId);
 				String logUsernameValue = userInfo.get(classifierId).getValue();
 
 
@@ -260,23 +259,23 @@ public class UserServiceImpl implements UserService{
 				}
 
 				// Last activity of data source
-				DateTime userCurrLastOfType = user.getLogLastActivity(logEventsName);
+				DateTime userCurrLastOfType = user.getLogLastActivity(logEventId);
 				if (userCurrLastOfType == null || currTime.isAfter(userCurrLastOfType)) {
 					if (update == null)
 						update = new Update();
-					update.set(User.getLogLastActivityField(logEventsName), currTime);
+					update.set(User.getLogLastActivityField(logEventId), currTime);
 				}
 
 
 				//update the logusername if needed
-				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventsName));
+				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventId));
 
 				if (!isLogUserNameExist)
 				{
 
 					if (update == null)
 						update = new Update();
-					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsName)), logUsernameValue);
+					update.set(User.getLogUserNameField(usernameService.getLogname(logEventId)), logUsernameValue);
 				}
 
 			}
@@ -320,7 +319,7 @@ public class UserServiceImpl implements UserService{
 	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
 	 * @return - the Classifier of the win event
 	 */
-	private Classifier getFirstClassifier(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
+	private String getFirstClassifierId(Map<String, JksonSerilaizablePair<Long, String>> userInfo, Map<String, Boolean> dataSourceUpdateOnlyFlagMap)
 	{
 		Entry<String, JksonSerilaizablePair<Long,String>> earlierEntry = null;
 
@@ -333,7 +332,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 
-		return earlierEntry != null ? Classifier.valueOf(earlierEntry.getKey()) : null;
+		return earlierEntry != null ? earlierEntry.getKey() : null;
 	}
 
 	@Override

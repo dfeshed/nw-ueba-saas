@@ -213,14 +213,14 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		UserInfoForUpdate dataSourceToUserInfo = store.get(normalizedUsername);
 
-		String logEventName = ClassifierHelper.getLogEventName(classifierId);
+		String logEventId = ClassifierHelper.getLogEventId(classifierId);
 
 		//in case that the user doesnt exist in the LevelDB
 		if (dataSourceToUserInfo == null) {
 			dataSourceToUserInfo = new UserInfoForUpdate();
 			// Since the same user will be always on the same partition, no need to synchronize this
 			Map<String,JksonSerilaizablePair<Long,String>> dataSourceToUserInfoHashMap  = new HashMap<>();
-			dataSourceToUserInfoHashMap.put(logEventName, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
+			dataSourceToUserInfoHashMap.put(logEventId, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 
 			dataSourceToUserInfo.setUserInfo(dataSourceToUserInfoHashMap);
 
@@ -228,22 +228,22 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		}
 
 		//in case the user have no entry for the current data source
-		if (dataSourceToUserInfo.getUserInfo().get(logEventName) == null)
+		if (dataSourceToUserInfo.getUserInfo().get(logEventId) == null)
 		{
 
-			dataSourceToUserInfo.getUserInfo().put(logEventName, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(logEventId, new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 
 		}
 
 
-		Long userLastActivity = dataSourceToUserInfo.getUserInfo().get(logEventName).getKey();
+		Long userLastActivity = dataSourceToUserInfo.getUserInfo().get(logEventId).getKey();
 
 
 		//update in case that last activity need to be update
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity and logusername  in level DB
-			dataSourceToUserInfo.getUserInfo().put(logEventName, new JksonSerilaizablePair<Long, String>(timestamp, logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(logEventId, new JksonSerilaizablePair<Long, String>(timestamp, logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
