@@ -22,8 +22,7 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
 
-	@Value("${max.user.elements.per.data.source.in.cache:100000}")
-	private int maxUserElementsPerDataSourceInCache;
+	private int maxCacheUserEntriesPerDataSource = 100000; // TODO externalize the value to spring properties
 
 	// maps log event id to user representation combined of the user id and the log username, e.g. :
 	// vpn -> {1111111###gils@fortscale.com, 2222222222###gabi@cbs.com, 33333333###ami@nbc.com}
@@ -240,13 +239,13 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	private void createLogEventIdToUserEntry(String logEventName) {
-		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxUserElementsPerDataSourceInCache));
+		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxCacheUserEntriesPerDataSource));
 
 		logEventIdToUsersRep.put(logEventName, usersSet);
 	}
 
 	private void createLogEventToUserIdMap(String logEventName) {
-		Map<String, String> usersMap = new SimpleLRUCache<>(maxUserElementsPerDataSourceInCache);
+		Map<String, String> usersMap = new SimpleLRUCache<>(maxCacheUserEntriesPerDataSource);
 
 		logEventIdToUserIdMapping.put(logEventName, usersMap);
 	}

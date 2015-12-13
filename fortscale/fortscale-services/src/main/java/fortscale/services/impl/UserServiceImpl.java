@@ -156,26 +156,34 @@ public class UserServiceImpl implements UserService{
 			
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
-				Update update = new Update();
-				usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
-				if(updateAppUsername){
-					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
-				}
-			
-				updateUser(userId, update);
-				usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
+				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
         } else{
-			User user = createUser(userApplicationId, normalizedUsername, logUsername);
-			usernameService.updateLogUsername(user, logEventId, logUsername);
-			saveUser(user);
-			if(user == null || user.getId() == null){
-				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
-			} else{
-				usernameService.addLogNormalizedUsername(logEventId, user.getId(), normalizedUsername);
-				usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
-			}
+			createNewUser(classifierId, normalizedUsername, logUsername, logEventId, userApplicationId);
 		}		
+	}
+
+	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
+		User user = createUser(userApplicationId, normalizedUsername, logUsername);
+		usernameService.updateLogUsername(user, logEventId, logUsername);
+		saveUser(user);
+		if(user == null || user.getId() == null){
+            logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+        } else{
+            usernameService.addLogNormalizedUsername(logEventId, user.getId(), normalizedUsername);
+            usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
+        }
+	}
+
+	private void updateUser(String logUsername, boolean updateAppUsername, String logEventId, String userApplicationId, String userId) {
+		Update update = new Update();
+		usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
+		if(updateAppUsername){
+            usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
+        }
+
+		updateUser(userId, update);
+		usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 	}
 
 	private User saveUser(User user){
@@ -232,8 +240,6 @@ public class UserServiceImpl implements UserService{
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
-
-
 
 		try {
 
@@ -659,10 +665,6 @@ public class UserServiceImpl implements UserService{
 	private User findUserByObjectGUID(String objectGUID){
 		return userRepository.findByObjectGUID(objectGUID);
 	}
-	
-//	private void updateUser(User user, String fieldName, Object val){
-//		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(fieldName, val), User.class);
-//	}
 	
 	@Override
 	public void updateUser(User user, Update update){
