@@ -7,6 +7,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,6 +23,12 @@ public class ModelBuilderManager {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
 
     @Autowired
+    private FactoryService<IContextSelector> contextSelectorFactoryService;
+    @Autowired
+    private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    @Autowired
+    private FactoryService<IModelBuilder> modelBuilderFactoryService;
+    @Autowired
     private ModelStore modelStore;
 
     private ModelConf modelConf;
@@ -29,15 +36,14 @@ public class ModelBuilderManager {
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
-    public ModelBuilderManager(ModelConf modelConf, ModelService modelService) {
+    public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
-        Assert.notNull(modelService);
         this.modelConf = modelConf;
 
         IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
-        contextSelector = contextSelectorConf == null ? null : modelService.getContextSelector(contextSelectorConf);
-        dataRetriever = modelService.getDataRetriever(modelConf.getDataRetrieverConf());
-        modelBuilder = modelService.getModelBuilder(modelConf.getModelBuilderConf());
+        contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
+        dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
+        modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {

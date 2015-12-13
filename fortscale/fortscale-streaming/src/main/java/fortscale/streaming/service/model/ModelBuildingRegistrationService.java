@@ -46,6 +46,8 @@ public class ModelBuildingRegistrationService {
 		Assert.notNull(modelBuildingStore);
 		this.modelBuildingListener = modelBuildingListener;
 		this.modelBuildingStore = modelBuildingStore;
+
+		modelService.init();
 	}
 
 	public void process(JSONObject event) {
