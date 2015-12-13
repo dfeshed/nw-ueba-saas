@@ -22,7 +22,6 @@ public class RarityScorer {
 	private double[] buckets;
 	private int minEvents;
 	private int totalEvents;
-	private int totalDistinctFeatures;
 	private int maxNumOfRareFeatures;
 
 	public RarityScorer(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
@@ -30,7 +29,6 @@ public class RarityScorer {
 		this.maxNumOfRareFeatures = maxNumOfRareFeatures;
 		buckets = new double[maxRareCount * 2];
 		totalEvents = 0;
-		totalDistinctFeatures = 0;
 		for (Map.Entry<Integer, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
 			int occurrences = entry.getKey();
 			double numOfFeatures = entry.getValue();
@@ -38,7 +36,6 @@ public class RarityScorer {
 				buckets[occurrences - 1] = numOfFeatures;
 			}
 			totalEvents += numOfFeatures * occurrences;
-			totalDistinctFeatures += numOfFeatures;
 		}
 	}
 
@@ -101,7 +98,7 @@ public class RarityScorer {
 			numDistinctRareFeatures += buckets[i] * commonnessDiscount;
 		}
 		double commonEventProbability = 1 - numRareEvents / totalEvents;
-		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numDistinctRareFeatures / Math.min(totalDistinctFeatures, maxNumOfRareFeatures), RARITY_SUM_EXPONENT));
+		double numRareFeaturesDiscount = 1 - Math.min(1, Math.pow(numDistinctRareFeatures / maxNumOfRareFeatures, RARITY_SUM_EXPONENT));
 		double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
 		return Math.floor(MAX_POSSIBLE_SCORE * score);
 	}

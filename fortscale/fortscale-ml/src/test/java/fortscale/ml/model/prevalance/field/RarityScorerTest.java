@@ -239,23 +239,6 @@ public class RarityScorerTest {
 		assertMonotonicity(scoresSeries, true);
 	}
 
-	@Test
-	public void shouldScoreIncreasinglyWhenProbabilityForRareFeatureIncreases() {
-		int maxRareCount = 10;
-		int maxNumOfRareFeatures = 6;
-
-		int veryRareFeatureCount = 1;
-		int maxNumOfCommonFeatures = 10;
-		int commonFeatureCount = maxRareCount * 2 * maxNumOfCommonFeatures;
-		List<Double> scores = new ArrayList<>();
-		for (int numOfCommonFeatures = 1; numOfCommonFeatures <= maxNumOfCommonFeatures; numOfCommonFeatures++) {
-			scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, numOfCommonFeatures, commonFeatureCount / numOfCommonFeatures), veryRareFeatureCount));
-		}
-		List<List<Double>> scoresSeries = new ArrayList<>();
-		scoresSeries.add(scores);
-		assertMonotonicity(scoresSeries, true);
-	}
-
 
 
 
@@ -658,7 +641,7 @@ public class RarityScorerTest {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 
-		double[] scores = new double[]{76, 61, 50, 34, 17, 8, 4, 2, 1, 0};
+		double[] scores = new double[]{85, 78, 67, 46, 23, 11, 4, 2, 1, 0};
 		for (int rareFeatureCount = 1; rareFeatureCount < 11; rareFeatureCount++) {
 			double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 4, 1, 15), rareFeatureCount);
 			Assert.assertEquals(scores[rareFeatureCount - 1], score, 1);
@@ -667,9 +650,7 @@ public class RarityScorerTest {
 
 	private static class TestEventsBatch {
 		public int numOfEvents;
-		public String normalized_src_machine;
-		public int normalized_src_machine_score;
-		public int expected_rarity_scorer_score;
+		public String feature_value;
 	}
 
 	private List<TestEventsBatch> readEventsFromCsv(String csvFileName) throws IOException {
@@ -725,21 +706,20 @@ public class RarityScorerTest {
 					bar));
 		}
 		System.out.println();
-		int featureValueIndex = featureValues.indexOf(eventsBatch.normalized_src_machine);
+		int featureValueIndex = featureValues.indexOf(eventsBatch.feature_value);
 		int totalNumOfEvents = 1;
 		for (int count : featureValueToCountMap.values()) {
 			totalNumOfEvents += count;
 		}
 		System.out.println(String.format("\tscoring %s%s%s%s which has %d events. In total there are %d events spread across %d features.",
-				getFeatureColor(eventsBatch.normalized_src_machine),
-				eventsBatch.normalized_src_machine,
+				getFeatureColor(eventsBatch.feature_value),
+				eventsBatch.feature_value,
 				COLOR_NORMAL,
 				featureValueIndex == -1 ? "" : " (#" + featureValueIndex + ")",
-				featureValueIndex == -1 ? 1 : featureValueToCountMap.get(eventsBatch.normalized_src_machine) + 1,
+				featureValueIndex == -1 ? 1 : featureValueToCountMap.get(eventsBatch.feature_value) + 1,
 				totalNumOfEvents,
 				featureValueToCountMap.size()));
-		System.out.println(String.format("\told model: %d", eventsBatch.normalized_src_machine_score));
-		System.out.println(String.format("\tnew model: %d", score.intValue()));
+		System.out.println(String.format("\tscore: %d", score.intValue()));
 		System.out.println("\n");
 	}
 
@@ -751,10 +731,6 @@ public class RarityScorerTest {
 			this.featureValue = featureValue;
 			this.score = score;
 		}
-
-		public ScoredFeature(String featureValue, Integer score) {
-			this(featureValue, (double) score);
-		}
 	}
 
 	private void testRealScenario(String filePath, int minInterestingScore) throws IOException {
@@ -765,50 +741,38 @@ public class RarityScorerTest {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		List<ScoredFeature> featureValueAndNewScores = new ArrayList<>();
-		List<ScoredFeature> featureValueAndOldScores = new ArrayList<>();
-		boolean oldModelAndNewModelAreWarmedUp = false;
+		List<ScoredFeature> featureValueAndScores = new ArrayList<>();
 		for (final TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
 			for (int i = 0; i < eventsBatch.numOfEvents; i++) {
-				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_src_machine);
+				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.feature_value);
 				if (eventFeatureCount == null) {
 					eventFeatureCount = 0;
 				}
 				final Double score = calcScore(30, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
-				if (eventsBatch.normalized_src_machine_score > 0 && score != null) {
-					oldModelAndNewModelAreWarmedUp = true;
-				}
-				boolean eventIsInteresting = eventsBatch.normalized_src_machine_score > minInterestingScore || (score != null && score > minInterestingScore);
-				if (oldModelAndNewModelAreWarmedUp && eventIsInteresting) {
-//					Assert.assertEquals(eventsBatch.expected_rarity_scorer_score, score, 0);
-					featureValueAndNewScores.add(new ScoredFeature(eventsBatch.normalized_src_machine, score));
-					featureValueAndOldScores.add(new ScoredFeature(eventsBatch.normalized_src_machine, eventsBatch.normalized_src_machine_score));
+				if (score != null && score > minInterestingScore) {
+					featureValueAndScores.add(new ScoredFeature(eventsBatch.feature_value, score));
 					printEvent(featureValueToCountMap, eventsBatch, score);
 				}
-				featureValueToCountMap.put(eventsBatch.normalized_src_machine, eventFeatureCount + 1);
+				featureValueToCountMap.put(eventsBatch.feature_value, eventFeatureCount + 1);
 			}
 		}
 
 		printGoogleSheetsExplaination(filePath);
 		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
-		for (int modelType = 0; modelType < 2; modelType++) {
-			for (String featureValue : featureValues) {
-				System.out.print((StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue) + " " + (modelType == 0 ? "new" : "old") + "\t");
-			}
+		for (String featureValue : featureValues) {
+			System.out.print((StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue) + "\t");
 		}
 		System.out.println();
 		String tabs = "";
 		for (int i = 0; i < featureValues.size(); i++) {
 			tabs += "\t";
 		}
-		for (int featureValueAndScoreInd = 0; featureValueAndScoreInd < featureValueAndNewScores.size(); featureValueAndScoreInd++) {
-			for (int modelType = 0; modelType < 2; modelType++) {
-				ScoredFeature scoredFeature = (modelType == 0 ? featureValueAndNewScores : featureValueAndOldScores).get(featureValueAndScoreInd);
-				int featureValueIndex = featureValues.indexOf(scoredFeature.featureValue);
-				System.out.print(tabs.substring(0, featureValueIndex));
-				System.out.print(scoredFeature.score);
-				System.out.print(tabs.substring(0, featureValues.size() - featureValueIndex));
-			}
+		for (int featureValueAndScoreInd = 0; featureValueAndScoreInd < featureValueAndScores.size(); featureValueAndScoreInd++) {
+			ScoredFeature scoredFeature = featureValueAndScores.get(featureValueAndScoreInd);
+			int featureValueIndex = featureValues.indexOf(scoredFeature.featureValue);
+			System.out.print(tabs.substring(0, featureValueIndex));
+			System.out.print(scoredFeature.score);
+			System.out.print(tabs.substring(0, featureValues.size() - featureValueIndex));
 			System.out.println();
 		}
 	}
