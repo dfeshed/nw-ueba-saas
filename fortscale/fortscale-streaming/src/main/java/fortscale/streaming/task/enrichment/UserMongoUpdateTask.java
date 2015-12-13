@@ -2,15 +2,13 @@ package fortscale.streaming.task.enrichment;
 
 
 import fortscale.services.UserService;
-import fortscale.services.fe.ClassifierService;
-import fortscale.services.impl.UsernameService;
+import fortscale.services.classifier.ClassifierHelper;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
-import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -80,8 +78,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	protected UserService userService;
 
-	private ClassifierService classifierService;
-
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
@@ -147,7 +143,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
-		JSONObject message = parseJsonMessage(envelope);
+		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
@@ -217,7 +213,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		UserInfoForUpdate dataSourceToUserInfo = store.get(normalizedUsername);
 
-		String logEventName = UsernameService.getLogEventName(classifierId);
+		String logEventName = ClassifierHelper.getLogEventName(classifierId);
 
 		//in case that the user doesnt exist in the LevelDB
 		if (dataSourceToUserInfo == null) {

@@ -14,6 +14,7 @@ import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.classifier.ClassifierHelper;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
@@ -146,8 +147,8 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 
-		String logEventName = UsernameService.getLogEventName(classifierId);
-		String userApplication = usernameService.getUserApplication(classifierId);
+		String logEventName = ClassifierHelper.getLogEventName(classifierId);
+		String userApplication = ClassifierHelper.getUserApplication(classifierId);
 
 		String userId = usernameService.getUserId(normalizedUsername, logEventName);
 		if(userId == null && onlyUpdate){
@@ -246,7 +247,7 @@ public class UserServiceImpl implements UserService{
 				// get the time of the event
 				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
 
-				String logEventsName = UsernameService.getLogEventName(classifierId);
+				String logEventsName = ClassifierHelper.getLogEventName(classifierId);
 				String logUsernameValue = userInfo.get(classifierId).getValue();
 
 

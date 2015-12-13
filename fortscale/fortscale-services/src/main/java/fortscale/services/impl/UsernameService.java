@@ -7,7 +7,6 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
-import fortscale.services.fe.Classifier;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,59 +76,6 @@ public class UsernameService implements InitializingBean, CachingService{
 		return user.getLogUsernameMap().get(getLogname(eventId));
 	}
 
-	public String getTableName(String eventId) {
-		boolean eventIdExist = EnumUtils.isValidEnum(LogEventsEnum.class, eventId);
-
-		if (eventIdExist) {
-			LogEventsEnum logEventIdType = LogEventsEnum.valueOf(eventId);
-
-			switch (logEventIdType) {
-				case login:
-					return loginDAO.getTableName();
-				case ssh:
-					return sshDAO.getTableName();
-				case vpn:
-					return vpnDAO.getTableName();
-				case amt:
-					return amtDAO.getTableName();
-				case amtsession:
-					return amtsessionDAO.getTableName();
-				default:
-					break;
-			}
-		}
-
-		return eventId;
-	}
-
-	public static String getLogEventName(String classifierId) {
-		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifierId);
-
-		if (classifierExist) {
-			Classifier classifierType = Classifier.valueOf(classifierId);
-
-			return classifierType.getLogEventsEnum().getId();
-		}
-
-		return classifierId;
-	}
-
-	public String getUserApplication(String classifier) {
-		boolean classifierExist = EnumUtils.isValidEnum(Classifier.class, classifier);
-
-		if (classifierExist) {
-			Classifier classifierType = Classifier.valueOf(classifier);
-
-			return classifierType.getUserApplication().getId();
-		}
-
-		return classifier;
-	}
-
-	public String getLogname(String eventId){
-		return getTableName(eventId);
-	}
-
 	public List<String> getFollowedUsersUsername(){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){
@@ -179,6 +125,34 @@ public class UsernameService implements InitializingBean, CachingService{
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
+	public String getTableName(String eventId) {
+		boolean eventIdExist = EnumUtils.isValidEnum(LogEventsEnum.class, eventId);
+
+		if (eventIdExist) {
+			LogEventsEnum logEventIdType = LogEventsEnum.valueOf(eventId);
+
+			switch (logEventIdType) {
+				case login:
+					return loginDAO.getTableName();
+				case ssh:
+					return sshDAO.getTableName();
+				case vpn:
+					return vpnDAO.getTableName();
+				case amt:
+					return amtDAO.getTableName();
+				case amtsession:
+					return amtsessionDAO.getTableName();
+				default:
+					break;
+			}
+		}
+
+		return eventId;
+	}
+
+	public String getLogname(String eventId){
+		return getTableName(eventId);
+	}
 
 
 	public boolean isUsernameExist(String username){
