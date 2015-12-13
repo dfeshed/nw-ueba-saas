@@ -71,14 +71,12 @@ public class PxGridFetchJob extends FortscaleJob {
 	private String truststorePassphrase;
 	private int connectionRetryMillisecond;
 
-	@Value("${collection.fetch.data.path}")
-	private String outputPath;
+	@Value("${collection.fetch.data.path}") private String outputPath;
 
 	private File outputTempFile;
 	private File outputFile;
 
-	@Autowired
-	private FetchConfigurationRepository fetchConfigurationRepository;
+	@Autowired private FetchConfigurationRepository fetchConfigurationRepository;
 
 	// Flag to indicate whether connection is established to the grid
 	private boolean connected;
@@ -112,7 +110,7 @@ public class PxGridFetchJob extends FortscaleJob {
 			do {
 
 				// preparer fetch page params
-				if  (fetchIntervalInSeconds != -1 ) {
+				if (fetchIntervalInSeconds != -1) {
 					preparerFetchPageParams();
 				}
 
@@ -138,8 +136,12 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				iterator.close();
 
-			} while(keepFetching);
+				updateMongoWithCurrentFetchProgress();
+			} while (keepFetching);
 
+			logger.info("fetch job finished successfully");
+		} catch (Exception e) {
+			logger.error("Error while fetching data from pxGrid. Error: " + e.getMessage());
 		} finally {
 			if (recon != null && con.isConnected()) {
 				// disconnect from pxGrid
@@ -272,21 +274,20 @@ public class PxGridFetchJob extends FortscaleJob {
 		}
 
 		// get parameters values from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map,"type")){
+		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "type")) {
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
-		}
-		else{
+		} else {
 			//calculate query run times from mongo in the case not provided as job params
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);
 		}
 	}
 
-	private void preparerFetchPageParams(){
+	private void preparerFetchPageParams() {
 		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
 		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
@@ -295,13 +296,12 @@ public class PxGridFetchJob extends FortscaleJob {
 		earliestDate = pageLatestDate;
 	}
 
-	private void updateMongoWithCurrentFetchProgress(){
+	private void updateMongoWithCurrentFetchProgress() {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
-		if(fetchConfiguration == null){
+		if (fetchConfiguration == null) {
 			fetchConfiguration = new FetchConfiguration(type, latest);
-		}
-		else {
+		} else {
 			fetchConfiguration.setLastFetchTime(latest);
 		}
 		fetchConfigurationRepository.save(fetchConfiguration);
@@ -313,7 +313,7 @@ public class PxGridFetchJob extends FortscaleJob {
 		}
 	}
 
-	private void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException{
+	private void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
 		type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		//time back (default 1 hour)
 		fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
@@ -322,16 +322,15 @@ public class PxGridFetchJob extends FortscaleJob {
 		//set fetch until the ceiling of now (according to the given interval
 		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
 		//shift the date by the configured diff
-		latestDate = DateUtils.addSeconds(latestDate,-1*fetchDiffInSeconds);
+		latestDate = DateUtils.addSeconds(latestDate, -1 * fetchDiffInSeconds);
 		keepFetching = true;
 
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		if (fetchConfiguration != null) {
 			earliest = fetchConfiguration.getLastFetchTime();
 			earliestDate = new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
-		}
-		else {
-			earliestDate = DateUtils.addSeconds(latestDate,-1*fetchIntervalInSeconds);
+		} else {
+			earliestDate = DateUtils.addSeconds(latestDate, -1 * fetchIntervalInSeconds);
 		}
 	}
 
