@@ -22,8 +22,8 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
 
-	@Value("${max.user.elements.in.cache:100000}")
-	private int maxUserElementsInCache;
+	@Value("${max.user.elements.per.data.source.in.cache:100000}")
+	private int maxUserElementsPerDataSourceInCache;
 
 	// maps log event id to user representation combined of the user id and the log username, e.g. :
 	// vpn -> {1111111###gils@fortscale.com, 2222222222###gabi@cbs.com, 33333333###ami@nbc.com}
@@ -122,8 +122,9 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (usernameToUserIdCache.containsKey(username))
 			return true;
 
-		if(logEventsEnum != null && logEventIdToUserIdMapping.containsKey(logEventsEnum.getId()) && logEventIdToUserIdMapping.get(logEventsEnum.getId()).containsKey(username))
+		if(logEventsEnum != null && logEventIdToUserIdMapping.containsKey(logEventsEnum.getId()) && logEventIdToUserIdMapping.get(logEventsEnum.getId()).containsKey(username)) {
 			return true;
+		}
 
 		// resort to lookup mongodb and save the user id in cache
 		User user = userRepository.findByUsername(username);
@@ -239,13 +240,13 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	private void createLogEventIdToUserEntry(String logEventName) {
-		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxUserElementsInCache));
+		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxUserElementsPerDataSourceInCache));
 
 		logEventIdToUsersRep.put(logEventName, usersSet);
 	}
 
 	private void createLogEventToUserIdMap(String logEventName) {
-		Map<String, String> usersMap = new SimpleLRUCache<>(maxUserElementsInCache);
+		Map<String, String> usersMap = new SimpleLRUCache<>(maxUserElementsPerDataSourceInCache);
 
 		logEventIdToUserIdMapping.put(logEventName, usersMap);
 	}
