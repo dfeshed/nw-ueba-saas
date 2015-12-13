@@ -388,6 +388,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//Normalized User Name and user Tagging task
+
 			System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s",dataSourceName));
 
 			//open the task properties file
@@ -490,12 +491,29 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             writeLineToFile("#############", taskPropertiesFileWriter, true);
 
 
+			//flush the writer for username-normalization-tagging-task.properties
+			taskPropertiesFileWriter.flush();
+
+
 
 
 
 
 
 			//Ip Resolving task
+
+			System.out.println(String.format("Going to configure the IP resolving task for %s",dataSourceName));
+
+			//open the task properties file
+			taskPropertiesFile = new File(configFilesPath + "ip-resolving-task.properties");
+			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
+
+			taskPropertiesFileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\r\n");
+
+			line = String.format("# %s", this.dataSourceName);
+
+			writeLineToFile(line,taskPropertiesFileWriter,true);
 
 
 			//Computer tagging task
