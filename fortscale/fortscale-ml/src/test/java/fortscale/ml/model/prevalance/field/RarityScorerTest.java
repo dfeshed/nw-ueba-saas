@@ -649,6 +649,20 @@ public class RarityScorerTest {
 		}
 	}
 
+
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 ***************************** TEST REAL DATA SCENARIOS ******************************
+	 ***************** THESE TESTS ARE MORE OF RESEARCH SCRIPTS THAN TESTS ***************
+	 ********* THEY ARE MEANT FOR RUNNING REAL DATA SCENARIOS AND THEN INSPECTING ********
+	 ************ THE RESULTS BY HANDS (ALTHOUGH ASSERTS COULD BE USED AS WELL) **********
+	 *********** IN ORDER TO GENERATE THE DATA, RUN get_ssh_research_data.bash ***********
+	 ********* (from research project: https://bitbucket.org/fortscale/research) *********
+	 ******************* (DON'T FORGET TO CHANGE "PRINT_GRAPHS = true") ******************
+	 *************************************************************************************
+	 *************************************************************************************/
+
 	private static class TestEventsBatch {
 		public int numOfEvents;
 		public String feature_value;
@@ -660,7 +674,10 @@ public class RarityScorerTest {
 		MappingIterator<TestEventsBatch> it = new CsvMapper().reader(TestEventsBatch.class).with(schema).readValues(csvFile);
 		List<TestEventsBatch> res = new ArrayList<>();
 		while (it.hasNext()){
-			res.add(it.next());
+			TestEventsBatch event = it.next();
+			if (!StringUtils.isBlank(event.feature_value)) {
+				res.add(event);
+			}
 		}
 		return res;
 	}
@@ -807,8 +824,12 @@ public class RarityScorerTest {
 		}
 		if (printContextInfo) {
 			println("first time events:");
-			for (int firstTimeEventIndex : firstTimeEventIndices) {
-				println("\t" + firstTimeEventIndex);
+			if (firstTimeEventIndices.isEmpty()) {
+				println("\t(none)");
+			} else {
+				for (int firstTimeEventIndex : firstTimeEventIndices) {
+					println("\t" + firstTimeEventIndex);
+				}
 			}
 		}
 
@@ -899,7 +920,9 @@ public class RarityScorerTest {
 		Map<String, Integer> scenarioToNumOfEvents = new HashMap<>(scenarioFiles.length);
 		for (File file : scenarioFiles) {
 			int numOfEvents = getNumOfEventsInScenario(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/" + file.getName());
-			scenarioToNumOfEvents.put(file.getName(), numOfEvents);
+			if (numOfEvents > 0) {
+				scenarioToNumOfEvents.put(file.getName(), numOfEvents);
+			}
 		}
 		List<Map.Entry<String, Integer>> sortedScenariosByNumOfEvents = sortMapByValues(scenarioToNumOfEvents);
 
@@ -939,7 +962,7 @@ public class RarityScorerTest {
 			}
 		}
 		println(String.format("\ntotal %d / %d anomalous users", totalAnomalousUsers, scenarioFiles.length));
-		Assert.assertEquals(0.2, (double) totalAnomalousUsers / scenarioFiles.length, 0.05);
+		Assert.assertEquals(0.17, (double) totalAnomalousUsers / scenarioFiles.length, 0.05);
 	}
 
 	private List<Map.Entry<String, Integer>> sortMapByValues(Map<String, Integer> m) {
