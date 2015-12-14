@@ -26,11 +26,11 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	// maps log event id to user representation combined of the user id and the log username, e.g. :
 	// vpn -> {1111111###gils@fortscale.com, 2222222222###gabi@cbs.com, 33333333###ami@nbc.com}
-	private Map<String, Set<String>> logEventIdToUsersRep = new HashMap<>();
+	private Map<String, Set<String>> logUsernamesCache = new HashMap<>();
 
 	// maps log event id to a map of username to user id , e.g. :
 	// vpn -> {gils -> 11111111, gabi -> 22222222, ami -> 333333333}
-	private Map<String, Map<String, String>> logEventIdToUserIdMapping = new HashMap<>();
+	private Map<String, Map<String, String>> normalizedUsernameToUserIdCache = new HashMap<>();
 
 	@Autowired
 	private UserRepository userRepository;
@@ -79,7 +79,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		update.set(User.getAppField(userApplication), applicationUserDetails);
 	}
 
-	public void updateLogUsername(User user, String eventId, String username) {
+	public void addLogUsername(User user, String eventId, String username) {
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
@@ -117,16 +117,17 @@ public class UsernameService implements InitializingBean, CachingService{
 		return isUsernameExist(username, null);
 	}
 
-	public boolean isUsernameExist(String username, LogEventsEnum logEventsEnum){
-		if (usernameToUserIdCache.containsKey(username))
+	public boolean isUsernameExist(String normalizedUsername, LogEventsEnum logEventsEnum){
+		if (usernameToUserIdCache.containsKey(normalizedUsername)) {
 			return true;
+		}
 
-		if(logEventsEnum != null && logEventIdToUserIdMapping.containsKey(logEventsEnum.getId()) && logEventIdToUserIdMapping.get(logEventsEnum.getId()).containsKey(username)) {
+		if(logEventsEnum != null && normalizedUsernameToUserIdCache.containsKey(logEventsEnum.getId()) && normalizedUsernameToUserIdCache.get(logEventsEnum.getId()).containsKey(normalizedUsername)) {
 			return true;
 		}
 
 		// resort to lookup mongodb and save the user id in cache
-		User user = userRepository.findByUsername(username);
+		User user = userRepository.findByUsername(normalizedUsername);
 
 		if (user != null) {
 			updateUsernameInCache(user);
@@ -141,8 +142,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(logEventName != null && logEventIdToUserIdMapping.containsKey(logEventName) && logEventIdToUserIdMapping.get(logEventName).containsKey(username)) {
-			return logEventIdToUserIdMapping.get(logEventName).get(username);
+		if(logEventName != null && normalizedUsernameToUserIdCache.containsKey(logEventName) && normalizedUsernameToUserIdCache.get(logEventName).containsKey(username)) {
+			return normalizedUsernameToUserIdCache.get(logEventName).get(username);
 		}
 
 		// fall back to query mongo if not found
@@ -165,18 +166,12 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	public boolean isLogUsernameExist(String logEventName, String logUsername, String userId) {
 
-		if (logEventIdToUsersRep.containsKey(logEventName) && logEventIdToUsersRep.get(logEventName).contains(formatUserIdWithLogUsername(userId, logUsername))) {
+		if (logUsernamesCache.containsKey(logEventName) && logUsernamesCache.get(logEventName).contains(formatUserIdWithLogUsername(userId, logUsername))) {
 			return true;
 		}
 
 		User user = userRepository.findOne(userId);
 		if(user != null && logUsername.equals(user.getLogUserName(getLogname(logEventName)))) {
-			if (!logEventIdToUsersRep.containsKey(logEventName)) {
-				createLogEventIdToUserEntry(logEventName);
-			}
-
-			logEventIdToUsersRep.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
-
 			return true;
 		}
 
@@ -194,10 +189,6 @@ public class UsernameService implements InitializingBean, CachingService{
 		// Get number of users and calculate number of pages
 		long count = userRepository.count();
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
-
-		// Initialize a logEventIdToUsernamesMap from LogEventsEnum to a set of UserIdWithLogUsername
-		Map<String, Set<String>> logEventIdToUsernamesMap = new HashMap<>();
-
 
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
@@ -220,42 +211,36 @@ public class UsernameService implements InitializingBean, CachingService{
 				for (Map.Entry<String, String> logUsernameEntry : logUsernameMap.entrySet()) {
 					String logEventId = logUsernameEntry.getKey();
 
-					if (!logEventIdToUsersRep.containsKey(logEventId)) {
-						createLogEventIdToUserEntry(logEventId);
-					}
-
-					logEventIdToUsersRep.get(logEventId).add(formatUserIdWithLogUsername(userId, logUsernameEntry.getValue()));
+					addLogUsernameToCache(logEventId, logUsernameEntry.getValue(), userId);
 				}
 			}
 		}
 	}
 
-	public void addLogNormalizedUsername(String logEventName, String userId, String username){
-		if (!logEventIdToUserIdMapping.containsKey(logEventName)) {
+	public void addUsernameToCache(String logEventName, String userId, String normalizedUsername){
+		if (!normalizedUsernameToUserIdCache.containsKey(logEventName)) {
 			createLogEventToUserIdMap(logEventName);
 		}
 
-		logEventIdToUserIdMapping.get(logEventName).put(username, userId);
+		normalizedUsernameToUserIdCache.get(logEventName).put(normalizedUsername, userId);
 	}
 
 	private void createLogEventIdToUserEntry(String logEventName) {
 		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxCacheUserEntriesPerDataSource));
 
-		logEventIdToUsersRep.put(logEventName, usersSet);
+		logUsernamesCache.put(logEventName, usersSet);
 	}
 
 	private void createLogEventToUserIdMap(String logEventName) {
-		Map<String, String> usersMap = new SimpleLRUCache<>(maxCacheUserEntriesPerDataSource);
-
-		logEventIdToUserIdMapping.put(logEventName, usersMap);
+		normalizedUsernameToUserIdCache.put(logEventName, new SimpleLRUCache<String, String>(maxCacheUserEntriesPerDataSource));
 	}
 
 	public void addLogUsernameToCache(String logEventName, String logUsername, String userId){
-		if (!logEventIdToUsersRep.containsKey(logEventName)) {
+		if (!logUsernamesCache.containsKey(logEventName)) {
 			createLogEventIdToUserEntry(logEventName);
 		}
 
-		logEventIdToUsersRep.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
+		logUsernamesCache.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
 
 	@Override

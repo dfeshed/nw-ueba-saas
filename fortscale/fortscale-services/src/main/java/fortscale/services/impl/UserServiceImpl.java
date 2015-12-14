@@ -156,6 +156,7 @@ public class UserServiceImpl implements UserService{
 			
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
+				// i.e. user exists but the log username is not updated ==> update the user with the new log username
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
         } else{
@@ -165,12 +166,12 @@ public class UserServiceImpl implements UserService{
 
 	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
 		User user = createUser(userApplicationId, normalizedUsername, logUsername);
-		usernameService.updateLogUsername(user, logEventId, logUsername);
+		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
 		if(user == null || user.getId() == null){
-            logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+            logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
         } else{
-            usernameService.addLogNormalizedUsername(logEventId, user.getId(), normalizedUsername);
+            usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
             usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
         }
 	}
@@ -182,7 +183,8 @@ public class UserServiceImpl implements UserService{
             usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
         }
 
-		updateUser(userId, update);
+		updateUserInMongo(userId, update);
+
 		usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 	}
 
@@ -673,7 +675,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 	
-	public void updateUser(String userId, Update update){
+	private void updateUserInMongo(String userId, Update update){
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(userId)), update, User.class);
 	}
 	
