@@ -842,6 +842,143 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
+    },
+
+    {
+      "name": "normalized_username_crmsf_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "successful_actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Success')]"}
+        },
+        {
+          "name": "failure_actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
+        },
+        {
+          "name": "actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+        },
+        {
+          "name": "action_type_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_type"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_crmsf_hourly",
+      "expireAfterSeconds": 2592000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hour"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "successful_actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Success')]"}
+        },
+        {
+          "name": "failure_actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
+        },
+        {
+          "name": "actions_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+        },
+        {
+          "name": "action_type_histogram",
+          "featureNamesMap": {
+            "groupBy": ["action_type"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "source_machine_crmsf_logins_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
     }
   ]
 }
