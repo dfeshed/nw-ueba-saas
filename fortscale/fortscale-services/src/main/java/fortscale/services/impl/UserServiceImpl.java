@@ -1012,7 +1012,7 @@ public class UserServiceImpl implements UserService{
 				userTagsCache.put(username, tags);
 			}
 		}
-		return tags!=null & tags.contains(tag);
+		return tags!=null && tags.contains(tag);
 	}
 
 	@Override public CacheHandler getCache() {
