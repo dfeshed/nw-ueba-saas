@@ -137,6 +137,9 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				iterator.close();
 
+				outputTempFile.flush();
+				outputTempFile.close();
+
 				renameOutput();
 				updateMongoWithCurrentFetchProgress();
 			} while (keepFetching);
