@@ -1,7 +1,11 @@
 package fortscale.streaming.service.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 import java.util.Date;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ModelBuildingRegistration {
 	private final String sessionId;
 	private final String modelConfName;
