@@ -2,7 +2,7 @@ package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.classifier.Classifier;
+import fortscale.services.fe.Classifier;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class AMTEventProcessJob extends EventProcessJob {
 		if(classifier != null){
 			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
 			String logUsername = extractUsernameFromRecord(record);
-			userService.updateOrCreateUserWithClassifierUsername(classifier.getId(), normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
+			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
 		}
 	}
 
