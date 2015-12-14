@@ -1,9 +1,9 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.services.UserTagEnum;
 import fortscale.domain.core.User;
 
 @Service("executiveAccountService")

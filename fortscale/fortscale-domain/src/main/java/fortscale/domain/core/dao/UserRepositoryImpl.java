@@ -8,7 +8,6 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	final public static String NORMALIZED_USER_NAME = "normalizedUserName";
 
 	@Override
-	public User findLastActiveUser(LogEventsEnum eventId) {
-		String logLastActiveField = User.getLogLastActivityField(eventId);
+	public User findLastActiveUser(String logEventsName) {
+		String logLastActiveField = User.getLogLastActivityField(logEventsName);
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, logLastActiveField);
 		Query query = new Query();
 		query.with(pageable);
@@ -416,11 +415,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Deprecated
 	@Override
-	public User getLastActivityByUserName(LogEventsEnum eventId, String userName) {
+	public User getLastActivityByUserName(String logEventsName, String userName) {
 		Criteria criteria = Criteria.where(User.usernameField).is(userName);
 		Query query = new Query(criteria);
 		query.fields().include(User.lastActivityField);
-		query.fields().include(User.getLogLastActivityField(eventId));
+		query.fields().include(User.getLogLastActivityField(logEventsName));
 		List<User> users = mongoTemplate.find(query, User.class);
 
 		if (users.size() > 0) {
@@ -471,14 +470,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
 		return mongoTemplate.count(query, User.class);
 	}
-	
-	
+
+
 	public void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
 		// construct the criteria to filter according to user name
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
 
 		// construct the update that adds and removes tags
-		if (!tagsToAdd.isEmpty()) {
+		if (tagsToAdd != null && !tagsToAdd.isEmpty()) {
             EachAddToSetUpdate update = new EachAddToSetUpdate();
             update.addToSetEach(User.tagsField, tagsToAdd);
 
@@ -486,7 +485,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             mongoTemplate.updateFirst(usernameCriteria, update, User.class);
         }
 
-		if (!tagsToRemove.isEmpty()) {
+		if (tagsToRemove != null && !tagsToRemove.isEmpty()) {
             EachAddToSetUpdate update = new EachAddToSetUpdate();
             update.pullAll(User.tagsField, tagsToRemove.toArray());
 

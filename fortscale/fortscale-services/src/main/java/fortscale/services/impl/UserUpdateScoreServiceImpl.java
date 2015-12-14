@@ -1,21 +1,5 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
-
 import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
@@ -25,8 +9,17 @@ import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.UserUpdateScoreService;
 import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import fortscale.utils.logging.Logger;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("userUpdateScoreService")
 public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {

@@ -1,14 +1,10 @@
 package fortscale.services.impl;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.EventScoreDAO;
+import fortscale.services.cache.CacheHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -16,11 +12,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageRequest;
 
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.EventScoreDAO;
-import fortscale.services.cache.CacheHandler;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class UsernameServiceTest {
 	@Mock
@@ -87,15 +84,17 @@ public class UsernameServiceTest {
 		when(amtsessionDAO.getTableName()).thenReturn(LogEventsEnum.amtsession.name());
 
 		// Act
-		usernameService.update();
+		usernameService.updateUsernameCaches();
 
 		// Assert
 		verify(usernameToUserIdCache, times(1)).clear();
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
-			for (LogEventsEnum value : LogEventsEnum.values())
-				assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
+
+			for (LogEventsEnum value : LogEventsEnum.values()) {
+				assertTrue(usernameService.isLogUsernameExist(value.getId(), getDataSourceUsername(value, user), user.getId()));
+			}
 		}
 	}
 

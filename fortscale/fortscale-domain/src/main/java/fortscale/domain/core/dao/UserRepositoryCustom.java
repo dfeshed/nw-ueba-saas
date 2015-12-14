@@ -4,7 +4,6 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
@@ -41,7 +40,7 @@ public interface UserRepositoryCustom {
 	
 	public User getLastActivityAndLogUserNameByUserName(String userName);
 	@Deprecated
-	public User getLastActivityByUserName(LogEventsEnum eventId, String username);
+	public User getLastActivityByUserName(String eventId, String username);
 	
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);
 	
@@ -53,7 +52,7 @@ public interface UserRepositoryCustom {
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
-	public User findLastActiveUser(LogEventsEnum eventId);
+	public User findLastActiveUser(String logEventName);
 
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
 	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
