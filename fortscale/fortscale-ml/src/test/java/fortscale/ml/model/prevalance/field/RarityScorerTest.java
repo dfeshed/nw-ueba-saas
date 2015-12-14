@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 @RunWith(JUnit4.class)
@@ -886,7 +887,11 @@ public class RarityScorerTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		File[] scenarioFiles = new File(getClass().getClassLoader().getResource(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH).getFile()).listFiles();
+		URL dirResource = getClass().getClassLoader().getResource(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH);
+		if (dirResource == null) {
+			return;
+		}
+		File[] scenarioFiles = new File(dirResource.getFile()).listFiles();
 		if (scenarioFiles.length < 10) {
 			return;
 		}
