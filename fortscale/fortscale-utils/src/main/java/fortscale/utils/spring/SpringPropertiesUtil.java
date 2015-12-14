@@ -1,5 +1,6 @@
 package fortscale.utils.spring;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -47,6 +48,21 @@ public class SpringPropertiesUtil extends PropertyPlaceholderConfigurer {
      */
     public static String getProperty(String name) {
         return propertiesMap.get(name).toString();
+    }
+
+    /**
+     * method used to retrieve all attributes with specific prefix
+     * @param prefix
+     * @return value of the prperty
+     */
+    public static Map<String, String> getPropertyMapByPrefix(String prefix) {
+        Map<String, String> subSet = new HashMap<>();
+        for (Map.Entry<String, String> prop : propertiesMap.entrySet()){
+            if (StringUtils.startsWith(prop.getKey(), prefix)){
+                subSet.put(prop.getKey(), prop.getValue());
+            }
+        }
+        return subSet;
     }
 
 }
