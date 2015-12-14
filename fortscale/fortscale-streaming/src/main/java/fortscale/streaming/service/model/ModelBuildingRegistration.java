@@ -2,6 +2,8 @@ package fortscale.streaming.service.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -12,7 +14,13 @@ public class ModelBuildingRegistration {
 	private Date previousEndTime;
 	private Date currentEndTime;
 
-	public ModelBuildingRegistration(String sessionId, String modelConfName, Date previousEndTime, Date currentEndTime) {
+	@JsonCreator
+	public ModelBuildingRegistration(
+			@JsonProperty("sessionId") String sessionId,
+			@JsonProperty("modelConfName") String modelConfName,
+			@JsonProperty("previousEndTime") Date previousEndTime,
+			@JsonProperty("currentEndTime") Date currentEndTime) {
+
 		this.sessionId = sessionId;
 		this.modelConfName = modelConfName;
 		this.previousEndTime = previousEndTime;
