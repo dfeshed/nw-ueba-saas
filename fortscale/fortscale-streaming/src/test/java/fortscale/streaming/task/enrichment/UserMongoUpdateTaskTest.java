@@ -39,7 +39,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		updateOnlyPerClassifire.put("vpn",true);
 		updateOnlyPerClassifire.put("ssh",true);
 		updateOnlyPerClassifire.put("login", false);
-		task.updateOnlyPerClassifire = updateOnlyPerClassifire;
+		task.updateOnlyPerClassifier = updateOnlyPerClassifire;
 
 
 
