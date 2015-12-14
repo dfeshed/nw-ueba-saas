@@ -20,6 +20,14 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
 		<!--<property name="localOverride" value="true"/>-->
 	</bean>
+    
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:fortscale-overriding-streaming-test.properties"/>
+        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="localOverride" value="true"/>
+    </bean>
 
 	<bean id="vpnGeolocationConfig" class="fortscale.streaming.service.vpn.VpnGeolocationConfig">
 		<constructor-arg name="ipField" value="ip_field"/>

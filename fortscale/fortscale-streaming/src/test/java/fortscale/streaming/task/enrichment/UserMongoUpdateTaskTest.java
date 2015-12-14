@@ -12,6 +12,7 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-streaming-context-test.xml"})
 public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 	public static final String MESSAGE_1 = "{ \"name\": \"user1\",\"username\": \"user1\", \"time\": 1 , \"Status\":\"B\", \"last_state\":\"state1\", \"data_source\":\"vpn\"}";
