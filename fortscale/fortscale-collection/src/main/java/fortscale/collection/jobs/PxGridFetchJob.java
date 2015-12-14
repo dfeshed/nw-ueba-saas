@@ -23,10 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Calendar;
@@ -37,6 +34,8 @@ import java.util.List;
  * Created by tomerd on 27/11/2015.
  */
 public class PxGridFetchJob extends FortscaleJob {
+
+	private static final String COMMA_DELIMITER = ",";
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
 
@@ -73,7 +72,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}") private String outputPath;
 
-	private File outputTempFile;
+	private FileWriter outputTempFile;
 	private File outputFile;
 
 	@Autowired private FetchConfigurationRepository fetchConfigurationRepository;
@@ -116,7 +115,6 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				// try to create output file
 				createOutputFile(outputDir);
-				logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 				monitor.finishStep(getMonitorId(), "Prepare sink file");
 
 				// create query we'll use to make call
@@ -131,6 +129,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				Session s;
 				while ((s = iterator.next()) != null) {
+					addSessionToFile(s);
 					print(s);
 				}
 
@@ -147,7 +146,28 @@ public class PxGridFetchJob extends FortscaleJob {
 				// disconnect from pxGrid
 				recon.stop();
 			}
+			outputTempFile.flush();
+			outputTempFile.close();
 		}
+	}
+
+	private void addSessionToFile(Session session) throws IOException{
+		outputTempFile.append(session.getLastUpdateTime().getTime().toString());
+		outputTempFile.append(COMMA_DELIMITER);
+
+		// Get the first IP
+		// TODO: How to handle multi IP's?
+		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
+		if (intfIDs.size() > 0) {
+			outputTempFile.append(intfIDs.get(0).getIpAddress());
+		}
+		outputTempFile.append(COMMA_DELIMITER);
+
+		User user = session.getUser();
+		if (user != null) {
+			outputTempFile.append(user.getName());
+		}
+		outputTempFile.append(COMMA_DELIMITER);
 	}
 
 	private void print(Session session) {
@@ -237,20 +257,22 @@ public class PxGridFetchJob extends FortscaleJob {
 	private void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
 		String filename = String.format(filenameFormat, (new Date()).getTime());
-
-		outputTempFile = new File(outputDir, filename + ".part");
-		outputFile = new File(outputDir, filename);
-
+		String path = combine(outputPath, filename + ".part");
 		try {
-			if (!outputTempFile.createNewFile()) {
-				logger.error("cannot create output file {}", outputTempFile);
-				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
-			}
-
+			outputTempFile = new FileWriter(path);
 		} catch (IOException e) {
-			logger.error("error creating file " + outputTempFile.getPath(), e);
-			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+			logger.error("error creating file " + path);
+			throw new JobExecutionException("cannot create output file " + path);
 		}
+
+		outputFile = new File(outputDir, filename);
+	}
+
+	private String combine(String firstPath, String secondPath)
+	{
+		File firstFile = new File(firstPath);
+		File secondFile = new File(firstFile, secondPath);
+		return secondFile.getPath();
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
