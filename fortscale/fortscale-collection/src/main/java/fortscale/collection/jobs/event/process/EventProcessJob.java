@@ -305,11 +305,6 @@ public class EventProcessJob implements Job {
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 			appender.writeLine(outputToHadoop, timestamp.longValue());
 
-			// ensure user exists in mongodb
-			// todo - Think how to deprecate this part or move it to the streaming
-			//move the implemintation tot he relevant data source job - cause we need it only for AMT for now
-			updateOrCreateUserWithClassifierUsername(record);
-
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
 
@@ -317,10 +312,6 @@ public class EventProcessJob implements Job {
 		} else {
 			return false;
 		}
-	}
-	
-	protected void updateOrCreateUserWithClassifierUsername(Record record){
-
 	}
 	
 	protected Classifier getClassifier(){
