@@ -74,7 +74,9 @@ public class PxGridFetchJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}") private String outputPath;
 
 	private FileWriter outputTempFile;
+	private File tempOutput;
 	private File outputFile;
+
 
 	@Autowired private FetchConfigurationRepository fetchConfigurationRepository;
 
@@ -135,6 +137,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				iterator.close();
 
+				renameOutput();
 				updateMongoWithCurrentFetchProgress();
 			} while (keepFetching);
 
@@ -167,91 +170,18 @@ public class PxGridFetchJob extends FortscaleJob {
 		if (user != null) {
 			outputTempFile.append(user.getName());
 		}
-		outputTempFile.append(COMMA_DELIMITER);
+
+		outputTempFile.append(System.lineSeparator());
 	}
 
-	private void print(Session session) {
-		System.out.print("Session={");
-
-		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
-		System.out.print("ip=[");
-		for (int i = 0; i < intfIDs.size(); i++) {
-			if (i > 0)
-				System.out.print(",");
-			System.out.print(intfIDs.get(i).getIpAddress());
+	private void renameOutput() {
+		if (tempOutput.length()==0) {
+			logger.info("deleting empty output file {}", tempOutput.getName());
+			if (!tempOutput.delete())
+				logger.warn("cannot delete empty file {}", tempOutput.getName());
+		} else {
+			tempOutput.renameTo(outputFile);
 		}
-		System.out.print("]");
-
-		System.out.print(", Audit Session Id=" + session.getGid());
-		User user = session.getUser();
-		if (user != null) {
-			System.out.print(", User Name=" + user.getName());
-			System.out.print(", AD User DNS Domain=" + user.getADUserDNSDomain());
-			System.out.print(", AD Host DNS Domain=" + user.getADHostDNSDomain());
-			System.out.print(", AD User NetBIOS Name=" + user.getADUserNetBIOSName());
-			System.out.print(", AD Host NETBIOS Name=" + user.getADHostNetBIOSName());
-		}
-
-		List<String> macs = session.getInterface().getMacAddresses();
-		if (macs != null && macs.size() > 0) {
-			System.out.print(", Calling station id=" + macs.get(0));
-		}
-
-		System.out.print(", Session state=" + session.getState());
-		//System.out.print(", Epsstatus=" + session.getEPSStatus());
-		System.out.print(", ANCstatus=" + session.getANCStatus());
-		System.out.print(", Security Group=" + session.getSecurityGroup());
-		System.out.print(", Endpoint Profile=" + session.getEndpointProfile());
-
-		// Port and NAS Ip information
-		DevicePortIdentifier deviceAttachPt = session.getInterface().getDeviceAttachPt();
-		if (deviceAttachPt != null) {
-			IPInterfaceIdentifier deviceMgmtIntfID = deviceAttachPt.getDeviceMgmtIntfID();
-			if (deviceMgmtIntfID != null) {
-				System.out.print(", NAS IP=" + deviceAttachPt.getDeviceMgmtIntfID().getIpAddress());
-			}
-			Port port = deviceAttachPt.getPort();
-			if (port != null) {
-				System.out.print(", NAS Port=" + port.getPortId());
-			}
-		}
-
-		List<RADIUSAVPair> radiusAVPairs = session.getRADIUSAttrs();
-		if (radiusAVPairs != null && !radiusAVPairs.isEmpty()) {
-			System.out.print(", RADIUSAVPairs=[");
-			for (RADIUSAVPair p : radiusAVPairs) {
-				System.out.print(" " + p.getAttrName() + "=" + p.getAttrValue());
-			}
-			System.out.print("]");
-		}
-
-		// Posture Info
-		List<PostureAssessment> postures = session.getAssessedPostureEvents();
-		if (postures != null && postures.size() > 0) {
-			System.out.print(", Posture Status=" + postures.get(0).getStatus());
-
-			Calendar cal = postures.get(0).getLastUpdateTime();
-			System.out.print(", Posture Timestamp=" + ((cal != null) ? cal.getTime() : ""));
-
-		}
-		System.out.print(", Session Last Update Time=" + session.getLastUpdateTime().getTime());
-		//Get Generic Attributes
-		List<GenericAttribute> attributes = session.getExtraAttributes();
-		for (GenericAttribute attrib : attributes) {
-
-			System.out.print(", Session attributeName=" + attrib.getName());
-			if (attrib.getType() == GenericAttributeValueType.STRING) {
-				String attribValue = null;
-				try {
-					attribValue = new String(attrib.getValue(), "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-
-					e.printStackTrace();
-				}
-				System.out.print(", Session attributeValue=" + attribValue);
-			}
-		}
-		System.out.println("}");
 	}
 
 	private void createOutputFile(File outputDir) throws JobExecutionException {
@@ -271,8 +201,8 @@ public class PxGridFetchJob extends FortscaleJob {
 	private String combine(String firstPath, String secondPath)
 	{
 		File firstFile = new File(firstPath);
-		File secondFile = new File(firstFile, secondPath);
-		return secondFile.getPath();
+		tempOutput = new File(firstFile, secondPath);
+		return tempOutput.getPath();
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -390,43 +320,5 @@ public class PxGridFetchJob extends FortscaleJob {
 		config.setTruststorePassphrase(truststorePassphrase);
 
 		return config;
-	}
-
-	private class MyListener implements Listener {
-
-		@Override public void beforeConnect() {
-			System.out.println("Connecting...");
-		}
-
-		@Override public void onConnected() {
-			System.out.println("Connected");
-			synchronized (PxGridFetchJob.this) {
-				connected = true;
-				PxGridFetchJob.this.notify();
-			}
-		}
-
-		@Override public void onDisconnected() {
-			if (connected) {
-				System.out.println("Connection closed");
-				connected = false;
-			}
-		}
-
-		@Override public void onDeleted() {
-			System.out.println("Account deleted");
-		}
-
-		@Override public void onDisabled() {
-			System.out.println("Account disabled");
-		}
-
-		@Override public void onEnabled() {
-			System.out.println("Account enabled");
-		}
-
-		@Override public void onAuthorizationChanged() {
-			System.out.println("Authorization changed");
-		}
 	}
 }
