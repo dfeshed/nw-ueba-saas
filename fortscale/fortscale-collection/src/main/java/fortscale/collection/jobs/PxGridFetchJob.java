@@ -13,6 +13,7 @@ import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
+import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
@@ -119,10 +120,10 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				// create query we'll use to make call
 				begin = Calendar.getInstance();
-				begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
-				//begin.setTimeInMillis(Long.parseLong(earliest));
+				//begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
+				begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
 				end = Calendar.getInstance();
-				end.setTimeInMillis(Long.parseLong(latest));
+				end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
 				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
 				SessionIterator iterator = sd.getSessionsByTime(begin, end);
 				iterator.open();
@@ -130,7 +131,6 @@ public class PxGridFetchJob extends FortscaleJob {
 				Session s;
 				while ((s = iterator.next()) != null) {
 					addSessionToFile(s);
-					print(s);
 				}
 
 				iterator.close();
