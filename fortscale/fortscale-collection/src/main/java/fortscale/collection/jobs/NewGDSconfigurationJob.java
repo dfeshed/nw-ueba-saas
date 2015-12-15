@@ -20,8 +20,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private Boolean targetIpFlag;
 	private Boolean sourceIpResolvingFlag;
 	private Boolean targetIpResolvingFlag;
+	private Boolean sourceMachineNameFlag;
+	private Boolean targetMachineNameFlag;
 	private String usernameFieldName;
 	private String lastState;
+	private Boolean sourceGeoLocatedFlag;
+	private Boolean tartgetGeoLocatedFlag;
 
 	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry.name";
 
@@ -133,19 +137,33 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Does %s will have source ip field  (i.e spurce_ip or client_address ) (y/n)?",this.dataSourceName));
 				sourceIpFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
+
+
+
 				if (sourceIpFlag) {
 					System.out.println(String.format("Please enter the \"source ip\" field name (i.e source_ip or client_address ):"));
 					String sourceIpFieldName = br.readLine().toLowerCase();
 					line = String.format("impala.data.%s.table.field.source_ip=%s", dataSourceName, sourceIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
 
+					//Geo location task
+					System.out.println(String.format("Does %s supposed to geo locate the source ip (y/n)?", dataSourceName));
+					sourceGeoLocatedFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+
 					System.out.println(String.format("Does %s will have source ip resolving (y/n)?",this.dataSourceName));
 					sourceIpResolvingFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
-					if (sourceIpResolvingFlag) {
+					if (!sourceIpResolvingFlag)
+					{
+						System.out.println(String.format("Does %s will have machine name from raw data (y/n)?",this.dataSourceName));
+						sourceMachineNameFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+					}
+
+
+					if (sourceIpResolvingFlag || sourceMachineNameFlag) {
 
 						//write the source_ip field configuration at the streaming overriding for the enrich part
-						System.out.println(String.format("Please enter the \"source machine field name that will contain the source ip resolving result\"  (i.e hostname ):"));
+						System.out.println(String.format("Please enter the \"source machine\" field name that will contain the source ip resolving result or the machine name (i.e hostname ):"));
 						String sourceMachineFieldName = br.readLine().toLowerCase();
 						line = String.format("impala.data.%s.table.field.hostname=%s", dataSourceName, sourceMachineFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
@@ -175,11 +193,21 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 					line = String.format("impala.data.%s.table.field.target_ip=%s", dataSourceName, targetIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
 
+
+					System.out.println(String.format("Does %s supposed to geo locate the target ip (y/n)?", dataSourceName));
+					tartgetGeoLocatedFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+
 					System.out.println(String.format("Does %s will have target ip resolving (y/n)?",this.dataSourceName));
 					targetIpResolvingFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
+					if (!targetIpResolvingFlag)
+					{
+						System.out.println(String.format("Does %s will have machine name from raw data (y/n)?",this.dataSourceName));
+						targetMachineNameFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+					}
 
-					if(targetIpResolvingFlag) {
+
+					if(targetIpResolvingFlag || targetMachineNameFlag) {
 
 						//write the target_ip field configuration at the streaming overriding for the enrich part
 						System.out.println(String.format("Please enter the \"target machine\" field name that will contain the target ip resolving result in case that %s doesnt contain target ip keep this empty  (i.e target_machine ):", this.dataSourceName));
@@ -553,12 +581,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 
-			//Geo location task
-			System.out.println(String.format("Does %s supposed to geo locate the source machine (y/n)?", dataSourceName));
-			Boolean sourceGeoLocatedFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
-			System.out.println(String.format("Does %s supposed to geo locate the target machine (y/n)?", dataSourceName));
-			Boolean tartgetGeoLocatedFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
 			if(sourceGeoLocatedFlag || tartgetGeoLocatedFlag) {
 
@@ -644,7 +667,17 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
-			configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event");
+			if (sourceIpResolvingFlag || targetIpResolvingFlag)
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving");
+			else if (sourceMachineNameFlag || targetMachineNameFlag)
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging");
+			else if (sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location");
+			else
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event");
+
+
+
 
 			//User name field
 			System.out.println(String.format("Please enter the \"username\" field name (i.e account_name or user_id ):"));
@@ -738,7 +771,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//source ip configuration for resolving the ip
 			if (sourceIpResolvingFlag) {
 
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_sourceIp",lastState,"fortscale-generic-data-access-source-ip-resolved");
+				//in case of no target to resolve
+				if (!targetIpResolvingFlag)
+					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_sourceIp",lastState,"fortscale-generic-data-access-ip-resolved");
+				else
+					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_sourceIp",lastState,"fortscale-generic-data-access-source-ip-resolved");
+
 
 				//partition field name  (today we use for all the username)
 				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.partition.field=${impala.data.%s.table.field.username}", this.dataSourceName, this.dataSourceName);
@@ -791,7 +829,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//reslove also a target ip
 			if (targetIpResolvingFlag) {
 
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_targetIp",lastState,"fortscale-generic-data-access-target-ip-resolved");
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_targetIp",lastState,"fortscale-generic-data-access-resolved");
 
 
 				//partition field name  (today we use for all the username)
@@ -869,7 +907,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			line = String.format("# %s", this.dataSourceName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
-			configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"ComputerTaggingClusteringTask",lastState,"fortscale-generic-data-access-computer-tagged-clustered");
+			if(sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"ComputerTaggingClusteringTask",lastState,"fortscale-generic-data-access-computer-tagged-clustered_to_geo_location");
+			else
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"ComputerTaggingClusteringTask",lastState,"fortscale-generic-data-access-computer-tagged-clustered");
+
 
 
 			//partition field name  (today we use for all the username)
@@ -961,7 +1003,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			if (sourceGeoLocatedFlag) {
 
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"source_VpnEnrichTask",lastState,"fortscale-generic-data-access-source-ip-geolocated");
+				if (tartgetGeoLocatedFlag)
+					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"source_VpnEnrichTask",lastState,"fortscale-generic-data-access-source-ip-geolocated");
+				else
+					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"source_VpnEnrichTask",lastState,"fortscale-generic-data-access-ip-geolocated");
 
 				//source ip field
 				line = String.format("%s.%s_source_VpnEnrichTask.ip.field=${impala.data.%s.table.field.source_ip}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
