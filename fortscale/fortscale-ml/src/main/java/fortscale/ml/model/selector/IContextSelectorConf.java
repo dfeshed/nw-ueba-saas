@@ -1,4 +1,4 @@
-package fortscale.ml.model.builder;
+package fortscale.ml.model.selector;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -6,6 +6,6 @@ import fortscale.utils.factory.FactoryConfig;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-		@JsonSubTypes.Type(value = ContinuousHistogramModelBuilderConf.class, name = ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER)
+		@JsonSubTypes.Type(value = FeatureBucketContextSelectorConf.class, name = FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR)
 })
-public interface IModelBuilderConf extends FactoryConfig {}
+public interface IContextSelectorConf extends FactoryConfig {}

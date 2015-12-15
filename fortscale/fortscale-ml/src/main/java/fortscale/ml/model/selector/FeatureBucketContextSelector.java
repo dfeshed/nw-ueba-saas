@@ -11,23 +11,23 @@ import java.util.Date;
 import java.util.List;
 
 @Configurable(preConstruction = true)
-public class FeatureBucketContextSelector implements ContextSelector {
+public class FeatureBucketContextSelector implements IContextSelector {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-
 	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
 
 	private FeatureBucketConf featureBucketConf;
 
-	public FeatureBucketContextSelector(ContextSelectorConf conf) {
-		FeatureBucketContextSelectorConf featureBucketContextSelectorConf = (FeatureBucketContextSelectorConf)conf;
-		this.featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketContextSelectorConf.getFeatureBucketConfName());
+	public FeatureBucketContextSelector(FeatureBucketContextSelectorConf config) {
+		String featureBucketConfName = config.getFeatureBucketConfName();
+		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
 		Assert.notNull(featureBucketConf);
 	}
 
 	@Override
 	public List<String> getContexts(Date startTime, Date endTime) {
-		return featureBucketsReaderService.findDistinctContextByTimeRange(featureBucketConf, startTime.getTime(), endTime.getTime());
+		return featureBucketsReaderService.findDistinctContextByTimeRange(
+				featureBucketConf, startTime.getTime(), endTime.getTime());
 	}
 }
