@@ -22,6 +22,7 @@ import org.apache.samza.task.TaskCoordinator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-streaming-context-test.xml"})
 public class UsernameNormalizationAndTaggingTaskTest {
 
 

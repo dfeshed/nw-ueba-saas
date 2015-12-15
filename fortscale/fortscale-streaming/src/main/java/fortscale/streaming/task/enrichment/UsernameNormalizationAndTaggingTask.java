@@ -5,6 +5,7 @@ import fortscale.services.CachingService;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
@@ -82,6 +83,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+
 		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
 		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
@@ -102,7 +106,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 							+ ".domain.fake", configKey)) : "";
 			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
 					+ ".normalizedusername.field",configKey));
-			String partitionKey = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic",configKey));
+			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
 			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
 			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", configKey));

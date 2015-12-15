@@ -157,6 +157,7 @@ import static fortscale.utils.ConversionUtils.*;
 				if (dropCloseEventWhenOpenMissingAndSessionDataIsNeeded) {
                     logger.warn("keep the closed session as is");
 					//There is no vpnOpenSession ==> skip this event.
+					logger.warn("return the close event as is");
 					return event;
 				} else if (isResolveIp) {
 					cleanSourceIpInfoFromEvent(event);
