@@ -82,6 +82,20 @@
 		<constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
+	<bean id="pxGridResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+				<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${pxgrid.resolver.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
+	</bean>
 	<bean id="pxGridBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
 		<constructor-arg name="timeToExpire" value="${pxgrid.resolver.blacklist.timeToExpireSec:3600}" />
