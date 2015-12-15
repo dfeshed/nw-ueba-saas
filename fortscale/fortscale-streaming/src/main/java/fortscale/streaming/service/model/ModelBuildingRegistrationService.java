@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingRegistrationService {
@@ -46,6 +48,8 @@ public class ModelBuildingRegistrationService {
 		Assert.notNull(modelBuildingStore);
 		this.modelBuildingListener = modelBuildingListener;
 		this.modelBuildingStore = modelBuildingStore;
+
+		modelService.init();
 	}
 
 	public void process(JSONObject event) {
@@ -70,6 +74,7 @@ public class ModelBuildingRegistrationService {
 
 	public void window() {
 		Iterator<ModelBuildingRegistration> iterator = modelBuildingStore.getRegistrationsIterator();
+		List<ModelBuildingRegistration> registrationsToUpdate = new ArrayList<>();
 
 		while (iterator.hasNext()) {
 			ModelBuildingRegistration reg = iterator.next();
@@ -79,7 +84,12 @@ public class ModelBuildingRegistrationService {
 						reg.getPreviousEndTime(), reg.getCurrentEndTime());
 				reg.setPreviousEndTime(reg.getCurrentEndTime());
 				reg.setCurrentEndTime(null);
+				registrationsToUpdate.add(reg);
 			}
+		}
+
+		for (ModelBuildingRegistration reg : registrationsToUpdate) {
+			modelBuildingStore.storeRegistration(reg);
 		}
 	}
 
