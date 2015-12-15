@@ -7,6 +7,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by idanp on 12/1/2015.
@@ -18,6 +20,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private String dataSourceName;
 	private Boolean sourceIpFlag;
 	private Boolean targetIpFlag;
+	private String dataFieldsCsv;
+	private String enrichFieldsCsv;
+	private String scoreFieldsCsv;
 	private Boolean sourceIpResolvingFlag;
 	private Boolean targetIpResolvingFlag;
 	private Boolean sourceMachineNameFlag;
@@ -26,6 +31,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private String lastState;
 	private Boolean sourceGeoLocatedFlag;
 	private Boolean tartgetGeoLocatedFlag;
+
+	private Map<String,String> dataFelds;
+	private Map<String,String> enrichFelds;
+	private Map<String,String> scoreFelds;
 
 	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry.name";
 
@@ -50,14 +59,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		System.out.println("Please enter the new data source name: ");
 		this.dataSourceName = br.readLine();
 
+		this.dataFelds = new HashMap<>();
+		this.enrichFelds = new HashMap<>();
+		this.scoreFelds = new HashMap<>();
 
-        startNewStep("Init Configuration");
         initPartConfiguration(br);
-        finishStep();
-
-		startNewStep("Init Configuration");
 		streamingConfiguration(br);
-		finishStep();
 
 
     }
@@ -90,7 +97,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			streamingOverridingfileWriter.write("\r\n");
 
 
-			String line = String.format("########################################### New Configuration For Generic Data Source  ########################################################",dataSourceName);
+			String line = String.format("########################################### New Configuration For Generic Data Source  ########################################################");
 			writeLineToFile(line,fileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -113,21 +120,31 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Data part
             if(result)
             {
-                line = String.format("########### Data Schema",dataSourceName);
+                line = String.format("########### Data Schema");
 				writeLineToFile(line,fileWriter,true);
 
 
 				//fields
                 System.out.println(String.format("Please enter the fields for %s data schema at csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
-                String fields = br.readLine();
-				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,fields);
-				writeLineToFile(line,fileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
+                dataFieldsCsv = br.readLine();
+
+				//keep the field definition at map of <Field name,Data type> for validation
+				String [] fieldsArray = dataFieldsCsv.split(",");
+				for ( String fieldDef : fieldsArray)
+				{
+					String [] fieldDefSep = fieldDef.split(" ");
+					this.dataFelds.put(fieldDefSep[0],fieldDefSep[1]);
+				}
+
 
 
                 //write the username configuration at the streaming overriding for the enrich part
                 System.out.println(String.format("Please enter the \"username\" field name (i.e account_name or user_id ):"));
-                String usernameFieldName =  br.readLine().toLowerCase();
+                usernameFieldName =  br.readLine().toLowerCase();
+
+				//validation of the username field
+				usernameFieldName = validatedFieldExietInSchema(usernameFieldName,this.dataFelds,dataFieldsCsv);
+
                 line=String.format("impala.data.%s.table.field.username=%s",dataSourceName,usernameFieldName);
                 writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -143,6 +160,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				if (sourceIpFlag) {
 					System.out.println(String.format("Please enter the \"source ip\" field name (i.e source_ip or client_address ):"));
 					String sourceIpFieldName = br.readLine().toLowerCase();
+
+					//validation of the SOURCE IP  field
+					sourceIpFieldName = validatedFieldExietInSchema(sourceIpFieldName,this.dataFelds,dataFieldsCsv);
+
+
 					line = String.format("impala.data.%s.table.field.source_ip=%s", dataSourceName, sourceIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
 
@@ -165,17 +187,29 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 						//write the source_ip field configuration at the streaming overriding for the enrich part
 						System.out.println(String.format("Please enter the \"source machine\" field name that will contain the source ip resolving result or the machine name (i.e hostname ):"));
 						String sourceMachineFieldName = br.readLine().toLowerCase();
+
+						//validation of the SOURCE machine  field
+						sourceMachineFieldName = validatedFieldExietInSchema(sourceMachineFieldName,this.dataFelds,dataFieldsCsv);
+
 						line = String.format("impala.data.%s.table.field.hostname=%s", dataSourceName, sourceMachineFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 
 						//write the source machien classification field configuration at the streaming overriding for the enrich part
-						System.out.println(String.format("Please enter the \"source machine\" class field name, this field will contain if this is a Desktop or Server   (i.e src_class ):", this.dataSourceName));
+						System.out.println(String.format("Please enter the \"source machine\" class field name, this field will contain if this is a Desktop or Server   (i.e src_class ):"));
 						String srClassFieldName = br.readLine().toLowerCase();
+
+						//validation of the source machine class  field
+						srClassFieldName = validatedFieldExietInSchema(srClassFieldName,this.dataFelds,dataFieldsCsv);
+
 						line = String.format("impala.data.%s.table.field.src_class=%s", dataSourceName, srClassFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 
 						//configure the normalized_src_machine
-						line = String.format("impala.data.%s.table.field.normalized_src_machine=normalized_src_machine", dataSourceName);
+						//validation of the normalized_src_machine  field
+						String normalizedSrcMachine = "normalized_src_machine";
+						normalizedSrcMachine =validatedFieldExietInSchema("normalizedSrcMachine",this.dataFelds,dataFieldsCsv);
+
+						line = String.format("impala.data.%s.table.field.normalized_src_machine=%s", dataSourceName,normalizedSrcMachine);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 					}
 
@@ -184,12 +218,16 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//write the target_ip field configuration at the streaming overriding for the enrich part
-				System.out.println(String.format("Does %s will have target ip field  (i.e target_ip  ):",this.dataSourceName));
+				System.out.println(String.format("Does %s will have target ip field  (i.e target_ip  )(y/n)?",this.dataSourceName));
 				targetIpFlag =  br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
 				if (targetIpFlag) {
 					System.out.println(String.format("Please enter the \"target ip\" field name (i.e target_ip ):"));
 					String targetIpFieldName = br.readLine().toLowerCase();
+
+					//validation of the target ip  field
+					targetIpFieldName = validatedFieldExietInSchema(targetIpFieldName,this.dataFelds,dataFieldsCsv);
+
 					line = String.format("impala.data.%s.table.field.target_ip=%s", dataSourceName, targetIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
 
@@ -212,17 +250,32 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 						//write the target_ip field configuration at the streaming overriding for the enrich part
 						System.out.println(String.format("Please enter the \"target machine\" field name that will contain the target ip resolving result in case that %s doesnt contain target ip keep this empty  (i.e target_machine ):", this.dataSourceName));
 						String targetMachineFieldName = br.readLine().toLowerCase();
+
+						//validation of the target machine  field
+						targetMachineFieldName = validatedFieldExietInSchema(targetMachineFieldName,this.dataFelds,dataFieldsCsv);
+
 						line = String.format("impala.data.%s.table.field.target_machine=%s", dataSourceName, targetMachineFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 
 						//write the dest machine classification field configuration at the streaming overriding for the enrich part
-						System.out.println(String.format("Please enter the \"target machine\" class field name, this field will contain if this is a Desktop or Server   (i.e dst_class ):", this.dataSourceName));
+						System.out.println(String.format("Please enter the \"target machine\" class field name, this field will contain if this is a Desktop or Server (i.e dst_class ):"));
 						String dstClassFieldName = br.readLine().toLowerCase();
+
+						//validation of the target machine class  field
+						dstClassFieldName = validatedFieldExietInSchema(dstClassFieldName,this.dataFelds,dataFieldsCsv);
+
+
 						line = String.format("impala.data.%s.table.field.dst_class=%s", dataSourceName, dstClassFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 
+
 						//configure the normalized_dst_machine
-						line = String.format("impala.data.%s.table.field.normalized_dst_machine=normalized_dst_machine", dataSourceName);
+						//validation of the normalized_dst_machine  field
+						String normalizedDstMachine = "normalized_dst_machine";
+						normalizedDstMachine =validatedFieldExietInSchema(normalizedDstMachine,this.dataFelds,dataFieldsCsv);
+
+						//configure the normalized_dst_machine
+						line = String.format("impala.data.%s.table.field.normalized_dst_machine=%s", dataSourceName,normalizedDstMachine);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
 					}
 				}
@@ -231,6 +284,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//write the time stamp field name
 				System.out.println(String.format("Please enter the \"time stamp field name \"  (i.e date_time_unix):"));
 				String timestampFieldName =  br.readLine().toLowerCase();
+
+				//validation of the target machine class  field
+				timestampFieldName = validatedFieldExietInSchema(timestampFieldName,this.dataFelds,dataFieldsCsv);
+
 				line=String.format("impala.data.%s.table.field.epochtime=%s",dataSourceName,timestampFieldName);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -259,6 +316,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 				//is sensitive machien field
 				line = String.format("impala.data.%s.table.field.is_sensitive_machine=is_sensitive_machine",dataSourceName);
+
+				//validation of the target machine class  field
+				validatedFieldExietInSchema("is_sensitive_machine",this.dataFelds,dataFieldsCsv);
+
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -268,15 +329,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line,fileWriter,true);
                 writeLineToFile(line,streamingOverridingfileWriter,true);
 
-
-
-
-
-
-
-
-
-
+				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,dataFieldsCsv);
+				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,streamingOverridingfileWriter,true);
             }
 
             System.out.println(String.format("Dose %s Have enrich schema (y/n)?",dataSourceName));
@@ -288,16 +343,52 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile("\r\n",fileWriter,true);
 				writeLineToFile("\r\n",streamingOverridingfileWriter,true);
 
-				line = String.format("########### Enrich Schema",dataSourceName);
+				line = String.format("########### Enrich Schema");
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 
 				//fields
-                System.out.println(String.format("Please enter the fields for %s enrich schema csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
-                String fields = br.readLine();
-				line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,fields);
+				this.enrichFieldsCsv = this.dataFieldsCsv;
+
+                System.out.println(String.format("Please enter addition fields for %s enrich schema csv style with data types no need to enter the %s data schema again   (i.e )",dataSourceName,dataSourceName));
+                String enrichAdditionFields = ""+br.readLine();
+
+
+				//Validate geo location fields if needed for source ip
+				if(sourceGeoLocatedFlag)
+				{
+					validatedFieldExietInSchema("src_longtitude",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_latitude",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_countryIsoCode",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_region",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_city",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_isp",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("src_usageType",this.enrichFelds,enrichFieldsCsv);
+
+
+				}
+
+				//Validate geo location fields if needed for target ip
+				if(tartgetGeoLocatedFlag)
+				{
+					validatedFieldExietInSchema("dst_longtitude",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_latitude",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_countryIsoCode",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_region",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_city",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_isp",this.enrichFelds,enrichFieldsCsv);
+					validatedFieldExietInSchema("dst_usageType",this.enrichFelds,enrichFieldsCsv);
+
+
+				}
+
+				if (enrichAdditionFields.length()>0)
+					this.enrichFieldsCsv+=String.format(",%s",enrichAdditionFields);
+
+
+				line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,this.enrichFieldsCsv);
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -335,12 +426,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
             }
 
-			line = String.format("########### Score Schema",dataSourceName);
+			line = String.format("########### Score Schema");
 			writeLineToFile(line,fileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
             //Score part
-            System.out.println(String.format("Please enter the fields for %s score schema csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
+            System.out.println(String.format("Please enter the score fields for %s the score schema in csv style with data types  (i.e date_time_score STRING,target_score DOUBLE)",dataSourceName));
             String fields = br.readLine();
 
 			//fields
@@ -680,8 +771,6 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//User name field
-			System.out.println(String.format("Please enter the \"username\" field name (i.e account_name or user_id ):"));
-			usernameFieldName = br.readLine().toLowerCase();
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", this.dataSourceName, usernameFieldName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
@@ -1342,6 +1431,31 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
+	private String validatedFieldExietInSchema(String fieldName,Map<String,String> fieldsSchema,String fields) throws Exception
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		boolean exist =  fieldsSchema.containsKey(fieldName);
+		boolean result = false;
+
+		while (!exist) {
+				System.out.println(String.format("The %s field does not exist on the data schema you inserted do you want to add it (y/n)?", fieldName));
+				result = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+				if (result) {
+					fields += String.format(",%s STRING", fieldName);
+					this.dataFelds.put(fieldName,"STRING");
+					break;
+				}
+				System.out.println(String.format("Please enter the \"%s\" field name :",fieldName));
+				fieldName = br.readLine().toLowerCase();
+				fieldsSchema.containsKey(fieldName);
+		}
+
+			return fieldName;
+
+
+
+	}
+
     @Override
     protected int getTotalNumOfSteps() { return 1; }
 
@@ -1358,7 +1472,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         NewGDSconfigurationJob simulator = new NewGDSconfigurationJob();
-        simulator.initPartConfiguration(br);
+       try {
+		   simulator.runSteps();
+	   }
+	   catch(Exception e)
+	   {
+
+	   }
 
 
     }
