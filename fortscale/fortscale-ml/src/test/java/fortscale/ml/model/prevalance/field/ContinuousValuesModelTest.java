@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class ContinuousValuesModelTest {
 
@@ -291,9 +292,8 @@ public class ContinuousValuesModelTest {
 		String json = mapper.writeValueAsString(continuousValuesModel);
 
 		Assert.assertNotNull(json);
-		Assert.assertTrue(json.contains("\"histogram\":{\"38.4\":2.0,\"19.2\":1.0}"));
-		Assert.assertTrue(json.contains("\"histogramAvg\":32.0"));
-		Assert.assertFalse(json.contains("\"histogramStd\":050966799187808"));
+		String expected = "{\"roundNumber\":19.2,\"histogram\":{\"19.2\":1.0,\"38.4\":2.0},\"maxNumOfHistogramElements\":2,\"histogramAvg\":32.0,\"histogramStd\":9.050966799187808,\"N\":3}";
+		JSONAssert.assertEquals(expected, json, false);
 	}
 	
 	@Test
