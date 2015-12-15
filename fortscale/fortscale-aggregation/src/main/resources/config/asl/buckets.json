@@ -882,11 +882,6 @@
           "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
         },
         {
-          "name": "actions_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
-        },
-        {
           "name": "action_type_histogram",
           "featureNamesMap": {
             "groupBy": ["action_type"]
@@ -938,11 +933,6 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
-        },
-        {
-          "name": "actions_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
           "name": "action_type_histogram",
