@@ -870,23 +870,16 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "successful_actions_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Success')]"}
         },
         {
-          "name": "failure_actions_counter",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
-        },
-        {
-          "name": "action_type_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_type"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
           "name": "country_histogram",
@@ -923,23 +916,16 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "successful_actions_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Success')]"}
         },
         {
-          "name": "failure_actions_counter",
+          "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
-        },
-        {
-          "name": "action_type_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_type"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
           "name": "country_histogram",
@@ -955,6 +941,26 @@
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "country_crmsf_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "country"
       ],
       "dataSources": [
         "crmsf"
