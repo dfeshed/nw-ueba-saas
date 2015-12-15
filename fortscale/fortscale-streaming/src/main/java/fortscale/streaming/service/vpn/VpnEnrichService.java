@@ -153,9 +153,11 @@ import static fortscale.utils.ConversionUtils.*;
 		if (vpnSession.getClosedAt() != null && isAddSessionData) {
 			VpnSession vpnOpenSession = vpnService.findOpenVpnSession(vpnSession);
 			if (vpnOpenSession == null) {
-				logger.debug("got close vpn session for non existing or failed session");
+				logger.warn("got close vpn session for non existing or failed session");
 				if (dropCloseEventWhenOpenMissingAndSessionDataIsNeeded) {
+                    logger.warn("keep the closed session as is");
 					//There is no vpnOpenSession ==> skip this event.
+					logger.warn("return the close event as is");
 					return event;
 				} else if (isResolveIp) {
 					cleanSourceIpInfoFromEvent(event);

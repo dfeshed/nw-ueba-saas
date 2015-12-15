@@ -232,7 +232,7 @@
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
-		<property name="lazy" value="true"/>
+		<property name="lazyUsernameCachesUpdate" value="true"/>
 	</bean>
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>

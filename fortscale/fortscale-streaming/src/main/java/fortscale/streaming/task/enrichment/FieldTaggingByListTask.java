@@ -3,6 +3,7 @@ package fortscale.streaming.task.enrichment;
 import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
@@ -18,7 +19,6 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +50,14 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+
 		if (topicToServiceMap == null) {
 
 			topicToServiceMap = new HashMap<>();
 
 			// get spring environment to resolve properties values using configuration files
-			Environment env = SpringService.getInstance().resolve(Environment.class);
+
 
 			Map<String, ComputerTaggingConfig> configs = new HashMap<>();
 
@@ -67,10 +69,10 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
 				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
 				String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
-				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings)));
-				String filePath = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.file.path", dsSettings)));
-				String tagFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings)));
-				String taggingBaesdFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings)));
+				String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings),res);
+				String filePath = resolveStringValue(config, String.format("fortscale.events.entry.%s.file.path", dsSettings),res);
+				String tagFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings),res);
+				String taggingBaesdFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings),res);
 
 				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
 

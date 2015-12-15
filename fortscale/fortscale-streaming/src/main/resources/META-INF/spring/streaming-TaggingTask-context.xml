@@ -10,8 +10,6 @@
 
 
 
-
-
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>

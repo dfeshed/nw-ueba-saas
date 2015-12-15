@@ -5,9 +5,10 @@ package fortscale.utils.cloudera;
  */
 
 import com.cloudera.api.ClouderaManagerClientBuilder;
+import com.cloudera.api.DataView;
 import com.cloudera.api.model.*;
-import com.cloudera.api.v6.RootResourceV6;
-import com.cloudera.api.v6.ServicesResourceV6;
+import com.cloudera.api.v10.RootResourceV10;
+import com.cloudera.api.v10.ServicesResourceV10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,8 @@ public class ClouderaUtils {
     private static Logger logger = LoggerFactory.getLogger(ClouderaUtils.class);
 
     private static final int DEFAULT_TIMEOUT = 30;
-    private static RootResourceV6 apiRoot;
-    private static ServicesResourceV6 servicesRes;
+    private static RootResourceV10 apiRoot;
+    private static ServicesResourceV10 servicesRes;
 
     static class ClouderaManagerClientBuilderFactoryHelper {
         ClouderaManagerClientBuilder makeClouderaManagerClientBuilder(){
@@ -38,7 +39,7 @@ public class ClouderaUtils {
     }
     private void init(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass) {
         logger.debug("initializing cloudera manager utils");
-        apiRoot = factoryHelper.makeClouderaManagerClientBuilder().withHost(serverHost).withUsernamePassword(cmAdminUser, cmAdminPass).build().getRootV6();
+        apiRoot = factoryHelper.makeClouderaManagerClientBuilder().withHost(serverHost).withUsernamePassword(cmAdminUser, cmAdminPass).build().getRootV10();
         servicesRes = apiRoot.getClustersResource().getServicesResource(clusterName);
     }
 
@@ -119,11 +120,25 @@ public class ClouderaUtils {
      */
     public boolean validateServiceStartedOrStopped(String serviceName, boolean isStop) {
         ApiRoleState validationValue = isStop ? ApiRoleState.STOPPED : ApiRoleState.STARTED;
+        boolean serviceInstalled = false;
         logger.debug("checking if service {} is {}", serviceName, validationValue);
-        for (ApiRole role : servicesRes.getRolesResource(serviceName).readRoles() ){
-            if (servicesRes.getRolesResource(serviceName).readRole(role.getName()).getRoleState() != validationValue) {
-                return false;
+        ApiServiceList apiServices = servicesRes.readServices(DataView.SUMMARY);
+
+        for (ApiService apiService : apiServices){
+            if (apiService.getName().equals(serviceName)){
+                serviceInstalled = true; break;
             }
+        }
+
+        if (serviceInstalled){ //do not try to stop a service that is not installed
+            for (ApiRole role : servicesRes.getRolesResource(serviceName).readRoles() ){
+                if (servicesRes.getRolesResource(serviceName).readRole(role.getName()).getRoleState() != validationValue) {
+                    logger.warn("service {} is not {}", serviceName, validationValue);
+                    return false;
+                }
+            }
+        } else {
+            logger.warn("Service {} is not installed", serviceName);
         }
         return true;
     }

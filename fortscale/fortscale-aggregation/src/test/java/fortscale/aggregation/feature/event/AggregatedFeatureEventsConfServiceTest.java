@@ -2,13 +2,14 @@ package fortscale.aggregation.feature.event;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import net.minidev.json.JSONObject;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
+import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,14 +35,14 @@ public class AggregatedFeatureEventsConfServiceTest {
     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Test
-    public void getAggregatedFeatureEventConfTest() {
+    public void getAggregatedFeatureEventConfTest() throws JSONException {
         AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf("name1");
         assertAggregatedFeatureEventConf1(aggregatedFeatureEventConf);
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf("name2");
         assertAggregatedFeatureEventConf2(aggregatedFeatureEventConf);
     }
 
-    private void assertAggregatedFeatureEventConf1(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
+    private void assertAggregatedFeatureEventConf1(AggregatedFeatureEventConf aggregatedFeatureEventConf) throws JSONException {
         String bucketConfName = aggregatedFeatureEventConf.getBucketConfName();
         FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
         JSONObject aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
@@ -58,12 +59,12 @@ public class AggregatedFeatureEventsConfServiceTest {
 
         Assert.assertEquals("bc1", bucketConfName);
         Assert.assertEquals(BUCKET_CONF_AS_STRING1, featureBucketConf.toString());
-        Assert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING1, aggrFeatureEventFunction.toString());
+        JSONAssert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING1, aggrFeatureEventFunction.toString(), false);
         Assert.assertEquals("name1", name);
         Assert.assertEquals(1, bucketLeap);
         Assert.assertEquals(false, fireEventsAlsoForEmptyBucketTicks);
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING1, featureNameMap.toString());
-        Assert.assertEquals(FEATURE_NAMES_AS_STRING1, featureNames.toString());
+        JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING1, featureNames.toString(), false);
         Assert.assertEquals("number_of_ssh_events_hourly", anomalyType);
         Assert.assertEquals("HIGHEST_SCORE", evidencesFilterStrategy);
         Assert.assertEquals(1, numberOfBuckets);
@@ -71,7 +72,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals("hourly_feature_retention_strategy", retentionStrategyName);
     }
 
-    private void assertAggregatedFeatureEventConf2(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
+    private void assertAggregatedFeatureEventConf2(AggregatedFeatureEventConf aggregatedFeatureEventConf) throws JSONException {
         String bucketConfName = aggregatedFeatureEventConf.getBucketConfName();
         FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
         JSONObject aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
@@ -87,13 +88,13 @@ public class AggregatedFeatureEventsConfServiceTest {
         String retentionStrategyName = aggregatedFeatureEventConf.getRetentionStrategyName();
 
         Assert.assertEquals("bc2", bucketConfName);
-        Assert.assertEquals(BUCKET_CONF_AS_STRING2, featureBucketConf.toString());
-        Assert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2, aggrFeatureEventFunction.toString());
+        JSONAssert.assertEquals(BUCKET_CONF_AS_STRING2, featureBucketConf.toString(), false);
+        JSONAssert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2, aggrFeatureEventFunction.toString(), false);
         Assert.assertEquals("name2", name);
         Assert.assertEquals(2, bucketLeap);
         Assert.assertEquals(false, fireEventsAlsoForEmptyBucketTicks);
-        Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING2, featureNameMap.toString());
-        Assert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString());
+        JSONAssert.assertEquals(FEATURE_NAME_MAP_AS_STRING2, featureNameMap.toString(), false);
+        JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString(), false);
         Assert.assertEquals("number_of_ssh_events_daily", anomalyType);
         Assert.assertEquals("HIGHEST_SCORE_PER_VALUE", evidencesFilterStrategy);
         Assert.assertEquals(2, numberOfBuckets);
@@ -101,7 +102,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals("daily_feature_retention_strategy", retentionStrategyName);
     }
     @Test
-    public void getAggregatedFeatureEventConfListTest() {
+    public void getAggregatedFeatureEventConfListTest() throws JSONException {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
 
         Assert.assertEquals(2, aggregatedFeatureEventConfs.size());

@@ -2,13 +2,11 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.ml.model.data.type.ContinuousDataHistogram;
-import fortscale.ml.model.data.type.IData;
+import fortscale.aggregation.feature.util.GenericHistogram;
 
 import java.util.Date;
 import java.util.Map;
-
-import static fortscale.utils.time.TimestampUtils.convertToSeconds;
+import java.util.concurrent.TimeUnit;
 
 public class ContinuousDataHistogramExponentialDecay implements IDataRetrieverFunction {
     public static final String DATA_RETRIEVER_FUNCTION_TYPE = "continuous_data_histogram_exponential_decay";
@@ -17,23 +15,26 @@ public class ContinuousDataHistogramExponentialDecay implements IDataRetrieverFu
     private final long timeRangeIntervalInSeconds;
 
     @JsonCreator
-    public ContinuousDataHistogramExponentialDecay(@JsonProperty("base") float base,
-                                                   @JsonProperty("timeRangeIntervalInSeconds") long timeRangeIntervalInSeconds) {
+    public ContinuousDataHistogramExponentialDecay(
+            @JsonProperty("base") float base,
+            @JsonProperty("timeRangeIntervalInSeconds") long timeRangeIntervalInSeconds) {
+
         this.base = base;
         this.timeRangeIntervalInSeconds = timeRangeIntervalInSeconds;
     }
 
     @Override
-    public ContinuousDataHistogram execute(IData data, Date currentTime) {
-        ContinuousDataHistogram histogram = (ContinuousDataHistogram)data;
-        ContinuousDataHistogram res = new ContinuousDataHistogram(data.getStartTime(), data.getEndTime());
+    public Object execute(Object data, Date dataTime, Date currentTime) {
+        GenericHistogram oldHistogram = (GenericHistogram)data;
+        GenericHistogram newHistogram = new GenericHistogram();
 
-        long timeDifferenceInSeconds = convertToSeconds(currentTime.getTime()) - convertToSeconds(data.getStartTime().getTime());
-        double decayFactor = Math.pow(base, Math.floor(timeDifferenceInSeconds / timeRangeIntervalInSeconds));
+        long timeDifferenceInSeconds = TimeUnit.MILLISECONDS.toSeconds(currentTime.getTime() - dataTime.getTime());
+        double decayFactor = Math.pow(base, timeDifferenceInSeconds / timeRangeIntervalInSeconds);
 
-        for (Map.Entry<Double, Double> entry : histogram.getMap().entrySet()) {
-            res.add(entry.getKey(), entry.getValue() * decayFactor);
+        for (Map.Entry<String, Double> entry : oldHistogram.getHistogramMap().entrySet()) {
+            newHistogram.add(entry.getKey(), entry.getValue() * decayFactor);
         }
-        return res;
+
+        return newHistogram;
     }
 }

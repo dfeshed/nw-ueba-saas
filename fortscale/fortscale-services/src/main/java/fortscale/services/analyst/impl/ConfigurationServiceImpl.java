@@ -1,13 +1,12 @@
 package fortscale.services.analyst.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.math.IntRange;
-import org.apache.commons.lang.math.Range;
+import fortscale.domain.analyst.FortscaleConfiguration;
+import fortscale.domain.analyst.ScoreConfiguration;
+import fortscale.domain.analyst.ScoreWeight;
+import fortscale.domain.analyst.dao.FortscaleConfigurationRepository;
+import fortscale.services.analyst.ConfigurationService;
+import fortscale.services.classifier.Classifier;
+import fortscale.services.impl.SeverityElement;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,15 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.analyst.Analyst;
-import fortscale.domain.analyst.FortscaleConfiguration;
-import fortscale.domain.analyst.ScoreConfiguration;
-import fortscale.domain.analyst.ScoreWeight;
-import fortscale.domain.analyst.dao.FortscaleConfigurationRepository;
-import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.fe.Classifier;
-import fortscale.services.impl.SeverityElement;
+import java.util.*;
 
 
 @Service("configurationService")
@@ -33,7 +24,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	private List<SeverityElement> severityOrderedList;
 	
 	private Map<String, Classifier> classifiersMap;
-	
+
 	@Value("${score.distribution:Critical:95,High:80,Medium:50,Low:0}")
 	private String scoreDistribution;
 	
@@ -51,12 +42,6 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			return null;
 		}
 		return fortscaleConfigurations.get(0).getConfObj();
-	}
-
-	@Override
-	public void setScoreConfiguration(ScoreConfiguration scoreConfiguration,
-			Analyst createdBy) {
-		setScoreConfiguration(scoreConfiguration, createdBy.getId(), createdBy.getUserName());
 	}
 	
 	@Override
@@ -83,7 +68,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 		}
 		
 		setScoreDistribution(scoreDistribution);
-		
+
 		classifiersMap = new HashMap<String, Classifier>();
 		for(Classifier classifier: Classifier.values()){
 			classifiersMap.put(classifier.getId(), classifier);
@@ -94,35 +79,6 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	@Override
 	public List<SeverityElement> getSeverityElements() {
 		return severityOrderedList;
-	}
-	
-	@Override
-	public Range getRange(String severityId){
-		if(severityId == null){
-			return new IntRange(0, 101);
-		}
-		int i = 0;
-		for(SeverityElement element: getSeverityElements()){
-			if(element.getName().equals(severityId)){
-				break;
-			}
-			i++;
-		}
-		if(getSeverityElements().size() == i){
-			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
-		}
-		int lowestVal = getSeverityElements().get(i).getValue();
-		int upperVal = 101;
-		if(i > 0){
-			upperVal = getSeverityElements().get(i-1).getValue();
-		}
-		
-		return new IntRange(lowestVal, upperVal);
-	}
-	
-	@Override
-	public Map<String, Classifier> getClassifiersMap(){
-		return classifiersMap;
 	}
 
 	@Override
@@ -136,12 +92,4 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 		severityOrderedList = tmp;
 		this.scoreDistribution = scoreDistribution;
 	}
-	
-	@Override
-	public void setScoreDistribution(List<SeverityElement> severityList){
-		Collections.sort(severityList, new SeverityElement.OrderByValueDesc());
-		severityOrderedList = severityList;
-		this.scoreDistribution = null;
-	}
-
 }
