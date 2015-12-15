@@ -94,7 +94,7 @@
 				<constructor-arg name="topic" value="${pxgrid.resolver.cache.updates.topic}" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
+		<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
 	</bean>
 	<bean id="pxGridBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
