@@ -11,7 +11,9 @@ import static fortscale.utils.ConversionUtils.convertToDouble;
 
 public class ContinuousHistogramModelBuilder implements IModelBuilder {
     public static final String MODEL_BUILDER_TYPE = "continuous_data_histogram";
-    private static final int DEFAULT_NUM_OF_DIGITS_AFTER_POINT = 3;
+    private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
+    private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
+            "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
 
     @Override
     public Model build(Object modelBuilderData) {
@@ -35,9 +37,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         double sd = Math.sqrt(sum / totalCount);
 
         ContinuousDataModel model = new ContinuousDataModel();
-        mean = round(mean, DEFAULT_NUM_OF_DIGITS_AFTER_POINT);
-        sd = round(sd, DEFAULT_NUM_OF_DIGITS_AFTER_POINT);
-        model.setParameters((long)totalCount, mean, sd);
+        model.setParameters((long)totalCount, round(mean), round(sd));
         return model;
     }
 
@@ -47,25 +47,12 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {
-        Assert.notNull(modelBuilderData, "Model builder data cannot be null.");
-
-        String errorMsg = String.format("Model builder data must be of type %s.",
-                GenericHistogram.class.getSimpleName());
-        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, errorMsg);
-
+        Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
+        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
         return (GenericHistogram)modelBuilderData;
     }
 
-    private static double round(double value, int numOfDigitsAfterPoint) {
-        if (numOfDigitsAfterPoint < 0) {
-            numOfDigitsAfterPoint = DEFAULT_NUM_OF_DIGITS_AFTER_POINT;
-        }
-
-        try {
-            double helper = Math.pow(10.0, numOfDigitsAfterPoint);
-            return Math.round(value * helper) / helper;
-        } catch (Exception e) {
-            return value;
-        }
+    private static double round(double value) {
+        return Math.round(value * 1000) / 1000d;
     }
 }

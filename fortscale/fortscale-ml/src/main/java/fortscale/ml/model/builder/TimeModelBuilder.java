@@ -9,6 +9,9 @@ import org.springframework.util.Assert;
 
 public class TimeModelBuilder implements IModelBuilder {
     public static final String MODEL_BUILDER_TYPE = "time";
+    private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
+    private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
+            "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
 
     private final int timeResolution;
     private final int bucketSize;
@@ -40,12 +43,8 @@ public class TimeModelBuilder implements IModelBuilder {
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {
-        Assert.notNull(modelBuilderData, "Model builder data cannot be null.");
-
-        String errorMsg = String.format("Model builder data must be of type %s.",
-                GenericHistogram.class.getSimpleName());
-        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, errorMsg);
-
+        Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
+        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
         return (GenericHistogram)modelBuilderData;
     }
 }
