@@ -7,7 +7,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -59,9 +59,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		System.out.println("Please enter the new data source name: ");
 		this.dataSourceName = br.readLine();
 
-		this.dataFelds = new HashMap<>();
-		this.enrichFelds = new HashMap<>();
-		this.scoreFelds = new HashMap<>();
+		this.dataFelds = new LinkedHashMap<>();
+		this.enrichFelds = new LinkedHashMap<>();
+		this.scoreFelds = new LinkedHashMap<>();
 
         initPartConfiguration(br);
 		streamingConfiguration(br);
@@ -125,8 +125,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Data part
             if(result)
             {
-                line = String.format("########### Data Schema");
-				writeLineToFile(line,fileWriter,true);
+
 
 
 				//fields
@@ -327,6 +326,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line,fileWriter,true);
 
 
+				line = String.format("########### Data Schema");
+				writeLineToFile(line,fileWriter,true);
 
                 //delimiter
                 System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
@@ -854,7 +855,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//In case of fake domain - enter the actual domain value the PS want
 			System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty valuefor keeping the name without domain): "));
-			String domainValue = br.readLine().toLowerCase();
+			String domainValue = br.readLine();
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.fake=%s", dataSourceName, domainValue);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
@@ -1006,7 +1007,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//reslove also a target ip
 			if (targetIpResolvingFlag) {
 
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_targetIp",lastState,"fortscale-generic-data-access-resolved");
+				writeLineToFile("", taskPropertiesFileWriter, true);
+
+				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_targetIp",lastState,"fortscale-generic-data-access-ip-resolved");
 
 
 				//partition field name  (today we use for all the username)
@@ -1031,20 +1034,20 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//short name
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.shortName=%s", this.dataSourceName, shortNameUsage.toString());
+				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.shortName=%s", this.dataSourceName, shortNameUsage.toString());
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//Remove last Dot
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.isRemoveLastDot=%s", this.dataSourceName, removeLastDotUsage.toString());
+				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.isRemoveLastDot=%s", this.dataSourceName, removeLastDotUsage.toString());
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//Drop When Fail
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.dropWhenFail=%s", this.dataSourceName, dropOnFailUsage.toString());
+				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.dropWhenFail=%s", this.dataSourceName, dropOnFailUsage.toString());
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
 				//Override IP with Hostname
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.overrideIPWithHostname=%s", this.dataSourceName, overrideIpWithHostNameUsage.toString());
+				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.overrideIPWithHostname=%s", this.dataSourceName, overrideIpWithHostNameUsage.toString());
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				lastState="IpResolvingStreamTask";
@@ -1495,7 +1498,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		writeLineToFile(line, taskPropertiesFileWriter, true);
 
 		//data source
-		line = String.format("%s.%s_%s.data.source=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,name, this.dataSourceName);
+		line = String.format("%s.%s_%s.data.source=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,name, this.dataSourceName.toLowerCase());
 		writeLineToFile(line, taskPropertiesFileWriter, true);
 
 		//last state
