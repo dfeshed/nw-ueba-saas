@@ -26,20 +26,20 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "destination_machine_with_high_score_histogram",
+          "name": "destination_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["destination_machine"],
+            "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "failure_code_histogram",
@@ -49,12 +49,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "failure_code_with_high_score_histogram",
+          "name": "failure_code_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": ["failure_code"],
+            "maximize": ["failure_codescore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "events_counter",
@@ -69,9 +69,10 @@
         },
         {
           "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "featureNamesMap": {
+            "aaa": "date_time_score"
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -108,20 +109,20 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "destination_machine_with_high_score_histogram",
+          "name": "destination_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["destination_machine"],
+            "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "failure_code_histogram",
@@ -131,12 +132,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "failure_code_with_high_score_histogram",
+          "name": "failure_code_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": ["failure_code"],
+            "maximize": ["failure_codescore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "events_counter",
@@ -197,20 +198,20 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "destination_machine_with_high_score_histogram",
+          "name": "destination_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["destination_machine"],
+            "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "events_counter",
@@ -277,20 +278,20 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "destination_machine_with_high_score_histogram",
+          "name": "destination_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["destination_machine"],
+            "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
           "name": "events_counter",
@@ -374,20 +375,20 @@
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "country_with_high_score_histogram",
+          "name": "country_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": ["country"],
+            "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         }
       ]
     },
@@ -441,20 +442,20 @@
           "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
-          "name": "source_machine_with_high_score_histogram",
+          "name": "source_machine_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         },
         {
-          "name": "country_with_high_score_histogram",
+          "name": "country_to_highest_score",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": ["country"],
+            "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
         }
       ]
     },
