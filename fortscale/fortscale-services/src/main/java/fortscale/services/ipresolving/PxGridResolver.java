@@ -27,7 +27,7 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 
 	@Autowired private PxGridEventRepository pxGridEventRepository;
 
-	@Value("${pxGrid.resolver.leaseTimeInMins:1}") private int graceTimeInMins;
+	@Value("${pxgrid.resolver.leaseTimeInMins:1}") private int graceTimeInMins;
 
 	@Autowired @Qualifier("pxGridResolverCache") private CacheHandler<String, PxGridIPEvent> cache;
 
