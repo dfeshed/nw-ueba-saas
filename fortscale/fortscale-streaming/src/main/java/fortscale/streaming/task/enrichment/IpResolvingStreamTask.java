@@ -5,6 +5,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
@@ -50,6 +51,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     private final static String dhcpCacheKey = "dhcp-cache";
 	private final static String iseCacheKey = "ise-cache";
+    private final static String pxGridCacheKey = "pxGrid-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
@@ -77,6 +79,11 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
+
+            LevelDbBasedCache<String, PxGridIPEvent> pxGridCache = new LevelDbBasedCache<String,PxGridIPEvent>(
+                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
+            resolver.getPxGridResolver().setCache(pxGridCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
             LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);

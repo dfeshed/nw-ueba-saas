@@ -3,7 +3,9 @@ package fortscale.collection.jobs.event.process;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.ipresolving.IseResolver;
+import fortscale.services.ipresolving.PxGridResolver;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -22,12 +24,12 @@ public class PxGridEventsProcessJob extends EventProcessJob {
     private static Logger logger = LoggerFactory.getLogger(PxGridEventsProcessJob.class);
 
     @Autowired
-    private IseResolver iseResolver;
+    private PxGridResolver pxGridResolver;
 
     @Autowired
     private JobDataMapExtension jobDataMapExtension;
 
-    private RecordToBeanItemConverter<IseEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<IseEvent>(new IseEvent());
+    private RecordToBeanItemConverter<PxGridIPEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<PxGridIPEvent>(new PxGridIPEvent());
 
     @Override
     protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -50,9 +52,9 @@ public class PxGridEventsProcessJob extends EventProcessJob {
             return false;
 
         try {
-            IseEvent iseEvent = new IseEvent();
-            recordToBeanItemConverter.convert(record, iseEvent);
-            iseResolver.addIseEvent(iseEvent);
+            PxGridIPEvent pxGridIPEvent = new PxGridIPEvent();
+            recordToBeanItemConverter.convert(record, pxGridIPEvent);
+            pxGridResolver.addPxGridEvent(pxGridIPEvent);
             return true;
         } catch (Exception e) {
             logger.warn(String.format("error writing record %s to mongo", record.toString()));

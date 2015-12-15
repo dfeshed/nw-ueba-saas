@@ -152,8 +152,6 @@ public class PxGridFetchJob extends FortscaleJob {
 				// disconnect from pxGrid
 				recon.stop();
 			}
-			outputTempFile.flush();
-			outputTempFile.close();
 		}
 	}
 
