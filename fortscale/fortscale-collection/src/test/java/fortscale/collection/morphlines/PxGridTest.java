@@ -18,7 +18,7 @@ public class PxGridTest {
 
     private MorphlinesTester morphlineTester = new MorphlinesTester();
     private String confFile = "resources/conf-files/parsePxGrid.conf";
-    private String[] iseOutputFields = new String[]{"event_time", "hostname", "ipaddress","adHostName"};
+    private String[] iseOutputFields = new String[]{"createdAt","timestampepoch", "hostname", "ipaddress","adHostName"};
 
     @SuppressWarnings("resource")
 	@BeforeClass
@@ -49,7 +49,7 @@ public class PxGridTest {
                 $(
                         "Regular event",
                         "Mon Dec 14 14:30:12 IST 2015,192.168.0.81,zehavitv",
-                        "1450096212,zehavitv,192.168.0.81,false"
+                        "Mon Dec 14 14:30:12 IST 2015,1450096212,zehavitv,192.168.0.81,false"
                 )
         );
     }
