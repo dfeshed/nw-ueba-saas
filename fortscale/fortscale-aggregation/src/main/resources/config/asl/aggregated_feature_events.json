@@ -472,7 +472,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -492,7 +492,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -512,7 +512,7 @@
         "anomalyType": "destination_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "destination_machine_to_highest_score_map"
           ]
         },
@@ -532,7 +532,7 @@
         "anomalyType": "destination_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "destination_machine_to_highest_score_map"
           ]
         },
@@ -552,7 +552,7 @@
         "anomalyType": "failure_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "failure_code_to_highest_score_map"
           ]
         },
@@ -572,7 +572,7 @@
         "anomalyType": "failure_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "failure_code_to_highest_score_map"
           ]
         },
@@ -629,7 +629,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -649,7 +649,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -669,7 +669,7 @@
         "anomalyType": "destination_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "destination_machine_to_highest_score_map"
           ]
         },
@@ -689,7 +689,7 @@
         "anomalyType": "destination_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "destination_machine_to_highest_score_map"
           ]
         },
@@ -782,7 +782,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -802,7 +802,7 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "source_machine_to_highest_score_map"
           ]
         },
@@ -822,7 +822,7 @@
         "anomalyType": "country",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "country_to_highest_score_map"
           ]
         },
@@ -842,7 +842,7 @@
         "anomalyType": "country",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "pluck": [
+          "pick": [
             "country_to_highest_score_map"
           ]
         },

@@ -11,7 +11,7 @@ import java.util.*;
 public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 
 	private void assertBucketsAggregatedCorrectly(final Map<String[], Integer> expectedFeaturesGroupToMax, Pair<String[], Integer>[]... featureValuesAndNumbersInBucketList) {
-		String pluckFeatureName = "source_machine_to_highest_score_map";
+		String pickFeatureName = "source_machine_to_highest_score_map";
 
 		final boolean[] calculateMapAggrFeatureValueWasCalled = {false};
 		AbstractAggrFeatureEventFeatureToMaxMapFunc f = new AbstractAggrFeatureEventFeatureToMaxMapFunc() {
@@ -30,9 +30,9 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 		};
 
 		List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList =
-				AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultipleBucketsAggrFeaturesMapList(pluckFeatureName, featureValuesAndNumbersInBucketList);
+				AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultipleBucketsAggrFeaturesMapList(pickFeatureName, featureValuesAndNumbersInBucketList);
 		f.calculateAggrFeature(
-				AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf("sum_of_highest_scores_over_src_machines_vpn_hourly", pluckFeatureName),
+				AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf("sum_of_highest_scores_over_src_machines_vpn_hourly", pickFeatureName),
 				multipleBucketsAggrFeaturesMapList);
 
 		Assert.assertTrue(calculateMapAggrFeatureValueWasCalled[0]);

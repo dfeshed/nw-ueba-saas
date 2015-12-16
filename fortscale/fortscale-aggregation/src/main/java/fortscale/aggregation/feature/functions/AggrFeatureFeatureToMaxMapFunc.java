@@ -14,6 +14,19 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Aggregate events into a mapping from a group of features to a maximal number (of type Map<List<String>, Integer>).
+ * This is best explained using an example:
+ * Suppose a user accesses several machines from several machines many times, and each access gets some score.
+ * This class can be used in order to know the maximal score each pair of source machine and destination machine got.
+ * In this case, the features group will be the tuple (source machine's name, destination machine's name).
+ * Each of the values of this tuple will be extracted from the features' values contained in the aggregated events.
+ * The score (which is to be maximized) is also extracted from the events's features.
+ *
+ * Parameters this class gets from the ASL:
+ * 1. groupBy: a list containing the names of the features whose values should be used as a key of the resulting map.
+ * 2. maximize: the name of the feature whose numeric value should be extracted and maximized.
+ */
 @JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {

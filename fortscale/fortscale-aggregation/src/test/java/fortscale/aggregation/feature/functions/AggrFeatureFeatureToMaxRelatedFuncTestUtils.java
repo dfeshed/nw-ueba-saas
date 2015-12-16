@@ -15,11 +15,11 @@ import java.util.*;
  */
 public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 
-	public static AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, String pluckFeatureName) {
-		List<String> pluckFeatureNameList = new ArrayList<>();
-		pluckFeatureNameList.add(pluckFeatureName);
+	public static AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, String pickFeatureName) {
+		List<String> pickFeatureNameList = new ArrayList<>();
+		pickFeatureNameList.add(pickFeatureName);
 		Map<String, List<String>> map = new HashMap<>();
-		map.put(AbstractAggrFeatureEventFeatureToMaxMapFunc.PLUCK_FIELD_NAME, pluckFeatureNameList);
+		map.put(AbstractAggrFeatureEventFeatureToMaxMapFunc.PICK_FIELD_NAME, pickFeatureNameList);
 		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE", map, new JSONObject());
 	}
 
