@@ -103,7 +103,8 @@ public class BatchScheduler {
 
 	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
-		
+
+		startJob("Custom", "Tagging", params);
 		startJob("Computer_Fetch", "AD", params);
 		startJob("Computer_ETL", "AD", params);
 		startJob("Computer", "Tagging", params);
