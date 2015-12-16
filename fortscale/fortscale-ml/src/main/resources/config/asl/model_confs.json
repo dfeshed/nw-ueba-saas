@@ -1,7 +1,314 @@
 {
   "ModelConfs": [
     {
-      "name": "data_bucket_normalized_username_vpn_session_daily",
+      "name": "date_time_unix_normalized_username_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily",
+        "featureName": "date_time_unix_histogram"
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600
+      }
+    },
+    {
+      "name": "source_machine_normalized_username_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily",
+        "featureName": "source_machine_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "destination_machine_normalized_username_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily",
+        "featureName": "destination_machine_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "failure_code_normalized_username_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_kerberos_logins_daily",
+        "featureName": "failure_code_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_source_machine_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "source_machine_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "source_machine_kerberos_logins_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_destination_machine_kerberos_logins_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "destination_machine_kerberos_logins_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "destination_machine_kerberos_logins_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "date_time_unix_normalized_username_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_ssh_daily",
+        "featureName": "date_time_unix_histogram"
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600
+      }
+    },
+    {
+      "name": "source_machine_normalized_username_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_ssh_daily",
+        "featureName": "source_machine_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "destination_machine_normalized_username_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_ssh_daily",
+        "featureName": "destination_machine_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "auth_method_normalized_username_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_ssh_daily",
+        "featureName": "auth_method_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_source_machine_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "source_machine_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "source_machine_ssh_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_destination_machine_ssh_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "destination_machine_ssh_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "destination_machine_ssh_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "date_time_unix_normalized_username_vpn_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_vpn_daily",
+        "featureName": "date_time_unix_histogram"
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600
+      }
+    },
+    {
+      "name": "country_normalized_username_vpn_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [
+          {
+            "type": "discrete_data_histogram_ignore_pattern",
+            "ignorePattern": "Reserved Range"
+          }
+        ],
+        "featureBucketConfName": "normalized_username_vpn_daily",
+        "featureName": "country_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "hostname_normalized_username_vpn_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [
+          {
+            "type": "discrete_data_histogram_ignore_pattern",
+            "ignorePattern": null
+          }
+        ],
+        "featureBucketConfName": "normalized_username_vpn_daily",
+        "featureName": "hostname_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_city_vpn_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "city_vpn_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "city_vpn_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "date_time_unix_normalized_username_vpn_session_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_session_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_vpn_session_daily",
+        "featureName": "date_time_unix_histogram"
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600
+      }
+    },
+    {
+      "name": "country_normalized_username_vpn_session_daily",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -11,16 +318,141 @@
         "timeRangeInSeconds": 7776000,
         "functions": [
           {
-            "type": "continuous_data_histogram_exponential_decay",
-            "base": 0.99,
-            "timeRangeIntervalInSeconds": 86400
+            "type": "discrete_data_histogram_ignore_pattern",
+            "ignorePattern": "Reserved Range"
           }
         ],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
-        "featureName": "data_bucket_histogram"
+        "featureName": "country_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "hostname_normalized_username_vpn_session_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_session_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [
+          {
+            "type": "discrete_data_histogram_ignore_pattern",
+            "ignorePattern": null
+          }
+        ],
+        "featureBucketConfName": "normalized_username_vpn_session_daily",
+        "featureName": "hostname_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "databucket_normalized_username_vpn_session_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_vpn_session_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_vpn_session_daily",
+        "featureName": "databucket_histogram"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_city_vpn_session_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "city_vpn_session_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "city_vpn_session_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "date_time_unix_normalized_username_amt_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_amt_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_amt_daily",
+        "featureName": "date_time_unix_histogram"
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600
+      }
+    },
+    {
+      "name": "source_machine_normalized_username_amt_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_amt_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_amt_daily",
+        "featureName": "source_machine_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "action_code_normalized_username_amt_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "normalized_username_amt_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "normalized_username_amt_daily",
+        "featureName": "action_code_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
+      }
+    },
+    {
+      "name": "normalized_username_source_machine_amt_daily",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "source_machine_amt_daily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "source_machine_amt_daily",
+        "featureName": "normalized_username_histogram"
+      },
+      "builder": {
+        "type": "discrete_model_builder"
       }
     }
   ]
