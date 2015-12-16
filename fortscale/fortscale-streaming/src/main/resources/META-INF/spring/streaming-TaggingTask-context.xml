@@ -62,6 +62,15 @@
         <constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
+    <bean id="pxGridResolverCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+        <constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+    </bean>
+    <bean id="pxGridBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${pxgrid.resolver.blacklist.timeToExpireSec:7200}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
         <constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
@@ -81,6 +90,10 @@
     <bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
         <constructor-arg name="ipBlackListCache" ref="iseBlacklistCache" />
+    </bean>
+    <bean id="pxGridResolver" class="fortscale.services.ipresolving.PxGridResolver" scope="singleton" >
+        <constructor-arg name="shouldUseBlackList" value="${pxgrid.resolver.shouldUseBlackList:true}" />
+        <constructor-arg name="ipBlackListCache" ref="pxGridBlacklistCache" />
     </bean>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
