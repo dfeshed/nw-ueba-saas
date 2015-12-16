@@ -39,7 +39,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private Map<String,String> enrichFelds;
 	private Map<String,String> scoreFelds;
 
-	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry.name";
+	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
 
 
     @Value("${fortscale.data.source}")
@@ -92,7 +92,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      */
     public void initPartConfiguration(BufferedReader br){
 
-        File file = new File(root+"/fortscale/fortscale-core/fortscale/fortscale-collection/resources/fortscale-collection-overriding.properties");
+        File file = new File(root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
 		File streamingOverridingFile = new File (root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
@@ -169,6 +169,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 					System.out.println(String.format("Does %s supposed to geo locate the source ip (y/n)?", dataSourceName));
 					brResult =br.readLine().toLowerCase();
 					sourceGeoLocatedFlag = brResult.equals("y") || brResult.equals("yes");
+
+
 
 
 					System.out.println(String.format("Does %s will have source ip resolving (y/n)?",this.dataSourceName));
@@ -325,7 +327,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 //no target ip - maybe this event have any other target kind representation - target device/computer/website/file etc
                 else
                 {
-                    System.out.println(String.format("Does %s will have source name from raw data (i.e source machine/user/device/website  ) (y/n)?",this.dataSourceName));
+                    System.out.println(String.format("Does %s will have target name from raw data (i.e target machine/user/device/website  ) (y/n)?",this.dataSourceName));
                     brResult =br.readLine().toLowerCase();
                     targetFlag = brResult.equals("y") || brResult.equals("yes");
 
@@ -369,29 +371,44 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 				writeLineToFile(line,fileWriter,true);
 
+                //configure the normalized_username
+                //validation of the normalized_username  field
+                String normalizedUserName = "normalized_username";
+                validatedFieldExietInSchema(normalizedUserName,this.dataFelds,dataFieldsCsv,"autoAddition");
+
 
 				line = String.format("########### Data Schema");
 				writeLineToFile(line,fileWriter,true);
+
+                line=String.format("impala.%s.have.data=true",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
 
                 //delimiter
                 System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
                 String delimiter = br.readLine();
                 line = String.format("impala.data.%s.table.delimiter=%s",dataSourceName,delimiter);
 				writeLineToFile(line,fileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
+
 
                 //table name
                 System.out.println(String.format("Please enter the %s data table name  (i.e sshdata )",dataSourceName));
                 String dataTableName = br.readLine();
                 line = String.format("impala.data.%s.table.name=%s",dataSourceName,dataTableName);
 				writeLineToFile(line,fileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
+
 
 
                 //hdfs paths
                 line = String.format("hdfs.user.data.%s.path=${hdfs.user.data.path}/%s",dataSourceName,dataSourceName);
 				writeLineToFile(line,fileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
+
+
+                //hdfs retention
+                line = String.format("hdfs.user.data.%s.retention=90",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
+
+
+
 
 
 				//is sensitive machien field
@@ -407,14 +424,17 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 //partition type
                 line = String.format("impala.data.%s.table.partition.type=monthly",dataSourceName);
 				writeLineToFile(line,fileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
+
 
 				//align the field list csv
 				dataFieldsCsv = alignTheFieldList(this.dataFelds);
 
 				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,dataFieldsCsv);
 				writeLineToFile(line,fileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
+
+
+
+
             }
 
             System.out.println(String.format("Dose %s Have enrich schema (y/n)?",dataSourceName));
@@ -431,6 +451,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				line = String.format("########### Enrich Schema");
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
+
+                line=String.format("impala.%s.have.enrich=true",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
 
 
 				//fields
@@ -450,11 +473,17 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//Validate geo location fields if needed for source ip
 				if(sourceGeoLocatedFlag)
 				{
+                    showMessage = String.format("Please enter the source country to geo locate (i.e src_country )");
+                    System.out.println(showMessage);
+                    String srcCountryFiledName = br.readLine();
+                    validatedFieldExietInSchema(srcCountryFiledName,this.enrichFelds,enrichFieldsCsv,showMessage);
+
 					validatedFieldExietInSchema("src_longtitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_latitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_countryIsoCode",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_region",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_city",this.enrichFelds,enrichFieldsCsv,"autoAddition");
+
 					validatedFieldExietInSchema("src_isp",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_usageType",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 
@@ -464,6 +493,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//Validate geo location fields if needed for target ip
 				if(tartgetGeoLocatedFlag)
 				{
+
+                    showMessage = String.format("Please enter the target country to geo locate (i.e dst_country )");
+                    System.out.println(showMessage);
+                    String dstCountryFiledName = br.readLine();
+                    validatedFieldExietInSchema(dstCountryFiledName,this.enrichFelds,enrichFieldsCsv,showMessage);
+
+
 					validatedFieldExietInSchema("dst_longtitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("dst_latitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("dst_countryIsoCode",this.enrichFelds,enrichFieldsCsv,"autoAddition");
@@ -503,6 +539,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				line = String.format("hdfs.user.enricheddata.%s.path=${hdfs.user.enricheddata.path}/%s",dataSourceName,dataSourceName);
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
+
+                //hdfs retention
+                line = String.format("hdfs.user.enricheddata.%s.retention=90",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
 
 				//hdfs file name
 				line = String.format("hdfs.enricheddata.%s.file.name=${impala.enricheddata.%s.table.name}.csv",dataSourceName,dataSourceName);
@@ -559,6 +600,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line,fileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
+            //hdfs retention
+            line = String.format("hdfs.user.processeddata.%s.retention=90",dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,streamingOverridingfileWriter,true);
+
 
 			//partition strategy
 			line=String.format("impala.score.%s.table.partition.type=daily",dataSourceName);
@@ -575,9 +621,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             if(result) {
                 //Top score part
 
-				line = String.format("########### Top Score Schema",dataSourceName);
+				line = String.format("########### Top Score Schema");
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
+
+                line=String.format("impala.%s.have.topScore=true",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
 
 
 				//fields
@@ -593,7 +642,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//table name
-				line = String.format("impala.score.%s.top.table.name=%s",dataSourceName,tableName);
+				line = String.format("impala.score.%s.top.table.name=%s",dataSourceName,tableName+"_top");
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
@@ -602,7 +651,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				line=String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
 				writeLineToFile(line,fileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
-				
+
+                //hdfs retention
+                line = String.format("hdfs.user.processeddata.%s.top.retention=90",dataSourceName);
+                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,streamingOverridingfileWriter,true);
+
+
 				//partition startegy
 				line=String.format("impala.score.%s.top.table.partition.type=daily",dataSourceName);
 				writeLineToFile(line,fileWriter,true);
@@ -610,6 +665,27 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
             }
+
+            line=String.format("%s.EventsJoiner.ttl=86400",dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+
+            line=String.format("kafka.%s.message.record.field.data_source=data_source",dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+
+            line=String.format("kafka.%s.message.record.field.last_state=last_state",dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+
+            line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+
+            line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
+            writeLineToFile(line,fileWriter,true);
+
+
+            line="read"+dataSourceName.toUpperCase()+".morphline=file:resources/conf-files/processread"+dataSourceName.toUpperCase()+"ParsingOngoingEvents.conf";
+            writeLineToFile(line,fileWriter,true);
+
+
 
 
 
@@ -669,7 +745,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	public void streamingConfiguration(BufferedReader br)
 	{
 
-		String configFilesPath = root+"/fortscale/streaming/config";
+		String configFilesPath = root+"/fortscale/streaming/config/";
 		Boolean result = false;
 		lastState="etl";
 
@@ -922,7 +998,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
 			//Normalizing service
 			System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
-			Boolean updateOnly = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+            String updateOnlyResult = br.readLine().toLowerCase();
+			Boolean updateOnly = updateOnlyResult.equals("y") ||updateOnlyResult.toLowerCase().equals("yes");
 
 			if (updateOnly) {
 				line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService", this.dataSourceName);
@@ -1502,7 +1579,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 				//SUCCESS  value
 				System.out.println(String.format("Please enter value that mark event as successed (i.c Accepted for ssh or SUCCESS for vpn 0x0 for kerberos ) :"));
-				String successValue = br.readLine().toLowerCase();
+				String successValue = br.readLine();
 				line = String.format("%s.%s_UserMongoUpdateStreamTask.success.value=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, successValue);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 			}
@@ -1518,7 +1595,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//TODO - NOT SURE THIS FILED IS NEEDED , NET TO VALIDATE AND IF NOT TO REMOVE IT
-			line = String.format("%s.%s_UserMongoUpdateStreamTask.UserMongoUpdateStreamTask.updateOnly=true",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
+			line = String.format("%s.%s_UserMongoUpdateStreamTask.UserMongoUpdateStreamTask.updateOnly=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//flush the writer for user-mongo-update-task.properties
@@ -1550,7 +1627,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
-			configureTaskMandatoryConfiguration(taskPropertiesFileWriter, topolegyResult, "enriched_HDFSWriterStreamTask", lastState, String.format("fortscale-%s-enriched-after-write",this.dataSourceName));
+			configureTaskMandatoryConfiguration(taskPropertiesFileWriter, topolegyResult, "enriched_HDFSWriterStreamTask", lastState, "fortscale-generic-data-access-enriched-after-write");
 
 			//bdp routing value
 			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.bdp.output.topics=",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
@@ -1573,7 +1650,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//hdfs path
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.hdfs.root=${hdfs.user.enricheddata.%s.pat}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
+			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.hdfs.root=${hdfs.user.enricheddata.%s.path}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//file name
@@ -1604,6 +1681,36 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
+
+            //Key-Value store configuration
+
+            line = String.format("stores.hdfs-write-%sEnrich.factory=org.apache.samza.storage.kv.KeyValueStorageEngineFactory", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.changelog=kafka.hdfs-write-crmsfEnrich-changelog", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.key.serde=string", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.msg.serde=timebarrier", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("# This property is set to the number of key/value pairs that should be kept in this in-memory buffer, per task instance. The number cannot be greater than stores.*.object.cache.size.");
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.write.batch.size=25", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("# This property determines the number of objects to keep in Samza's cache, per task instance. This same cache is also used for write buffering (see stores.*.write.batch.size). A value of 0 disables all caching and batching.");
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.object.cache.size=100", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("# The size of LevelDB's block cache in bytes, per container. Note that this is an off-heap memory allocation, so the container's total memory use is the maximum JVM heap size plus the size of this cache.");
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.container.cache.size.bytes=2000", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("# The amount of memory (in bytes) that LevelDB uses for buffering writes before they are written to disk.");
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+            line = String.format("stores.hdfs-write-%sEnrich.container.write.buffer.size.bytes=1000", this.dataSourceName);
+            writeLineToFile(line, taskPropertiesFileWriter, true);
+
+
+
 			//flush the writer for hdfs write of enrich part
 			taskPropertiesFileWriter.flush();
 
@@ -1631,7 +1738,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private void configureTaskMandatoryConfiguration(FileWriter taskPropertiesFileWriter ,Boolean topolegyResult, String name,String lastState,String outputTopic){
 		String line ="";
 		//name
-		line = String.format("%s.%s_%s=%s_%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, name,this.dataSourceName,name);
+		line = String.format("%s.name.%s_%s=%s_%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, name,this.dataSourceName,name);
 		writeLineToFile(line, taskPropertiesFileWriter, true);
 
 		//data source
