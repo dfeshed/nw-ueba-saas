@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,16 +11,9 @@ import java.util.*;
 
 public class AggrFeatureFeatureToMaxMapFuncTest {
     private AggregatedFeatureConf createAggrFeatureConf(String maximizeFeatureName, String... groupByFeatureNames) {
-        List<String> groupByFeatureNamesList = new ArrayList<>();
-        for (String featureName : groupByFeatureNames) {
-            groupByFeatureNamesList.add(featureName);
-        }
-        List<String> maximizeFeatureNameList = new ArrayList<>();
-        maximizeFeatureNameList.add(maximizeFeatureName);
-
         Map<String, List<String>> featureNamesMap = new HashMap<>();
-        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.GROUP_BY_FIELD_NAME, groupByFeatureNamesList);
-        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.MAXIMIZE_FIELD_NAME, maximizeFeatureNameList);
+        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.GROUP_BY_FIELD_NAME, Arrays.asList(groupByFeatureNames));
+        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.MAXIMIZE_FIELD_NAME, Collections.singletonList(maximizeFeatureName));
         return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
     }
 
@@ -41,10 +33,10 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final String featureGroupedByValue = "host_123";
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
 
-                Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
-                        createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
-                        new HashMap<String, Feature>(),
-                        aggrFeature);
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
+                createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
+                new HashMap<String, Feature>(),
+                aggrFeature);
 
         Assert.assertTrue(value instanceof AggrFeatureValue);
         Assert.assertEquals(value, aggrFeature.getValue());
