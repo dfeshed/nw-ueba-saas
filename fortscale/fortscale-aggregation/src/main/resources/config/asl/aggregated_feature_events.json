@@ -427,7 +427,7 @@
 
 
       {
-        "name": "has_high_score_date_time_events_kerberos_logins_daily",
+        "name": "highest_score_over_date_time_events_kerberos_logins_daily",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_daily",
         "numberOfBuckets": 1,
@@ -436,16 +436,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_date_time_events_kerberos_logins_hourly",
+        "name": "highest_score_over_date_time_events_kerberos_logins_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_kerberos_logins_hourly",
         "numberOfBuckets": 1,
@@ -454,12 +454,12 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
@@ -584,7 +584,7 @@
       },
 
       {
-        "name": "has_high_score_date_time_events_ssh_daily",
+        "name": "highest_score_over_date_time_events_ssh_daily",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -593,16 +593,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_date_time_events_ssh_hourly",
+        "name": "highest_score_over_date_time_events_ssh_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_hourly",
         "numberOfBuckets": 1,
@@ -611,12 +611,12 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
@@ -700,7 +700,7 @@
         }
       },
       {
-        "name": "has_high_score_auth_method_events_ssh_daily",
+        "name": "highest_score_over_auth_method_events_ssh_daily",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_daily",
         "numberOfBuckets": 1,
@@ -709,16 +709,16 @@
         "anomalyType": "auth_method",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_auth_method_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_auth_method_events_ssh_hourly",
+        "name": "highest_score_over_auth_method_events_ssh_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_ssh_hourly",
         "numberOfBuckets": 1,
@@ -727,17 +727,17 @@
         "anomalyType": "auth_method",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_auth_method_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
 
       {
-        "name": "has_high_score_date_time_events_vpn_daily",
+        "name": "highest_score_over_date_time_events_vpn_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_daily",
         "numberOfBuckets": 1,
@@ -746,16 +746,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_date_time_events_vpn_hourly",
+        "name": "highest_score_over_date_time_events_vpn_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_hourly",
         "numberOfBuckets": 1,
@@ -764,12 +764,12 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {

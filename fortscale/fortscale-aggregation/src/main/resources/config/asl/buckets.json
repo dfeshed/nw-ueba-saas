@@ -68,10 +68,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -150,10 +152,12 @@
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -224,10 +228,12 @@
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -237,10 +243,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
+          "name": "highest_score_auth_method",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["auth_method_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },
@@ -303,10 +311,12 @@
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -316,10 +326,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_auth_method_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.auth_method_score >= 50)]"}
+          "name": "highest_score_auth_method",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["auth_method_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },
@@ -367,10 +379,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "source_machine_to_highest_score_map",
@@ -434,10 +448,12 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "source_machine_to_highest_score_map",
