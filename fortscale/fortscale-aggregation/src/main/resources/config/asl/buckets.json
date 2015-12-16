@@ -69,10 +69,9 @@
         },
         {
           "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {
-            "aaa": "date_time_score"
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
