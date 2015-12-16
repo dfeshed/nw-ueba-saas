@@ -31,7 +31,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private String lastState;
 	private Boolean sourceGeoLocatedFlag;
 	private Boolean tartgetGeoLocatedFlag;
-	//private String root;
+	private String root;
 
 	private Map<String,String> dataFelds;
 	private Map<String,String> enrichFelds;
@@ -71,7 +71,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		targetMachineNameFlag=false;
 		sourceIpFlag=false;
 		targetIpFlag=false;
-		//root = System.getProperty("user.home");
+		root = System.getProperty("user.home");
 
         initPartConfiguration(br);
 		streamingConfiguration(br);
@@ -85,9 +85,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      */
     public void initPartConfiguration(BufferedReader br){
 
-        File file = new File("resources/fortscale-collection-overriding.properties");
+        File file = new File(root+"fortscale/fortscale-core/fortscale/fortscale-collection/resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
-		File streamingOverridingFile = new File ("../../fortscale-streaming/config/fortscale-overriding-streaming.properties");
+		File streamingOverridingFile = new File (root+"/fortscale/sreaming/config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
 		String brResult="";
 		String showMessage="";
@@ -632,7 +632,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	public void streamingConfiguration(BufferedReader br)
 	{
 
-		String configFilesPath = "../../fortscale-streaming/config/";
+		String configFilesPath = root+"/fortscale/streaming/config/";
 		Boolean result = false;
 		lastState="etl";
 
