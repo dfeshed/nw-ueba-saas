@@ -94,7 +94,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
         File file = new File(root+"/fortscale/fortscale-core/fortscale/fortscale-collection/resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
-		File streamingOverridingFile = new File (root+"/fortscale/sreaming/config/fortscale-overriding-streaming.properties");
+		File streamingOverridingFile = new File (root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
 		String brResult="";
 		String showMessage="";
@@ -669,7 +669,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	public void streamingConfiguration(BufferedReader br)
 	{
 
-		String configFilesPath = root+"/fortscale/streaming/config/";
+		String configFilesPath = root+"/fortscale/streaming/config";
 		Boolean result = false;
 		lastState="etl";
 
