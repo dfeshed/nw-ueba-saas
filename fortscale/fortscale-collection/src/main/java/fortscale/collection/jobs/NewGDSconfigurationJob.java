@@ -31,6 +31,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private String lastState;
 	private Boolean sourceGeoLocatedFlag;
 	private Boolean tartgetGeoLocatedFlag;
+	private String root;
 
 	private Map<String,String> dataFelds;
 	private Map<String,String> enrichFelds;
@@ -62,6 +63,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		this.dataFelds = new LinkedHashMap<>();
 		this.enrichFelds = new LinkedHashMap<>();
 		this.scoreFelds = new LinkedHashMap<>();
+		root = System.getProperty("user.dir");
 
         initPartConfiguration(br);
 		streamingConfiguration(br);
@@ -73,15 +75,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      * This section will configure the Init configuration (The part that support the schema (HDFS paths and impala tables)
      * @param br - Will hold the scanner for tracing the user input
      */
-    public void initPartConfiguration(BufferedReader br)
-    {
+    public void initPartConfiguration(BufferedReader br){
 
-        // Open the fortscale-collection-overriding.properties in append mode for adding the new configuration
-        //TODO - CHANGE IT TO REALTIVE PATH
-		String root = System.getProperty("user.dir");
-        File file = new File(root+"/fortscale-collection/resources/fortscale-collection-overriding.properties");
+        File file = new File("resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
-		File streamingOverridingFile = new File ("fortscale-streaming/config/fortscale-overriding-streaming.properties");
+		File streamingOverridingFile = new File ("../../fortscale-streaming/config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
 		String brResult="";
 		String showMessage="";
@@ -623,9 +621,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	public void streamingConfiguration(BufferedReader br)
 	{
 
-		// Open the fortscale-collection-overriding.properties in append mode for adding the new configuration
-		//TODO - CHANGE IT TO REALTIVE PATH
-		String configFilesPath = "fortscale-streaming/config/";
+		String configFilesPath = "../../fortscale-streaming/config/";
 		Boolean result = false;
 		lastState="etl";
 
