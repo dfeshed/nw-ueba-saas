@@ -106,7 +106,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 							+ ".domain.fake", configKey)) : "";
 			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
 					+ ".normalizedusername.field",configKey));
-			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
+			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey), res);
 			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
 			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", configKey));
@@ -134,7 +134,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
-		for (Entry<String,String> tagConfigField : config.subset("fortscale.tags.").entrySet()) {
+		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.").entrySet()) {
 			String tagName = tagConfigField.getKey();
 			String tagField = tagConfigField.getValue();
 			tags.put(tagName, tagField);
