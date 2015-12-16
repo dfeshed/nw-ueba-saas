@@ -287,8 +287,7 @@
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"],
-            "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
+            "groupBy": ["destination_machine"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
