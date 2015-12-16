@@ -31,7 +31,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private String lastState;
 	private Boolean sourceGeoLocatedFlag;
 	private Boolean tartgetGeoLocatedFlag;
-	private String root;
+	//private String root;
 
 	private Map<String,String> dataFelds;
 	private Map<String,String> enrichFelds;
@@ -63,7 +63,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		this.dataFelds = new LinkedHashMap<>();
 		this.enrichFelds = new LinkedHashMap<>();
 		this.scoreFelds = new LinkedHashMap<>();
-		root = System.getProperty("user.dir");
+		//root = System.getProperty("user.home");
 
         initPartConfiguration(br);
 		streamingConfiguration(br);
