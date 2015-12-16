@@ -180,39 +180,4 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 			}
 		}
 	}
-
-	/**
-	 * Handle PxGrid IP release event
-	 *
-	 * @param event
-	 */
-	private void handleIpReleaseEvent(PxGridIPEvent event) {
-
-		// Get event from cache
-		PxGridIPEvent cached = cache.get(event.getIpaddress());
-
-		// If we have in cache event with different host name, ignore
-		if (cached != null && !cached.getHostname().equals(event.getHostname()))
-			return;
-
-		// Cache hit
-		if (cached != null) {
-			if (cached.getHostname().compareTo(event.getHostname()) == 0) {
-				cached.setExpiration(event.getTimestampepoch());
-				cache.put((cached.getIpaddress()), cached);
-			}
-		}
-
-		// Update the repository
-		List<PxGridIPEvent> pxGridEvents = pxGridEventRepository.findByIpaddress(event.getIpaddress(), new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
-		if (!pxGridEvents.isEmpty()) {
-			cached = pxGridEvents.get(0);
-			// Update if this event is newer than the event from cache \ repository
-			if (event.getTimestampepoch().compareTo(cached.getTimestampepoch()) > 0 && cached.getHostname().compareTo(event.getHostname()) == 0) {
-				cached.setExpiration(event.getTimestampepoch());
-				pxGridEventRepository.save(cached);
-			}
-		}
-	}
-
 }

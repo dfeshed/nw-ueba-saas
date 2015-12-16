@@ -38,15 +38,15 @@
 				</entry>
 				<entry>
 					<key>hosts</key>
-					<value>fs-ise-02.fortscale.dom</value>
+					<value>${pxgrid.hosts}</value>
 				</entry>
 				<entry>
 					<key>userName</key>
-					<value>Fortscale-client</value>
+					<value>${pxgrid.userName}</value>
 				</entry>
 				<entry>
 					<key>group</key>
-					<value>ANC</value>
+					<value>${pxgrid.group}</value>
 				</entry>
 				<entry>
 					<key>keystorePath</key>
@@ -54,7 +54,7 @@
 				</entry>
 				<entry>
 					<key>keystorePassphrase</key>
-					<value>cisco123</value>
+					<value>${pxgrid.keystorePassphrase}</value>
 				</entry>
 				<entry>
 					<key>truststorePath</key>
@@ -62,7 +62,7 @@
 				</entry>
 				<entry>
 					<key>truststorePassphrase</key>
-					<value>cisco123</value>
+					<value>${pxgrid.truststorePassphrase}</value>
 				</entry>
 				<entry>
 					<key>connectionRetryMillisecond</key>
