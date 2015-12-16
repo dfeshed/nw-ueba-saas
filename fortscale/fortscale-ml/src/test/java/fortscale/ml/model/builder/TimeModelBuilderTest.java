@@ -1,10 +1,10 @@
 package fortscale.ml.model.builder;
 
+import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
-import java.util.HashMap;
 
 public class TimeModelBuilderTest {
 	@Test
@@ -12,7 +12,7 @@ public class TimeModelBuilderTest {
 		Integer timeResolution = 60;
 		Integer bucketSize = 10;
 		TimeModelBuilder builder = new TimeModelBuilder(timeResolution, bucketSize);
-		Model model = builder.build(new HashMap<>());
+		Model model = builder.build(new GenericHistogram());
 		Assert.assertEquals(timeResolution, Whitebox.getInternalState(model, "timeResolution"));
 		Assert.assertEquals(bucketSize, Whitebox.getInternalState(model, "bucketSize"));
 	}

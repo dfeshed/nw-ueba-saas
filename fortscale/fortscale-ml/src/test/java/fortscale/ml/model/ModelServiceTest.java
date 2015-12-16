@@ -61,7 +61,8 @@ public class ModelServiceTest {
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
 		listener = new ListModelBuildingListener();
-		modelService = testContextManager.getBeanFactory().createBean(ModelService.class);
+		modelService = testContextManager.getBean(ModelService.class);
+		modelService.init();
 	}
 
 	@Test
@@ -141,9 +142,9 @@ public class ModelServiceTest {
 		verifyNoMoreInteractions(mongoTemplate);
 
 		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
-		expectedId1Model.setParameters(96, 316.6666666666667, 81.22328620674138);
+		expectedId1Model.setParameters(96, 316.667, 81.223);
 		ContinuousDataModel expectedId2Model = new ContinuousDataModel();
-		expectedId2Model.setParameters(75, 7.3192, 6.539804229485773);
+		expectedId2Model.setParameters(75, 7.319, 6.540);
 
 		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());

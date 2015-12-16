@@ -270,10 +270,10 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 */
 	private boolean checkAndStopAllRelevantServices() {
-		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName);
-		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName);
-		boolean kafkaServiceStoppedSuccess = checkAndStopService(kafkaServiceName);
-		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStoppedSuccess;
+		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName, true);
+		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName, true);
+		boolean kafkaServiceStartedSuccess = checkAndStopService(kafkaServiceName, false);
+		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStartedSuccess;
 	}
 
 	/***
@@ -550,24 +550,39 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param serviceName
 	 */
-	private boolean checkAndStopService(String serviceName) {
-		boolean stopped = true;
-		//if service is not stopped
+	private boolean checkAndStopService(String serviceName, boolean stopped) {
+		//if service is not started/stopped
 		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
-			logger.info("{} service is not stopped, attempting to stop...", serviceName);
-			//try to stop the service
+			if (stopped) {
+				logger.info("{} service is not stopped, attempting to stop...", serviceName);
+			} else {
+				logger.info("{} service is not started, attempting to start...", serviceName);
+			}
+			//try to start/stop the service
 			clouderaUtils.startOrStopService(serviceName, stopped);
-			//validate if stopping succeeded
+			//validate if starting/stopping succeeded
 			boolean success = clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped);
 			if (success) {
-				logger.info("{} is down, good!", serviceName);
+				if (stopped) {
+					logger.info("{} is down, good!", serviceName);
+				} else {
+					logger.info("{} is up, good!", serviceName);
+				}
 			} else {
-				logger.warn("{} service is not stopped, cleaning might not be performed fully", serviceName);
+				if (stopped) {
+					logger.warn("{} service is not stopped, cleaning might not be performed fully", serviceName);
+				} else {
+					logger.warn("{} service is not started, cleaning might not be performed fully", serviceName);
+				}
 			}
 			return success;
 		}
-		logger.info("{} is down, good!", serviceName);
-		return stopped;
+		if (stopped) {
+			logger.info("{} is down, good!", serviceName);
+		} else {
+			logger.info("{} is up, good!", serviceName);
+		}
+		return true;
 	}
 
 	/***

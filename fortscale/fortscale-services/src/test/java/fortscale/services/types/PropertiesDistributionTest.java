@@ -20,7 +20,7 @@ public class PropertiesDistributionTest {
 		String json = mapper.writeValueAsString(subject);
 		
 		Assert.assertNotNull(json);
-		String expected = "{\"propertyName\":\"country\",\"conclusive\":true,\"entries\":[{\"propertyValue\":\"Thailand\",\"count\":2,\"percantage\":0.2},{\"propertyValue\":\"Israel\",\"count\":8,\"percantage\":0.8}]}";
+		String expected = "{\"propertyName\":\"country\",\"conclusive\":true,\"entries\":[{\"propertyValue\":\"Israel\",\"count\":8,\"percantage\":0.8},{\"propertyValue\":\"Thailand\",\"count\":2,\"percantage\":0.2}]}";
 		Assert.assertEquals(expected, json);
 	}
 

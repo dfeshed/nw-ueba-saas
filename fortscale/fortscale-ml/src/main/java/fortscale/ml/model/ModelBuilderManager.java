@@ -1,14 +1,13 @@
 package fortscale.ml.model;
 
-import fortscale.ml.model.builder.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.retriever.ContextHistogramRetriever;
-import fortscale.ml.model.selector.ContextSelector;
-import fortscale.ml.model.selector.FeatureBucketContextSelector;
+import fortscale.ml.model.selector.IContextSelector;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -24,10 +23,16 @@ public class ModelBuilderManager {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
 
     @Autowired
+    private FactoryService<IContextSelector> contextSelectorFactoryService;
+    @Autowired
+    private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    @Autowired
+    private FactoryService<IModelBuilder> modelBuilderFactoryService;
+    @Autowired
     private ModelStore modelStore;
 
     private ModelConf modelConf;
-    private ContextSelector contextSelector;
+    private IContextSelector contextSelector;
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
 
@@ -35,11 +40,10 @@ public class ModelBuilderManager {
         Assert.notNull(modelConf);
         this.modelConf = modelConf;
 
-        if (modelConf.getContextSelectorConf() != null) {
-            contextSelector = new FeatureBucketContextSelector(modelConf.getContextSelectorConf());
-        }
-        dataRetriever = new ContextHistogramRetriever(modelConf.getDataRetrieverConf());
-        modelBuilder = new ContinuousHistogramModelBuilder();
+        IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
+        contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
+        dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
+        modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
@@ -59,14 +63,11 @@ public class ModelBuilderManager {
             contextIds.add(null);
         }
 
-        boolean success;
         long numOfSuccesses = 0;
         long numOfFailures = 0;
 
         for (String contextId : contextIds) {
-            success = build(listener, sessionId, contextId, currentEndTime);
-
-            if (success) {
+            if (build(listener, sessionId, contextId, currentEndTime)) {
                 numOfSuccesses++;
             } else {
                 numOfFailures++;
@@ -75,10 +76,6 @@ public class ModelBuilderManager {
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
                 modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
-    }
-
-    public void setContextSelector(ContextSelector contextSelector) {
-        this.contextSelector = contextSelector;
     }
 
     private boolean build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
