@@ -264,11 +264,11 @@ public class UserScoreStreamingService {
 			return;
 
 		Map<String, Double> map = new HashMap<String, Double>();
-		double avgScore = updateLevelDb(dataSource, lastUpdateEpochTime, map);
+		double avgScore = updateKeyValueDb(dataSource, lastUpdateEpochTime, map);
 		updateMongoDb(dataSource, lastUpdateEpochTime, avgScore, map);
 	}
 
-	private double updateLevelDb(String dataSource, long lastUpdateEpochTime, Map<String, Double> userScores) {
+	private double updateKeyValueDb(String dataSource, long lastUpdateEpochTime, Map<String, Double> userScores) {
 		KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
 
 		double avgScore = 0;

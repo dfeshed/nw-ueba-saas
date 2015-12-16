@@ -259,7 +259,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// copy level DB to mongo DB
 		if (userService !=null) {
-			copyLevelDbToMongoDB();
+			copyKeyValueDbToMongoDB();
 		}
 
 	}
@@ -273,7 +273,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// copy level DB to mongo DB
 		if (userService != null) {
-			copyLevelDbToMongoDB();
+			copyKeyValueDbToMongoDB();
 		}
 		userService = null;
 
@@ -283,7 +283,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Go over all users in the last-activity map and write them to Mongo
 	 */
-	private void copyLevelDbToMongoDB() {
+	private void copyKeyValueDbToMongoDB() {
 
 		KeyValueIterator<String, UserInfoForUpdate> iter = store.all();
 
