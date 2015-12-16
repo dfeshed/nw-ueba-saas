@@ -6,7 +6,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTaggingService;
 
 public class UserTaggingJob extends FortscaleJob{
 	

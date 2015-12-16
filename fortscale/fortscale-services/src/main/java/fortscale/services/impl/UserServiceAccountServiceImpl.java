@@ -1,9 +1,11 @@
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.services.UserTagEnum;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -30,6 +32,8 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	@Autowired
 	private UserTaggingService userTaggingService;
+	@Autowired
+	private TagService tagService;
 
 	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 
@@ -45,6 +49,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	private Set<String> serviceAccounts = null;
 
 	private UserTagEnum tag = UserTagEnum.service;
+
 
 	@Override
 	public boolean isUserTagged(String username) {
@@ -62,6 +67,8 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		throws Exception {
 
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
+		Tag tag = new Tag(UserTagEnum.service.getId(), UserTagEnum.service.getDisplayName(), true, true);
+		tagService.addTag(tag);
 		refreshServiceAccounts();
 	}
 
@@ -207,6 +214,16 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	public String getTagMongoField() {
 
 		return User.userServiceAccountField;
+	}
+
+	@Override
+	public void addUserTag(String userName, String tag) {
+		tagServiceAccount(userName);
+	}
+
+	@Override
+	public void removeUserTag(String userName, String tag) {
+		removeTagFromUser(userName);
 	}
 
 	@Override

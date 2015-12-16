@@ -1,14 +1,11 @@
 package fortscale.web.rest;
 
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.IFeature;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserService;
-import fortscale.services.UserServiceFacade;
+import fortscale.services.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
@@ -18,8 +15,9 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +31,12 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
+
+	@Autowired
+	private TagService tagService;
+
+	@Autowired
+	private UserTaggingService userTaggingService;
 
 	@Autowired
 	private UserService userService;
@@ -84,6 +88,39 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
 		User user = userRepository.findOne(id);
 		return getUserDetail(user);
+	}
+
+	/**
+	 * API to update user tags
+	 * @param body
+	 * @return
+	 */
+	@RequestMapping(value="{id}", method = RequestMethod.POST)
+	@LogException
+	@ResponseBody
+	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
+		User user = userRepository.findOne(id);
+		JSONObject params = new JSONObject(body);
+		String tag;
+		boolean addTag;
+		if (params.has("add")) {
+			tag = params.getString("add");
+			addTag = true;
+		} else if (params.has("remove")) {
+			tag = params.getString("remove");
+			addTag = false;
+		} else {
+			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
+		}
+		UserTagService userTagService = userTaggingService.getUserTagService(tag);
+		if (userTagService == null) {
+			userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
+		}
+		if (addTag) {
+			userTagService.addUserTag(user.getUsername(), tag);
+		} else {
+			userTagService.removeUserTag(user.getUsername(), tag);
+		}
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
@@ -144,6 +181,17 @@ public class ApiUserController extends BaseController{
 			result.add(new TagPair(entry.getKey(), entry.getValue()));
 		}
 		DataBean<List<TagPair>> ret = new DataBean();
+		ret.setData(result);
+		ret.setTotal(result.size());
+		return ret;
+	}
+
+	@RequestMapping(value="/user_tags", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Tag>> getAllTags() {
+		List<Tag> result = tagService.getAllTags();
+		DataBean<List<Tag>> ret = new DataBean();
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;

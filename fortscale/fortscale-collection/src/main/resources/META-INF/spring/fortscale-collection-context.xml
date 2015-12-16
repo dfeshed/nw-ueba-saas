@@ -146,7 +146,7 @@
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
 	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
-	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 	<!-- group by tags service cache that uses memory based implementation -->
 	<bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
