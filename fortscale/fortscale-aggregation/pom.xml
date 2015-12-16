@@ -104,6 +104,11 @@
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
@@ -189,7 +194,7 @@
 	<build>
 		<plugins>
 
-			<!-- Tells maven to use the Java 7 JDK instead of its default -->
+			<!-- Tells maven to use the Java 8 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

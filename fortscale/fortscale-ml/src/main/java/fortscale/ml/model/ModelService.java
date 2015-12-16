@@ -2,7 +2,6 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ModelService implements InitializingBean {
+public class ModelService {
 	private static final Logger logger = Logger.getLogger(ModelService.class);
 
 	@Autowired
@@ -19,8 +18,7 @@ public class ModelService implements InitializingBean {
 
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void init() {
 		modelConfNameToManager = new HashMap<>();
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
