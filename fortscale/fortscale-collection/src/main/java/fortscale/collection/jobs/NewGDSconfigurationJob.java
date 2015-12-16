@@ -63,6 +63,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		this.dataFelds = new LinkedHashMap<>();
 		this.enrichFelds = new LinkedHashMap<>();
 		this.scoreFelds = new LinkedHashMap<>();
+		sourceGeoLocatedFlag=false;
+		tartgetGeoLocatedFlag=false;
+		sourceIpResolvingFlag=false;
+		targetIpResolvingFlag=false;
+		sourceMachineNameFlag=false;
+		targetMachineNameFlag=false;
+		sourceIpFlag=false;
+		targetIpFlag=false;
 		//root = System.getProperty("user.home");
 
         initPartConfiguration(br);
@@ -577,7 +585,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
         }
         catch (Exception exception)
         {
-            logger.error("There was an exception during the file - {} processing , cause - {} ",file.getName(),exception.getMessage());
+            logger.error("There was an exception during execution - {} ",exception.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
         }
 
@@ -589,7 +598,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                }
                catch (IOException exception)
                {
-                   logger.error("There was an exception during the file - {} closing  , cause - {} ",file.getName(),exception.getMessage());
+                   logger.error("There was an exception during the file - {} closing  , cause - {} ",file.getName(),exception.getCause().getMessage());
+				   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
                }
 
@@ -602,7 +612,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				}
 				catch (IOException exception)
 				{
-					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getMessage());
+					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getCause().getMessage());
+					System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 				}
 
@@ -638,7 +649,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch (Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 
@@ -794,7 +806,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 
@@ -812,7 +825,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch (Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 	}
 
@@ -893,7 +907,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 		catch (Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 		finally {
@@ -902,7 +917,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
 		}
@@ -1053,7 +1069,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 		finally {
@@ -1062,7 +1079,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
+
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
 		}
@@ -1146,6 +1165,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e){
 
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 		finally {
@@ -1154,7 +1175,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
 		}
@@ -1318,7 +1340,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 		} catch (Exception e) {
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 		finally {
@@ -1327,7 +1350,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
 
 			}
 		}
@@ -1393,12 +1416,17 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 		} catch (Exception e) {
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 		} finally {
 			try {
 				taskPropertiesFileWriter.close();
 			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
+
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getCause().getMessage());
+
+				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
 		}
@@ -1471,14 +1499,17 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 		catch (Exception e)
 		{
-
+			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
 		finally {
 			try {
 				taskPropertiesFileWriter.close();
 			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getCause().getMessage());
+
+				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
 		}
@@ -1594,7 +1625,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	   }
 	   catch(Exception e)
 	   {
-
+		   logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+		   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 	   }
 
 
