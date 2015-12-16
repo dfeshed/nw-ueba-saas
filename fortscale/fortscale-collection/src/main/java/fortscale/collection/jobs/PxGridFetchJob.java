@@ -1,19 +1,16 @@
 package fortscale.collection.jobs;
 
 import com.cisco.pxgrid.GridConnection;
-import com.cisco.pxgrid.GridConnection.Listener;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
-import com.cisco.pxgrid.model.core.GenericAttribute;
-import com.cisco.pxgrid.model.core.GenericAttributeValueType;
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
-import com.cisco.pxgrid.model.net.*;
+import com.cisco.pxgrid.model.net.Session;
+import com.cisco.pxgrid.model.net.User;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
-import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
@@ -24,7 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Calendar;
@@ -36,21 +36,40 @@ import java.util.List;
  */
 public class PxGridFetchJob extends FortscaleJob {
 
+	//<editor-fold desc="Variables">
 	private static final String COMMA_DELIMITER = ",";
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
 
+	//<editor-fold desc="Fetch timeframe vars">
 	// time limits sends to pxGrid
 	private String earliest;
 	private String latest;
 
-	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
-	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
-	private int fetchIntervalInSeconds = -1;
-
 	// time limits as dates to allow easy paging - will be used in continues run
 	private Date earliestDate;
 	private Date latestDate;
+
+	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
+	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
+	private int fetchIntervalInSeconds = -1;
+	//</editor-fold>
+
+
+	//<editor-fold desc="pxGrid params">
+	private String hosts;
+	private String userName;
+	private String group;
+	private String keystorePath;
+	private String keystorePassphrase;
+	private String truststorePath;
+	private String truststorePassphrase;
+	private int connectionRetryMillisecond;
+
+	// Hold the connection to the grid
+	GridConnection con;
+	ReconnectionManager recon;
+	//</editor-fold>
 
 	//indicate if still have more pages to go over and fetch
 	private boolean keepFetching = false;
@@ -61,32 +80,16 @@ public class PxGridFetchJob extends FortscaleJob {
 	// The output file format
 	private String filenameFormat;
 
-	// pxGrid params
-	private String hosts;
-	private String userName;
-	private String group;
-	private String keystorePath;
-	private String keystorePassphrase;
-	private String truststorePath;
-	private String truststorePassphrase;
-	private int connectionRetryMillisecond;
-
 	@Value("${collection.fetch.data.path}") private String outputPath;
 
 	private FileWriter outputTempFile;
 	private File tempOutput;
 	private File outputFile;
 
-
 	@Autowired private FetchConfigurationRepository fetchConfigurationRepository;
+	//</editor-fold>
 
-	// Flag to indicate whether connection is established to the grid
-	private boolean connected;
-
-	// Hold the connection to the grid
-	GridConnection con;
-	ReconnectionManager recon;
-
+	//<editor-fold desc="Override Job functions">
 	@Override protected int getTotalNumOfSteps() {
 		return 3;
 	}
@@ -121,15 +124,19 @@ public class PxGridFetchJob extends FortscaleJob {
 				monitor.finishStep(getMonitorId(), "Prepare sink file");
 
 				// create query we'll use to make call
+
+				// Set the query time frame
 				begin = Calendar.getInstance();
-				//begin.set(Calendar.YEAR, begin.get(Calendar.YEAR) - 1);
 				begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
 				end = Calendar.getInstance();
 				end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
+
+				// Create iterator
 				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
 				SessionIterator iterator = sd.getSessionsByTime(begin, end);
 				iterator.open();
 
+				// Iterate the active sessions and write to output file
 				Session s;
 				while ((s = iterator.next()) != null) {
 					addSessionToFile(s);
@@ -137,11 +144,16 @@ public class PxGridFetchJob extends FortscaleJob {
 
 				iterator.close();
 
+				// Flush & close the file stream
 				outputTempFile.flush();
 				outputTempFile.close();
 
+				// Rename the output file
 				renameOutput();
+
+				// Update the current run params in the repository
 				updateMongoWithCurrentFetchProgress();
+
 			} while (keepFetching);
 
 			logger.info("fetch job finished successfully");
@@ -153,57 +165,6 @@ public class PxGridFetchJob extends FortscaleJob {
 				recon.stop();
 			}
 		}
-	}
-
-	private void addSessionToFile(Session session) throws IOException{
-		outputTempFile.append(session.getLastUpdateTime().getTime().toString());
-		outputTempFile.append(COMMA_DELIMITER);
-
-		// Get the first IP
-		// TODO: How to handle multi IP's?
-		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
-		if (intfIDs.size() > 0) {
-			outputTempFile.append(intfIDs.get(0).getIpAddress());
-		}
-		outputTempFile.append(COMMA_DELIMITER);
-
-		User user = session.getUser();
-		if (user != null) {
-			outputTempFile.append(user.getName());
-		}
-
-		outputTempFile.append(System.lineSeparator());
-	}
-
-	private void renameOutput() {
-		if (tempOutput.length()==0) {
-			logger.info("deleting empty output file {}", tempOutput.getName());
-			if (!tempOutput.delete())
-				logger.warn("cannot delete empty file {}", tempOutput.getName());
-		} else {
-			tempOutput.renameTo(outputFile);
-		}
-	}
-
-	private void createOutputFile(File outputDir) throws JobExecutionException {
-		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
-		String path = combine(outputPath, filename + ".part");
-		try {
-			outputTempFile = new FileWriter(path);
-		} catch (IOException e) {
-			logger.error("error creating file " + path);
-			throw new JobExecutionException("cannot create output file " + path);
-		}
-
-		outputFile = new File(outputDir, filename);
-	}
-
-	private String combine(String firstPath, String secondPath)
-	{
-		File firstFile = new File(firstPath);
-		tempOutput = new File(firstFile, secondPath);
-		return tempOutput.getPath();
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -239,7 +200,120 @@ public class PxGridFetchJob extends FortscaleJob {
 			getRunTimeFrameFromMongo(map);
 		}
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="pxGrid methods">
+
+	/**
+	 * Initiate connection to pxGrid
+	 * @throws Exception
+	 */
+	private void connectToGrid() throws Exception {
+
+		// configure the connection properties
+		TLSConfiguration config = createConfigObject();
+
+		con = new GridConnection(config);
+		//con.addListener(new MyListener());
+
+		recon = new ReconnectionManager(con);
+		recon.setRetryMillisecond(connectionRetryMillisecond);
+		recon.start();
+
+		// Wait for the connection to establish
+		while (!con.isConnected()) {
+			Thread.sleep(100);
+		}
+	}
+
+	/**
+	 * Test keystore
+	 * @param filename
+	 * @param password
+	 * @throws GeneralSecurityException
+	 * @throws IOException
+	 */
+	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
+		KeyStore ks = KeyStore.getInstance("JKS");
+		ks.load(new FileInputStream(filename), password.toCharArray());
+	}
+
+	/**
+	 * Create pxGrid configuration object
+	 * @return
+	 */
+	private TLSConfiguration createConfigObject() {
+		TLSConfiguration config = new TLSConfiguration();
+		config.setHosts(new String[] { hosts });
+		config.setUserName(userName);
+		config.setGroup(group);
+		config.setKeystorePath(keystorePath);
+		config.setKeystorePassphrase(keystorePassphrase);
+		config.setTruststorePath(truststorePath);
+		config.setTruststorePassphrase(truststorePassphrase);
+
+		return config;
+	}
+
+	/**
+	 * Write session to the output file
+	 * @param session
+	 * @throws IOException
+	 */
+	private void addSessionToFile(Session session) throws IOException {
+		outputTempFile.append(session.getLastUpdateTime().getTime().toString());
+		outputTempFile.append(COMMA_DELIMITER);
+
+		// Get the first IP
+		// TODO: How to handle multi IP's?
+		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
+		if (intfIDs.size() > 0) {
+			outputTempFile.append(intfIDs.get(0).getIpAddress());
+		}
+		outputTempFile.append(COMMA_DELIMITER);
+
+		User user = session.getUser();
+		if (user != null) {
+			outputTempFile.append(user.getName());
+		}
+
+		outputTempFile.append(System.lineSeparator());
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="Path construction params">
+	private void renameOutput() {
+		if (tempOutput.length() == 0) {
+			logger.info("deleting empty output file {}", tempOutput.getName());
+			if (!tempOutput.delete())
+				logger.warn("cannot delete empty file {}", tempOutput.getName());
+		} else {
+			tempOutput.renameTo(outputFile);
+		}
+	}
+
+	private void createOutputFile(File outputDir) throws JobExecutionException {
+		// generate filename according to the job name and time
+		String filename = String.format(filenameFormat, (new Date()).getTime());
+		String path = combine(outputPath, filename + ".part");
+		try {
+			outputTempFile = new FileWriter(path);
+		} catch (IOException e) {
+			logger.error("error creating file " + path);
+			throw new JobExecutionException("cannot create output file " + path);
+		}
+
+		outputFile = new File(outputDir, filename);
+	}
+
+	private String combine(String firstPath, String secondPath) {
+		File firstFile = new File(firstPath);
+		tempOutput = new File(firstFile, secondPath);
+		return tempOutput.getPath();
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="Handle fetch params">
 	private void preparerFetchPageParams() {
 		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
@@ -286,40 +360,5 @@ public class PxGridFetchJob extends FortscaleJob {
 			earliestDate = DateUtils.addSeconds(latestDate, -1 * fetchIntervalInSeconds);
 		}
 	}
-
-	private void connectToGrid() throws Exception {
-
-		// configure the connection properties
-		TLSConfiguration config = createConfigObject();
-
-		con = new GridConnection(config);
-		//con.addListener(new MyListener());
-
-		recon = new ReconnectionManager(con);
-		recon.setRetryMillisecond(connectionRetryMillisecond);
-		recon.start();
-
-		// Wait for the connection to establish
-		while (!con.isConnected()) {
-			Thread.sleep(100);
-		}
-	}
-
-	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
-		KeyStore ks = KeyStore.getInstance("JKS");
-		ks.load(new FileInputStream(filename), password.toCharArray());
-	}
-
-	private TLSConfiguration createConfigObject() {
-		TLSConfiguration config = new TLSConfiguration();
-		config.setHosts(new String[] { hosts });
-		config.setUserName(userName);
-		config.setGroup(group);
-		config.setKeystorePath(keystorePath);
-		config.setKeystorePassphrase(keystorePassphrase);
-		config.setTruststorePath(truststorePath);
-		config.setTruststorePassphrase(truststorePassphrase);
-
-		return config;
-	}
+	//</editor-fold>
 }
