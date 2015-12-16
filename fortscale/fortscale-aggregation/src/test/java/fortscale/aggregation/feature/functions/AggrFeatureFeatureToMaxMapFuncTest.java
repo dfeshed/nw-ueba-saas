@@ -25,28 +25,6 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
     }
 
-    private Feature createAggrFeature(Pair<String[], Integer>... featureValuesAndNumbers) {
-        Map<List<String>, Integer> featuresGroupToMax = new HashMap<>();
-        for (Pair<String[], Integer> featureValuesAndNumber : featureValuesAndNumbers) {
-            List<String> featureGroupedByValues = Arrays.asList(featureValuesAndNumber.getLeft());
-            featuresGroupToMax.put(featureGroupedByValues, featureValuesAndNumber.getRight());
-        }
-        return new Feature("MyAggrFeature", new AggrFeatureValue(featuresGroupToMax, (long) featuresGroupToMax.size()));
-    }
-
-    private Map createFeatureMap(final ImmutablePair<String, Object>... featureValues) {
-        return new HashMap() {{
-            for (ImmutablePair<String, Object> featureValue : featureValues) {
-                Object value = featureValue.getRight();
-                if (value instanceof String) {
-                    put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (String) value));
-                } else {
-                    put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (Integer) value));
-                }
-            }
-        }};
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateWithWrongAggrFeatureValueType() {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf("maximizeFeatureName", "groupByFeatureName");
@@ -61,20 +39,18 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
+        Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
 
-        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
-                createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
-                new HashMap<String, Feature>(),
-                aggrFeature);
+                Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
+                        createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
+                        new HashMap<String, Feature>(),
+                        aggrFeature);
 
         Assert.assertTrue(value instanceof AggrFeatureValue);
         Assert.assertEquals(value, aggrFeature.getValue());
         Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
         Assert.assertEquals(1, featuresGroupToMax.size());
-        List<String> groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue);
-        }};
+        List<String> groupByFeatureValues = Collections.singletonList(featureGroupedByValue);
         Assert.assertEquals(max, featuresGroupToMax.get(groupByFeatureValues).intValue());
     }
 
@@ -85,8 +61,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
-        Map<String, Feature> featureMap = createFeatureMap(
+        Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
+        Map<String, Feature> featureMap = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max - 1)
         );
@@ -98,9 +74,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
 
         Assert.assertEquals(1, featuresGroupToMax.size());
-        List<String> groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue);
-        }};
+        List<String> groupByFeatureValues = Collections.singletonList(featureGroupedByValue);
         Assert.assertEquals(max, featuresGroupToMax.get(groupByFeatureValues).intValue());
     }
 
@@ -111,8 +85,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max - 1));
-        Map<String, Feature> featureMap = createFeatureMap(
+        Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureGroupedByValue}, max - 1));
+        Map<String, Feature> featureMap = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
         );
@@ -124,9 +98,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
 
         Assert.assertEquals(1, featuresGroupToMax.size());
-        List<String> groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue);
-        }};
+        List<String> groupByFeatureValues = Collections.singletonList(featureGroupedByValue);
         Assert.assertEquals(max, featuresGroupToMax.get(groupByFeatureValues).intValue());
     }
 
@@ -138,8 +110,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final int max = 10;
         final String featureGroupedByValue1 = "host_123";
         final String featureGroupedByValue2 = "host_456";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue1}, max));
-        Map<String, Feature> featureMap = createFeatureMap(
+        Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureGroupedByValue1}, max));
+        Map<String, Feature> featureMap = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue2),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
         );
@@ -151,9 +123,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
 
         Assert.assertEquals(2, featuresGroupToMax.size());
-        List<String> groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue2);
-        }};
+        List<String> groupByFeatureValues = Collections.singletonList(featureGroupedByValue2);
         Assert.assertEquals(max, featuresGroupToMax.get(groupByFeatureValues).intValue());
     }
 
@@ -169,10 +139,11 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final String featureGroupedByValue2A = "src_host_456_A";
         final String featureGroupedByValue1B = "dest_host_123_B";
         final String featureGroupedByValue2B = "src_host_456_B";
-        Feature aggrFeature = createAggrFeature(
+        Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
+                "MyAggrFeature",
                 new ImmutablePair<>(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, maxA),
                 new ImmutablePair<>(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
-        Map<String, Feature> featureMap = createFeatureMap(
+        Map<String, Feature> featureMap = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName1, featureGroupedByValue1B),
                 new ImmutablePair<String, Object>(groupByFeatureName2, featureGroupedByValue2B),
                 new ImmutablePair<String, Object>(maximizeFeatureName, maxB)
@@ -185,15 +156,9 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
 
         Assert.assertEquals(2, featuresGroupToMax.size());
-        List<String> groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue1A);
-            add(featureGroupedByValue2A);
-        }};
+        List<String> groupByFeatureValues = Arrays.asList(featureGroupedByValue1A, featureGroupedByValue2A);
         Assert.assertEquals(maxA, featuresGroupToMax.get(groupByFeatureValues).intValue());
-        groupByFeatureValues = new ArrayList() {{
-            add(featureGroupedByValue1B);
-            add(featureGroupedByValue2B);
-        }};
+        groupByFeatureValues = Arrays.asList(featureGroupedByValue1B, featureGroupedByValue2B);
         Assert.assertEquals(maxB, featuresGroupToMax.get(groupByFeatureValues).intValue());
     }
 
@@ -209,7 +174,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
             final String featureGroupedByValue2A = "src_host_456_A";
             final String featureGroupedByValue1B = "dest_host_123_B";
             final String featureGroupedByValue2B = "src_host_456_B";
-            Feature aggrFeature = createAggrFeature(
+            Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
+                    "MyAggrFeature",
                     new ImmutablePair<>(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, max),
                     new ImmutablePair<>(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
             ImmutablePair[] featureValues = new ImmutablePair[2];
@@ -221,7 +187,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
                 // a group by feature is missing
                 featureValues[1] = new ImmutablePair<String, Object>(maximizeFeatureName, max);
             }
-            Map<String, Feature> featureMap = createFeatureMap(featureValues);
+            Map<String, Feature> featureMap = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createFeatureMap(featureValues);
 
             Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                     createAggrFeatureConf(maximizeFeatureName, groupByFeatureName1, groupByFeatureName2),
@@ -229,10 +195,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
                     aggrFeature);
             Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
 
-            List<String> groupByFeatureValues = new ArrayList() {{
-                add(featureGroupedByValue1B);
-                add(featureGroupedByValue2B);
-            }};
+            List<String> groupByFeatureValues = Arrays.asList(featureGroupedByValue1B, featureGroupedByValue2B);
             Assert.assertEquals(0, featuresGroupToMax.get(groupByFeatureValues).intValue());
         }
     }
