@@ -7,7 +7,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.streaming.user.UserScoreSnapshot;
 import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
-import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.exceptions.KeyValueDBException;
 import fortscale.streaming.model.UserEventTypePair;
 import fortscale.streaming.model.UserTopEvents;
 import org.apache.samza.storage.kv.Entry;
@@ -112,7 +112,7 @@ public class UserScoreStreamingService {
 		}
 	}
 
-	public void updateUserWithEventScore(String username, String dataSource, double score, long eventTimeInMillis) throws LevelDbException{
+	public void updateUserWithEventScore(String username, String dataSource, double score, long eventTimeInMillis) throws KeyValueDBException {
 
 		UserTopEvents userTopEvents = fetchUserTopEventsIfExist(username, dataSource);
 
@@ -169,7 +169,7 @@ public class UserScoreStreamingService {
 			} catch(Exception exception){
 				logger.error("error storing value. username: {} exception: {}", username, exception);
 				logger.error("error storing value.", exception);
-				throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
+				throw new KeyValueDBException(String.format("error while trying to store user %s.", username), exception);
 			}
 		}
 	}
