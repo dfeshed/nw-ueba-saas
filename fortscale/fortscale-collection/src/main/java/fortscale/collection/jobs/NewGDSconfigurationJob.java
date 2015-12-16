@@ -71,6 +71,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		targetMachineNameFlag=false;
 		sourceIpFlag=false;
 		targetIpFlag=false;
+		dataFieldsCsv="";
+		enrichFieldsCsv="";
+		scoreFieldsCsv="";
 		root = System.getProperty("user.home");
 
         initPartConfiguration(br);
@@ -140,8 +143,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 dataFieldsCsv = br.readLine();
 
 				//keep the field definition at map of <Field name,Data type> for validation
-
 				spilitCSVtoMap(dataFieldsCsv,this.dataFelds);
+
+
 
 
 
