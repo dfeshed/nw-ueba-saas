@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class AggrFeatureMaxIntegerPerFeatureFuncTest {
+public class AggrFeatureFeatureToMaxMapFuncTest {
     private AggregatedFeatureConf createAggrFeatureConf(String maximizeFeatureName, String... groupByFeatureNames) {
         List<String> groupByFeatureNamesList = new ArrayList<>();
         for (String featureName : groupByFeatureNames) {
@@ -20,8 +20,8 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
         maximizeFeatureNameList.add(maximizeFeatureName);
 
         Map<String, List<String>> featureNamesMap = new HashMap<>();
-        featureNamesMap.put(AggrFeatureMaxIntegerPerFeatureFunc.GROUP_BY_FIELD_NAME, groupByFeatureNamesList);
-        featureNamesMap.put(AggrFeatureMaxIntegerPerFeatureFunc.MAXIMIZE_FIELD_NAME, maximizeFeatureNameList);
+        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.GROUP_BY_FIELD_NAME, groupByFeatureNamesList);
+        featureNamesMap.put(AggrFeatureFeatureToMaxMapFunc.MAXIMIZE_FIELD_NAME, maximizeFeatureNameList);
         return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
     }
 
@@ -51,7 +51,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
     public void testUpdateWithWrongAggrFeatureValueType() {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf("maximizeFeatureName", "groupByFeatureName");
         Feature aggrFeature = new Feature("MyAggrFeature", "I'm a string, not a map");
-        new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(aggrFuncConf, new HashMap<String, Feature>(), aggrFeature);
+        new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(aggrFuncConf, new HashMap<String, Feature>(), aggrFeature);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
         final String featureGroupedByValue = "host_123";
         Feature aggrFeature = createAggrFeature(new ImmutablePair(new String[]{featureGroupedByValue}, max));
 
-        Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 new HashMap<String, Feature>(),
                 aggrFeature);
@@ -91,7 +91,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
                 new ImmutablePair<String, Object>(maximizeFeatureName, max - 1)
         );
 
-        Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -117,7 +117,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
         );
 
-        Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -144,7 +144,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
         );
 
-        Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -178,7 +178,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
                 new ImmutablePair<String, Object>(maximizeFeatureName, maxB)
         );
 
-        Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+        Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName1, groupByFeatureName2),
                 featureMap,
                 aggrFeature);
@@ -223,7 +223,7 @@ public class AggrFeatureMaxIntegerPerFeatureFuncTest {
             }
             Map<String, Feature> featureMap = createFeatureMap(featureValues);
 
-            Object value = new AggrFeatureMaxIntegerPerFeatureFunc().updateAggrFeature(
+            Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                     createAggrFeatureConf(maximizeFeatureName, groupByFeatureName1, groupByFeatureName2),
                     featureMap,
                     aggrFeature);

@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 
-@JsonTypeName(AggrFeatureMaxIntegerPerFeatureFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureMaxIntegerPerFeatureFunc implements IAggrFeatureFunction {
-    final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_max_integer_per_feature_func";
+public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
+    final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
     public final static String MAXIMIZE_FIELD_NAME = "maximize";
 

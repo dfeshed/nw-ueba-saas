@@ -31,7 +31,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "destination_machine_to_highest_score_map",
@@ -39,7 +39,7 @@
             "groupBy": ["destination_machine"],
             "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "failure_code_histogram",
@@ -54,7 +54,7 @@
             "groupBy": ["failure_code"],
             "maximize": ["failure_codescore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "events_counter",
@@ -114,7 +114,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "destination_machine_to_highest_score_map",
@@ -122,7 +122,7 @@
             "groupBy": ["destination_machine"],
             "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "failure_code_histogram",
@@ -137,7 +137,7 @@
             "groupBy": ["failure_code"],
             "maximize": ["failure_codescore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "events_counter",
@@ -203,7 +203,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "destination_machine_to_highest_score_map",
@@ -211,7 +211,7 @@
             "groupBy": ["destination_machine"],
             "maximize": ["normalized_dst_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "events_counter",
@@ -283,7 +283,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "destination_machine_to_highest_score_map",
@@ -291,7 +291,7 @@
             "groupBy": ["destination_machine"],
             "filter": {"jsonPath": "[?(@.normalized_dst_machine_score >= 50)]"}
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "events_counter",
@@ -380,7 +380,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "country_to_highest_score_map",
@@ -388,7 +388,7 @@
             "groupBy": ["country"],
             "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },
@@ -447,7 +447,7 @@
             "groupBy": ["source_machine"],
             "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "country_to_highest_score_map",
@@ -455,7 +455,7 @@
             "groupBy": ["country"],
             "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_max_integer_per_feature_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },
