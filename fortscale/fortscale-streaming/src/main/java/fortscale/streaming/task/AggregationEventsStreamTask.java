@@ -1,7 +1,6 @@
 package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
-
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -9,7 +8,6 @@ import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -33,9 +31,11 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private Counter lastTimestampCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
+
+
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 
 		Config fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
@@ -57,9 +57,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	}
 	
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
-		return resolver.resolveStringValue(getConfigString(config, string));
-	}
+
 
 
 	@Override

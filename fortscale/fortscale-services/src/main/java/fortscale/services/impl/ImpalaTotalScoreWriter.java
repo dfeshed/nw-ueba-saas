@@ -1,22 +1,21 @@
 package fortscale.services.impl;
 
+import fortscale.domain.analyst.ScoreConfiguration;
+import fortscale.domain.analyst.ScoreWeight;
+import fortscale.domain.core.ClassifierScore;
+import fortscale.domain.core.User;
+import fortscale.services.classifier.Classifier;
+import fortscale.utils.hdfs.HDFSWriter;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
-
-import fortscale.domain.analyst.ScoreConfiguration;
-import fortscale.domain.analyst.ScoreWeight;
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.User;
-import fortscale.services.fe.Classifier;
-import fortscale.utils.hdfs.HDFSWriter;
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.logging.Logger;
 
 public class ImpalaTotalScoreWriter extends ImpalaWriter{
 	private static Logger logger = Logger.getLogger(ImpalaTotalScoreWriter.class);

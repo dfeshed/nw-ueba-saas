@@ -1,32 +1,22 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserScoreService;
+import fortscale.services.classifier.Classifier;
+import fortscale.services.classifier.ClassifierHelper;
 import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.services.fe.Classifier;
-import fortscale.services.fe.ClassifierService;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
@@ -36,9 +26,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 	
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private ClassifierService classifierService;
 
 	@Value("${vpn.status.success.value.regex:SUCCESS}")
 	private String vpnStatusSuccessValueRegex;
@@ -85,11 +72,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
 			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), 0, MAX_NUM_OF_HISTORY_DAYS)) {
-				Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
-				if(classifier == null){
-					continue;
-				}
-				UserScore score = new UserScore(user.getId(), classifierScore.getClassifierId(), classifier.getDisplayName(),
+				UserScore score = new UserScore(user.getId(), classifierScore.getClassifierId(), ClassifierHelper.getClassifierDisplayName(classifierScore.getClassifierId()),
 						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
 				ret.add(score);
 			}
@@ -97,7 +80,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 		
 		return ret;
 	}
-	
+
 	@Override
 	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp){
 		User user = userRepository.findOne(uid);
@@ -154,7 +137,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 	@Override
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift){
-		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));

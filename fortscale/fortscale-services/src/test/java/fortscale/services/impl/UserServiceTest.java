@@ -14,7 +14,6 @@ import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.UserApplication;
-import fortscale.services.fe.ClassifierServiceTest;
 import fortscale.utils.actdir.ADParser;
 import junitparams.JUnitParamsRunner;
 import org.junit.Before;
@@ -28,11 +27,12 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -91,7 +91,7 @@ public class UserServiceTest {
 		UserApplication userApplication = UserApplication.active_directory;
 		String username = "usernameTest";
 		when(userRepository.save(user)).thenReturn(user);
-		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication, username, true);
+		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication.getId(), username, true);
 		assertEquals(true, isNewVal);
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, times(1)).save(user);
@@ -104,7 +104,7 @@ public class UserServiceTest {
 		String username = "usernameTest";
 		ApplicationUserDetails applicationUserDetails = new ApplicationUserDetails(userApplication.getId(), username);
 		user.addApplicationUserDetails(applicationUserDetails);
-		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication, "differntName", true);
+		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication.getId(), "differntName", true);
 		assertEquals(false, isNewVal);
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, never()).save((User)any());
@@ -202,7 +202,7 @@ public class UserServiceTest {
 			verify(userRepository, times(3)).save(subList);
 
 		for (User user : listOfUsers) {
-			verify(usernameService, times(3)).updateUsernameCache(user);
+			verify(usernameService, times(3)).updateUsernameInCache(user);
 			assertTrue(user.getTags().size() == 0);
 			assertTrue(user.getScores().isEmpty());
 		}
@@ -245,37 +245,8 @@ public class UserServiceTest {
 
 		// Assert
 		verify(userRepository, times(numOfUsers)).save(any(User.class));
-		verify(usernameService, times(numOfUsers)).updateUsernameCache(any(User.class));
+		verify(usernameService, times(numOfUsers)).updateUsernameInCache(any(User.class));
 		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
-	}
-
-	@SuppressWarnings("deprecation")
-	@Test
-	public void updateUserWithADInfo_should_not_skip_update_when_member_of_differs() throws Exception{
-
-		AdUser user = new AdUser();
-		user.setObjectGUID("12345-44545-123");
-		user.setDistinguishedName("Me!!!");
-		user.setWhenChanged("2015/04/19T11:32:00");
-		user.setMemberOf("CN=group1,OU=home;CN=group2,OU=home");
-		user.setUserPrincipalName("Me!!!");
-
-		ClassifierServiceTest.TestUser savedUser = new ClassifierServiceTest.TestUser("Me!!!");
-		savedUser.setAdObjectGUID("12345-44545-123");
-		savedUser.getAdInfo().setWhenChanged(new Date(2015, 4, 19, 11, 32));
-		savedUser.getAdInfo().setUserPrincipalName("Me!!!");
-		savedUser.setId("123");
-
-		when(userRepository.findByObjectGUID("12345-44545-123")).thenReturn(savedUser);
-
-		when(adUserParser.parseDate(anyString())).thenCallRealMethod();
-
-		// act
-		userService.updateUserWithADInfo(user);
-
-		// assert
-		//verify(userRepository, times(1)).save(any(User.class));
-		verify(mongoTemplate, times(1)).updateFirst(any(Query.class), any(Update.class), any(Class.class));
 	}
 
 	@Test
