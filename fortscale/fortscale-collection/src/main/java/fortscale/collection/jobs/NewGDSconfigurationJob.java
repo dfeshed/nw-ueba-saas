@@ -78,7 +78,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
         // Open the fortscale-collection-overriding.properties in append mode for adding the new configuration
         //TODO - CHANGE IT TO REALTIVE PATH
-        File file = new File("fortscale-collection/resources/fortscale-collection-overriding.properties");
+		String root = System.getProperty("user.dir");
+        File file = new File(root+"/fortscale-collection/resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
 		File streamingOverridingFile = new File ("fortscale-streaming/config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
