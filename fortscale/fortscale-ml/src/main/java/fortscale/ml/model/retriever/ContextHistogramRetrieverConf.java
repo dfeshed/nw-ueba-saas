@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
-	public static final String CONTEXT_HISTOGRAM_RETRIEVER_CONF = "context_histogram_retriever_conf";
+	public static final String CONTEXT_HISTOGRAM_RETRIEVER = "context_histogram_retriever";
 
 	private String featureBucketConfName;
 	private String featureName;
@@ -27,6 +27,11 @@ public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 
 		this.featureBucketConfName = featureBucketConfName;
 		this.featureName = featureName;
+	}
+
+	@Override
+	public String getFactoryName() {
+		return CONTEXT_HISTOGRAM_RETRIEVER;
 	}
 
 	public String getFeatureBucketConfName() {

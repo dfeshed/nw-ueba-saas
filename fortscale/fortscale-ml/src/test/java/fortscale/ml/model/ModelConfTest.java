@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.builder.ContinuousHistogramModelBuilderConf;
+import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.selector.FeatureBucketContextSelectorConf;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -33,14 +34,14 @@ public class ModelConfTest {
 
     private JSONObject buildSelectorJSON() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "feature_bucket_context_selector_conf");
+        jsonObject.put("type", FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONTEXT_SELECTOR);
         jsonObject.put(FeatureBucketContextSelectorConf.FEATURE_BUCKET_CONF_NAME_PROPERTY, "featureBucketConfName1");
         return jsonObject;
     }
 
     private JSONObject buildRetrieverJSON() {
         JSONObject json = new JSONObject();
-        json.put("type", "context_histogram_retriever_conf");
+        json.put("type", ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
         json.put("timeRangeInSeconds", 1);
         json.put("functions", new JSONArray());
         json.put("featureBucketConfName", "featureBucketConfName1");
@@ -50,7 +51,7 @@ public class ModelConfTest {
 
     private JSONObject buildBuilderJSON(String type) {
         if (type == null) {
-            type = "continuous_histogram_model_builder_conf";
+            type = ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER;
         }
 
         JSONObject result = new JSONObject();
@@ -77,7 +78,7 @@ public class ModelConfTest {
                 "some name",
                 buildSelectorJSON(),
                 buildRetrieverJSON(),
-                buildBuilderJSON("continuous_histogram_model_builder_conf"));
+                buildBuilderJSON(ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER));
         ModelConf modelConf = (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
         Assert.assertTrue(modelConf.getModelBuilderConf() instanceof ContinuousHistogramModelBuilderConf);
     }
@@ -98,7 +99,7 @@ public class ModelConfTest {
                 "some name",
                 null,
                 buildRetrieverJSON(),
-                buildBuilderJSON("continuous_histogram_model_builder_conf"));
+                buildBuilderJSON(ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER));
         (new ObjectMapper()).readValue(modelConfJSON.toJSONString(), ModelConf.class);
     }
 

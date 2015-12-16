@@ -1,66 +1,54 @@
 package fortscale.ml.model.builder;
 
+import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DiscreteModelBuilderTest {
+	@Test(expected = IllegalArgumentException.class)
+	public void should_fail_if_given_null_as_input() {
+		new DiscreteModelBuilder().build(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void should_fail_if_given_an_illegal_input_type() {
+		new DiscreteModelBuilder().build("notTheCorrectType");
+	}
+
 	@Test
-	public void shouldBuildUsingOnlyFeaturesThatAreNotIgnored() {
-		String ignore = "ignore";
-		Map<String, Double> modelBuilderData = new HashMap<>();
-		modelBuilderData.put("rareValue", 1d);
-		modelBuilderData.put("commonValue", 10d);
-		DiscreteModelBuilder builderWithIgnore = new DiscreteModelBuilder(ignore);
-		DiscreteModelBuilder builderWithoutIgnore = new DiscreteModelBuilder(null);
+	public void should_build_model_and_calculate_score_correctly() {
+		// Arrange
+		GenericHistogram modelBuilderData = new GenericHistogram();
+		modelBuilderData.add("rareValue", 1d);
+		modelBuilderData.add("commonValue", 10d);
+		DiscreteModelBuilder builder = new DiscreteModelBuilder();
 
-		Model modelWithoutIgnoredValue = builderWithIgnore.build(modelBuilderData);
-		modelBuilderData.put(ignore, 1d);
-		Model modelWithIgnoredValue = builderWithIgnore.build(modelBuilderData);
-		Model modelWithoutIgnoring = builderWithoutIgnore.build(modelBuilderData);
+		// Act
+		Model oldModel = builder.build(modelBuilderData);
+		modelBuilderData.add("yetAnotherRareValue", 1d);
+		Model newModel = builder.build(modelBuilderData);
 
+		// Assert
 		Double count = 1d;
-		Assert.assertTrue(modelWithIgnoredValue.calculateScore(count) > modelWithoutIgnoring.calculateScore(count));
-		Assert.assertEquals(modelWithoutIgnoredValue.calculateScore(count), modelWithIgnoredValue.calculateScore(count), 0);
+		Assert.assertTrue(oldModel.calculateScore(count) > newModel.calculateScore(count));
 	}
 
 	@Test
-	public void shouldScore0ToEmptyString() throws Exception {
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(null);
-		double score = builder.calculateScore(new ImmutablePair<Object, Double>("", 1d), null);
-		Assert.assertEquals(0d, score, 0.000001);
-	}
+	public void should_delegate_values_to_model() {
+		// Arrange
+		Model model = Mockito.mock(Model.class);
+		double count = 1;
+		double expectedScore = 95;
+		Mockito.when(model.calculateScore(count)).thenReturn(expectedScore);
 
-	@Test
-	public void shouldScore0ToIgnoredValues() throws Exception {
-		final String ignore = "ignore";
-		DiscreteModelBuilder builder = new DiscreteModelBuilder(ignore);
-		double score = builder.calculateScore(new ImmutablePair<Object, Double>(ignore, 1d), null);
-		Assert.assertEquals(0d, score, 0.000001);
-	}
+		// Act
+		DiscreteModelBuilder builder = new DiscreteModelBuilder();
+		double actualScore = builder.calculateScore(new ImmutablePair<>("value", count), model);
 
-	@Test
-	public void shouldDelegateNotIgnoredValuesToModel() throws Exception {
-		DiscreteModelBuilder builder = new DiscreteModelBuilder("ignore");
-		Model modelMock = Mockito.mock(Model.class);
-		double count = 1d;
-		double score = 95;
-		Mockito.when(modelMock.calculateScore(count)).thenReturn(score);
-		Assert.assertEquals(score, builder.calculateScore(new ImmutablePair<Object, Double>("do not ignore", count), modelMock), 0.000001);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNullAsInput() {
-		new DiscreteModelBuilder(null).build(null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenIllegalInputType() {
-		new DiscreteModelBuilder(null).build("");
+		// Assert
+		Assert.assertEquals(expectedScore, actualScore, 0);
 	}
 }

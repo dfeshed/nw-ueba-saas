@@ -1,13 +1,5 @@
 package fortscale.domain.core;
 
-import static com.google.common.base.Preconditions.checkNotNull; 
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
@@ -18,7 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
-import fortscale.domain.events.LogEventsEnum;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 
 @Document(collection=User.collectionName)
@@ -239,8 +233,8 @@ public class User extends AbstractDocument {
 		return logUsernameMap;
 	}
 		
-	public DateTime getLogLastActivity(LogEventsEnum eventId){
-		return logLastActivityMap.get(eventId.getId());
+	public DateTime getLogLastActivity(String logEventName){
+		return logLastActivityMap.get(logEventName);
 	}
 	
 	public Map<String, DateTime> getLogLastActivityMap(){
@@ -284,7 +278,7 @@ public class User extends AbstractDocument {
 		checkNotNull(tag);
 		tags.remove(tag);
 	}
-	
+
 	public Set<String> getTags(){
 		return tags;
 	}
@@ -361,8 +355,8 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.logUsernameField,logname);
 	}
 	
-	public static String getLogLastActivityField(LogEventsEnum eventId) {
-		return String.format("%s.%s", User.logLastActivityField,eventId.getId());
+	public static String getLogLastActivityField(String logEventsName) {
+		return String.format("%s.%s", User.logLastActivityField, logEventsName);
 	}
 	
 	public DateTime getLastActivity() {

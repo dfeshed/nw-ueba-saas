@@ -1,25 +1,16 @@
 package fortscale.services;
 
+import fortscale.domain.ad.AdUser;
+import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.User;
+import fortscale.services.types.PropertiesDistribution;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.data.domain.Sort.Direction;
-
-import fortscale.domain.ad.AdUser;
-import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.User;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.IFeature;
-import fortscale.services.fe.Classifier;
-import fortscale.services.types.PropertiesDistribution;
-
 
 public interface UserServiceFacade {
-	public void updateUserWithCurrentADInfo();
-	
-	public void updateUserWithADInfo(Long timestampepoch);
-	
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
 	public List<IUserScore> getUserScores(String uid); 
@@ -35,24 +26,12 @@ public interface UserServiceFacade {
 	public String findByNormalizedUserName(String normalizedUsername);
 	
 	public void recalculateTotalScore();
-		
-	public void removeClassifierFromAllUsers(String classifierId);
-
-	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids);
-	
-	public Map<User, List<IUserScore>> getFollowedUsersScores();
-
-	public List<String> getFollowedUsersVpnLogUsername();
-
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId);
 	
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);
 
 	public void updateUserTotalScore();
-	
-	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 	
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
 
@@ -73,6 +52,4 @@ public interface UserServiceFacade {
 	public User getUserManager(User user, Map<String, User> dnToUserMap);
 
 	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
-
-
 }

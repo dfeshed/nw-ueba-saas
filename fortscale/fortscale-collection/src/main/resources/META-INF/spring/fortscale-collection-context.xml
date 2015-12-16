@@ -123,7 +123,7 @@
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
 	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
-	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 	<!-- group by tags service cache that uses memory based implementation -->
 	<bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
@@ -232,12 +232,16 @@
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
-		<property name="lazy" value="true"/>
+		<property name="lazyUsernameCachesUpdate" value="true"/>
 	</bean>
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
+
+	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
+
+	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
 
 	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
 

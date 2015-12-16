@@ -1,13 +1,14 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.DBCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.Index.Duplicates;
@@ -92,6 +93,29 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String collectionName = getCollectionName(featureBucketConf);
+		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
+		createCollectionIfNotExist(collectionName, expireAfterSeconds);
+		try {
+			mongoTemplate.save(featureBucket, collectionName);
+		} catch (Exception e) {
+			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
+		}
+	}
+	public void insertFeatureBuckets(FeatureBucketConf featureBucketConf, Collection<FeatureBucket> featureBuckets) throws Exception{
+		String collectionName = getCollectionName(featureBucketConf);
+		// TTL on CreatedAt
+		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
+		createCollectionIfNotExist(collectionName, expireAfterSeconds);
+		try {
+			mongoTemplate.insert(featureBuckets, collectionName);
+		} catch (Exception e) {
+			throw new Exception("Got exception while trying to save featureBuckets to mongodb. ", e);
+		}
+	}
+
+
+
+	private void createCollectionIfNotExist(String collectionName, int expireAfterSeconds) {
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 
@@ -112,18 +136,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
-			// TTL on CreatedAt
-			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
-			
 			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
 					.expire(expireAfterSeconds, TimeUnit.SECONDS)
 					.named(FeatureBucket.CREATED_AT_FIELD_NAME)
 					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
-		}
-		try {
-			mongoTemplate.save(featureBucket, collectionName);
-		} catch (Exception e) {
-			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
 		}
 	}
 	
