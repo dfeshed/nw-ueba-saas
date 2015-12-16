@@ -473,7 +473,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -492,7 +492,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -511,7 +511,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "destination_machine_to_highest_score"
+            "destination_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -530,7 +530,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "destination_machine_to_highest_score"
+            "destination_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -549,7 +549,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "failure_code_to_highest_score"
+            "failure_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -568,7 +568,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "failure_code_to_highest_score"
+            "failure_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -624,7 +624,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -643,7 +643,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -662,7 +662,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "destination_machine_to_highest_score"
+            "destination_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -681,7 +681,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "destination_machine_to_highest_score"
+            "destination_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -773,7 +773,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -792,7 +792,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "source_machine_to_highest_score"
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -811,7 +811,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "country_to_highest_score"
+            "country_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -830,7 +830,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pluck": [
-            "country_to_highest_score"
+            "country_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {

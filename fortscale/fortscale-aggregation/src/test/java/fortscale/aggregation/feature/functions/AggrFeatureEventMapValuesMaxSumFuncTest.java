@@ -36,7 +36,7 @@ public class AggrFeatureEventMapValuesMaxSumFuncTest {
 	public void testCalculateAggrFeature() {
 		int max1 = 10;
 		int max2 = 20;
-		String pluckFeatureName = "source_machine_to_highest_score";
+		String pluckFeatureName = "source_machine_to_highest_score_map";
 		List<Map<String, Feature>> listOfMaps = new ArrayList<>();
 		listOfMaps.add(createBucketAggrFeaturesMap(
 				pluckFeatureName,

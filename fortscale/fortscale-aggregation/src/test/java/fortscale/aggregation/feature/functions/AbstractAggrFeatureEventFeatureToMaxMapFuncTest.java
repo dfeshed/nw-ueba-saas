@@ -41,7 +41,7 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 
 	@Test
 	public void shouldCreateTheSameMappingGivenOnlyOneBucket() {
-		String pluckFeatureName = "source_machine_to_highest_score";
+		String pluckFeatureName = "source_machine_to_highest_score_map";
 		final Feature aggrFeature = createAggrFeature(
 				pluckFeatureName,
 				new ImmutablePair<>(new String[]{"host_123"}, 10));
@@ -66,7 +66,7 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 
 	@Test
 	public void shouldCreateMappingContainingMaxValuesGivenTwoBuckets() {
-		String pluckFeatureName = "source_machine_to_highest_score";
+		String pluckFeatureName = "source_machine_to_highest_score_map";
 		final String feature1 = "host_123";
 		final String feature2 = "host_456";
 		final int max1 = 10;
