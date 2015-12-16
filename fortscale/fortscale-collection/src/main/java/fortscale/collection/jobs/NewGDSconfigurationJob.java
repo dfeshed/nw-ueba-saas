@@ -92,10 +92,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
 
 
-            fileWriter.write("\r\n");
-            fileWriter.write("\r\n");
-			streamingOverridingfileWriter.write("\r\n");
-			streamingOverridingfileWriter.write("\r\n");
+            fileWriter.write("\n");
+            fileWriter.write("\n");
+			streamingOverridingfileWriter.write("\n");
+			streamingOverridingfileWriter.write("\n");
 
 
 			String line = String.format("########################################### New Configuration For Generic Data Source  ########################################################");
@@ -380,8 +380,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Enrich  part
             if(result)
             {
-				writeLineToFile("\r\n",fileWriter,true);
-				writeLineToFile("\r\n",streamingOverridingfileWriter,true);
+				writeLineToFile("\n",fileWriter,true);
+				writeLineToFile("\n",streamingOverridingfileWriter,true);
 
 				line = String.format("########### Enrich Schema");
 				writeLineToFile(line,fileWriter,true);
@@ -394,11 +394,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 
-                System.out.println(String.format("Please enter addition fields for %s enrich schema csv style with data types no need to enter the %s data schema again   (i.e )",dataSourceName,dataSourceName));
-                String enrichAdditionFields = ""+br.readLine();
+                //System.out.println(String.format("Please enter addition fields for %s enrich schema csv style with data types no need to enter the %s data schema again   (i.e )",dataSourceName,dataSourceName));
+                //String enrichAdditionFields = ""+br.readLine();
 
-				if (enrichAdditionFields.length()>0)
-					this.enrichFieldsCsv+=String.format(",%s",enrichAdditionFields);
+				//if (enrichAdditionFields.length()>0)
+				//	this.enrichFieldsCsv+=String.format(",%s",enrichAdditionFields);
 
 				spilitCSVtoMap(this.enrichFieldsCsv,this.enrichFelds);
 
@@ -680,8 +680,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			taskPropertiesFile = new File(configFilesPath + "username-normalization-tagging-task.properties");
 			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-			taskPropertiesFileWriter.write("\r\n");
-			taskPropertiesFileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\n");
+			taskPropertiesFileWriter.write("\n");
 
 			configureNormalizeUserNameTask(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
 
@@ -702,8 +702,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				taskPropertiesFile = new File(configFilesPath + "ip-resolving-task.properties");
 				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-				taskPropertiesFileWriter.write("\r\n");
-				taskPropertiesFileWriter.write("\r\n");
+				taskPropertiesFileWriter.write("\n");
+				taskPropertiesFileWriter.write("\n");
 
 				configureIpResolving(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
 
@@ -724,8 +724,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				taskPropertiesFile = new File(configFilesPath + "computer-tagging-clustering-task.properties");
 				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-				taskPropertiesFileWriter.write("\r\n");
-				taskPropertiesFileWriter.write("\r\n");
+				taskPropertiesFileWriter.write("\n");
+				taskPropertiesFileWriter.write("\n");
 
 				configureComputerTaggingTask(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
 
@@ -747,8 +747,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				taskPropertiesFile = new File(configFilesPath + "vpn-geolocation-session-update-task.properties");
 				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-				taskPropertiesFileWriter.write("\r\n");
-				taskPropertiesFileWriter.write("\r\n");
+				taskPropertiesFileWriter.write("\n");
+				taskPropertiesFileWriter.write("\n");
 
 				configureGeoLocationTask(taskPropertiesFileWriter,taskPropertiesFile, topolegyResult, br, sourceGeoLocatedFlag, tartgetGeoLocatedFlag);
 
@@ -764,8 +764,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			taskPropertiesFile = new File(configFilesPath + "user-mongo-update-task.properties");
 			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-			taskPropertiesFileWriter.write("\r\n");
-			taskPropertiesFileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\n");
+			taskPropertiesFileWriter.write("\n");
 
 			configureUserMongoUpdateTask(taskPropertiesFileWriter, taskPropertiesFile, topolegyResult, br);
 
@@ -781,8 +781,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			taskPropertiesFile = new File(configFilesPath + "hdfs-events-writer-task.properties");
 			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
 
-			taskPropertiesFileWriter.write("\r\n");
-			taskPropertiesFileWriter.write("\r\n");
+			taskPropertiesFileWriter.write("\n");
+			taskPropertiesFileWriter.write("\n");
 
 			configureHDFSWruteTask(taskPropertiesFileWriter, taskPropertiesFile, topolegyResult, br, "enrich");
 
@@ -803,15 +803,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
-
-
-
-
 	private void writeLineToFile(String line, FileWriter writer, boolean withNewLine){
 		try {
 			writer.write(line);
 			if (withNewLine)
-				writer.write("\r\n");
+				writer.write("\n");
 		}
 
 		catch (Exception e)
@@ -888,7 +884,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName, this.dataSourceName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
-			writeLineToFile("\r\n", taskPropertiesFileWriter, true);
+			writeLineToFile("\n", taskPropertiesFileWriter, true);
 			writeLineToFile("#############", taskPropertiesFileWriter, true);
 
 
