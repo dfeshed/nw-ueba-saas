@@ -28,6 +28,7 @@ public class IpToHostnameResolver {
 	@Autowired private ComputerLoginResolver computerLoginResolver;
 	@Autowired private DhcpResolver dhcpResolver;
 	@Autowired private IseResolver iseResolver;
+	@Autowired private PxGridResolver pxGridResolver;
 	@Autowired private DnsResolver dnsResolver;
 	@Autowired private StaticFileBasedMappingResolver fileResolver;
 	@Autowired private ComputerService computerService;
@@ -40,6 +41,7 @@ public class IpToHostnameResolver {
 	@Value("${ip2hostname.dhcpProvider.enabled:true}") private boolean dhcpProviderEnabled;
 	@Value("${ip2hostname.iseProvider.enabled:true}") private boolean iseProviderEnabled;
 	@Value("${ip2hostname.dnsProvider.enabled:true}") private boolean dnsProviderEnabled;
+	@Value("${ip2hostname.pxGridProvider.enabled:true}") private boolean pxGridProviderEnabled;
 
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
@@ -91,6 +93,10 @@ public class IpToHostnameResolver {
 
 		if (isIseProviderEnabled()) {
 			addToHostnameQueue(ipToHostnameQueue, iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp));
+		}
+
+		if (isPxGridProviderEnabled()) {
+			addToHostnameQueue(ipToHostnameQueue, pxGridResolver.getLatestPxGridEventBeforeTimestamp(ip, timestamp));
 		}
 
 		// Try resolving IP using queue
@@ -240,6 +246,14 @@ public class IpToHostnameResolver {
 		this.iseProviderEnabled = iseProviderEnabled;
 	}
 
+	public boolean isPxGridProviderEnabled() {
+		return pxGridProviderEnabled;
+	}
+
+	public void setPxGridProviderEnabled(boolean pxGridProviderEnabled) {
+		this.pxGridProviderEnabled = pxGridProviderEnabled;
+	}
+
 	public boolean isDnsProviderEnabled() {
 		return dnsProviderEnabled;
 	}
@@ -258,6 +272,10 @@ public class IpToHostnameResolver {
 
 	public IseResolver getIseResolver() {
 		return iseResolver;
+	}
+
+	public PxGridResolver getPxGridResolver() {
+		return pxGridResolver;
 	}
 
 	public DnsResolver getDnsResolver() {
