@@ -61,7 +61,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair(new String[]{featureGroupedByValue}, max));
+        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
 
         Object value = new AggrFeatureFeatureToMaxMapFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
@@ -85,7 +85,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair(new String[]{featureGroupedByValue}, max));
+        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max));
         Map<String, Feature> featureMap = createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max - 1)
@@ -111,7 +111,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair(new String[]{featureGroupedByValue}, max - 1));
+        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue}, max - 1));
         Map<String, Feature> featureMap = createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
@@ -138,7 +138,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final int max = 10;
         final String featureGroupedByValue1 = "host_123";
         final String featureGroupedByValue2 = "host_456";
-        Feature aggrFeature = createAggrFeature(new ImmutablePair(new String[]{featureGroupedByValue1}, max));
+        Feature aggrFeature = createAggrFeature(new ImmutablePair<>(new String[]{featureGroupedByValue1}, max));
         Map<String, Feature> featureMap = createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue2),
                 new ImmutablePair<String, Object>(maximizeFeatureName, max)
@@ -170,8 +170,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final String featureGroupedByValue1B = "dest_host_123_B";
         final String featureGroupedByValue2B = "src_host_456_B";
         Feature aggrFeature = createAggrFeature(
-                new ImmutablePair(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, maxA),
-                new ImmutablePair(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
+                new ImmutablePair<>(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, maxA),
+                new ImmutablePair<>(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
         Map<String, Feature> featureMap = createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName1, featureGroupedByValue1B),
                 new ImmutablePair<String, Object>(groupByFeatureName2, featureGroupedByValue2B),
@@ -210,8 +210,8 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
             final String featureGroupedByValue1B = "dest_host_123_B";
             final String featureGroupedByValue2B = "src_host_456_B";
             Feature aggrFeature = createAggrFeature(
-                    new ImmutablePair(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, max),
-                    new ImmutablePair(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
+                    new ImmutablePair<>(new String[]{featureGroupedByValue1A, featureGroupedByValue2A}, max),
+                    new ImmutablePair<>(new String[]{featureGroupedByValue1B, featureGroupedByValue2B}, 0));
             ImmutablePair[] featureValues = new ImmutablePair[2];
             featureValues[0] = new ImmutablePair<String, Object>(groupByFeatureName1, featureGroupedByValue1B);
             if (missingFeatureType == 0) {
