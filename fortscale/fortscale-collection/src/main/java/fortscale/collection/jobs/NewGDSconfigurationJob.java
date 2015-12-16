@@ -585,7 +585,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
         }
         catch (Exception exception)
         {
-            logger.error("There was an exception during execution - {} ",exception.getCause().getMessage());
+            logger.error("There was an exception during execution - {} ",exception.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
         }
@@ -598,7 +598,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                }
                catch (IOException exception)
                {
-                   logger.error("There was an exception during the file - {} closing  , cause - {} ",file.getName(),exception.getCause().getMessage());
+                   logger.error("There was an exception during the file - {} closing  , cause - {} ",file.getName(),exception.getMessage());
 				   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
                }
@@ -612,7 +612,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				}
 				catch (IOException exception)
 				{
-					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getCause().getMessage());
+					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getMessage());
 					System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 				}
@@ -649,7 +649,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch (Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -806,7 +806,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -825,7 +825,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch (Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 	}
@@ -861,13 +861,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//In case of fake domain - enter the actual domain value the PS want
-			System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty valuefor keeping the name without domain): "));
+			System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty value for keeping the name without domain): "));
 			String domainValue = br.readLine();
 			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.fake=%s", dataSourceName, domainValue);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//Normalized_username field
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}");
+			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}",this.dataSourceName);
 			writeLineToFile(line, taskPropertiesFileWriter, true);
 
 			//partition field name  (today we use for all the username)
@@ -877,7 +877,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
 			//Normalizing service
-			System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):"));
+			System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
 			Boolean updateOnly = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
 
 			if (updateOnly) {
@@ -907,7 +907,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 		catch (Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -917,7 +917,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
@@ -1069,7 +1069,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -1080,7 +1080,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			catch (IOException exception)
 			{
 
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
@@ -1165,7 +1165,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e){
 
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -1175,7 +1175,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 			}
@@ -1274,48 +1274,48 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//country ip field
-				line = String.format("%s.%s_dest_VpnEnrichTask.country.field=dest_country",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.country.field=dest_country",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//longtitude  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.longtitude.field=dest_longtitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.longtitude.field=dest_longtitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//latitude  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.latitude.field=dest_latitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.latitude.field=dest_latitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//countryIsoCode field
-				line = String.format("%s.%s_dest_VpnEnrichTask.countryIsoCode.field=dest_countryIsoCode",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.countryIsoCode.field=dest_countryIsoCode",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//region  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.region.field=dest_region",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.region.field=dest_region",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//city field
-				line = String.format("%s.%s_dest_VpnEnrichTask.city.field=dest_city",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.city.field=dest_city",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//isp field
-				line = String.format("%s.%s_dest_VpnEnrichTask.isp.field=dest_isp",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.isp.field=dest_isp",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//usageType field
-				line = String.format("%s.%s_dest_VpnEnrichTask.usageType.field=dest_usageType",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.usageType.field=dest_usageType",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//put session update configuration as false  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doSessionUpdate=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.doSessionUpdate=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
 				//put data bucket as false field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doDataBuckets=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.doDataBuckets=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 				//put geo location as true field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doGeoLocation=true",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
+				line = String.format("%s.%s_dest_VpnEnrichTask.doGeoLocation=true",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
 				writeLineToFile(line, taskPropertiesFileWriter, true);
 
 
@@ -1340,7 +1340,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 		} catch (Exception e) {
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -1350,7 +1350,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 			catch (IOException exception)
 			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
 
 			}
 		}
@@ -1416,7 +1416,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 		} catch (Exception e) {
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
 		} finally {
@@ -1424,7 +1424,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				taskPropertiesFileWriter.close();
 			} catch (IOException exception) {
 
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
 
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
@@ -1499,7 +1499,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 		catch (Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 
@@ -1507,7 +1507,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			try {
 				taskPropertiesFileWriter.close();
 			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getCause().getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
 
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
@@ -1625,7 +1625,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	   }
 	   catch(Exception e)
 	   {
-		   logger.error("There was an exception during the execution - {}",e.getCause().getMessage());
+		   logger.error("There was an exception during the execution - {}",e.getMessage());
 		   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 	   }
 
