@@ -130,54 +130,46 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 	 * @param event
 	 */
 	private void handleIpAllocationEvent(PxGridIPEvent event) {
+
+		// Received a new event - remove it's IP from the blacklist    
+		removeFromBlackList(event);
+
 		// add assigned events to repository
 		// see that we don't already have such an event in cache with the same
 		// expiration time and hostname
 		PxGridIPEvent cached = cache.get(event.getIpaddress());
 
-		// If have already have in cache an event with same host name and a more recent lease time, return
-		if (cached != null && cached.getHostname().equals(event.getHostname()) && cached.getTimestampepoch().compareTo(event.getTimestampepoch()) >= 0)
-			return;
-
-		// Cache miss
-		if (cached == null) {
-			List<PxGridIPEvent> pxGridIPEvents = pxGridEventRepository.findByIpaddress(event.getIpaddress(), new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
-			// New IP - add it to repository and cache
-			if (pxGridIPEvents.isEmpty()) {
+		// cache hit
+		if (cached != null) {
+			// The new pxGrid event is fresher than the one in the cache
+			if (cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
 				cache.put(event.getIpaddress(), event);
 				pxGridEventRepository.save(event);
 			}
-			// The IP was used before;
-			// Update the cache
-			// TODO: make sure that the first event is the latest date
-			else {
-				cached = pxGridIPEvents.get(0);
-				// We will update the cache and the repository in case that:
-				// 1. IP was allocated
-				// 2. We have record in repository but not in cache
-				// 3. The ips of the new event and the event from the repository are the same
-				// 4. The time of the new event is more recent
-				// 5. The hostnames are different
-				if (cached.getIpaddress().equals(event.getIpaddress()) &&
-						!cached.getHostname().equals(event.getHostname()) &&
-						cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
-					pxGridEventRepository.save(event);
-					cache.put((event.getIpaddress()), event);
-				} else {
-					cache.put(cached.getIpaddress(), cached);
-				}
-
-			}
+			return;
 		}
-		// Cache hit
-		else {
-			if (cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
-				cache.put(event.getIpaddress(), event);
-				removeFromBlackList(event);
-				if (!cached.getHostname().equals(event.getHostname())) {
-					pxGridEventRepository.save(event);
-				}
-			}
+
+		// Cache miss
+		List<PxGridIPEvent> pxGridIPEvents = pxGridEventRepository.findByIpaddress(event.getIpaddress(), new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+		// New IP - add it to repository and cache
+		if (pxGridIPEvents.isEmpty()) {
+			cache.put(event.getIpaddress(), event);
+			pxGridEventRepository.save(event);
+			return;
+		}
+
+		// The IP was used before;
+		// Update the cache
+		// TODO: make sure that the first event is the latest date
+		PxGridIPEvent fromRepository = pxGridIPEvents.get(0);
+
+		// In case the new event is fresher than the one from the repository - update the repository and put in cache the new event
+		// In case the event from the repository is fresher, put it in cache
+		if (fromRepository.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
+			pxGridEventRepository.save(event);
+			cache.put((event.getIpaddress()), event);
+		} else {
+			cache.put(fromRepository.getIpaddress(), fromRepository);
 		}
 	}
 }
