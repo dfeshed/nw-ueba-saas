@@ -16,6 +16,7 @@ import java.util.List;
 
 import static junitparams.JUnitParamsRunner.$;
 
+
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsNitro4769Test {
 
