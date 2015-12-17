@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class EntityEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
+	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
 	@Autowired
@@ -39,11 +40,11 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 
 
 	@Override
-	public void saveEvent(JSONObject event, String collectionPrefix) throws IOException {
-		String entityEventType = (String) event.get(entityEventTypeFieldName);
-		String collectionName = new StringBuilder(collectionPrefix).append(COLLECTION_NAME_SEPARATOR)
-				.append(eventTypeFieldValue).append(COLLECTION_NAME_SEPARATOR)
-				.append(entityEventType).toString();
+	public void saveEvent(JSONObject event) throws IOException {
+		String entityEventType = (String)event.get(entityEventTypeFieldName);
+		String collectionName = COLLECTION_NAME_PREFIX.concat(COLLECTION_NAME_SEPARATOR)
+				.concat(eventTypeFieldValue).concat(COLLECTION_NAME_SEPARATOR)
+				.concat(entityEventType);
 
 		if (!isCollectionExist(collectionName)) {
 			EntityEventConf entityEventConf = entityEventConfService.getEntityEventConf(entityEventType);
