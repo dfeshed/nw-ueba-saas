@@ -43,6 +43,9 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		if (value == null) {
 			value = new FeatureNumericValue(0D);
 			aggrFeature.setValue(value);
+		} else if (!(value instanceof FeatureNumericValue)) {
+			throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s",
+					aggrFeature.getName(), FeatureNumericValue.class.getSimpleName()));
 		}
 
 		Double oldSum = (Double) ((FeatureNumericValue) value).getValue();
@@ -85,8 +88,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		}
 
 		double sum = sumNumbersOverBucketAggrFeatures(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-		Feature resFeature = new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(sum, 0L));
-		return resFeature;
+		return new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(sum, 0L));
 	}
 	
 	private double sumNumbersOverBucketAggrFeatures(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList){

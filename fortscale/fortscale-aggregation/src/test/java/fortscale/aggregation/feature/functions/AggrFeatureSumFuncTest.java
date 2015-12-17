@@ -1,13 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import fortscale.aggregation.feature.FeatureNumericValue;
 import net.minidev.json.JSONObject;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,13 +19,14 @@ import fortscale.aggregation.feature.util.GenericHistogram;
  */
 public class AggrFeatureSumFuncTest {
 
-	private AggregatedFeatureConf createAggregatedFeatureConf(String name, int num) {
-		List<String> list = new ArrayList<>();
-		for (int i = 1; i <= num; i++) {
-			list.add(String.format("feature%d", i));
-		}
-		Map<String, List<String>> map = new HashMap<>();
-		return new AggregatedFeatureConf(name, map, new JSONObject());
+	private AggregatedFeatureConf createAggregatedFeatureConf(String name) {
+		return new AggregatedFeatureConf(name, new HashMap<String, List<String>>(), new JSONObject());
+	}
+
+	private AggregatedFeatureConf createAggregatedFeatureConf(String name, String featureToSum) {
+		AggregatedFeatureConf conf = createAggregatedFeatureConf(name);
+		conf.getFeatureNamesMap().put("sum", Collections.singletonList(featureToSum));
+		return conf;
 	}
 
 	private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
@@ -40,19 +39,31 @@ public class AggrFeatureSumFuncTest {
 		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE",  map, new JSONObject());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateAggrFeatureWrongFeatureValueType() {
+		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName");
+		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
+		function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("featureName", "NOT_INTEGER_VALUE"));
+	}
+
 	@Test
 	public void testUpdateAggrFeatureWhenCounting() {
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
-		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName", 1);
+		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName");
 		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10D));
 		Assert.assertEquals(11D, actual1.getValue());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testUpdateAggrFeatureWrongFeatureValueType() {
-		AggregatedFeatureConf conf = createAggregatedFeatureConf("", 1);
+	@Test
+	public void testUpdateAggrFeatureWhenSummingSpecificFeature() {
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
-		function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("featureName", "NOT_INTEGER_VALUE"));
+		String featureNameToSum = "score";
+		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName", featureNameToSum);
+		double sum = 10;
+		double score = 50;
+		Map<String, Feature> features = AggrFeatureTestUtils.createFeatureMap(new ImmutablePair<String, Object>(featureNameToSum, score));
+		FeatureNumericValue actual = (FeatureNumericValue)function.updateAggrFeature(conf, features, new Feature("aggregatedFeatureEventTestName", sum));
+		Assert.assertEquals(sum + score, actual.getValue());
 	}
 
 	@Test

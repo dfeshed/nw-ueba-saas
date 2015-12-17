@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.functions;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -23,18 +22,6 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE", map, new JSONObject());
 	}
 
-	public static Map<String, Feature> createFeatureMap(final ImmutablePair<String, Object>... featureValues) {
-		Map<String, Feature> featureMap = new HashMap<>();
-		for (ImmutablePair<String, Object> featureValue : featureValues) {
-			Object value = featureValue.getRight();
-			if (value instanceof String) {
-				featureMap.put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (String) value));
-			} else {
-				featureMap.put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (Integer) value));
-			}
-		}
-		return featureMap;
-	}
 
 	public static Feature createAggrFeature(String featureName, Pair<String[], Integer>... featureValuesAndNumbers) {
 		Map<List<String>, Integer> featuresGroupToMax = new HashMap<>();
