@@ -879,7 +879,7 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
+          "filter": {"jsonPath": "[?(@.status != 'Success')]"}
         },
         {
           "name": "country_histogram",
@@ -925,7 +925,7 @@
           "name": "failed_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Failure')]"}
+          "filter": {"jsonPath": "[?(@.status != 'Success')]"}
         },
         {
           "name": "country_histogram",
