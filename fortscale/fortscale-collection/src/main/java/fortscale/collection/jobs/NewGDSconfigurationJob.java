@@ -111,35 +111,35 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      */
     public void initPartConfiguration(BufferedReader br){
 
-        File file = new File(collectionPath+"resources/fortscale-collection-overriding.properties");
-        FileWriter fileWriter=null;
+        File collectionOverridingFile = new File(collectionPath+"resources/fortscale-collection-overriding.properties");
+        FileWriter collectionOverridingfileWriter=null;
 		File streamingOverridingFile = new File (streamingPath+"config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
 		String brResult="";
 		String showMessage="";
 
         try{
-            fileWriter = new FileWriter(file,true);
+            collectionOverridingfileWriter = new FileWriter(collectionOverridingFile,true);
 			streamingOverridingfileWriter=new FileWriter(streamingOverridingFile,true);
 
             Boolean result = false;
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
 
-            fileWriter.write("\n");
-            fileWriter.write("\n");
+            collectionOverridingfileWriter.write("\n");
+            collectionOverridingfileWriter.write("\n");
 			streamingOverridingfileWriter.write("\n");
 			streamingOverridingfileWriter.write("\n");
 
 			String line = String.format("########################################### New Configuration For Generic Data Source  ########################################################");
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
 			//Configure the data source list
-			writeLineToFile(String.format("fortscale.data.source=%s,%s",currentDataSources,dataSourceName),fileWriter,true);
+			writeLineToFile(String.format("fortscale.data.source=%s,%s",currentDataSources,dataSourceName),collectionOverridingfileWriter,true);
 
 			line = String.format("########################################### %s ########################################################",dataSourceName);
-			writeLineToFile(line,fileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
+			writeLineToFile(line, streamingOverridingfileWriter, true);
 
             System.out.println(String.format("Dose %s Have data schema (for ETL) (y/n) ?",dataSourceName));
 			brResult =br.readLine().toLowerCase();
@@ -165,7 +165,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
                 line=String.format("impala.data.%s.table.field.username=%s",dataSourceName,usernameFieldName);
                 writeLineToFile(line,streamingOverridingfileWriter,true);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 				//write the source_ip field configuration at the streaming overriding for the enrich part
 				System.out.println(String.format("Does %s will have source ip field  (i.e spurce_ip or client_address ) (y/n)?",this.dataSourceName));
@@ -182,7 +182,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 					line = String.format("impala.data.%s.table.field.source_ip=%s", dataSourceName, sourceIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
-					writeLineToFile(line,fileWriter,true);
+					writeLineToFile(line,collectionOverridingfileWriter,true);
 
 					//Geo location task
 					System.out.println(String.format("Does %s supposed to geo locate the source ip (y/n)?", dataSourceName));
@@ -216,7 +216,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 						line = String.format("impala.data.%s.table.field.source=%s", dataSourceName, sourceMachineFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 
 						//write the source machien classification field configuration at the streaming overriding for the enrich part
 						showMessage=String.format("Please enter the \"source machine\" class field name, this field will contain if this is a Desktop or Server   (i.e src_class ):");
@@ -228,7 +228,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 						line = String.format("impala.data.%s.table.field.src_class=%s", dataSourceName, srClassFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 
 						//configure the normalized_src_machine
 						//validation of the normalized_src_machine  field
@@ -237,7 +237,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 						line = String.format("impala.data.%s.table.field.normalized_src_machine=%s", dataSourceName, normalizedSrcMachine);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 					}
 
 				}
@@ -259,7 +259,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
                         line = String.format("impala.data.%s.table.field.normalized_src_machine=%s", dataSourceName, normalizedSrcMachine);
                         writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,fileWriter,true);
+                        writeLineToFile(line,collectionOverridingfileWriter,true);
 
                     }
                 }
@@ -281,7 +281,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 					line = String.format("impala.data.%s.table.field.target_ip=%s", dataSourceName, targetIpFieldName);
 					writeLineToFile(line, streamingOverridingfileWriter, true);
-					writeLineToFile(line,fileWriter,true);
+					writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 					System.out.println(String.format("Does %s supposed to geo locate the target ip (y/n)?", dataSourceName));
@@ -315,7 +315,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 						line = String.format("impala.data.%s.table.field.target=%s", dataSourceName, targetMachineFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 
 						//write the dest machine classification field configuration at the streaming overriding for the enrich part
 						showMessage=String.format("Please enter the \"target machine\" class field name, this field will contain if this is a Desktop or Server (i.e dst_class ):");
@@ -328,7 +328,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 						line = String.format("impala.data.%s.table.field.dst_class=%s", dataSourceName, dstClassFieldName);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 						//configure the normalized_dst_machine
@@ -339,7 +339,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 						//configure the normalized_dst_machine
 						line = String.format("impala.data.%s.table.field.normalized_dst_machine=%s", dataSourceName,normalizedDstMachine);
 						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,fileWriter,true);
+						writeLineToFile(line,collectionOverridingfileWriter,true);
 					}
 				}
 
@@ -360,7 +360,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                         //configure the normalized_dst_machine
                         line = String.format("impala.data.%s.table.field.normalized_dst_machine=%s", dataSourceName,normalizedDstMachine);
                         writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,fileWriter,true);
+                        writeLineToFile(line,collectionOverridingfileWriter,true);
 
                         //write the target_ip field configuration at the streaming overriding for the enrich part
                         showMessage=String.format("Please enter the \"target\" field name that will contain the target name  (i.e target_user ):");
@@ -372,23 +372,19 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
                         line = String.format("impala.data.%s.table.field.target=%s", dataSourceName, targetFieldName);
                         writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,fileWriter,true);
+                        writeLineToFile(line,collectionOverridingfileWriter,true);
 
                     }
                 }
 
 
-                //write the time stamp field name
-				showMessage=String.format("Please enter the \"time stamp field name \"  (i.e date_time_unix):");
-				System.out.println(showMessage);
-				String timestampFieldName =  br.readLine().toLowerCase();
 
 				//validation of the target machine class  field
-				timestampFieldName = validatedFieldExietInSchema(timestampFieldName,this.dataFelds,dataFieldsCsv,showMessage);
+				 validatedFieldExietInSchema("date_time_unix",this.dataFelds,dataFieldsCsv,"autoAddition");
 
-				line=String.format("impala.data.%s.table.field.epochtime=%s",dataSourceName,timestampFieldName);
+				line=String.format("impala.data.%s.table.field.epochtime=date_time_unix",dataSourceName);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
                 //configure the normalized_username
                 //validation of the normalized_username  field
@@ -397,34 +393,34 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				line = String.format("########### Data Schema");
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
                 line=String.format("impala.%s.have.data=true",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
 
                 //delimiter
                 System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
                 String delimiter = br.readLine();
                 line = String.format("impala.data.%s.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
                 //table name
                 System.out.println(String.format("Please enter the %s data table name  (i.e sshdata )",dataSourceName));
                 String dataTableName = br.readLine();
                 line = String.format("impala.data.%s.table.name=%s",dataSourceName,dataTableName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 
                 //hdfs paths
                 line = String.format("hdfs.user.data.%s.path=${hdfs.user.data.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
                 //hdfs retention
                 line = String.format("hdfs.user.data.%s.retention=90",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 
@@ -436,20 +432,20 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//validation of the target machine class  field
 				validatedFieldExietInSchema("is_sensitive_machine",this.dataFelds,dataFieldsCsv,"autoAddition");
 
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
                 //partition type
                 line = String.format("impala.data.%s.table.partition.type=monthly",dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 				//align the field list csv
 				dataFieldsCsv = convertDataSchemaMapToCSVlist(this.dataFelds);
 
 				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,dataFieldsCsv);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 
@@ -464,15 +460,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Enrich  part
             if(result)
             {
-				writeLineToFile("\n",fileWriter,true);
+				writeLineToFile("\n",collectionOverridingfileWriter,true);
 				writeLineToFile("\n",streamingOverridingfileWriter,true);
 
 				line = String.format("########### Enrich Schema");
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
                 line=String.format("impala.%s.have.enrich=true",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 				//fields
@@ -536,14 +532,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,this.enrichFieldsCsv);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 				//delimiter
                 System.out.println(String.format("Please enter the %s enrich schema delimiter  (i.e | or , )",dataSourceName));
                 String delimiter = br.readLine();
 				line = String.format("impala.enricheddata.%s.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
@@ -551,35 +547,35 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 System.out.println(String.format("Please enter the %s enrich table name  (i.e sshenriched )",dataSourceName));
                 String tableName = br.readLine();
 				line = String.format("impala.enricheddata.%s.table.name=%s",dataSourceName,tableName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 				//hdfs path
 				line = String.format("hdfs.user.enricheddata.%s.path=${hdfs.user.enricheddata.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
                 //hdfs retention
                 line = String.format("hdfs.user.enricheddata.%s.retention=90",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
                 writeLineToFile(line,streamingOverridingfileWriter,true);
 
 				//hdfs file name
 				line = String.format("hdfs.enricheddata.%s.file.name=${impala.enricheddata.%s.table.name}.csv",dataSourceName,dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 
 				//partition strategy
 				line = String.format("impala.enricheddata.%s.table.partition.type=daily",dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
             }
 
 			line = String.format("########### Score Schema");
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
@@ -596,7 +592,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			//fields
 			line = String.format("impala.score.%s.table.fields=%s",dataSourceName,this.scoreFieldsCsv);
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
@@ -604,31 +600,31 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             System.out.println(String.format("Please enter the %s score schema delimiter  (i.e | or , )",dataSourceName));
             String delimiter = br.readLine();
 			line = String.format("impala.score.%s.table.delimiter=%s",dataSourceName,delimiter);
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
 			//table name
             System.out.println(String.format("Please enter the %s score table name  (i.e sshscores )",dataSourceName));
             String tableName = br.readLine();
 			line = String.format("impala.score.%s.table.name=%s",dataSourceName,tableName);
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
 			//hdfs path
 			line = String.format("hdfs.user.processeddata.%s.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
-			writeLineToFile(line,fileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
 			writeLineToFile(line,streamingOverridingfileWriter,true);
 
             //hdfs retention
             line = String.format("hdfs.user.processeddata.%s.retention=90",dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
             writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 			//partition strategy
 			line=String.format("impala.score.%s.table.partition.type=daily",dataSourceName);
-			writeLineToFile(line,fileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
+			writeLineToFile(line,collectionOverridingfileWriter,true);
+			writeLineToFile(line, streamingOverridingfileWriter, true);
 
 
 
@@ -641,68 +637,68 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 //Top score part
 
 				line = String.format("########### Top Score Schema");
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
                 line=String.format("impala.%s.have.topScore=true",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 				//fields
 				line = String.format("impala.score.%s.top.table.fields=%s",dataSourceName,this.scoreFieldsCsv);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 				//delimiter
 				line = String.format("impala.score.%s.top.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 				//table name
 				line = String.format("impala.score.%s.top.table.name=%s",dataSourceName,tableName+"_top");
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 				//hdfs path
 				line=String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
                 //hdfs retention
                 line = String.format("hdfs.user.processeddata.%s.top.retention=90",dataSourceName);
-                writeLineToFile(line,fileWriter,true);
+                writeLineToFile(line,collectionOverridingfileWriter,true);
                 writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
 				//partition startegy
 				line=String.format("impala.score.%s.top.table.partition.type=daily",dataSourceName);
-				writeLineToFile(line,fileWriter,true);
+				writeLineToFile(line,collectionOverridingfileWriter,true);
 				writeLineToFile(line,streamingOverridingfileWriter,true);
 
 
             }
 
             line=String.format("%s.EventsJoiner.ttl=86400",dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
             line=String.format("kafka.%s.message.record.field.data_source=data_source",dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
             line=String.format("kafka.%s.message.record.field.last_state=last_state",dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
             line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
             line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
             line="read"+dataSourceName.toUpperCase()+".morphline=file:resources/conf-files/processread"+dataSourceName.toUpperCase()+"ParsingOngoingEvents.conf";
-            writeLineToFile(line,fileWriter,true);
+            writeLineToFile(line,collectionOverridingfileWriter,true);
 
 
 
@@ -710,7 +706,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 
-            fileWriter.flush();
+            collectionOverridingfileWriter.flush();
 			streamingOverridingfileWriter.flush();
 
         }
@@ -723,14 +719,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
         }
 
         finally {
-            if (fileWriter != null)
+            if (collectionOverridingfileWriter != null)
             {
                try {
-                   fileWriter.close();
+                   collectionOverridingfileWriter.close();
                }
                catch (IOException exception)
                {
-                   logger.error("There was an exception during the file - {} closing  , cause - {} ",file.getName(),exception.getMessage());
+                   logger.error("There was an exception during the file - {} closing  , cause - {} ",collectionOverridingFile.getName(),exception.getMessage());
 				   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 
                }
