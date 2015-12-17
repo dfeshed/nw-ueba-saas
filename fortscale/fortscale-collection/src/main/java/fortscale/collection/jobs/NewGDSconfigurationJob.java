@@ -498,7 +498,6 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 					validatedFieldExietInSchema("src_countryIsoCode",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_region",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_city",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-
 					validatedFieldExietInSchema("src_isp",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 					validatedFieldExietInSchema("src_usageType",this.enrichFelds,enrichFieldsCsv,"autoAddition");
 
