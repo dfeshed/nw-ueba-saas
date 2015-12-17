@@ -50,7 +50,7 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 	}
 
 	@Test
-	public void shouldCreateMappingContainingMaxValuesGivenTwoBuckets() {
+	public void shouldCreateMappingContainingMaxValuesGivenMultipleBuckets() {
 		final String feature1 = "host_123";
 		final String feature2 = "host_456";
 		final int max1 = 10;
@@ -66,6 +66,9 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 				},
 				new Pair[]{
 						new ImmutablePair<>(new String[]{feature2}, max2)
+				},
+				new Pair[]{
+						new ImmutablePair<>(new String[]{feature1}, max1 - 1)
 				});
 	}
 }

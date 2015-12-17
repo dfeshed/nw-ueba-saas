@@ -48,7 +48,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
                         featureToPick, AggrFeatureValue.class.getSimpleName(), Map.class.getSimpleName()));
             }
             for (Map.Entry<List<String>, Integer> featuresGroupAndMax : ((Map<List<String>, Integer>) ((AggrFeatureValue) aggrFeature.getValue()).getValue()).entrySet()) {
-                Integer max = featuresGroupToMax.get(featuresGroupAndMax.getValue());
+                Integer max = featuresGroupToMax.get(featuresGroupAndMax.getKey());
                 if (max == null) {
                     max = Integer.MIN_VALUE;
                 }
