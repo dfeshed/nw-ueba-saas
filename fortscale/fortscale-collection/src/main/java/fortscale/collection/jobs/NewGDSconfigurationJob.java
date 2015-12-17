@@ -34,6 +34,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
     private Boolean sourceFlag;
     private Boolean targetFlag;
 	private String root;
+	private String collectionPath;
+	private String streamingPath;
 
 	private Map<String,String> dataFelds;
 	private Map<String,String> enrichFelds;
@@ -79,9 +81,26 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		enrichFieldsCsv="";
 		scoreFieldsCsv="";
 		root = System.getProperty("user.home");
+		collectionPath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/";
+		streamingPath = root+"/fortscale/streaming/";
 
-        initPartConfiguration(br);
-		streamingConfiguration(br);
+
+		System.out.println("Do you want to configure the schema part (y/n)?");
+		String result = br.readLine();
+		if (result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"))
+        	initPartConfiguration(br);
+
+		System.out.println("Do you want to configure the collection jobs  (y/n)?");
+		result = br.readLine();
+		if (result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"))
+			collectionJobConfiguration(br);
+
+		System.out.println("Do you want to configure the streaming part (y/n)?");
+		result = br.readLine();
+		if (result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"))
+			streamingConfiguration(br);
+
+
 
 
     }
@@ -92,9 +111,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      */
     public void initPartConfiguration(BufferedReader br){
 
-        File file = new File(root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties");
+        File file = new File(collectionPath+"resources/fortscale-collection-overriding.properties");
         FileWriter fileWriter=null;
-		File streamingOverridingFile = new File (root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties");
+		File streamingOverridingFile = new File (streamingPath+"config/fortscale-overriding-streaming.properties");
 		FileWriter streamingOverridingfileWriter=null;
 		String brResult="";
 		String showMessage="";
@@ -427,7 +446,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//align the field list csv
-				dataFieldsCsv = alignTheFieldList(this.dataFelds);
+				dataFieldsCsv = convertDataSchemaMapToCSVlist(this.dataFelds);
 
 				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,dataFieldsCsv);
 				writeLineToFile(line,fileWriter,true);
@@ -513,7 +532,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//align the field list csv
-				this.enrichFieldsCsv = alignTheFieldList(this.enrichFelds);
+				this.enrichFieldsCsv = convertDataSchemaMapToCSVlist(this.enrichFelds);
 
 
 				line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,this.enrichFieldsCsv);
@@ -742,10 +761,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	 * This method will configure the entire streaming configuration - Enrich , Single model/score, Aggregation
 	 * @param br - Will hold the scanner for tracing the user input
 	 */
-	public void streamingConfiguration(BufferedReader br)
-	{
+	public void streamingConfiguration(BufferedReader br){
 
-		String configFilesPath = root+"/fortscale/streaming/config/";
+		String configFilesPath = streamingPath+"config/";
 		Boolean result = false;
 		lastState="etl";
 
@@ -770,9 +788,21 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
+	private void collectionJobConfiguration(BufferedReader br){
 
-	private void enrichStereamingConfiguration(BufferedReader br,String configFilesPath)
-	{
+		String tempalteDirectoryPath;
+
+
+
+	}
+
+
+	/**
+	 * This method will configure the entire enrich parts at the streaming
+	 * @param br
+	 * @param configFilesPath
+	 */
+	private void enrichStereamingConfiguration(BufferedReader br,String configFilesPath){
 
 
 		String line="";
@@ -929,6 +959,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
+
+	/**
+	 * Private method that will write line into a given file
+	 * @param line -  the line to write
+	 * @param writer - the write of the file
+	 * @param withNewLine - flag that will sign if need to add new line
+	 */
 	private void writeLineToFile(String line, FileWriter writer, boolean withNewLine){
 		try {
 			writer.write(line);
@@ -943,6 +980,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 * Will configure the user normalization and tagging streaming task
+	 * @param taskPropertiesFileWriter - The writer of the task properties
+	 * @param taskPropertiesFile - The task properties fiel
+	 * @param topolegyResult - The flag that will sign the topolegy path (generic or specific)
+	 * @param br - The buffer reader
+	 */
 	private void configureNormalizeUserNameTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
 
 		try {
@@ -1735,6 +1779,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 
 	}
+
 	private void configureTaskMandatoryConfiguration(FileWriter taskPropertiesFileWriter ,Boolean topolegyResult, String name,String lastState,String outputTopic){
 		String line ="";
 		//name
@@ -1765,8 +1810,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
-	private String validatedFieldExietInSchema(String fieldName,Map<String,String> fieldsSchema,String fields,String showMessage) throws Exception
-	{
+	private String validatedFieldExietInSchema(String fieldName,Map<String,String> fieldsSchema,String fields,String showMessage) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		boolean exist =  fieldsSchema.containsKey(fieldName);
 		boolean result = false;
@@ -1800,8 +1844,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
-	private String alignTheFieldList(Map<String,String> updatedDataSourceSchema)
-	{
+	private String convertDataSchemaMapToCSVlist(Map<String, String> updatedDataSourceSchema){
 		String result = "";
 
 		for (Map.Entry<String,String> entry :updatedDataSourceSchema.entrySet())
@@ -1824,11 +1867,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		}
 	}
 
+
+
     @Override
     protected int getTotalNumOfSteps() { return 1; }
 
     @Override
     protected boolean shouldReportDataReceived() { return false; }
+
 
 
     public static void main(String[] args)  throws IOException {
