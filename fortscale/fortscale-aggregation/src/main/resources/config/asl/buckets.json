@@ -486,10 +486,11 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "high_score_rate_vpn_session_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
+          "name": "sum_of_scores_rate_vpn_session",
+          "featureNamesMap": {
+            "sum": ["databucketScore"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         }
       ]
     },
@@ -505,10 +506,11 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "high_score_rate_vpn_session_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
+          "name": "sum_of_scores_rate_vpn_session",
+          "featureNamesMap": {
+            "sum": ["databucketScore"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         }
       ]
     },

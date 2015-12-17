@@ -854,7 +854,7 @@
       },
 
       {
-        "name": "number_of_high_score_rate_vpn_session_daily",
+        "name": "sum_of_scores_rate_vpn_session_daily",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_daily",
         "numberOfBuckets": 1,
@@ -864,7 +864,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "sum": [
-            "high_score_rate_vpn_session_counter"
+            "sum_of_scores_rate_vpn_session"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -872,7 +872,7 @@
         }
       },
       {
-        "name": "number_of_high_score_rate_vpn_session_hourly",
+        "name": "sum_of_scores_rate_vpn_session_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_vpn_session_hourly",
         "numberOfBuckets": 1,
@@ -882,7 +882,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "sum": [
-            "high_score_rate_vpn_session_counter"
+            "sum_of_scores_rate_vpn_session"
           ]
         },
         "aggregatedFeatureEventFunction": {
