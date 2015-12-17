@@ -59,7 +59,8 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
                 aggrFeature.getName(), Map.class.getSimpleName()));
         }
 
-        Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) ((AggrFeatureValue) value).getValue();
+        AggrFeatureValue aggFeatureValue = (AggrFeatureValue) value;
+        Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggFeatureValue.getValue();
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
@@ -72,6 +73,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
                 }
                 int num = ((FeatureNumericValue) featureToMaximize.getValue()).getValue().intValue();
                 featuresGroupToMax.put(groupByFeatureValues, Math.max(max, num));
+                aggFeatureValue.setTotal(aggFeatureValue.getTotal() + 1);
             }
         }
 

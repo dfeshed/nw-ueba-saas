@@ -30,14 +30,15 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
     	AggrFeatureValue featuresGroupToMax = calculateFeaturesGroupToMaxFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        return calculateMapAggrFeatureValue(featuresGroupToMax);
+        return calculateFeaturesGroupToMaxValue(featuresGroupToMax);
     }
     
-    protected abstract AggrFeatureValue calculateMapAggrFeatureValue(AggrFeatureValue aggrFeatureValue);
+    protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue);
 
     private AggrFeatureValue calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         String featureToPick = getFeatureToPick(aggrFeatureEventConf);
         Map<List<String>, Integer> featuresGroupToMax = new HashMap<>();
+        long total = 0;
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             Feature aggrFeature = aggrFeatures.get(featureToPick);
             if (aggrFeature == null) {
@@ -54,9 +55,10 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
                 }
                 featuresGroupToMax.put(featuresGroupAndMax.getKey(), Math.max(max, featuresGroupAndMax.getValue()));
             }
+            total += ((AggrFeatureValue) aggrFeature.getValue()).getTotal();
         }
 
-        return new AggrFeatureValue(featuresGroupToMax, (long) featuresGroupToMax.size());
+        return new AggrFeatureValue(featuresGroupToMax, total);
     }
 
     private String getFeatureToPick(AggregatedFeatureEventConf aggrFeatureEventConf) {

@@ -50,7 +50,7 @@ public class AggrFeatureSumFuncTest {
 	public void testUpdateAggrFeatureWhenCounting() {
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName");
-		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", 10D));
+		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(10D, 10L)));
 		Assert.assertEquals(11D, actual1.getValue());
 	}
 
@@ -62,7 +62,7 @@ public class AggrFeatureSumFuncTest {
 		double sum = 10;
 		double score = 50;
 		Map<String, Feature> features = AggrFeatureTestUtils.createFeatureMap(new ImmutablePair<String, Object>(featureNameToSum, score));
-		FeatureNumericValue actual = (FeatureNumericValue)function.updateAggrFeature(conf, features, new Feature("aggregatedFeatureEventTestName", sum));
+		FeatureNumericValue actual = (FeatureNumericValue)function.updateAggrFeature(conf, features, new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(sum, 2L)));
 		Assert.assertEquals(sum + score, actual.getValue());
 	}
 
@@ -72,13 +72,13 @@ public class AggrFeatureSumFuncTest {
 
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", 1D),
-				new ImmutablePair<String, Object>("feature2", 8D)
+				new ImmutablePair<String, Object>("feature1", new AggrFeatureValue(1D, 1L)),
+				new ImmutablePair<String, Object>("feature2", new AggrFeatureValue(8D, 8L))
 		);
 
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", 12D),
-				new ImmutablePair<String, Object>("feature2", 42D)
+				new ImmutablePair<String, Object>("feature1", new AggrFeatureValue(12D, 12L)),
+				new ImmutablePair<String, Object>("feature2", new AggrFeatureValue(42D, 42L))
 		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
@@ -97,13 +97,13 @@ public class AggrFeatureSumFuncTest {
 	public void testCalculateAggrFeatureConfiguredFeatureNameNotInBuckets() {
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("counter1", 1),
-				new ImmutablePair<String, Object>("counter2", 8)
+				new ImmutablePair<String, Object>("counter1", new AggrFeatureValue(1D, 1L)),
+				new ImmutablePair<String, Object>("counter2", new AggrFeatureValue(8D, 8L))
 		);
 
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("counter1", 13),
-				new ImmutablePair<String, Object>("counter2", 42)
+				new ImmutablePair<String, Object>("counter1", new AggrFeatureValue(13D, 13L)),
+				new ImmutablePair<String, Object>("counter2", new AggrFeatureValue(42D, 42L))
 		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();

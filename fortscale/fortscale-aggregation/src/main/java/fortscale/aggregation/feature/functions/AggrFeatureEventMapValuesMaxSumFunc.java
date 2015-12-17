@@ -34,13 +34,13 @@ public class AggrFeatureEventMapValuesMaxSumFunc extends AbstractAggrFeatureEven
 	private int minScoreToInclude;
 
 	@Override
-	protected AggrFeatureValue calculateMapAggrFeatureValue(AggrFeatureValue aggrFeatureValue) {
+	protected AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue) {
 		Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggrFeatureValue.getValue();
 		int sum = 0;
 		for (int max : featuresGroupToMax.values()) {
 			sum += max;
 		}
-		AggrFeatureValue res = new AggrFeatureValue(sum, (long) featuresGroupToMax.size());
+		AggrFeatureValue res = new AggrFeatureValue(sum, aggrFeatureValue.getTotal());
 		putAdditionalInformation(res, featuresGroupToMax);
 		return res;
 	}

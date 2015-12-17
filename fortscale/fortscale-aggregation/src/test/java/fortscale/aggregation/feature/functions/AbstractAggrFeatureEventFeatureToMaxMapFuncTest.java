@@ -16,7 +16,7 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
 		final boolean[] calculateMapAggrFeatureValueWasCalled = {false};
 		AbstractAggrFeatureEventFeatureToMaxMapFunc f = new AbstractAggrFeatureEventFeatureToMaxMapFunc() {
 			@Override
-			protected AggrFeatureValue calculateMapAggrFeatureValue(AggrFeatureValue aggrFeatureValue) {
+			protected AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue) {
 				Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggrFeatureValue.getValue();
 				Assert.assertEquals(expectedFeaturesGroupToMax.size(), featuresGroupToMax.size());
 				for (Map.Entry<String[], Integer> entry : expectedFeaturesGroupToMax.entrySet()) {
