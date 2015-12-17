@@ -98,12 +98,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -116,12 +116,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -134,12 +134,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -152,12 +152,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -247,12 +247,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -265,12 +265,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -283,12 +283,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -301,12 +301,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -320,12 +320,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -338,12 +338,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -863,12 +863,12 @@
         "anomalyType": "data_bucket",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "high_score_rate_vpn_session_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         }
       },
       {
@@ -881,12 +881,12 @@
         "anomalyType": "data_bucket",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "high_score_rate_vpn_session_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         }
       }
     ]

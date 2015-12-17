@@ -59,12 +59,12 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
@@ -143,12 +143,12 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
         },
         {
@@ -219,12 +219,12 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
@@ -302,12 +302,12 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
         },
         {
@@ -361,15 +361,15 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "failed_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
-        },
-        {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
+          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -430,15 +430,15 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "failed_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
-        },
-        {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
+          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
         },
         {
           "name": "number_of_events_per_hour_histogram",
@@ -507,7 +507,7 @@
         {
           "name": "high_score_rate_vpn_session_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
