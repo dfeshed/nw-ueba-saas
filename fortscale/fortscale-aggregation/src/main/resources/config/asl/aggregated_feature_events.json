@@ -710,7 +710,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "pick": [
-            "highest_score_date_time"
+            "highest_score_auth_method"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -728,7 +728,7 @@
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
           "pick": [
-            "highest_score_date_time"
+            "highest_score_auth_method"
           ]
         },
         "aggregatedFeatureEventFunction": {
