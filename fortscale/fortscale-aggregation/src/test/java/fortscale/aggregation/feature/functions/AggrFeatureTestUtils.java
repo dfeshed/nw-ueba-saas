@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.Feature;
+import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
@@ -18,6 +19,8 @@ public class AggrFeatureTestUtils {
 				featureMap.put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (String) value));
 			} else if (value instanceof Number) {
 				featureMap.put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (Number) value));
+			} else if (value == null || (value instanceof FeatureValue)) {
+				featureMap.put(featureValue.getLeft(), new Feature(featureValue.getLeft(), (FeatureValue) value));
 			} else {
 				throw new IllegalArgumentException();
 			}

@@ -71,13 +71,15 @@ public class AggrFeatureSumFuncTest {
 		String featureNameToCount = "featureToCount";
 
 
-		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("feature1", new Feature("feature1", 1D));
-		bucket1FeatureMap.put("feature2", new Feature("feature2", 8D));
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", 1D),
+				new ImmutablePair<String, Object>("feature2", 8D)
+		);
 
-		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-		bucket2FeatureMap.put("feature1", new Feature("feature1", 12D));
-		bucket2FeatureMap.put("feature2", new Feature("feature2", 42D));
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", 12D),
+				new ImmutablePair<String, Object>("feature2", 42D)
+		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);
@@ -94,13 +96,15 @@ public class AggrFeatureSumFuncTest {
 	@Test
 	public void testCalculateAggrFeatureConfiguredFeatureNameNotInBuckets() {
 
-		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("counter1", new Feature("counter1", 1));
-		bucket1FeatureMap.put("counter2", new Feature("counter2", 8));
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("counter1", 1),
+				new ImmutablePair<String, Object>("counter2", 8)
+		);
 
-		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-		bucket2FeatureMap.put("counter1", new Feature("counter1", 13));
-		bucket2FeatureMap.put("counter2", new Feature("counter2", 42));
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("counter1", 13),
+				new ImmutablePair<String, Object>("counter2", 42)
+		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);
@@ -119,8 +123,9 @@ public class AggrFeatureSumFuncTest {
 		histogram1.add("first", 1.0);
 		histogram1.add("second", 2.0);
 		histogram1.add("third", 3.0);
-		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("feature1", new Feature("counter1", histogram1));
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram1)
+		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);
