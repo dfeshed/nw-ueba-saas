@@ -2,10 +2,10 @@ import Ember from 'ember';
 import { initialize } from '../../../initializers/theme';
 import { module, test } from 'qunit';
 
-var application;
+let application;
 
 module('Unit | Initializer | theme', {
-  beforeEach: function() {
+  beforeEach() {
     Ember.run(function() {
       application = Ember.Application.create();
       application.deferReadiness();

@@ -12,7 +12,7 @@ export default function startApp(attrs) {
     application = Application.create(attributes);
     application.setupForTesting();
     application.injectTestHelpers();
-    localStorage.setItem("rsa-i18n-default-locale", "en");
+    localStorage.setItem('rsa-i18n-default-locale', 'en');
     authenticateSession();
   });
 

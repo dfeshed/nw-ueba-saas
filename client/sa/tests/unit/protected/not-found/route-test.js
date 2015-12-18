@@ -6,6 +6,6 @@ moduleFor('route:protected/not-found', 'Unit | Route | protected/not found', {
 });
 
 test('it exists', function(assert) {
-  var route = this.subject();
+  let route = this.subject();
   assert.ok(route);
 });

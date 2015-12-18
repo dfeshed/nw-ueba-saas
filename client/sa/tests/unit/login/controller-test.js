@@ -7,13 +7,12 @@ moduleFor('controller:login', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  var controller = this.subject();
+  let controller = this.subject();
   assert.ok(controller);
 });
 
-
 test('login controller test', function(assert) {
-    assert.expect(0);
-    var controller = this.subject();
-    controller.send('authenticate');
+  assert.expect(0);
+  let controller = this.subject();
+  controller.send('authenticate');
 });
