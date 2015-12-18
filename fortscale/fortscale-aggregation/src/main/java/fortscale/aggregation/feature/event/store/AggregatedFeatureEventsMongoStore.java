@@ -14,10 +14,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class AggregatedFeatureEventsMongoStore implements InitializingBean {
@@ -57,11 +54,35 @@ public class AggregatedFeatureEventsMongoStore implements InitializingBean {
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
-		return mongoTemplate.getCollection(getCollectionName(aggregatedFeatureName))
-				.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
+		String collectionName = getCollectionName(aggregatedFeatureName);
+
+		if (collectionExists(collectionName)) {
+			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+			Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+			return mongoTemplate.getCollection(collectionName)
+					.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(
+			AggregatedFeatureEventConf aggregatedFeatureEventConf,
+			String contextId, Date startTime, Date endTime) {
+
+		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
+		String collectionName = getCollectionName(aggregatedFeatureName);
+
+		if (collectionExists(collectionName)) {
+			Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
+			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+			Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
+			return mongoTemplate.find(query, AggrEvent.class, collectionName);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {

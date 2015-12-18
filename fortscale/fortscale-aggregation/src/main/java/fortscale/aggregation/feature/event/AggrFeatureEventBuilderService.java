@@ -265,7 +265,7 @@ public class AggrFeatureEventBuilderService {
     public String getAggregatedFeatureContextId(JSONObject event) {
         return getAggregatedFeatureContext(event).entrySet().stream()
                 .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
-                .map(entry -> String.format("%s%s%s", entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
+                .map(entry -> entry.getKey().concat(CONTEXT_ID_SEPARATOR).concat(entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }
 

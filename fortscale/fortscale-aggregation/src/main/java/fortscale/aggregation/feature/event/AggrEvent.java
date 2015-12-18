@@ -153,6 +153,10 @@ public class AggrEvent implements Serializable {
 		return creationEpochTime;
 	}
 
+	public Date getStartTime() {
+		return startTime;
+	}
+
 	public Long getStartTimeUnix() {
 		return startTimeUnix;
 	}
