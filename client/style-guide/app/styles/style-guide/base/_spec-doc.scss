@@ -1,0 +1,4 @@
+.spec-doc {
+  position: relative;             /* Enables absolute position of child components (e.g., spec-nav). */
+  padding-left: $app-nav-width;
+}

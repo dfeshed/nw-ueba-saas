@@ -1,0 +1,18 @@
+.#{$ns}dark {
+  .color-swatch {
+    background-color: rgba($rsa-color-gray-d2,.3);
+
+    &__title,
+    &__subtitle {
+      font-size: 10pt;
+    }
+
+    &__title {
+      color: $rsa-color-white;
+    }
+
+    &__subtitle {
+      color: $rsa-color-gray-l1;
+    }
+  }
+}

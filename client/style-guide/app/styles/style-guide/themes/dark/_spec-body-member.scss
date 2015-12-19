@@ -1,0 +1,16 @@
+.#{$ns}dark {
+  .spec-body-member {
+    &__title {
+      color: $rsa-color-white;
+      font-size: 11pt;
+    }
+    &__description {
+      color: $rsa-color-gray-l1;
+
+      code {
+        color: $rsa-color-gray-l3;
+        font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      }
+    }
+  }
+}

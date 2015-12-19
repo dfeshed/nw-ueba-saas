@@ -1,0 +1,18 @@
+.spec-body-member {
+  margin: 15pt 0;
+
+  &__anchor {
+    position: relative;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    top: -40pt;         /* Should be >= outer height of the fixed masthead. */
+    &:after {
+      content: ' ';      /* @workaround Gives the browser a placeholder, so DOM won't be omitted. */
+    }
+  }
+
+  &__description {
+    margin: 2.5pt 0;
+  }
+}

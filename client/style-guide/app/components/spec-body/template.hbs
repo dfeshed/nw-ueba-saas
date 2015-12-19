@@ -1,0 +1,14 @@
+{{#if model.description}}
+    <header class="spec-body__header">
+      {{{model.description}}}
+    </header>
+{{/if}}
+
+<section class="spec-body__body">
+
+  {{#each model.categories as |category|}}
+      {{spec-body-category model=category spec=model}}
+  {{/each}}
+
+</section>
+

@@ -5,8 +5,8 @@
 * bower cache clean -- Clear Bower cache
 * npm install -g ember-cli@<i>version number</i> -- Install new global ember-cli
 
-# SA and dashboard changes
-Follow these steps in sa and dashboard directory
+# SA, Component Library & Style Guide Changes
+Follow these steps in each of these sub-directories of client: sa, component-lib & style-guide.
 * rm -rf node_modules bower_components dist tmp -- Delete temporary development folders.
 * npm install --save-dev ember-cli@<i>version number</i> -- Update project's package.json to use latest version.
 * npm install -- Reinstall NPM dependencies.
@@ -17,12 +17,12 @@ an upgrade, skip this step.
 * Ensure the latest version of ember and ember-cli gets updated in package.json and bower.json.
 
 
-Please make sure latest version of ember is used in "SA" app and "dashboard" app.
+Please make sure latest version of ember is used in the "sa" app, "component-lib" addon, and "style-guide" app.
 
 Once the upgrade is successful,
-* Launch both sa and dashboard app and make sure it works without issues
-* Run unit tests in sa and dashboard
-* Test the pages that uses thrid-party addons and make sure the functionality is not broken
+* Try launching each of the "sa" app and "style-guide" app (separately, one at a time) and make sure they each work without issues
+* Run unit tests in sa, component-lib and style-guide
+* Test the pages that uses third-party addons and make sure the functionality is not broken
 * If there are new deprecation warnings in our source code, plan to fix them
 
 
@@ -44,4 +44,5 @@ Once the upgrade is successful,
 
 # List of addons used by dashboard
 * [ember-cli-sass](https://github.com/aexmachina/ember-cli-sass)
+* [clipboardjs](https://clipboardjs.com/)
 * [highlightjs](https://highlightjs.org)

@@ -1,0 +1,16 @@
+.#{$ns}light {
+  .spec-body-member {
+    &__title {
+      color: $rsa-color-blue;
+      font-size: 11pt;
+    }
+    &__description {
+      color: $rsa-color-gray;
+
+      code {
+        color: $rsa-color-black;
+        font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      }
+    }
+  }
+}

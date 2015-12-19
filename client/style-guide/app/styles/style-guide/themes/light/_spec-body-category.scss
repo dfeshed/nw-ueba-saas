@@ -1,0 +1,9 @@
+.#{$ns}light {
+  .spec-body-category {
+    &__title {
+      color: $rsa-color-blue-d2;
+      font-size: 12pt;
+      text-transform: uppercase;
+    }
+  }
+}

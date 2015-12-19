@@ -1,0 +1,16 @@
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  tagName: 'nav',
+  classNames: 'spec-nav',
+  model: null,
+
+  /**
+   * Returns the current browser URL's path, without hostname prefix & hash suffix (e.g, "/comp/button").
+   * Used for constructing links to anchors in the sub-sections of the spec DOM.
+   * @public
+   */
+  baseUrl: function() {
+    return window.location.pathname;
+  }.property('model')
+});

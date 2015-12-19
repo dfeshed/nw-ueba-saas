@@ -1,0 +1,801 @@
+{
+  "data": [
+    {
+      "id": "colors",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "palette",
+        "title": "Colors",
+        "subtitle": "A palette of named colors for styling components.",
+        "description": "RSA uses a specific palette of colors across its themes. These colors are implemented as SASS variables with friendly names so that they can be referenced throughout our styles.<br/><br/>To ensure consistency across the UI, avoid using ad-hoc color values; use these named color variables instead.",
+        "categories": [
+          {
+            "id": "neutrals",
+            "title": "Neutrals",
+            "subtitle": "",
+            "description": "This family of colors includes white, black, a 7 shades of gray.",
+            "members": [
+              {
+                "id": "Black",
+                "title": "Black",
+                "subtitle": "",
+                "description": "",
+                "code": "#000000",
+                "backgroundClass": "rsa-bg-black",
+                "sassVar": "$rsa-color-black"
+              },
+              {
+                "id": "Gray+3",
+                "title": "Gray+3",
+                "subtitle": "",
+                "description": "",
+                "code": "#161616",
+                "backgroundClass": "rsa-bg-gray-d3",
+                "sassVar": "$rsa-color-gray-d3"
+              },
+              {
+                "id": "Gray+2",
+                "title": "Gray+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#212121",
+                "backgroundClass": "rsa-bg-gray-d2",
+                "sassVar": "$rsa-color-gray-d2"
+
+              },
+              {
+                "id": "Gray+1",
+                "title": "Gray+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#424242",
+                "backgroundClass": "rsa-bg-gray-d1",
+                "sassVar": "$rsa-color-gray-d1"
+              },
+              {
+                "id": "Gray",
+                "title": "Gray",
+                "subtitle": "",
+                "description": "",
+                "code": "#757575",
+                "backgroundClass": "rsa-bg-gray",
+                "sassVar": "$rsa-color-gray"
+
+              },
+              {
+                "id": "Gray-1",
+                "title": "Gray-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#BDBDBD",
+                "backgroundClass": "rsa-bg-gray-l1",
+                "sassVar": "$rsa-color-gray-l1"
+
+              },
+              {
+                "id": "Gray-2",
+                "title": "Gray-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#EEEEEE",
+                "backgroundClass": "rsa-bg-gray-l2",
+                "sassVar": "$rsa-color-gray-l2"
+
+              },
+              {
+                "id": "Gray-3",
+                "title": "Gray-3",
+                "subtitle": "",
+                "description": "",
+                "code": "#FAFAFA",
+                "backgroundClass": "rsa-bg-gray-l3",
+                "sassVar": "$rsa-color-gray-l3"
+
+              },
+              {
+                "id": "White",
+                "title": "White",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFFFFF",
+                "backgroundClass": "rsa-bg-white",
+                "sassVar": "$rsa-color-white"
+
+              }
+            ]
+          },
+          {
+            "id": "blues",
+            "title": "Blues",
+            "subtitle": "",
+            "description": "This family includes a central blue color, plus two darker shades and two lighter shades.",
+            "members": [
+              {
+                "id": "Blue+2",
+                "title": "Blue+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#01579B",
+                "backgroundClass": "rsa-bg-blue-d2",
+                "sassVar": "$rsa-color-blue-d2"
+
+              },
+              {
+                "id": "Blue+1",
+                "title": "Blue+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#0288D1",
+                "backgroundClass": "rsa-bg-blue-d1",
+                "sassVar": "$rsa-color-blue-d1"
+
+              },
+              {
+                "id": "Blue",
+                "title": "Blue",
+                "subtitle": "",
+                "description": "",
+                "code": "#03A9F4",
+                "backgroundClass": "rsa-bg-blue",
+                "sassVar": "$rsa-color-blue"
+
+              },
+              {
+                "id": "Blue-1",
+                "title": "Blue-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#4FC3F7",
+                "backgroundClass": "rsa-bg-blue-l1",
+                "sassVar": "$rsa-color-blue-l1"
+
+              },
+              {
+                "id": "Blue-2",
+                "title": "Blue-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#B3E5FC",
+                "backgroundClass": "rsa-bg-blue-l2",
+                "sassVar": "$rsa-color-blue-l2"
+              }
+            ]
+          },
+          {
+            "id": "reds",
+            "title": "Reds",
+            "subtitle": "",
+            "description": "This family includes a central red color, plus two darker shades and two lighter shades.",
+            "members": [
+              {
+                "id": "Red+2",
+                "title": "Red+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#A60808",
+                "backgroundClass": "rsa-bg-red-d2",
+                "sassVar": "$rsa-color-red-d2"
+              },
+              {
+                "id": "Red+1",
+                "title": "Red+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#C91818",
+                "backgroundClass": "rsa-bg-red-d1",
+                "sassVar": "$rsa-color-red-d1"
+              },
+              {
+                "id": "Red",
+                "title": "Red",
+                "subtitle": "",
+                "description": "",
+                "code": "#EC2227",
+                "backgroundClass": "rsa-bg-red",
+                "sassVar": "$rsa-color-red"
+              },
+              {
+                "id": "Red-1",
+                "title": "Red-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#E65C5C",
+                "backgroundClass": "rsa-bg-red-l1",
+                "sassVar": "$rsa-color-red-l1"
+              },
+              {
+                "id": "Red-2",
+                "title": "Red-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFCCD1",
+                "backgroundClass": "rsa-bg-red-l2",
+                "sassVar": "$rsa-color-red-l2"
+              }
+            ]
+          },
+          {
+            "id": "oranges",
+            "title": "Oranges",
+            "subtitle": "",
+            "description": "This family includes a central orange color, plus two darker shades and two lighter shades.",
+            "members": [
+              {
+                "id": "Orange+2",
+                "title": "Orange+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#BF360C",
+                "backgroundClass": "rsa-bg-orange-d2",
+                "sassVar": "$rsa-color-orange-d2"
+              },
+              {
+                "id": "Orange+1",
+                "title": "Orange+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#E64A19",
+                "backgroundClass": "rsa-bg-orange-d1",
+                "sassVar": "$rsa-color-orange-d1"
+              },
+              {
+                "id": "Orange",
+                "title": "Orange",
+                "subtitle": "",
+                "description": "",
+                "code": "#FF5722",
+                "backgroundClass": "rsa-bg-orange",
+                "sassVar": "$rsa-color-orange"
+              },
+              {
+                "id": "Orange-1",
+                "title": "Orange-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#FF8A65",
+                "backgroundClass": "rsa-bg-orange-l1",
+                "sassVar": "$rsa-color-orange-l1"
+              },
+              {
+                "id": "Orange-2",
+                "title": "Orange-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFCCBC",
+                "backgroundClass": "rsa-bg-orange-l2",
+                "sassVar": "$rsa-color-orange-l2"
+              }
+            ]
+          },
+          {
+            "id": "ambers",
+            "title": "Ambers",
+            "subtitle": "",
+            "description": "This family includes a central yellow color, plus two darker shades and two lighter shades.",
+            "members": [
+              {
+                "id": "Amber+2",
+                "title": "Amber+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#FF6F00",
+                "backgroundClass": "rsa-bg-amber-d2",
+                "sassVar": "$rsa-color-amber-d2"
+              },
+              {
+                "id": "Amber+1",
+                "title": "Amber+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFA000",
+                "backgroundClass": "rsa-bg-amber-d1",
+                "sassVar": "$rsa-color-amber-d1"
+              },
+              {
+                "id": "Amber",
+                "title": "Amber",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFC107",
+                "backgroundClass": "rsa-bg-amber",
+                "sassVar": "$rsa-color-amber"
+              },
+              {
+                "id": "Amber-1",
+                "title": "Amber-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFD54F",
+                "backgroundClass": "rsa-bg-amber-l1",
+                "sassVar": "$rsa-color-amber-l1"
+              },
+              {
+                "id": "Amber-2",
+                "title": "Amber-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFECB3",
+                "backgroundClass": "rsa-bg-amber-l2",
+                "sassVar": "$rsa-color-amber-l2"
+              }
+            ]
+          },
+          {
+            "id": "greens",
+            "title": "Greens",
+            "subtitle": "",
+            "description": "This family includes a central green color, plus two darker shades and two lighter shades.",
+            "members": [
+              {
+                "id": "Green+2",
+                "title": "Green+2",
+                "subtitle": "",
+                "description": "",
+                "code": "#33691E",
+                "backgroundClass": "rsa-bg-green-d2",
+                "sassVar": "$rsa-color-green-d2"
+              },
+              {
+                "id": "Green+1",
+                "title": "Green+1",
+                "subtitle": "",
+                "description": "",
+                "code": "#689F38",
+                "backgroundClass": "rsa-bg-green-d1",
+                "sassVar": "$rsa-color-green-d1"
+              },
+              {
+                "id": "Green",
+                "title": "Green",
+                "subtitle": "",
+                "description": "",
+                "code": "#8BC34A",
+                "backgroundClass": "rsa-bg-green",
+                "sassVar": "$rsa-color-green"
+              },
+              {
+                "id": "Green-1",
+                "title": "Green-1",
+                "subtitle": "",
+                "description": "",
+                "code": "#AED581",
+                "backgroundClass": "rsa-bg-green-l1",
+                "sassVar": "$rsa-color-green-l1"
+              },
+              {
+                "id": "Green-2",
+                "title": "Green-2",
+                "subtitle": "",
+                "description": "",
+                "code": "#DCEDC8",
+                "backgroundClass": "rsa-bg-green-l2",
+                "sassVar": "$rsa-color-green-l2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "typography",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "typography",
+        "title": "Typography",
+        "subtitle": "Typefaces, type weights and type sizes.",
+        "description": "This Style Guide prescribes text styles for consistency across the UI. You will find these styles used in components across the application, such as Button and Text.",
+        "categories": [
+          {
+            "id": "typeface",
+            "title": "Typeface",
+            "subtitle": "",
+            "description": "RSA uses Open Sans typeface extensively throughout its UIs.",
+            "members": [
+              {
+                "id": "open_sans",
+                "title": "Open Sans",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-h1 rsa--regular\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                }
+              }
+            ]
+          },
+          {
+            "id": "weight",
+            "title": "Type Weights",
+            "subtitle": "",
+            "description": "Open Sans is available in a variety of weights.",
+            "members": [
+              {
+                "id": "w300",
+                "title": "Light",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-font rsa-font--light\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                }
+              },
+              {
+                "id": "w400",
+                "title": "Regular",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-font rsa-font--regular\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                }
+              },
+              {
+                "id": "w600",
+                "title": "Semi-Bold",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-font rsa-font--semi-bold\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                }
+              },
+              {
+                "id": "w700",
+                "title": "Bold",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-font rsa-font--bold\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                }
+              }
+            ]
+          },
+          {
+            "id": "size",
+            "title": "Type Sizes",
+            "subtitle": "",
+            "description": "The following components below leverage the various weights and sizes of Open Sans to convey information hierarchy.",
+            "members": [
+              {
+                "id": "h1",
+                "title": "Heading Large",
+                "subtitle": "",
+                "description": "24px Open Sans Light",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-h1\">The quick brown fox jumps over the lazy dog.</h1>"
+                }
+              },
+              {
+                "id": "h2",
+                "title": "Heading Medium",
+                "subtitle": "",
+                "description": "18px Open Sans Light",
+                "code": {
+                  "hbs": "<h2 class=\"rsa-h2\">The quick brown fox jumps over the lazy dog.</h2>"
+                }
+              },
+              {
+                "id": "h3",
+                "title": "Heading Small",
+                "subtitle": "",
+                "description": "14px Open Sans Regular Uppercase",
+                "code": {
+                  "hbs": "<h3 class=\"rsa-h3\">The quick brown fox jumps over the lazy dog.</h3>"
+                }
+              },
+              {
+                "id": "h4",
+                "title": "Heading Label",
+                "subtitle": "",
+                "description": "10px Open Sans Bold Uppercase",
+                "code": {
+                  "hbs": "<h4 class=\"rsa-h4\">The quick brown fox jumps over the lazy dog.</h4>"
+                }
+              },
+              {
+                "id": "p",
+                "title": "Paragraph",
+                "subtitle": "",
+                "description": "14px Open Sans Regular",
+                "code": {
+                  "hbs": "<p class=\"rsa-p\">This is a paragraph. Paragraphs are preset with a font size, line height and spacing to match the overall vertical rhythm. To show what a paragraphy looks like this needs a little more content. In the context of an enterprise application, the need for longform text is quite rare. More often, application design involves small bits of text that all represent the user's data.</p>"
+                }
+              },
+              {
+                "id": "span",
+                "title": "Body Default",
+                "subtitle": "",
+                "description": "14px Open Sans Regular",
+                "code": {
+                  "hbs": "<span class=\"rsa-span\">The quick brown fox jumps over the lazy dog.</span>"
+                }
+              },
+              {
+                "id": "small",
+                "title": "Body Small",
+                "subtitle": "",
+                "description": "12px Open Sans Regular",
+                "code": {
+                  "hbs": "<small class=\"rsa--small\">The quick brown fox jumps over the lazy dog.</small>"
+                }
+              },
+              {
+                "id": "a1",
+                "title": "Navigation Large",
+                "subtitle": "",
+                "description": "14px Open Sans Bold Uppercase",
+                "code": {
+                  "hbs": "<a class=\"rsa-a1\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              },
+              {
+                "id": "a2",
+                "title": "Navigation Medium",
+                "subtitle": "",
+                "description": "12px Open Sans Regular Uppercase",
+                "code": {
+                  "hbs": "<a class=\"rsa-a2\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              },
+              {
+                "id": "a3",
+                "title": "Navigation Small",
+                "subtitle": "",
+                "description": "10px Open Sans Regular Uppercase",
+                "code": {
+                  "hbs": "<a class=\"rsa-a3\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "button",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Button",
+        "subtitle": "Basic widget for initiating actions.",
+        "description": "Create a button component by applying the <code>rsa-btn</code> class to the native HTML button element. This element supports a variety of states and behaviors out of the box.",
+        "categories": [
+          {
+            "id": "type",
+            "title": "Type",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "The Base button is the default presentation of a button. It is defined by appending the <code>rsa-btn--base</code> class to element.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Button</button>"
+                }
+              },
+              {
+                "id": "primary",
+                "title": "Primary",
+                "subtitle": "",
+                "description": "A Primary button is used to emphasize a useful or typical action. It is defined by appending the <code>rsa-btn--primary</code> class to the element.",
+                "status": 1,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--primary\">Primary Button</button>"
+                }
+              },
+              {
+                "id": "danger",
+                "title": "Danger",
+                "subtitle": "",
+                "description": "A Danger button conveys a sense of urgency or warning. It is defined by appending the <code>rsa-btn--danger</code> class to the element.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--danger\">Danger Button</button>"
+                }
+              }
+            ]
+          },
+          {
+            "id": "state",
+            "title": "State",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "default",
+                "title": "Default",
+                "subtitle": "",
+                "description": "The default state is shown below without any user interaction. However, note that this default style will automatically implement styling for other states, such as Hover and Active, when you interact with it.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Default</button>\n<button class=\"rsa-btn rsa-btn--primary\">Primary Default</button>\n<button class=\"rsa-btn rsa-btn--danger\">Danger Default</button>"
+                }
+              },
+              {
+                "id": "hover",
+                "title": "Hover",
+                "subtitle": "",
+                "description": "The hover state occurs when you mouse over a button that is not disabled.  It is simulated below with an <code>rsa-btn--hover</code> class, but in practice you will not need to use that class.  The hover state will simply be handled automatically when you interact with the button.",
+                "status": 1,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--hover\">Base Hover</button>\n<button class=\"rsa-btn rsa-btn--primary rsa-btn--hover\">Primary Hover</button>\n<button class=\"rsa-btn rsa-btn--danger rsa-btn--hover\">Danger Hover</button>"
+                }
+              },
+              {
+                "id": "active",
+                "title": "Active",
+                "subtitle": "",
+                "description": "The active state occurs when you click down on a button that is not disabled.  It is simulated below with an <code>rsa-btn--active</code> class, but in practice you will not need to use that class.  The hover state will simply be handled automatically when you interact with the button.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--active\">Base Active</button>\n<button class=\"rsa-btn rsa-btn--primary rsa-btn--active\">Primary Active</button>\n<button class=\"rsa-btn rsa-btn--danger rsa-btn--active\">Danger Active</button>"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "The disabled state indicates that a button is not receptive to interaction.  It is specified by applying the native HTML attribute <code>disabled</code>.  Note that the value of the HTML attribute is ignored.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base\" disabled=\"\">Base Disabled</button>\n<button class=\"rsa-btn rsa-btn--primary\" disabled=\"\">Primary Disabled</button>\n<button class=\"rsa-btn rsa-btn--danger\" disabled=\"\">Danger Disabled</button>"
+                }
+              }
+            ]
+          },
+          {
+            "id": "variations",
+            "title": "Variations",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "text-only",
+                "title": "Text Only",
+                "subtitle": "",
+                "description": "A Text Only button displays text without any icon.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Text Only</button>\n<button class=\"rsa-btn rsa-btn--primary\">Primary Text Only</button>\n<button class=\"rsa-btn rsa-btn--danger\">Danger Text Only</button>"
+                }
+              },
+              {
+                "id": "icon-only",
+                "title": "Icon Only",
+                "subtitle": "",
+                "description": "An Icon Only button displays an icon without any text. The examples below show an Icon Only Base button in four states: default, hover, active and disabled.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--icon\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon rsa-btn--hover\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon rsa-btn--active\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon\" disabled=\"\">{{rsa-pencil}}</button>"
+                }
+              },
+              {
+                "id": "text-icon",
+                "title": "Icon + Text",
+                "subtitle": "",
+                "description": "An Icon + Text button displays an icon with text beside it. The examples below show an Icon + Text Base button in four states: default, hover, active and disabled.",
+                "status": 0,
+                "code": {
+                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text rsa-btn--hover\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text rsa-btn--active\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text\" disabled=\"\">{{rsa-pencil}}Edit</button>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "text",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Text",
+        "subtitle": "Headings, body text and navigation.",
+        "description": "For consistent typography throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
+        "categories": [
+          {
+            "id": "variant",
+            "title": "Variants",
+            "subtitle": "",
+            "description": "The following components below leverage the various weights and sizes of Open Sans to convey information hierarchy.",
+            "members": [
+              {
+                "id": "h1",
+                "title": "Heading Large",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h1 class=\"rsa-h1\">The quick brown fox jumps over the lazy dog.</h1>"
+                }
+              },
+              {
+                "id": "h2",
+                "title": "Heading Medium",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h2 class=\"rsa-h2\">The quick brown fox jumps over the lazy dog.</h2>"
+                }
+              },
+              {
+                "id": "h3",
+                "title": "Heading Small",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h3 class=\"rsa-h3\">The quick brown fox jumps over the lazy dog.</h3>"
+                }
+              },
+              {
+                "id": "h4",
+                "title": "Heading Label",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<h4 class=\"rsa-h4\">The quick brown fox jumps over the lazy dog.</h4>"
+                }
+              },
+              {
+                "id": "p",
+                "title": "Paragraph",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<p class=\"rsa-p\">The quick brown fox jumps over the lazy dog.</p>"
+                }
+              },
+              {
+                "id": "span",
+                "title": "Body Default",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<span class=\"rsa-span\">The quick brown fox jumps over the lazy dog.</span>"
+                }
+              },
+              {
+                "id": "small",
+                "title": "Body Small",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<small class=\"rsa--small\">The quick brown fox jumps over the lazy dog.</small>"
+                }
+              },
+              {
+                "id": "a1",
+                "title": "Navigation Large",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<a class=\"rsa-a1\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              },
+              {
+                "id": "a2",
+                "title": "Navigation Medium",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<a class=\"rsa-a2\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              },
+              {
+                "id": "a3",
+                "title": "Navigation Small",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<a class=\"rsa-a3\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+/**
+ * @file Grid Layout components.
+ * Mixins and classes for laying out UI elements using flexbox.
+ */
+
+/*
+  Generates a column layout with configurable alignment.
+*/
+@mixin rsa-col($halign, $valign) {
+  @include rsa-flex-direction(column);
+
+  @if $halign == "left" {
+    @include rsa-flex-align-items(flex-start);
+  }
+  @if $halign == "right" {
+    @include rsa-flex-align-items(flex-end);
+  }
+  @if $halign == "center" {
+    @include rsa-flex-align-items(center);
+  }
+  @if $halign == "justify" {
+    @include rsa-flex-align-items(stretch);
+  }
+
+  @if $valign == "top" {
+    @include rsa-flex-justify-content(flex-start);
+  }
+  @if $valign == "bottom" {
+    @include rsa-flex-justify-content(flex-end);
+  }
+  @if $valign == "middle" {
+    @include rsa-flex-justify-content(center);
+  }
+  @if $valign == "fill" {
+    @include rsa-flex-justify-content(space-between);
+  }
+}
+
+/*
+  Generates a row layout with configurable alignment.
+*/
+@mixin rsa-row($halign, $valign) {
+  @include rsa-flex-direction(row);
+
+  @if $halign == "left" {
+    @include rsa-flex-justify-content(flex-start);
+  }
+  @if $halign == "right" {
+    @include rsa-flex-justify-content(flex-end);
+  }
+  @if $halign == "center" {
+    @include rsa-flex-justify-content(center);
+  }
+  @if $halign == "justify" {
+    @include rsa-flex-justify-content(space-between);
+  }
+
+  @if $valign == "top" {
+    @include rsa-flex-align-items(flex-start);
+  }
+  @if $valign == "bottom" {
+    @include rsa-flex-align-items(flex-end);
+  }
+  @if $valign == "middle" {
+    @include rsa-flex-align-items(center);
+  }
+  @if $valign == "fill" {
+    @include rsa-flex-align-items(stretch);
+  }
+}
+

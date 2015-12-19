@@ -1,0 +1,19 @@
+.#{$ns}dark {
+  .hbs-snippet {
+    background-color: rgba($rsa-color-black,.2);
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+
+    color: $rsa-color-gray-l1;
+    -webkit-text-size-adjust: none;
+
+    .hljs-title {
+      color: $rsa-color-blue-l1;
+    }
+    .hljs-attribute {
+      color: $rsa-color-green-l1;
+    }
+    .hljs-value {
+      color: $rsa-color-red-l1;
+    }
+  }
+}

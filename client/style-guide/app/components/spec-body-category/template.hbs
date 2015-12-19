@@ -1,0 +1,27 @@
+<header class="spec-body-category__header">
+
+  <a id="{{model.id}}" class="spec-body-category__anchor"></a>
+  <h3 class="spec-body-category__title">{{model.title}}</h3>
+
+  {{#if category.subtitle}}
+      <p class="spec-body-category__subtitle">{{model.subtitle}}</p>
+  {{/if}}
+
+  {{#if category.description}}
+      <section class="spec-body-category__description">{{{model.description}}}</section>
+  {{/if}}
+
+</header>
+<section class="spec-body-category__members">
+
+  {{#each model.members as |member|}}
+      <a id="{{member.id}}" class="spec-body-member__anchor"></a>
+
+      {{#if (is-equal spec.dataType "palette")}}
+        {{color-swatch class="spec-body__color-swatch" model=member}}
+      {{else}}
+        {{spec-body-member model=member category=model spec=spec}}
+      {{/if}}
+  {{/each}}
+
+</section>
