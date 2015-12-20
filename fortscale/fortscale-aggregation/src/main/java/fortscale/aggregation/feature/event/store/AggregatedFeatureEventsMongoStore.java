@@ -5,7 +5,7 @@ import fortscale.aggregation.feature.event.AggrFeatureRetentionStrategy;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.utils.mongodb.FIndex;
-import org.springframework.beans.factory.InitializingBean;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -14,10 +14,12 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class AggregatedFeatureEventsMongoStore implements InitializingBean {
+public class AggregatedFeatureEventsMongoStore {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
@@ -28,14 +30,6 @@ public class AggregatedFeatureEventsMongoStore implements InitializingBean {
 
 	@Value("${streaming.event.field.type.aggr_event}")
 	private String eventType;
-
-	// Names of all existing collections in Mongo
-	private Set<String> collectionNames;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
-	}
 
 	public void storeEvent(AggrEvent aggregatedFeatureEvent) {
 		String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
@@ -86,13 +80,14 @@ public class AggregatedFeatureEventsMongoStore implements InitializingBean {
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
-		return COLLECTION_NAME_PREFIX.concat(COLLECTION_NAME_SEPARATOR)
-				.concat(eventType).concat(COLLECTION_NAME_SEPARATOR)
-				.concat(aggregatedFeatureName);
+		return StringUtils.join(
+				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
+				eventType, COLLECTION_NAME_SEPARATOR,
+				aggregatedFeatureName);
 	}
 
 	private boolean collectionExists(String collectionName) {
-		return collectionNames.contains(collectionName);
+		return mongoTemplate.collectionExists(collectionName);
 	}
 
 	private long getRetentionInSeconds(String aggregatedFeatureName) {
@@ -140,8 +135,5 @@ public class AggregatedFeatureEventsMongoStore implements InitializingBean {
 				.expire(retentionInSeconds, TimeUnit.SECONDS)
 				.named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME)
 				.on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
-
-		// Update set of collection names
-		collectionNames.add(collectionName);
 	}
 }

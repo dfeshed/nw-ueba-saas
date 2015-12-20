@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -265,7 +266,7 @@ public class AggrFeatureEventBuilderService {
     public String getAggregatedFeatureContextId(JSONObject event) {
         return getAggregatedFeatureContext(event).entrySet().stream()
                 .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
-                .map(entry -> entry.getKey().concat(CONTEXT_ID_SEPARATOR).concat(entry.getValue()))
+                .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }
 
