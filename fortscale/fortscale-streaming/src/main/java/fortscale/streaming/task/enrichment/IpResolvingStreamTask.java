@@ -45,7 +45,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     private final static String dhcpCacheKey = "dhcp-cache";
 	private final static String iseCacheKey = "ise-cache";
-    private final static String pxGridCacheKey = "pxGrid-cache";
+    private final static String pxGridCacheKey = "pxgrid-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
