@@ -1,7 +1,7 @@
 {
   "ModelConfs": [
     {
-      "name": "date_time_unix_normalized_username_kerberos_logins_daily",
+      "name": "date_time_unix.normalized_username.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_kerberos_logins_daily"
@@ -20,7 +20,7 @@
       }
     },
     {
-      "name": "source_machine_normalized_username_kerberos_logins_daily",
+      "name": "source_machine.normalized_username.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_kerberos_logins_daily"
@@ -37,7 +37,7 @@
       }
     },
     {
-      "name": "destination_machine_normalized_username_kerberos_logins_daily",
+      "name": "destination_machine.normalized_username.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_kerberos_logins_daily"
@@ -54,7 +54,7 @@
       }
     },
     {
-      "name": "failure_code_normalized_username_kerberos_logins_daily",
+      "name": "failure_code.normalized_username.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_kerberos_logins_daily"
@@ -71,7 +71,7 @@
       }
     },
     {
-      "name": "normalized_username_source_machine_kerberos_logins_daily",
+      "name": "normalized_username.source_machine.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "source_machine_kerberos_logins_daily"
@@ -88,7 +88,7 @@
       }
     },
     {
-      "name": "normalized_username_destination_machine_kerberos_logins_daily",
+      "name": "normalized_username.destination_machine.kerberos_logins",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "destination_machine_kerberos_logins_daily"
@@ -105,7 +105,7 @@
       }
     },
     {
-      "name": "date_time_unix_normalized_username_ssh_daily",
+      "name": "date_time_unix.normalized_username.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_ssh_daily"
@@ -124,7 +124,7 @@
       }
     },
     {
-      "name": "source_machine_normalized_username_ssh_daily",
+      "name": "source_machine.normalized_username.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_ssh_daily"
@@ -141,7 +141,7 @@
       }
     },
     {
-      "name": "destination_machine_normalized_username_ssh_daily",
+      "name": "destination_machine.normalized_username.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_ssh_daily"
@@ -158,7 +158,7 @@
       }
     },
     {
-      "name": "auth_method_normalized_username_ssh_daily",
+      "name": "auth_method.normalized_username.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_ssh_daily"
@@ -175,7 +175,7 @@
       }
     },
     {
-      "name": "normalized_username_source_machine_ssh_daily",
+      "name": "normalized_username.source_machine.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "source_machine_ssh_daily"
@@ -192,7 +192,7 @@
       }
     },
     {
-      "name": "normalized_username_destination_machine_ssh_daily",
+      "name": "normalized_username.destination_machine.ssh",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "destination_machine_ssh_daily"
@@ -209,7 +209,7 @@
       }
     },
     {
-      "name": "date_time_unix_normalized_username_vpn_daily",
+      "name": "date_time_unix.normalized_username.vpn",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_daily"
@@ -228,7 +228,7 @@
       }
     },
     {
-      "name": "country_normalized_username_vpn_daily",
+      "name": "country.normalized_username.vpn",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_daily"
@@ -250,7 +250,7 @@
       }
     },
     {
-      "name": "hostname_normalized_username_vpn_daily",
+      "name": "hostname.normalized_username.vpn",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_daily"
@@ -272,7 +272,7 @@
       }
     },
     {
-      "name": "normalized_username_city_vpn_daily",
+      "name": "normalized_username.city.vpn",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "city_vpn_daily"
@@ -289,7 +289,7 @@
       }
     },
     {
-      "name": "date_time_unix_normalized_username_vpn_session_daily",
+      "name": "date_time_unix.normalized_username.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -308,7 +308,7 @@
       }
     },
     {
-      "name": "country_normalized_username_vpn_session_daily",
+      "name": "country.normalized_username.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -330,7 +330,7 @@
       }
     },
     {
-      "name": "hostname_normalized_username_vpn_session_daily",
+      "name": "hostname.normalized_username.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -352,7 +352,7 @@
       }
     },
     {
-      "name": "databucket_normalized_username_vpn_session_daily",
+      "name": "databucket.normalized_username.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -369,7 +369,7 @@
       }
     },
     {
-      "name": "normalized_username_city_vpn_session_daily",
+      "name": "normalized_username.city.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "city_vpn_session_daily"
@@ -379,76 +379,6 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "city_vpn_session_daily",
-        "featureName": "normalized_username_histogram"
-      },
-      "builder": {
-        "type": "discrete_model_builder"
-      }
-    },
-    {
-      "name": "date_time_unix_normalized_username_amt_daily",
-      "selector": {
-        "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "normalized_username_amt_daily"
-      },
-      "retriever": {
-        "type": "context_histogram_retriever",
-        "timeRangeInSeconds": 7776000,
-        "functions": [],
-        "featureBucketConfName": "normalized_username_amt_daily",
-        "featureName": "date_time_unix_histogram"
-      },
-      "builder": {
-        "type": "time_model_builder",
-        "timeResolution": 86400,
-        "bucketSize": 600
-      }
-    },
-    {
-      "name": "source_machine_normalized_username_amt_daily",
-      "selector": {
-        "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "normalized_username_amt_daily"
-      },
-      "retriever": {
-        "type": "context_histogram_retriever",
-        "timeRangeInSeconds": 7776000,
-        "functions": [],
-        "featureBucketConfName": "normalized_username_amt_daily",
-        "featureName": "source_machine_histogram"
-      },
-      "builder": {
-        "type": "discrete_model_builder"
-      }
-    },
-    {
-      "name": "action_code_normalized_username_amt_daily",
-      "selector": {
-        "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "normalized_username_amt_daily"
-      },
-      "retriever": {
-        "type": "context_histogram_retriever",
-        "timeRangeInSeconds": 7776000,
-        "functions": [],
-        "featureBucketConfName": "normalized_username_amt_daily",
-        "featureName": "action_code_histogram"
-      },
-      "builder": {
-        "type": "discrete_model_builder"
-      }
-    },
-    {
-      "name": "normalized_username_source_machine_amt_daily",
-      "selector": {
-        "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "source_machine_amt_daily"
-      },
-      "retriever": {
-        "type": "context_histogram_retriever",
-        "timeRangeInSeconds": 7776000,
-        "functions": [],
-        "featureBucketConfName": "source_machine_amt_daily",
         "featureName": "normalized_username_histogram"
       },
       "builder": {

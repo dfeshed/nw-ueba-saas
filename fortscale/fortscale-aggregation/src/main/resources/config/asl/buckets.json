@@ -14,7 +14,7 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["date_time_unix"]
+            "groupBy": ["two_minute_resolution_epochtime"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
@@ -185,7 +185,7 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["date_time_unix"]
+            "groupBy": ["two_minute_resolution_epochtime"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
@@ -352,7 +352,7 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["date_time_unix"]
+            "groupBy": ["two_minute_resolution_epochtime"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
@@ -501,7 +501,7 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["date_time_unix"]
+            "groupBy": ["two_minute_resolution_epochtime"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
@@ -565,13 +565,6 @@
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
-        {
-          "name": "date_time_unix_histogram",
-          "featureNamesMap": {
-            "groupBy": ["date_time_unix"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
