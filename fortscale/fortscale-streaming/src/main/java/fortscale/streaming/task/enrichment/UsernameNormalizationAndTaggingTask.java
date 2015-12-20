@@ -137,7 +137,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.",false).entrySet()) {
 			String tagField = resolveStringValue(config,tagConfigField.getKey(),res);
 			String tagName = tagConfigField.getKey();
-			tags.put(tagName, tagField);
+			tags.put(tagField, tagName);
 		}
 		tagService = new UserTagsService(tags);
 		CachingService userService = tagService.getUserService();
