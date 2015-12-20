@@ -4,24 +4,28 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
         version="2.0">
+
     <schedule>
         <job>
-            <name>StartServices</name>
-            <group>Cloudera</group>
-            <description>Starts the Kafak and Streaming processes</description>
-            <job-class>fortscale.collection.jobs.StartStopServices</job-class>
+            <name>ETL</name>
+            <group>PXGRID</group>
+            <description>process pxGrid events received from pxGrid </description>
+            <job-class>fortscale.collection.jobs.event.process.PxGridEventsProcessJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+
             <job-data-map>
                 <entry>
-                    <key>isStop</key>
-                    <value>false</value>
+                    <key>filesFilter</key>
+                    <value>PXGRID_\d+.csv$</value>
                 </entry>
                 <entry>
-                    <key>services</key>
-                    <value>${streaming.service.name}</value>
+                    <key>specificMorphlineFile</key>
+                    <value>${pxgrid.morphline}</value>
                 </entry>
             </job-data-map>
         </job>
+
     </schedule>
+
 </job-scheduling-data>
