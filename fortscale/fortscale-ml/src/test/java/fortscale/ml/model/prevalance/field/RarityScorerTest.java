@@ -254,7 +254,7 @@ public class RarityScorerTest {
 	 *************************************************************************************
 	 *************************************************************************************/
 
-	private static final boolean PRINT_GRAPHS = false;
+	private static final boolean PRINT_GRAPHS = true;
 
 	private boolean printingOffOverride = false;
 
@@ -853,29 +853,27 @@ public class RarityScorerTest {
 		return new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(new Date(TimestampUtils.convertToMilliSeconds(date)));
 	}
 
-	private static class ScenarioInfo {
+	private class ScenarioInfo {
 		public int numOfEvents;
 		public Long firstEventTime;
 		public Long lastEventTime;
+		public String filePath;
 
-		public ScenarioInfo() {
+		public ScenarioInfo(String filePath) throws IOException {
+			this.filePath = filePath;
+			List<TestEventsBatch> eventsBatches = readEventsFromCsv(filePath);
 			numOfEvents = 0;
-			firstEventTime = null;
-			lastEventTime = null;
+			for (TestEventsBatch eventsBatch : eventsBatches) {
+				numOfEvents += eventsBatch.num_of_events;
+			}
+			if (eventsBatches.isEmpty()) {
+				firstEventTime = null;
+				lastEventTime = null;
+			} else {
+				firstEventTime = eventsBatches.get(0).time_bucket;
+				lastEventTime = eventsBatches.get(eventsBatches.size() - 1).time_bucket;
+			}
 		}
-	}
-
-	private ScenarioInfo getScenarioInfo(String filePath) throws IOException {
-		ScenarioInfo res = new ScenarioInfo();
-		List<TestEventsBatch> eventsBatches = readEventsFromCsv(filePath);
-		for (TestEventsBatch eventsBatch : eventsBatches) {
-			res.numOfEvents += eventsBatch.num_of_events;
-		}
-		if (!eventsBatches.isEmpty()) {
-			res.firstEventTime = eventsBatches.get(0).time_bucket;
-			res.lastEventTime = eventsBatches.get(eventsBatches.size() - 1).time_bucket;
-		}
-		return res;
 	}
 
 	/**
@@ -920,7 +918,7 @@ public class RarityScorerTest {
 	@Test
 	public void testRealScenarioSshSrcMachineUsername_42423294() throws IOException {
 		String filePath = REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/username_42423294.csv";
-		ScenarioInfo scenarioInfo = getScenarioInfo(filePath);
+		ScenarioInfo scenarioInfo = new ScenarioInfo(filePath);
 		runAndPrintRealScenario(filePath, (int) (scenarioInfo.firstEventTime + (scenarioInfo.lastEventTime - scenarioInfo.firstEventTime) * 0.9), 0);
 	}
 
@@ -942,46 +940,77 @@ public class RarityScorerTest {
 		}
 	}
 
+	private class ScenariosInfo {
+		public Long firstEventTime;
+		public Long lastEventTime;
+
+		private List<Map.Entry<ScenarioInfo, Integer>> sortedScenariosByNumOfEvents;
+
+		public ScenariosInfo(String dirPath) throws IOException {
+			List<ScenarioInfo> scenarioInfos = getScenarioInfos(dirPath);
+			Map<ScenarioInfo, Integer> scenarioToNumOfEvents = new HashMap<>(scenarioInfos.size());
+			if (scenarioInfos.isEmpty()) {
+				firstEventTime = null;
+				lastEventTime = null;
+				sortedScenariosByNumOfEvents = new ArrayList<>();
+			} else {
+				firstEventTime = Long.MAX_VALUE;
+				lastEventTime = Long.MIN_VALUE;
+				for (ScenarioInfo scenarioInfo : scenarioInfos) {
+					if (scenarioInfo.numOfEvents > 0) {
+						firstEventTime = Math.min(firstEventTime, scenarioInfo.firstEventTime);
+						lastEventTime = Math.max(lastEventTime, scenarioInfo.lastEventTime);
+						scenarioToNumOfEvents.put(scenarioInfo, scenarioInfo.numOfEvents);
+					}
+				}
+
+				sortedScenariosByNumOfEvents = sortMapByValues(scenarioToNumOfEvents);
+			}
+		}
+
+		private List<ScenarioInfo> getScenarioInfos(String dirPath) throws IOException {
+			File[] scenarioFiles = new File(dirPath).listFiles();
+			List<ScenarioInfo> scenarioInfos = new ArrayList<>(scenarioFiles.length);
+			for (File file : scenarioFiles) {
+				scenarioInfos.add(new ScenarioInfo(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/" + file.getName()));
+			}
+			return scenarioInfos;
+		}
+
+		public int size() {
+			return sortedScenariosByNumOfEvents.size();
+		}
+
+		public ScenarioInfo get(int i) {
+			return sortedScenariosByNumOfEvents.get(i).getKey();
+		}
+	}
+
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
 		URL dirResource = getClass().getClassLoader().getResource(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH);
 		if (dirResource == null) {
 			return;
 		}
-		File[] scenarioFiles = new File(dirResource.getFile()).listFiles();
-		if (scenarioFiles.length < 10) {
-			return;
-		}
 
-		Map<String, Integer> scenarioToNumOfEvents = new HashMap<>(scenarioFiles.length);
-		long firstEventTime = Long.MAX_VALUE;
-		long lastEventTime = Long.MIN_VALUE;
-		for (File file : scenarioFiles) {
-			ScenarioInfo scenarioInfo = getScenarioInfo(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/" + file.getName());
-			if (scenarioInfo.numOfEvents > 0) {
-				scenarioToNumOfEvents.put(file.getName(), scenarioInfo.numOfEvents);
-				firstEventTime = Math.min(firstEventTime, scenarioInfo.firstEventTime);
-				lastEventTime = Math.max(lastEventTime, scenarioInfo.lastEventTime);
-			}
-		}
-		List<Map.Entry<String, Integer>> sortedScenariosByNumOfEvents = sortMapByValues(scenarioToNumOfEvents);
-		int minDate = (int) (firstEventTime + (lastEventTime - firstEventTime) * 0.9);
+		ScenariosInfo scenariosInfo = new ScenariosInfo(dirResource.getFile());
+		int minDate = (int) (scenariosInfo.firstEventTime + (scenariosInfo.lastEventTime - scenariosInfo.firstEventTime) * 0.9);
 
 		// run all the scenarios and create some statistics:
 		Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics = new HashMap<>();
-		for (Map.Entry<String, Integer> scenario : sortedScenariosByNumOfEvents) {
-			String filePath = REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/" + scenario.getKey();
-			println("\nrunning scenario " + sortedScenariosByNumOfEvents.indexOf(scenario) + " / " + sortedScenariosByNumOfEvents.size() + " " + filePath + " (min date " + getFormattedDate(minDate) + ")");
-			List<ScoredFeature> featureValueAndScores = runRealScenario(filePath, minDate, 50, true);
+		for (int i = 0; i < scenariosInfo.size(); i++) {
+			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
+			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
+			List<ScoredFeature> featureValueAndScores = runRealScenario(scenarioInfo.filePath, minDate, 50, true);
 
-			int logNumOfEvents = (int) (Math.log(scenario.getValue()) / Math.log(10));
+			int logNumOfEvents = (int) (Math.log(scenarioInfo.numOfEvents) / Math.log(10));
 			UsersStatistics usersStatistics = logNumOfEventsToUsersStatistics.get(logNumOfEvents);
 			if (usersStatistics == null) {
 				usersStatistics = new UsersStatistics();
 				logNumOfEventsToUsersStatistics.put(logNumOfEvents, usersStatistics);
 			}
 			if (!featureValueAndScores.isEmpty()) {
-				usersStatistics.anomalousUserScenarioToNumOfEvents.put(scenario.getKey(), scenario.getValue());
+				usersStatistics.anomalousUserScenarioToNumOfEvents.put(scenarioInfo.filePath, scenarioInfo.numOfEvents);
 			} else {
 				usersStatistics.numOfRegularUsers++;
 			}
@@ -1004,15 +1033,15 @@ public class RarityScorerTest {
 				println(String.format("\t%-6d: %s", e.getValue(), e.getKey()));
 			}
 		}
-		println(String.format("\ntotal %d / %d anomalous users", totalAnomalousUsers, scenarioFiles.length));
-		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenarioFiles.length, 0.01);
+		println(String.format("\ntotal %d / %d anomalous users", totalAnomalousUsers, scenariosInfo.size()));
+		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
 	}
 
-	private List<Map.Entry<String, Integer>> sortMapByValues(Map<String, Integer> m) {
-		List<Map.Entry<String, Integer>> sortedList = new ArrayList<>(m.entrySet());
-		Collections.sort(sortedList, new Comparator<Map.Entry<String, Integer>>() {
+	private static <T> List<Map.Entry<T, Integer>> sortMapByValues(Map<T, Integer> m) {
+		List<Map.Entry<T, Integer>> sortedList = new ArrayList<>(m.entrySet());
+		Collections.sort(sortedList, new Comparator<Map.Entry<T, Integer>>() {
 			@Override
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+			public int compare(Map.Entry<T, Integer> o1, Map.Entry<T, Integer> o2) {
 				return o1.getValue().compareTo(o2.getValue());
 			}
 		});
