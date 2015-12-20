@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -23,10 +24,24 @@ public abstract class ConfigurationService {
 
 
 
-
+    public abstract Boolean Configure() throws Exception;
 	public abstract Boolean Init();
-	public abstract Boolean Configure() throws Exception;
-	public abstract Boolean Done();
+
+	public  Boolean Done(){
+        Boolean result = true;
+        if (fileWriterToConfigure != null) {
+            try {
+                fileWriterToConfigure.close();
+            } catch (IOException exception) {
+                logger.error("There was an exception during the file - {} closing  , cause - {} ", fileToConfigure.getName(), exception.getMessage());
+                System.out.println(String.format("There was an exception during execution please see more info at the log "));
+                result=false;
+
+            }
+
+        }
+        return result;
+    }
 
 
 	/**

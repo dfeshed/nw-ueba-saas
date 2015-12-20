@@ -332,18 +332,6 @@ public class InitPartConfiguration extends ConfigurationService {
 	@Override
 	public Boolean Done() {
 
-		Boolean result = true;
-		if (fileWriterToConfigure != null) {
-			try {
-				fileWriterToConfigure.close();
-			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", fileToConfigure.getName(), exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-				result=false;
-
-			}
-
-		}
 
 		if (secondFileWriterToConfigure != null) {
 			try {
@@ -351,13 +339,13 @@ public class InitPartConfiguration extends ConfigurationService {
 			} catch (IOException exception) {
 				logger.error("There was an exception during the file - {} closing  , cause - {} ", secoundFileToConfigure.getName(), exception.getMessage());
 				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-				result=false;
+				return false;
 
 			}
 
 		}
 
-		return result;
+		return super.Done();
 	}
 
 

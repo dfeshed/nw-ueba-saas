@@ -34,11 +34,6 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 
-
-
-
-
-
 	//TODO - Generate this auto from the entities  properties
 	private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,status STRING,${fortscale.tags.admin} BOOLEAN, ${fortscale.tags.executive} BOOLEAN,${fortscale.tags.service} BOOLEAN";
 	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,status STRING,${fortscale.tags.admin} BOOLEAN, ${fortscale.tags.executive} BOOLEAN,${fortscale.tags.service} BOOLEAN";
@@ -296,7 +291,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			paramsMap.put("topSchemaFlag", new ConfigurationParam("topSchemaFlaf",brResult.equals("y") || brResult.equals("yes"),""));
 
 
-			initConfigurationService =new InitPartConfiguration(paramsMap);
+
+            //Service configuration
+			initConfigurationService = new InitPartConfiguration(paramsMap);
 
 			if (initConfigurationService.Init())
 				executionResult = initConfigurationService.Configure();
@@ -361,7 +358,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	 * @param
 	 */
 
-	/*
+
 	private void enrichStereamingConfiguration(BufferedReader br){
 
 
@@ -374,14 +371,56 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			String brResult =br.readLine().toLowerCase();
 			Boolean topolegyResult = brResult.equals("y") || brResult.equals("yes");
 			paramsMap.put("topologyFlag",new ConfigurationParam("topologyFlag",true,""));
-
 			paramsMap.put("lastState", new ConfigurationParam("lastState",false,"etl"));
+            paramsMap.put("taskName",new ConfigurationParam("taskName",false,"UsernameNormalizationAndTaggingTask"));
+
+
+            //in case there is a target user to be normalize also
+            if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+                //in case there is machine to normalized and tag
+            else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+                paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                //in case there is ip to geo locate
+            else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+                paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+            else
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
+
+
+            //User name field
+            paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,"username"));
+
+            //Domain field  - for the enrich part
+            paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
+
+            //In case of fake domain - enter the actual domain value the PS want
+            paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+
+            //Normalized_username field
+            paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
 
 
 
-			configureNormalizeUserNameTask(taskPropertiesFileWriter, taskPropertiesFile, topolegyResult, br);
+            //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
+            //Normalizing service
+            System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
+            String updateOnlyResult = br.readLine().toLowerCase();
+            Boolean updateOnly = updateOnlyResult.equals("y") ||updateOnlyResult.toLowerCase().equals("yes");
 
-			System.out.println(String.format("End configure the Normalized Username and tagging task for %s", dataSourceName));
+            if (updateOnly) {
+                //Service  name
+                paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName",false,"SecurityUsernameNormalizationService"));
+                paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag",true,"true"));
+
+            } else {
+                paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName",false,"genericUsernameNormalizationService"));
+                paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag",false,"false"));
+            }
+
+            paramsMap.put("lastState", new ConfigurationParam("lastState",false,"UsernameNormalizationAndTaggingTask"));
+
+            System.out.println(String.format("End configure the Normalized Username and tagging task for %s", dataSourceName));
 
 
 
@@ -516,161 +555,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	}
 
 
-	private void configureNormalizeUserNameTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
 
-		try {
-
-
-
-            //regiular user name normalization - each line must have at least username field
-
-
-
-
-			//User name field
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", this.dataSourceName, usernameFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//Domain field  - for the enrich part
-			System.out.println(String.format("Please enter the Domain field name (i.e account_domain) in case %s data source doesn't have domain field please enter \"fake\":", dataSourceName));
-			String domainFieldName = br.readLine().toLowerCase();
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", dataSourceName, domainFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//In case of fake domain - enter the actual domain value the PS want
-			System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty value for keeping the name without domain): "));
-			String domainValue = br.readLine();
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.fake=%s", dataSourceName, domainValue);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//Normalized_username field
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}",this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//partition field name  (today we use for all the username)
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s", this.dataSourceName, usernameFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			//TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
-			//Normalizing service
-			System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
-            String updateOnlyResult = br.readLine().toLowerCase();
-			Boolean updateOnly = updateOnlyResult.equals("y") ||updateOnlyResult.toLowerCase().equals("yes");
-
-			if (updateOnly) {
-				line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			} else {
-
-				line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=genericUsernameNormalizationService", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=false", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			}
-
-
-			//classifier value
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			writeLineToFile("\n", taskPropertiesFileWriter, true);
-			writeLineToFile("#############", taskPropertiesFileWriter, true);
-
-            lastState="UsernameNormalizationAndTaggingTask";
-
-
-            //target  normalization - for example target user
-            if(targetFlag)
-            {
-                if (sourceIpResolvingFlag || targetIpResolvingFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving");
-                else if (sourceMachineNameFlag || targetMachineNameFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging");
-                else if (sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location");
-                else
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event");
-
-
-                //target User name field
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.username.field=${impala.data.%s.table.field.target}", this.dataSourceName, usernameFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //Domain field  - for the enrich part
-                System.out.println(String.format("Please enter the Domain field name (i.e account_domain) in case %s data source doesn't have domain field please enter \"fake\":", dataSourceName));
-                domainFieldName = br.readLine().toLowerCase();
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.domain.field=%s", dataSourceName, domainFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //In case of fake domain - enter the actual domain value the PS want
-                System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty value for keeping the name without domain): "));
-                domainValue = br.readLine();
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.domain.fake=%s", dataSourceName, domainValue);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //Normalized_username field
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.normalizedusername.field=${impala.data.%s.table.field.normalized_dst_machine}",this.dataSourceName,this.dataSourceName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //partition field name  (today we use for all the username)
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.partition.field=%s", this.dataSourceName, usernameFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-                //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
-                //Normalizing service
-                System.out.println(String.format("Does the %s data source should contain target users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
-                updateOnly = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
-
-                if (updateOnly) {
-                    line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask_target.normalization.service=SecurityUsernameNormalizationService", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                    line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.updateOnly=true", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                } else {
-
-                    line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask_target.normalization.service=genericUsernameNormalizationService", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                    line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.updateOnly=false", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                }
-
-
-                //classifier value
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.classifier=%s", this.dataSourceName, this.dataSourceName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                writeLineToFile("\n", taskPropertiesFileWriter, true);
-                writeLineToFile("#############", taskPropertiesFileWriter, true);
-
-            }
-
-
-			//flush the writer for username-normalization-tagging-task.properties
-			taskPropertiesFileWriter.flush();
-		}
-		catch (Exception e)
-		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			}
-			catch (IOException exception)
-			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-
-	}
 	private void configureIpResolving(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
 
 		try {

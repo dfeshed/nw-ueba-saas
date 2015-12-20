@@ -44,10 +44,18 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 
 	@Override
 	public Boolean Configure() throws Exception {
-		Boolean result = false;
+
 		String line = "";
 		Boolean topolegyResult = configurationParams.get("topologyFlag").getParamFlag();
 		String lastState  = configurationParams.get("lastState").getParamValue();
+        String taskName = configurationParams.get("taskName").getParamValue();
+        String outPutTopic = configurationParams.get("outPutTopic").getParamValue();
+        String userNameField = configurationParams.get("userNameField").getParamValue();
+        String domainField = configurationParams.get("domainFieldName").getParamValue();
+        String domainValue = configurationParams.get("domainValue").getParamValue();
+        String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
+        String normalizeServiceName = configurationParams.get("normalizeSservieName").getParamValue();
+        String updateOnly = configurationParams.get("updateOnlyFlag").getParamValue();
 
 
 		String dataSourceName = configurationParams.get("dataSourceName").getParamValue();
@@ -60,23 +68,45 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 		line = String.format("# %s",dataSourceName);
 		writeLineToFile(line, fileWriterToConfigure, true);
 
+        configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,taskName,lastState,outPutTopic);
 
-		//in case there is a target user to be normalize also
-		if (configurationParams.get("sourceIpResolvingFlag").getParamFlag() || configurationParams.get("targetIpResolvingFlag").getParamFlag())
-			configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving");
-			//in case there is machine to normalized and tag
-		else if (sourceMachineNameFlag || targetMachineNameFlag)
-			configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging");
-			//in case there is ip to geo locate
-		else if (sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
-			configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location");
-		else
-			configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event");
+        //User name field configuration
+        line = String.format("%s.%s_%s.username.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,userNameField);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        //Domain field name
+        line = String.format("%s.%s_%s.domain.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,domainField);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        //Domain value
+        line = String.format("%s.%s_%s.domain.fake=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,domainValue);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        //Normalized user name value
+        line = String.format("%s.%s_%s.normalizedusername.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,normalizedUserNameField);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        //Partition Field Name
+        //TODO - TOday its user name for all cases , if it will be change need to put it out to configuration
+        line = String.format("%s.%s_%s.partition.field=username",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        //Service name
+        line = String.format("%s.%s_%s.normalization.service=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,normalizeServiceName);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        line = String.format("%s.%s_%s.updateOnly=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,updateOnly);
+        writeLineToFile(line, fileWriterToConfigure, true);
+
+        line = String.format("%s.%s_%s.classifier=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,dataSourceName);
+        writeLineToFile(line, fileWriterToConfigure, true);
 
 
 
+        writeLineToFile("\n", fileWriterToConfigure, true);
+        writeLineToFile("#############", fileWriterToConfigure, true);
 
-		return result;
+		return true;
 
 	}
 
@@ -110,8 +140,5 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 		}
 	}
 
-	@Override
-	public Boolean Done() {
 
-	}
 }
