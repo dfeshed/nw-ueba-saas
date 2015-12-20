@@ -25,10 +25,7 @@ public class RarityScorerTest {
 	private Double calcScore(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
 		Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
 		for (int count : featureValueToCountMap.values()) {
-			Double lastCount = occurrencesToNumOfFeatures.get(count);
-			if (lastCount == null) {
-				lastCount = 0D;
-			}
+			double lastCount = occurrencesToNumOfFeatures.getOrDefault(count, 0D);
 			occurrencesToNumOfFeatures.put(count, lastCount + 1);
 		}
 		RarityScorer rarityScorer = new RarityScorer(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
@@ -182,7 +179,7 @@ public class RarityScorerTest {
 		if (overParameter == PARAMETER.MAX_RARE_COUNT) {
 			for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
 				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
-					scoresSeries.add(new ArrayList<Double>());
+					scoresSeries.add(new ArrayList<>());
 					for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
 						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
 					}
@@ -191,7 +188,7 @@ public class RarityScorerTest {
 		} else if (overParameter == PARAMETER.MAX_NUM_OF_RARE_FEATURES) {
 			for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
 				for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
-					scoresSeries.add(new ArrayList<Double>());
+					scoresSeries.add(new ArrayList<>());
 					for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
 						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
 					}
@@ -200,7 +197,7 @@ public class RarityScorerTest {
 		} else {
 			for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
 				for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
-					scoresSeries.add(new ArrayList<Double>());
+					scoresSeries.add(new ArrayList<>());
 					for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
 						scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
 					}
@@ -678,12 +675,16 @@ public class RarityScorerTest {
 		public String normalized_dst_machine;
 	}
 
-	private List<TestEventsBatch> readEventsFromCsv(String csvFileName) throws IOException {
-		URL fileURL = getClass().getClassLoader().getResource(csvFileName);
+	private String getAbsoluteFilePath(String fileName) throws FileNotFoundException {
+		URL fileURL = getClass().getClassLoader().getResource(fileName);
 		if (fileURL == null) {
-			throw new FileNotFoundException("file " + csvFileName + " not exist");
+			throw new FileNotFoundException("file " + fileName + " not exist");
 		}
-		File csvFile = new File(fileURL.getFile());
+		return fileURL.getFile();
+	}
+
+	private List<TestEventsBatch> readEventsFromCsv(String csvFileName) throws IOException {
+		File csvFile = new File(getAbsoluteFilePath(csvFileName));
 		CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(',');
 		MappingIterator<TestEventsBatch> it = new CsvMapper().reader(TestEventsBatch.class).with(schema).readValues(csvFile);
 		List<TestEventsBatch> res = new ArrayList<>();
@@ -879,10 +880,7 @@ public class RarityScorerTest {
 		ScenarioStats scenarioStats = new ScenarioStats();
 		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
-				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_dst_machine);
-				if (eventFeatureCount == null) {
-					eventFeatureCount = 0;
-				}
+				int eventFeatureCount = featureValueToCountMap.getOrDefault(eventsBatch.normalized_dst_machine, 0);
 				Double score = calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
 				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
 				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.normalized_dst_machine, score, isScoreInteresting);
@@ -1045,12 +1043,13 @@ public class RarityScorerTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		URL dirResource = getClass().getClassLoader().getResource(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH);
-		if (dirResource == null) {
+		ScenariosInfo scenariosInfo;
+		try {
+			scenariosInfo = new ScenariosInfo(getAbsoluteFilePath(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH));
+		} catch (FileNotFoundException e) {
 			println("directory not found");
+			return;
 		}
-
-		ScenariosInfo scenariosInfo = new ScenariosInfo(dirResource.getFile());
 		int minDate = (int) (scenariosInfo.firstEventTime + (scenariosInfo.lastEventTime - scenariosInfo.firstEventTime) * 0.9);
 
 		// run all the scenarios and create some statistics:
