@@ -14,6 +14,7 @@ import org.junit.runners.JUnit4;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -678,7 +679,11 @@ public class RarityScorerTest {
 	}
 
 	private List<TestEventsBatch> readEventsFromCsv(String csvFileName) throws IOException {
-		File csvFile = new File(getClass().getClassLoader().getResource(csvFileName).getFile());
+		URL fileURL = getClass().getClassLoader().getResource(csvFileName);
+		if (fileURL == null) {
+			throw new FileNotFoundException("file " + csvFileName + " not exist");
+		}
+		File csvFile = new File(fileURL.getFile());
 		CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(',');
 		MappingIterator<TestEventsBatch> it = new CsvMapper().reader(TestEventsBatch.class).with(schema).readValues(csvFile);
 		List<TestEventsBatch> res = new ArrayList<>();
@@ -860,19 +865,19 @@ public class RarityScorerTest {
 	/**
 	 * Run a real data scenario.
 	 * The first 90% of the events won't be scored (they are only used for building the model).
-	 * @param filePath a path of the csv containing the data which has been queried from impala.
+	 * @param scenarioInfo all the info about the scenario needed in order to run it.
 	 * @param minDate events occurring before this time won't be scored.
 	 * @param minInterestingScore scores smaller than this number are considered not interesting, and won't be included in the result.
 	 * @param printContextInfo if true, context info will be printed (aids in understanding the result scores).
 	 * @return statistics about the result of running the scenario.
 	 * @throws IOException
 	 */
-	private ScenarioStats runRealScenario(String filePath, int minDate, int minInterestingScore, boolean printContextInfo) throws IOException {
+	private ScenarioStats runRealScenario(ScenarioInfo scenarioInfo, int minDate, int minInterestingScore, boolean printContextInfo) throws IOException {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
 		ScenarioStats scenarioStats = new ScenarioStats();
-		for (final TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
+		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
 				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_dst_machine);
 				if (eventFeatureCount == null) {
@@ -900,24 +905,26 @@ public class RarityScorerTest {
 	}
 
 	private class ScenarioInfo {
+		public String filePath;
+		private List<TestEventsBatch> eventsBatches;
 		public int numOfEvents;
 		public Long firstEventTime;
 		public Long lastEventTime;
-		public String filePath;
 
 		public ScenarioInfo(String filePath) throws IOException {
 			this.filePath = filePath;
-			List<TestEventsBatch> eventsBatches = readEventsFromCsv(filePath);
+			eventsBatches = readEventsFromCsv(filePath);
 			numOfEvents = 0;
-			for (TestEventsBatch eventsBatch : eventsBatches) {
-				numOfEvents += eventsBatch.num_of_events;
-			}
-			if (eventsBatches.isEmpty()) {
-				firstEventTime = null;
-				lastEventTime = null;
-			} else {
-				firstEventTime = eventsBatches.get(0).time_bucket;
-				lastEventTime = eventsBatches.get(eventsBatches.size() - 1).time_bucket;
+			firstEventTime = null;
+			lastEventTime = null;
+			if (eventsBatches != null) {
+				for (TestEventsBatch eventsBatch : eventsBatches) {
+					numOfEvents += eventsBatch.num_of_events;
+				}
+				if (!eventsBatches.isEmpty()) {
+					firstEventTime = eventsBatches.get(0).time_bucket;
+					lastEventTime = eventsBatches.get(eventsBatches.size() - 1).time_bucket;
+				}
 			}
 		}
 	}
@@ -951,12 +958,12 @@ public class RarityScorerTest {
 		}
 	}
 
-	private void runAndPrintRealScenario(String filePath, int minDate, int minInterestingScore) throws IOException {
+	private void runAndPrintRealScenario(ScenarioInfo scenarioInfo, int minDate, int minInterestingScore) throws IOException {
 		if (PRINT_GRAPHS == false) {
 			return;
 		}
-		ScenarioStats scenarioStats = runRealScenario(filePath, minDate, minInterestingScore, true);
-		printRealScenarioGraph(filePath.substring(0, filePath.indexOf('/')), scenarioStats.featureValueAndScores);
+		ScenarioStats scenarioStats = runRealScenario(scenarioInfo, minDate, minInterestingScore, true);
+		printRealScenarioGraph(scenarioInfo.filePath.substring(0, scenarioInfo.filePath.indexOf('/')), scenarioStats.featureValueAndScores);
 	}
 
 	public static final String REAL_SCENARIOS_SSH_SRC_MACHINE_PATH = "ssh-src-machine";
@@ -964,8 +971,12 @@ public class RarityScorerTest {
 	@Test
 	public void testRealScenarioSshSrcMachineUsername_42423294() throws IOException {
 		String filePath = REAL_SCENARIOS_SSH_SRC_MACHINE_PATH + "/username_42423294.csv";
-		ScenarioInfo scenarioInfo = new ScenarioInfo(filePath);
-		runAndPrintRealScenario(filePath, (int) (scenarioInfo.firstEventTime + (scenarioInfo.lastEventTime - scenarioInfo.firstEventTime) * 0.9), 0);
+		try {
+			ScenarioInfo scenarioInfo = new ScenarioInfo(filePath);
+			runAndPrintRealScenario(scenarioInfo, (int) (scenarioInfo.firstEventTime + (scenarioInfo.lastEventTime - scenarioInfo.firstEventTime) * 0.9), 0);
+		} catch (FileNotFoundException e) {
+			println("file not found");
+		}
 	}
 
 	private static class UsersStatistics {
@@ -1036,7 +1047,7 @@ public class RarityScorerTest {
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
 		URL dirResource = getClass().getClassLoader().getResource(REAL_SCENARIOS_SSH_SRC_MACHINE_PATH);
 		if (dirResource == null) {
-			return;
+			println("directory not found");
 		}
 
 		ScenariosInfo scenariosInfo = new ScenariosInfo(dirResource.getFile());
@@ -1048,7 +1059,7 @@ public class RarityScorerTest {
 		for (int i = 0; i < scenariosInfo.size(); i++) {
 			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
 			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
-			ScenarioStats scenarioStats = runRealScenario(scenarioInfo.filePath, minDate, 50, true);
+			ScenarioStats scenarioStats = runRealScenario(scenarioInfo, minDate, 50, true);
 			scenarioToStats.put(scenarioInfo, scenarioStats);
 
 			int logNumOfEvents = (int) (Math.log(scenarioInfo.numOfEvents) / Math.log(10));
@@ -1097,12 +1108,7 @@ public class RarityScorerTest {
 
 	private static <T> List<Map.Entry<T, Integer>> sortMapByValues(Map<T, Integer> m) {
 		List<Map.Entry<T, Integer>> sortedList = new ArrayList<>(m.entrySet());
-		Collections.sort(sortedList, new Comparator<Map.Entry<T, Integer>>() {
-			@Override
-			public int compare(Map.Entry<T, Integer> o1, Map.Entry<T, Integer> o2) {
-				return o1.getValue().compareTo(o2.getValue());
-			}
-		});
+		Collections.sort(sortedList, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
 		return sortedList;
 	}
 }
