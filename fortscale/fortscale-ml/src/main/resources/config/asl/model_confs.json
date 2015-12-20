@@ -1,13 +1,13 @@
 {
   "ModelConfs": [
     {
-      "name": "data_rate_normalized_username_vpn_session_daily",
+      "name": "data_bucket_normalized_username_vpn_session_daily",
       "selector": {
-        "type": "feature_bucket_context_selector_conf",
+        "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
       },
       "retriever": {
-        "type": "context_histogram_retriever_conf",
+        "type": "context_histogram_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [
           {
@@ -17,10 +17,10 @@
           }
         ],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
-        "featureName": "vpn_session_rate"
+        "featureName": "data_bucket_histogram"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder_conf"
+        "type": "continuous_histogram_model_builder"
       }
     }
   ]

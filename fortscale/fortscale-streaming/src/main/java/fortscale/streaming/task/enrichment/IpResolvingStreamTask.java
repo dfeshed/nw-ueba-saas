@@ -4,10 +4,12 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
@@ -42,7 +44,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     private final static String storeConfigKeyFormat = "fortscale.%s.store";
 
     private final static String dhcpCacheKey = "dhcp-cache";
-    private final static String iseCacheKey = "ise-cache";
+	private final static String iseCacheKey = "ise-cache";
+    private final static String pxGridCacheKey = "pxGrid-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
@@ -53,6 +56,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
+
+
+		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 
         // initialize the ip resolving service only once for all streaming task instances. Since we can
         // host several task instances in this process, we want all of them to share the same ip resolving cache
@@ -74,6 +80,11 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
+
+            LevelDbBasedCache<String, PxGridIPEvent> pxGridCache = new LevelDbBasedCache<String,PxGridIPEvent>(
+                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
+            resolver.getPxGridResolver().setCache(pxGridCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
             LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
@@ -97,14 +108,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
 
                 String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
-                String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.ip.field", configKey)));
-                String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.host.field", configKey)));
-                String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey)));
+                String ipField = resolveStringValue(config, String.format("fortscale.events.entry.%s.ip.field", configKey), res);
+                String hostField = resolveStringValue(config, String.format("fortscale.events.entry.%s.host.field", configKey), res);
+                String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
                 boolean restrictToADName = config.getBoolean(String.format("fortscale.events.entry.%s.restrictToADName", configKey));
                 boolean shortName = config.getBoolean(String.format("fortscale.events.entry.%s.shortName", configKey));
                 boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.entry.%s.isRemoveLastDot", configKey));
                 boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.entry.%s.dropWhenFail", configKey));
-                String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", configKey)));
+                String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey), res);
                 boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.entry.%s.overrideIPWithHostname", configKey));
                 boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.entry.%s.resolveOnlyReserved", configKey), defaultResolveOnlyReservedIp);
 
@@ -170,6 +181,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             }
         }
     }
+
+
 
 
     @Override

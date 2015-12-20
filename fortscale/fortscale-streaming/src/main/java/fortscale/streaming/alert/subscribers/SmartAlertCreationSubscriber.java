@@ -5,13 +5,10 @@ import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnu
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
-import fortscale.services.AlertsService;
-import fortscale.services.ComputerService;
-import fortscale.services.EvidencesService;
-import fortscale.services.UserService;
+import fortscale.services.*;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
-import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
+import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -21,7 +18,9 @@ import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * create alert from smart events. smart events may appear in combination with other evidences, such as tags and notifications.
@@ -50,7 +49,11 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 * Aggregated feature event builder service
 	 */
 	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
-	
+
+	/**
+	 * Tags service
+	 */
+	@Autowired protected TagService tagService;
 
 	/**
 	 * Alerts service (for Mongo export)
@@ -245,11 +248,13 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		List<Evidence> evidences = new ArrayList<>();
 
 		// Iterate the tags list and create evidence for each tag
-		for (String tag : tags) {
-			Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
-					entityName,	startDate, endDate, tag);
-
-			evidences.add(evidence);
+		for (String tagStr : tags) {
+			Tag tag = tagService.getTag(tagStr);
+			if (tag != null && tag.getCreatesIndicator()) {
+				Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
+						entityName, startDate, endDate, tagStr);
+				evidences.add(evidence);
+			}
 		}
 
 		return  evidences;
@@ -420,7 +425,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
 		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent,
-				startDate, endDate);
+				TimestampUtils.convertToSeconds(startDate),
+				TimestampUtils.convertToSeconds(endDate));
 
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,

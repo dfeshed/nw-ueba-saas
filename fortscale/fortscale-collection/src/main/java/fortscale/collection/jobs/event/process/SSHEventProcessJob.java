@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.WeeklyFileSplitStrategy;
 import org.kitesdk.morphline.api.Record;

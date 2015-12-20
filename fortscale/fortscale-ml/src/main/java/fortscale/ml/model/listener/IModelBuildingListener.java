@@ -3,5 +3,5 @@ package fortscale.ml.model.listener;
 import java.util.Date;
 
 public interface IModelBuildingListener {
-	public void modelBuildingStatus(String modelConfName, String contextId, Date endTime, boolean success);
+	public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status);
 }

@@ -82,6 +82,25 @@
 		<constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
+	<bean id="pxGridResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+				<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${pxgrid.resolver.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+	</bean>
+	<bean id="pxGridBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${pxgrid.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
 	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -118,12 +137,16 @@
 		<constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
 	</bean>
+	<bean id="pxGridResolver" class="fortscale.services.ipresolving.PxGridResolver" scope="singleton" >
+		<constructor-arg name="shouldUseBlackList" value="${pxgrid.resolver.shouldUseBlackList:true}" />
+		<constructor-arg name="ipBlackListCache" ref="pxGridBlacklistCache" />
+	</bean>
 	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
 	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
-	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 	<!-- group by tags service cache that uses memory based implementation -->
 	<bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
@@ -232,12 +255,16 @@
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
-		<property name="lazy" value="true"/>
+		<property name="lazyUsernameCachesUpdate" value="true"/>
 	</bean>
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
+
+	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
+
+	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
 
 	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
 

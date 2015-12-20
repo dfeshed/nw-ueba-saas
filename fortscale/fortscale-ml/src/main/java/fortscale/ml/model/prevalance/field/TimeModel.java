@@ -3,6 +3,7 @@ package fortscale.ml.model.prevalance.field;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
+import fortscale.utils.ConversionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,6 @@ import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
-	public static final String MODEL_TYPE = "time_model";
-	private static final long serialVersionUID = 5006807217250354329L;
 	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
@@ -19,7 +18,7 @@ public class TimeModel implements Model {
 	private List<Double> smoothedCounterBuckets;
 	private OccurrencesHistogram occurrencesHistogram;
 
-	public TimeModel(int timeResolution, int bucketSize, Map<Long, Double> timeToCounter) {
+	public TimeModel(int timeResolution, int bucketSize, Map<?, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
 		int numOfBuckets = (int) Math.ceil(timeResolution / (double) bucketSize);
@@ -30,13 +29,14 @@ public class TimeModel implements Model {
 			bucketHits.add(false);
 		}
 
-		for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+		for (Map.Entry<?, Double> entry : timeToCounter.entrySet()) {
+			long key = ConversionUtils.convertToLong(entry.getKey());
 			double counter = entry.getValue();
-			int bucketHit = getBucketIndex(entry.getKey());
+			int bucketHit = getBucketIndex(key);
 			bucketHits.set(bucketHit, true);
 			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
 			for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
-				double addVal = counter * (1 - (distance - 1) / ((double)SMOOTHING_DISTANCE));
+				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHING_DISTANCE));
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
 				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
 			}

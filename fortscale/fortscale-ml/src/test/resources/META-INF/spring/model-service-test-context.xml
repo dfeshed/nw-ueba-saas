@@ -12,12 +12,10 @@
     <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"/>
     <mockito:mock id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService"/>
 
-    <bean id="modelConfService" class="fortscale.ml.model.ModelConfService"/>
-    <bean id="modelStore" class="fortscale.ml.model.store.ModelStore"/>
+    <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
 
     <context:spring-configured/>
     <context:annotation-config/>
-    <context:component-scan base-package="fortscale.aggregation.feature.bucket, org.springframework.data.mongodb.core, fortscale.aggregation.util, fortscale.ml.model"/>
 
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:ModelServiceTest.properties"/>
