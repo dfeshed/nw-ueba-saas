@@ -23,7 +23,11 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask{
 
 
 		// filter out vpn events with closed status
-		return !CLOSED.equals(message.get(STATUS_FIELD));
+		boolean closedEvnets=CLOSED.equals(message.get(STATUS_FIELD));
+		if (closedEvnets){//Message is filtered
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+		}
+		return !closedEvnets;
 	}
 
 }

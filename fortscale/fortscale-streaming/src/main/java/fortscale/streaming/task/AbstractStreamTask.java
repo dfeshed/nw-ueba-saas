@@ -28,6 +28,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
 						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
+	protected static final String CANNOT_EXTRACT_USER_NAME_MESSAGE = "Cannot extract user name from event";
+	protected static final String SEND_TO_OUTPUT_TOPIC_FAILED_MESSAGE = "Output topic connection error";
 
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";

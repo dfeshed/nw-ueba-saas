@@ -1,5 +1,6 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.logging.Logger;
@@ -41,6 +42,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 
 			String lastState = getConfigString(config, String.format("fortscale.events.%s.last.state", configKey));
 
+
 			Config dataSourceConfig = config.subset(String.format("fortscale.events.%s.", configKey));
 			dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
 			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
@@ -63,24 +65,32 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = getEventsPrevalenceModelStreamTaskManager(envelope);
-		eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
-	}
-	
-	private EventsPrevalenceModelStreamTaskManager getEventsPrevalenceModelStreamTaskManager(IncomingMessageEnvelope envelope) throws Exception{
 		JSONObject message = parseJsonMessage(envelope);
-
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
+		}
 
 		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = dataSourceToEventsPrevalenceModelStreamTaskManagerMap.get(configKey);
 
 		if (eventsPrevalenceModelStreamTaskManager == null)
 		{
+			taskMonitoringHelper.countNewFilteredEvents(configKey, CANNOT_EXTRACT_STATE_MESSAGE);
 			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
 		}
-		
-		return eventsPrevalenceModelStreamTaskManager;
+
+		try {
+			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+			handleUnfilteredEvent(message, configKey);
+		} catch (FilteredEventException e){
+			taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
+			throw e;
+		}
+
 	}
+	
+
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
