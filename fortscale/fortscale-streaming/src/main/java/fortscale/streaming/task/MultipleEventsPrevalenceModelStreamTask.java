@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.logging.Logger;
@@ -83,7 +84,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 		try {
 			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
 			handleUnfilteredEvent(message, configKey);
-		} catch (FilteredEventException e){
+		} catch (FilteredEventException  | KafkaPublisherException e){
 			taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
 			throw e;
 		}

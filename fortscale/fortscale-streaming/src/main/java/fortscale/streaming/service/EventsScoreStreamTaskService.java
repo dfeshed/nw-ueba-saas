@@ -1,6 +1,7 @@
 package fortscale.streaming.service;
 
 import fortscale.ml.service.ModelService;
+import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
@@ -10,6 +11,7 @@ import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -109,7 +111,7 @@ public class EventsScoreStreamTaskService {
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new StreamMessageNotContainFieldException(messageText, timestampField);
+			throw new FilteredEventException(AbstractStreamTask.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
 		}
 
 		

@@ -24,12 +24,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
-	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
-	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+
+	//Monitor error messages
+	public static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
+	public static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+	public static final String CANNOT_EXTRACT_USER_NAME_MESSAGE = "Cannot extract user name from event";
+	public static final String SEND_TO_OUTPUT_TOPIC_FAILED_MESSAGE = "Output topic connection error";
+	public static final String MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD = "message does not contains timestamp in field";
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
-						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
-	protected static final String CANNOT_EXTRACT_USER_NAME_MESSAGE = "Cannot extract user name from event";
-	protected static final String SEND_TO_OUTPUT_TOPIC_FAILED_MESSAGE = "Output topic connection error";
+			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
 
 
 	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";

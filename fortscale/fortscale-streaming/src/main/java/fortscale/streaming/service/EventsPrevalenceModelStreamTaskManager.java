@@ -29,16 +29,12 @@ public class EventsPrevalenceModelStreamTaskManager {
 	
 	/** Process incoming events and update the user models stats */
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		try {
-			if (!skipModel) {
-				eventsPrevalenceModelStreamTaskService.process(envelope, collector, coordinator);
-			}
+		if (!skipModel) {
+			eventsPrevalenceModelStreamTaskService.process(envelope, collector, coordinator);
+		}
 
-			if (!skipScore) {
-				eventsScoreStreamTaskService.process(envelope, collector, coordinator);
-			}
-		} catch (Exception e) {
-			throw new FilteredEventException(e.getMessage(), e);
+		if (!skipScore) {
+			eventsScoreStreamTaskService.process(envelope, collector, coordinator);
 		}
 	}
 
