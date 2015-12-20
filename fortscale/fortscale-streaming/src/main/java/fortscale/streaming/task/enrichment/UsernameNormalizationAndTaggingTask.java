@@ -135,7 +135,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
 		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.",false).entrySet()) {
-			String tagField = resolveStringValue(config,tagConfigField.getKey(),res); // the name of the bollean field as saved to table
+			String tagField = resolveStringValue(config,tagConfigField.getKey(),res); // the name of the boolean field as saved to table
 			String tagName = tagConfigField.getKey().split("fortscale.username.tags.")[1]; //the name of the tag as shown in tags cache
 			tags.put(tagName, tagField);
 		}
