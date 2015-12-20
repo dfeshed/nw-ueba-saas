@@ -99,7 +99,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
-			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
+			String usernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.username.field",configKey),res);
 			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
 					configKey));
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
@@ -172,7 +172,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
 			}
 
-			// get the normalized username from input record
+			// get the normalized username from input record - if he doesnt exist  its sign that we should normalized the username field
 			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				String messageText = (String)envelope.getMessage();
