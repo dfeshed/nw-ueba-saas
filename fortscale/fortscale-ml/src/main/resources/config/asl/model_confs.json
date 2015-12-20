@@ -260,8 +260,7 @@
         "timeRangeInSeconds": 7776000,
         "functions": [
           {
-            "type": "discrete_data_histogram_ignore_pattern",
-            "ignorePattern": null
+            "type": "discrete_data_histogram_ignore_pattern"
           }
         ],
         "featureBucketConfName": "normalized_username_vpn_daily",
@@ -340,8 +339,7 @@
         "timeRangeInSeconds": 7776000,
         "functions": [
           {
-            "type": "discrete_data_histogram_ignore_pattern",
-            "ignorePattern": null
+            "type": "discrete_data_histogram_ignore_pattern"
           }
         ],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
