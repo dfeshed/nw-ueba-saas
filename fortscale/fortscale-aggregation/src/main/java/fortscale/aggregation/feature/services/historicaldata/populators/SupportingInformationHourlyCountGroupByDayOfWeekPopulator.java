@@ -92,7 +92,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
                     SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), hour.toString());
 
-                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null) ?  histogramKeyObjectMap.get(supportingInformationKey) : 0;
+                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null) ?  histogramKeyObjectMap.get(supportingInformationKey) : 0.0;
 
                     histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
                 }

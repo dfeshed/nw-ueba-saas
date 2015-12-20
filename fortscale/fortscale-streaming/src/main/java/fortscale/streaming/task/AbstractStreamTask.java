@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
@@ -14,6 +15,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public abstract class AbstractStreamTask implements StreamTask, WindowableTask, InitableTask, ClosableTask {
 
@@ -34,6 +37,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
 
+	protected  FortscaleStringValueResolver res;
+
 
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
@@ -42,6 +47,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
+
+	protected String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValue(getConfigString(config, string));
+	}
 
 	public AbstractStreamTask(){
 		processExceptionHandler = new ExceptionHandler();
@@ -185,7 +194,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 	}
 
-	//Get the data source and last state without excetion, return  null if cannot extract
+	//Get the data source and last state without exception, return  null if cannot extract
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
 		StreamingTaskDataSourceConfigKey configKey;
 		try {

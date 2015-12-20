@@ -1,8 +1,12 @@
 package fortscale.streaming.service.tagging;
 
+import fortscale.domain.core.Tag;
+import fortscale.services.TagService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
+import fortscale.streaming.service.SpringService;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +14,6 @@ import java.util.regex.Pattern;
  * Created by idanp on 7/11/2014.
  */
 public class IsFixSourceTagImpl implements ServiceAccountTagging {
-
 
     @Value("${FixSource.max.source.count.Threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
@@ -24,7 +27,6 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
     private Pattern regExpPattern;
 
     private static final String FixTag = "Fixed Source";
-
 
     public IsFixSourceTagImpl() {
 
@@ -100,5 +102,9 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
 
     }
 
+    @Override
+    public void addTagToMongo(TagService tagService) {
+        tagService.addTag(new Tag(FixTag, FixTag, false, true));
+    }
 
 }

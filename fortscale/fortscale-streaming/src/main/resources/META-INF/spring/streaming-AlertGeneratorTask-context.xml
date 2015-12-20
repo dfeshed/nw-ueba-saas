@@ -33,6 +33,8 @@
 
     <bean id="usernameService" class="fortscale.services.impl.UsernameService"/>
 
+    <bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
+
     <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
     <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
@@ -43,6 +45,12 @@
         <constructor-arg name="maxSize" value="${computer.service.cache.max.items:0}" />
         <constructor-arg name="timeToExpire" value="${computer.service.cache.timeToExpireSec:3600}" />
         <constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+    </bean>
+
+    <bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
 
     <!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
