@@ -45,8 +45,10 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
         }
     }
 
+    /*
     public void setRawEvents(List<VpnSessionOverlap> rawEvents) {
         this.rawEvents = rawEvents;
     }
+    */
 
 }
