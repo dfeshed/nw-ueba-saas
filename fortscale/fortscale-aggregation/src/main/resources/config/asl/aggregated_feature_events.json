@@ -1127,6 +1127,154 @@
           "type": "aggr_feature_distinct_values_counter_func",
           "includeValues": true
         }
+      },
+      {
+        "name": "distinct_number_of_src_machines_crmsf_daily",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": false
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+        "name": "distinct_number_of_src_machines_crmsf_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "source_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": false
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+        "name": "number_of_crmsf_daily",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+        "name": "number_of_crmsf_events_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+        "name": "number_of_failed_crmsf_daily",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "failed_events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+        "name": "number_of_failed_crmsf_events_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "failed_events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+        "name": "distinct_number_of_countries_crmsf_daily",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "country_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": false
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+        "name": "distinct_number_of_countries_crmsf_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_crmsf_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "groupBy": [
+            "country_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_distinct_values_counter_func",
+          "includeValues": false
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
       }
     ]
   }
