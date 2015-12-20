@@ -8,9 +8,6 @@ import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements Model {
-	public static final String MODEL_TYPE = "category_rarity_model";
-	private static final long serialVersionUID = 1683497340140662427L;
-
 	private RarityScorer occurrencesHistogram;
 
 	public CategoryRarityModel(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
