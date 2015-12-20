@@ -1078,20 +1078,22 @@ public class RarityScorerTest {
 		printAnomalousUsersRatios(scenariosInfo, logNumOfEventsToUsersStatistics);
 
 		// assert stuff
-		int totalAnomalousUsers = 0;
-		for (Map.Entry<Integer, UsersStatistics> entry : logNumOfEventsToUsersStatistics.entrySet()) {
-			totalAnomalousUsers += entry.getValue().getNumOfAnomalousUsers();
-		}
+		int totalAnomalousUsers = getTotalAnomalousUsers(logNumOfEventsToUsersStatistics);
 		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
 	}
 
+	private Integer getTotalAnomalousUsers(Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics) {
+		return logNumOfEventsToUsersStatistics.entrySet().stream()
+				.map((entry) -> entry.getValue().getNumOfAnomalousUsers())
+				.reduce((numOfAnomalousUsers1, numOfAnomalousUsers2) -> numOfAnomalousUsers1 + numOfAnomalousUsers2)
+				.get();
+	}
+
 	private void printAnomalousUsersRatios(ScenariosInfo scenariosInfo, Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics) {
-		int totalAnomalousUsers = 0;
 		println(String.format("\n%s: <anomalous users / <total users> -> followed by a list of the anomalous users", StringUtils.rightPad("<number of events>", 20)));
 		for (Map.Entry<Integer, UsersStatistics> entry : logNumOfEventsToUsersStatistics.entrySet()) {
 			Integer logNumOfEvents = entry.getKey();
 			UsersStatistics usersStatistics = entry.getValue();
-			totalAnomalousUsers += usersStatistics.getNumOfAnomalousUsers();
 			String logNumOfEventsRange = (int) Math.pow(10, logNumOfEvents) + " - " + (int) Math.pow(10, logNumOfEvents + 1);
 			println(String.format("%s: %3d%%   %-6d / %-6d anomalous users",
 					StringUtils.rightPad(logNumOfEventsRange, 20),
@@ -1102,7 +1104,7 @@ public class RarityScorerTest {
 				println(String.format("\t%-6d: %s", e.getValue(), e.getKey()));
 			}
 		}
-		println(String.format("\ntotal %d / %d anomalous users", totalAnomalousUsers, scenariosInfo.size()));
+		println(String.format("\ntotal %d / %d anomalous users", getTotalAnomalousUsers(logNumOfEventsToUsersStatistics), scenariosInfo.size()));
 	}
 
 	private static <T> List<Map.Entry<T, Integer>> sortMapByValues(Map<T, Integer> m) {
