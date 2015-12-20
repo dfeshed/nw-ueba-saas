@@ -6,8 +6,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -254,29 +252,29 @@ public class RarityScorerTest {
 	 *************************************************************************************
 	 *************************************************************************************/
 
-	private static final boolean PRINT_GRAPHS = true;
+	private static final boolean PRINT_GRAPHS = false;
 
-	private boolean printingOffOverride = false;
+	private static boolean printingOffOverride = false;
 
-	private void turnOffPrinting() {
+	private static void turnOffPrinting() {
 		printingOffOverride = true;
 	}
 
-	private void revertPrinting() {
+	private static void revertPrinting() {
 		printingOffOverride = false;
 	}
 
-	private void print(String msg) {
+	private static void print(String msg) {
 		if (PRINT_GRAPHS && !printingOffOverride) {
 			System.out.print(msg);
 		}
 	}
 
-	private void println(String msg) {
+	private static void println(String msg) {
 		print(msg + "\n");
 	}
 
-	private void println() {
+	private static void println() {
 		println("");
 	}
 
@@ -796,6 +794,69 @@ public class RarityScorerTest {
 		}
 	}
 
+	private static class ScenarioStats {
+		private Map<String, FeatureStats> featureTofeatureStats;
+		private List<ScoredFeature> featureValueAndScores;
+		private int numOfProcessedEvents;
+
+		public ScenarioStats() {
+			featureTofeatureStats = new HashMap<>();
+			featureValueAndScores = new ArrayList<>();
+			numOfProcessedEvents = 0;
+		}
+
+		public void addEventInfo(long eventTime, String feature, Double score, boolean isScoreInteresting) {
+			numOfProcessedEvents++;
+			FeatureStats featureStats = featureTofeatureStats.get(feature);
+			if (featureStats == null) {
+				featureStats = new FeatureStats();
+				featureTofeatureStats.put(feature, featureStats);
+			}
+			featureStats.addEventInfo(eventTime, numOfProcessedEvents);
+			if (isScoreInteresting) {
+				featureValueAndScores.add(new ScoredFeature(feature, score));
+			}
+		}
+
+		public void print() {
+			if (featureValueAndScores.isEmpty()) {
+				return;
+			}
+
+			println("first time events:");
+			for (FeatureStats featureStats : featureTofeatureStats.values()) {
+				String date = getFormattedDate(featureStats.firstEventTime);
+				println(String.format("\t#%-8d %s", featureStats.firstEventIndex, date));
+			}
+		}
+	}
+
+	private static class FeatureStats {
+		public Long firstEventTime;
+		private int firstEventIndex;
+		public Long lastEventTime;
+		private int lastEventIndex;
+
+		public FeatureStats() {
+			firstEventTime = null;
+			lastEventTime = null;
+		}
+
+		public void addEventInfo(long eventTime, int eventIndex) {
+			if (firstEventTime == null) {
+				firstEventTime = eventTime;
+				firstEventIndex = eventIndex;
+				lastEventTime = eventTime;
+				lastEventIndex = eventIndex;
+			} else {
+				firstEventTime = Math.min(firstEventTime, eventTime);
+				firstEventIndex = Math.min(firstEventIndex, eventIndex);
+				lastEventTime = Math.max(lastEventTime, eventTime);
+				lastEventIndex = Math.max(lastEventIndex, eventIndex);
+			}
+		}
+	}
+
 	/**
 	 * Run a real data scenario.
 	 * The first 90% of the events won't be scored (they are only used for building the model).
@@ -803,30 +864,24 @@ public class RarityScorerTest {
 	 * @param minDate events occurring before this time won't be scored.
 	 * @param minInterestingScore scores smaller than this number are considered not interesting, and won't be included in the result.
 	 * @param printContextInfo if true, context info will be printed (aids in understanding the result scores).
-	 * @return a list of all the events which got high scores. The list is ordered chronologically.
+	 * @return statistics about the result of running the scenario.
 	 * @throws IOException
 	 */
-	private List<ScoredFeature> runRealScenario(String filePath, int minDate, int minInterestingScore, boolean printContextInfo) throws IOException {
+	private ScenarioStats runRealScenario(String filePath, int minDate, int minInterestingScore, boolean printContextInfo) throws IOException {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
-		List<ScoredFeature> featureValueAndScores = new ArrayList<>();
-		List<Pair<Integer, Long>> firstTimeEventsIndexAndTime = new ArrayList<>();
-		int processedEvents = 0;
+		ScenarioStats scenarioStats = new ScenarioStats();
 		for (final TestEventsBatch eventsBatch : readEventsFromCsv(filePath)) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
-				processedEvents++;
 				Integer eventFeatureCount = featureValueToCountMap.get(eventsBatch.normalized_dst_machine);
 				if (eventFeatureCount == null) {
 					eventFeatureCount = 0;
-					firstTimeEventsIndexAndTime.add(new ImmutablePair<>(processedEvents, eventsBatch.time_bucket));
 				}
-				Double score = null;
-				if (eventsBatch.time_bucket >= minDate) {
-					score = calcScore(0, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
-				}
-				if (score != null && score > minInterestingScore) {
-					featureValueAndScores.add(new ScoredFeature(eventsBatch.normalized_dst_machine, score));
+				Double score = calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
+				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
+				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.normalized_dst_machine, score, isScoreInteresting);
+				if (isScoreInteresting) {
 					if (printContextInfo) {
 						printEvent(eventsBatch.time_bucket, eventsBatch.normalized_dst_machine, score, featureValueToCountMap);
 					}
@@ -834,22 +889,13 @@ public class RarityScorerTest {
 				featureValueToCountMap.put(eventsBatch.normalized_dst_machine, eventFeatureCount + 1);
 			}
 		}
-		if (printContextInfo && !featureValueAndScores.isEmpty()) {
-			println("first time events:");
-			if (firstTimeEventsIndexAndTime.isEmpty()) {
-				println("\t(none)");
-			} else {
-				for (Pair<Integer, Long> firstTimeEventIndexAndTime : firstTimeEventsIndexAndTime) {
-					String date = getFormattedDate(firstTimeEventIndexAndTime.getRight());
-					println(String.format("\t#%-8d %s", firstTimeEventIndexAndTime.getLeft(), date));
-				}
-			}
+		if (printContextInfo) {
+			scenarioStats.print();
 		}
-
-		return featureValueAndScores;
+		return scenarioStats;
 	}
 
-	private String getFormattedDate(long date) {
+	private static String getFormattedDate(long date) {
 		return new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(new Date(TimestampUtils.convertToMilliSeconds(date)));
 	}
 
@@ -909,8 +955,8 @@ public class RarityScorerTest {
 		if (PRINT_GRAPHS == false) {
 			return;
 		}
-		List<ScoredFeature> featureValueAndScores = runRealScenario(filePath, minDate, minInterestingScore, true);
-		printRealScenarioGraph(filePath.substring(0, filePath.indexOf('/')), featureValueAndScores);
+		ScenarioStats scenarioStats = runRealScenario(filePath, minDate, minInterestingScore, true);
+		printRealScenarioGraph(filePath.substring(0, filePath.indexOf('/')), scenarioStats.featureValueAndScores);
 	}
 
 	public static final String REAL_SCENARIOS_SSH_SRC_MACHINE_PATH = "ssh-src-machine";
@@ -998,10 +1044,12 @@ public class RarityScorerTest {
 
 		// run all the scenarios and create some statistics:
 		Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics = new HashMap<>();
+		Map<ScenarioInfo, ScenarioStats> scenarioToStats = new HashMap<>(scenariosInfo.size());
 		for (int i = 0; i < scenariosInfo.size(); i++) {
 			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
 			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
-			List<ScoredFeature> featureValueAndScores = runRealScenario(scenarioInfo.filePath, minDate, 50, true);
+			ScenarioStats scenarioStats = runRealScenario(scenarioInfo.filePath, minDate, 50, true);
+			scenarioToStats.put(scenarioInfo, scenarioStats);
 
 			int logNumOfEvents = (int) (Math.log(scenarioInfo.numOfEvents) / Math.log(10));
 			UsersStatistics usersStatistics = logNumOfEventsToUsersStatistics.get(logNumOfEvents);
@@ -1009,32 +1057,42 @@ public class RarityScorerTest {
 				usersStatistics = new UsersStatistics();
 				logNumOfEventsToUsersStatistics.put(logNumOfEvents, usersStatistics);
 			}
-			if (!featureValueAndScores.isEmpty()) {
+			if (!scenarioStats.featureValueAndScores.isEmpty()) {
 				usersStatistics.anomalousUserScenarioToNumOfEvents.put(scenarioInfo.filePath, scenarioInfo.numOfEvents);
 			} else {
 				usersStatistics.numOfRegularUsers++;
 			}
 		}
 
-		// analyze the results:
-		println(String.format("\n%s: <anomalous users / <total users> -> followed by a list of the anomalous users", StringUtils.rightPad("<number of events>", 20)));
+		// print interesting stuff about the results:
+		printAnomalousUsersRatios(scenariosInfo, logNumOfEventsToUsersStatistics);
+
+		// assert stuff
 		int totalAnomalousUsers = 0;
+		for (Map.Entry<Integer, UsersStatistics> entry : logNumOfEventsToUsersStatistics.entrySet()) {
+			totalAnomalousUsers += entry.getValue().getNumOfAnomalousUsers();
+		}
+		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
+	}
+
+	private void printAnomalousUsersRatios(ScenariosInfo scenariosInfo, Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics) {
+		int totalAnomalousUsers = 0;
+		println(String.format("\n%s: <anomalous users / <total users> -> followed by a list of the anomalous users", StringUtils.rightPad("<number of events>", 20)));
 		for (Map.Entry<Integer, UsersStatistics> entry : logNumOfEventsToUsersStatistics.entrySet()) {
 			Integer logNumOfEvents = entry.getKey();
 			UsersStatistics usersStatistics = entry.getValue();
+			totalAnomalousUsers += usersStatistics.getNumOfAnomalousUsers();
 			String logNumOfEventsRange = (int) Math.pow(10, logNumOfEvents) + " - " + (int) Math.pow(10, logNumOfEvents + 1);
 			println(String.format("%s: %3d%%   %-6d / %-6d anomalous users",
 					StringUtils.rightPad(logNumOfEventsRange, 20),
 					100 * usersStatistics.getNumOfAnomalousUsers() / (usersStatistics.getNumOfRegularUsers() + usersStatistics.getNumOfAnomalousUsers()),
 					usersStatistics.getNumOfAnomalousUsers(),
 					usersStatistics.numOfRegularUsers + usersStatistics.getNumOfAnomalousUsers()));
-			totalAnomalousUsers += usersStatistics.getNumOfAnomalousUsers();
 			for (Map.Entry<String, Integer> e : sortMapByValues(usersStatistics.anomalousUserScenarioToNumOfEvents)) {
 				println(String.format("\t%-6d: %s", e.getValue(), e.getKey()));
 			}
 		}
 		println(String.format("\ntotal %d / %d anomalous users", totalAnomalousUsers, scenariosInfo.size()));
-		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
 	}
 
 	private static <T> List<Map.Entry<T, Integer>> sortMapByValues(Map<T, Integer> m) {
