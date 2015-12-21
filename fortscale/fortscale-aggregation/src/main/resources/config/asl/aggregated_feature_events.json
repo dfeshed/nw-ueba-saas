@@ -1031,7 +1031,7 @@
         }
       },
       {
-        "name": "has_high_score_date_time_events_amt_daily",
+        "name": "highest_score_over_date_time_events_amt_daily",
         "type": "P",
         "bucketConfName": "normalized_username_amt_daily",
         "numberOfBuckets": 1,
@@ -1040,16 +1040,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_date_time_events_amt_hourly",
+        "name": "highest_score_over_date_time_events_amt_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_amt_hourly",
         "numberOfBuckets": 1,
@@ -1058,16 +1058,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "distinct_number_of_high_score_action_code_events_amt_daily",
+        "name": "sum_of_highest_scores_over_action_code_events_amt_daily",
         "type": "P",
         "bucketConfName": "normalized_username_amt_daily",
         "numberOfBuckets": 1,
@@ -1076,17 +1076,17 @@
         "anomalyType": "action_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "high_score_action_code_histogram"
+          "pick": [
+            "action_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
+          "type": "aggr_feature_map_values_max_sum_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_high_score_action_code_events_amt_hourly",
+        "name": "sum_of_highest_scores_over_action_code_events_amt_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_amt_hourly",
         "numberOfBuckets": 1,
@@ -1095,17 +1095,17 @@
         "anomalyType": "action_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "high_score_action_code_histogram"
+          "pick": [
+            "action_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
+          "type": "aggr_feature_map_values_max_sum_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_high_score_source_machine_events_amt_daily",
+        "name": "sum_of_highest_scores_over_source_machine_events_amt_daily",
         "type": "P",
         "bucketConfName": "normalized_username_amt_daily",
         "numberOfBuckets": 1,
@@ -1114,17 +1114,17 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "high_score_source_machine_histogram"
+          "pick": [
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
+          "type": "aggr_feature_map_values_max_sum_func",
           "includeValues": true
         }
       },
       {
-        "name": "distinct_number_of_high_score_source_machine_events_amt_hourly",
+        "name": "sum_of_highest_scores_over_source_machine_events_amt_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_amt_hourly",
         "numberOfBuckets": 1,
@@ -1133,12 +1133,12 @@
         "anomalyType": "source_machine",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "high_score_source_machine_histogram"
+          "pick": [
+            "source_machine_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
+          "type": "aggr_feature_map_values_max_sum_func",
           "includeValues": true
         }
       }

@@ -540,26 +540,28 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_source_machine_histogram",
+          "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"]
+            "groupBy": ["normalized_src_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "high_score_action_code_histogram",
+          "name": "action_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["action_code"]
+            "groupBy": ["action_code"],
+            "maximize": ["action_code_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.action_code_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "yid_histogram",
@@ -615,26 +617,28 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_source_machine_histogram",
+          "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"]
+            "groupBy": ["normalized_src_machine"],
+            "maximize": ["normalized_src_machine_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.normalized_src_machine_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "groupBy": [],
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "high_score_action_code_histogram",
+          "name": "action_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["action_code"]
+            "groupBy": ["action_code"],
+            "maximize": ["action_code_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.action_code_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
           "name": "yid_histogram",
