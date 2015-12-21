@@ -19,7 +19,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(NewGDSconfigurationJob.class);
 
-	private ConfigurationParam dataSourceName;
+	private ConfigurationParam dataSourceNameParam;
 	private ConfigurationParam dataSourceType;
 	private ConfigurationParam dataFelds;
 	private ConfigurationParam enrichFelds;
@@ -34,6 +34,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private ConfigurationService computerTaggingTaskService;
 	private ConfigurationService geoLocationTaskService;
 	private ConfigurationService userMongoUpdateTaskService;
+	private String dataSourceName;
 
 
 	//TODO - Generate this auto from the entities  properties
@@ -70,7 +71,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		System.out.println("Please enter the new data source name: ");
 		String dataSourceNameString = br.readLine();
-		this.dataSourceName = new ConfigurationParam("dataSourceName",false,dataSourceNameString);
+		this.dataSourceNameParam = new ConfigurationParam("dataSourceName",false,dataSourceNameString);
+		dataSourceName = this.dataSourceNameParam.getParamValue();
 
 
 		System.out.println(String.format("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ",dataSourceName));
@@ -113,7 +115,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		String result = "";
 		String line ="";
 
-		paramsMap.put(this.dataSourceName.getParamName(),this.dataSourceName);
+		paramsMap.put(this.dataSourceName,this.dataSourceNameParam);
 		paramsMap.put(this.dataSourceType.getParamName(),this.dataSourceType);
 
 
