@@ -112,7 +112,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
         }
         catch (Exception e)
         {
-            logger.error("There was an exception during execution - {} ",e.getMessage());
+            logger.error("There was an exception during execution - {} ",e.getMessage()!=null ? e.getMessage() : e.getCause().getMessage());
             return false;
         }
 

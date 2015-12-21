@@ -115,7 +115,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		String result = "";
 		String line ="";
 
-		paramsMap.put(this.dataSourceName,this.dataSourceNameParam);
+		paramsMap.put(this.dataSourceNameParam.getParamName(),this.dataSourceNameParam);
 		paramsMap.put(this.dataSourceType.getParamName(),this.dataSourceType);
 
 
