@@ -8,10 +8,7 @@ import fortscale.aggregation.feature.FeatureStringValue;
 import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -81,6 +78,9 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
     }
 
     private List<String> extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
+        if (groupByFeatureNames == null) {
+            return Collections.emptyList();
+        }
         List<String> groupByFeatureValues = new ArrayList<>(groupByFeatureNames.size());
         for (String groupByFeatureName : groupByFeatureNames) {
 			Feature featureToGroupBy = features.get(groupByFeatureName);

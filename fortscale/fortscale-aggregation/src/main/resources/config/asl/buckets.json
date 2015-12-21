@@ -70,7 +70,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -154,7 +153,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -230,7 +228,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -245,7 +242,6 @@
         {
           "name": "highest_score_auth_method",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["auth_method_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -313,7 +309,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -328,7 +323,6 @@
         {
           "name": "highest_score_auth_method",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["auth_method_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -381,7 +375,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -450,7 +443,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -491,6 +483,7 @@
             "sum": ["databucketScore"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+        },
         {
           "name": "data_bucket_histogram",
           "featureNamesMap": {
@@ -550,7 +543,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
@@ -627,7 +619,6 @@
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "groupBy": [],
             "maximize": ["date_time_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
