@@ -129,7 +129,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			additionalFieldsCSV = br.readLine();
 			spilitCSVtoMap(additionalFieldsCSV,additionalFieldsMap);
 
-			System.out.println("Does %s data source have additional score fields (y/n)");
+			System.out.println(String.format("Does %s data source have additional score fields (y/n)",dataSourceName));
 			result = br.readLine();
 			if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes")) {
 				additionalScoreFieldsCSV=",";
@@ -157,15 +157,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
-				System.out.println("Does %s source ip should be resolved (y/n)?");
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source ip should be geo located (y/n)?");
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source machine name should be normalized (y/n)?");
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
@@ -181,30 +181,30 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
-				System.out.println("Does %s source ip should be resolved (y/n)?");
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source ip should be geo located (y/n)?");
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source machine name should be normalized (y/n)?");
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
 
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
 
-				System.out.println("Does %s target ip should be resolved (y/n)?");
+				System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s target ip should be geo located (y/n)?");
+				System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s target machine name should be normalized (y/n)?");
+				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
@@ -218,29 +218,29 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
-				System.out.println("Does %s source ip should be resolved (y/n)?");
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source ip should be geo located (y/n)?");
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s source machine name should be normalized (y/n)?");
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
 
-				System.out.println("Does %s target ip should be resolved (y/n)?");
+				System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s target ip should be geo located (y/n)?");
+				System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 
-				System.out.println("Does %s target machine name should be normalized (y/n)?");
+				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
 

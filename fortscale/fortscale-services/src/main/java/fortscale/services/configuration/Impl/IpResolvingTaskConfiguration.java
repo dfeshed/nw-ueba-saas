@@ -44,65 +44,73 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 
 	@Override
 	public Boolean Configure() throws Exception {
-		String line = "";
-		Boolean restrictToAD = configurationParams.get("restrictToAD").getParamFlag();
-		Boolean shortNameUsage = configurationParams.get("shortNameUsage").getParamFlag();
-		Boolean removeLastDotUsage = configurationParams.get("removeLastDotUsage").getParamFlag();
-		Boolean dropOnFailUsage = configurationParams.get("dropOnFailUsage").getParamFlag();
-		Boolean overrideIpWithHostNameUsage = configurationParams.get("overrideIpWithHostNameUsage").getParamFlag();
-		String ipField = configurationParams.get("ipField").getParamValue();
-		String hostField = configurationParams.get("host").getParamValue();
+        try {
+            String line = "";
+            Boolean restrictToAD = configurationParams.get("restrictToAD").getParamFlag();
+            Boolean shortNameUsage = configurationParams.get("shortNameUsage").getParamFlag();
+            Boolean removeLastDotUsage = configurationParams.get("removeLastDotUsage").getParamFlag();
+            Boolean dropOnFailUsage = configurationParams.get("dropOnFailUsage").getParamFlag();
+            Boolean overrideIpWithHostNameUsage = configurationParams.get("overrideIpWithHostNameUsage").getParamFlag();
+            String ipField = configurationParams.get("ipField").getParamValue();
+            String hostField = configurationParams.get("host").getParamValue();
 
-		mandatoryConfiguration();
+            mandatoryConfiguration();
 
-		//partition field name  (today we use for all the username)
-		line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName,dataSourceName);
-		writeLineToFile(line, fileWriterToConfigure, true);
+            //partition field name  (today we use for all the username)
+            line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
-		//ip field
-		line = String.format("%s.%s_%s.ip.field=%s", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName,ipField);
-		writeLineToFile(line, fileWriterToConfigure, true);
+            //ip field
+            line = String.format("%s.%s_%s.ip.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, ipField);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
-		//hostname
-		line = String.format("%s.%s_%s.host.field=%s",FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName,hostField);
-		writeLineToFile(line, fileWriterToConfigure, true);
+            //hostname
+            line = String.format("%s.%s_%s.host.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hostField);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
-		//time stamp
-		line = String.format("%s.%s_%s.timestamp.field=${impala.data.%s.table.field.epochtime}",FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName,dataSourceName);
-		writeLineToFile(line, fileWriterToConfigure, true);
-
-
-		//restric to AD
-
-		line = String.format("%s.%s_%s.restrictToADName=%s", FORTSCALE_CONFIGURATION_PREFIX ,dataSourceName,taskName, restrictToAD.toString());
-		writeLineToFile(line, fileWriterToConfigure, true);
-
-		//short name
-
-		line = String.format("%s.%s_%s.shortName=%s", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName, shortNameUsage.toString());
-		writeLineToFile(line, fileWriterToConfigure, true);
-
-		//Remove last Dot
-
-		line = String.format("%s.%s_%s.isRemoveLastDot=%s", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName, removeLastDotUsage.toString());
-		writeLineToFile(line, fileWriterToConfigure, true);
-
-		//Drop When Fail
-
-		line = String.format("%s.%s_%s.dropWhenFail=%s", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName, taskName,dropOnFailUsage.toString());
-		writeLineToFile(line, fileWriterToConfigure, true);
+            //time stamp
+            line = String.format("%s.%s_%s.timestamp.field=${impala.data.%s.table.field.epochtime}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
 
-		//Override IP with Hostname
+            //restric to AD
 
-		line = String.format("%s.%s_%s.overrideIPWithHostname=%s", FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,taskName, overrideIpWithHostNameUsage.toString());
-		writeLineToFile(line, fileWriterToConfigure, true);
+            line = String.format("%s.%s_%s.restrictToADName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, restrictToAD.toString());
+            writeLineToFile(line, fileWriterToConfigure, true);
 
-		writeLineToFile("\n", fileWriterToConfigure, true);
-		writeLineToFile("#############", fileWriterToConfigure, true);
+            //short name
+
+            line = String.format("%s.%s_%s.shortName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, shortNameUsage.toString());
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Remove last Dot
+
+            line = String.format("%s.%s_%s.isRemoveLastDot=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, removeLastDotUsage.toString());
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Drop When Fail
+
+            line = String.format("%s.%s_%s.dropWhenFail=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dropOnFailUsage.toString());
+            writeLineToFile(line, fileWriterToConfigure, true);
 
 
-		fileWriterToConfigure.flush();
+            //Override IP with Hostname
+
+            line = String.format("%s.%s_%s.overrideIPWithHostname=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, overrideIpWithHostNameUsage.toString());
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            writeLineToFile("\n", fileWriterToConfigure, true);
+            writeLineToFile("#############", fileWriterToConfigure, true);
+
+
+            fileWriterToConfigure.flush();
+        }
+
+        catch (Exception e)
+        {
+            logger.error("There was an exception during execution - {} ",e.getMessage());
+            return false;
+        }
 
 
 		return true;

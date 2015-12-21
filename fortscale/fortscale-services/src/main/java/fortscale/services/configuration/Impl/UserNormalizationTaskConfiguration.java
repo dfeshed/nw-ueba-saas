@@ -46,60 +46,66 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 	@Override
 	public Boolean Configure() throws Exception {
 
-		String line = "";
-        String userNameField = configurationParams.get("userNameField").getParamValue();
-        String domainField = configurationParams.get("domainFieldName").getParamValue();
-        String domainValue = configurationParams.get("domainValue").getParamValue();
-        String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
-        String normalizeServiceName = configurationParams.get("normalizeSservieName").getParamValue();
-        String updateOnly = configurationParams.get("updateOnlyFlag").getParamValue();
-		System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s",dataSourceName));
+        try {
+            String line = "";
+            String userNameField = configurationParams.get("userNameField").getParamValue();
+            String domainField = configurationParams.get("domainFieldName").getParamValue();
+            String domainValue = configurationParams.get("domainValue").getParamValue();
+            String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
+            String normalizeServiceName = configurationParams.get("normalizeSservieName").getParamValue();
+            String updateOnly = configurationParams.get("updateOnlyFlag").getParamValue();
+            System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s", dataSourceName));
 
-		fileWriterToConfigure.write("\n");
-		fileWriterToConfigure.write("\n");
-
-
-		mandatoryConfiguration();
+            fileWriterToConfigure.write("\n");
+            fileWriterToConfigure.write("\n");
 
 
-        //User name field configuration
-        line = String.format("%s.%s_%s.username.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,userNameField);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        //Domain field name
-        line = String.format("%s.%s_%s.domain.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,domainField);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        //Domain value
-        line = String.format("%s.%s_%s.domain.fake=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,domainValue);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        //Normalized user name value
-        line = String.format("%s.%s_%s.normalizedusername.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,normalizedUserNameField);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        //Partition Field Name
-        //TODO - TOday its user name for all cases , if it will be change need to put it out to configuration
-        line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,dataSourceName);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        //Service name
-        line = String.format("%s.%s_%s.normalization.service=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,normalizeServiceName);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        line = String.format("%s.%s_%s.updateOnly=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,updateOnly);
-        writeLineToFile(line, fileWriterToConfigure, true);
-
-        line = String.format("%s.%s_%s.classifier=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,dataSourceName);
-        writeLineToFile(line, fileWriterToConfigure, true);
+            mandatoryConfiguration();
 
 
+            //User name field configuration
+            line = String.format("%s.%s_%s.username.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, userNameField);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
-        writeLineToFile("\n", fileWriterToConfigure, true);
-        writeLineToFile("#############", fileWriterToConfigure, true);
+            //Domain field name
+            line = String.format("%s.%s_%s.domain.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, domainField);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Domain value
+            line = String.format("%s.%s_%s.domain.fake=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, domainValue);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Normalized user name value
+            line = String.format("%s.%s_%s.normalizedusername.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, normalizedUserNameField);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Partition Field Name
+            //TODO - TOday its user name for all cases , if it will be change need to put it out to configuration
+            line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            //Service name
+            line = String.format("%s.%s_%s.normalization.service=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, normalizeServiceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            line = String.format("%s.%s_%s.updateOnly=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, updateOnly);
+            writeLineToFile(line, fileWriterToConfigure, true);
+
+            line = String.format("%s.%s_%s.classifier=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
 
 
-		fileWriterToConfigure.flush();
+            writeLineToFile("\n", fileWriterToConfigure, true);
+            writeLineToFile("#############", fileWriterToConfigure, true);
+
+
+            fileWriterToConfigure.flush();
+        }
+        catch (Exception e)
+        {
+            logger.error("There was an exception during execution - {} ",e.getMessage());
+            return false;
+        }
 
 		return true;
 
