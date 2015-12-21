@@ -132,7 +132,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		{
 			additionalFieldsCSV=",";
 			System.out.println(String.format("Please enter %s data source additional fields csv style  (i.e url STRING,application STRING  etc): ",dataSourceName));
-			additionalFieldsCSV = br.readLine();
+			additionalFieldsCSV += br.readLine();
 			spilitCSVtoMap(additionalFieldsCSV,additionalFieldsMap);
 
 			System.out.println(String.format("Does %s data source have additional score fields (y/n)",dataSourceName));
@@ -140,7 +140,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes")) {
 				additionalScoreFieldsCSV=",";
 				System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ",dataSourceName));
-				additionalScoreFieldsCSV = br.readLine();
+				additionalScoreFieldsCSV += br.readLine();
 				spilitCSVtoMap(additionalScoreFieldsCSV,additionalScoreFieldsMap);
 			}
 		}
