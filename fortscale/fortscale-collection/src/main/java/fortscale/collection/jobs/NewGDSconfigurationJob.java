@@ -697,7 +697,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Do you want to update last activity for any raw that came and not only successed events (y/n)? "));
 				brResult =br.readLine().toLowerCase();
 				Boolean anyRow = brResult.equals("y") || brResult.equals("yes");
-				paramsMap.put("anyRow", new ConfigurationParam("anyRow", true, ""));
+				paramsMap.put("anyRow", new ConfigurationParam("anyRow", anyRow, ""));
 
 
 				if (!anyRow) {
@@ -762,7 +762,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
+			logger.error("There was an exception during the execution - {}",e.getMessage()!= null ? e.getMessage() : e.getCause().getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 	}

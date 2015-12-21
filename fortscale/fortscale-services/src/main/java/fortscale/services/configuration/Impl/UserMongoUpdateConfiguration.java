@@ -42,9 +42,14 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 	public Boolean Configure() throws Exception {
         try {
             String line = "";
+            String statusFieldName="";
+            String successValue="";
             Boolean anyRow = configurationParams.get("anyRow").getParamFlag();
-            String statusFieldName = configurationParams.get("statusFieldName").getParamValue();
-            String successValue = configurationParams.get("sucessValu").getParamValue();
+
+            if (!anyRow) {
+                 statusFieldName = configurationParams.get("statusFieldName").getParamValue();
+                 successValue = configurationParams.get("sucessValue").getParamValue();
+            }
             String userNameField = configurationParams.get("userNameField").getParamValue();
 
             mandatoryConfiguration();
