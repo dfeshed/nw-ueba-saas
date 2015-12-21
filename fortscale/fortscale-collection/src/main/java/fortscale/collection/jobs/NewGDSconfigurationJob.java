@@ -38,6 +38,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	private ConfigurationService computerTaggingTaskService;
 	private ConfigurationService geoLocationTaskService;
 	private ConfigurationService userMongoUpdateTaskService;
+    private ConfigurationService hdfsTaskService;
 	private String dataSourceName;
 
 
@@ -435,7 +436,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			executionResult = userNormalizationTaskService.Init();
 			if (executionResult)
 				executionResult = userNormalizationTaskService.Configure();
-			userNormalizationTaskService.Done();
+
 
 
             //Configure the taarget user name normalization
@@ -459,9 +460,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
 
                 executionResult = userNormalizationTaskService.Configure();
-                userNormalizationTaskService.Done();
+
 
             }
+
+            userNormalizationTaskService.Done();
 
 
 			if (executionResult) {
@@ -522,7 +525,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = ipResolvingTaskService.Init();
 				if (executionResult)
 					executionResult = ipResolvingTaskService.Configure();
-				ipResolvingTaskService.Done();
+
 
 				if (executionResult)
 					paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask_sourceIp"));
@@ -540,12 +543,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 				if (ipResolvingTaskService.Init())
 					executionResult = ipResolvingTaskService.Configure();
-				ipResolvingTaskService.Done();
+
 
 				paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask_targetIp"));
 
 
 			}
+
+            ipResolvingTaskService.Done();
 			System.out.println(String.format("End configure the IP resolving task for %s", dataSourceName));
 
 
@@ -576,12 +581,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = computerTaggingTaskService.Init();
 				if (executionResult)
 					executionResult = computerTaggingTaskService.Configure();
-				computerTaggingTaskService.Done();
+
 
 				if(executionResult) {
 					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "ComputerTaggingClusteringTask"));
 					System.out.println(String.format("End configure the Computer Tagging task for %s", dataSourceName));
 				}
+
+
+                computerTaggingTaskService.Done();
 
 			}
 
@@ -615,7 +623,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = geoLocationTaskService.Init();
 				if (executionResult)
 					executionResult = geoLocationTaskService.Configure();
-				geoLocationTaskService.Done();
+
 
 				if (executionResult)
 				{
@@ -649,12 +657,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = geoLocationTaskService.Init();
 				if (executionResult)
 					executionResult = geoLocationTaskService.Configure();
-				geoLocationTaskService.Done();
+
 
 				if (executionResult)
 				{
 					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "VpnEnrichTask"));
 				}
+
+                geoLocationTaskService.Done();
 
 			}
 			System.out.println(String.format("End configure the GeoLocation task for %s", dataSourceName));
@@ -721,6 +731,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "enriched_HDFSWriterStreamTask"));
 
 				}
+
+                hdfsTaskService = new HDFSWriteTaskConfiguration(paramsMap);
+                executionResult = hdfsTaskService.Init();
+                if (executionResult)
+                    executionResult = hdfsTaskService.Configure();
+                hdfsTaskService.Done();
 
 				System.out.println(String.format("End configure the HDFS write task for %s", dataSourceName));
 
