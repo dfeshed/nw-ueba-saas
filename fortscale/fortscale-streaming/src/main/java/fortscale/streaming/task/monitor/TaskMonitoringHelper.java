@@ -86,7 +86,7 @@ public class TaskMonitoringHelper {
             text = cause;
         }
         TaskMonitoringDTO node = getNode(key);
-        node.increaseCauseCount(cause);
+        node.increaseCauseCount(text);
 
     }
 
