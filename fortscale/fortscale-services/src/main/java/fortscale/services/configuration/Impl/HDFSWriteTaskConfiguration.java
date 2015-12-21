@@ -23,6 +23,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	public Boolean Init() {
 		super.Init();
 		Boolean result = false;
+		outPutTopicEntry = "output.topics";
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"hdfs-events-writer-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);

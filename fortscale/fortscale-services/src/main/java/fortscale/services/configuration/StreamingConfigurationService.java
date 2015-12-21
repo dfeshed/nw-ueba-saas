@@ -13,6 +13,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 	protected String lastState;
 	protected String outPutTopic;
 	protected String dataSourceName;
+	protected String outPutTopicEntry;
 
 	@Override
 	public Boolean Init() {
@@ -22,6 +23,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 		lastState  = configurationParams.get("lastState").getParamValue();
 		outPutTopic = configurationParams.get("outPutTopic").getParamValue();
 		dataSourceName = configurationParams.get("dataSourceName").getParamValue();
+		outPutTopicEntry = "output.topic";
 		return true;
 
 	}
@@ -56,7 +58,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 		if(!StringUtils.isBlank(outPutTopic)) {
 			//GDS general topology
 			if (topolegyResult) {
-				line = String.format("%s.%s_%s.output.topic=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, outPutTopic);
+				line = String.format("%s.%s_%s.%s=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,outPutTopicEntry,outPutTopic);
 				writeLineToFile(line, fileWriterToConfigure, true);
 			} else {
 

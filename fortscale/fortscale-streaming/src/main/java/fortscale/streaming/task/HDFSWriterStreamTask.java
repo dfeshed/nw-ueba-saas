@@ -107,8 +107,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			dataSourceToConfigsMap.get(configKey).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.output.topics", dsSettings))) {
-				writerConfiguration.outputTopics = getConfigStringList(config,
-						String.format("fortscale.events.entry.%s.output.topics", dsSettings));
+				writerConfiguration.outputTopics = getConfigStringList(config,String.format("fortscale.events.entry.%s.output.topics", dsSettings));
 			}
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.bdp.output.topics", dsSettings))) {
 				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
