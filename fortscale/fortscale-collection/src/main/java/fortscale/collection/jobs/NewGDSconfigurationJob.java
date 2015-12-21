@@ -160,7 +160,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
@@ -184,7 +184,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields", new ConfigurationParam("dataFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
@@ -221,7 +221,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));

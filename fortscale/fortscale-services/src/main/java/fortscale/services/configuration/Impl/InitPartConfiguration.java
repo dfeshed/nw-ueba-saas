@@ -77,7 +77,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Configure the data source list
-            line = String.format("fortscale.data.source=%s,%s", configurationParams.get("dataSourceLists"), dataSourceName);
+            line = String.format("fortscale.data.source=%s,%s", configurationParams.get("dataSourceLists").getParamValue(), dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             line = String.format("########################################### %s ########################################################", dataSourceName);
@@ -293,6 +293,9 @@ public class InitPartConfiguration extends ConfigurationService {
 
             }
 
+            writeLineToFile("\n", fileWriterToConfigure, true);
+            writeLineToFile("\n", fileWriterToConfigure, true);
+            
             line = String.format("%s.EventsJoiner.ttl=86400", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
