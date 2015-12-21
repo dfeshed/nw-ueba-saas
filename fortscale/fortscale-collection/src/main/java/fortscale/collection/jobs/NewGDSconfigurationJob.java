@@ -702,10 +702,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//USER MONGO UPDATE
 			if (executionResult) {
 
+
 				//User Mongo update task
 				System.out.println(String.format("Going to configure the UserMongoUpdate task for %s (i.e we use it for user last activity update) ", dataSourceName));
 
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("%s_UserMongoUpdateStreamTask",dataSourceName)));
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, ""));
 
 
 				//Status field value
@@ -745,13 +747,16 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//HDFS Write - for enrich
 				System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s  ", dataSourceName));
 
+                paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("enriched_HDFSWriterStreamTask")));
+
+
 				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-enriched-after-write"));
-				paramsMap.put("fieldList", new ConfigurationParam("fieldList",false,"${impala.enricheddata.%s.table.fields}"));
-				paramsMap.put("delimiter", new ConfigurationParam("delimiter",false,"${impala.enricheddata.%s.table.delimiter}"));
-				paramsMap.put("tableName", new ConfigurationParam("tableName",false,"${impala.enricheddata.%s.table.name} "));
-				paramsMap.put("hdfsPath", new ConfigurationParam("hdfsPath",false,"${hdfs.user.enricheddata.%s.path}"));
-				paramsMap.put("fileName", new ConfigurationParam("fileName",false,"${hdfs.enricheddata.%s.file.name}"));
-				paramsMap.put("partitionStrategy", new ConfigurationParam("partitionStrategy",false,"${impala.enricheddata.%s.table.partition.type}"));
+				paramsMap.put("fieldList", new ConfigurationParam("fieldList",false,String.format("${impala.enricheddata.%s.table.fields}",dataSourceName)));
+				paramsMap.put("delimiter", new ConfigurationParam("delimiter",false,String.format("${impala.enricheddata.%s.table.delimiter}",dataSourceName)));
+				paramsMap.put("tableName", new ConfigurationParam("tableName",false,String.format("${impala.enricheddata.%s.table.name} ",dataSourceName)));
+				paramsMap.put("hdfsPath", new ConfigurationParam("hdfsPath",false,String.format("${hdfs.user.enricheddata.%s.path}",dataSourceName)));
+				paramsMap.put("fileName", new ConfigurationParam("fileName",false,String.format("${hdfs.enricheddata.%s.file.name}",dataSourceName)));
+				paramsMap.put("partitionStrategy", new ConfigurationParam("partitionStrategy",false,String.format("${impala.enricheddata.%s.table.partition.type}",dataSourceName)));
 				paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,"fortscale.utils.hdfs.split.DailyFileSplitStrategy"));
 
 

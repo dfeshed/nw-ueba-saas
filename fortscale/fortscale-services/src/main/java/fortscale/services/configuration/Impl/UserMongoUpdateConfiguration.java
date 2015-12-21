@@ -50,7 +50,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
                  statusFieldName = configurationParams.get("statusFieldName").getParamValue();
                  successValue = configurationParams.get("successValue").getParamValue();
             }
-            String userNameField = configurationParams.get("userNameField").getParamValue();
+            //String userNameField = configurationParams.get("userNameField").getParamValue();
 
             mandatoryConfiguration();
 
@@ -71,7 +71,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
             }
 
             //logusername
-            line = String.format("%s.%s_%s.logusername.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, userNameField);
+            line = String.format("%s.%s_%s.logusername.field=username", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //normalized_username

@@ -105,29 +105,29 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 
             //Key-Value store configuration
 
-            line = String.format("stores.hdfs-write-%sEnrich.factory=org.apache.samza.storage.kv.KeyValueStorageEngineFactory", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.factory=org.apache.samza.storage.kv.KeyValueStorageEngineFactory", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.changelog=kafka.hdfs-write-crmsfEnrich-changelog", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.changelog=kafka.hdfs-write-crmsfEnrich-changelog", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.key.serde=string", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.key.serde=string", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.msg.serde=timebarrier", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.msg.serde=timebarrier", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("# This property is set to the number of key/value pairs that should be kept in this in-memory buffer, per task instance. The number cannot be greater than stores.*.object.cache.size.");
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.write.batch.size=25", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.write.batch.size=25", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("# This property determines the number of objects to keep in Samza's cache, per task instance. This same cache is also used for write buffering (see stores.*.write.batch.size). A value of 0 disables all caching and batching.");
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.object.cache.size=100", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.object.cache.size=100", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("# The size of LevelDB's block cache in bytes, per container. Note that this is an off-heap memory allocation, so the container's total memory use is the maximum JVM heap size plus the size of this cache.");
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.container.cache.size.bytes=2000", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.container.cache.size.bytes=2000", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("# The amount of memory (in bytes) that LevelDB uses for buffering writes before they are written to disk.");
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%sEnrich.container.write.buffer.size.bytes=1000", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.container.write.buffer.size.bytes=1000", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
 
