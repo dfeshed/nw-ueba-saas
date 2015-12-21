@@ -48,7 +48,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 
             if (!anyRow) {
                  statusFieldName = configurationParams.get("statusFieldName").getParamValue();
-                 successValue = configurationParams.get("sucessValue").getParamValue();
+                 successValue = configurationParams.get("successValue").getParamValue();
             }
             String userNameField = configurationParams.get("userNameField").getParamValue();
 
