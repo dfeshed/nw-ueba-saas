@@ -4,7 +4,6 @@ import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +13,6 @@ import java.util.Map;
 /**
  * Created by idanp on 12/20/2015.
  */
-@Service
 public class InitPartConfiguration extends ConfigurationService {
 
 	@Value("${fortscale.data.source}")
