@@ -73,7 +73,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		this.dataSourceName = new ConfigurationParam("dataSourceName",false,dataSourceNameString);
 
 
-		System.out.println("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ");
+		System.out.println(String.format("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ",dataSourceName));
 		System.out.println("         base                    - user , time  ");
 		System.out.println("         access_event            - user , time, source (resolving,geo location)  ");
 		System.out.println("         auth_event              - user , time, source (resolving,geo location) , target (resolving,geo location)  ");
@@ -118,21 +118,21 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 		//Additional Fields
-		System.out.println("Does %s data source have additional fields (y/n)");
+		System.out.println(String.format("Does %s data source have additional fields (y/n)",dataSourceName));
 		result = br.readLine();
 		if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"))
 		{
 			additionalFieldsCSV=",";
-			System.out.println("Please enter %s data source additional fields csv style  (i.e url STRING,application STRING  etc): ");
-			additionalFieldsCSV += br.readLine();
+			System.out.println(String.format("Please enter %s data source additional fields csv style  (i.e url STRING,application STRING  etc): ",dataSourceName));
+			additionalFieldsCSV = br.readLine();
 			spilitCSVtoMap(additionalFieldsCSV,additionalFieldsMap);
 
 			System.out.println("Does %s data source have additional score fields (y/n)");
 			result = br.readLine();
 			if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes")) {
 				additionalScoreFieldsCSV=",";
-				System.out.println("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ");
-				additionalScoreFieldsCSV += br.readLine();
+				System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ",dataSourceName));
+				additionalScoreFieldsCSV = br.readLine();
 				spilitCSVtoMap(additionalScoreFieldsCSV,additionalScoreFieldsMap);
 			}
 		}
