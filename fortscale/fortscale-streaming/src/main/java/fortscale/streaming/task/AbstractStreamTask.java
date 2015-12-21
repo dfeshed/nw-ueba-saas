@@ -26,7 +26,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
 
-	//Monitor error messages
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
 			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
