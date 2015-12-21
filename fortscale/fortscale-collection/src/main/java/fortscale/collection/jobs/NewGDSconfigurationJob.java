@@ -6,6 +6,7 @@ import fortscale.services.configuration.Impl.*;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import java.io.*;
@@ -18,6 +19,9 @@ import java.util.Map;
 public class NewGDSconfigurationJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(NewGDSconfigurationJob.class);
+
+    @Value("${fortscale.data.source}")
+    private String currentDataSources;
 
 	private ConfigurationParam dataSourceNameParam;
 	private ConfigurationParam dataSourceType;
@@ -117,6 +121,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		paramsMap.put(this.dataSourceNameParam.getParamName(),this.dataSourceNameParam);
 		paramsMap.put(this.dataSourceType.getParamName(),this.dataSourceType);
+        paramsMap.put("dataSourceLists", new ConfigurationParam("dataSourceLists",false,currentDataSources));
 
 
 		//Additional Fields

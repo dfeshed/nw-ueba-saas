@@ -15,8 +15,7 @@ import java.util.Map;
  */
 public class InitPartConfiguration extends ConfigurationService {
 
-	@Value("${fortscale.data.source}")
-	private String currentDataSources;
+
 
 	private String secondFileToConfigurePath; //Will represent the streaming overriding file
 	private File secoundFileToConfigure;
@@ -78,7 +77,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Configure the data source list
-            line = String.format("fortscale.data.source=%s,%s", currentDataSources, dataSourceName);
+            line = String.format("fortscale.data.source=%s,%s", configurationParams.get("dataSourceLists"), dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             line = String.format("########################################### %s ########################################################", dataSourceName);
