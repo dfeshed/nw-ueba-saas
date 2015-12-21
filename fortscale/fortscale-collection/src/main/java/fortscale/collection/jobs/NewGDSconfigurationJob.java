@@ -373,9 +373,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			paramsMap.put("lastState", new ConfigurationParam("lastState",false,"etl"));
             paramsMap.put("taskName",new ConfigurationParam("taskName",false,"UsernameNormalizationAndTaggingTask"));
 
+            System.out.println(String.format("Dose %s have target username to normalized (y/n) ?",dataSourceName));
+            brResult =br.readLine().toLowerCase();
+            Boolean targetNormalizationFlag = brResult.equals("y") || brResult.equals("yes");
+
 
             //in case there is a target user to be normalize also
-            if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+            if(targetNormalizationFlag)
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
+            else if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                 //in case there is machine to normalized and tag
             else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
@@ -424,6 +430,32 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			if (executionResult)
 				executionResult = userNormalizationTaskService.Configure();
 			userNormalizationTaskService.Done();
+
+
+            //Configure the taarget user name normalization
+            if(executionResult && targetNormalizationFlag)
+            {
+                System.out.println(String.format("Please enter the second username field to normalize :"));
+                brResult =br.readLine().toLowerCase();
+
+                paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,brResult));
+
+                //Domain field  - for the enrich part
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
+
+                //In case of fake domain - enter the actual domain value the PS want
+                paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+
+
+                System.out.println(String.format("Please enter the field that will contain the second normalized user name field to normalize :"));
+                brResult =br.readLine().toLowerCase();
+                //Normalized_username field
+                paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
+
+                executionResult = userNormalizationTaskService.Configure();
+                userNormalizationTaskService.Done();
+
+            }
 
 
 			if (executionResult) {
