@@ -728,7 +728,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//HDFS Write - for enrich
-				System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s (i.e we use it for user last activity update) ", dataSourceName));
+				System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s  ", dataSourceName));
 
 				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-enriched-after-write"));
 				paramsMap.put("fieldList", new ConfigurationParam("fieldList",false,"${impala.enricheddata.%s.table.fields}"));
