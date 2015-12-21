@@ -12,6 +12,7 @@ import fortscale.streaming.scorer.ScorerContext;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -111,7 +112,7 @@ public class EventsScoreStreamTaskService {
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new FilteredEventException(AbstractStreamTask.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
+			throw new FilteredEventException(MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
 		}
 
 		

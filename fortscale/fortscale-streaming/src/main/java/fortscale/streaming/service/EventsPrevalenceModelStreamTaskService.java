@@ -9,6 +9,7 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -139,7 +140,7 @@ public class EventsPrevalenceModelStreamTaskService {
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new FilteredEventException(AbstractStreamTask.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
+			throw new FilteredEventException(MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
 		}
 		
 		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);

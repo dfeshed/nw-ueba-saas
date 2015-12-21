@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.geoip.GeoIPInfo;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 
 public class VPNEventsFilterStreamTask extends EventsFilterStreamTask{
@@ -23,7 +24,7 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask{
 		// filter out vpn events with closed status
 		boolean closedEvnets=CLOSED.equals(message.get(STATUS_FIELD));
 		if (closedEvnets){//Message is filtered
-			taskMonitoringHelper.countNewFilteredEvents(super.extractDataSourceConfigKeySafe(message), CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(super.extractDataSourceConfigKeySafe(message), MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 		}
 		return !closedEvnets;
 	}

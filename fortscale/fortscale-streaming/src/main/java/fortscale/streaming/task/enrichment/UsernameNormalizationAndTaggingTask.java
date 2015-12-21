@@ -12,6 +12,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -162,14 +163,14 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
-				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 				return;
 			}
 
 			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
 
 			if (usernameNormalizationConfig == null){
-				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			}
 
 			// get the normalized username from input record
@@ -180,9 +181,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				String username = convertToString(message.get(usernameNormalizationConfig.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
-					String filteredEventLabel = "Message does not contains username in field " +
-							usernameNormalizationConfig.getUsernameField();
-					taskMonitoringHelper.countNewFilteredEvents(configKey,filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
 				}
 
@@ -204,8 +203,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
-					String filteredEventLabel = "User " + username + "does not exists";
-					taskMonitoringHelper.countNewFilteredEvents(configKey, filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);

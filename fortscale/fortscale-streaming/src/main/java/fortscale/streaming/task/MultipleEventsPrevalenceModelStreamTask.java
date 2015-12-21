@@ -4,6 +4,7 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +70,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 		JSONObject message = parseJsonMessage(envelope);
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
 		}
 
@@ -77,7 +78,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 
 		if (eventsPrevalenceModelStreamTaskManager == null)
 		{
-			taskMonitoringHelper.countNewFilteredEvents(configKey, CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
 		}
 
