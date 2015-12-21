@@ -30,7 +30,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 		super.Init();
 		Boolean result = false;
 		try {
-			this.fileToConfigurePath = this.root+"fortscale/streaming/config/username-normalization-tagging-task.properties";
+			this.fileToConfigurePath =this.fileToConfigurePath+"username-normalization-tagging-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;

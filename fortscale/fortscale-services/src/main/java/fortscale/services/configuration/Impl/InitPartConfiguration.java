@@ -295,7 +295,7 @@ public class InitPartConfiguration extends ConfigurationService {
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);
-            
+
             line = String.format("%s.EventsJoiner.ttl=86400", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
