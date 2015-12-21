@@ -79,8 +79,10 @@ public class TaskMonitoringHelper {
     public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause){
 
         //Get the text from messages file.
-        String text = messages.getProperty(cause);
-
+        String text = null;
+        if (messages != null) {
+            text = messages.getProperty(cause);
+        }
         //If not exists in messages file use the original cause
         if (StringUtils.isBlank(text)){
             text = cause;
