@@ -16,12 +16,14 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
 
 
-	public UserNormalizationTaskConfiguration(Map<String, ConfigurationParam> params) {
+	public UserNormalizationTaskConfiguration() {
 
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(UserNormalizationTaskConfiguration.class);
 
 	}
+
+
 
 
 	@Override

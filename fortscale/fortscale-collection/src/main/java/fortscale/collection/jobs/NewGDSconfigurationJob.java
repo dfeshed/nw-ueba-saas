@@ -63,6 +63,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
         logger.debug("Initializing Configuration GDS Job");
 		additionalFieldsMap = new LinkedHashMap<>();
 		additionalScoreFieldsMap = new LinkedHashMap<>();
+        ipResolvingTaskService = new IpResolvingTaskConfiguration();
+        initConfigurationService = new InitPartConfiguration();
+        userNormalizationTaskService = new UserNormalizationTaskConfiguration();
+        computerTaggingTaskService = new ComputerTaggingClassConfiguration();
+        geoLocationTaskService = new GeoLocationConfiguration();
+        userMongoUpdateTaskService = new UserMongoUpdateConfiguration();
+        hdfsTaskService = new HDFSWriteTaskConfiguration();
 
 
         logger.debug("Job Initialized");
@@ -303,8 +310,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
             //Service configuration
-			initConfigurationService = new InitPartConfiguration(paramsMap);
 
+
+            initConfigurationService.setConfigurationParams(paramsMap);
 			if (initConfigurationService.Init())
 				executionResult = initConfigurationService.Configure();
 
@@ -431,8 +439,8 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             }
 
 			//Service configuration
-			userNormalizationTaskService = new UserNormalizationTaskConfiguration(paramsMap);
 
+            userNormalizationTaskService.setConfigurationParams(paramsMap);
 			executionResult = userNormalizationTaskService.Init();
 			if (executionResult)
 				executionResult = userNormalizationTaskService.Configure();
@@ -459,6 +467,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 //Normalized_username field
                 paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
 
+                userNormalizationTaskService.setConfigurationParams(paramsMap);
                 executionResult = userNormalizationTaskService.Configure();
 
 
@@ -521,7 +530,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//Service configuration
-				ipResolvingTaskService = new IpResolvingTaskConfiguration(paramsMap);
+				ipResolvingTaskService.setConfigurationParams(paramsMap);
 				executionResult = ipResolvingTaskService.Init();
 				if (executionResult)
 					executionResult = ipResolvingTaskService.Configure();
@@ -542,7 +551,11 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("host", new ConfigurationParam("host", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
 
 				if (ipResolvingTaskService.Init())
-					executionResult = ipResolvingTaskService.Configure();
+                {
+                    ipResolvingTaskService.setConfigurationParams(paramsMap);
+                    executionResult = ipResolvingTaskService.Configure();
+                }
+
 
 
 				paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask_targetIp"));
@@ -577,7 +590,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("dstHost", new ConfigurationParam("dstHost", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
 
 				//Service configuration
-				computerTaggingTaskService = new ComputerTaggingClassConfiguration(paramsMap);
+				computerTaggingTaskService.setConfigurationParams(paramsMap);
 				executionResult = computerTaggingTaskService.Init();
 				if (executionResult)
 					executionResult = computerTaggingTaskService.Configure();
@@ -619,7 +632,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				//Service configuration
-				geoLocationTaskService = new GeoLocationConfiguration(paramsMap);
+				geoLocationTaskService.setConfigurationParams(paramsMap);
 				executionResult = geoLocationTaskService.Init();
 				if (executionResult)
 					executionResult = geoLocationTaskService.Configure();
@@ -654,6 +667,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("doDataBuckets", new ConfigurationParam("doDataBuckets",false,""));
 				paramsMap.put("doGeoLocation", new ConfigurationParam("doGeoLocation",true,""));
 
+                geoLocationTaskService.setConfigurationParams(paramsMap);
 				executionResult = geoLocationTaskService.Init();
 				if (executionResult)
 					executionResult = geoLocationTaskService.Configure();
@@ -701,7 +715,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				}
 
 
-				userMongoUpdateTaskService = new UserMongoUpdateConfiguration(paramsMap);
+				userMongoUpdateTaskService.setConfigurationParams(paramsMap);
 				executionResult = userMongoUpdateTaskService.Init();
 				if (executionResult)
 					executionResult = userMongoUpdateTaskService.Configure();
@@ -732,7 +746,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 				}
 
-                hdfsTaskService = new HDFSWriteTaskConfiguration(paramsMap);
+               hdfsTaskService.setConfigurationParams(paramsMap);
                 executionResult = hdfsTaskService.Init();
                 if (executionResult)
                     executionResult = hdfsTaskService.Configure();

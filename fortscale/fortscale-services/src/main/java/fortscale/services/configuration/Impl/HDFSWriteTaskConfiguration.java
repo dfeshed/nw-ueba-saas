@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 
-	public HDFSWriteTaskConfiguration (Map<String, ConfigurationParam> params)
+	public HDFSWriteTaskConfiguration ()
 	{
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(HDFSWriteTaskConfiguration.class);
 	}
 

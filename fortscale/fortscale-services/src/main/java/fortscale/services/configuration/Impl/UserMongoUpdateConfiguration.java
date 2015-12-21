@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class UserMongoUpdateConfiguration  extends StreamingConfigurationService {
 
-	public UserMongoUpdateConfiguration (Map<String, ConfigurationParam> params)
+	public UserMongoUpdateConfiguration ()
 	{
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(UserMongoUpdateConfiguration.class);
 	}
 

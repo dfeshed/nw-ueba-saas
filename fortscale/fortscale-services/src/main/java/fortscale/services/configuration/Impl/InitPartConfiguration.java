@@ -26,12 +26,12 @@ public class InitPartConfiguration extends ConfigurationService {
 
 
 
-	public InitPartConfiguration(Map<String,ConfigurationParam> params)
+	public InitPartConfiguration()
 	{
 		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
 		this.fileToConfigurePath = this.root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
 		this.secondFileToConfigurePath = root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties";
-		this.configurationParams = params;
+
 
 
 	}

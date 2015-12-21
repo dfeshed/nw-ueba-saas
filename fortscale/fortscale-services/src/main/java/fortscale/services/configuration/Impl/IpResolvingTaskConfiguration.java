@@ -16,9 +16,9 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 
 
 
-	public IpResolvingTaskConfiguration (Map<String, ConfigurationParam> params)
+	public IpResolvingTaskConfiguration ()
 	{
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(IpResolvingTaskConfiguration.class);
 	}
 

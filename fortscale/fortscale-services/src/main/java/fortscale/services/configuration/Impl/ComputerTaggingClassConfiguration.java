@@ -14,9 +14,9 @@ import java.util.Map;
 public class ComputerTaggingClassConfiguration extends StreamingConfigurationService {
 
 
-	public ComputerTaggingClassConfiguration (Map<String, ConfigurationParam> params)
+	public ComputerTaggingClassConfiguration ()
 	{
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(ComputerTaggingClassConfiguration.class);
 	}
 

@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class GeoLocationConfiguration extends StreamingConfigurationService {
 
-	public GeoLocationConfiguration (Map<String, ConfigurationParam> params)
+	public GeoLocationConfiguration ()
 	{
-		this.configurationParams = params;
+
 		logger = LoggerFactory.getLogger(GeoLocationConfiguration.class);
 	}
 
