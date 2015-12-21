@@ -450,6 +450,21 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Configure the taarget user name normalization
             if(executionResult && targetNormalizationFlag)
             {
+                if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+                    paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+                    //in case there is machine to normalized and tag
+                else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+                    paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                    //in case there is ip to geo locate
+                else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+                    paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+                else
+                    paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
+
+                paramsMap.put("lastState", new ConfigurationParam("lastState",false,"UsernameNormalizationAndTaggingTask"));
+                paramsMap.put("taskName",new ConfigurationParam("taskName",false,"UsernameNormalizationAndTaggingTask_target"));
+
+
                 System.out.println(String.format("Please enter the second username field to normalize :"));
                 brResult =br.readLine().toLowerCase();
 
