@@ -17,7 +17,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 
 	@Override
 	public Boolean Init() {
-		this.fileToConfigurePath = this.root+"fortscale/streaming/config/";
+		this.fileToConfigurePath = this.root+"/fortscale/streaming/config/";
 		taskName = configurationParams.get("taskName").getParamValue();
 		topolegyResult = configurationParams.get("topologyFlag").getParamFlag();
 		lastState  = configurationParams.get("lastState").getParamValue();
