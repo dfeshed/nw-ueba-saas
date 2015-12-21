@@ -180,7 +180,7 @@ public class InitPartConfiguration extends ConfigurationService {
 		line=String.format("impala.%s.have.enrich=true",dataSourceName);
 		writeLineToFile(line,fileWriterToConfigure,true);
 
-		line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,configurationParams.get("enrichFelds").getParamValue());
+		line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,configurationParams.get("enrichFields").getParamValue());
 		writeLineToFile(line,fileWriterToConfigure,true);
 		writeLineToFile(line,secondFileWriterToConfigure,true);
 

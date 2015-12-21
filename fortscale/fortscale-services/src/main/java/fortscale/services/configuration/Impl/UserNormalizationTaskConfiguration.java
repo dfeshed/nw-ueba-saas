@@ -1,8 +1,7 @@
 package fortscale.services.configuration.Impl;
 
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.ConfigurationService;
-import org.apache.commons.lang.StringUtils;
+import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -12,9 +11,9 @@ import java.util.Map;
 /**
  * Created by idanp on 12/20/2015.
  */
-public class UserNormalizationTaskConfiguration extends ConfigurationService {
+public class UserNormalizationTaskConfiguration extends StreamingConfigurationService {
 
-	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
+
 
 
 	public UserNormalizationTaskConfiguration(Map<String, ConfigurationParam> params) {
@@ -27,6 +26,8 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 
 	@Override
 	public Boolean Init() {
+
+		super.Init();
 		Boolean result = false;
 		try {
 			this.fileToConfigurePath = this.root+"fortscale/streaming/config/username-normalization-tagging-task.properties";
@@ -46,29 +47,20 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 	public Boolean Configure() throws Exception {
 
 		String line = "";
-		Boolean topolegyResult = configurationParams.get("topologyFlag").getParamFlag();
-		String lastState  = configurationParams.get("lastState").getParamValue();
-        String taskName = configurationParams.get("taskName").getParamValue();
-        String outPutTopic = configurationParams.get("outPutTopic").getParamValue();
         String userNameField = configurationParams.get("userNameField").getParamValue();
         String domainField = configurationParams.get("domainFieldName").getParamValue();
         String domainValue = configurationParams.get("domainValue").getParamValue();
         String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
         String normalizeServiceName = configurationParams.get("normalizeSservieName").getParamValue();
         String updateOnly = configurationParams.get("updateOnlyFlag").getParamValue();
-
-
-		String dataSourceName = configurationParams.get("dataSourceName").getParamValue();
 		System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s",dataSourceName));
 
 		fileWriterToConfigure.write("\n");
 		fileWriterToConfigure.write("\n");
 
 
-		line = String.format("# %s",dataSourceName);
-		writeLineToFile(line, fileWriterToConfigure, true);
+		mandatoryConfiguration();
 
-        configureTaskMandatoryConfiguration(fileWriterToConfigure,topolegyResult,taskName,lastState,outPutTopic);
 
         //User name field configuration
         line = String.format("%s.%s_%s.username.field=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,userNameField);
@@ -88,7 +80,7 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
 
         //Partition Field Name
         //TODO - TOday its user name for all cases , if it will be change need to put it out to configuration
-        line = String.format("%s.%s_%s.partition.field=username",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName);
+        line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,dataSourceName);
         writeLineToFile(line, fileWriterToConfigure, true);
 
         //Service name
@@ -106,39 +98,13 @@ public class UserNormalizationTaskConfiguration extends ConfigurationService {
         writeLineToFile("\n", fileWriterToConfigure, true);
         writeLineToFile("#############", fileWriterToConfigure, true);
 
+
+		fileWriterToConfigure.flush();
+
 		return true;
 
 	}
 
-	private void configureTaskMandatoryConfiguration(FileWriter taskPropertiesFileWriter ,Boolean topolegyResult, String name,String lastState,String outputTopic) throws Exception{
-		String line ="";
-		String dataSourceName = configurationParams.get("dataSourceName").getParamValue();
-		//name
-		line = String.format("%s.name.%s_%s=%s_%s",FORTSCALE_CONFIGURATION_PREFIX,dataSourceName,name,dataSourceName,name);
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-		//data source
-		line = String.format("%s.%s_%s.data.source=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,name, dataSourceName.toLowerCase());
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-		//last state
-		line = String.format("%s.%s_%s.last.state=%s",FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,name,lastState);
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-		if(!StringUtils.isBlank(outputTopic)) {
-			//GDS general topology
-			if (topolegyResult) {
-				line = String.format("%s.%s_%s.output.topic=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, name, outputTopic);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			} else {
-
-				System.out.println("Not supported yet via  this configuration tool ");
-				//TODO - Need to add the topic configuration  also for task.inputs and fortscale.events.entry.<dataSource>_UsernameNormalizationAndTaggingTask.output.topic
-
-			}
-		}
-	}
 
 
 }

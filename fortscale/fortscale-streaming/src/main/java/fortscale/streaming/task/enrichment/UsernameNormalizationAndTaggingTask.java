@@ -104,8 +104,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					configKey));
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
 							+ ".domain.fake", configKey)) : "";
-			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
-					+ ".normalizedusername.field",configKey));
+			String normalizedUsernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s"
+					+ ".normalizedusername.field",configKey),res);
 			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
 			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
