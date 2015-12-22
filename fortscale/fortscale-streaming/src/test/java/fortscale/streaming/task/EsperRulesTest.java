@@ -83,7 +83,7 @@ public class EsperRulesTest {
 		epService.getEPRuntime().sendEvent(entityEventLow);
 
 		EventBean result = listener.assertOneGetNewAndReset();
-		EPAssertionUtil.assertProps(result, new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Medium"});
+		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Medium" });
 
 
 		//Notification for user without tag should be ignored
@@ -378,7 +378,7 @@ public class EsperRulesTest {
 		epService.getEPRuntime().sendEvent(entityEventLow);
 		EventBean result = listener.assertOneGetNewAndReset();
 
-		EPAssertionUtil.assertProps(result, new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Low"});
+		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 	}
 
     /**
@@ -426,7 +426,33 @@ public class EsperRulesTest {
 
 	}
 
+    /**
+     * Test normal user rule on user without notification (other user have notification), and with tag which is not admin, executive or service.
+     * @throws Exception
+     */
+    @Test
+    public void testSmartEventWithCustomTaggedUserAndAdminAccountWithoutNotification() throws Exception{
 
+        EPStatement stmt = initSmartEventWithTaggedNonSuspiciousUserAccountWithoutNotification();
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+
+        stmt.addListener(listener);
+
+        EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
+        Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user2@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
+        List<String> userTags = new ArrayList<>();
+        userTags.add("test");
+        userTags.add("admin");
+        EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
+        epService.getEPRuntime().sendEvent(notification);
+        epService.getEPRuntime().sendEvent(entityTags);
+        epService.getEPRuntime().sendEvent(entityEventLow);
+        EventBean result = listener.assertOneGetNewAndReset();
+
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
+    }
 
 	/**
 	 * Test normal user rule on user without notification (other user have notification), and with tag which is not admin, executive or service.
