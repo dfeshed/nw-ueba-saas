@@ -16,6 +16,7 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -145,13 +146,12 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			JSONObject message = parseJsonMessage(envelope);
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
-				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 				return;
 			}
 			ComputerTaggingConfig config = configs.get(configKey);
 			if (configs == null) {
-				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
-
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 				return;
 			}
 
