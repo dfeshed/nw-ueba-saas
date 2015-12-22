@@ -261,8 +261,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message)) {
-				String errorMessage = String.format(MonitorMessaages.MessageFilter, filter.getName());
-				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), ": "+errorMessage);
+				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
 				return true;
 			}
 		}
