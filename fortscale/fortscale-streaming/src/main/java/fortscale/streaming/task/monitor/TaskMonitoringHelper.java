@@ -76,7 +76,7 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause){
+    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause, String... args){
 
         //Get the text from messages file.
         String text = null;
@@ -86,6 +86,9 @@ public class TaskMonitoringHelper {
         //If not exists in messages file use the original cause
         if (StringUtils.isBlank(text)){
             text = cause;
+        }
+        if (args!= null && args.length>0){
+            text = String.format(text,args);
         }
         TaskMonitoringDTO node = getNode(key);
         node.increaseCauseCount(text);
