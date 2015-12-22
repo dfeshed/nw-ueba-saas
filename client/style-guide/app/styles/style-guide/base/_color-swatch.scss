@@ -1,0 +1,15 @@
+.color-swatch {
+  display: inline-block;
+  margin: 5pt 5pt 5pt 0;
+
+  &__preview {
+    margin-bottom: 5pt;
+    height: 60pt;
+    min-width: 96pt;
+  }
+  &__caption {
+    padding: 5pt;
+    white-space: nowrap;
+    text-align: center;
+  }
+}

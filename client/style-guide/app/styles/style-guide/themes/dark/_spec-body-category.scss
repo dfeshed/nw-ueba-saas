@@ -1,0 +1,9 @@
+.#{$ns}dark {
+  .spec-body-category {
+    &__title {
+      color: $rsa-color-gray-l2;
+      font-size: 12pt;
+      text-transform: uppercase;
+    }
+  }
+}

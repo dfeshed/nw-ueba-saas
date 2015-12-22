@@ -1,0 +1,28 @@
+.#{$ns}dark {
+  .hbs-example {
+
+    &.no-snippet {
+    }
+
+    &__header {
+      color: rgba($rsa-color-white, 0.5);
+      font-size: 8.5pt;
+      background-color: rgba($rsa-color-black,.5);
+      margin-bottom: 1px;
+    }
+    &__btn {
+      text-indent: -1000px;
+
+      .svg-clipboard {
+        &__svg {
+          path {
+            fill: $rsa-color-gray-l2;
+          }
+        }
+      }
+    }
+    &__body {
+    }
+  }
+}
+

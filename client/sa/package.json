@@ -49,7 +49,7 @@
   },
   "ember-addon": {
     "paths": [
-      "lib/dashboard"
+      "../component-lib"
     ]
   }
 }

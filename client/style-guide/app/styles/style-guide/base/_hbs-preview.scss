@@ -1,0 +1,16 @@
+.hbs-preview {
+  padding: 10pt;
+
+  .for-hbs-preview-only {
+    position: static;
+    visibility: visible;
+  }
+}
+
+.for-hbs-preview-only {
+  position: fixed;
+  top: -1000px;
+  left: -1000px;
+  visibility: hidden;
+}
+

@@ -1,0 +1,15 @@
+{{#each model.categories as |category|}}
+    <section class="spec-nav__category">
+        <h3 class="spec-nav__category-title">
+            <a href="{{baseUrl}}#{{category.id}}" class="spec-nav__link">{{category.title}}</a>
+        </h3>
+        <ul class="spec-nav__members">
+          {{#each category.members as |member|}}
+              <li class="spec-nav__member">
+                  <a href="{{baseUrl}}#{{member.id}}" class="spec-nav__link">{{member.title}}</a>
+              </li>
+          {{/each}}
+        </ul>
+    </section>
+{{/each}}
+

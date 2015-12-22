@@ -1,0 +1,42 @@
+/**
+ * @file Font faces that can be used in font-family attributes.
+ * @assumes The URLs for these font binary files will be available in the consuming app's /assets/ subdirectory.
+ * To ensure that is true, this addon should supply the files (e.g., in /vendor/) and then this addon's index.js
+ * should copy those files into the consuming app's /assets/ subdir at build time.
+ */
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans'),
+         local('OpenSans'),
+         url('fonts/OpenSans-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'),
+         local('OpenSans'),
+         url('fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans'),
+         local('OpenSans'),
+         url('fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 800;
+    src: local('Open Sans'),
+         local('OpenSans'),
+         url('fonts/OpenSans-ExtraBold.ttf') format('truetype');
+}

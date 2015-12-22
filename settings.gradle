@@ -1,5 +1,6 @@
 include "client:sa"
-include "client:sa:lib/dashboard"
+include "client:component-lib"
+include "client:style-guide"
 include "server:common"
 include "server:investigation"
 include "server:threats"

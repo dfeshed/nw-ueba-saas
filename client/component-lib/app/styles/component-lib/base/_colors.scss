@@ -1,0 +1,274 @@
+/**
+ * @file Global list of named colors.
+ * These named colors can be used across RSA themes for consistency.
+ */
+
+$rsa-color-white: #fff;
+$rsa-color-black: #000;
+
+$rsa-color-gray-d3: #161616;
+$rsa-color-gray-d2: #212121;
+$rsa-color-gray-d1: #424242;
+$rsa-color-gray: #757575;
+$rsa-color-gray-l1: #BDBDBD;
+$rsa-color-gray-l2: #EEEEEE;
+$rsa-color-gray-l3: #FAFAFA;
+
+$rsa-color-blue-d2: #01579B;
+$rsa-color-blue-d1: #0288D1;
+$rsa-color-blue: #03A9F4;
+$rsa-color-blue-l1: #4FC3F7;
+$rsa-color-blue-l2: #B3E5FC;
+
+$rsa-color-green-d2: #33691E;
+$rsa-color-green-d1: #689F38;
+$rsa-color-green: #8BC34A;
+$rsa-color-green-l1: #AED581;
+$rsa-color-green-l2: #DCEDC8;
+
+$rsa-color-red-d2: #A60808;
+$rsa-color-red-d1: #C91818;
+$rsa-color-red: #EC2227;
+$rsa-color-red-l1: #E65C5C;
+$rsa-color-red-l2: #FFCCD1;
+
+$rsa-color-orange-d2: #BF360C;
+$rsa-color-orange-d1: #E64A19;
+$rsa-color-orange: #FF5722;
+$rsa-color-orange-l1: #FF8A65;
+$rsa-color-orange-l2: #FFCCBC;
+
+$rsa-color-amber-d2: #FF6F00;
+$rsa-color-amber-d1: #FFA000;
+$rsa-color-amber: #FFC107;
+$rsa-color-amber-l1: #FFD54F;
+$rsa-color-amber-l2: #FFECB3;
+
+/*
+@todo
+Can we write a loop that generates mixins for every color above?
+For example, suppose all the colors above are collated into a list.
+Then for each list color, generate a mixin who name is variable
+("<colorname>-bg"), and it sets the background-color to that variable.
+Similarly, a correpsonding mixin "<colorname>-fg") sets color: that variable.
+*/
+
+.rsa-bg-white {
+  background-color: $rsa-color-white;
+}
+.rsa-bg-black {
+  background-color: $rsa-color-black;
+}
+
+.rsa-bg-gray-d3 {
+  background-color: $rsa-color-gray-d3;
+}
+.rsa-bg-gray-d2 {
+  background-color: $rsa-color-gray-d2;
+}
+.rsa-bg-gray-d1 {
+  background-color: $rsa-color-gray-d1;
+}
+.rsa-bg-gray {
+  background-color: $rsa-color-gray;
+}
+.rsa-bg-gray-l1 {
+  background-color: $rsa-color-gray-l1;
+}
+.rsa-bg-gray-l2 {
+  background-color: $rsa-color-gray-l2;
+}
+.rsa-bg-gray-l3 {
+  background-color: $rsa-color-gray-l3;
+}
+
+.rsa-bg-blue-d2 {
+  background-color: $rsa-color-blue-d2;
+}
+.rsa-bg-blue-d1 {
+  background-color: $rsa-color-blue-d1;
+}
+.rsa-bg-blue {
+  background-color: $rsa-color-blue;
+}
+.rsa-bg-blue-l1 {
+  background-color: $rsa-color-blue-l1;
+}
+.rsa-bg-blue-l2 {
+  background-color: $rsa-color-blue-l2;
+}
+
+.rsa-bg-green-d2 {
+  background-color: $rsa-color-green-d2;
+}
+.rsa-bg-green-d1 {
+  background-color: $rsa-color-green-d1;
+}
+.rsa-bg-green {
+  background-color: $rsa-color-green;
+}
+.rsa-bg-green-l1 {
+  background-color: $rsa-color-green-l1;
+}
+.rsa-bg-green-l2 {
+  background-color: $rsa-color-green-l2;
+}
+
+.rsa-bg-red-d2 {
+  background-color: $rsa-color-red-d2;
+}
+.rsa-bg-red-d1 {
+  background-color: $rsa-color-red-d1;
+}
+.rsa-bg-red {
+  background-color: $rsa-color-red;
+}
+.rsa-bg-red-l1 {
+  background-color: $rsa-color-red-l1;
+}
+.rsa-bg-red-l2 {
+  background-color: $rsa-color-red-l2;
+}
+
+.rsa-bg-orange-d2 {
+  background-color: $rsa-color-orange-d2;
+}
+.rsa-bg-orange-d1 {
+  background-color: $rsa-color-orange-d1;
+}
+.rsa-bg-orange {
+  background-color: $rsa-color-orange;
+}
+.rsa-bg-orange-l1 {
+  background-color: $rsa-color-orange-l1;
+}
+.rsa-bg-orange-l2 {
+  background-color: $rsa-color-orange-l2;
+}
+
+.rsa-bg-amber-d2 {
+  background-color: $rsa-color-amber-d2;
+}
+.rsa-bg-amber-d1 {
+  background-color: $rsa-color-amber-d1;
+}
+.rsa-bg-amber {
+  background-color: $rsa-color-amber;
+}
+.rsa-bg-amber-l1 {
+  background-color: $rsa-color-amber-l1;
+}
+.rsa-bg-amber-l2 {
+  background-color: $rsa-color-amber-l2;
+}
+
+.rsa-fg-white {
+  background-color: $rsa-color-white;
+}
+.rsa-fg-black {
+  background-color: $rsa-color-black;
+}
+
+.rsa-fg-gray-d3 {
+  background-color: $rsa-color-gray-d3;
+}
+.rsa-fg-gray-d2 {
+  background-color: $rsa-color-gray-d2;
+}
+.rsa-fg-gray-d1 {
+  background-color: $rsa-color-gray-d1;
+}
+.rsa-fg-gray {
+  background-color: $rsa-color-gray;
+}
+.rsa-fg-gray-l1 {
+  background-color: $rsa-color-gray-l1;
+}
+.rsa-fg-gray-l2 {
+  background-color: $rsa-color-gray-l2;
+}
+.rsa-fg-gray-l3 {
+  background-color: $rsa-color-gray-l3;
+}
+
+.rsa-fg-blue-d2 {
+  background-color: $rsa-color-blue-d2;
+}
+.rsa-fg-blue-d1 {
+  background-color: $rsa-color-blue-d1;
+}
+.rsa-fg-blue {
+  background-color: $rsa-color-blue;
+}
+.rsa-fg-blue-l1 {
+  background-color: $rsa-color-blue-l1;
+}
+.rsa-fg-blue-l2 {
+  background-color: $rsa-color-blue-l2;
+}
+
+.rsa-fg-green-d2 {
+  background-color: $rsa-color-green-d2;
+}
+.rsa-fg-green-d1 {
+  background-color: $rsa-color-green-d1;
+}
+.rsa-fg-green {
+  background-color: $rsa-color-green;
+}
+.rsa-fg-green-l1 {
+  background-color: $rsa-color-green-l1;
+}
+.rsa-fg-green-l2 {
+  background-color: $rsa-color-green-l2;
+}
+
+.rsa-fg-red-d2 {
+  background-color: $rsa-color-red-d2;
+}
+.rsa-fg-red-d1 {
+  background-color: $rsa-color-red-d1;
+}
+.rsa-fg-red {
+  background-color: $rsa-color-red;
+}
+.rsa-fg-red-l1 {
+  background-color: $rsa-color-red-l1;
+}
+.rsa-fg-red-l2 {
+  background-color: $rsa-color-red-l2;
+}
+
+.rsa-fg-orange-d2 {
+  background-color: $rsa-color-orange-d2;
+}
+.rsa-fg-orange-d1 {
+  background-color: $rsa-color-orange-d1;
+}
+.rsa-fg-orange {
+  background-color: $rsa-color-orange;
+}
+.rsa-fg-orange-l1 {
+  background-color: $rsa-color-orange-l1;
+}
+.rsa-fg-orange-l2 {
+  background-color: $rsa-color-orange-l2;
+}
+
+.rsa-fg-amber-d2 {
+  background-color: $rsa-color-amber-d2;
+}
+.rsa-fg-amber-d1 {
+  background-color: $rsa-color-amber-d1;
+}
+.rsa-fg-amber {
+  background-color: $rsa-color-amber;
+}
+.rsa-fg-amber-l1 {
+  background-color: $rsa-color-amber-l1;
+}
+.rsa-fg-amber-l2 {
+  background-color: $rsa-color-amber-l2;
+}
+
+

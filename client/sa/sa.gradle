@@ -2,7 +2,7 @@ ext {
     createRPM = true
 }
 
-task emberGenerateShim(type: NodeTask, dependsOn: [":client:sa:lib/dashboard:emberBuild"]) {
+task emberGenerateShim(type: NodeTask, dependsOn: [":client:component-lib:emberBuild"]) {
     script = ember
     args = ["build", "generate", "ember-cli-es5-shim", "--silent"]
 }
@@ -43,4 +43,4 @@ afterEvaluate {
 }
 
 test.dependsOn(["emberGenerateShim"])
-emberBuild.dependsOn("fixtured", ":client:sa:lib/dashboard:emberBuild")
+emberBuild.dependsOn("fixtured", ":client:component-lib:emberBuild")

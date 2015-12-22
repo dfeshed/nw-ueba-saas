@@ -1,0 +1,7 @@
+.#{$ns}light.#{$ns}backdrop,
+.#{$ns}light .#{$ns}backdrop {
+  background-color: $light-base-bg-color;
+  background-image: $light-base-bg-image;
+  background-repeat: no-repeat;
+  background-position: left top;
+}

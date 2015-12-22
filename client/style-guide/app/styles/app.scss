@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+/* Imports all styles from component-lib addon. */
+
+@import 'component-lib/manifest';
+
+/* Imports styles specific for this style-guide app. */
+
+@import 'style-guide/manifest';

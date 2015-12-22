@@ -1,0 +1,9 @@
+.#{$ns}light {
+  .hbs-preview {
+    border-bottom: 1px solid $rsa-color-gray-l1;
+    color: $rsa-color-black;
+  }
+  .no-snippet .hbs-preview {
+    border: 0;
+  }
+}
