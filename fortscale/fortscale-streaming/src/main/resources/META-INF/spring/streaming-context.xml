@@ -22,18 +22,5 @@
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain" />
 
-	<bean id="streamMessage" class="fortscale.utils.spring.SpringPropertiesUtil">
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-		<property name="locations">
-			<list>
-				<value>classpath:META-INF/messages-streaming.properties</value>
-			</list>
-		</property>
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="localOverride" value="true" />
-	</bean>
-
-
-
 
 </beans>
