@@ -84,28 +84,27 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 			return null;
 		}
 
-		long upperTsLimit = (graceTimeInMins > 0) ? ts + graceTimeInMins * 60 * 1000 : ts;
-
 		// see if we have a matching event in cache
 		PxGridIPEvent pxGridEvent = cache.get(ip);
-		if (pxGridEvent != null && pxGridEvent.getTimestampepoch() <= upperTsLimit && pxGridEvent.getExpiration() >= ts) {
-			// return cached event
-			return pxGridEvent;
+		if (pxGridEvent != null) {
+			if (checkForIpValidity(ts, pxGridEvent.getTimestampepoch())) {
+				// return cached event
+				return pxGridEvent;
+			}
 		}
 
 		// if the event was not in cache than look for it in the repository
-		List<PxGridIPEvent> pxGridEvents = pxGridEventRepository.findByIpaddressAndTimestampepochLessThan(ip, upperTsLimit, new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+		List<PxGridIPEvent> pxGridEvents = pxGridEventRepository.findByIpaddressAndTimestampepochLessThan(ip, ts, new PageRequest(0, 1, Direction.DESC, PxGridIPEvent.TIMESTAMP_EPOCH_FIELD_NAME));
 		if (!pxGridEvents.isEmpty()) {
 			// check if the ip assignment is not expired
 			pxGridEvent = pxGridEvents.get(0);
-			// also add the event to the cache for next time
-			cache.put(ip, pxGridEvent);
-			return pxGridEvent;
+			if (checkForIpValidity(ts, pxGridEvent.getTimestampepoch())) {
+				// also add the event to the cache for next time
+				cache.put(ip, pxGridEvent);
+				return pxGridEvent;
+			}
 		}
 
-		//take the expiration date as the lower limit of the black list period only if the given event is previous to the given event ts
-		long lowerLimitTs = pxGridEvent != null && (pxGridEvent.getExpiration() < ts) ? pxGridEvent.getExpiration() : 0;
-		addToBlackList(ip, lowerLimitTs, upperTsLimit);
 		return null;
 	}
 
@@ -171,5 +170,16 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 		} else {
 			cache.put(fromRepository.getIpaddress(), fromRepository);
 		}
+	}
+
+	/**
+	 * Check if a given timestamp is within a timeframe, considering the grace time
+	 * @param eventTime
+	 * @param startTimeToCompare
+	 * @return
+	 */
+	private boolean checkForIpValidity(long eventTime, long startTimeToCompare){
+		long endTimeToCompare = startTimeToCompare +  graceTimeInMins * 60 * 1000;
+		return (startTimeToCompare <= eventTime && eventTime <= endTimeToCompare);
 	}
 }
