@@ -1,14 +1,11 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created by idanp on 12/20/2015.
@@ -312,8 +309,13 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
 
 
-            line = "read" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/processread" + dataSourceName.toUpperCase() + ".conf";
+            line = "read" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/parse" + dataSourceName.toUpperCase() + ".conf";
             writeLineToFile(line, fileWriterToConfigure, true);
+
+			line = "enrich" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/enrichment/read" + dataSourceName.toUpperCase() + "_enrich.conf";
+			writeLineToFile(line, fileWriterToConfigure, true);
+
+
 
             secondFileWriterToConfigure.flush();
             fileWriterToConfigure.flush();
