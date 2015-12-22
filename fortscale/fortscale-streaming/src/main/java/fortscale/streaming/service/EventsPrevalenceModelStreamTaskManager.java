@@ -1,5 +1,7 @@
 package fortscale.streaming.service;
 
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
@@ -30,8 +32,8 @@ public class EventsPrevalenceModelStreamTaskManager {
 		if (!skipModel) {
 			eventsPrevalenceModelStreamTaskService.process(envelope, collector, coordinator);
 		}
-		
-		if(!skipScore){
+
+		if (!skipScore) {
 			eventsScoreStreamTaskService.process(envelope, collector, coordinator);
 		}
 	}
