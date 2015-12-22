@@ -6,10 +6,12 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressContainer;
 import fortscale.streaming.service.ipresolving.utils.FsIpAddressUtils;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.management.monitor.Monitor;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +25,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
  */
 public class EventsIpResolvingService extends StreamingTaskConfigurationService<EventResolvingConfig> {
 
-    private static final String HOST_IS_EMPTY_LABEL = "Host is empty";
 
     private IpToHostnameResolver resolver;
     private Set<FsIpAddressContainer> reservedIpAddersses = null;
@@ -121,9 +122,9 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 
         if (shouldFilterEvent){
             if (key!=null) {
-                taskMonitoringHelper.countNewFilteredEvents(key, HOST_IS_EMPTY_LABEL);
+                taskMonitoringHelper.countNewFilteredEvents(key, MonitorMessaages.HOST_IS_EMPTY_LABEL);
             } else { //Fallback handler - should not arrive here
-                taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, HOST_IS_EMPTY_LABEL);
+                taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.HOST_IS_EMPTY_LABEL);
             }
 
             return true;
