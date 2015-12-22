@@ -1,19 +1,12 @@
 package fortscale.aggregation.feature.event;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-
-import fortscale.utils.time.TimestampUtils;
+import java.io.Serializable;
+import java.util.*;
 
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrEvent implements Serializable {
@@ -23,10 +16,11 @@ public class AggrEvent implements Serializable {
     public static final String EVENT_FILED_DATA_SOURCE = "data_source";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
-    public static final String EVENT_FIELD_AGGREFGATED_FEATURE_VALUE = "aggregated_feature_value";
+    public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     public static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
     public static final String EVENT_FIELD_CONTEXT = "context";
+    public static final String EVENT_FIELD_CONTEXT_ID = "contextId";
     public static final String EVENT_FIELD_CREATION_EPOCHTIME = "creation_epochtime";
     public static final String EVENT_FIELD_CREATION_DATE_TIME = "creation_date_time";
     public static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
@@ -53,7 +47,7 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_AGGREGATED_FEATURE_NAME)
     String aggregatedFeatureName;
 
-    @Field(EVENT_FIELD_AGGREFGATED_FEATURE_VALUE)
+    @Field(EVENT_FIELD_AGGREGATED_FEATURE_VALUE)
     Double aggregatedFeatureValue;
 
     @Field(EVENT_FIELD_AGGREGATED_FEATURE_INFO)
@@ -64,6 +58,9 @@ public class AggrEvent implements Serializable {
 
     @Field(EVENT_FIELD_CONTEXT)
     Map<String, String> context;
+
+    @Field(EVENT_FIELD_CONTEXT_ID)
+    String contextId;
 
     @Field(EVENT_FIELD_CREATION_EPOCHTIME)
     Long creationEpochTime;
@@ -93,9 +90,14 @@ public class AggrEvent implements Serializable {
 
     public AggrEvent() {}
 
-    public AggrEvent(String dataSource, String featureType, String aggregatedFeatureName, Double aggregatedFeatureValue, Map<String, Object> aggregatedFeatureInfo, String bucketConfName, Map<String, String> context, 
-    		Long creationEpochTimeSeconds, Long startTimeUnixSeconds, Long endTimeUnixSeconds, List<String> dataSources, Double score) {
-    	this.dataSource = dataSource;
+    public AggrEvent(
+            String dataSource, String featureType, String aggregatedFeatureName,
+            Double aggregatedFeatureValue, Map<String, Object> aggregatedFeatureInfo,
+            String bucketConfName, Map<String, String> context, String contextId,
+            Long creationEpochTimeSeconds, Long startTimeUnixSeconds, Long endTimeUnixSeconds,
+            List<String> dataSources, Double score) {
+
+        this.dataSource = dataSource;
         this.featureType = featureType;
         this.aggregatedFeatureName = aggregatedFeatureName;
         this.aggregatedFeatureValue = aggregatedFeatureValue;
@@ -103,6 +105,7 @@ public class AggrEvent implements Serializable {
         
         this.bucketConfName = bucketConfName;
         this.context = context;
+        this.contextId = contextId;
         this.creationEpochTime = creationEpochTimeSeconds;
         creationDateTime = new Date(TimestampUtils.convertToMilliSeconds(creationEpochTimeSeconds));
         this.startTimeUnix  = startTimeUnixSeconds;
@@ -150,6 +153,10 @@ public class AggrEvent implements Serializable {
 		return creationEpochTime;
 	}
 
+	public Date getStartTime() {
+		return startTime;
+	}
+
 	public Long getStartTimeUnix() {
 		return startTimeUnix;
 	}
@@ -160,6 +167,10 @@ public class AggrEvent implements Serializable {
 
     public Map<String, String> getContext() {
         return context;
+    }
+
+    public String getContextId() {
+        return contextId;
     }
 
     public Map<String, String> getContext(List<String> contextFields) {
