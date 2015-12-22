@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 public class DiscreteModelBuilder implements IModelBuilder {
-    public static final String MODEL_BUILDER_TYPE = "discrete";
     private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
