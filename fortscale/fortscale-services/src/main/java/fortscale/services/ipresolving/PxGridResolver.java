@@ -86,11 +86,9 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 
 		// see if we have a matching event in cache
 		PxGridIPEvent pxGridEvent = cache.get(ip);
-		if (pxGridEvent != null) {
-			if (checkForIpValidity(ts, pxGridEvent.getTimestampepoch())) {
-				// return cached event
-				return pxGridEvent;
-			}
+		if (pxGridEvent != null && checkForIpValidity(ts, pxGridEvent.getTimestampepoch())) {
+			// return cached event
+			return pxGridEvent;
 		}
 
 		// if the event was not in cache than look for it in the repository
@@ -174,12 +172,13 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 
 	/**
 	 * Check if a given timestamp is within a timeframe, considering the grace time
+	 *
 	 * @param eventTime
 	 * @param startTimeToCompare
 	 * @return
 	 */
-	private boolean checkForIpValidity(long eventTime, long startTimeToCompare){
-		long endTimeToCompare = startTimeToCompare +  graceTimeInMins * 60 * 1000;
+	private boolean checkForIpValidity(long eventTime, long startTimeToCompare) {
+		long endTimeToCompare = startTimeToCompare + graceTimeInMins * 60 * 1000;
 		return (startTimeToCompare <= eventTime && eventTime <= endTimeToCompare);
 	}
 }
