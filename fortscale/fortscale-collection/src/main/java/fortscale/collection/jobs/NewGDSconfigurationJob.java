@@ -446,7 +446,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = userNormalizationTaskService.Configure();
 
 
-
+			//******bug configuration **********//
             //Configure the taarget user name normalization
             if(executionResult && targetNormalizationFlag)
             {
@@ -477,7 +477,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
 
 
-                System.out.println(String.format("Please enter the field that will contain the second normalized user name field to normalize :"));
+                System.out.println(String.format("Please enter the field name of the field that will contain the second normalized user name :"));
                 brResult =br.readLine().toLowerCase();
                 //Normalized_username field
                 paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
