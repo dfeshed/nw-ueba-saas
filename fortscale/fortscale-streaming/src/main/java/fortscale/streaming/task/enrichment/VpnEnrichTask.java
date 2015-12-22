@@ -6,6 +6,7 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -151,7 +152,11 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         String messageText = (String) envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			return;
+		}
 		VpnEnrichService vpnEnrichService = dataSourceConfigs.get(configKey);
 
         message = vpnEnrichService.processVpnEvent(message, collector);
@@ -159,13 +164,16 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
 
         if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")){
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
             logger.error("No username field in event {}. Dropping Record", messageText);
             return;
         }
         try {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
             collector.send(output);
+			handleUnfilteredEvent(message, configKey);
         } catch (Exception exception) {
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.SEND_TO_OUTPUT_TOPIC_FAILED_MESSAGE);
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", configKey, vpnEnrichService.getOutputTopic()), exception);
         }
     }

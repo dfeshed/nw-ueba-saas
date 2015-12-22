@@ -23,6 +23,4 @@
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain" />
 
 
-
-
 </beans>
