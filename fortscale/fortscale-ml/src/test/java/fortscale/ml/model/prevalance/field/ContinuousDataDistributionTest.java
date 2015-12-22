@@ -87,17 +87,19 @@ public class ContinuousDataDistributionTest {
 	@Test
 	public void shouldScoreDecreasinglyAsSensitivityIncreases(){
 		double sensitivities[] = new double[]{1, 2, 3};
-		double expectedScores[] = new double[]{86, 74, 62};
+		double expectedScores[] = new double[]{90, 81, 72};
 		for (int test = 0; test < sensitivities.length; test++) {
 			ContinuousDataDistribution distribution = create(10, 1.0);
 			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivities[test], true, true);
-			double max = 0.15;
+			distribution.add(0, 0);
+			distribution.add(0.5, 0);
+			distribution.add(-1, 0);
 			for (int i = 0; i < 5; i++) {
-				distribution.add(max, 0);
-				distribution.add(-max, 0);
+				distribution.add(0.15, 0);
+				distribution.add(-0.15, 0);
 			}
 
-			double score = calculateScore(distribution, 3 * max, calibrationForContModel);
+			double score = calculateScore(distribution, 1, calibrationForContModel);
 			Assert.assertEquals(expectedScores[test], score, 0.0);
 		}
 	}
