@@ -8,14 +8,14 @@ import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements Model {
-	private RarityScorer occurrencesHistogram;
+	private RarityScorer rarityScorer;
 
 	public CategoryRarityModel(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {
-		occurrencesHistogram = new RarityScorer(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
+		rarityScorer = new RarityScorer(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
 	}
 
 	@Override
 	public Double calculateScore(Object value) {
-		return occurrencesHistogram.score((Integer) value);
+		return rarityScorer.score((Integer) value);
 	}
 }
