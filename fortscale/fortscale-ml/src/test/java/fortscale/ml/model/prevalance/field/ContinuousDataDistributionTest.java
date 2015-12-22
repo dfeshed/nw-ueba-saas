@@ -85,6 +85,24 @@ public class ContinuousDataDistributionTest {
 	}
 
 	@Test
+	public void shouldScoreDecreasinglyAsSensitivityIncreases(){
+		double sensitivities[] = new double[]{1, 2, 3};
+		double expectedScores[] = new double[]{86, 74, 62};
+		for (int test = 0; test < sensitivities.length; test++) {
+			ContinuousDataDistribution distribution = create(10, 1.0);
+			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivities[test], true, true);
+			double max = 0.15;
+			for (int i = 0; i < 5; i++) {
+				distribution.add(max, 0);
+				distribution.add(-max, 0);
+			}
+
+			double score = calculateScore(distribution, 3 * max, calibrationForContModel);
+			Assert.assertEquals(expectedScores[test], score, 0.0);
+		}
+	}
+
+	@Test
 	public void continuous_test_1() throws Exception {
 		runScenarioAndTestScores("src/test/model/continuousTest1.csv");
 	}
