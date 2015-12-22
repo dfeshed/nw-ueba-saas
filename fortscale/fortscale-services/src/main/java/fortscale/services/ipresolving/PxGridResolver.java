@@ -84,8 +84,6 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 			return null;
 		}
 
-		//long upperTsLimit = (graceTimeInMins > 0) ? ts + graceTimeInMins * 60 * 1000 : ts;
-
 		// see if we have a matching event in cache
 		PxGridIPEvent pxGridEvent = cache.get(ip);
 		if (pxGridEvent != null) {
