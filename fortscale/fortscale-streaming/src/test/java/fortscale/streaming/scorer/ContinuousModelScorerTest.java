@@ -34,12 +34,6 @@ public class ContinuousModelScorerTest extends ModelScorerBaseTest{
 			} else {
 				when(config.getDouble(String.format(ContiuousModelScorer.SENSITIVITY_CONFIG_FORMAT, scorerName))).thenThrow(ConfigException.class);
 			}
-
-			if(plargestValue != null){
-				when(config.getDouble(String.format(ContiuousModelScorer.LARGEST_PVALUE_CONFIG_FORMAT, scorerName))).thenReturn(plargestValue);
-			} else {
-				when(config.getDouble(String.format(ContiuousModelScorer.LARGEST_PVALUE_CONFIG_FORMAT, scorerName))).thenThrow(ConfigException.class);
-			}
 			
 			if(isScoreForLargeValues != null){
 				when(config.getBoolean(String.format(ContiuousModelScorer.IS_SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT, scorerName), ContiuousModelScorer.DEFAULT_IS_SCORE_FOR_LARGE_VALUES)).thenReturn(isScoreForLargeValues);
