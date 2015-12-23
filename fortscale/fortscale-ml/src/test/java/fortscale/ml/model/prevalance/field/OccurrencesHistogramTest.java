@@ -78,7 +78,7 @@ public class OccurrencesHistogramTest {
 		Assert.assertEquals(scoreA, scoreB, 1);
 		Assert.assertEquals(94, scoreA, 1);
 
-		double[] counts = new double[]{2, 2, 1, 1, 1};
+		double[] counts = new double[]{2, 1, 1, 1};
 		double[] scores = new double[]{87, 76, 59, 38};
 		for (int i = 0; i < scores.length; i++) {
 			String rareFeature = String.format("rareFeature-%d", i);

@@ -1,31 +1,29 @@
 package fortscale.aggregation.feature.event;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.functions.AggrFeatureValue;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class AggrFeatureEventBuilderService {
 
-	private static final SimpleDateFormat format = getSimpleDateFormat();
-	
-	private static SimpleDateFormat getSimpleDateFormat(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format;
+    private static final SimpleDateFormat format = getSimpleDateFormat();
+    private static final String CONTEXT_ID_SEPARATOR = "#";
+    private static SimpleDateFormat getSimpleDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
-
-    
 
     @Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
@@ -188,24 +186,30 @@ public class AggrFeatureEventBuilderService {
 		
 		return event;
 	}
-    
+
     public AggrEvent buildEvent(JSONObject event) {
-    	String dataSource = getAggregatedFeatureDataSource(event);
-    	String featureType = getAggregatedFeatureType(event);
+        String dataSource = getAggregatedFeatureDataSource(event);
+        String featureType = getAggregatedFeatureType(event);
         String aggregatedFeatureName = getAggregatedFeatureName(event);
         Double aggregatedFeatureValue = getAggregatedFeatureValue(event);
         Map<String, Object> aggregatedFeatureInfo = getAggregatedFeatureAdditionalInfo(event);
         String bucketConfName = getAggregatedFeatureBucketConfName(event);
         Map<String, String> context = getAggregatedFeatureContext(event);
+        String contextId = getAggregatedFeatureContextId(event);
         Long creationEpochTime = getAggregatedFeatureCreationEpochTime(event);
-        Long startTimeUnix  = getAggregatedFeatureStartTimeUnix(event);
-        Long endTimeUnix  = getAggregatedFeatureEndTimeUnix(event);
+        Long startTimeUnix = getAggregatedFeatureStartTimeUnix(event);
+        Long endTimeUnix = getAggregatedFeatureEndTimeUnix(event);
         List<String> dataSources = getAggregatedFeatureDataSources(event);
         Double score = getAggregatedFeatureScore(event);
-        
-        return new AggrEvent(dataSource, featureType, aggregatedFeatureName, aggregatedFeatureValue, aggregatedFeatureInfo, bucketConfName, context, creationEpochTime, startTimeUnix, endTimeUnix, dataSources, score);
+
+        return new AggrEvent(
+                dataSource, featureType, aggregatedFeatureName,
+                aggregatedFeatureValue, aggregatedFeatureInfo,
+                bucketConfName, context, contextId,
+                creationEpochTime, startTimeUnix, endTimeUnix,
+                dataSources, score);
     }
-    
+
     private void setAggregatedFeatureDataSource(JSONObject event, String dataSource){
     	event.put(dataSourceFieldName, dataSource);
     }
@@ -258,7 +262,14 @@ public class AggrFeatureEventBuilderService {
     public Map<String, String> getAggregatedFeatureContext(JSONObject event){
     	return (Map<String, String>)event.get(contextFieldName);
     }
-    
+
+    public String getAggregatedFeatureContextId(JSONObject event) {
+        return getAggregatedFeatureContext(event).entrySet().stream()
+                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
+                .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
+                .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
+    }
+
     private void setAggregatedFeatureCreationEpochTime(JSONObject event, Long creationEpochTime){
     	event.put(AggrEvent.EVENT_FIELD_CREATION_EPOCHTIME, creationEpochTime);
     }
