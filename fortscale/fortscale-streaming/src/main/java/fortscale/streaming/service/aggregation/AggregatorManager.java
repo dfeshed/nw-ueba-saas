@@ -3,6 +3,7 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
+import fortscale.streaming.service.BDPService;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -44,6 +45,8 @@ public class AggregatorManager {
 	private FeatureBucketStrategyService featureBucketStrategyService;
 	private FeatureBucketsService featureBucketsService;
 	private AggrFeatureEventImprovedService featureEventService;
+
+	private BDPService bdpService;
 
 
 	@Autowired
@@ -87,6 +90,7 @@ public class AggregatorManager {
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
 		featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		aggregationMetricsService = new AggregationMetricsService(context);
+		bdpService = new BDPService();
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
@@ -131,8 +135,11 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
-		
-		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
+
+		if (!bdpService.isBDPRunning()) {
+			featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
+		}
+
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
 	}
