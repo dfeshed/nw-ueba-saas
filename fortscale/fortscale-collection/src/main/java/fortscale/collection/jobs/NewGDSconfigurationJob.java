@@ -553,7 +553,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				if (executionResult)
-					paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask_sourceIp"));
+					paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
 
 
 			}
@@ -574,7 +574,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 
-				paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask_targetIp"));
+				paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
 
 
 			}
