@@ -71,6 +71,57 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		return Collections.emptyList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<String> findDistinctContextsByTimeRange(
+			EntityEventConf entityEventConf, Date startTime, Date endTime) {
+
+		String entityEventConfName = entityEventConf.getName();
+		String collectionName = getCollectionName(entityEventConfName);
+
+		/*
+		 * NOTE: Existence of collections should be checked directly against Mongo,
+		 * and not with Mongo DB utils, since the later is maintained only in the
+		 * Entity Events task (and not in other tasks that only query the store).
+		 */
+		if (mongoTemplate.collectionExists(collectionName)) {
+			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
+			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+
+			Query query = new Query();
+			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
+			return mongoTemplate.getCollection(collectionName)
+					.distinct(EntityEventData.CONTEXT_ID_FIELD, query.getQueryObject());
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
+			EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
+
+		String entityEventConfName = entityEventConf.getName();
+		String collectionName = getCollectionName(entityEventConfName);
+
+		/*
+		 * NOTE: Existence of collections should be checked directly against Mongo,
+		 * and not with Mongo DB utils, since the later is maintained only in the
+		 * Entity Events task (and not in other tasks that only query the store).
+		 */
+		if (mongoTemplate.collectionExists(collectionName)) {
+			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
+			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+
+			Query query = new Query();
+			query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
+			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
+			return mongoTemplate.find(query, EntityEventData.class, collectionName);
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
 	@Override
 	public void storeEntityEventData(EntityEventData entityEventData) {
 		String entityEventName = entityEventData.getEntityEventName();

@@ -1,17 +1,20 @@
 package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.*;
 
-@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class AggrEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final String FULL_AGGREGATED_FEATURE_NAME_SEPARATOR = ".";
 
     public static final String EVENT_FILED_DATA_SOURCE = "data_source";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
@@ -33,11 +36,11 @@ public class AggrEvent implements Serializable {
     private static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
     private static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
 
-
     // Event Fields
+    @SuppressWarnings("unused")
     @Id
     private String id;
-    
+
     @Field(EVENT_FILED_DATA_SOURCE)
     private String dataSource;
 
@@ -86,8 +89,6 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_SCORE)
     Double score;
 
-    
-
     public AggrEvent() {}
 
     public AggrEvent(
@@ -102,7 +103,7 @@ public class AggrEvent implements Serializable {
         this.aggregatedFeatureName = aggregatedFeatureName;
         this.aggregatedFeatureValue = aggregatedFeatureValue;
         this.aggregatedFeatureInfo = aggregatedFeatureInfo;
-        
+
         this.bucketConfName = bucketConfName;
         this.context = context;
         this.contextId = contextId;
@@ -112,7 +113,7 @@ public class AggrEvent implements Serializable {
         startTime = new Date(TimestampUtils.convertToMilliSeconds(startTimeUnixSeconds));
         this.endTimeUnix  = endTimeUnixSeconds;
         endTime  = new Date(TimestampUtils.convertToMilliSeconds(endTimeUnixSeconds));
-        
+
         this.dataSources = dataSources;
         this.score = score;
     }
@@ -122,10 +123,10 @@ public class AggrEvent implements Serializable {
     }
 
     public String getDataSource() {
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	public boolean isOfTypeF() {
+    public boolean isOfTypeF() {
         return AGGREGATED_FEATURE_TYPE_F_VALUE.equals(getFeatureType());
     }
 
@@ -146,22 +147,22 @@ public class AggrEvent implements Serializable {
     }
 
     public Map<String, Object> getAggregatedFeatureInfo() {
-		return aggregatedFeatureInfo;
-	}
+        return aggregatedFeatureInfo;
+    }
 
-	public Long getCreationEpochTime() {
-		return creationEpochTime;
-	}
+    public Long getCreationEpochTime() {
+        return creationEpochTime;
+    }
 
-	public Date getStartTime() {
-		return startTime;
-	}
+    public Date getStartTime() {
+        return startTime;
+    }
 
-	public Long getStartTimeUnix() {
-		return startTimeUnix;
-	}
+    public Long getStartTimeUnix() {
+        return startTimeUnix;
+    }
 
-	public Double getScore() {
+    public Double getScore() {
         return score;
     }
 
@@ -196,6 +197,14 @@ public class AggrEvent implements Serializable {
         return endTimeUnix;
     }
 
-    public List<String> getDataSources() {return dataSources; }
+    public List<String> getDataSources() {
+        return dataSources;
+    }
 
+    public String getFullAggregatedFeatureName() {
+        return StringUtils.join(
+                getBucketConfName(),
+                FULL_AGGREGATED_FEATURE_NAME_SEPARATOR,
+                getAggregatedFeatureName());
+    }
 }

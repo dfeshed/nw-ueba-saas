@@ -120,8 +120,9 @@ public class EntityEventBuilder {
 	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
 		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
+
 		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
-			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
+			String aggrFeatureEventName = aggrFeatureEvent.getFullAggregatedFeatureName();
 			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}
