@@ -3,7 +3,9 @@ package fortscale.streaming.task.monitor;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -19,6 +21,9 @@ public class TaskMonitoringHelper {
     @Autowired
     private JobProgressReporter jobMonitorReporter;
 
+    @Autowired
+    private SpringPropertiesUtil messages;
+
 
     //Node is the task for specific data source and last state
     private Map<StreamingTaskDataSourceConfigKey, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
@@ -30,7 +35,7 @@ public class TaskMonitoringHelper {
     public static final String TOTAL_EVENTS_LABEL = "Total Events";
     public static final String NOT_FILTERED_EVENTS_LABEL = "Processed Event";
     public static final String JOB_DATA_SOURCE = "Streaming";
-    private static final String EVENTS_TYPE="EVENTS";
+    public  static final String EVENTS_TYPE="EVENTS";
     private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - Reason ";
 
 
@@ -71,10 +76,22 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause){
+    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause, String... args){
 
+        //Get the text from messages file.
+        String text = null;
+        if (messages != null) {
+            text = messages.getProperty(cause);
+        }
+        //If not exists in messages file use the original cause
+        if (StringUtils.isBlank(text)){
+            text = cause;
+        }
+        if (args!= null && args.length>0){
+            text = String.format(text,args);
+        }
         TaskMonitoringDTO node = getNode(key);
-        node.increaseCauseCount(cause);
+        node.increaseCauseCount(text);
 
     }
 

@@ -5,6 +5,7 @@ import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
@@ -24,13 +25,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
-	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
-	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+
+
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
-						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
-
-
-	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
+			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
 
 	protected static final String KAFKA_MESSAGE_QUEUE = "kafka";
 
@@ -219,7 +217,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			String messageText = (String) envelope.getMessage();
 			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
-			taskMonitoringHelper.countNewFilteredEvents(null,CANNOT_PARSE_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
 			throw e;
 		}
 	}
