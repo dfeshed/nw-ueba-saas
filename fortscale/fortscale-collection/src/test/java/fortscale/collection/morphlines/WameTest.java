@@ -17,15 +17,16 @@ import java.util.List;
 import static junitparams.JUnitParamsRunner.$;
 
 /**
- * Created by idanp on 12/17/2015.
+ * Created by idanp on 12/22/2015.
  */
 
 @RunWith(JUnitParamsRunner.class)
-public class crmsfTest {
+public class WameTest {
+
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/parseCRMSF.conf";
-	private String confEnrichmentFile = "resources/conf-files/enrichment/readCRMSF_enrich.conf";
+	private String confFile = "resources/conf-files/parseWAME.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readWAME_enrich.conf";
 
 
 
@@ -38,7 +39,7 @@ public class crmsfTest {
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.data.crmsf.table.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.wame.table.fields");
 		List<String> crmsfOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, crmsfOutputFields);
 	}
@@ -70,17 +71,18 @@ public class crmsfTest {
 				$(
 						"Regular Event",
 						$(
-						  "idan@fortscale.com,\"12/6/2015 3:31 AM\",204.14.234.8,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942",
-					      "idan@fortscale.com,\"12/6/2015 3:31 AM\",,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942"
+								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",\"Idan.Admin.B\",\"TEST-DEV\",usr1",
+								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",,\"TEST-DEV\",usr1",
+								"2015-12-22T15:04:24.000+0000,4724,IDAN-DEV,Idan.Admin.B,TEST-DEV,usr1"
 						),
 						$(
-						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,204.14.234.8,,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,login.salesforce.com,Login,,,,,,,,",
-							(String)null
+								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,IDAN-DEV,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,TEST-DEV,,Password Reset",
+								(String)null,
+								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,IDAN-DEV,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,TEST-DEV,,Password Reset"
 						)
 				)
 
 		);
 	}
-
 
 }
