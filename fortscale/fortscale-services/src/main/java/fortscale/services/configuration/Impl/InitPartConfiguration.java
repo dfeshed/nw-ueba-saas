@@ -266,14 +266,14 @@ public class InitPartConfiguration extends ConfigurationService {
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
 
-                line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, configurationParams.get("scoreTableName").getParamValue());
+                line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, configurationParams.get("scoreTableName").getParamValue()+"_top");
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
 
                 //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
                 //hdfs path
-                line = String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s", dataSourceName, dataSourceName);
+                line = String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s_top", dataSourceName, dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 

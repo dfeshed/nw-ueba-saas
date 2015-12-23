@@ -43,10 +43,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 	//TODO - Generate this auto from the entities  properties
-	private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,status STRING,${fortscale.tags.admin} BOOLEAN, ${fortscale.tags.executive} BOOLEAN,${fortscale.tags.service} BOOLEAN";
-	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,status STRING,${fortscale.tags.admin} BOOLEAN, ${fortscale.tags.executive} BOOLEAN,${fortscale.tags.service} BOOLEAN";
+	private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
 	private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,event_score DOUBLE,source_machine_score DOUBLE,country_score DOUBLE";
-	private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,${fortscale.tags.admin} BOOLEAN, ${fortscale.tags.executive} BOOLEAN,${fortscale.tags.service} BOOLEAN,${fortscale.tags.sensitive} BOOLEAN";
+	private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
 	private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,event_score DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
 	private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix LONG,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
 	private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,event_score DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE,data_bucket_score DOUBLE";
@@ -168,7 +168,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+","+SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
@@ -192,7 +192,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields", new ConfigurationParam("dataFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
@@ -229,7 +229,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			{
 				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
 				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
-				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
 				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
