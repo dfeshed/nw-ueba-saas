@@ -450,6 +450,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //Configure the taarget user name normalization
             if(executionResult && targetNormalizationFlag)
             {
+
                 if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
                     paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                     //in case there is machine to normalized and tag
@@ -669,7 +670,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-geolocated"));
 
-				paramsMap.put("ipField", new ConfigurationParam("ipField",false,"${impala.data.%s.table.field.target_ip}"));
+				paramsMap.put("ipField", new ConfigurationParam("ipField",false,"${impala.data.%s.table.field.target}"));
 				paramsMap.put("countryField", new ConfigurationParam("countryField",false,"dst_country"));
 				paramsMap.put("longtitudeField", new ConfigurationParam("longtitudeField",false,"dst_longtitudeField"));
 				paramsMap.put("latitudeField", new ConfigurationParam("latitudeField",false,"dst_latitudeField"));
@@ -706,7 +707,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				//User Mongo update task
 				System.out.println(String.format("Going to configure the UserMongoUpdate task for %s (i.e we use it for user last activity update) ", dataSourceName));
 
-				paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("%s_UserMongoUpdateStreamTask",dataSourceName)));
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("UserMongoUpdateStreamTask",dataSourceName)));
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, ""));
 
 
@@ -757,7 +758,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("hdfsPath", new ConfigurationParam("hdfsPath",false,String.format("${hdfs.user.enricheddata.%s.path}",dataSourceName)));
 				paramsMap.put("fileName", new ConfigurationParam("fileName",false,String.format("${hdfs.enricheddata.%s.file.name}",dataSourceName)));
 				paramsMap.put("partitionStrategy", new ConfigurationParam("partitionStrategy",false,String.format("${impala.enricheddata.%s.table.partition.type}",dataSourceName)));
-				paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,"fortscale.utils.hdfs.split.DailyFileSplitStrategy"));
+
+
+				//todo -  add the anility to configure this param
+				paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,""));
 
 
 				if (executionResult)

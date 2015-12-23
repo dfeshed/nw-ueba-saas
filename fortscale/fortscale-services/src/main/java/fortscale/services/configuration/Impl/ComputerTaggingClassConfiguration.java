@@ -1,12 +1,10 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Map;
 
 /**
  * Created by idanp on 12/21/2015.
@@ -53,6 +51,10 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
             String dstMachineClassifier = configurationParams.get("dstMachineClassifier").getParamValue();
             String dstClusteringField = configurationParams.get("dstClusteringField").getParamValue();
 
+			fileWriterToConfigure.write("\n");
+			fileWriterToConfigure.write("\n");
+
+
             mandatoryConfiguration();
 
             //partition field name  (today we use for all the username)
@@ -67,7 +69,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
                 writeLineToFile(line, fileWriterToConfigure, true);
 
                 //classification
-                line = String.format("%s.%s_%s.source.classification.field=${impala.data.%s.table.field.src_class}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, srcMachineClassifier);
+                line = String.format("%s.%s_%s.source.classification.field=${impala.data.%s.table.field.src_class}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
                 //Normalized_src_machine (clustering)

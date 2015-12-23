@@ -1,12 +1,10 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Map;
 
 /**
  * Created by idanp on 12/21/2015.
@@ -51,6 +49,10 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
                  successValue = configurationParams.get("successValue").getParamValue();
             }
             //String userNameField = configurationParams.get("userNameField").getParamValue();
+
+			fileWriterToConfigure.write("\n");
+			fileWriterToConfigure.write("\n");
+
 
             mandatoryConfiguration();
 

@@ -104,7 +104,7 @@ public class InitPartConfiguration extends ConfigurationService {
             }
 
             if (configurationParams.containsKey("targetIpFlag") && configurationParams.get("targetIpFlag").getParamFlag()) {
-                line = String.format("impala.data.%s.table.field.target=source_ip", dataSourceName);
+                line = String.format("impala.data.%s.table.field.target=target_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -150,7 +150,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //is sensitive machien field
-            line = String.format("impala.data.%s.table.field.is_sensitive_machine=%s", dataSourceName, configurationParams.get("sensitive_machine").getParamValue());
+            line = String.format("impala.data.%s.table.field.is_sensitive_machine=is_sensitive_machine", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 

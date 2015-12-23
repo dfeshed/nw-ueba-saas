@@ -1,12 +1,10 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Map;
 
 /**
  * Created by idanp on 12/21/2015.
@@ -55,6 +53,9 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
             Boolean doDataBuckets = configurationParams.get("doDataBuckets").getParamFlag();
             Boolean doGeoLocation = configurationParams.get("doGeoLocation").getParamFlag();
 
+
+			fileWriterToConfigure.write("\n");
+			fileWriterToConfigure.write("\n");
 
             mandatoryConfiguration();
 
