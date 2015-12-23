@@ -47,7 +47,11 @@ public class SpringPropertiesUtil extends PropertyPlaceholderConfigurer {
      * @return value of the prperty
      */
     public static String getProperty(String name) {
-        return propertiesMap.get(name).toString();
+        if (propertiesMap == null){
+            return null;
+        }
+
+        return propertiesMap.get(name);
     }
 
     /**
