@@ -82,6 +82,8 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		 * NOTE: Existence of collections should be checked directly against Mongo,
 		 * and not with Mongo DB utils, since the later is maintained only in the
 		 * Entity Events task (and not in other tasks that only query the store).
+		 * Performance wise this is less recommended, since calling 'collectionExists'
+		 * takes a long time.
 		 */
 		if (mongoTemplate.collectionExists(collectionName)) {
 			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
@@ -107,6 +109,8 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		 * NOTE: Existence of collections should be checked directly against Mongo,
 		 * and not with Mongo DB utils, since the later is maintained only in the
 		 * Entity Events task (and not in other tasks that only query the store).
+		 * Performance wise this is less recommended, since calling 'collectionExists'
+		 * takes a long time.
 		 */
 		if (mongoTemplate.collectionExists(collectionName)) {
 			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());

@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.event;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -14,7 +13,6 @@ import java.util.*;
 public class AggrEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final String FULL_AGGREGATED_FEATURE_NAME_SEPARATOR = ".";
 
     public static final String EVENT_FILED_DATA_SOURCE = "data_source";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
@@ -199,12 +197,5 @@ public class AggrEvent implements Serializable {
 
     public List<String> getDataSources() {
         return dataSources;
-    }
-
-    public String getFullAggregatedFeatureName() {
-        return StringUtils.join(
-                getBucketConfName(),
-                FULL_AGGREGATED_FEATURE_NAME_SEPARATOR,
-                getAggregatedFeatureName());
     }
 }

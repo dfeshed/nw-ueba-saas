@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.entity.event.*;
 import fortscale.utils.logging.Logger;
@@ -25,6 +26,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	private EntityEventDataReaderService entityEventDataReaderService;
 
 	private EntityEventConf entityEventConf;
+	private JokerFunction jokerFunction;
 
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
@@ -32,6 +34,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		Assert.notNull(entityEventConf);
+		jokerFunction = getJokerFunction();
 	}
 
 	@Override
@@ -43,20 +46,12 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		List<EntityEventData> entityEventsData = entityEventDataReaderService
 				.findEntityEventsDataByContextIdAndTimeRange(
 				entityEventConf, contextId, startTime, endTime);
-		JokerFunction jokerFunction = getJokerFunction();
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (EntityEventData entityEventData : entityEventsData) {
-			Date entityEventDataTime = new Date(
-					TimestampUtils.convertToMilliSeconds(entityEventData.getStartTime()));
 			Double entityEventValue = jokerFunction.calculateEntityEventValue(
 					getAggrEventsMap(entityEventData));
-
-			for (IDataRetrieverFunction function : functions) {
-				entityEventValue = (Double)function.execute(
-						entityEventValue, entityEventDataTime, endTime);
-			}
-
+			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
 		}
 
@@ -80,11 +75,17 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		Map<String, AggrEvent> aggrEventsMap = new HashMap<>();
 
 		for (AggrEvent aggrEvent : entityEventData.getIncludedAggrFeatureEvents()) {
-			aggrEventsMap.put(aggrEvent.getFullAggregatedFeatureName(), aggrEvent);
+			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
+					.buildFullAggregatedFeatureEventName(
+					aggrEvent.getBucketConfName(), aggrEvent.getAggregatedFeatureName());
+			aggrEventsMap.put(fullAggregatedFeatureEventName, aggrEvent);
 		}
 
 		for (AggrEvent aggrEvent : entityEventData.getNotIncludedAggrFeatureEvents()) {
-			aggrEventsMap.put(aggrEvent.getFullAggregatedFeatureName(), aggrEvent);
+			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
+					.buildFullAggregatedFeatureEventName(
+					aggrEvent.getBucketConfName(), aggrEvent.getAggregatedFeatureName());
+			aggrEventsMap.put(fullAggregatedFeatureEventName, aggrEvent);
 		}
 
 		return aggrEventsMap;
