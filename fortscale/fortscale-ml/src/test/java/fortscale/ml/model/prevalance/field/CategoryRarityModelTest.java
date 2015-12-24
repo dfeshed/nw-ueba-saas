@@ -21,15 +21,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RunWith(JUnit4.class)
-public class RarityScorerTest {
+public class CategoryRarityModelTest {
 	private Double calcScore(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
 		Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
 		for (int count : featureValueToCountMap.values()) {
 			double lastCount = occurrencesToNumOfFeatures.getOrDefault(count, 0D);
 			occurrencesToNumOfFeatures.put(count, lastCount + 1);
 		}
-		RarityScorer rarityScorer = new RarityScorer(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
-		return rarityScorer.score(featureCountToScore);
+		CategoryRarityModel model = new CategoryRarityModel(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
+		return model.calculateScore(featureCountToScore);
 	}
 
 	private Double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
