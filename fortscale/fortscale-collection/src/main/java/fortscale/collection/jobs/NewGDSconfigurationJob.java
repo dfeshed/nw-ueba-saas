@@ -446,7 +446,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = userNormalizationTaskService.Configure();
 
 
-			//******bug configuration **********//
+
             //Configure the taarget user name normalization
             if(executionResult && targetNormalizationFlag)
             {
@@ -764,17 +764,19 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,""));
 
 
-				if (executionResult)
-				{
-					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "enriched_HDFSWriterStreamTask"));
 
-				}
 
                hdfsTaskService.setConfigurationParams(paramsMap);
                 executionResult = hdfsTaskService.Init();
                 if (executionResult)
                     executionResult = hdfsTaskService.Configure();
                 hdfsTaskService.Done();
+
+				if (executionResult)
+				{
+					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "enriched_HDFSWriterStreamTask"));
+
+				}
 
 				System.out.println(String.format("End configure the HDFS write task for %s", dataSourceName));
 
