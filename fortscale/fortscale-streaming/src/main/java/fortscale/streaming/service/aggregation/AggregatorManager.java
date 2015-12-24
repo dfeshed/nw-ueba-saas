@@ -46,7 +46,7 @@ public class AggregatorManager {
 	private FeatureBucketsService featureBucketsService;
 	private AggrFeatureEventImprovedService featureEventService;
 
-	private boolean sendAggregationEvents;
+	private Boolean sendAggregationEvents;
 
 
 	@Autowired
