@@ -3,7 +3,7 @@ package fortscale.streaming.task;
 import com.google.common.collect.Iterables;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
@@ -28,13 +28,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
 	private String dateFieldName;
+	private boolean sendAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 
 		Config fieldsSubset = config.subset("fortscale.");
@@ -45,8 +46,10 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		}
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
+
+		sendAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
 		
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),sendAggregationEvents);
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 
@@ -57,10 +60,13 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	}
 	
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
+	private boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
+		return resolver.resolveBooleanValue(getConfigString(config, string));
+	}
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {

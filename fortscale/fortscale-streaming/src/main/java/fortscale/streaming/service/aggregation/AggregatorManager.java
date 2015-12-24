@@ -27,7 +27,7 @@ import fortscale.aggregation.feature.extraction.DataEntitiesConfigWithBlackList;
 import fortscale.aggregation.feature.extraction.Event;
 import fortscale.aggregation.feature.extraction.RawEvent;
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStoreSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
@@ -46,11 +46,11 @@ public class AggregatorManager {
 	private FeatureBucketsService featureBucketsService;
 	private AggrFeatureEventImprovedService featureEventService;
 
-	private BDPService bdpService;
+	private boolean sendAggregationEvents;
 
 
 	@Autowired
-	private FortscaleStringValueResolver fortscaleStringValueResolver;
+	private FortscaleValueResolver fortscaleValueResolver;
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 
@@ -83,14 +83,14 @@ public class AggregatorManager {
     private AggregationMetricsService aggregationMetricsService;
 
 
-	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
-		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
+	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, boolean sendAggregationEventsFlag) {
+		timestampFieldName = fortscaleValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
 		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
 		featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		aggregationMetricsService = new AggregationMetricsService(context);
-		bdpService = new BDPService();
+		sendAggregationEvents = sendAggregationEventsFlag;
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
@@ -136,7 +136,7 @@ public class AggregatorManager {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
 
-		if (!bdpService.isBDPRunning()) {
+		if (sendAggregationEvents) {
 			featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		}
 

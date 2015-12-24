@@ -16,7 +16,7 @@ import org.apache.samza.task.TaskCoordinator;
 import com.google.common.collect.Iterables;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 
@@ -31,7 +31,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		
 		// Get configuration properties
 		Config fieldsSubset = config.subset("fortscale.");
@@ -46,7 +46,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 
 	}
 	
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 	
