@@ -83,7 +83,7 @@ public class AggregatorManager {
     private AggregationMetricsService aggregationMetricsService;
 
 
-	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, boolean sendAggregationEventsFlag) {
+	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean sendAggregationEventsFlag) {
 		timestampFieldName = fortscaleValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
 		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);

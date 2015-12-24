@@ -28,7 +28,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
 	private String dateFieldName;
-	private boolean sendAggregationEvents;
+	private Boolean sendAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
@@ -64,7 +64,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
-	private boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
+	private Boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveBooleanValue(getConfigString(config, string));
 	}
 
