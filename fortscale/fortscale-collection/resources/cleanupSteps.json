@@ -30,6 +30,27 @@
       }
     ]
   },
+  "ScoredDataToBucketCreation": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "aggr_%%%prefix@@@date:::startTime###FeatureBucketAggrMetadata@@@date:::endTime###"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "aggr_@@@prefix###feature_buckets_store"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###metrics"
+      }
+    ]
+  },
   "ScoredDataToSMARTEvents": {
     "timeBasedSteps": [
       {
