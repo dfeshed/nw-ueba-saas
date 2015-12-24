@@ -2,7 +2,6 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
-import groovy.json.JsonException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -13,76 +12,116 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class ModelConfService implements InitializingBean, ApplicationContextAware {
-    private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
-    private static final Logger logger = Logger.getLogger(ModelConfService.class);
+public class ModelConfService implements ApplicationContextAware, InitializingBean {
+	private static final Logger logger = Logger.getLogger(ModelConfService.class);
+	private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
 
-    @Value("${fortscale.model.configurations.json.file.path}")
-    private String modelConfigurationsJSONFilePath;
+	@Value("${fortscale.model.configurations.location.path}")
+	private String modelConfigurationsLocationPath;
 
-    private List<ModelConf> modelConfs;
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
+	private List<ModelConf> modelConfs;
+	private Map<String, ModelConf> nameToModelConfMap;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        modelConfs = new ArrayList<>();
-        loadModelDefinitions(modelConfigurationsJSONFilePath);
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		modelConfs = new ArrayList<>();
+		nameToModelConfMap = new HashMap<>();
+		loadModelConfs();
+	}
 
-    public List<ModelConf> getModelConfs() {
-        return modelConfs;
-    }
+	public List<ModelConf> getModelConfs() {
+		return modelConfs;
+	}
 
-    private void loadModelDefinitions(String JSONFilePath) {
-        JSONArray modelConfJSONs;
-        String errorMsg;
+	@SuppressWarnings("unused")
+	public ModelConf getModelConf(String modelConfName) {
+		return nameToModelConfMap.get(modelConfName);
+	}
 
-        try {
-            Resource jsonResource = applicationContext.getResource(JSONFilePath);
-            JSONObject json = (JSONObject) JSONValue.parseWithException(jsonResource.getInputStream());
-            modelConfJSONs = (JSONArray) json.get(MODEL_CONFS_JSON_FIELD_NAME);
-        } catch (Exception e) {
-            errorMsg = String.format("Failed to parse JSON file %s", JSONFilePath);
-            logger.error(errorMsg, e);
-            throw new JsonException(errorMsg, e);
-        }
+	private void loadModelConfs() {
+		String errorMsg;
+		List<Object> modelConfJSONs = getModelConfsFromAllResources();
+		ObjectMapper objectMapper = new ObjectMapper();
 
-        if (modelConfJSONs == null) {
-            errorMsg = String.format("JSON file %s does not contain field %s", JSONFilePath, MODEL_CONFS_JSON_FIELD_NAME);
-            logger.error(errorMsg);
-            throw new JsonException(errorMsg);
-        }
+		for (Object modelConfJSON : modelConfJSONs) {
+			String jsonString = ((JSONObject)modelConfJSON).toJSONString();
 
-        Set<String> modelConfNames = new HashSet<>(modelConfJSONs.size());
-        ObjectMapper objectMapper = new ObjectMapper();
-        for (Object modelConfJSON : modelConfJSONs) {
-            String jsonString = ((JSONObject) modelConfJSON).toJSONString();
-            try {
-                ModelConf modelConf = objectMapper.readValue(jsonString, ModelConf.class);
-                String modelConfName = modelConf.getName();
-                if (modelConfNames.contains(modelConfName)) {
-                    errorMsg = String.format("model configuration names must be unique. %s appears multiple times", modelConfName);
-                    logger.error(errorMsg);
-                    throw new RuntimeException(errorMsg);
-                }
-                modelConfNames.add(modelConfName);
-                modelConfs.add(modelConf);
-            } catch (IOException e) {
-                errorMsg = String.format("Failed to deserialize JSON %s", jsonString);
-                logger.error(errorMsg, e);
-                throw new RuntimeException(errorMsg, e);
-            }
-        }
-    }
+			try {
+				ModelConf modelConf = objectMapper.readValue(jsonString, ModelConf.class);
+				String modelConfName = modelConf.getName();
+
+				if (nameToModelConfMap.containsKey(modelConfName)) {
+					errorMsg = String.format(
+							"Model configuration names must be unique. %s appears multiple times.",
+							modelConfName);
+					logger.error(errorMsg);
+					throw new IllegalArgumentException(errorMsg);
+				}
+
+				modelConfs.add(modelConf);
+				nameToModelConfMap.put(modelConfName, modelConf);
+			} catch (Exception e) {
+				errorMsg = String.format("Failed to deserialize model conf JSON %s.", jsonString);
+				logger.error(errorMsg, e);
+				throw new IllegalArgumentException(errorMsg, e);
+			}
+		}
+	}
+
+	private List<Object> getModelConfsFromAllResources() {
+		String errorMsg;
+		List<Resource> resources;
+		List<Object> modelConfs = new ArrayList<>();
+
+		try {
+			resources = Arrays.asList(applicationContext
+					.getResources(modelConfigurationsLocationPath.concat("/*.json")));
+		} catch (Exception e) {
+			errorMsg = String.format(
+					"Failed to get model confs resources from location path %s.",
+					modelConfigurationsLocationPath);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
+		}
+
+		for (Resource resource : resources) {
+			modelConfs.addAll(getModelConfsFromResource(resource));
+		}
+
+		return modelConfs;
+	}
+
+	private static JSONArray getModelConfsFromResource(Resource resource) {
+		String errorMsg;
+		JSONArray modelConfs;
+
+		try {
+			JSONObject json = (JSONObject)JSONValue.parseWithException(resource.getInputStream());
+			modelConfs = (JSONArray)json.get(MODEL_CONFS_JSON_FIELD_NAME);
+		} catch (Exception e) {
+			errorMsg = String.format(
+					"Failed to parse model confs JSON file %s.",
+					resource.getFilename());
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
+		}
+
+		if (modelConfs == null) {
+			errorMsg = String.format(
+					"Model confs JSON file %s does not contain field %s.",
+					resource.getFilename(), MODEL_CONFS_JSON_FIELD_NAME);
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
+
+		return modelConfs;
+	}
 }
