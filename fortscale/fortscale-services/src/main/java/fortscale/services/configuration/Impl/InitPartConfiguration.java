@@ -125,6 +125,10 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
+			line = String.format("impala.data.crmsf.table.field.normalized_username=%s", dataSourceName,configurationParams.get("normalizedUserNameField").getParamValue());
+			writeLineToFile(line, fileWriterToConfigure, true);
+			writeLineToFile(line, secondFileWriterToConfigure, true);
+
             line = String.format("########### Data Schema");
             writeLineToFile(line, fileWriterToConfigure, true);
 
@@ -246,6 +250,11 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
+			//hdfs file name
+			line = String.format("{hdfs.user.processeddata.%s.file.name=${impala.processeddata.%s.table.name}.csv", dataSourceName, dataSourceName);
+			writeLineToFile(line, fileWriterToConfigure, true);
+			writeLineToFile(line, secondFileWriterToConfigure, true);
+
             //Top Score schema
             if (configurationParams.containsKey("topSchemaFlag") && configurationParams.get("topSchemaFlag").getParamFlag()) {
                 line = String.format("########### Top Score Schema");
@@ -269,6 +278,11 @@ public class InitPartConfiguration extends ConfigurationService {
                 line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, configurationParams.get("scoreTableName").getParamValue()+"_top");
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
+
+				//hdfs file name
+				line = String.format("{hdfs.user.processeddata.%s.file.name=${impala.score.%s.top.table.name}.csv", dataSourceName, dataSourceName);
+				writeLineToFile(line, fileWriterToConfigure, true);
+				writeLineToFile(line, secondFileWriterToConfigure, true);
 
 
                 //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
