@@ -9,9 +9,16 @@ import fortscale.utils.factory.FactoryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 @Configuration
-@ComponentScan("fortscale.ml.model")
+@ComponentScan(
+		basePackages = "fortscale.ml.model",
+		excludeFilters = @ComponentScan.Filter(
+				type = FilterType.REGEX,
+				pattern = {"fortscale.ml.model.config.*", "fortscale.ml.model.prevalance.*"}
+		)
+)
 public class ModelBuildingConfiguration {
 	// TODO: Annotate with @Service instead
 	@Bean
