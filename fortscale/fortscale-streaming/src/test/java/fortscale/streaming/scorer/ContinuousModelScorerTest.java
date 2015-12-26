@@ -14,7 +14,7 @@ public class ContinuousModelScorerTest extends ModelScorerBaseTest{
 	@SuppressWarnings("unchecked")
 	protected void prepareConfig(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName,
 			String optionalContextReplacementFieldName,
-			Double a1, Double a2, Double sensitivity, Double plargestValue, Boolean isScoreForLargeValues, Boolean isScoreForSmallValues){
+			Double a1, Double a2, Double sensitivity, Boolean isScoreForLargeValues, Boolean isScoreForSmallValues){
 		prepareConfig(ContiuousModelScorerFactory.SCORER_TYPE, scorerName, outputFieldName, modelName, fieldName, contextName, optionalContextReplacementFieldName);
 		if(scorerName !=null){
 			if(a1 != null){
@@ -53,7 +53,7 @@ public class ContinuousModelScorerTest extends ModelScorerBaseTest{
 			String optionalContextReplacementFieldName,
 			Double a1, Double a2, Double sensitivity, Double plargestValue, Boolean isScoreForLargeValues, Boolean isScoreForSmallValues) throws Exception{
 		prepareConfig(scorerName, outputFieldName, modelName, fieldName, contextName, optionalContextReplacementFieldName, 
-				a1, a2, sensitivity, plargestValue, isScoreForLargeValues, isScoreForSmallValues);
+				a1, a2, sensitivity, isScoreForLargeValues, isScoreForSmallValues);
 		
 		return (Scorer) context.resolve(Scorer.class, scorerName);
 	}
