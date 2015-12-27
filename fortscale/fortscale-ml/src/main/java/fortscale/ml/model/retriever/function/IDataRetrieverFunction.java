@@ -1,4 +1,4 @@
-package fortscale.ml.model.retriever;
+package fortscale.ml.model.retriever.function;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

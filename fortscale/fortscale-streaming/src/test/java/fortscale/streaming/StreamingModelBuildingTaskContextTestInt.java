@@ -1,10 +1,12 @@
 package fortscale.streaming;
 
+import fortscale.ml.model.ModelService;
 import fortscale.utils.test.category.HadoopTestCategory;
 import fortscale.utils.test.category.IntegrationTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -12,7 +14,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/streaming-model-building-context.xml"})
 @Category(HadoopTestCategory.class)
 public class StreamingModelBuildingTaskContextTestInt {
+	@Autowired
+	private ModelService modelService;
+
 	@Test
 	@Category(IntegrationTestCategory.class)
-	public void testContext() {}
+	public void testContext() {
+		modelService.init();
+	}
 }
