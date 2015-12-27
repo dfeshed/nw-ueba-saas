@@ -1,7 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
@@ -35,7 +35,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
 
-	protected  FortscaleStringValueResolver res;
+	protected FortscaleValueResolver res;
 
 
 
@@ -46,7 +46,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
 
-	protected String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+	protected String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
