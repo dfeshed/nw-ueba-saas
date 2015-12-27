@@ -411,11 +411,26 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //User name field
             paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,"username"));
 
-            //Domain field  - for the enrich part
-            paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
 
-            //In case of fake domain - enter the actual domain value the PS want
-            paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+            //Domain field  - for the enrich part
+            System.out.println(String.format("Dose %s have a field that contain the user domain  (y/n) ?",dataSourceName));
+            brResult =br.readLine().toLowerCase();
+            Boolean domainResult = brResult.equals("y") || brResult.equals("yes");
+
+            if (domainResult)
+            {
+                //Domain field  - for the enrich part
+                System.out.println(String.format("pleaase enter the field name that will contain the user Domain value :"));
+                brResult =br.readLine().toLowerCase();
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+            }
+            else {
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+
+                //In case of fake domain - enter the actual domain value the PS want
+                paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+            }
 
             //Normalized_username field
             paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
@@ -472,10 +487,25 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,brResult));
 
                 //Domain field  - for the enrich part
-                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
+                System.out.println(String.format("Dose %s have a field that contain the target user domain  (y/n) ?",dataSourceName));
+                brResult =br.readLine().toLowerCase();
+                domainResult = brResult.equals("y") || brResult.equals("yes");
 
-                //In case of fake domain - enter the actual domain value the PS want
-                paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+                if (domainResult)
+                {
+                    //Domain field  - for the enrich part
+                    System.out.println(String.format("pleaase enter the field name that will contain the target user Domain value :"));
+                    brResult =br.readLine().toLowerCase();
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+                }
+                else {
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+
+                    //In case of fake domain - enter the actual domain value the PS want
+                    paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+                }
+
 
 
                 System.out.println(String.format("Please enter the field name of the field that will contain the second normalized user name :"));
