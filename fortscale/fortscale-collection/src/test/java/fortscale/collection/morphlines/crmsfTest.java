@@ -70,12 +70,14 @@ public class crmsfTest {
 				$(
 						"Regular Event",
 						$(
-						  "idan@fortscale.com,\"12/6/2015 3:31 AM\",204.14.234.8,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942",
-					      "idan@fortscale.com,\"12/6/2015 3:31 AM\",,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942"
+						  "idan@fortscale.com,\"12/6/2015 3:31 AM\",204.14.234.8,Remote Access 2.0,Success,Chrome 47,Windows 7,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942",
+					      "idan@fortscale.com,\"12/6/2015 3:31 AM\",,Remote Access 2.0,Success,Unknown,Safari 23,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942",
+						  "idan@fortscale.com,12/6/2015 3:31 AM,204.14.234.8,Remote Access 2.0,Success,IE 5,Mac OSX,Salesforce Help & Training,N/A,N/A,N/A,login.salesforce.com,US,United States,California,San Francisco,94105,37.7898,-122.3942"
 						),
 						$(
-						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,204.14.234.8,,Remote Access 2.0,Success,Unknown,Unknown,Salesforce Help & Training,login.salesforce.com,Login,,,,,,,,",
-							(String)null
+						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,204.14.234.8,,Remote Access 2.0,Success,Chrome,Windows,Salesforce Help & Training,login.salesforce.com,Login,,,,,,,,",
+							(String)null,
+						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,204.14.234.8,,Remote Access 2.0,Success,IE,Mac,Salesforce Help & Training,login.salesforce.com,Login,,,,,,,,"
 						)
 				)
 
