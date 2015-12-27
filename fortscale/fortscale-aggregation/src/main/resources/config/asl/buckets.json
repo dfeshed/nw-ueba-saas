@@ -305,7 +305,8 @@
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["destination_machine"],
+            "maximize": ["normalized_dst_machine_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
@@ -614,13 +615,13 @@
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
         },
         {
@@ -690,13 +691,13 @@
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
         },
         {
           "name": "sensitive_actions_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
         },
         {
@@ -737,7 +738,7 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
         }
       ]
     },
@@ -972,13 +973,13 @@
         {
           "name": "success_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'Success')]"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status != 'Success')]"}
         },
         {
@@ -1018,13 +1019,13 @@
         {
           "name": "success_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status == 'Success')]"}
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
           "filter": {"jsonPath": "[?(@.status != 'Success')]"}
         },
         {
