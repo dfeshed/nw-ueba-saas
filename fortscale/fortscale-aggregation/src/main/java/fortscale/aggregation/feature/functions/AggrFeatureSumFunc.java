@@ -41,7 +41,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 
 		FeatureValue value = aggrFeature.getValue();
 		if (value == null) {
-			value = new AggrFeatureValue(0D, 0L);
+			value = new AggrFeatureValue(0D, 0D);
 			aggrFeature.setValue(value);
 		} else if (!(value instanceof AggrFeatureValue && ((AggrFeatureValue) value).getValue() instanceof Double)) {
 			throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s containig %s",
