@@ -3,6 +3,7 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
+import fortscale.aggregation.feature.event.AggrFeatureEventBdpModeService;
 import fortscale.streaming.service.BDPService;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
@@ -46,8 +47,6 @@ public class AggregatorManager {
 	private FeatureBucketsService featureBucketsService;
 	private AggrFeatureEventImprovedService featureEventService;
 
-	private Boolean sendAggregationEvents;
-
 
 	@Autowired
 	private FortscaleValueResolver fortscaleValueResolver;
@@ -61,25 +60,25 @@ public class AggregatorManager {
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
 	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
-	
+
 	@Autowired
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
-	
+
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
-	
+
 	@Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
     @Value("${streaming.event.field.type.aggr_event}")
     private String aggrEventType;
-    
+
     @Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
     @Value("${streaming.aggr_event.field.bucket_conf_name}")
     private String bucketConfFieldName;
-    
+
     private AggregationMetricsService aggregationMetricsService;
 
 
@@ -88,9 +87,13 @@ public class AggregatorManager {
 		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
-		featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
+		if (sendAggregationEventsFlag) {
+			featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
+		}
+		else {
+			featureEventService = new AggrFeatureEventBdpModeService(aggregatedFeatureEventsConfService, featureBucketsService);
+		}
 		aggregationMetricsService = new AggregationMetricsService(context);
-		sendAggregationEvents = sendAggregationEventsFlag;
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
@@ -104,7 +107,7 @@ public class AggregatorManager {
 
 		processEvent(event);
 	}
-	
+
 	public void processEvent(JSONObject jsonObject) throws Exception {
 		Event event = createEvent(jsonObject);
 		dataSourcesSyncTimer.process(event);
@@ -121,7 +124,7 @@ public class AggregatorManager {
 			}
 		}
 	}
-	
+
 	private Event createEvent(JSONObject eventMessage){
 		String eventType = (String) eventMessage.get(eventTypeFieldName);
 		if(aggrEventType.equals(eventType)){
@@ -135,10 +138,7 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
-
-		if (sendAggregationEvents) {
-			featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
-		}
+		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
