@@ -229,7 +229,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, "normalized_username", username,
                 evidenceType, startTime, endTime, dataEntitiesIds, score, anomalyValue, anomalyTypeFieldName,
                 numberOfEvents, evidenceTimeframe);
-        evidencesService.saveEvidenceInRepository(indicator);
+        try {
+            evidencesService.saveEvidenceInRepository(indicator);
+        } catch (Exception ex) {
+            logger.error("failed to save evidence - {}", ex);
+        }
         return indicator;
     }
 
