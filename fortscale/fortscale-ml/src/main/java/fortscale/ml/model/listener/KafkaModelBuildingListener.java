@@ -6,7 +6,9 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.util.Assert;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class KafkaModelBuildingListener implements IModelBuildingListener {
 	private static final String MODEL_CONF_NAME_JSON_FIELD = "modelConfName";
@@ -15,6 +17,12 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 	private static final String END_TIME_JSON_FIELD = "endTime";
 	private static final String SUCCESS_JSON_FIELD = "success";
 	private static final String MESSAGE_JSON_FIELD = "message";
+
+	private static final SimpleDateFormat utc;
+	static {
+		utc = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
+		utc.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	private String outputTopicName;
 	private MessageCollector collector;
@@ -47,7 +55,7 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 		json.put(MODEL_CONF_NAME_JSON_FIELD, modelConfName);
 		json.put(SESSION_ID_JSON_FIELD, sessionId);
 		json.put(CONTEXT_ID_JSON_FIELD, contextId);
-		json.put(END_TIME_JSON_FIELD, endTime.toString());
+		json.put(END_TIME_JSON_FIELD, utc.format(endTime));
 		json.put(SUCCESS_JSON_FIELD, success);
 		json.put(MESSAGE_JSON_FIELD, message);
 		return json.toJSONString();
