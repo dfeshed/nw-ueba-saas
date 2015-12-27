@@ -51,7 +51,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) value;
 		Double oldSum = (Double) aggrFeatureValue.getValue();
 		double addend = getFeatureValueToSum(aggregatedFeatureConf, features);
-		aggrFeatureValue.setValue(new FeatureNumericValue(oldSum + addend));
+		aggrFeatureValue.setValue(new Double(oldSum + addend));
 		aggrFeatureValue.setTotal(aggrFeatureValue.getTotal() + 1);
 
 		return aggrFeatureValue;

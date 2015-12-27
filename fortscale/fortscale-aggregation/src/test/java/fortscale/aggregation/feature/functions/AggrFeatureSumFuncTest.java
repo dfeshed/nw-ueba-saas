@@ -50,7 +50,7 @@ public class AggrFeatureSumFuncTest {
 	public void testUpdateAggrFeatureWhenCounting() {
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName");
-		FeatureNumericValue actual1 = (FeatureNumericValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(10D, 10L)));
+		AggrFeatureValue actual1 = (AggrFeatureValue)function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(10D, 10L)));
 		Assert.assertEquals(11D, actual1.getValue());
 	}
 
@@ -62,7 +62,7 @@ public class AggrFeatureSumFuncTest {
 		double sum = 10;
 		double score = 50;
 		Map<String, Feature> features = AggrFeatureTestUtils.createFeatureMap(new ImmutablePair<String, Object>(featureNameToSum, score));
-		FeatureNumericValue actual = (FeatureNumericValue)function.updateAggrFeature(conf, features, new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(sum, 2L)));
+		AggrFeatureValue actual = (AggrFeatureValue)function.updateAggrFeature(conf, features, new Feature("aggregatedFeatureEventTestName", new AggrFeatureValue(sum, 2L)));
 		Assert.assertEquals(sum + score, actual.getValue());
 	}
 
