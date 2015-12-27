@@ -141,6 +141,20 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         mongoTemplate.insert(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
     }
 
+    /**
+     *
+     * This method generates the events in HDFS and Impala
+     *
+     * @param context
+     * @param username
+     * @param srcMachine
+     * @param dstMachine
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws IOException
+     * @throws HdfsException
+     */
     public void createEvents(String context, String username, String srcMachine, String dstMachine)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         String SEPARATOR = ",";
