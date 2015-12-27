@@ -129,6 +129,18 @@
     ]
   },
   "AfterEnriched": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",
@@ -153,6 +165,18 @@
     ]
   },
   "AfterScored": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",
