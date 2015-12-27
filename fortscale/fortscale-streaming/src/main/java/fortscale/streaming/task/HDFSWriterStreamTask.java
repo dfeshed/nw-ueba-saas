@@ -2,6 +2,8 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.services.impl.HdfsService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
@@ -24,9 +26,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 

@@ -5,7 +5,7 @@ import org.apache.samza.metrics.MetricsReporter;
 import org.apache.samza.metrics.MetricsReporterFactory;
 
 import fortscale.streaming.ConfigUtils;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 
 /**
  * Constructs a MongoMetricsSnaphotReporter to report job metrics to mongodb periodically

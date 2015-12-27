@@ -21,7 +21,7 @@ import com.google.common.collect.Iterables;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;

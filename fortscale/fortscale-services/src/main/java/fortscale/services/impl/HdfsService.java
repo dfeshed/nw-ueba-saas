@@ -1,6 +1,6 @@
-package fortscale.streaming.service;
+package fortscale.services.impl;
 
-import fortscale.streaming.exceptions.HdfsException;
+import fortscale.services.exceptions.HdfsException;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;

@@ -5,7 +5,7 @@ import fortscale.services.notifications.AmtActionToSensitiveAccountNotificationG
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.model.AmtSession;
 import fortscale.streaming.service.AmtSummaryService;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;

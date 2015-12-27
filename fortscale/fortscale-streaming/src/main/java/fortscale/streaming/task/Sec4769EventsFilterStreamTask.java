@@ -13,7 +13,7 @@ import org.apache.samza.task.TaskContext;
 
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 private static final String NAT_SRC_MACHINE = "nat_src_machine";
