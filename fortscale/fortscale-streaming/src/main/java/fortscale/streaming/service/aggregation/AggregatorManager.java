@@ -3,8 +3,8 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
-import fortscale.aggregation.feature.event.AggrFeatureEventBdpModeService;
-import fortscale.streaming.service.BDPService;
+import fortscale.aggregation.feature.event.AggrFeatureEventDummyService;
+import fortscale.aggregation.feature.event.IAggrFeatureEventService;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -45,7 +45,7 @@ public class AggregatorManager {
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;
 	private FeatureBucketsService featureBucketsService;
-	private AggrFeatureEventImprovedService featureEventService;
+	private IAggrFeatureEventService featureEventService;
 
 
 	@Autowired
@@ -91,7 +91,7 @@ public class AggregatorManager {
 			featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		}
 		else {
-			featureEventService = new AggrFeatureEventBdpModeService(aggregatedFeatureEventsConfService, featureBucketsService);
+			featureEventService = new AggrFeatureEventDummyService();
 		}
 		aggregationMetricsService = new AggregationMetricsService(context);
 	}
