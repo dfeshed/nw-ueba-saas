@@ -43,6 +43,11 @@
 			<name>remote-repos</name>
 			<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
 		</repository>
+		<repository>
+			<id>mirror.fortscale.dom</id>
+			<name>mirror.fortscale.dom-releases</name>
+			<url>http://mirror.fortscale.dom/artifactory/cisco-pxGrid</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -352,7 +357,6 @@
 			<version>${thrift.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -366,6 +370,87 @@
   			<version>1.0</version>
   			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-gcl</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-client-stub</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-core-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-net-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-gc-admin-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-identity-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-eps-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-netcapture-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-tdanalysis-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-anc-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-identity-client-stub</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-core</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-java7</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-extensions</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-tcp</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -581,6 +666,15 @@
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<nonFilteredFileExtensions>
+							<nonFilteredFileExtension>jks</nonFilteredFileExtension>
+						</nonFilteredFileExtensions>
 					</configuration>
 				</plugin>
 			</plugins>
