@@ -15,7 +15,7 @@ public class DiscreteDataModel implements Model {
 	}
 
 	@Override
-	public double calculateScore(Object value) {
-		return occurrencesHistogram.score((Double) value);
+	public Double calculateScore(Object value) {
+		return occurrencesHistogram.score((Double)value);
 	}
 }

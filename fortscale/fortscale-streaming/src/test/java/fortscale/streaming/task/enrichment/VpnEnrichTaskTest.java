@@ -5,6 +5,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -59,6 +60,9 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     private MessageCollector messageCollector;
     @Mock
     TaskCoordinator taskCoordinator;
+
+    @Mock
+    TaskMonitoringHelper taskMonitorHelper;
 
     ObjectMapper mapper = new ObjectMapper();
 

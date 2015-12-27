@@ -12,6 +12,13 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": ["two_minute_resolution_epochtime"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
           "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
@@ -176,6 +183,13 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": ["two_minute_resolution_epochtime"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
           "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
@@ -336,6 +350,13 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": ["two_minute_resolution_epochtime"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
           "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["source_machine"]
@@ -346,6 +367,13 @@
           "name": "country_histogram",
           "featureNamesMap": {
             "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "hostname_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hostname"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
@@ -471,17 +499,38 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "high_score_rate_vpn_session_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": ["two_minute_resolution_epochtime"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "data_bucket_histogram",
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "hostname_histogram",
+          "featureNamesMap": {
+            "groupBy": ["hostname"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "databucket_histogram",
           "featureNamesMap": {
             "groupBy": ["databucket"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_rate_vpn_session_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.databucketScore >= 50)]"}
         }
       ]
     },
@@ -831,6 +880,46 @@
       ],
       "dataSources": [
         "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "city_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "city"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_username"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      "name": "city_vpn_session_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "city"
+      ],
+      "dataSources": [
+        "vpn_session"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [

@@ -36,9 +36,9 @@ public class ContinuousDataModel implements Model {
 	}
 
 	@Override
-	public double calculateScore(Object value) {
+	public Double calculateScore(Object value) {
 		if (sd == 0)
-			return 0;
+			return 0D;
 
 		double z = ((Double) value - mean) / sd;
 		TDistribution tDistribution = new TDistribution(N - 1);

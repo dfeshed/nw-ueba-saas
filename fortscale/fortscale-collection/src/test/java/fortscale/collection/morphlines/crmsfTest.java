@@ -37,7 +37,7 @@ public class crmsfTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.crmsf.table.fields");
 		List<String> crmsfOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, crmsfOutputFields);

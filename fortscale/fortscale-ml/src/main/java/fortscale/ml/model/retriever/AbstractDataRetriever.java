@@ -1,6 +1,7 @@
 package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 

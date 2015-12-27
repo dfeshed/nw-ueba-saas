@@ -1,14 +1,11 @@
 package fortscale.ml.model.builder;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.prevalance.field.TimeModel;
 import org.springframework.util.Assert;
 
 public class TimeModelBuilder implements IModelBuilder {
-    public static final String MODEL_BUILDER_TYPE = "time";
     private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
@@ -16,18 +13,9 @@ public class TimeModelBuilder implements IModelBuilder {
     private final int timeResolution;
     private final int bucketSize;
 
-    @JsonCreator
-    public TimeModelBuilder(
-            @JsonProperty("timeResolution") Integer timeResolution,
-            @JsonProperty("bucketSize") Integer bucketSize) {
-
-        Assert.notNull(timeResolution);
-        Assert.notNull(bucketSize);
-        Assert.isTrue(timeResolution > 0);
-        Assert.isTrue(bucketSize > 0);
-
-        this.timeResolution = timeResolution;
-        this.bucketSize = bucketSize;
+    public TimeModelBuilder(TimeModelBuilderConf config) {
+        timeResolution = config.getTimeResolution();
+        bucketSize = config.getBucketSize();
     }
 
     @Override

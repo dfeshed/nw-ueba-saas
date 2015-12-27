@@ -15,6 +15,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -45,7 +46,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     private final static String dhcpCacheKey = "dhcp-cache";
 	private final static String iseCacheKey = "ise-cache";
-    private final static String pxGridCacheKey = "pxGrid-cache";
+    private final static String pxGridCacheKey = "pxgrid-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
@@ -148,14 +149,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
             if (configKey == null){
-                taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+                taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
                 return;
             }
 
             EventResolvingConfig eventResolvingConfig = dataSourceToConfigurationMap.get(configKey);
 
             if (eventResolvingConfig == null){
-                taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+                taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
                 return;
             }
 
