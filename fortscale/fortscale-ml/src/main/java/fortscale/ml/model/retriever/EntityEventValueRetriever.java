@@ -6,7 +6,6 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilServic
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.entity.event.*;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -39,13 +38,9 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
-		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
-		Date startTime = new Date(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
-
 		List<EntityEventData> entityEventsData = entityEventDataReaderService
 				.findEntityEventsDataByContextIdAndTimeRange(
-				entityEventConf, contextId, startTime, endTime);
+				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (EntityEventData entityEventData : entityEventsData) {
