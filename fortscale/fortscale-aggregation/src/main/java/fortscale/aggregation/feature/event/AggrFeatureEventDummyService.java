@@ -7,7 +7,8 @@ import java.util.List;
 
 /**
  * Dummy implementation of IAggrFeatureEventService
- * This class will be used when running under BDP mode
+ * This class should be used when AggregatorManager should not send aggregation events
+ * e.g. in step 2 of BDP mode.
  */
 @Configurable(preConstruction = true) public class AggrFeatureEventDummyService implements IAggrFeatureEventService {
 
