@@ -8,6 +8,9 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilServic
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.entity.event.EntityEventConfService;
+import fortscale.entity.event.EntityEventDataMongoStore;
+import fortscale.entity.event.EntityEventDataReaderService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,5 +54,20 @@ public class ModelBuildingDependencies {
 	@Bean
 	public AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore() {
 		return new AggregatedFeatureEventsMongoStore();
+	}
+
+	@Bean
+	public EntityEventConfService entityEventConfService() {
+		return new EntityEventConfService();
+	}
+
+	@Bean
+	public EntityEventDataReaderService entityEventDataReaderService() {
+		return new EntityEventDataReaderService();
+	}
+
+	@Bean
+	public EntityEventDataMongoStore entityEventDataMongoStore() {
+		return new EntityEventDataMongoStore();
 	}
 }

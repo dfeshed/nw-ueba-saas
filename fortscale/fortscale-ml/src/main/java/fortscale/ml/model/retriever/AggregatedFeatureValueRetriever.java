@@ -43,14 +43,8 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (AggrEvent aggrEvent : aggrEvents) {
-			Date aggrEventTime = aggrEvent.getStartTime();
 			Double aggregatedFeatureValue = aggrEvent.getAggregatedFeatureValue();
-
-			for (IDataRetrieverFunction function : functions) {
-				aggregatedFeatureValue = (Double)function.execute(
-						aggregatedFeatureValue, aggrEventTime, endTime);
-			}
-
+			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(aggregatedFeatureValue, 1d);
 		}
 
