@@ -171,10 +171,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String serviceId = "FORTSCALE\\FS-DC-01$";
         boolean isLR = false;
         int eventScore = 0;
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMdd");
+        DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
+        DateTimeFormatter hdfsTimestampFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         long timestamp = new Date().getTime();
         StringBuilder sb = new StringBuilder()
-                .append(dt).append(SEPARATOR)
+                .append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
                 .append(dt.getMillis() / 1000).append(SEPARATOR)
                 .append(dateTimeScore).append(SEPARATOR)
                 .append(username).append(SEPARATOR)
@@ -200,7 +201,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(isLR).append(SEPARATOR)
                 .append(eventScore).append(SEPARATOR)
                 .append(timestamp)
-                .append(SEPARATOR).append(dtf.print(dt)).append(SEPARATOR);
+                .append(SEPARATOR).append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
         service.writeLineToHdfs(sb.toString(), timestamp);
     }
 
