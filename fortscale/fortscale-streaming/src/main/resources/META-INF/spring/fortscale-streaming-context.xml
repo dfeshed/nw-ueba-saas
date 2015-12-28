@@ -21,6 +21,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:META-INF/messages-streaming.properties</value>
+                <value>file:config/entities-overriding-streaming.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />

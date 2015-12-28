@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Map;
 
 /**
  * Created by idanp on 12/20/2015.
@@ -50,12 +49,24 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
         try {
             String line = "";
-            String userNameField = configurationParams.get("userNameField").getParamValue();
-            String domainField = configurationParams.get("domainFieldName").getParamValue();
-            String domainValue = configurationParams.get("domainValue").getParamValue();
-            String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
-            String normalizeServiceName = configurationParams.get("normalizeSservieName").getParamValue();
-            String updateOnly = configurationParams.get("updateOnlyFlag").getParamValue();
+			ConfigurationParam result = getParamConfiguration(configurationParams,"userNameField");
+            String userNameField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"domainFieldName");
+            String domainField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"domainValue");
+            String domainValue = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"normalizedUserNameField");
+            String normalizedUserNameField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"normalizeSservieName");
+            String normalizeServiceName = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"updateOnlyFlag");
+            String updateOnly = result != null ? result.getParamValue() : null;
+
             System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s", dataSourceName));
 
             fileWriterToConfigure.write("\n");
@@ -105,7 +116,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
         }
         catch (Exception e)
         {
-            logger.error("There was an exception during execution - {} ",e.getMessage()!=null ? e.getMessage() : e.getCause().getMessage());
+            logger.error("There was an exception during execution - {} ",e);
             return false;
         }
 

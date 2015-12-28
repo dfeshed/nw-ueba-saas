@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -40,18 +41,44 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 	public Boolean Configure() throws Exception {
         try {
             String line = "";
-            String ipField = configurationParams.get("ipField").getParamValue();
-            String countryField = configurationParams.get("countryField").getParamValue();
-            String longtitudeField = configurationParams.get("longtitudeField").getParamValue();
-            String latitudeField = configurationParams.get("latitudeField").getParamValue();
-            String countryIsoCodeField = configurationParams.get("countryIsoCodeField").getParamValue();
-            String regionField = configurationParams.get("regionField").getParamValue();
-            String cityField = configurationParams.get("cityField").getParamValue();
-            String ispField = configurationParams.get("ispField").getParamValue();
-            String usageTypeField = configurationParams.get("usageTypeField").getParamValue();
-            Boolean doSessionUpdateFlag = configurationParams.get("doSessionUpdateFlag").getParamFlag();
-            Boolean doDataBuckets = configurationParams.get("doDataBuckets").getParamFlag();
-            Boolean doGeoLocation = configurationParams.get("doGeoLocation").getParamFlag();
+
+			ConfigurationParam result = getParamConfiguration(configurationParams,"ipField");
+            String ipField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"countryField");
+            String countryField = result != null ? result.getParamValue() : null;
+
+
+			result = getParamConfiguration(configurationParams,"longtitudeField");
+            String longtitudeField = result != null ? result.getParamValue() : null;
+
+
+			result = getParamConfiguration(configurationParams,"latitudeField");
+            String latitudeField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"countryIsoCodeField");
+            String countryIsoCodeField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"regionField");
+            String regionField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"cityField");
+            String cityField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"ispField");
+            String ispField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"usageTypeField");
+            String usageTypeField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"doSessionUpdateFlag");
+            Boolean doSessionUpdateFlag = result != null ? result.getParamFlag() : null;
+
+			result = getParamConfiguration(configurationParams,"doDataBuckets");
+            Boolean doDataBuckets = result != null ? result.getParamFlag() : null;
+
+			result = getParamConfiguration(configurationParams,"doGeoLocation");
+            Boolean doGeoLocation = result != null ? result.getParamFlag() : null;
 
 
 			fileWriterToConfigure.write("\n");
