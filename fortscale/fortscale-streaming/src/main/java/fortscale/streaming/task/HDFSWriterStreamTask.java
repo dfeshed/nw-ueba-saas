@@ -24,9 +24,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -85,7 +82,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		long windowDuration = config.getLong("task.window.ms");
 
@@ -161,15 +158,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	}
 
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
-	private List<String> resolveStringValues(Config config, String string, FortscaleStringValueResolver resolver) {
+	private List<String> resolveStringValues(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValues(getConfigStringList(config, string));
 	}
 
-	private String resolveStringValueDefault(Config config, String string, String def, FortscaleStringValueResolver resolver) {
+	private String resolveStringValueDefault(Config config, String string, String def, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(config.get(string, def));
 	}
 
