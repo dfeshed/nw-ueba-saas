@@ -85,7 +85,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //Domain value
-            line = String.format("%s.%s_%s.domain.fake=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, domainValue);
+            line = String.format("%s.%s_%s.domain.fake=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, domainValue!=null ? domainValue : "");
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //Normalized user name value

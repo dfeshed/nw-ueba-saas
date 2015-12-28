@@ -505,23 +505,24 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                     brResult =br.readLine().toLowerCase();
                     paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
 
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+
                 }
                 else {
                     paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, dataSourceName+"Connect"));
 
-                    //In case of fake domain - enter the actual domain value the PS want
-                    paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+
                 }
-
-
-
                 System.out.println(String.format("Please enter the field name of the field that will contain the second normalized user name :"));
                 brResult =br.readLine().toLowerCase();
                 //Normalized_username field
                 paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
 
                 userNormalizationTaskService.setConfigurationParams(paramsMap);
-                executionResult = userNormalizationTaskService.Configure();
+				executionResult = userNormalizationTaskService.Init();
+				if(executionResult)
+                	executionResult = userNormalizationTaskService.Configure();
 
 
             }
@@ -606,7 +607,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				if (ipResolvingTaskService.Init())
                 {
                     ipResolvingTaskService.setConfigurationParams(paramsMap);
-                    executionResult = ipResolvingTaskService.Configure();
+					executionResult = ipResolvingTaskService.Init();
+					if (executionResult)
+						executionResult = ipResolvingTaskService.Configure();
+
                 }
 
 
