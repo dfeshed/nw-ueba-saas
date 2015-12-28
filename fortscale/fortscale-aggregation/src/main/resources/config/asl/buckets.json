@@ -979,7 +979,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "ssh"
+        "crmsf"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
