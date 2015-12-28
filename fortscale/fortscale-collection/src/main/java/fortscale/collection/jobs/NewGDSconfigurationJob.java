@@ -822,7 +822,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getMessage()!= null ? e.getMessage() : e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e);
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 	}
@@ -860,7 +860,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	   }
 	   catch(Exception e)
 	   {
-		   logger.error("There was an exception during the execution - {}",e.getMessage());
+		   logger.error("There was an exception during the execution - {}",e);
 		   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 	   }
 
