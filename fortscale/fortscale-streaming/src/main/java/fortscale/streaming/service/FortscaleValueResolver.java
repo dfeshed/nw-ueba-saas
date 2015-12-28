@@ -14,7 +14,7 @@ import java.util.List;
  * A simple EmbeddedValueResolverAware implementation.
  */
 @Component
-public class FortscaleStringValueResolver implements EmbeddedValueResolverAware {
+public class FortscaleValueResolver implements EmbeddedValueResolverAware {
 
     StringValueResolver stringValueResolver;
 
@@ -26,10 +26,20 @@ public class FortscaleStringValueResolver implements EmbeddedValueResolverAware 
     public String resolveStringValue(String str) {
         return stringValueResolver.resolveStringValue(str);
     }
-    
+
+    public Boolean resolveBooleanValue(String str) {
+        String value = stringValueResolver.resolveStringValue(str);
+        return Boolean.parseBoolean(value);
+    }
+
     public String resolveStringValue(Config config, String string) {
 		return resolveStringValue(getConfigString(config, string));
 	}
+
+    public Boolean resolveBooleanValue(Config config, String string) {
+        String value = resolveStringValue(config,string);
+        return Boolean.parseBoolean(value);
+    }
 
     public List<String> resolveStringValues(List<String> list) {
         List<String> resolvedList = new ArrayList<String>(list.size());
