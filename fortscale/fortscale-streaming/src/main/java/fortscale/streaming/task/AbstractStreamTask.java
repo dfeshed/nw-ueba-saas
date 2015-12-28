@@ -39,7 +39,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 
-	protected TaskMonitoringHelper taskMonitoringHelper;
+	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;

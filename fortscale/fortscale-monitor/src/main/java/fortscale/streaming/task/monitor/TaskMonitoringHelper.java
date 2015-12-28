@@ -2,7 +2,6 @@ package fortscale.streaming.task.monitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +14,11 @@ import java.util.Map;
  * Created by shays on 05/11/2015.
  */
 
-public class TaskMonitoringHelper {
+/*
+T is the key of the logged entity
+ */
+
+public class TaskMonitoringHelper<T> {
 
     //Parameters for Window statistics monitoring
     @Autowired
@@ -26,7 +29,7 @@ public class TaskMonitoringHelper {
 
 
     //Node is the task for specific data source and last state
-    private Map<StreamingTaskDataSourceConfigKey, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
+    private Map<T, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
 
     //Constant labels for JOB monitoring
     public static final String TOTAL_FILTERED_EVENTS_LABEL = "Filtered Events";
@@ -49,7 +52,7 @@ public class TaskMonitoringHelper {
         this.isMonitoredTask = isMonitoredTask;
     }
 
-    private TaskMonitoringDTO getNode(StreamingTaskDataSourceConfigKey key){
+    private TaskMonitoringDTO getNode(T key){
         TaskMonitoringDTO node = nodeMonitoringDetails.get(key);
         if (node == null){
             node = new TaskMonitoringDTO();
@@ -63,7 +66,7 @@ public class TaskMonitoringHelper {
      * Called for each new event
      * doesn't matter if the event will be filtered or not
      */
-    public void handleNewEvent(StreamingTaskDataSourceConfigKey key){
+    public void handleNewEvent(T key){
         if (isMonitoredTask()) {
             TaskMonitoringDTO node = getNode(key);
             node.increaseTotalEventsCount();
@@ -76,7 +79,7 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause, String... args){
+    public void countNewFilteredEvents(T key, String cause, String... args){
 
         //Get the text from messages file.
         String text = null;
@@ -101,7 +104,7 @@ public class TaskMonitoringHelper {
         nodeMonitoringDetails.clear();
     }
 
-    public void handleUnFilteredEvents(StreamingTaskDataSourceConfigKey key, Long dateTimeUnix, String dateAsString){
+    public void handleUnFilteredEvents(T key, Long dateTimeUnix, String dateAsString){
 
         TaskMonitoringDTO node = getNode(key);
 
@@ -131,11 +134,11 @@ public class TaskMonitoringHelper {
         //Start saving:
         String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
 
-        for (Map.Entry<StreamingTaskDataSourceConfigKey,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
-            StreamingTaskDataSourceConfigKey nodeKey = node.getKey();
+        for (Map.Entry<T,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
+            T nodeKey = node.getKey();
             String nodePrefix = "";
             if (nodeKey != null) {
-                nodePrefix = node.getKey().getDataSource() + "/" + node.getKey().getLastState() + "- ";
+                nodePrefix = node.getKey().toString() + "- ";
             };
 
             TaskMonitoringDTO nodeData = node.getValue();
