@@ -84,7 +84,7 @@
     },
     {
       "name": "normalized_username_kerberos_logins_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -246,7 +246,7 @@
     },
     {
       "name": "normalized_username_ssh_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -393,7 +393,7 @@
     },
     {
       "name": "normalized_username_vpn_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -480,7 +480,7 @@
     },
     {
       "name": "normalized_username_vpn_session_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -575,7 +575,7 @@
     },
     {
       "name": "normalized_username_amt_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
