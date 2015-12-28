@@ -85,7 +85,6 @@
             "distinct_src_machines_amt": 0.09,
             "sensitive_actions_amt": 0.09,
             "distinct_yid_amt": 0.09,
-            "distinct_src_machines_crmsf": 0.09,
             "successful_crmsf": 0.09,
             "failed_crmsf": 0.09,
             "distinct_countries_crmsf": 0.09
@@ -188,7 +187,6 @@
             "distinct_src_machines_amt": 0.09,
             "sensitive_actions_amt": 0.09,
             "distinct_yid_amt": 0.09,
-            "distinct_src_machines_crmsf": 0.09,
             "successful_crmsf": 0.09,
             "failed_crmsf": 0.09,
             "distinct_countries_crmsf": 0.09
