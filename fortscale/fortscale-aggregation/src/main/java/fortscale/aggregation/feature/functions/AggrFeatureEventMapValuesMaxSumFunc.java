@@ -35,7 +35,7 @@ public class AggrFeatureEventMapValuesMaxSumFunc extends AbstractAggrFeatureEven
 
     @Override
     protected AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue) {
-        Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggrFeatureValue.getValue();
+        Map<String, Integer> featuresGroupToMax = (Map<String, Integer>) aggrFeatureValue.getValue();
         int sum = 0;
         for (int max : featuresGroupToMax.values()) {
             sum += max;
@@ -45,13 +45,13 @@ public class AggrFeatureEventMapValuesMaxSumFunc extends AbstractAggrFeatureEven
         return res;
     }
 
-    protected void putAdditionalInformation(AggrFeatureValue aggrFeatureValue, Map<List<String>, Integer> featuresGroupToMax){
+    protected void putAdditionalInformation(AggrFeatureValue aggrFeatureValue, Map<String, Integer> featuresGroupToMax){
         if (!includeValues) {
             return;
         }
 
-        List<List<String>> featuresGroupsWithHighScore = new ArrayList<>();
-        for (Map.Entry<List<String>, Integer> entry : featuresGroupToMax.entrySet()) {
+        List<String> featuresGroupsWithHighScore = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : featuresGroupToMax.entrySet()) {
             if (entry.getValue() >= minScoreToInclude) {
                 featuresGroupsWithHighScore.add(entry.getKey());
             }

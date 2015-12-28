@@ -17,11 +17,12 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
         AbstractAggrFeatureEventFeatureToMaxMapFunc f = new AbstractAggrFeatureEventFeatureToMaxMapFunc() {
             @Override
             protected AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue) {
-                Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggrFeatureValue.getValue();
+                Map<String, Integer> featuresGroupToMax = (Map<String, Integer>) aggrFeatureValue.getValue();
                 Assert.assertEquals(expectedFeaturesGroupToMax.size(), featuresGroupToMax.size());
                 for (Map.Entry<String[], Integer> entry : expectedFeaturesGroupToMax.entrySet()) {
                     List<String> groupByFeatureValues = Arrays.asList(entry.getKey());
-                    Assert.assertEquals(entry.getValue().intValue(), featuresGroupToMax.get(groupByFeatureValues).intValue());
+                    String groupByFeatureValuesKey = generateGroupByFeatureValuesKey(entry.getKey());
+                    Assert.assertEquals(entry.getValue().intValue(), featuresGroupToMax.get(groupByFeatureValuesKey).intValue());
                 }
 
                 calculateMapAggrFeatureValueWasCalled[0] = true;
@@ -36,6 +37,17 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
                 multipleBucketsAggrFeaturesMapList);
 
         Assert.assertTrue(calculateMapAggrFeatureValueWasCalled[0]);
+    }
+
+    private String generateGroupByFeatureValuesKey(String[] features){
+        StringBuilder builder = new StringBuilder();
+        for(String feature: features){
+            if(builder.length() > 0){
+                builder.append(AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY);
+            }
+            builder.append(feature);
+        }
+        return builder.toString();
     }
 
     @Test

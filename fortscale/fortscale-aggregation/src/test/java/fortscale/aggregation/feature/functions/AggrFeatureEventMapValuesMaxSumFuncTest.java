@@ -70,7 +70,7 @@ public class AggrFeatureEventMapValuesMaxSumFuncTest {
 
         Map<String, Object> additionalInforation = ((AggrFeatureValue) res.getValue()).getAdditionalInformationMap();
         Assert.assertEquals(
-                Collections.singletonList(Collections.singletonList(featureValue)),
+                Collections.singletonList(featureValue),
                 additionalInforation.get("distinct_values"));
     }
 }

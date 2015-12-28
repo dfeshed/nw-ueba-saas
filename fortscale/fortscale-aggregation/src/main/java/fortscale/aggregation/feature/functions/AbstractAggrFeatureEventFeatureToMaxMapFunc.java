@@ -37,7 +37,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
 
     private AggrFeatureValue calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         String featureToPick = getFeatureToPick(aggrFeatureEventConf);
-        Map<List<String>, Integer> featuresGroupToMax = new HashMap<>();
+        Map<String, Integer> featuresGroupToMax = new HashMap<>();
         long total = 0;
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             Feature aggrFeature = aggrFeatures.get(featureToPick);
@@ -48,7 +48,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
                 throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s containing %s",
                         featureToPick, AggrFeatureValue.class.getSimpleName(), Map.class.getSimpleName()));
             }
-            for (Map.Entry<List<String>, Integer> featuresGroupAndMax : ((Map<List<String>, Integer>) ((AggrFeatureValue) aggrFeature.getValue()).getValue()).entrySet()) {
+            for (Map.Entry<String, Integer> featuresGroupAndMax : ((Map<String, Integer>) ((AggrFeatureValue) aggrFeature.getValue()).getValue()).entrySet()) {
                 Integer max = featuresGroupToMax.get(featuresGroupAndMax.getKey());
                 if (max == null) {
                     max = Integer.MIN_VALUE;

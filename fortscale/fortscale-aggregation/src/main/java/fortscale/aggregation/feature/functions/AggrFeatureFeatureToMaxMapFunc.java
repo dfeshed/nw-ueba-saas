@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.FeatureStringValue;
 import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -27,6 +28,8 @@ import java.util.*;
 @JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
+    protected static final String FEATURE_GROUP_SEPERATOR_KEY = "# # #";
+    protected static final String FEATURE_SEPERATOR_KEY = "#";
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
     public final static String MAXIMIZE_FIELD_NAME = "maximize";
@@ -57,11 +60,11 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         }
 
         AggrFeatureValue aggFeatureValue = (AggrFeatureValue) value;
-        Map<List<String>, Integer> featuresGroupToMax = (Map<List<String>, Integer>) aggFeatureValue.getValue();
+        Map<String, Integer> featuresGroupToMax = (Map<String, Integer>) aggFeatureValue.getValue();
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
-            List<String> groupByFeatureValues = extractGroupByFeatureValues(features, groupByFeatureNames);
+            String groupByFeatureValues = extractGroupByFeatureValues(features, groupByFeatureNames);
             Feature featureToMaximize = features.get(maximizeFeatureName);
             if (groupByFeatureValues != null && featureToMaximize != null) {
                 Integer max = featuresGroupToMax.get(groupByFeatureValues);
@@ -77,18 +80,21 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         return value;
     }
 
-    private List<String> extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
+    private String extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
         if (groupByFeatureNames == null) {
-            return Collections.emptyList();
+            return "";
         }
-        List<String> groupByFeatureValues = new ArrayList<>(groupByFeatureNames.size());
+        StringBuilder builder = new StringBuilder();
         for (String groupByFeatureName : groupByFeatureNames) {
             Feature featureToGroupBy = features.get(groupByFeatureName);
             if (featureToGroupBy == null) {
                 return null;
             }
-            groupByFeatureValues.add(((FeatureStringValue) featureToGroupBy.getValue()).getValue());
+            if(builder.length() > 0){
+                builder.append(FEATURE_GROUP_SEPERATOR_KEY);
+            }
+            builder.append(groupByFeatureName).append(FEATURE_SEPERATOR_KEY).append(((FeatureStringValue) featureToGroupBy.getValue()).getValue());
         }
-        return groupByFeatureValues;
+        return builder.toString();
     }
 }

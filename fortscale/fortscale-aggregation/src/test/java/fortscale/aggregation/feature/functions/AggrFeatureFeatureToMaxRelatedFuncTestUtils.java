@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.functions;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -24,10 +25,10 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 
 
     public static Feature createAggrFeature(String featureName, Pair<String[], Integer>... featureValuesAndNumbers) {
-        Map<List<String>, Integer> featuresGroupToMax = new HashMap<>();
+        Map<String, Integer> featuresGroupToMax = new HashMap<>();
         for (Pair<String[], Integer> featureValuesAndNumber : featureValuesAndNumbers) {
             List<String> featureGroupedByValues = Arrays.asList(featureValuesAndNumber.getLeft());
-            featuresGroupToMax.put(featureGroupedByValues, featureValuesAndNumber.getRight());
+            featuresGroupToMax.put(StringUtils.join(featureGroupedByValues,"# # #"), featureValuesAndNumber.getRight());
         }
         return new Feature(featureName, new AggrFeatureValue(featuresGroupToMax, (long) featuresGroupToMax.size()));
     }
