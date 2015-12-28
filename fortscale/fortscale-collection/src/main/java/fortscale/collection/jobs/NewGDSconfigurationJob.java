@@ -321,6 +321,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				executionResult = initConfigurationService.Configure();
 
 			initConfigurationService.Done();
+
+
+			System.out.println(String.format("Finish to configure the Schema part"));
         }
         catch (Exception exception)
         {
