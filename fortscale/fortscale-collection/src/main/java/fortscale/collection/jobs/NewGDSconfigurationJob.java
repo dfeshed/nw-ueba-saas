@@ -403,13 +403,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //in case there is a target user to be normalize also
             if(targetNormalizationFlag)
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
-            else if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                 //in case there is machine to normalized and tag
-            else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
                 paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
                 //in case there is ip to geo locate
-            else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
                 paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
             else
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
@@ -473,13 +473,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             if(executionResult && targetNormalizationFlag)
             {
 
-                if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+                if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
                     paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                     //in case there is machine to normalized and tag
-                else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+                else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
                     paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
                     //in case there is ip to geo locate
-                else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+                else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
                     paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
                 else
                     paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
@@ -572,7 +572,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("overrideIpWithHostNameUsage", new ConfigurationParam("overrideIpWithHostNameUsage", overrideIpWithHostNameUsage, ""));
 
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_sourceIp"));
-				if (paramsMap.get("targetIpResolvingFlag").getParamFlag())
+				if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag())
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-resolved"));
 
 				else
