@@ -162,6 +162,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,BASE_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",false,""));
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
 			}
 
 			case "access_event":
@@ -185,6 +186,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
 
 
 			}
@@ -221,6 +223,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
 
 
 
@@ -257,6 +260,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
 
 			}
 		}
