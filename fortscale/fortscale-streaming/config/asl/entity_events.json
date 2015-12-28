@@ -8,7 +8,7 @@
     "EntityEventDefinitions": [
       {
         "name": "normalized_username_daily",
-        "daysToRetainDocument": 30,
+        "daysToRetainDocument": 365,
         "contextFields": ["normalized_username"],
         "aggregatedFeatureEventNamesMap": {
           "aggregatedFeatureEventNames": [
@@ -101,7 +101,7 @@
       },
       {
         "name": "normalized_username_hourly",
-        "daysToRetainDocument": 1,
+        "daysToRetainDocument": 365,
         "contextFields": ["normalized_username"],
         "aggregatedFeatureEventNamesMap": {
           "aggregatedFeatureEventNames": [
