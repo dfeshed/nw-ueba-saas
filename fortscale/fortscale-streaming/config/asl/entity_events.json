@@ -45,7 +45,10 @@
             "normalized_username_vpn_session_daily.number_of_high_score_rate_vpn_session_daily",
             "normalized_username_amt_daily.has_high_score_date_time_events_amt_daily",
             "normalized_username_amt_daily.distinct_number_of_high_score_action_code_events_amt_daily",
-            "normalized_username_amt_daily.distinct_number_of_high_score_source_machine_events_amt_daily"
+            "normalized_username_amt_daily.distinct_number_of_high_score_source_machine_events_amt_daily",
+            "normalized_username_crmsf_daily.has_high_score_date_time_events_crmsf_daily",
+            "normalized_username_crmsf_daily.distinct_number_of_country_with_high_score_crmsf_daily",
+            "normalized_username_crmsf_daily.distinct_number_of_failure_code_with_high_score_crmsf_daily"
           ]
         },
         "entityEventFunction": {
@@ -104,7 +107,10 @@
             "normalized_username_vpn_session_daily.number_of_high_score_rate_vpn_session_daily": 0.1,
             "normalized_username_amt_daily.has_high_score_date_time_events_amt_daily": 0.15,
             "normalized_username_amt_daily.distinct_number_of_high_score_action_code_events_amt_daily": 0.15,
-            "normalized_username_amt_daily.distinct_number_of_high_score_source_machine_events_amt_daily": 0.15
+            "normalized_username_amt_daily.distinct_number_of_high_score_source_machine_events_amt_daily": 0.15,
+            "normalized_username_crmsf_daily.has_high_score_date_time_events_crmsf_daily": 0.15,
+            "normalized_username_crmsf_daily.distinct_number_of_country_with_high_score_crmsf_daily": 0.15,
+            "normalized_username_crmsf_daily.distinct_number_of_failure_code_with_high_score_crmsf_daily": 0.2
           }
         }
       },
@@ -147,7 +153,10 @@
             "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpn_session_hourly",
             "normalized_username_amt_hourly.has_high_score_date_time_events_amt_hourly",
             "normalized_username_amt_hourly.distinct_number_of_high_score_action_code_events_amt_hourly",
-            "normalized_username_amt_hourly.distinct_number_of_high_score_source_machine_events_amt_hourly"
+            "normalized_username_amt_hourly.distinct_number_of_high_score_source_machine_events_amt_hourly",
+            "normalized_username_crmsf_hourly.has_high_score_date_time_events_crmsf_hourly",
+            "normalized_username_crmsf_hourly.distinct_number_of_country_with_high_score_crmsf_hourly",
+            "normalized_username_crmsf_hourly.distinct_number_of_failure_code_with_high_score_crmsf_hourly"
           ]
         },
         "entityEventFunction": {
@@ -206,7 +215,10 @@
             "normalized_username_vpn_session_hourly.number_of_high_score_rate_vpn_session_hourly": 0.1,
             "normalized_username_amt_hourly.has_high_score_date_time_events_amt_hourly": 0.15,
             "normalized_username_amt_hourly.distinct_number_of_high_score_action_code_events_amt_hourly": 0.15,
-            "normalized_username_amt_hourly.distinct_number_of_high_score_source_machine_events_amt_hourly": 0.15
+            "normalized_username_amt_hourly.distinct_number_of_high_score_source_machine_events_amt_hourly": 0.15,
+            "normalized_username_crmsf_hourly.has_high_score_date_time_events_crmsf_hourly": 0.15,
+            "normalized_username_crmsf_hourly.distinct_number_of_country_with_high_score_crmsf_hourly": 0.15,
+            "normalized_username_crmsf_hourly.distinct_number_of_failure_code_with_high_score_crmsf_hourly": 0.2
           }
         }
       }
