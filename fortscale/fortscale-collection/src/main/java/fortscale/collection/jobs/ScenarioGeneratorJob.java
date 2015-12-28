@@ -88,9 +88,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
         /*********************** Entity **********************/
         //TODO - extract these
-        String username = "alrusr51@somebigcompany.com";
-        String srcMachine = "alrusr51_PC";
-        String dstMachine = "alrusr51_SRV";
+        String samaccountname = "alrusr51";
+        String username = samaccountname + "@somebigcompany.com";
+        String srcMachine = samaccountname + "_PC";
+        String dstMachine = samaccountname + "_SRV";
         String dataSource = "kerberos_logins";
         String timeSpan = "Hourly";
         String impalaTable = "authenticationscores";
@@ -124,7 +125,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         /*********************** Events **********************/
         HdfsService service = new HdfsService(hdfsPartition, fileName, partitionStrategy, splitStrategy, impalaTable,
                 1, 0, SEPARATOR);
-        createEvents(user, computer, dstMachine, service);
+        createWorkBaselineEvents(user, computer, dstMachine, service);
 
         /*********************** Buckets *********************/
         createBuckets(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime);
@@ -190,7 +191,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws IOException
      * @throws HdfsException
      */
-    public void createEvents(User user, Computer computer, String dstMachine, HdfsService service)
+    public void createWorkBaselineEvents(User user, Computer computer, String dstMachine, HdfsService service)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         //TODO - extract these
         int numOfDays = 30;
@@ -234,7 +235,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dt = dt.plusDays(1);
             }
         }
-
     }
 
     /**
