@@ -27,7 +27,6 @@
             "normalized_username_amt_daily.distinct_number_of_src_machines_amt_daily",
             "normalized_username_amt_daily.distinct_number_of_sensitive_actions_amt_daily",
             "normalized_username_amt_daily.distinct_number_of_yid_amt_daily",
-            "normalized_username_crmsf_daily.distinct_number_of_src_machines_crmsf_daily",
             "normalized_username_crmsf_daily.number_of_successful_crmsf_events_daily",
             "normalized_username_crmsf_daily.number_of_failed_crmsf_daily",
             "normalized_username_crmsf_daily.distinct_number_of_countries_crmsf_daily",
@@ -66,7 +65,6 @@
             "distinct_src_machines_amt": ["normalized_username_amt_daily.distinct_number_of_src_machines_amt_daily"],
             "sensitive_actions_amt": ["normalized_username_amt_daily.distinct_number_of_sensitive_actions_amt_daily"],
             "distinct_yid_amt": ["normalized_username_amt_daily.distinct_number_of_yid_amt_daily"],
-            "distinct_src_machines_crmsf": ["normalized_username_crmsf_daily.distinct_number_of_src_machines_crmsf_daily"],
             "successful_crmsf": ["normalized_username_crmsf_daily.number_of_successful_crmsf_events_daily"],
             "failed_crmsf": ["normalized_username_crmsf_daily.number_of_failed_crmsf_daily"],
             "distinct_countries_crmsf": ["normalized_username_crmsf_daily.distinct_number_of_countries_crmsf_daily"]
@@ -132,7 +130,6 @@
             "normalized_username_amt_hourly.distinct_number_of_src_machines_amt_hourly",
             "normalized_username_amt_hourly.distinct_number_of_sensitive_actions_amt_hourly",
             "normalized_username_amt_hourly.distinct_number_of_yid_amt_hourly",
-            "normalized_username_crmsf_hourly.distinct_number_of_src_machines_crmsf_hourly",
             "normalized_username_crmsf_hourly.number_of_successful_crmsf_events_hourly",
             "normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly",
             "normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly",
@@ -171,7 +168,6 @@
             "distinct_src_machines_amt": ["normalized_username_amt_hourly.distinct_number_of_src_machines_amt_hourly"],
             "sensitive_actions_amt": ["normalized_username_amt_hourly.distinct_number_of_sensitive_actions_amt_hourly"],
             "distinct_yid_amt": ["normalized_username_amt_hourly.distinct_number_of_yid_amt_hourly"],
-            "distinct_src_machines_crmsf": ["normalized_username_crmsf_hourly.distinct_number_of_src_machines_crmsf_hourly"],
             "successful_crmsf": ["normalized_username_crmsf_hourly.number_of_successful_crmsf_events_hourly"],
             "failed_crmsf": ["normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly"],
             "distinct_countries_crmsf": ["normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly"]
