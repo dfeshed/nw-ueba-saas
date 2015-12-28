@@ -27,7 +27,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private AggregatorManager aggregatorManager;
 	private String dataSourceFieldName;
 	private String dateFieldName;
-	private Boolean sendAggregationEvents;
+	private Boolean skipSendingAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
@@ -37,9 +37,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 
-		sendAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
+		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
 
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),sendAggregationEvents);
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 
@@ -49,6 +49,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
 
 	}
+
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
