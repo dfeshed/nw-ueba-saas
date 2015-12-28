@@ -9,26 +9,19 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
 public class ModelBuilderManager {
     private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
-
-    private static final SimpleDateFormat utc;
-    static {
-        utc = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
-        utc.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
 
     @Autowired
     private FactoryService<IContextSelector> contextSelectorFactoryService;
@@ -92,7 +85,7 @@ public class ModelBuilderManager {
         }
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
-                modelConf.getName(), sessionId, utc.format(currentEndTime), numOfSuccesses, numOfFailures);
+                modelConf.getName(), sessionId, TimeUtils.getUtcFormat(currentEndTime), numOfSuccesses, numOfFailures);
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
