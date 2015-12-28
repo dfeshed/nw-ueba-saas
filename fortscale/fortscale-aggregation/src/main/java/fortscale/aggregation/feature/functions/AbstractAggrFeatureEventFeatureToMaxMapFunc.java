@@ -29,10 +29,10 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
 
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
-    	AggrFeatureValue featuresGroupToMax = calculateFeaturesGroupToMaxFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        AggrFeatureValue featuresGroupToMax = calculateFeaturesGroupToMaxFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
         return calculateFeaturesGroupToMaxValue(featuresGroupToMax);
     }
-    
+
     protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue);
 
     private AggrFeatureValue calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {

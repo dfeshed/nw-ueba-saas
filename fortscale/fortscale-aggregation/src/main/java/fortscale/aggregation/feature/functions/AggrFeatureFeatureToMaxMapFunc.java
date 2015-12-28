@@ -28,8 +28,8 @@ import java.util.*;
 @JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
-    private static final String FEATURE_GROUP_SEPERATOR_KEY = "# # #";
-    private static final String FEATURE_SEPERATOR_KEY = "#";
+    protected static final String FEATURE_GROUP_SEPERATOR_KEY = "# # #";
+    protected static final String FEATURE_SEPERATOR_KEY = "#";
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
     public final static String MAXIMIZE_FIELD_NAME = "maximize";
@@ -56,7 +56,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
             aggrFeature.setValue(value);
         } else if (!(value instanceof AggrFeatureValue && ((AggrFeatureValue) value).getValue() instanceof Map)) {
             throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s",
-                aggrFeature.getName(), Map.class.getSimpleName()));
+                    aggrFeature.getName(), Map.class.getSimpleName()));
         }
 
         AggrFeatureValue aggFeatureValue = (AggrFeatureValue) value;
@@ -86,7 +86,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         }
         StringBuilder builder = new StringBuilder();
         for (String groupByFeatureName : groupByFeatureNames) {
-			Feature featureToGroupBy = features.get(groupByFeatureName);
+            Feature featureToGroupBy = features.get(groupByFeatureName);
             if (featureToGroupBy == null) {
                 return null;
             }
@@ -94,7 +94,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
                 builder.append(FEATURE_GROUP_SEPERATOR_KEY);
             }
             builder.append(groupByFeatureName).append(FEATURE_SEPERATOR_KEY).append(((FeatureStringValue) featureToGroupBy.getValue()).getValue());
-		}
+        }
         return builder.toString();
     }
 }
