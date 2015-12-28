@@ -537,7 +537,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//source Ip Resolving task
-			if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() && executionResult) {
+			if (paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag() && executionResult) {
 
 				System.out.println(String.format("Going to configure the IP resolving task for %s", dataSourceName));
 
@@ -596,7 +596,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//target ip resolving
-			if (paramsMap.get("targetIpResolvingFlag").getParamFlag() && executionResult) {
+			if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag() && executionResult) {
 
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_targetIp"));
 				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-resolved"));
@@ -621,12 +621,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//Computer tagging task
-			if ((paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag()) && executionResult)
+			if (((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())) && executionResult)
 			{
 				System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "ComputerTaggingClusteringTask"));
 
-				if(paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+				if((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered_to_geo_location"));
 				else
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered"));
@@ -660,12 +660,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//Source Geo Location
-			if(paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()  && executionResult) {
+			if(paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()  && executionResult) {
 
 				System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "source_VpnEnrichTask"));
 
-				if(paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+				if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-geolocated"));
 				else
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-geolocated"));
@@ -699,7 +699,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//Target Geo Location
-			if(paramsMap.get("targetIpGeoLocationFlag").getParamFlag()  && executionResult) {
+			if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()  && executionResult) {
 
 				System.out.println(String.format("Going to configure the target ip at  GeoLocation task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "target_VpnEnrichTask"));
