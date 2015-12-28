@@ -42,7 +42,7 @@ public class ScenarioGeneratorJobTest {
 	@Test
 	public void testRandomTimes()
 			throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
-		scenarioGeneratorJob.createWorkBaselineEvents(user, computer, "alrusr51_SRV", service);
+		scenarioGeneratorJob.createEvents(user, computer, "alrusr51_SRV", service);
 	}
 
 }

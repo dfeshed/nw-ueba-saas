@@ -125,10 +125,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         /*********************** Events **********************/
         HdfsService service = new HdfsService(hdfsPartition, fileName, partitionStrategy, splitStrategy, impalaTable,
                 1, 0, SEPARATOR);
-        createWorkBaselineEvents(user, computer, dstMachine, service);
+        createEvents(user, computer, dstMachine, service);
 
         /*********************** Buckets *********************/
-        createBuckets(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime);
+        createBucket(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime, 1,
+                "destination_machine_histogram");
 
         /********************** Score ************************/
         int alertScore = 80;
@@ -156,23 +157,22 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param startTime
      * @param endTime
      */
-    public void createBuckets(String username, String key, String dataSource, String timeSpan, long startTime,
-            long endTime) {
+    public void createBucket(String username, String key, String dataSource, String timeSpan, long startTime,
+                             long endTime, int count, String featureName) {
         FeatureBucket bucket = new FeatureBucket();
-        //TODO - generalize this
         bucket.setBucketId("fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username);
         bucket.setCreatedAt(new Date());
         bucket.setContextFieldNames(Arrays.asList(new String[] { key }));
         bucket.setDataSources(Arrays.asList(new String[] { dataSource }));
-        bucket.setFeatureBucketConfName(key + "_" + dataSource + "_daily");
+        bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
         bucket.setStrategyId("fixed_duration_" + timeSpan + "_" + startTime);
         bucket.setStartTime(startTime);
         bucket.setEndTime(endTime);
         Feature feature = new Feature();
-        feature.setName("destination_machine_histogram");
-        feature.setValue(new FeatureNumericValue(1));
+        feature.setName(featureName);
+        feature.setValue(new FeatureNumericValue(count));
         Map<String, Feature> features = new HashMap();
-        features.put("destination_machine_histogram", feature);
+        features.put(featureName, feature);
         bucket.setAggregatedFeatures(features);
         mongoTemplate.insert(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
     }
@@ -191,7 +191,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws IOException
      * @throws HdfsException
      */
-    public void createWorkBaselineEvents(User user, Computer computer, String dstMachine, HdfsService service)
+    public void createEvents(User user, Computer computer, String dstMachine, HdfsService service)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         //TODO - extract these
         int numOfDays = 30;
@@ -202,12 +202,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int standardDeviation = 2;
         int morningMedianHour = 11;
         int afternoonMedianHour = 15;
+        boolean skipWeekend = true;
 
         Random random = new Random();
         DateTime now = new DateTime().withZone(DateTimeZone.UTC);
         DateTime dt = now.minusDays(numOfDays);
+        List<Pair<Long, String>> eventsToWrite = new ArrayList();
         while (dt.isBefore(now)) {
-            List<Pair<Long, String>> eventsToWrite = new ArrayList();
             int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
                     + numberOfMinEventsPerTimePeriod;
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
@@ -215,23 +216,21 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             for (int j = 0; j < numberOfMorningEvents; j++) {
                 DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, morningMedianHour, maxHourOfWork,
                         minHourOfWork);
-                Pair<Long, String> pair = new ImmutablePair(dateTime.getMillis(),
-                        buildKerberosHDFSLine(dateTime, user, computer, dstMachine));
-                eventsToWrite.add(pair);
+                eventsToWrite.add(new ImmutablePair(dateTime.getMillis(),
+                        buildKerberosHDFSLine(dateTime, user, computer, dstMachine)));
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
                 DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, afternoonMedianHour, maxHourOfWork,
                         minHourOfWork);
-                Pair<Long, String> pair = new ImmutablePair(dateTime.getMillis(),
-                        buildKerberosHDFSLine(dateTime, user, computer, dstMachine));
-                eventsToWrite.add(pair);
+                eventsToWrite.add(new ImmutablePair(dateTime.getMillis(),
+                        buildKerberosHDFSLine(dateTime, user, computer, dstMachine)));
             }
             sendToHDFS(service, eventsToWrite);
+            eventsToWrite.clear();
             dt = dt.plusDays(1);
-            //skip the weekend
-            if (dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
+            if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
-            } else if (dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+            } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
                 dt = dt.plusDays(1);
             }
         }
@@ -252,8 +251,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 			}
 		};
         Collections.sort(eventsToWrite, comparator);
-        for (Pair<Long, String> touple: eventsToWrite) {
-			service.writeLineToHdfs(touple.getValue(), touple.getKey());
+        for (Pair<Long, String> tuple: eventsToWrite) {
+			service.writeLineToHdfs(tuple.getValue(), tuple.getKey());
 		}
     }
 
