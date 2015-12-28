@@ -38,7 +38,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	private boolean useEndTimeSort;
     
     @Autowired
-    FeatureBucketAggrMetadataRepository featureBucketAggrMetadataRepository;
+    private FeatureBucketAggrMetadataRepository featureBucketAggrMetadataRepository;
     
     @Autowired 
     private FeatureBucketAggrSendingQueueRepository featureBucketAggrSendingQueueRepository; 
