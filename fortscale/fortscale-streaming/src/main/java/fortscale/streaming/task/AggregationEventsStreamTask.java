@@ -34,7 +34,6 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 
@@ -49,14 +48,6 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
 
-	}
-
-	protected String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
-		return resolver.resolveStringValue(getConfigString(config, string));
-	}
-
-	private Boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
-		return resolver.resolveBooleanValue(getConfigString(config, string));
 	}
 
 	@Override

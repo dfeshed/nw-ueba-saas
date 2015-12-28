@@ -83,9 +83,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-
-		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
-
 		long windowDuration = config.getLong("task.window.ms");
 
 

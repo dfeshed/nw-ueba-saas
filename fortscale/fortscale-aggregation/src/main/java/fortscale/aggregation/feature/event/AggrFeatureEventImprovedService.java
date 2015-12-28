@@ -34,7 +34,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     private long fetchDataCycleInSeconds;
     @Value("${fortscale.aggregation.sync.timer.waiting.time.before.notification}")
 	private long waitingTimeBeforeNotification;
-    @Value("${fortscale.aggregation.sender.use.end.time.sort:false}")
+    @Value("${fortscale.aggregation.sender.use.end.time.sort:true}")
 	private boolean useEndTimeSort;
     
     @Autowired

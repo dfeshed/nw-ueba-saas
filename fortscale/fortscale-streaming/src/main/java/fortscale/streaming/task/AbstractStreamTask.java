@@ -50,6 +50,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
+	protected Boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
+		return resolver.resolveBooleanValue(getConfigString(config, string));
+	}
+
 	public AbstractStreamTask(){
 		processExceptionHandler = new ExceptionHandler();
 		fillExceptionHandler(processExceptionHandler);
@@ -68,6 +72,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void init(Config config, TaskContext context) throws Exception {
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
+
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
