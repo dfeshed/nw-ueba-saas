@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +45,26 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 	public Boolean Configure() throws Exception {
         try {
             String line = "";
-            Boolean restrictToAD = configurationParams.get("restrictToAD").getParamFlag();
-            Boolean shortNameUsage = configurationParams.get("shortNameUsage").getParamFlag();
-            Boolean removeLastDotUsage = configurationParams.get("removeLastDotUsage").getParamFlag();
-            Boolean dropOnFailUsage = configurationParams.get("dropOnFailUsage").getParamFlag();
-            Boolean overrideIpWithHostNameUsage = configurationParams.get("overrideIpWithHostNameUsage").getParamFlag();
-            String ipField = configurationParams.get("ipField").getParamValue();
-            String hostField = configurationParams.get("host").getParamValue();
+			ConfigurationParam result = getParamConfiguration(configurationParams,"restrictToAD");
+            Boolean restrictToAD = result != null ? result.getParamFlag() : null;
+
+			result = getParamConfiguration(configurationParams,"restrictToAD");
+            Boolean shortNameUsage = result != null ? result.getParamFlag() : null;
+
+			getParamConfiguration(configurationParams,"restrictToAD");
+            Boolean removeLastDotUsage = result != null ? result.getParamFlag() : null;
+
+			getParamConfiguration(configurationParams,"dropOnFailUsage");
+            Boolean dropOnFailUsage = result != null ? result.getParamFlag() : null;
+
+			getParamConfiguration(configurationParams,"overrideIpWithHostNameUsage");
+            Boolean overrideIpWithHostNameUsage = result != null ? result.getParamFlag() : null;
+
+			getParamConfiguration(configurationParams,"ipField");
+            String ipField = result != null ? result.getParamValue() : null;
+
+			getParamConfiguration(configurationParams,"host");
+            String hostField = result != null ? result.getParamValue() : null;
 
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");

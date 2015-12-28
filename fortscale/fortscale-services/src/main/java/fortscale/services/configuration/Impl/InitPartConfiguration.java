@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +59,61 @@ public class InitPartConfiguration extends ConfigurationService {
         try {
             Boolean result = false;
             String line = "";
-            String dataSourceName = configurationParams.get("dataSourceName").getParamValue();
-            String dataSourceType = configurationParams.get("dataSourceType").getParamValue();
+
+			ConfigurationParam configurationResult = getParamConfiguration(configurationParams,"dataSourceName");
+            String dataSourceName = result != null ? configurationResult.getParamValue() : null;
+
+			//configurationResult = getParamConfiguration(configurationParams,"dataSourceType");
+            //String dataSourceType = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"dataSourceLists");
+			String dataSourceList  = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"sourceIpFlag");
+			Boolean sourceIpFlag = result != null ? configurationResult.getParamFlag() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"targetIpFlag");
+			Boolean targetIpFlag = result != null ? configurationResult.getParamFlag() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"dataFields");
+			String dataFields = result != null ? configurationResult.getParamValue() : null;
+
+
+			configurationResult = getParamConfiguration(configurationParams,"enrichFields");
+			String enrichFields = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"enrichDelimiter");
+			String enrichDelimiter = result != null ? configurationResult.getParamValue() : null;
+
+
+			configurationResult = getParamConfiguration(configurationParams,"enrichTableName");
+			String enrichTableName = result != null ? configurationResult.getParamValue() : null;
+
+
+			configurationResult = getParamConfiguration(configurationParams,"scoreFields");
+			String scoreFields = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"scoreDelimiter");
+			String scoreDelimiter = result != null ? configurationResult.getParamValue() : null;
+
+
+			configurationResult = getParamConfiguration(configurationParams,"scoreTableName");
+			String scoreTableName = result != null ? configurationResult.getParamValue() : null;
+
+
+			configurationResult = getParamConfiguration(configurationParams,"topSchemaFlag");
+			Boolean topSchemaFlag = result != null ? configurationResult.getParamFlag() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"normalizedUserNameField");
+			String normalizedUserNameField = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"dataDelimiter");
+			String dataDelimiter = result != null ? configurationResult.getParamValue() : null;
+
+			configurationResult = getParamConfiguration(configurationParams,"dataTableName");
+			String dataTableName = result != null ? configurationResult.getParamValue() : null;
+
+
 
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
 
@@ -74,7 +128,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Configure the data source list
-            line = String.format("fortscale.data.source=%s,%s", configurationParams.get("dataSourceLists").getParamValue(), dataSourceName);
+            line = String.format("fortscale.data.source=%s,%s",dataSourceList, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             line = String.format("########################################### %s ########################################################", dataSourceName);
@@ -85,7 +139,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            if (configurationParams.containsKey("sourceIpFlag") && configurationParams.get("sourceIpFlag").getParamFlag()) {
+            if (sourceIpFlag!=null && sourceIpFlag) {
                 line = String.format("impala.data.%s.table.field.source=source_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -103,7 +157,7 @@ public class InitPartConfiguration extends ConfigurationService {
                 writeLineToFile(line, secondFileWriterToConfigure, true);
             }
 
-            if (configurationParams.containsKey("targetIpFlag") && configurationParams.get("targetIpFlag").getParamFlag()) {
+            if (targetIpFlag!=null && targetIpFlag) {
                 line = String.format("impala.data.%s.table.field.target=target_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -125,7 +179,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-			line = String.format("impala.data.crmsf.table.field.normalized_username=%s", dataSourceName,configurationParams.get("normalizedUserNameField").getParamValue());
+			line = String.format("impala.data.%s.table.field.normalized_username=%s",dataSourceName,normalizedUserNameField);
 			writeLineToFile(line, fileWriterToConfigure, true);
 			writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -135,10 +189,10 @@ public class InitPartConfiguration extends ConfigurationService {
             line = String.format("impala.%s.have.data=true", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            line = String.format("impala.data.%s.table.delimiter=%s", dataSourceName, configurationParams.get("dataDelimiter").getParamValue());
+            line = String.format("impala.data.%s.table.delimiter=%s", dataSourceName,dataDelimiter );
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            line = String.format("impala.data.%s.table.name=%s", dataSourceName, configurationParams.get("dataTableName").getParamValue());
+            line = String.format("impala.data.%s.table.name=%s", dataSourceName, dataTableName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
 
@@ -162,7 +216,7 @@ public class InitPartConfiguration extends ConfigurationService {
             line = String.format("impala.data.%s.table.partition.type=monthly", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            line = String.format("impala.data.%s.table.fields=%s", dataSourceName, configurationParams.get("dataFields").getParamValue());
+            line = String.format("impala.data.%s.table.fields=%s", dataSourceName,dataFields );
             writeLineToFile(line, fileWriterToConfigure, true);
 
 
@@ -178,15 +232,15 @@ public class InitPartConfiguration extends ConfigurationService {
             line = String.format("impala.%s.have.enrich=true", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            line = String.format("impala.enricheddata.%s.table.fields=%s", dataSourceName, configurationParams.get("enrichFields").getParamValue());
+            line = String.format("impala.enricheddata.%s.table.fields=%s", dataSourceName,enrichFields );
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            line = String.format("impala.enricheddata.%s.table.delimiter=%s", dataSourceName, configurationParams.get("enrichDelimiter").getParamValue());
+            line = String.format("impala.enricheddata.%s.table.delimiter=%s", dataSourceName,enrichDelimiter );
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            line = String.format("impala.enricheddata.%s.table.name=%s", dataSourceName, configurationParams.get("enrichTableName").getParamValue());
+            line = String.format("impala.enricheddata.%s.table.name=%s", dataSourceName, enrichTableName);
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -219,16 +273,16 @@ public class InitPartConfiguration extends ConfigurationService {
 
 
             //fields
-            line = String.format("impala.score.%s.table.fields=%s", dataSourceName, configurationParams.get("scoreFields").getParamValue());
+            line = String.format("impala.score.%s.table.fields=%s", dataSourceName,scoreFields );
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            line = String.format("impala.score.%s.table.delimiter=%s", dataSourceName, configurationParams.get("scoreDelimiter").getParamValue());
+            line = String.format("impala.score.%s.table.delimiter=%s", dataSourceName,scoreDelimiter);
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
 
-            line = String.format("impala.score.%s.table.name=%s", dataSourceName, configurationParams.get("scoreTableName").getParamValue());
+            line = String.format("impala.score.%s.table.name=%s", dataSourceName,scoreTableName );
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -256,7 +310,7 @@ public class InitPartConfiguration extends ConfigurationService {
 			writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Top Score schema
-            if (configurationParams.containsKey("topSchemaFlag") && configurationParams.get("topSchemaFlag").getParamFlag()) {
+            if (configurationParams.containsKey("topSchemaFlag") && topSchemaFlag) {
                 line = String.format("########### Top Score Schema");
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -266,16 +320,16 @@ public class InitPartConfiguration extends ConfigurationService {
 
 
                 //fields
-                line = String.format("impala.score.%s.top.table.fields=%s", dataSourceName, configurationParams.get("scoreFields").getParamValue());
+                line = String.format("impala.score.%s.top.table.fields=%s", dataSourceName,scoreFields );
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
-                line = String.format("impala.score.%s.top.table.delimiter=%s", dataSourceName, configurationParams.get("scoreDelimiter").getParamValue());
+                line = String.format("impala.score.%s.top.table.delimiter=%s", dataSourceName, scoreDelimiter);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
 
-                line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, configurationParams.get("scoreTableName").getParamValue()+"_top");
+                line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, scoreTableName+"_top");
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
