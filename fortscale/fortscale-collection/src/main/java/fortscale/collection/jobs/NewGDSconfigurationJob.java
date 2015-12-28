@@ -314,8 +314,6 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
             //Service configuration
-
-
             initConfigurationService.setConfigurationParams(paramsMap);
 			if (initConfigurationService.Init())
 				executionResult = initConfigurationService.Configure();
