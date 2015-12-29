@@ -21,10 +21,7 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 	private Object value;
 	private Map<String, Object> additionalInformationMap;
 
-	@JsonCreator
-	public AggrFeatureValue(@JsonProperty("value") Object value){
-		this.value = value;
-	}
+	public AggrFeatureValue(){}
 
 	public AggrFeatureValue(Object value, Long total){
 		this.value = value;
