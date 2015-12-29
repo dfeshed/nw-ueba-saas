@@ -43,14 +43,14 @@ public class ScenarioGeneratorJobTest {
 	@Test
 	public void testRandomTimes()
 			throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
-		scenarioGeneratorJob.createEvents(user, computer, "alrusr51_SRV", service);
+		//scenarioGeneratorJob.createEvents(user, computer, "alrusr51_SRV", service);
 	}
 
 	@Test
 	public void testRandomAnomalyTimes()
 			throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
 		DateTime now = new DateTime();
-		scenarioGeneratorJob.generateTimeLoginAnomalies(now.minusDays(1), now.minusDays(30), 2, 3, 3, 5, user, computer, "alrusr51_SRV");
+		//scenarioGeneratorJob.generateTimeLoginAnomalies(now.minusDays(1), now.minusDays(30), 2, 3, 3, 5, user, computer, "alrusr51_SRV");
 	}
 
 }
