@@ -69,7 +69,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private int afternoonMedianHour;
     private boolean skipWeekend;
 
-    private int numberOfEventsInTheAnomalyDate;
+    private GenericHistogram anomalyDateHistogram;
 
     /**
      *
@@ -102,7 +102,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         morningMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "morningMedianHour");
         afternoonMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "afternoonMedianHour");
         skipWeekend = jobDataMapExtension.getJobDataMapBooleanValue(map, "skipWeekend", true);
-        numberOfEventsInTheAnomalyDate = 0;
         logger.info("Job initialized");
 	}
 
@@ -210,22 +209,20 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param featureName
      */
     private void createBucket(String username, String key, String dataSource, String timeSpan, DateTime start,
-            DateTime end, int count, String featureName) {
+            DateTime end, GenericHistogram genericHistogram, String featureName) {
         long startTime = start.getMillis() / 1000;
         long endTime = end.getMillis() / 1000;
         FeatureBucket bucket = new FeatureBucket();
         bucket.setBucketId("fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username);
         bucket.setCreatedAt(new Date());
-        bucket.setContextFieldNames(Arrays.asList(new String[] { key }));
-        bucket.setDataSources(Arrays.asList(new String[] { dataSource }));
+        bucket.setContextFieldNames(Arrays.asList(new String[]{key}));
+        bucket.setDataSources(Arrays.asList(new String[]{dataSource}));
         bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
         bucket.setStrategyId("fixed_duration_" + timeSpan + "_" + startTime);
         bucket.setStartTime(startTime);
         bucket.setEndTime(endTime);
         Feature feature = new Feature();
         feature.setName(featureName);
-        GenericHistogram genericHistogram = new GenericHistogram();
-        genericHistogram.add(start.getHourOfDay(), count + 0.0);
         feature.setValue(genericHistogram);
         Map<String, Feature> features = new HashMap();
         features.put(featureName, feature);
@@ -281,9 +278,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         dateTime.getMillis());
             }
             //create hourly buckets
+            GenericHistogram dailyHistogram = new GenericHistogram();
             for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
+                GenericHistogram genericHistogram = new GenericHistogram();
+                genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
+                dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
                 createBucket(user.getUsername(), KEY, dataSource, "hourly", bucket.getKey(),
-                        bucket.getKey().plusHours(1).minusMillis(1), bucket.getValue(),
+                        bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
                         "number_of_events_per_hour_histogram");
             }
             DateTime midnight = new DateTime(dt)
@@ -291,14 +292,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     .withMinuteOfHour(0)
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
-            int count = numberOfMorningEvents + numberOfAfternoonEvents;
-            //save the number of events in the anomaly date so that we can later create the proper daily bucket
+            //save the histogram for the anomaly date so that we can later create the proper daily bucket
             if (midnight.equals(anomalyDate)) {
-                numberOfEventsInTheAnomalyDate = count;
+                anomalyDateHistogram = dailyHistogram;
             } else {
                 //create daily bucket
                 createBucket(user.getUsername(), KEY, dataSource, "daily", midnight, midnight.plusDays(1).
-                                minusMillis(1), count, "number_of_events_per_hour_histogram");
+                                minusMillis(1), dailyHistogram, "number_of_events_per_hour_histogram");
             }
             dt = dt.plusDays(1);
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
@@ -375,13 +375,18 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             }
         }
         //create hourly buckets
+        GenericHistogram dailyHistogram = new GenericHistogram();
+        dailyHistogram.add(anomalyDateHistogram);
         for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
+            GenericHistogram genericHistogram = new GenericHistogram();
+            genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
+            dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(user.getUsername(), KEY, dataSource, "hourly", bucket.getKey(), bucket.getKey().plusHours(1).
-                            minusMillis(1), bucket.getValue(), "number_of_events_per_hour_histogram");
+                            minusMillis(1), genericHistogram, "number_of_events_per_hour_histogram");
         }
         //create daily bucket
         createBucket(user.getUsername(), KEY, dataSource, "daily", anomalyDate, anomalyDate.plusDays(1).minusMillis(1),
-                numberOfEventsInTheAnomalyDate + numberOfAnomalies, "number_of_events_per_hour_histogram");
+                dailyHistogram, "number_of_events_per_hour_histogram");
         return indicators;
     }
 
@@ -514,17 +519,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
         evidencesService.saveEvidenceInRepository(indicator);
         return indicator;
-    }
-
-    /**
-     *
-     * This method generates a random IP address
-     *
-     * @return
-     */
-    private String generateRandomIPAddress() {
-        Random random = new Random();
-        return random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256);
     }
 
     /**
