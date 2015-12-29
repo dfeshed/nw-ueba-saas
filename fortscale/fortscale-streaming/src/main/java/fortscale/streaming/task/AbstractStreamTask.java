@@ -73,11 +73,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
 
-		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+
 
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
 		}
+
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		initTaskMonitoringHelper(config);
 
