@@ -48,9 +48,9 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	}
 	
 	@Override
-	protected boolean processLine(String line) throws IOException {
+	protected boolean processLine(String line, String fileName) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
+		Record record = morphline.process(line,fileName);
 		
 		// skip records that failed on parsing
 		if (record==null) 

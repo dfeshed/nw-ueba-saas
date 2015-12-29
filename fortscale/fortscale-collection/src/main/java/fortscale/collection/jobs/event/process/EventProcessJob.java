@@ -88,7 +88,7 @@ public class EventProcessJob implements Job {
 	protected UserService userService;
 
 	@Autowired
-	TaskMonitoringHelper<String> taskMonitoringHelper;
+	protected TaskMonitoringHelper<String> taskMonitoringHelper;
 	
 	
 		
@@ -130,29 +130,27 @@ public class EventProcessJob implements Job {
 		String jobName = context.getJobDetail().getKey().getName();
 		
 		logger.info("{} {} job started", jobName, sourceName);
-//		monitorId = monitor.startJob(sourceName, jobName, 3, true);
+
 
 		
 		String currentStep = "Get Job Parameters";
 		try {
 			// get parameters from job data map
-//			monitor.startStep(monitorId, currentStep, 1);
 			taskMonitoringHelper.startStep(currentStep);
-
 			getJobParameters(context);
-//			monitor.finishStep(monitorId, currentStep);
+			taskMonitoringHelper.finishStep(currentStep);
 
 			// list files in chronological order
 			currentStep = "List Files";
-//			monitor.startStep(monitorId, currentStep, 2);
+			taskMonitoringHelper.startStep(currentStep);
 			File[] files = listFiles(inputPath);
-//			monitor.finishStep(monitorId, currentStep);
+			taskMonitoringHelper.finishStep(currentStep);
 
 			// start process file stage
 			logger.info("processing {} files in {}", files.length, inputPath);
 			currentStep = "Process Files";
-//			monitor.startStep(monitorId, currentStep, 3);
 
+			taskMonitoringHelper.startStep(currentStep);
 			// get hadoop file writer and streaming sink
 			createOutputAppender();
 			initializeStreamingAppender();
@@ -177,7 +175,7 @@ public class EventProcessJob implements Job {
 						moveFileToFolder(file, errorPath);
 
 						logger.error("error processing file " + file.getName(), e);
-//						monitor.error(monitorId, currentStep, e.toString());
+						taskMonitoringHelper.error(currentStep, e.toString());
 					}
 				}
 			} finally {
@@ -200,17 +198,16 @@ public class EventProcessJob implements Job {
 			}
 
 			refreshImpala();
-			
-			//monitor.finishStep(monitorId, currentStep);
+
+			taskMonitoringHelper.finishStep(currentStep);
 		} catch (JobExecutionException e) {
-			//monitor.error(monitorId, currentStep, e.toString());
+			taskMonitoringHelper.error(currentStep, e.toString());
 			throw e;
 		} catch (Exception exp) {
 			logger.error("unexpected error during event process job: " + exp.toString());
-			//monitor.error(monitorId, currentStep, exp.toString());
+			taskMonitoringHelper.error(currentStep, exp.toString());
 			throw new JobExecutionException(exp);
 		} finally {
-			//monitor.finishJob(monitorId);
 			taskMonitoringHelper.saveJobStatusReport(jobName+"-"+sourceName,false);
 			logger.info("{} {} job finished", jobName, sourceName);
 		}
@@ -261,10 +258,9 @@ public class EventProcessJob implements Job {
 			
 			// flush hadoop
 			flushOutputAppender();
-			//monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
-			//monitor.error(monitorId, "Process Files", e.toString());
+			taskMonitoringHelper.error("Process Files", e.toString());
 			return false;
 		} finally {
 			reader.close();
@@ -273,12 +269,11 @@ public class EventProcessJob implements Job {
 		
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
-		//	monitor.error(monitorId, "Process Files", reader.getException().toString());
+			taskMonitoringHelper.error( "Process Files", reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
 				logger.warn("error processing file " + file.getName(), reader.getException());
-				//monitor.warn(monitorId, "Process Files", reader.getException().toString());
 			}
 			return true;
 		}

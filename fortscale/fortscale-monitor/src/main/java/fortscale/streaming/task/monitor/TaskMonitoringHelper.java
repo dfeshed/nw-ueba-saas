@@ -3,6 +3,7 @@ package fortscale.streaming.task.monitor;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.spring.SpringPropertiesUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math3.util.Pair;
@@ -31,6 +32,7 @@ public class TaskMonitoringHelper<T> {
     private SpringPropertiesUtil messages;
 
     private List<Pair<String, Steps>> stepsAndStatus = new ArrayList<>();
+    private List<Pair<String,String>> errors = new ArrayList<>();
 
 
     //Node is the task for specific data source and last state
@@ -139,6 +141,41 @@ public class TaskMonitoringHelper<T> {
         //Start saving:
         String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
 
+        saveMonitorSteps(monitorId);
+        saveMonitorRows(monitorId);
+        saveMonitorErrors(monitorId);
+
+        jobMonitorReporter.finishJob(monitorId);
+
+        //Reset counters per window
+        resetCountersPerWindow();
+
+    }
+
+    private void saveMonitorSteps(String monitorId){
+        if (CollectionUtils.isNotEmpty(stepsAndStatus)){
+            int count=0;
+            for (Pair<String, Steps> pair : stepsAndStatus){
+                if (Steps.SATARTED.equals(pair.getSecond())){
+                    jobMonitorReporter.startStep(monitorId, pair.getFirst(),count);
+                    count ++;
+                } else {
+                    jobMonitorReporter.finishStep(monitorId, pair.getFirst());
+                }
+            }
+        }
+    }
+
+    private void saveMonitorErrors(String monitorId){
+        if (CollectionUtils.isNotEmpty(errors)){
+            int count=0;
+            for (Pair<String, String> error : errors){
+               jobMonitorReporter.error(monitorId,error.getFirst(), error.getSecond());
+            }
+        }
+    }
+
+    private void saveMonitorRows(String monitorId) {
         for (Map.Entry<T,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
             T nodeKey = node.getKey();
             String nodePrefix = "";
@@ -168,16 +205,7 @@ public class TaskMonitoringHelper<T> {
 
 
         }
-
-
-        jobMonitorReporter.finishJob(monitorId);
-
-        //Reset counters per window
-        resetCountersPerWindow();
-
     }
-
-
 
 
     /**
@@ -197,8 +225,11 @@ public class TaskMonitoringHelper<T> {
     public void startStep(String name){
         stepsAndStatus.add(new Pair<String, Steps>(name, Steps.SATARTED));
     }
-    public void endStep(String name){
+    public void finishStep(String name){
         stepsAndStatus.add(new Pair<String, Steps>(name, Steps.FINISHED));
+    }
+    public void error(String step, String excpetion){
+        errors.add(new Pair<String, String>(step,excpetion));
     }
 
     private enum Steps{

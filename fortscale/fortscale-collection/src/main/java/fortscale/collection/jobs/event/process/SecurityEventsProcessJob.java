@@ -104,9 +104,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 
-	@Override protected boolean processLine(String line) throws IOException {
+	@Override protected boolean processLine(String line, String fileName) throws IOException {
 		// process each line
-		Record rec = morphline.process(line);
+		Record rec = morphline.process(line,fileName);
 		Record record = null;
 		if (rec==null)
 			return false;
@@ -196,7 +196,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					handlers.appender.flush();
 			} catch (IOException e) {
 				logger.error("error flushing hdfs partitions at " + handlers.hadoopPath, e);
-				monitor.error(monitorId, "Process Files", String.format("error flushing hdfs partitions at %s: \n %s",  handlers.hadoopPath, e.toString()));
+				taskMonitoringHelper.error("Process Files", String.format("error flushing hdfs partitions at %s: \n %s", handlers.hadoopPath, e.toString()));
 				exception = e;
 			}
 		}
@@ -216,7 +216,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					handlers.appender.close();
 			} catch (Exception e) {
 				logger.error("error closing hdfs partitions writer at " + handlers.hadoopPath, e);
-				monitor.error(monitorId, "Process Files", String.format("error closing hdfs partitions writer at %s: \n %s",  handlers.hadoopPath, e.toString()));
+				taskMonitoringHelper.error("Process Files", String.format("error closing hdfs partitions writer at %s: \n %s",  handlers.hadoopPath, e.toString()));
 				exception = e;
 			}
 		}
@@ -229,7 +229,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				processor.close();					
 			} catch (Exception e) {
 				logger.error(String.format("error closing morphline processor for event %s", iter.getKey()), e);
-				monitor.error(monitorId, "Process Files", String.format("error closing morphline processor for event %s. exception: %s", iter.getKey(), e.toString()));
+				taskMonitoringHelper.error("Process Files", String.format("error closing morphline processor for event %s. exception: %s", iter.getKey(), e.toString()));
 				exception = e;
 			}
 		}
@@ -266,7 +266,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		if (!exceptions.isEmpty()) {
 			for (Exception e : exceptions) {
 				logger.error("", e);
-				monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+				taskMonitoringHelper.error("Process Files", "error refreshing impala - " + e.toString());
 			}
 			throw new JobExecutionException("got error while refreshing impala", exceptions.get(0));
 		}

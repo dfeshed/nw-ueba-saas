@@ -58,7 +58,14 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// return the result record
 		return processed;
 	}
-	
+
+	/**
+	 *
+	 * @param item - the record to process - mandatory
+	 * @param source - name of origion where the data come from, I.E. file name,
+	 *               	for monitoring purposes. - source can be null.
+	 * @return
+	 */
 	public Record process(String item, String source) {
 
 		// create a record that holds the input string
