@@ -111,7 +111,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Map<String, HDFSProperties> result = new HashMap();
         for (String dataSource: jobDataMapExtension.getJobDataMapStringValue(map, "dataEntities").split(",")) {
             String impalaTable = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName-" + dataSource);
-            String hdfsPartition = jobDataMapExtension.getJobDataMapStringValue(map, "hdfsPartition--" + dataSource);
+            String hdfsPartition = jobDataMapExtension.getJobDataMapStringValue(map, "hdfsPartition-" + dataSource);
             //TODO - extract this
             String fileName = "secData.csv";
             dataSourceToHDFSProperties.put(dataSource, new HDFSProperties(impalaTable, fileName, hdfsPartition));
