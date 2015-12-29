@@ -3,6 +3,7 @@ package fortscale.collection.jobs;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.AlertsService;
@@ -185,11 +186,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate);
-        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies,
-                minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
+        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
         //TODO - generate indicators 2,3 and 4
-        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity);
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity);
     }
 
     /**
@@ -218,7 +217,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         bucket.setEndTime(endTime);
         Feature feature = new Feature();
         feature.setName(featureName);
-        feature.setValue(new FeatureNumericValue(count));
+        GenericHistogram genericHistogram = new GenericHistogram();
+        genericHistogram.add(new DateTime(startTime).getHourOfDay(), count + 0.0);
+        feature.setValue(genericHistogram);
         Map<String, Feature> features = new HashMap();
         features.put(featureName, feature);
         bucket.setAggregatedFeatures(features);
@@ -361,9 +362,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             addToBucketMap(randomDate, bucketMap);
             //create only one indicator
             if (i == 0) {
-                indicators.add(createIndicator(user.getAdDn(), EvidenceType.AnomalySingleEvent, randomDate.toDate(),
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+                indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalySingleEvent, randomDate.toDate(),
                         randomDate.toDate(), dataSource, indicatorScore + 0.0, "event_time",
-                        randomDate.toDate().toString(), 1, EvidenceTimeframe.Hourly));
+                        dateTimeFormatter.print(randomDate), 1, EvidenceTimeframe.Hourly));
             }
         }
         //create hourly buckets
