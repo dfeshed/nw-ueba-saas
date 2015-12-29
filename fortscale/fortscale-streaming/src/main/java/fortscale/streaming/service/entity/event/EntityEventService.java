@@ -7,8 +7,8 @@ import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataStore;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -26,14 +26,12 @@ public class EntityEventService {
 	private Long lastTimeEventsWereFired;
 	// Mapping from a full event name (bucketConfName.aggregatedFeatureEventName) to its related entity event builders
 	private Map<String, Set<EntityEventBuilder>> fullEventNameToBuilders;
+	private EntityEventDataStore entityEventDataStore;
 
 	@Autowired
 	private EntityEventConfService entityEventConfService;
-	
 	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
-
-	private EntityEventDataStore entityEventDataStore;
 
 	public EntityEventService(EntityEventDataStore entityEventDataStore) {
 		Assert.notNull(entityEventDataStore);
@@ -54,14 +52,21 @@ public class EntityEventService {
 		}
 	}
 
-	public void window(long currentTimeInMillis, String outputTopic, MessageCollector collector) {
-		long currentTimeInSeconds = currentTimeInMillis / 1000;
+	public void sendNewEntityEventsAndUpdateStore(long currentTimeInMillis, IEntityEventSender sender) {
+		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
 		if (lastTimeEventsWereFired + fireEventsEverySeconds <= currentTimeInSeconds) {
 			for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
-				entityEventBuilder.fireEntityEvents(currentTimeInSeconds, outputTopic, collector);
+				entityEventBuilder.sendNewEntityEventsAndUpdateStore(currentTimeInSeconds, sender);
 			}
 
 			lastTimeEventsWereFired = currentTimeInSeconds;
+		}
+	}
+
+	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInMillis, IEntityEventSender sender, boolean updateStore) {
+		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
+		for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
+			entityEventBuilder.sendEntityEventsInTimeRange(startTime, endTime, currentTimeInSeconds, sender, updateStore);
 		}
 	}
 

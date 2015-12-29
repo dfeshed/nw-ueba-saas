@@ -2,6 +2,7 @@ package fortscale.streaming.service.entity.event;
 
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataStore;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import java.util.*;
 
@@ -24,13 +25,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 			}
 		}
 
-		Collections.sort(listOfEntityEventData, new Comparator<EntityEventData>() {
-			@Override
-			public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
-				return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
-			}
-		});
-
+		Collections.sort(listOfEntityEventData, new EntityEventDataStartTimeComparator());
 		return listOfEntityEventData;
 	}
 
@@ -43,6 +38,24 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 			}
 		}
 
+		return listOfEntityEventData;
+	}
+
+	@Override
+	public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
+		long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
+		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+
+		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
+		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
+			String key = entry.getKey();
+			EntityEventData value = entry.getValue();
+			if (StringUtils.startsWith(key, entityEventName) && startTimeSeconds <= value.getStartTime() && value.getEndTime() <= endTimeSeconds) {
+				listOfEntityEventData.add(value);
+			}
+		}
+
+		Collections.sort(listOfEntityEventData, new EntityEventDataStartTimeComparator());
 		return listOfEntityEventData;
 	}
 
@@ -60,6 +73,13 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 
 	private static String getEntityEventDataMapKey(String entityEventName, String contextId, long startTime, long endTime) {
 		return String.format("%s.%s.%d.%d", entityEventName, contextId, startTime, endTime);
+	}
+
+	private static final class EntityEventDataStartTimeComparator implements Comparator<EntityEventData> {
+		@Override
+		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+			return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
+		}
 	}
 
 	public void emptyEntityEventDataStore() {

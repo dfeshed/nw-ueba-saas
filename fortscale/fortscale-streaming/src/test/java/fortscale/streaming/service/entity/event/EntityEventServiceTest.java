@@ -3,11 +3,7 @@ package fortscale.streaming.service.entity.event;
 import fortscale.entity.event.EntityEventDataStore;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.samza.system.OutgoingMessageEnvelope;
-import org.apache.samza.task.MessageCollector;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +23,9 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-context-test.xml"})
 public class EntityEventServiceTest extends EntityEventTestBase{
 	private static final double DELTA = 0.00001;
-	
+
 	@Value("${streaming.entity_event.field.entity_event_type}")
-    private String entityEventTypeFieldName;
+	private String entityEventTypeFieldName;
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
@@ -89,27 +85,26 @@ public class EntityEventServiceTest extends EntityEventTestBase{
 
 		// Trigger the firing of entity events
 		Thread.sleep(1000);
-		ArgumentCaptor<OutgoingMessageEnvelope> argumentCaptor = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
-		MessageCollector collector = mock(MessageCollector.class);
-		entityEventService.window(System.currentTimeMillis(), "testOutputTopic", collector);
-		verify(collector, times(3)).send(argumentCaptor.capture());
+		ArgumentCaptor<JSONObject> argumentCaptor = ArgumentCaptor.forClass(JSONObject.class);
+		IEntityEventSender sender = mock(IEntityEventSender.class);
+		entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
+		verify(sender, times(3)).send(argumentCaptor.capture());
 
-		List<OutgoingMessageEnvelope> envelopes = argumentCaptor.getAllValues();
-		Assert.assertNotNull(envelopes);
-		Assert.assertEquals(3, envelopes.size());
+		List<JSONObject> entityEvents = argumentCaptor.getAllValues();
+		Assert.assertNotNull(entityEvents);
+		Assert.assertEquals(3, entityEvents.size());
 
 		byte caseChecker = 0b000;
-		for (OutgoingMessageEnvelope envelope : envelopes) {
-			String entityEventString = (String)envelope.getMessage();
-			JSONObject entityEventJson = (JSONObject)JSONValue.parseWithException(entityEventString);
-			String entityEventType = ConversionUtils.convertToString(entityEventJson.get(entityEventTypeFieldName));
-			Double entityEventValue = ConversionUtils.convertToDouble(entityEventJson.get("entity_event_value"));
+		for (JSONObject entityEvent : entityEvents) {
+			String entityEventType = ConversionUtils.convertToString(entityEvent.get(entityEventTypeFieldName));
+			Double entityEventValue = ConversionUtils.convertToDouble(entityEvent.get("entity_event_value"));
+			if (entityEventValue == null) continue;
 			if (StringUtils.endsWith(entityEventType, "conf2")) {
 				Assert.assertEquals(61.355, entityEventValue, DELTA);
 				caseChecker |= 0b100;
 			} else {
 				@SuppressWarnings("unchecked")
-				Map<String, String> context = (Map<String, String>)entityEventJson.get("context");
+				Map<String, String> context = (Map<String, String>)entityEvent.get("context");
 				if ("user1".equals(context.get("normalized_username"))) {
 					Assert.assertEquals(70.93, entityEventValue, DELTA);
 					caseChecker |= 0b010;

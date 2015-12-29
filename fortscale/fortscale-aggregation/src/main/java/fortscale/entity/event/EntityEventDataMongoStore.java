@@ -10,7 +10,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -65,6 +67,30 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		if (mongoDbUtilService.collectionExists(collectionName)) {
 			Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
+			return mongoTemplate.find(query, EntityEventData.class, collectionName);
+		}
+
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
+		String collectionName = getCollectionName(entityEventName);
+		/*
+		 * NOTE: Existence of collections should be checked directly against Mongo,
+		 * and not with Mongo DB utils, since the later is maintained only in the
+		 * Entity Events task (and not in other tasks that only query the store).
+		 * Performance wise this is less recommended, since calling 'collectionExists'
+		 * takes a long time.
+		 */
+		if (mongoTemplate.collectionExists(collectionName)) {
+			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
+			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+
+			Query query = new Query();
+			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
+			query.addCriteria(where(EntityEventData.START_TIME_FIELD).lt(endTimeSeconds));
+			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		}
 

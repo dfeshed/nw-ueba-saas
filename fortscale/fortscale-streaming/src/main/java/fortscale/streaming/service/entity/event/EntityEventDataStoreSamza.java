@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -73,6 +74,21 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
         List<EntityEventData> listFromMongo = super.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventName, modifiedAtEpochtime);
         return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
+    }
+
+    @Override
+    public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
+        List<EntityEventData> returnedList = new ArrayList<>();
+        for (EntityEventData fromMongo : super.getEntityEventDataInTimeRange(entityEventName, startTime, endTime)) {
+            EntityEventData fromSamza = entityEventStore.get(getEntityEventDataKey(fromMongo));
+            if (fromSamza == null) {
+                returnedList.add(fromMongo);
+            } else {
+                returnedList.add(fromSamza);
+            }
+        }
+
+        return returnedList;
     }
 
     @Override

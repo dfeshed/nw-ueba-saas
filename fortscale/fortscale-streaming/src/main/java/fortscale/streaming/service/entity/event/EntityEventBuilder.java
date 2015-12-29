@@ -3,6 +3,7 @@ package fortscale.streaming.service.entity.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataStore;
@@ -10,9 +11,6 @@ import fortscale.entity.event.JokerFunction;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.apache.samza.system.OutgoingMessageEnvelope;
-import org.apache.samza.system.SystemStream;
-import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,14 +67,24 @@ public class EntityEventBuilder {
 		}
 	}
 
-	public void fireEntityEvents(long currentTimeInSeconds, String outputTopic, MessageCollector collector) {
-		List<EntityEventData> listOfEntityEventData =
-				entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventConf.getName(), currentTimeInSeconds - secondsToWaitBeforeFiring);
+	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) {
+		List<EntityEventData> listOfEntityEventData = entityEventDataStore
+				.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(
+				entityEventConf.getName(), currentTimeInSeconds - secondsToWaitBeforeFiring);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
-			entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
-			entityEventData.setTransmitted(true);
-			createAndSendEntityEvent(entityEventData, outputTopic, collector);
+			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
 			entityEventDataStore.storeEntityEventData(entityEventData);
+		}
+	}
+
+	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds, IEntityEventSender sender, boolean updateStore) {
+		List<EntityEventData> listOfEntityEventData = entityEventDataStore
+				.getEntityEventDataInTimeRange(entityEventConf.getName(), startTime, endTime);
+		for (EntityEventData entityEventData : listOfEntityEventData) {
+			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
+			if (updateStore) {
+				entityEventDataStore.storeEntityEventData(entityEventData);
+			}
 		}
 	}
 
@@ -117,34 +125,54 @@ public class EntityEventBuilder {
 		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);
 	}
 
-	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
+	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) {
+		entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
+		entityEventData.setTransmitted(true);
+		sender.send(createEntityEvent(entityEventData));
+	}
+
+	private JSONObject createEntityEvent(EntityEventData entityEventData) {
+		/*
+		 * NOTE: When not in a BDP run, the 'not included' set is empty,
+		 * so adding it is redundant. But when in a BDP run, we want to
+		 * create the entity event from all its aggregated feature events.
+		 */
+		Set<AggrEvent> allAggrFeatureEvents = new HashSet<>();
+		allAggrFeatureEvents.addAll(entityEventData.getIncludedAggrFeatureEvents());
+		allAggrFeatureEvents.addAll(entityEventData.getNotIncludedAggrFeatureEvents());
+
 		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
-		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
+
+		for (AggrEvent aggrFeatureEvent : allAggrFeatureEvents) {
 			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
 			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}
 
+		// Calculate the entity event (joker) value
 		double entityEventValue = jokerFunction.calculateEntityEventValue(aggrFeatureEventsMap);
 
 		JSONObject entityEvent = new JSONObject();
 		entityEvent.put(eventTypeFieldName, eventTypeFieldValue);
-		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
-		int tmp = (int) (entityEventValue*1000);
-		double entityEventValue3DigitPrecision = tmp/1000d;
-		entityEvent.put("entity_event_value", entityEventValue3DigitPrecision);
-		entityEvent.put("creation_epochtime", entityEventData.getTransmissionEpochtime());
-		entityEvent.put("start_time_unix", entityEventData.getStartTime());
-		entityEvent.put("end_time_unix", entityEventData.getEndTime());
-		// time of the event to be compared against other events from different types (raw events, entity event...)
+
+		// Time of the event to be compared against other events from different types (raw events, entity events, etc.)
 		entityEvent.put(epochtimeFieldName, entityEventData.getEndTime());
-		entityEvent.put("context", entityEventData.getContext());
-		entityEvent.put("contextId", entityEventData.getContextId());
-		entityEvent.put("aggregated_feature_events", aggrFeatureEvents);
-		entityEvent.put("entity_event_name", entityEventData.getEntityEventName());
+		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
 
+		entityEvent.put(EntityEvent.ENTITY_EVENT_NAME_FILED_NAME, entityEventData.getEntityEventName());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_VALUE_FILED_NAME, roundToEntityEventValuePrecision(entityEventValue));
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME, entityEventData.getTransmissionEpochtime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FILED_NAME, entityEventData.getStartTime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, entityEventData.getEndTime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, entityEventData.getContext());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_ID_FILED_NAME, entityEventData.getContextId());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME, aggrFeatureEvents);
 
-		collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), entityEvent.toJSONString()));
+		return entityEvent;
+	}
+
+	private static double roundToEntityEventValuePrecision(double value) {
+		return Math.round(value * 1000) / 1000d;
 	}
 }
