@@ -181,8 +181,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource);
-        //TODO - create buckets
-        //createBucket(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime, 1, "destination_machine_histogram");
         indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate,
                 minNumberOfAnomalies, maxNumberOfAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer,
                 dstMachine, indicatorScore));
@@ -241,8 +239,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     public void createLoginEvents(User user, Computer computer, String dstMachine, String dataSource)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
-        HdfsService service = new HdfsService(hdfsProperties.hdfsPartition, hdfsProperties.fileName, partitionStrategy,
-                splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
+        HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
+                partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
         Random random = new Random();
         DateTime now = new DateTime().withZone(DateTimeZone.UTC);
         DateTime dt = now.minusDays(numOfDaysBack);
@@ -251,18 +249,36 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     + numberOfMinEventsPerTimePeriod;
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
                     numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
+            Map<DateTime, Integer> bucketMap = new HashMap();
             for (int j = 0; j < numberOfMorningEvents; j++) {
                 DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, morningMedianHour, maxHourOfWork,
                         minHourOfWork);
+                addToBucketMap(dateTime, bucketMap);
                 service.writeLineToHdfs(buildKerberosHDFSLine(dateTime, user, computer, dstMachine, 0),
                         dateTime.getMillis());
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
                 DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, afternoonMedianHour, maxHourOfWork,
                         minHourOfWork);
+                addToBucketMap(dateTime, bucketMap);
                 service.writeLineToHdfs(buildKerberosHDFSLine(dateTime, user, computer, dstMachine, 0),
                         dateTime.getMillis());
             }
+            //create hourly buckets
+            for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
+                createBucket(user.getUsername(), KEY, dataSource, "hourly", bucket.getKey().getMillis() / 1000,
+                        bucket.getKey().plusHours(1).minusMillis(1).getMillis() / 1000, bucket.getValue(),
+                        "number_of_events_per_hour_histogram");
+            }
+            //create daily bucket
+            DateTime midnight = new DateTime(dt)
+                    .withHourOfDay(0)
+                    .withMinuteOfHour(0)
+                    .withSecondOfMinute(0)
+                    .withMillisOfSecond(0);
+            createBucket(user.getUsername(), KEY, dataSource, "daily", midnight.getMillis() / 1000,
+                    midnight.plusDays(1).minusMillis(1).getMillis() / 1000, numberOfMorningEvents +
+                            numberOfAfternoonEvents, "number_of_events_per_hour_histogram");
             dt = dt.plusDays(1);
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
@@ -270,6 +286,25 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dt = dt.plusDays(1);
             }
         }
+    }
+
+    /**
+     *
+     * This method adds the bucket to the bucket map
+     *
+     * @param dateTime
+     * @param bucketMap
+     */
+    private void addToBucketMap(DateTime dateTime, Map<DateTime, Integer> bucketMap) {
+        DateTime startOfHour = new DateTime(dateTime)
+				.withMinuteOfHour(0)
+				.withSecondOfMinute(0)
+				.withMillisOfSecond(0);
+        int count = 0;
+        if (bucketMap.containsKey(startOfHour)) {
+			count = bucketMap.get(startOfHour);
+		}
+        bucketMap.put(startOfHour, count + 1);
     }
 
     /**
@@ -294,19 +329,22 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             int minNumberOfAnomalies, int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly,
             User user, Computer computer, String dstMachine, int indicatorScore) throws HdfsException, IOException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
-        HdfsService service = new HdfsService(hdfsProperties.hdfsPartition, hdfsProperties.fileName, partitionStrategy,
-                splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
-        HdfsService service_top = new HdfsService(hdfsProperties.hdfsPartition + "_top", hdfsProperties.fileName,
-                partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable() + "_top", 1, 0, SEPARATOR);
+        HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
+                partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
+        HdfsService service_top = new HdfsService(hdfsProperties.getHdfsPartition() + "_top",
+                hdfsProperties.getFileName(), partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable() +
+                "_top", 1, 0, SEPARATOR);
         Random random = new Random();
         List<Evidence> indicators = new ArrayList();
         int numberOfAnomalies = random.nextInt(maxNumberOfAnomalies - minNumberOfAnomalies) + minNumberOfAnomalies;
+        Map<DateTime, Integer> bucketMap = new HashMap();
         for (int i = 0; i < numberOfAnomalies; i++) {
             DateTime randomDate = generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly);
             service.writeLineToHdfs(buildKerberosHDFSLine(randomDate, user, computer, dstMachine,
                     indicatorScore), randomDate.getMillis());
             service_top.writeLineToHdfs(buildKerberosHDFSLine(randomDate, user, computer, dstMachine,
                     indicatorScore), randomDate.getMillis());
+            addToBucketMap(randomDate, bucketMap);
             //create only one indicator
             if (i == 0) {
                 indicators.add(createIndicator(user.getAdDn(), EvidenceType.AnomalySingleEvent, randomDate.toDate(),
@@ -314,6 +352,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         randomDate.toDate().toString(), 1, EvidenceTimeframe.Hourly));
             }
         }
+        //create hourly buckets
+        for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
+            createBucket(user.getUsername(), KEY, dataSource, "hourly", bucket.getKey().getMillis() / 1000,
+                    bucket.getKey().plusHours(1).minusMillis(1).getMillis() / 1000, bucket.getValue(),
+                    "number_of_events_per_hour_histogram");
+        }
+        //create daily bucket
+        //TODO - ??
         return indicators;
     }
 
@@ -392,6 +438,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private String buildKerberosHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score) {
         DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
         DateTimeFormatter hdfsTimestampFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        String srcClass = "Desktop";
+        String dstClass = "Server";
+
         //TODO - extract these values
         int dateTimeScore = score;
         String domain = "FORTSCALE";
@@ -400,9 +449,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String clientAddress = "192.168.171.2";
         boolean isNat = false;
         int normalizedSrcMachineScore = 0;
-        String srcClass = "Desktop";
         int normalizedDstMachineScore = 0;
-        String dstClass = "Server";
         String serviceId = "FORTSCALE\\FS-DC-01$";
 
         int eventScore = Math.max(Math.max(dateTimeScore, failureCodeScore),
@@ -426,11 +473,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
                 .append(normalizedSrcMachineScore).append(SEPARATOR)
-                .append(srcClass).append(SEPARATOR).append(dstMachine)
-                .append(SEPARATOR).append(dstMachine.toUpperCase())
-                .append(SEPARATOR).append(normalizedDstMachineScore).append(SEPARATOR).append(dstClass).append(SEPARATOR)
-                .append(serviceId).append(SEPARATOR).append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
-                .append(eventScore).append(SEPARATOR).append(timestamp).append(SEPARATOR)
+                .append(srcClass).append(SEPARATOR)
+                .append(dstMachine).append(SEPARATOR)
+                .append(dstMachine.toUpperCase()).append(SEPARATOR)
+                .append(normalizedDstMachineScore).append(SEPARATOR)
+                .append(dstClass).append(SEPARATOR)
+                .append(serviceId).append(SEPARATOR)
+                .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
+                .append(eventScore).append(SEPARATOR)
+                .append(timestamp).append(SEPARATOR)
                 .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
@@ -459,6 +510,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
         evidencesService.saveEvidenceInRepository(indicator);
         return indicator;
+    }
+
+    /**
+     *
+     * This method generates a random IP address
+     *
+     * @return
+     */
+    private String generateRandomIPAddress() {
+        Random random = new Random();
+        return random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256);
     }
 
     /**
@@ -500,7 +562,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
     /**
      *
-     * This class contains the necessasry properties to write to HDFS
+     * This class contains the necessary properties to write to HDFS
      *
      */
     private class HDFSProperties {
