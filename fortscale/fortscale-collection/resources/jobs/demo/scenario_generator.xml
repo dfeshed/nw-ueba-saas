@@ -27,12 +27,20 @@
 					<value>${hdfs.user.processeddata.security.events.4769.path}</value>
 				</entry>
 				<entry>
+					<key>fileName-kerberos_logins</key>
+					<value>secData.csv</value>
+				</entry>
+				<entry>
 					<key>impalaTableName-ssh</key>
 					<value>${impala.score.ssh.table.name}</value>
 				</entry>
 				<entry>
 					<key>hdfsPartition-ssh</key>
 					<value>${hdfs.user.processeddata.sshscores.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-ssh</key>
+					<value>sshETL.csv</value>
 				</entry>
 				<entry>
 					<key>numOfDaysBack</key>
