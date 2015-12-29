@@ -165,9 +165,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String username = samaccountname + "@" + domain;
         String srcMachine = samaccountname + "_PC";
         String dstMachine = samaccountname + "_SRV";
-        Computer computer = computerRepository.findByName(srcMachine);
+        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
         if (computer == null) {
-            logger.error("computer {} not found - exiting", srcMachine);
+            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
             return;
         }
         User user = userService.findByUsername(username);
