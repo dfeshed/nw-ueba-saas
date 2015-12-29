@@ -167,7 +167,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int minHourForAnomaly = 3;
         int maxHourForAnomaly = 5;
 
-        DateTime anomalyDate = generateRandomDayForAnomaly(numOfDaysBack / 2, numOfDaysBack / 4);
+        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC).minusDays(1)
+                .withHourOfDay(0)
+                .withMinuteOfHour(0)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
         String username = samaccountname + "@" + domain;
         String srcMachine = samaccountname + "_PC";
         String dstMachine = samaccountname + "_SRV";
@@ -185,9 +189,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate);
-        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
+        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies,
+                minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
         //TODO - generate indicators 2,3 and 4
-        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity);
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
+                indicators, alertScore, alertSeverity);
     }
 
     /**
@@ -424,24 +430,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
     /**
      *
-     * This method generates a random day for the anomaly
-     *
-     * @param minDaysBack
-     * @param maxDaysBack
-     * @return
-     */
-    private DateTime generateRandomDayForAnomaly(int minDaysBack, int maxDaysBack) {
-        Random random = new Random();
-        int daysBack = random.nextInt(minDaysBack - maxDaysBack) + maxDaysBack;
-        return new DateTime().withZone(DateTimeZone.UTC).minusDays(daysBack)
-                .withHourOfDay(0)
-                .withMinuteOfHour(0)
-                .withSecondOfMinute(0)
-                .withMillisOfSecond(0);
-    }
-
-    /**
-     *
      * This method creates the actual csv line to write in HDFS
      *
      * @param dt
@@ -486,11 +474,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(failureCodeScore).append(SEPARATOR)
                 .append(clientAddress).append(SEPARATOR)
                 .append(isNat).append(SEPARATOR)
-                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR).append(srcMachine.getName().toUpperCase()).append(SEPARATOR).append(normalizedSrcMachineScore).append(SEPARATOR)
+                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
+                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
+                .append(normalizedSrcMachineScore).append(SEPARATOR)
                 .append(srcClass).append(SEPARATOR)
                 .append(dstMachine).append(SEPARATOR)
-                .append(dstMachine.toUpperCase()).append(SEPARATOR).append(normalizedDstMachineScore).append(SEPARATOR)
-                .append(dstClass).append(SEPARATOR).append(serviceId).append(SEPARATOR)
+                .append(dstMachine.toUpperCase()).append(SEPARATOR)
+                .append(normalizedDstMachineScore).append(SEPARATOR)
+                .append(dstClass).append(SEPARATOR)
+                .append(serviceId).append(SEPARATOR)
                 .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
                 .append(eventScore).append(SEPARATOR)
                 .append(timestamp).append(SEPARATOR)
