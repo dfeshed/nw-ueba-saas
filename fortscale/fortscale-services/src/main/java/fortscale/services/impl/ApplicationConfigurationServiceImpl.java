@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("applicationConfigurationService")
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
@@ -27,7 +28,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
      * @param configItems A map of config items.
      */
     @Override
-    public void updateConfigItems (HashMap<String, String> configItems) {
+    public void updateConfigItems (Map<String, String> configItems) {
         applicationConfigurationRepository.updateConfigItems(configItems);
     }
 }

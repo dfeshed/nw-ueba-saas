@@ -5,19 +5,23 @@ import fortscale.services.ApplicationConfigurationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +54,7 @@ public class ApiApplicationConfigurationControllerTest {
     @Test
     public void testGetConfigurations() throws Exception {
         // set up alerts repository mocked behavior
-        List<ApplicationConfiguration> applicationConfigurationList = new ArrayList<ApplicationConfiguration>();
+        List<ApplicationConfiguration> applicationConfigurationList = new ArrayList<>();
 
         applicationConfigurationList.add(new ApplicationConfiguration("test", "test"));
         applicationConfigurationList.add(new ApplicationConfiguration("test2", "test2"));
@@ -69,4 +73,41 @@ public class ApiApplicationConfigurationControllerTest {
                 .contains("{\"key\":\"test\",\"value\":\"test\"},{\"key\":\"test2\",\"value\":\"test2\"}]"));
 
     }
+
+    @Test
+    public void testUpdateConfigItems() throws Exception {
+
+        // When provided with a bad JSON it should return ResponseEntity with BAD_REQUEST
+        String badJSON = "{bad json";
+        assert (controller.updateConfigItems(badJSON).getStatusCode() == HttpStatus.BAD_REQUEST);
+
+        // When provided with JSON that has no "items" list, it should return ResponseEntity with BAD_REQUEST
+        String noItemsJSON = "{\"noItems\": []}";
+        assert (controller.updateConfigItems(noItemsJSON).getStatusCode() == HttpStatus.BAD_REQUEST);
+
+        // When provided with JSON that has "items" that is not a list, it should return ResponseEntity with BAD_REQUEST
+        String itemsNoList = "{\"items\": {}}";
+        assert (controller.updateConfigItems(itemsNoList).getStatusCode() == HttpStatus.BAD_REQUEST);
+
+        // When provided with JSON that has "items" with objects without "key" property, it should return ResponseEntity with BAD_REQUEST
+        String itemsNoKey = "{\"items\": [{}]}";
+        assert (controller.updateConfigItems(itemsNoKey).getStatusCode() == HttpStatus.BAD_REQUEST);
+
+        // When provided with JSON that has "items" with objects without "key" property, it should return ResponseEntity with BAD_REQUEST
+        String itemsNoValue = "{\"items\": [{\"key\": \"some key\"}]}";
+        assert (controller.updateConfigItems(itemsNoValue).getStatusCode() == HttpStatus.BAD_REQUEST);
+
+        // When provided with valid body, the configItems Map sent to applicationConfigurationService should be valid
+        Map<String, String> configItems = new HashMap<>();
+        configItems.put("someKey", "some value");
+        String validString = "{\"items\": [{\"key\": \"someKey\", \"value\": \"some value\"}]}";
+        controller.updateConfigItems(validString);
+        verify(applicationConfigurationService).updateConfigItems(configItems);
+
+        // When provided with valid body, the REST should return no-content
+        mockMvc.perform(post("/api/application_configuration").content(validString))
+                .andExpect(status().isNoContent());
+
+    }
+
 }

@@ -4,10 +4,11 @@ import com.mongodb.WriteResult;
 import fortscale.domain.core.ApplicationConfiguration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationConfigurationRepositoryCustom {
 
-    public List<ApplicationConfiguration> findAll();
+    List<ApplicationConfiguration> findAll();
 
-    public void updateConfigItems(HashMap<String, String> configItems);
+    void updateConfigItems(Map<String, String> configItems);
 }

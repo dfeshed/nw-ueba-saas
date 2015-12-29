@@ -4,11 +4,12 @@ import fortscale.domain.core.ApplicationConfiguration;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public interface ApplicationConfigurationService {
 
-    public List<ApplicationConfiguration> getApplicationConfiguration ();
+    List<ApplicationConfiguration> getApplicationConfiguration ();
 
-    public void updateConfigItems (HashMap<String, String> configItems);
+    void updateConfigItems (Map<String, String> configItems);
 }

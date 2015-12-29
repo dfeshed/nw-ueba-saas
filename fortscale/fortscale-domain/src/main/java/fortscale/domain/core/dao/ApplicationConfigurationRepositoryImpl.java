@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ApplicationConfigurationRepositoryImpl implements ApplicationConfigurationRepositoryCustom {
@@ -24,7 +25,7 @@ public class ApplicationConfigurationRepositoryImpl implements ApplicationConfig
      *
      * @param configItems Map of config items.
      */
-    public void updateConfigItems(HashMap<String, String> configItems) {
+    public void updateConfigItems(Map<String, String> configItems) {
 
         for(String key: configItems.keySet()) {
 

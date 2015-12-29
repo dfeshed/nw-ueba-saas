@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import com.sun.jersey.spi.inject.Errors;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.annotation.LogException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/application_configuration")
@@ -70,7 +72,7 @@ public class ApiApplicationConfigurationController extends BaseController {
 
 
         // Parse json. Return BAD_REQUEST If can not parse
-        JSONObject params = null;
+        JSONObject params;
         try {
             params = new JSONObject(body);
         } catch (JSONException e) {
@@ -79,7 +81,7 @@ public class ApiApplicationConfigurationController extends BaseController {
         }
 
         // Get "Items" from body. Return BAD_REQUEST if items does not exist or is invalid.
-        JSONArray jsonItems = null;
+        JSONArray jsonItems;
         try {
             jsonItems = params.getJSONArray(this.ITEMS_FIELD_NAME);
         } catch (JSONException e) {
@@ -88,7 +90,7 @@ public class ApiApplicationConfigurationController extends BaseController {
         }
 
         // Create configItems Map. Iterate through jsonItems and for each one get key and value and store in map.
-        HashMap<String, String> configItems = new HashMap<>();
+        Map<String, String> configItems = new HashMap<>();
         for (int i = 0; i < jsonItems.length(); i++) {
             String key;
             String value;
