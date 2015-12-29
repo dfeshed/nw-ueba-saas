@@ -5,10 +5,9 @@ import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
-import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.UserService;
 import fortscale.services.classifier.Classifier;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
@@ -30,6 +29,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,14 +82,13 @@ public class EventProcessJob implements Job {
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
-	protected JobProgressReporter monitor;
-	
-	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
 	
 	@Autowired
 	protected UserService userService;
-	
+
+	@Autowired
+	TaskMonitoringHelper<String> taskMonitoringHelper;
 	
 	
 		
@@ -131,26 +130,28 @@ public class EventProcessJob implements Job {
 		String jobName = context.getJobDetail().getKey().getName();
 		
 		logger.info("{} {} job started", jobName, sourceName);
-		monitorId = monitor.startJob(sourceName, jobName, 3, true);
+//		monitorId = monitor.startJob(sourceName, jobName, 3, true);
 
 		
 		String currentStep = "Get Job Parameters";
 		try {
 			// get parameters from job data map
-			monitor.startStep(monitorId, currentStep, 1);
+//			monitor.startStep(monitorId, currentStep, 1);
+			taskMonitoringHelper.startStep(currentStep);
+
 			getJobParameters(context);
-			monitor.finishStep(monitorId, currentStep);
+//			monitor.finishStep(monitorId, currentStep);
 
 			// list files in chronological order
 			currentStep = "List Files";
-			monitor.startStep(monitorId, currentStep, 2);
+//			monitor.startStep(monitorId, currentStep, 2);
 			File[] files = listFiles(inputPath);
-			monitor.finishStep(monitorId, currentStep);
+//			monitor.finishStep(monitorId, currentStep);
 
 			// start process file stage
 			logger.info("processing {} files in {}", files.length, inputPath);
 			currentStep = "Process Files";
-			monitor.startStep(monitorId, currentStep, 3);
+//			monitor.startStep(monitorId, currentStep, 3);
 
 			// get hadoop file writer and streaming sink
 			createOutputAppender();
@@ -176,7 +177,7 @@ public class EventProcessJob implements Job {
 						moveFileToFolder(file, errorPath);
 
 						logger.error("error processing file " + file.getName(), e);
-						monitor.error(monitorId, currentStep, e.toString());
+//						monitor.error(monitorId, currentStep, e.toString());
 					}
 				}
 			} finally {
@@ -197,19 +198,20 @@ public class EventProcessJob implements Job {
 					}
 				}
 			}
-			
+
 			refreshImpala();
 			
-			monitor.finishStep(monitorId, currentStep);
+			//monitor.finishStep(monitorId, currentStep);
 		} catch (JobExecutionException e) {
-			monitor.error(monitorId, currentStep, e.toString());
+			//monitor.error(monitorId, currentStep, e.toString());
 			throw e;
 		} catch (Exception exp) {
 			logger.error("unexpected error during event process job: " + exp.toString());
-			monitor.error(monitorId, currentStep, exp.toString());
+			//monitor.error(monitorId, currentStep, exp.toString());
 			throw new JobExecutionException(exp);
 		} finally {
-			monitor.finishJob(monitorId);
+			//monitor.finishJob(monitorId);
+			taskMonitoringHelper.saveJobStatusReport(jobName+"-"+sourceName,false);
 			logger.info("{} {} job finished", jobName, sourceName);
 		}
 	}
@@ -238,7 +240,7 @@ public class EventProcessJob implements Job {
 	
 	
 	protected boolean processFile(File file) throws IOException {
-		
+		Date date = new Date();
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 			
@@ -246,17 +248,23 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				if (processLine(line))
+				if (processLine(line,file.getName())){
 					++lineCounter;
+					//If success - write the event to the log.
+					//If failed do nothing. The assumption is that the logic updated the filter events
+					//with the relevant message
+					Date timestampFromLine = getTimestampFromLine(line);
+					taskMonitoringHelper.handleUnFilteredEvents(file.getName(),timestampFromLine.getTime(),timestampFromLine.getTime()+"");
+				}
+
 			}
 			
 			// flush hadoop
 			flushOutputAppender();
-			
-			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
+			//monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
-			monitor.error(monitorId, "Process Files", e.toString());
+			//monitor.error(monitorId, "Process Files", e.toString());
 			return false;
 		} finally {
 			reader.close();
@@ -265,21 +273,24 @@ public class EventProcessJob implements Job {
 		
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
-			monitor.error(monitorId, "Process Files", reader.getException().toString());
+		//	monitor.error(monitorId, "Process Files", reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
 				logger.warn("error processing file " + file.getName(), reader.getException());
-				monitor.warn(monitorId, "Process Files", reader.getException().toString());
+				//monitor.warn(monitorId, "Process Files", reader.getException().toString());
 			}
 			return true;
 		}
 	}
 
+	private Date getTimestampFromLine(String line){
+		return new Date();
+	}
 	
-	protected boolean processLine(String line) throws IOException {
+	protected boolean processLine(String line, String fileName) throws IOException {
 		// process each line
-		Record rec = morphline.process(line);
+		Record rec = morphline.process(line, fileName);
 		Record record = null;
 		if(rec == null){
 			return false;
@@ -364,7 +375,7 @@ public class EventProcessJob implements Job {
 		// log all errors if any
 		for (Exception e : exceptions) {
 			logger.error("error refreshing impala", e);
-			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			//monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
 		if (!exceptions.isEmpty())
 			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
@@ -409,7 +420,7 @@ public class EventProcessJob implements Job {
 			appender.flush();
 		} catch (IOException e) {
 			logger.error("error flushing hdfs partitions writer at " + hadoopPath, e);
-			monitor.error(monitorId, "Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
+		//	monitor.error(monitorId, "Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw e;
 		}
 	}
@@ -420,7 +431,7 @@ public class EventProcessJob implements Job {
 			appender.close(); 
 		} catch (IOException e) {
 			logger.error("error closing hdfs partitions writer at " + hadoopPath, e);
-			monitor.error(monitorId, "Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
+	//		monitor.error(monitorId, "Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error closing partitions at " + hadoopPath, e);
 		}
 	}

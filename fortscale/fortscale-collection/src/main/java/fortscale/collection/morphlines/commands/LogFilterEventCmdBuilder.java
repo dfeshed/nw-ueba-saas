@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -25,7 +26,7 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("SendNotification");
+		return Collections.singletonList("LogFilterEvent");
 	}
 
 	@Override
@@ -53,8 +54,14 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			String monitoringSource = "";
+			if (inputRecord.get("MONITORING_SOURCE") != null){
+				monitoringSource =  inputRecord.get("MONITORING_SOURCE").get(0).toString();
+			}
+
 			if (taskMonitoringHelper!=null && taskMonitoringHelper.isMonitoredTask()){
-				taskMonitoringHelper.countNewFilteredEvents("",this.errorMessage);
+				taskMonitoringHelper.countNewFilteredEvents(monitoringSource,this.errorMessage);
 			}
 			return super.doProcess(inputRecord);
 

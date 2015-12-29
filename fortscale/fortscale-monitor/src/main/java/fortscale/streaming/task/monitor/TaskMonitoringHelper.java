@@ -5,9 +5,12 @@ import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math3.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +29,8 @@ public class TaskMonitoringHelper<T> {
 
     @Autowired
     private SpringPropertiesUtil messages;
+
+    private List<Pair<String, Steps>> stepsAndStatus = new ArrayList<>();
 
 
     //Node is the task for specific data source and last state
@@ -188,4 +193,17 @@ public class TaskMonitoringHelper<T> {
 
         jobMonitorReporter.addDataReceived(monitorId,dataReceived);
     }
+
+    public void startStep(String name){
+        stepsAndStatus.add(new Pair<String, Steps>(name, Steps.SATARTED));
+    }
+    public void endStep(String name){
+        stepsAndStatus.add(new Pair<String, Steps>(name, Steps.FINISHED));
+    }
+
+    private enum Steps{
+        SATARTED, FINISHED;
+    }
+
+
 }

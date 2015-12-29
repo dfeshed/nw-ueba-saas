@@ -59,11 +59,12 @@ public class MorphlinesItemsProcessor implements Closeable {
 		return processed;
 	}
 	
-	public Record process(String item) {
+	public Record process(String item, String source) {
 
 		// create a record that holds the input string
 		Record record = new Record();
 		record.put(Fields.MESSAGE, item);
+		record.put("MONITORING_SOURCE", item);
 
 		return process(record);
 	}
