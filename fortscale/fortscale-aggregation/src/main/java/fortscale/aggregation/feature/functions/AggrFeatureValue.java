@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.functions;
 
+import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -8,7 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureValue implements FeatureValue {
+public class AggrFeatureValue implements Serializable, FeatureValue {
+	private static final long serialVersionUID = 1L;
+
+
 	protected final static String AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS = "total";
 	public static final String FEATURE_VALUE_TYPE = "aggr_feature_value";
 
