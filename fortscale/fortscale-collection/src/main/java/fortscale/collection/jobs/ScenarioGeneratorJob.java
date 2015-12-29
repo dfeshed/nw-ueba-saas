@@ -181,6 +181,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             logger.error("user {} not found - exiting", username);
             return;
         }
+
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate);
@@ -221,6 +222,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Map<String, Feature> features = new HashMap();
         features.put(featureName, feature);
         bucket.setAggregatedFeatures(features);
+        Map<String, String> contextFieldNameToValueMap = new HashMap();
+        contextFieldNameToValueMap.put(key, username);
+        bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
         mongoTemplate.insert(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
     }
 
