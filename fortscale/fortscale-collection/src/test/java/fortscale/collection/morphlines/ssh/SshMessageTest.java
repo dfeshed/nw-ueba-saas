@@ -24,7 +24,7 @@ public class SshMessageTest {
 
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readSSH_cisco.conf";
+	private String confFile = "resources/conf-files/ssh/readSSH_cisco.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
 
 

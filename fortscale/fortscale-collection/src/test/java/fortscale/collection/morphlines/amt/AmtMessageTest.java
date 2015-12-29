@@ -24,7 +24,7 @@ import static junitparams.JUnitParamsRunner.$;
 public class AmtMessageTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String parsConfFile ="resources/conf-files/processAMTParsingOngoingEvents.conf";
+	private String parsConfFile ="resources/conf-files/amt/processAMTParsingOngoingEvents.conf";
 	private String logicConfFile = "resources/conf-files/enrichment/readAMT_enrich.conf";
 
 

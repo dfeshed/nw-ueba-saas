@@ -36,7 +36,7 @@ public class VpnMessageTest extends FsParametrizedMultiLineTest {
 
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readVPN_Cisco.conf";
+	private String confFile = "resources/conf-files/vpn/readVPN_Cisco.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 
 	public VpnMessageTest(String testCase, Object[] lines, Object[] outputs) {
