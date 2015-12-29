@@ -35,7 +35,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "aggr_%%%prefix@@@date:::startTime###FeatureBucketAggrMetadata@@@date:::endTime"
+        "dataSources": "aggr_%%%prefix@@@date:::startTime###FeatureBucketMetadata@@@date:::endTime"
       }
     ],
     "otherSteps": [
@@ -48,6 +48,32 @@
         "technology": "KAFKA",
         "strategy": "DELETE",
         "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###metrics"
+      }
+    ]
+  },
+  "AggregatedEventsToEntityEvents": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix@@@date:::start_time_unix###entity_event_%%%prefix@@@date:::startTime"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "entity_events_store"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "RESTORE",
+        "dataSources": "streaming_models"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###fortscale-entity-event###metrics"
       }
     ]
   },
