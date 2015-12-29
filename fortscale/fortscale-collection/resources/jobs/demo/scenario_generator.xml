@@ -13,6 +13,64 @@
 			<job-class>fortscale.collection.jobs.ScenarioGeneratorJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
+			<job-data-map>
+				<entry>
+					<key>dataEntities</key>
+					<value>kerberos_logins,ssh</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-kerberos_logins</key>
+					<value>${impala.score.ldapauth.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-kerberos_logins</key>
+					<value>${hdfs.user.processeddata.security.events.4769.path}</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-ssh</key>
+					<value>${impala.score.ssh.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-ssh</key>
+					<value>${hdfs.user.processeddata.sshscores.path}</value>
+				</entry>
+				<entry>
+					<key>numOfDaysBack</key>
+					<value>30</value>
+				</entry>
+				<entry>
+					<key>maxHourOfWork</key>
+					<value>18</value>
+				</entry>
+				<entry>
+					<key>minHourOfWork</key>
+					<value>8</value>
+				</entry>
+				<entry>
+					<key>numberOfMaxEventsPerTimePeriod</key>
+					<value>5</value>
+				</entry>
+				<entry>
+					<key>numberOfMinEventsPerTimePeriod</key>
+					<value>2</value>
+				</entry>
+				<entry>
+					<key>standardDeviation</key>
+					<value>2</value>
+				</entry>
+				<entry>
+					<key>morningMedianHour</key>
+					<value>11</value>
+				</entry>
+				<entry>
+					<key>afternoonMedianHour</key>
+					<value>15</value>
+				</entry>
+				<entry>
+					<key>skipWeekend</key>
+					<value>true</value>
+				</entry>
+			</job-data-map>
 		</job>		
 	</schedule>
 	

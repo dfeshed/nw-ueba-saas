@@ -23,6 +23,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,46 +60,88 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
     private FileSplitStrategy splitStrategy;
     private PartitionStrategy partitionStrategy;
+    private Map<String, HDFSProperties> dataSourceToHDFSProperties;
+    private int numOfDaysBack;
+    private int maxHourOfWork;
+    private int minHourOfWork;
+    private int numberOfMaxEventsPerTimePeriod;
+    private int numberOfMinEventsPerTimePeriod;
+    private int standardDeviation;
+    private int morningMedianHour;
+    private int afternoonMedianHour;
+    private boolean skipWeekend;
 
-	@Override
+    @Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.info("Initializing scenario generator job");
-		//JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-        //TODO - read map
+		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         SpringService.init(CONTEXT);
         try {
-            splitStrategy = (FileSplitStrategy) Class.forName(SPLIT_STRATEGY).newInstance();
+            splitStrategy = (FileSplitStrategy)Class.forName(SPLIT_STRATEGY).newInstance();
         } catch (Exception ex) {
             logger.error("failed to find split strategy");
             throw new JobExecutionException(ex);
         }
         partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
+        dataSourceToHDFSProperties = buildDataSourceToHDFSPropertiesMap(map);
+        numOfDaysBack = jobDataMapExtension.getJobDataMapIntValue(map, "numOfDaysBack");
+        maxHourOfWork = jobDataMapExtension.getJobDataMapIntValue(map, "maxHourOfWork");
+        minHourOfWork = jobDataMapExtension.getJobDataMapIntValue(map, "minHourOfWork");
+        numberOfMaxEventsPerTimePeriod = jobDataMapExtension.getJobDataMapIntValue(map,
+                "numberOfMaxEventsPerTimePeriod");
+        numberOfMinEventsPerTimePeriod = jobDataMapExtension.getJobDataMapIntValue(map,
+                "numberOfMinEventsPerTimePeriod");
+        standardDeviation = jobDataMapExtension.getJobDataMapIntValue(map, "standardDeviation");
+        morningMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "morningMedianHour");
+        afternoonMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "afternoonMedianHour");
+        skipWeekend = jobDataMapExtension.getJobDataMapBooleanValue(map, "skipWeekend", true);
         logger.info("Job initialized");
 	}
 
-	@Override
+    /**
+     *
+     * This method builds the map required to save data to HDFS
+     *
+     * @param map
+     * @return
+     * @throws JobExecutionException
+     */
+    private Map<String, HDFSProperties> buildDataSourceToHDFSPropertiesMap(JobDataMap map)
+            throws JobExecutionException {
+        Map<String, HDFSProperties> result = new HashMap();
+        for (String dataSource: jobDataMapExtension.getJobDataMapStringValue(map, "dataEntities").split(",")) {
+            String impalaTable = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName-" + dataSource);
+            String hdfsPartition = jobDataMapExtension.getJobDataMapStringValue(map, "hdfsPartition--" + dataSource);
+            //TODO - extract this
+            String fileName = "secData.csv";
+            dataSourceToHDFSProperties.put(dataSource, new HDFSProperties(impalaTable, fileName, hdfsPartition));
+        }
+        return result;
+    }
+
+    @Override
 	protected void runSteps() throws Exception {
 		logger.info("Running scenario generator job");
         generateScenario1();
+        //TODO - generate scenario2 and scenario3
         finishStep();
 	}
 
     public void generateScenario1()
             throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
-
-        /*********************** Entity **********************/
         //TODO - extract these
         String samaccountname = "alrusr51";
-        String username = samaccountname + "@somebigcompany.com";
-        String srcMachine = samaccountname + "_PC";
-        String dstMachine = samaccountname + "_SRV";
+        String domain = "somebigcompany.com";
         String dataSource = "kerberos_logins";
         String timeSpan = "Hourly";
-        String impalaTable = "authenticationscores";
-        String fileName = "secData.csv";
-        String hdfsPartition = "/user/cloudera/processeddata/authentication";
         String title = "Suspicious " + timeSpan + " User Activity";
+        int alertScore = 80;
+        Severity alertSeverity = Severity.High;
+        double indicatorScore = 98;
 
+        String username = samaccountname + "@" + domain;
+        String srcMachine = samaccountname + "_PC";
+        String dstMachine = samaccountname + "_SRV";
         Computer computer = computerRepository.findByName(srcMachine);
         if (computer == null) {
             logger.error("computer {} not found - exiting", srcMachine);
@@ -107,6 +150,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         if (user == null) {
             logger.error("user {} not found - exiting", username);
         }
+        HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
 
         /*********************** Anomaly Time *****************/
         //TODO - extract these
@@ -122,19 +166,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         long endTime = dt.plusHours(1).minusMillis(1).getMillis() / 1000;
         Date date = dt.plusMinutes(37).plusSeconds(12).plusMillis(240).toDate();
 
+
+
         /*********************** Events **********************/
-        HdfsService service = new HdfsService(hdfsPartition, fileName, partitionStrategy, splitStrategy, impalaTable,
-                1, 0, SEPARATOR);
+        HdfsService service = new HdfsService(hdfsProperties.hdfsPartition, hdfsProperties.fileName, partitionStrategy,
+                splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
         createEvents(user, computer, dstMachine, service);
 
         /*********************** Buckets *********************/
-        createBucket(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime, 1,
-                "destination_machine_histogram");
-
-        /********************** Score ************************/
-        int alertScore = 80;
-        double indicatorScore = 98;
-        Severity severity = Severity.High;
+        createBucket(username, KEY, dataSource, timeSpan.toLowerCase(), startTime, endTime, 1, "destination_machine_histogram");
 
         /********************** Indicators *******************/
         List<Evidence> indicators = new ArrayList();
@@ -143,7 +183,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         indicators.add(indicator1);
 
         /********************** Alert ************************/
-        createAlert(title, startTimeMillis, endTimeMillis, user, indicators, alertScore, severity);
+        createAlert(title, startTimeMillis, endTimeMillis, user, indicators, alertScore, alertSeverity);
     }
 
     /**
@@ -193,20 +233,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     public void createEvents(User user, Computer computer, String dstMachine, HdfsService service)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
-        //TODO - extract these
-        int numOfDays = 30;
-        int maxHourOfWork = 18;
-        int minHourOfWork = 8;
-        int numberOfMaxEventsPerTimePeriod = 5;
-        int numberOfMinEventsPerTimePeriod = 2;
-        int standardDeviation = 2;
-        int morningMedianHour = 11;
-        int afternoonMedianHour = 15;
-        boolean skipWeekend = true;
-
         Random random = new Random();
         DateTime now = new DateTime().withZone(DateTimeZone.UTC);
-        DateTime dt = now.minusDays(numOfDays);
+        DateTime dt = now.minusDays(numOfDaysBack);
         List<Pair<Long, String>> eventsToWrite = new ArrayList();
         while (dt.isBefore(now)) {
             int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
@@ -389,5 +418,31 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
+
+    private class HDFSProperties {
+
+        private String impalaTable;
+        private String fileName;
+        private String hdfsPartition;
+
+        private HDFSProperties(String impalaTable, String fileName, String hdfsPartition) {
+            this.impalaTable = impalaTable;
+            this.fileName = fileName;
+            this.hdfsPartition = hdfsPartition;
+        }
+
+        public String getImpalaTable() {
+            return impalaTable;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public String getHdfsPartition() {
+            return hdfsPartition;
+        }
+
+    }
 
 }
