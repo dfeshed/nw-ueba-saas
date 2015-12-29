@@ -399,24 +399,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(user.getAdministratorAccount()).append(SEPARATOR)
                 .append(user.getUserServiceAccount()).append(SEPARATOR)
                 .append(user.getExecutiveAccount()).append(SEPARATOR)
-                .append(srcMachine.getIsSensitive()).append(SEPARATOR)
+                .append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
                 .append(failureCode).append(SEPARATOR)
                 .append(failureCodeScore).append(SEPARATOR)
                 .append(clientAddress).append(SEPARATOR)
                 .append(isNat).append(SEPARATOR)
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
-                .append(normalizedSrcMachineScore).append(SEPARATOR)
-                .append(srcClass).append(SEPARATOR)
-                .append(dstMachine).append(SEPARATOR)
-                .append(dstMachine.toUpperCase()).append(SEPARATOR)
-                .append(normalizedDstMachineScore).append(SEPARATOR)
-                .append(dstClass).append(SEPARATOR)
-                .append(serviceId).append(SEPARATOR)
-                .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
-                .append(eventScore).append(SEPARATOR)
-                .append(timestamp).append(SEPARATOR)
-                .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
+                .append(normalizedSrcMachineScore).append(SEPARATOR).append(srcClass).append(SEPARATOR).append(dstMachine).append(SEPARATOR).append(dstMachine.toUpperCase()).append(SEPARATOR).append(normalizedDstMachineScore).append(SEPARATOR).append(dstClass).append(SEPARATOR).append(serviceId).append(SEPARATOR).append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR).append(eventScore).append(SEPARATOR).append(timestamp).append(SEPARATOR).append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
 
