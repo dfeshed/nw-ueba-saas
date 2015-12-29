@@ -6,7 +6,6 @@ import fortscale.services.ApplicationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,11 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     @Autowired
     private ApplicationConfigurationRepositoryImpl applicationConfigurationRepository;
 
+    /**
+     * Returns a list of ApplicationConfiguration documents
+     *
+     * @return List<ApplicationConfiguration>
+     */
     @Override
     public List<ApplicationConfiguration> getApplicationConfiguration() {
         List<ApplicationConfiguration> applicationConfigurationList = new ArrayList<>();
@@ -24,6 +28,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     /**
+     * Updates or creates config items.
      *
      * @param configItems A map of config items.
      */
