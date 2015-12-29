@@ -168,10 +168,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Computer computer = computerRepository.findByName(srcMachine);
         if (computer == null) {
             logger.error("computer {} not found - exiting", srcMachine);
+            return;
         }
         User user = userService.findByUsername(username);
         if (user == null) {
             logger.error("user {} not found - exiting", username);
+            return;
         }
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
 
