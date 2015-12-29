@@ -69,6 +69,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private int afternoonMedianHour;
     private boolean skipWeekend;
 
+    private int numberOfEventsInTheAnomalyDate;
+
     /**
      *
      * This method gets the job parameters from the job xml file
@@ -100,6 +102,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         morningMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "morningMedianHour");
         afternoonMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "afternoonMedianHour");
         skipWeekend = jobDataMapExtension.getJobDataMapBooleanValue(map, "skipWeekend", true);
+        numberOfEventsInTheAnomalyDate = 0;
         logger.info("Job initialized");
 	}
 
@@ -148,7 +151,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public void generateScenario1()
+    private void generateScenario1()
             throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
         //TODO - extract these
         String samaccountname = "alrusr51";
@@ -164,7 +167,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int minHourForAnomaly = 3;
         int maxHourForAnomaly = 5;
 
-        DateTime anomalyDate = generateRandomDayForAnomaly(numOfDaysBack, numOfDaysBack / 2);
+        DateTime anomalyDate = generateRandomDayForAnomaly(numOfDaysBack / 2, numOfDaysBack / 4);
         String username = samaccountname + "@" + domain;
         String srcMachine = samaccountname + "_PC";
         String dstMachine = samaccountname + "_SRV";
@@ -180,10 +183,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         //generate scenario
         List<Evidence> indicators = new ArrayList();
-        createLoginEvents(user, computer, dstMachine, dataSource);
-        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate,
-                minNumberOfAnomalies, maxNumberOfAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer,
-                dstMachine, indicatorScore));
+        createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate);
+        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies,
+                minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
         //TODO - generate indicators 2,3 and 4
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity);
@@ -202,7 +204,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param count
      * @param featureName
      */
-    public void createBucket(String username, String key, String dataSource, String timeSpan, long startTime,
+    private void createBucket(String username, String key, String dataSource, String timeSpan, long startTime,
                              long endTime, int count, String featureName) {
         FeatureBucket bucket = new FeatureBucket();
         bucket.setBucketId("fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username);
@@ -230,13 +232,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param computer
      * @param dstMachine
      * @param dataSource
+     * @param anomalyDate
      * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws IOException
      * @throws HdfsException
      */
-    public void createLoginEvents(User user, Computer computer, String dstMachine, String dataSource)
+    private void createLoginEvents(User user, Computer computer, String dstMachine, String dataSource,
+            DateTime anomalyDate)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
@@ -270,15 +274,21 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         bucket.getKey().plusHours(1).minusMillis(1).getMillis() / 1000, bucket.getValue(),
                         "number_of_events_per_hour_histogram");
             }
-            //create daily bucket
             DateTime midnight = new DateTime(dt)
                     .withHourOfDay(0)
                     .withMinuteOfHour(0)
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
-            createBucket(user.getUsername(), KEY, dataSource, "daily", midnight.getMillis() / 1000,
-                    midnight.plusDays(1).minusMillis(1).getMillis() / 1000, numberOfMorningEvents +
-                            numberOfAfternoonEvents, "number_of_events_per_hour_histogram");
+            int count = numberOfMorningEvents + numberOfAfternoonEvents;
+            //save the number of events in the anomaly date so that we can later create the proper daily bucket
+            if (midnight.equals(anomalyDate)) {
+                numberOfEventsInTheAnomalyDate = count;
+            } else {
+                //create daily bucket
+                createBucket(user.getUsername(), KEY, dataSource, "daily", midnight.getMillis() / 1000,
+                        midnight.plusDays(1).minusMillis(1).getMillis() / 1000, count,
+                        "number_of_events_per_hour_histogram");
+            }
             dt = dt.plusDays(1);
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
@@ -325,7 +335,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws IOException
      * @return
      */
-    public List<Evidence> createTimeLoginAnomalies(String dataSource, DateTime anomalyDate,
+    private List<Evidence> createTimeLoginAnomalies(String dataSource, DateTime anomalyDate,
             int minNumberOfAnomalies, int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly,
             User user, Computer computer, String dstMachine, int indicatorScore) throws HdfsException, IOException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
@@ -359,7 +369,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     "number_of_events_per_hour_histogram");
         }
         //create daily bucket
-        //TODO - ??
+        createBucket(user.getUsername(), KEY, dataSource, "daily", anomalyDate.getMillis() / 1000,
+                anomalyDate.plusDays(1).minusMillis(1).getMillis() / 1000, numberOfEventsInTheAnomalyDate +
+                        numberOfAnomalies, "number_of_events_per_hour_histogram");
         return indicators;
     }
 
@@ -377,7 +389,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private DateTime generateRandomTimeForDay(DateTime dt, int standardDeviation, int mean, int max, int min) {
         Random random = new Random();
         //temp initialization
-        int hour = 0;
+        int hour = -1;
         //while the randomized time is not between normal work hours
         while (hour < min || hour > max) {
             hour = (int)(random.nextGaussian() * standardDeviation + mean);
@@ -470,15 +482,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(failureCodeScore).append(SEPARATOR)
                 .append(clientAddress).append(SEPARATOR)
                 .append(isNat).append(SEPARATOR)
-                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
-                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
-                .append(normalizedSrcMachineScore).append(SEPARATOR)
+                .append(srcMachine.getName().toUpperCase()).append(SEPARATOR).append(srcMachine.getName().toUpperCase()).append(SEPARATOR).append(normalizedSrcMachineScore).append(SEPARATOR)
                 .append(srcClass).append(SEPARATOR)
                 .append(dstMachine).append(SEPARATOR)
-                .append(dstMachine.toUpperCase()).append(SEPARATOR)
-                .append(normalizedDstMachineScore).append(SEPARATOR)
-                .append(dstClass).append(SEPARATOR)
-                .append(serviceId).append(SEPARATOR)
+                .append(dstMachine.toUpperCase()).append(SEPARATOR).append(normalizedDstMachineScore).append(SEPARATOR)
+                .append(dstClass).append(SEPARATOR).append(serviceId).append(SEPARATOR)
                 .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
                 .append(eventScore).append(SEPARATOR)
                 .append(timestamp).append(SEPARATOR)
