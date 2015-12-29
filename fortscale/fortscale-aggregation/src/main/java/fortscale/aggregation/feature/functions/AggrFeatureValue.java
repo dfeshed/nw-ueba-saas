@@ -2,6 +2,8 @@ package fortscale.aggregation.feature.functions;
 
 import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.FeatureValue;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
@@ -18,7 +20,12 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 
 	private Object value;
 	private Map<String, Object> additionalInformationMap;
-	
+
+	@JsonCreator
+	public AggrFeatureValue(@JsonProperty("value") Object value){
+		this.value = value;
+	}
+
 	public AggrFeatureValue(Object value, Long total){
 		this.value = value;
 		setTotal(total);
