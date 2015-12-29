@@ -406,7 +406,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(isNat).append(SEPARATOR)
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
                 .append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
-                .append(normalizedSrcMachineScore).append(SEPARATOR).append(srcClass).append(SEPARATOR).append(dstMachine).append(SEPARATOR).append(dstMachine.toUpperCase()).append(SEPARATOR).append(normalizedDstMachineScore).append(SEPARATOR).append(dstClass).append(SEPARATOR).append(serviceId).append(SEPARATOR).append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR).append(eventScore).append(SEPARATOR).append(timestamp).append(SEPARATOR).append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
+                .append(normalizedSrcMachineScore).append(SEPARATOR)
+                .append(srcClass).append(SEPARATOR).append(dstMachine)
+                .append(SEPARATOR).append(dstMachine.toUpperCase())
+                .append(SEPARATOR).append(normalizedDstMachineScore)
+                .append(SEPARATOR).append(dstClass).append(SEPARATOR)
+                .append(serviceId).append(SEPARATOR)
+                .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
+                .append(eventScore).append(SEPARATOR).append(timestamp).append(SEPARATOR)
+                .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
 
