@@ -281,7 +281,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//sensitive_machine
-			paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"${fortscale.tags.sensitive}"));
+			paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"is_sensitive_machine"));
 
 
 			//Enrich
