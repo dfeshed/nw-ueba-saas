@@ -4,6 +4,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.User;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,6 +44,13 @@ public class ScenarioGeneratorJobTest {
 	public void testRandomTimes()
 			throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
 		scenarioGeneratorJob.createEvents(user, computer, "alrusr51_SRV", service);
+	}
+
+	@Test
+	public void testRandomAnomalyTimes()
+			throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
+		DateTime now = new DateTime();
+		scenarioGeneratorJob.generateTimeLoginAnomalies(now.minusDays(1), now.minusDays(30), 2, 3, 3, 5, user, computer, "alrusr51_SRV");
 	}
 
 }

@@ -35,7 +35,7 @@ import java.util.*;
 /**
  * Created by Amir Keren on 14/12/2015.
  *
- * This task generates demo scenarios
+ * This job generates demo scenarios
  *
  */
 public class ScenarioGeneratorJob extends FortscaleJob {
@@ -71,6 +71,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private int afternoonMedianHour;
     private boolean skipWeekend;
 
+    /**
+     *
+     * This method gets the job parameters from the job xml file
+     *
+     * @param jobExecutionContext
+     * @throws JobExecutionException
+     */
     @Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.info("Initializing scenario generator job");
@@ -119,6 +126,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         return result;
     }
 
+    /**
+     *
+     * This is the main method of the job
+     *
+     * @throws Exception
+     */
     @Override
 	protected void runSteps() throws Exception {
 		logger.info("Running scenario generator job");
@@ -127,6 +140,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         finishStep();
 	}
 
+    /**
+     *
+     * This method generates scenario1 as described here:
+     * https://fortscale.atlassian.net/browse/FV-9286
+     *
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws HdfsException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public void generateScenario1()
             throws ClassNotFoundException, IOException, HdfsException, InstantiationException, IllegalAccessException {
         //TODO - extract these
@@ -153,7 +177,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
 
         /*********************** Anomaly Time *****************/
-        //TODO - extract these
         DateTime dt = new DateTime()
                 .withZone(DateTimeZone.UTC)
                 .withHourOfDay(4)
@@ -254,8 +277,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 eventsToWrite.add(new ImmutablePair(dateTime.getMillis(),
                         buildKerberosHDFSLine(dateTime, user, computer, dstMachine)));
             }
-            sendToHDFS(service, eventsToWrite);
-            eventsToWrite.clear();
             dt = dt.plusDays(1);
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
@@ -263,6 +284,48 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dt = dt.plusDays(1);
             }
         }
+        //TODO - extract these - 2, 3, 3, 5
+        eventsToWrite.addAll(generateTimeLoginAnomalies(now.minusDays(1), now.minusDays(numOfDaysBack), 2, 3, 3, 5,
+                user, computer, dstMachine));
+        sendToHDFS(service, eventsToWrite);
+    }
+
+    /**
+     *
+     * This method generates a random number of time login anomalies
+     *
+     * @param start
+     * @param end
+     * @param minNumberOfAnomalies
+     * @param maxNumberOfAnomalies
+     * @return
+     */
+    public List<Pair<Long, String>> generateTimeLoginAnomalies(DateTime start, DateTime end, int minNumberOfAnomalies,
+            int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
+            String dstMachine) {
+        DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
+        List<Pair<Long, String>> anomalousEvents = new ArrayList();
+        Set<String> usedDates = new HashSet();
+        Random random = new Random();
+        int numberOfAnomalies = random.nextInt(maxNumberOfAnomalies - minNumberOfAnomalies) + minNumberOfAnomalies;
+        for (int i = 0; i < numberOfAnomalies; i++) {
+            long randomTimeStamp = (long)(start.getMillis() + Math.random() * (end.getMillis() - start.getMillis()));
+            String randomDateStr = hdfsFolderFormat.print(new DateTime(randomTimeStamp));
+            while (!usedDates.isEmpty() && usedDates.contains(randomDateStr)) {
+                randomTimeStamp = (long)(start.getMillis() + Math.random() * (end.getMillis() - start.getMillis()));
+                randomDateStr = hdfsFolderFormat.print(new DateTime(randomTimeStamp));
+            }
+            usedDates.add(randomDateStr);
+            DateTime randomDate = new DateTime(randomTimeStamp)
+                .withZone(DateTimeZone.UTC)
+                .withHourOfDay(random.nextInt(maxHourForAnomaly - minHourForAnomaly) + minHourForAnomaly)
+                .withMinuteOfHour(random.nextInt(60))
+                .withSecondOfMinute(random.nextInt(60))
+                .withMillisOfSecond(random.nextInt(1000));
+            anomalousEvents.add(new ImmutablePair(randomDate.getMillis(), buildKerberosHDFSLine(randomDate, user,
+                    computer, dstMachine)));
+        }
+        return anomalousEvents;
     }
 
     /**
@@ -413,12 +476,29 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         alertsService.add(alert);
     }
 
+    /**
+     *
+     * This method returns the number of steps in the job
+     *
+     * @return
+     */
 	@Override
 	protected int getTotalNumOfSteps() { return 1; }
 
+    /**
+     *
+     * This method notifies the FortscaleJob class if it should report data transfers
+     *
+     * @return
+     */
 	@Override
 	protected boolean shouldReportDataReceived() { return false; }
 
+    /**
+     *
+     * This class contains the necessasry properties to write to HDFS
+     *
+     */
     private class HDFSProperties {
 
         private String impalaTable;
