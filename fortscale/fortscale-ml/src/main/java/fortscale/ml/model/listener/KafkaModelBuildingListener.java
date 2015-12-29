@@ -1,5 +1,6 @@
 package fortscale.ml.model.listener;
 
+import fortscale.utils.time.TimeUtils;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -47,7 +48,7 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 		json.put(MODEL_CONF_NAME_JSON_FIELD, modelConfName);
 		json.put(SESSION_ID_JSON_FIELD, sessionId);
 		json.put(CONTEXT_ID_JSON_FIELD, contextId);
-		json.put(END_TIME_JSON_FIELD, endTime.toString());
+		json.put(END_TIME_JSON_FIELD, TimeUtils.getUtcFormat(endTime));
 		json.put(SUCCESS_JSON_FIELD, success);
 		json.put(MESSAGE_JSON_FIELD, message);
 		return json.toJSONString();

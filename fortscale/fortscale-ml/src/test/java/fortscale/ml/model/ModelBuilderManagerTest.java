@@ -34,7 +34,7 @@ public class ModelBuilderManagerTest {
     @BeforeClass
     public static void setUpClass() {
         testContextManager = new ClassPathXmlApplicationContext(
-                "classpath*:META-INF/spring/model_builder_manager_test_context.xml");
+                "classpath*:META-INF/spring/model-builder-manager-test-context.xml");
     }
 
     @Before
