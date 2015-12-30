@@ -257,6 +257,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Random random = new Random();
         DateTime dt = anomalyDate.minusDays(numOfDaysBack);
         while (dt.isBefore(anomalyDate)) {
+            if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
+                dt = dt.plusDays(2);
+            } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+                dt = dt.plusDays(1);
+            }
             int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
                     + numberOfMinEventsPerTimePeriod;
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
@@ -300,11 +305,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                                 minusMillis(1), dailyHistogram, "number_of_events_per_hour_histogram");
             }
             dt = dt.plusDays(1);
-            if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
-                dt = dt.plusDays(2);
-            } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
-                dt = dt.plusDays(1);
-            }
         }
     }
 
