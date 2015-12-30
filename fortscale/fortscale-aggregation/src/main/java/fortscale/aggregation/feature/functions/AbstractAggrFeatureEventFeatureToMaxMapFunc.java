@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -55,7 +56,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
                 }
                 featuresGroupToMax.put(featuresGroupAndMax.getKey(), Math.max(max, featuresGroupAndMax.getValue()));
             }
-            total += ((AggrFeatureValue) aggrFeature.getValue()).getTotal();
+            total += ConversionUtils.convertToLong(((AggrFeatureValue) aggrFeature.getValue()).getTotal());
         }
 
         return new AggrFeatureValue(featuresGroupToMax, total);

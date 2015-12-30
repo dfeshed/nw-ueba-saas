@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.utils.ConversionUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
                             Double.class.getSimpleName()));
                 }
                 sum += (Double) ((AggrFeatureValue) featureToSum.getValue()).getValue();
-                total += ((AggrFeatureValue) featureToSum.getValue()).getTotal();
+                total += ConversionUtils.convertToLong(((AggrFeatureValue) featureToSum.getValue()).getTotal());
             }
         }
 

@@ -186,7 +186,7 @@
             "normalized_username_vpn_hourly.sum_of_highest_scores_over_src_machines_vpn_hourly": 0.002,
             "normalized_username_vpn_hourly.sum_of_highest_scores_over_country_vpn_hourly": 0.0015,
             "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly": 0.001,
-            "normalized_username_amt_hourly.highest_score_date_time_events_amt_hourly": 0.0015,
+            "normalized_username_amt_hourly.highest_score_over_date_time_events_amt_hourly": 0.0015,
             "normalized_username_amt_hourly.sum_of_highest_scores_over_action_code_events_amt_hourly": 0.0015,
             "normalized_username_amt_hourly.sum_of_highest_scores_over_source_machine_events_amt_hourly": 0.0015
           }
