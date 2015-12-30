@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +43,18 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
             String line = "";
             String statusFieldName="";
             String successValue="";
-            Boolean anyRow = configurationParams.get("anyRow").getParamFlag();
+
+			ConfigurationParam result = getParamConfiguration(configurationParams,"anyRow");
+
+            Boolean anyRow = result != null ? result.getParamFlag() : null;
 
             if (!anyRow) {
-                 statusFieldName = configurationParams.get("statusFieldName").getParamValue();
-                 successValue = configurationParams.get("successValue").getParamValue();
+
+				result = getParamConfiguration(configurationParams,"statusFieldName");
+                statusFieldName = result != null ? result.getParamValue() : null;
+
+				result = getParamConfiguration(configurationParams,"statusFieldName");
+                successValue = result != null ? result.getParamValue() : null;
             }
             //String userNameField = configurationParams.get("userNameField").getParamValue();
 
