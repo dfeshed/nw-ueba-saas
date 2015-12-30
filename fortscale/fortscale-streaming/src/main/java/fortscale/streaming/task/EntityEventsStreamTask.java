@@ -3,7 +3,7 @@ package fortscale.streaming.task;
 import fortscale.entity.event.EntityEventDataStore;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
-import fortscale.streaming.service.entity.event.EntityEventService;
+import fortscale.entity.event.EntityEventService;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;

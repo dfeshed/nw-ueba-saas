@@ -1,5 +1,6 @@
 package fortscale.streaming.service.entity.event;
 
+import fortscale.entity.event.IEntityEventSender;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;

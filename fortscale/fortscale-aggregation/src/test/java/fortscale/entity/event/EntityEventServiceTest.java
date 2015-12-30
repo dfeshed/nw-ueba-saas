@@ -1,6 +1,5 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
-import fortscale.entity.event.EntityEventDataStore;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

@@ -1,4 +1,4 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataStore;

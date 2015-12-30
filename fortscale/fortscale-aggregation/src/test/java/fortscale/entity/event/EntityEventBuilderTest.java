@@ -1,9 +1,6 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.entity.event.EntityEventConf;
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventDataStore;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;

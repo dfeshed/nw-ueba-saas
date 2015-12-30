@@ -1,13 +1,9 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.domain.core.EntityEvent;
-import fortscale.entity.event.EntityEventConf;
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventDataStore;
-import fortscale.entity.event.JokerFunction;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

@@ -1,4 +1,4 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
