@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
@@ -25,7 +26,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.util.*;
@@ -195,15 +199,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate, computerDomain, dc, clientAddress);
-        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies,
-                maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
-                computerDomain, dc, clientAddress, KerberosFailReason.TIME));
-        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfFailureAnomalies,
-                maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine,
-                eventScore, computerDomain, dc, clientAddress, KerberosFailReason.FAILURE));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies, maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, KerberosFailReason.TIME));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfFailureAnomalies, maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, KerberosFailReason.FAILURE));
         //TODO - generate indicators 2,3 and 4
-        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity);
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity);
     }
 
     /**
@@ -223,25 +222,34 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             DateTime end, GenericHistogram genericHistogram, String featureName) {
         long startTime = start.getMillis() / 1000;
         long endTime = end.getMillis() / 1000;
-        FeatureBucket bucket = new FeatureBucket();
-        bucket.setBucketId("fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username);
-        bucket.setCreatedAt(new Date());
-        bucket.setContextFieldNames(Arrays.asList(new String[]{key}));
-        bucket.setDataSources(Arrays.asList(new String[]{dataSource}));
-        bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
-        bucket.setStrategyId("fixed_duration_" + timeSpan + "_" + startTime);
-        bucket.setStartTime(startTime);
-        bucket.setEndTime(endTime);
-        Feature feature = new Feature();
-        feature.setName(featureName);
-        feature.setValue(genericHistogram);
-        Map<String, Feature> features = new HashMap();
-        features.put(featureName, feature);
-        bucket.setAggregatedFeatures(features);
-        Map<String, String> contextFieldNameToValueMap = new HashMap();
-        contextFieldNameToValueMap.put(key, username);
-        bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
-        mongoTemplate.insert(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
+        String bucketId = "fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username;
+        FeatureBucket bucket;
+        Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
+        bucket = mongoTemplate.findOne(query, FeatureBucket.class);
+        //no such bucket found
+        if (bucket == null) {
+            bucket = new FeatureBucket();
+            bucket.setBucketId(bucketId);
+            bucket.setCreatedAt(new Date());
+            bucket.setContextFieldNames(Arrays.asList(new String[]{ key }));
+            bucket.setDataSources(Arrays.asList(new String[]{ dataSource }));
+            bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
+            bucket.setStrategyId("fixed_duration_" + timeSpan + "_" + startTime);
+            bucket.setStartTime(startTime);
+            bucket.setEndTime(endTime);
+            Feature feature = new Feature();
+            feature.setName(featureName);
+            feature.setValue(genericHistogram);
+            Map<String, Feature> features = new HashMap();
+            features.put(featureName, feature);
+            bucket.setAggregatedFeatures(features);
+            Map<String, String> contextFieldNameToValueMap = new HashMap();
+            contextFieldNameToValueMap.put(key, username);
+            bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
+            mongoTemplate.insert(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
+        } else {
+            //TODO - handle existing bucket
+        }
     }
 
     /**
