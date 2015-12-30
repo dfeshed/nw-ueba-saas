@@ -37,9 +37,26 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
         }
     }
 
+    @Override
+    public FeatureBucket getFeatureBucketsById(String bucketId) {
+        Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
+        return mongoTemplate.findOne(query, FeatureBucket.class);
+    }
+
+    @Override
+    public void addBucket(FeatureBucket bucket, String collectionName) {
+        mongoTemplate.insert(bucket, collectionName);
+    }
+
+    @Override
+    public void updateBucket(FeatureBucket bucket) {
+        mongoTemplate.save(bucket);
+    }
+
     private Criteria createContextCriteria(String contextType, String contextName) {
         Map<String, String> contextMap = new HashMap(1);
         contextMap.put(contextType, contextName);
         return Criteria.where(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD).in(contextMap);
     }
+
 }

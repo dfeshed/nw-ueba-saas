@@ -11,5 +11,11 @@ import java.util.List;
  * Date: 15/11/2015
  */
 public interface FeatureBucketQueryService {
-    List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(String featureName, String contextType, String ContextName, Long startTime, Long endTime);
+
+    List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(String featureName, String contextType,
+                                                               String ContextName, Long startTime, Long endTime);
+    FeatureBucket getFeatureBucketsById(String bucketId);
+    void addBucket(FeatureBucket bucket, String collectionName);
+    void updateBucket(FeatureBucket bucket);
+
 }
