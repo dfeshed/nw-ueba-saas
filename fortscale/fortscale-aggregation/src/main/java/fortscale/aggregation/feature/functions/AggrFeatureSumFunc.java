@@ -99,7 +99,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
                             Double.class.getSimpleName()));
                 }
                 sum += (Double) ((AggrFeatureValue) featureToSum.getValue()).getValue();
-                total += ConversionUtils.convertToLong(((AggrFeatureValue) featureToSum.getValue()).getTotal());
+                total += ((AggrFeatureValue) featureToSum.getValue()).getTotal();
             }
         }
 

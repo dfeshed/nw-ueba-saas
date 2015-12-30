@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.FeatureValue;
+import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 	}
 	
 	public Long getTotal(){
-		return (Long) additionalInformationMap.get(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS);
+		return ConversionUtils.convertToLong( additionalInformationMap.get(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS) );
 	}
 	
 	public void putAdditionalInformation (String key, Object value){
