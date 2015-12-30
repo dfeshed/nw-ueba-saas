@@ -1,9 +1,11 @@
 package fortscale.streaming.task;
 
 import fortscale.entity.event.EntityEventDataStore;
-import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.entity.event.EntityEventService;
+import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.FortscaleValueResolver;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -21,13 +23,21 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		EntityEventDataStore entityEventDataStore = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
-		entityEventService = new EntityEventService(entityEventDataStore);
+		// Create the entity event service
+		EntityEventDataStore store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
+		entityEventService = new EntityEventService(store);
 
-		boolean skipSendingEntityEvents = config.getBoolean(SKIP_SENDING_ENTITY_EVENTS_PROPERTY, false);
-		String outputTopic = config.get(OUTPUT_TOPIC_PROPERTY, null);
-		Assert.hasText(outputTopic);
-		sender = new KafkaEntityEventSender(skipSendingEntityEvents ? null : outputTopic);
+		// Get skip sending entity events flag
+		String skipString = config.get(SKIP_SENDING_ENTITY_EVENTS_PROPERTY, Boolean.toString(false));
+		FortscaleValueResolver resolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+		boolean skipBoolean = resolver.resolveBooleanValue(skipString);
+
+		// Get output Kafka topic name
+		String outputTopicName = config.get(OUTPUT_TOPIC_PROPERTY, null);
+		Assert.hasText(outputTopicName);
+
+		// Create an entity event to Kafka sender
+		sender = new KafkaEntityEventSender(skipBoolean ? null : outputTopicName);
 	}
 
 	@Override
