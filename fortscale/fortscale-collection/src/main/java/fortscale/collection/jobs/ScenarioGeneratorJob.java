@@ -198,6 +198,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies,
                 maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
                 computerDomain, dc, clientAddress, KerberosFailReason.TIME));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfFailureAnomalies,
+                maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine,
+                eventScore, computerDomain, dc, clientAddress, KerberosFailReason.FAILURE));
         //TODO - generate indicators 2,3 and 4
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity);
@@ -361,6 +364,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
             String dstMachine, int indicatorScore, String dc, String computerDomain, String clientAddress,
             KerberosFailReason reason) throws HdfsException, IOException {
+        String anomalyTypeFieldName, histogramName;
+        //TODO - decide what to do with this
+        if (reason == KerberosFailReason.TIME) {
+            anomalyTypeFieldName = "event_time";
+            histogramName = "number_of_events_per_hour_histogram";
+        } else {
+            anomalyTypeFieldName = "number_of_failed_kerberos_logins_daily";
+            histogramName = "failure_code_histogram";
+        }
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
@@ -380,10 +392,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             addToBucketMap(randomDate, bucketMap);
             //create only one indicator
             if (i == 0) {
-                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-                indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalySingleEvent, randomDate.toDate(),
-                        randomDate.toDate(), dataSource, indicatorScore + 0.0, "event_time",
-                        dateTimeFormatter.print(randomDate), 1, EvidenceTimeframe.Hourly));
+                if (reason == KerberosFailReason.TIME) {
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+                    indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalySingleEvent,
+                            randomDate.toDate(), randomDate.toDate(), dataSource, indicatorScore + 0.0,
+                            anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, EvidenceTimeframe.Hourly));
+                } else {
+                    indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalyAggregatedEvent,
+                            randomDate.toDate(), randomDate.toDate(), dataSource, indicatorScore + 0.0,
+                            "number_of_failed_kerberos_logins_daily", ((double)numberOfAnomalies) + "", 1,
+                            EvidenceTimeframe.Daily));
+                }
             }
         }
         //create hourly buckets
@@ -396,11 +415,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(user.getUsername(), KEY, dataSource, "hourly", bucket.getKey(), bucket.getKey().plusHours(1).
-                            minusMillis(1), genericHistogram, "number_of_events_per_hour_histogram");
+                            minusMillis(1), genericHistogram, histogramName);
         }
         //create daily bucket
         createBucket(user.getUsername(), KEY, dataSource, "daily", anomalyDate, anomalyDate.plusDays(1).minusMillis(1),
-                dailyHistogram, "number_of_events_per_hour_histogram");
+                dailyHistogram, histogramName);
         return indicators;
     }
 
