@@ -73,6 +73,24 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 	}
 
+	public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime) {
+		String collectionName = getCollectionName(featureBucketConf);
+
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
+
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
+
+			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
+
+			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+			return featureBuckets;
+		}
+		else {
+			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
+		}
+	}
+
 	private Criteria createContextCriteria(String contextType, String contextName) {
 		Map<String, String> contextMap = new HashMap<>(1);
 		contextMap.put(contextType, contextName);
