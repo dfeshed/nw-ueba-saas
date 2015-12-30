@@ -16,7 +16,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 	protected String outPutTopicEntry;
 
 	@Override
-	public Boolean Init() {
+	public Boolean init() {
 		this.fileToConfigurePath = this.root+"/fortscale/streaming/config/";
 		taskName = configurationParams.get("taskName").getParamValue();
 		topolegyResult = configurationParams.get("topologyFlag").getParamFlag();
@@ -28,7 +28,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 
 	}
 
-	public abstract Boolean Configure() throws Exception;
+	public abstract Boolean applyConfiguration() throws Exception;
 
 	protected void mandatoryConfiguration () throws Exception{
 		String line = "";

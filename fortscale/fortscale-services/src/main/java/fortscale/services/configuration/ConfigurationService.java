@@ -30,8 +30,8 @@ public abstract class ConfigurationService {
 
 
 
-    public abstract Boolean Configure() throws Exception;
-	public abstract Boolean Init();
+    public abstract Boolean applyConfiguration() throws Exception;
+	public abstract Boolean init();
 
 	public  Boolean Done(){
         Boolean result = true;

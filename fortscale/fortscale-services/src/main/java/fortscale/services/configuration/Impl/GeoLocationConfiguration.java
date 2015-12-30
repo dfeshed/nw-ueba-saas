@@ -19,8 +19,8 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean Init() {
-		super.Init();
+	public Boolean init() {
+		super.init();
 		Boolean result = false;
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"vpn-geolocation-session-update-task.properties";
@@ -38,7 +38,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public Boolean applyConfiguration() throws Exception {
         try {
             String line = "";
 
