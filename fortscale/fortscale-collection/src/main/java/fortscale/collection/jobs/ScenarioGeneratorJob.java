@@ -1,6 +1,5 @@
 package fortscale.collection.jobs;
 
-import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.util.GenericHistogram;
@@ -26,7 +25,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -199,10 +197,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate, computerDomain, dc, clientAddress);
-        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies, maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, KerberosFailReason.TIME));
-        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfFailureAnomalies, maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, KerberosFailReason.FAILURE));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies,
+                maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
+                computerDomain, dc, clientAddress, KerberosFailReason.TIME));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfFailureAnomalies,
+                maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine,
+                eventScore, computerDomain, dc, clientAddress, KerberosFailReason.FAILURE));
         //TODO - generate indicators 2,3 and 4
-        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity);
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
+                indicators, alertScore, alertSeverity);
     }
 
     /**
