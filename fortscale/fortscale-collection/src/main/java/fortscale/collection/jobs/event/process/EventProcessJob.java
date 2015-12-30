@@ -208,7 +208,7 @@ public class EventProcessJob implements Job {
 			taskMonitoringHelper.error(currentStep, exp.toString());
 			throw new JobExecutionException(exp);
 		} finally {
-			taskMonitoringHelper.saveJobStatusReport(jobName+"-"+sourceName,false);
+			taskMonitoringHelper.saveJobStatusReport(jobName,false,sourceName);
 			logger.info("{} {} job finished", jobName, sourceName);
 		}
 	}

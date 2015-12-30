@@ -44,7 +44,6 @@ public class TaskMonitoringHelper<T> {
     public static final String LAST_EVENT_TIME_LABEL = "Last Event Original Time";
     public static final String TOTAL_EVENTS_LABEL = "Total Events";
     public static final String NOT_FILTERED_EVENTS_LABEL = "Processed Event";
-    public static final String JOB_DATA_SOURCE = "Streaming";
     public  static final String EVENTS_TYPE="EVENTS";
     private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - Reason ";
 
@@ -125,7 +124,7 @@ public class TaskMonitoringHelper<T> {
      * and how many filtered events per each cause.
      * If there where no filtered event, add one line of Filter events = 0
      */
-    public void saveJobStatusReport(String jobLabel,boolean saveOnlyIfDataExists){
+    public void saveJobStatusReport(String jobLabel,boolean saveOnlyIfDataExists, String jobDataSource){
 
         //If tasks is not monitored - stop saving and do nothing
         if (!isMonitoredTask()) {
@@ -139,7 +138,7 @@ public class TaskMonitoringHelper<T> {
         }
 
         //Start saving:
-        String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
+        String monitorId = jobMonitorReporter.startJob(jobDataSource, jobLabel, 1, true);
 
         saveMonitorSteps(monitorId);
         saveMonitorRows(monitorId);
