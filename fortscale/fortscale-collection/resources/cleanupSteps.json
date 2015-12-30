@@ -56,7 +56,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix@@@date:::start_time_unix###entity_event_%%%prefix@@@date:::startTime###streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix###entity_event_%%%prefix###streaming_models@@@regex:::modelName!!!aggr_event_"
       }
     ],
     "otherSteps": [
