@@ -60,8 +60,8 @@
                     <value>${impala.table.fields.username}</value>
                 </entry>
                 <entry>
-                    <key>streamingTopic</key> <!-- ntlm has a large volume, hence it needs its own topic -->
-                    <value>${kafka.ntlm.topic}</value>
+                    <key>streamingTopic</key> <!-- no editing needed -->
+                    <value>${kafka.generic.data.access.struct.topic}</value>
                 </entry>
                 <entry>
                     <key>partitionStrategy</key> <!--  monthly, weekly or daily. define in fortscale-collection-overriding.properties -->
