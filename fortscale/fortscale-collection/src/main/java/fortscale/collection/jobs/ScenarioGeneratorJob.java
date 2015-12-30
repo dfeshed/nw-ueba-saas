@@ -205,7 +205,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param timeSpan
      * @param start
      * @param end
-     * @param count
+     * @param genericHistogram
      * @param featureName
      */
     private void createBucket(String username, String key, String dataSource, String timeSpan, DateTime start,
@@ -255,9 +255,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
         Random random = new Random();
-        DateTime now = new DateTime().withZone(DateTimeZone.UTC);
-        DateTime dt = now.minusDays(numOfDaysBack);
-        while (dt.isBefore(now)) {
+        DateTime dt = anomalyDate.minusDays(numOfDaysBack);
+        while (dt.isBefore(anomalyDate)) {
             int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
                     + numberOfMinEventsPerTimePeriod;
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
@@ -287,7 +286,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
                         "number_of_events_per_hour_histogram");
             }
-            DateTime midnight = new DateTime(dt)
+            DateTime midnight = dt
                     .withHourOfDay(0)
                     .withMinuteOfHour(0)
                     .withSecondOfMinute(0)
@@ -317,7 +316,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param bucketMap
      */
     private void addToBucketMap(DateTime dateTime, Map<DateTime, Integer> bucketMap) {
-        DateTime startOfHour = new DateTime(dateTime)
+        DateTime startOfHour = dateTime
 				.withMinuteOfHour(0)
 				.withSecondOfMinute(0)
 				.withMillisOfSecond(0);
@@ -409,7 +408,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         while (hour < min || hour > max) {
             hour = (int)(random.nextGaussian() * standardDeviation + mean);
         }
-        return new DateTime(dt).withHourOfDay(hour)
+        return dt.withHourOfDay(hour)
                 .withMinuteOfHour(random.nextInt(60))
                 .withSecondOfMinute(random.nextInt(60))
                 .withMillisOfSecond(random.nextInt(1000));
@@ -427,7 +426,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private DateTime generateRandomTimeForAnomaly(DateTime dt, int minHour, int maxHour) {
         Random random = new Random();
         int hour = random.nextInt(maxHour - minHour) + minHour;
-        return new DateTime(dt).withHourOfDay(hour)
+        return dt.withHourOfDay(hour)
                 .withMinuteOfHour(random.nextInt(60))
                 .withSecondOfMinute(random.nextInt(60))
                 .withMillisOfSecond(random.nextInt(1000));
