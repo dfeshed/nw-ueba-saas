@@ -188,11 +188,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate);
-        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies,
-                minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
+        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, indicatorScore));
         //TODO - generate indicators 2,3 and 4
-        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity);
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity);
     }
 
     /**
@@ -375,7 +373,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         //create hourly buckets
         GenericHistogram dailyHistogram = new GenericHistogram();
-        dailyHistogram.add(anomalyDateHistogram);
+        if (anomalyDateHistogram != null) {
+            dailyHistogram.add(anomalyDateHistogram);
+        }
         for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
             GenericHistogram genericHistogram = new GenericHistogram();
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
