@@ -952,13 +952,6 @@
                     "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
                 },
                 {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-                },
-                {
                     "name": "success_events_counter",
                     "featureNamesMap": {},
                     "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -986,7 +979,7 @@
                 "normalized_username"
             ],
             "dataSources": [
-                "ssh"
+                "crmsf"
             ],
             "strategyName": "fixed_duration_hourly",
             "aggrFeatureConfs": [
@@ -994,13 +987,6 @@
                     "name": "number_of_events_per_hour_histogram",
                     "featureNamesMap": {
                         "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
                     },
                     "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
                 },
