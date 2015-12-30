@@ -164,8 +164,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String title = "Suspicious " + timeSpan + " User Activity";
         int alertScore = 80;
         Severity alertSeverity = Severity.High;
-        int minNumberOfAnomalies = 2;
-        int maxNumberOfAnomalies = 3;
+        int minNumberOfTimeAnomalies = 2;
+        int maxNumberOfTimeAnomalies = 3;
+        int minNumberOfFailureAnomalies = 5;
+        int maxNumberOfFailureAnomalies = 6;
         int minHourForAnomaly = 3;
         int maxHourForAnomaly = 5;
         String computerDomain = "FORTSCALE";
@@ -193,9 +195,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         List<Evidence> indicators = new ArrayList();
         createLoginEvents(user, computer, dstMachine, dataSource, anomalyDate, computerDomain, dc, clientAddress);
-        indicators.addAll(createTimeLoginAnomalies(dataSource, anomalyDate, minNumberOfAnomalies, maxNumberOfAnomalies,
-                minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore, computerDomain, dc,
-                clientAddress));
+        indicators.addAll(createLoginAnomalies(dataSource, anomalyDate, minNumberOfTimeAnomalies,
+                maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
+                computerDomain, dc, clientAddress, KerberosFailReason.TIME));
         //TODO - generate indicators 2,3 and 4
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity);
@@ -347,14 +349,18 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param computer
      * @param dstMachine
      * @param indicatorScore
+     * @param dc
+     * @param computerDomain
+     * @param clientAddress
+     * @param reason
      * @throws HdfsException
      * @throws IOException
      * @return
      */
-    private List<Evidence> createTimeLoginAnomalies(String dataSource, DateTime anomalyDate,
-            int minNumberOfAnomalies, int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly,
-            User user, Computer computer, String dstMachine, int indicatorScore, String dc, String computerDomain,
-            String clientAddress) throws HdfsException, IOException {
+    private List<Evidence> createLoginAnomalies(String dataSource, DateTime anomalyDate, int minNumberOfAnomalies,
+            int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
+            String dstMachine, int indicatorScore, String dc, String computerDomain, String clientAddress,
+            KerberosFailReason reason) throws HdfsException, IOException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
@@ -368,9 +374,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (int i = 0; i < numberOfAnomalies; i++) {
             DateTime randomDate = generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly);
             service.writeLineToHdfs(buildKerberosHDFSLine(randomDate, user, computer, dstMachine,
-                    indicatorScore, KerberosFailReason.TIME, computerDomain, dc, clientAddress),randomDate.getMillis());
+                    indicatorScore, reason, computerDomain, dc, clientAddress),randomDate.getMillis());
             service_top.writeLineToHdfs(buildKerberosHDFSLine(randomDate, user, computer, dstMachine,
-                    indicatorScore, KerberosFailReason.TIME, computerDomain, dc, clientAddress),randomDate.getMillis());
+                    indicatorScore, reason, computerDomain, dc, clientAddress),randomDate.getMillis());
             addToBucketMap(randomDate, bucketMap);
             //create only one indicator
             if (i == 0) {
@@ -461,6 +467,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param srcMachine
      * @param dstMachine
      * @param score
+     * @param reason
+     * @param domain
+     * @param dc
+     * @param clientAddress
      * @return
      */
     private String buildKerberosHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
