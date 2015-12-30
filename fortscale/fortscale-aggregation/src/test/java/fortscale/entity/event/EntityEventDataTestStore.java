@@ -1,7 +1,5 @@
 package fortscale.entity.event;
 
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventDataStore;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import java.util.*;
