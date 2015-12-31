@@ -87,6 +87,10 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected UserService userService;
 
+	/**
+	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
+	 * and drop events and save all those details to mongo
+	 */
 	@Autowired
 	protected TaskMonitoringHelper<String> taskMonitoringHelper;
 	
@@ -208,6 +212,7 @@ public class EventProcessJob implements Job {
 			taskMonitoringHelper.error(currentStep, exp.toString());
 			throw new JobExecutionException(exp);
 		} finally {
+			//Before job goes down - all monitoring details will be saved to mongo
 			taskMonitoringHelper.saveJobStatusReport(jobName,false,sourceName);
 			logger.info("{} {} job finished", jobName, sourceName);
 		}
@@ -245,10 +250,10 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+
+				//count that new event trying to processed from specific file
 				taskMonitoringHelper.handleNewEvent(file.getName());
-				if (processLine(line,file.getName())){
-					++lineCounter;
-				}
+				processLine(line,file.getName());
 			}
 			
 			// flush hadoop
@@ -307,9 +312,7 @@ public class EventProcessJob implements Job {
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
 
-			//If success - write the event to the log.
-			//If failed do nothing. The assumption is that the logic updated the filter events
-			//with the relevant message
+			//If success - write the event to monitoring. filed event monitoing handled by monitoring
 			taskMonitoringHelper.handleUnFilteredEvents(fileName,timestamp);
 			return true;
 		} else {
