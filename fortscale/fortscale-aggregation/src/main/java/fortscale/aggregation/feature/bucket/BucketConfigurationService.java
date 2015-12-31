@@ -1,9 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -84,6 +81,9 @@ public class BucketConfigurationService implements InitializingBean, Application
 
     }
 
+    public Collection<FeatureBucketConf> getFeatureBucketConfs(){
+        return bucketConfs.values();
+    }
 
     public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
 

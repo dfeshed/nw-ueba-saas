@@ -19,10 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AggregatedFeatureEventsConfService implements InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -44,6 +41,7 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 	// List of aggregated feature event configurations
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList;
 	private Map<String, AggrFeatureRetentionStrategy> aggrFeatureRetentionStrategies;
+	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -68,6 +66,12 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 		List<AggregatedFeatureEventConf> returned = new ArrayList<>();
 		returned.addAll(aggregatedFeatureEventConfList);
 		return returned;
+	}
+
+	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList(String bucketConfName){
+		List<AggregatedFeatureEventConf> ret = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+
+		return ret != null ? ret : Collections.<AggregatedFeatureEventConf>emptyList();
 	}
 
 	public String getAnomalyType(String aggregatedFeatureName){
@@ -225,6 +229,14 @@ public class AggregatedFeatureEventsConfService implements InitializingBean, App
 			String bucketConfName = conf.getBucketConfName();
 			FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(bucketConfName);
 			conf.setBucketConf(featureBucketConf);
+
+			List<AggregatedFeatureEventConf> bucketAggFeatureEventConfList = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+			if(bucketAggFeatureEventConfList == null){
+				bucketAggFeatureEventConfList = new ArrayList<>();
+				bucketConfName2FeatureEventConfMap.put(bucketConfName, bucketAggFeatureEventConfList);
+			}
+
+			bucketAggFeatureEventConfList.add(conf);
 		}
 	}
 	
