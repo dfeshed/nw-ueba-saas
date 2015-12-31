@@ -1,5 +1,7 @@
 package fortscale.collection.jobs.gds;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * @author gils
  * 30/12/2015
@@ -13,19 +15,26 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
 
     protected GDSConfigurationState gdsConfigurationState;
 
+    @Value("${fortscale.data.source}")
+    private String currentDataSources;
+
     public GDSBaseConfigurator(GDSConfigurationState gdsConfigurationState) {
-        this.gdsConfigurationState = new GDSConfigurationState();
+        this.gdsConfigurationState = gdsConfigurationState;
     }
 
     public void configure() throws Exception {
-        System.out.println("Please enter the new data source name: ");
-        String dataSourceName = gdsInputHandler.getInput(DATA_SOURCE_NAME);
+        if (!gdsConfigurationState.isDataSourceAlreadyDefined()) {
+            System.out.println("Please enter the data source name: ");
+            String dataSourceName = gdsInputHandler.getInput(DATA_SOURCE_NAME);
 
-        gdsConfigurationState.setDataSourceName(dataSourceName);
+            gdsConfigurationState.setDataSourceName(dataSourceName);
 
-        GDSMenuPrintHelper.printDataSourceTypeMenuOptions(dataSourceName);
-        String dataSourceType = gdsInputHandler.getInput(DATA_SOURCE_TYPE);
+            GDSMenuPrintHelper.printDataSourceTypeMenuOptions(dataSourceName);
+            String dataSourceType = gdsInputHandler.getInput(DATA_SOURCE_TYPE);
 
-        gdsConfigurationState.setEntityType(GDSEntityType.valueOf(dataSourceType.toUpperCase()));
+            gdsConfigurationState.setEntityType(GDSEntityType.valueOf(dataSourceType.toUpperCase()));
+
+            gdsConfigurationState.setCurrentDataSources(currentDataSources);
+        }
     }
 }

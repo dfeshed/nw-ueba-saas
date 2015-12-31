@@ -13,30 +13,19 @@ import java.io.IOException;
  */
 public class InitPartConfiguration extends ConfigurationService {
 
-
-
 	private String secondFileToConfigurePath; //Will represent the streaming overriding file
 	private File secoundFileToConfigure;
 	private FileWriter secondFileWriterToConfigure;
-
-
-
-
-
 
 	public InitPartConfiguration()
 	{
 		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
 		this.fileToConfigurePath = this.root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
 		this.secondFileToConfigurePath = root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties";
-
-
-
 	}
 
-
 	@Override
-	public Boolean Init() {
+	public boolean init() {
 		Boolean result = false;
 		try {
 			this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -54,7 +43,7 @@ public class InitPartConfiguration extends ConfigurationService {
 	}
 
 	@Override
-	public  Boolean Configure() throws Exception{
+	public  boolean applyConfiguration() throws Exception{
 
         try {
             Boolean result = false;
@@ -399,8 +388,8 @@ public class InitPartConfiguration extends ConfigurationService {
 
 	}
 
-	@Override
-	public Boolean Done() {
+    @Override
+	public boolean done() {
 
 
 		if (secondFileWriterToConfigure != null) {
@@ -415,7 +404,7 @@ public class InitPartConfiguration extends ConfigurationService {
 
 		}
 
-		return super.Done();
+		return super.done();
 	}
 
 

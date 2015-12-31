@@ -5,7 +5,9 @@ import fortscale.utils.logging.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,8 +23,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	Map<String, GDSConfigurator> configuratorsMap = new HashMap<>();
 
-	private boolean isBaseDataSourceConfigurationDefined;
-
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing Configuration GDS Job");
@@ -33,52 +33,45 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		logger.debug("Running Configuration Generic Data Source Tool");
 
-		handleMainMenuChoice();
+		handleMainMenu();
 
 		gdsInputHandler.close();
 	}
 
-	private void handleMainMenuChoice() throws Exception {
+	private void handleMainMenu() throws Exception {
 		GDSMenuPrintHelper.printMainMenu(true);
 
 		System.out.println("Please enter your choice:");
 		String stepInput = gdsInputHandler.getInput();
 
-		dispatchConfiguratorByInput(stepInput);
+		handleConfiguration(stepInput);
 	}
 
-	private void dispatchConfiguratorByInput(String stepInput) throws Exception {
-
-		GDSConfigurator gdsConfigurator = getGdsConfigurator(stepInput);
-
-		if (gdsConfigurator != null) {
-			gdsConfigurator.configure();
-		}
-		else {
-			System.exit(1);
-		}
-	}
-
-	private GDSConfigurator getGdsConfigurator(String stepInput) throws Exception {
-		int numOfInputRetries = MAX_NUM_OF_INPUT_RETRIES;
+	private void handleConfiguration(String stepInput) throws Exception {
 
 		GDSConfigurationState gdsConfigurationState = new GDSConfigurationState();
 
-		while (numOfInputRetries > 0) {
+		while (true) {
 			String stepInputNormalized = stepInput.trim();
 			switch (stepInputNormalized) {
 				case "1":
 					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSInitConfigurator(gdsConfigurationState));
+					configuratorsMap.get(stepInputNormalized).configure();
+					break;
 				case "2":
 					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSCollectionConfigurator(gdsConfigurationState));
 					configuratorsMap.get(stepInputNormalized).configure();
+					break;
 				case "3":
 					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSStreamingConfigurator(gdsConfigurationState));
 					configuratorsMap.get(stepInputNormalized).configure();
+					break;
 				case "4":
-					throw new UnsupportedOperationException("Operation not supported yet");
+					applyDirtyConfigurations();
+					break;
 				case "5":
-					throw new UnsupportedOperationException("Operation is not support yet");
+					revertDirtyConfigurations(gdsConfigurationState);
+					break;
 				case "6":
 					System.exit(0);
 					break;
@@ -87,12 +80,25 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 					System.out.println("Illegal input. Please enter your choice [1-6]:");
 					stepInput = gdsInputHandler.getInput();
-					numOfInputRetries--;
+
 					break;
 			}
 		}
+	}
 
-		return null;
+	private void revertDirtyConfigurations(GDSConfigurationState gdsConfigurationState) {
+		gdsConfigurationState.clear();
+	}
+
+	private void applyDirtyConfigurations() throws Exception {
+		List<GDSConfigurator> dirtyConfigurators = findDirtyConfigurations();
+		for (GDSConfigurator dirtyConfigurator : dirtyConfigurators) {
+			dirtyConfigurator.apply();
+        }
+	}
+
+	private List<GDSConfigurator> findDirtyConfigurations() {
+		return new ArrayList<>(configuratorsMap.values());
 	}
 
 	@Override

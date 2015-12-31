@@ -25,15 +25,10 @@ public abstract class ConfigurationService {
         this.configurationParams = configurationParams;
     }
 
+    public abstract boolean applyConfiguration() throws Exception;
+	public abstract boolean init();
 
-
-
-
-
-    public abstract Boolean applyConfiguration() throws Exception;
-	public abstract Boolean init();
-
-	public  Boolean Done(){
+	public  boolean done(){
         Boolean result = true;
         if (fileWriterToConfigure != null) {
             try {

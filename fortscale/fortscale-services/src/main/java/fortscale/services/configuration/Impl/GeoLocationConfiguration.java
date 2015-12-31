@@ -19,7 +19,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean init() {
+	public boolean init() {
 		super.init();
 		Boolean result = false;
 		try {
@@ -38,7 +38,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean applyConfiguration() throws Exception {
+	public boolean applyConfiguration() throws Exception {
         try {
             String line = "";
 

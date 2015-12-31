@@ -26,7 +26,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
 
 	@Override
-	public Boolean init() {
+	public boolean init() {
 
 		super.init();
 		Boolean result = false;
@@ -45,7 +45,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 	}
 
 	@Override
-	public Boolean applyConfiguration() throws Exception {
+	public boolean applyConfiguration() throws Exception {
 
         try {
             String line = "";
