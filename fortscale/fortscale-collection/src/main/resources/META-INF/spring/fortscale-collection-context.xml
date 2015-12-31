@@ -250,8 +250,6 @@
 
 	<bean id="aggregatedEventQueryMongoService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService" scope="singleton" />
 
-	<!--<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton" />-->
-
 	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService" scope="singleton" />
 
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
