@@ -1,18 +1,15 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import net.minidev.json.JSONObject;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.task.TaskContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-import net.minidev.json.JSONObject;
-
-
+import java.util.HashMap;
+import java.util.Map;
 
 @Configurable(preConstruction=true)
 public class AggregationMetricsService {
@@ -42,8 +39,8 @@ public class AggregationMetricsService {
 	
 	public void sentEvent(JSONObject event){
 		String aggregatedFeatureType = aggrFeatureEventBuilderService.getAggregatedFeatureType(event);
-		String aggretionEventTypeCounterStr =  String.format(AGGREGATION_EVENT_TYPE_COUNTER_FORMAT, aggregatedFeatureType);
-		incCounter(aggretionEventTypeCounterStr);
+		String aggregatedEventTypeCounterStr = String.format(AGGREGATION_EVENT_TYPE_COUNTER_FORMAT, aggregatedFeatureType);
+		incCounter(aggregatedEventTypeCounterStr);
 		
 		String aggregatedFeatureName = aggrFeatureEventBuilderService.getAggregatedFeatureName(event);
 		String aggregatedFeatureEventCounterStr =  String.format(AGGREGATION_FEATURE_EVENT_COUNTER_FORMAT, aggregatedFeatureName);
@@ -53,7 +50,8 @@ public class AggregationMetricsService {
 	private Counter getCounter(String counterName){
 		Counter counter = counters.get(counterName);
 		if(counter == null){
-			counter = context.getMetricsRegistry().newCounter(getClass().getName(), counterName); 
+			counter = context.getMetricsRegistry().newCounter(getClass().getName(), counterName);
+			counters.put(counterName, counter);
 		}
 		
 		return counter;

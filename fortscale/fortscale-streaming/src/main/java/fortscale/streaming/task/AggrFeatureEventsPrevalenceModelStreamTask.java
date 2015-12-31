@@ -1,24 +1,7 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.samza.config.Config;
-import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
 import com.google.common.collect.Iterables;
-
+import fortscale.streaming.service.AggregatedFeatureAndEntityEventsMetricsService;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -26,6 +9,18 @@ import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.apache.commons.lang.StringUtils;
+import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
@@ -36,14 +31,13 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	private FortscaleValueResolver fortscaleValueResolver;
 	
 	private Map<String, List<String>> eventTypeToFeatureFullPath = new HashMap<>();
-	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
+	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
 	private String eventTypeFieldName;
 	
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
-	
-	
-	
+	private AggregatedFeatureAndEntityEventsMetricsService aggregatedFeatureAndEntityEventsMetricsService;
+
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {	
 		fortscaleValueResolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
@@ -69,7 +63,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-processed-count");
 		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-skip-count");
-
+		aggregatedFeatureAndEntityEventsMetricsService = new AggregatedFeatureAndEntityEventsMetricsService(context);
 	}
 	
 	private List<String> resolveStringValues(Config config, String string) {
@@ -88,8 +82,12 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 			for(String fieldName: eventTypeToFeatureFullPath.get(eventTypeFieldValue)){
 				fullPathFeatureNameBuilder.append(".").append(message.get(fieldName));
 			}
-			
-			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureNameBuilder.toString());
+
+			String fullPathFeatureName = fullPathFeatureNameBuilder.toString();
+			aggregatedFeatureAndEntityEventsMetricsService.updateMetrics(fullPathFeatureName);
+			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager =
+					featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureName);
+
 			if(eventsPrevalenceModelStreamTaskManager != null){
 				eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
 				processedMessageCount.inc();
