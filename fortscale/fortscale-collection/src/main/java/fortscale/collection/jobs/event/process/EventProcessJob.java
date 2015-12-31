@@ -245,13 +245,10 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				taskMonitoringHelper.handleNewEvent(file.getName());
 				if (processLine(line,file.getName())){
 					++lineCounter;
-					//If success - write the event to the log.
-					//If failed do nothing. The assumption is that the logic updated the filter events
-					//with the relevant message
-					Date timestampFromLine = getTimestampFromLine(line);
-					taskMonitoringHelper.handleUnFilteredEvents(file.getName(),timestampFromLine.getTime(),timestampFromLine.getTime()+"");
+
 				}
 
 			}
@@ -278,10 +275,6 @@ public class EventProcessJob implements Job {
 			return true;
 		}
 	}
-
-	private Date getTimestampFromLine(String line){
-		return new Date();
-	}
 	
 	protected boolean processLine(String line, String fileName) throws IOException {
 		// process each line
@@ -304,6 +297,7 @@ public class EventProcessJob implements Job {
 		//2. shorter one - without them - to hadoop
 
 		String outputToHadoop = recordToHadoopString.process(record);
+
 		
 		// append to hadoop, if there is data to be written
 		if (outputToHadoop!=null) {
@@ -313,6 +307,12 @@ public class EventProcessJob implements Job {
 
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
+
+			//If success - write the event to the log.
+			//If failed do nothing. The assumption is that the logic updated the filter events
+			//with the relevant message
+
+			taskMonitoringHelper.handleUnFilteredEvents(fileName,timestamp);
 
 			return true;
 		} else {

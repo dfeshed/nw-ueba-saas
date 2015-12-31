@@ -6,6 +6,7 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.math3.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -110,10 +111,10 @@ public class TaskMonitoringHelper<T> {
         nodeMonitoringDetails.clear();
     }
 
-    public void handleUnFilteredEvents(T key, Long dateTimeUnix, String dateAsString){
+    public void handleUnFilteredEvents(T key, Long dateTimeUnix){
 
         TaskMonitoringDTO node = getNode(key);
-
+        String dateAsString = DateFormatUtils.ISO_DATETIME_FORMAT.format(dateTimeUnix);
         node.updateFirstLastEventInWindow(dateTimeUnix, dateAsString);
         node.increaseNotFilteredEvents(); //Count not filtered events per window
     }

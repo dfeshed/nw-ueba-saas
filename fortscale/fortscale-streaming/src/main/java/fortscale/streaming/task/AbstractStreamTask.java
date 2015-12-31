@@ -177,8 +177,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
-		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
