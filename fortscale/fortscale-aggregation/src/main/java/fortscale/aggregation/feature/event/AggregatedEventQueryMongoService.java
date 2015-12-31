@@ -50,4 +50,9 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
 
         return Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT).in(contextMap); // TODO check for multiple context, might not work
     }
+
+    public void insertAggregatedEvent(String collectionName, AggrEvent event) {
+        mongoTemplate.insert(event, collectionName);
+    }
+
 }
