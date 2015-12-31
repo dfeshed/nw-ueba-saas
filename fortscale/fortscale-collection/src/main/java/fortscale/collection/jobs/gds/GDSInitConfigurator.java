@@ -213,6 +213,7 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
         System.out.println("Finish to configure the Schema part");
 
         System.out.println("Do you want to apply changes? (y/n)");
+
         if (isYesAnswer(gdsInputHandler.getInput("is_apply_changes"))) {
             apply();
         }

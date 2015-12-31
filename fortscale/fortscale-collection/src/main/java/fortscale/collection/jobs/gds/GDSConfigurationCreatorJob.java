@@ -17,8 +17,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(GDSConfigurationCreatorJob.class);
 
-	private static final int MAX_NUM_OF_INPUT_RETRIES = 5;
-
 	private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
 
 	Map<String, GDSConfigurator> configuratorsMap = new HashMap<>();
