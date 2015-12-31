@@ -237,7 +237,7 @@ public class EventProcessJob implements Job {
 	
 	
 	protected boolean processFile(File file) throws IOException {
-		Date date = new Date();
+
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 			
@@ -248,9 +248,7 @@ public class EventProcessJob implements Job {
 				taskMonitoringHelper.handleNewEvent(file.getName());
 				if (processLine(line,file.getName())){
 					++lineCounter;
-
 				}
-
 			}
 			
 			// flush hadoop
@@ -271,6 +269,7 @@ public class EventProcessJob implements Job {
 		} else {
 			if (reader.hasWarnings()) {
 				logger.warn("error processing file " + file.getName(), reader.getException());
+				taskMonitoringHelper.error("Process Files warning", reader.getException().toString());
 			}
 			return true;
 		}
@@ -311,9 +310,7 @@ public class EventProcessJob implements Job {
 			//If success - write the event to the log.
 			//If failed do nothing. The assumption is that the logic updated the filter events
 			//with the relevant message
-
 			taskMonitoringHelper.handleUnFilteredEvents(fileName,timestamp);
-
 			return true;
 		} else {
 			return false;
@@ -370,7 +367,7 @@ public class EventProcessJob implements Job {
 		// log all errors if any
 		for (Exception e : exceptions) {
 			logger.error("error refreshing impala", e);
-			//monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			taskMonitoringHelper.error("Process Files warning", "error refreshing impala - " + e.toString());
 		}
 		if (!exceptions.isEmpty())
 			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
@@ -415,7 +412,7 @@ public class EventProcessJob implements Job {
 			appender.flush();
 		} catch (IOException e) {
 			logger.error("error flushing hdfs partitions writer at " + hadoopPath, e);
-		//	monitor.error(monitorId, "Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
+			taskMonitoringHelper.error("Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw e;
 		}
 	}
@@ -426,7 +423,7 @@ public class EventProcessJob implements Job {
 			appender.close(); 
 		} catch (IOException e) {
 			logger.error("error closing hdfs partitions writer at " + hadoopPath, e);
-	//		monitor.error(monitorId, "Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
+			taskMonitoringHelper.error("Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error closing partitions at " + hadoopPath, e);
 		}
 	}
