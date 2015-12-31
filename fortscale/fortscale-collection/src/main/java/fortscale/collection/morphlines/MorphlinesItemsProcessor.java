@@ -19,7 +19,8 @@ import org.springframework.util.Assert;
  */
 public class MorphlinesItemsProcessor implements Closeable {
 
-	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class); 
+	public static final String MONITORING_SOURCE = "MONITORING_SOURCE";
+	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class);
 	
 	private Command morphline;
 	private boolean isClosed = true;
@@ -71,7 +72,7 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// create a record that holds the input string
 		Record record = new Record();
 		record.put(Fields.MESSAGE, item);
-		record.put("MONITORING_SOURCE", item);
+		record.put(MONITORING_SOURCE, source);
 
 		return process(record);
 	}

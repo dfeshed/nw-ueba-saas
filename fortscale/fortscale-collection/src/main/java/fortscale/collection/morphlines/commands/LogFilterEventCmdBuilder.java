@@ -31,7 +31,6 @@ import com.typesafe.config.Config;
 
 public class LogFilterEventCmdBuilder implements CommandBuilder {
 
-	public static final String ERROR_MESSAGE = "errorMessage";
 
 	//getNames is the how the command will be called in the morphline files
 	@Override
@@ -56,14 +55,12 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public class LogFilterEvent extends AbstractCommand  {
 
+		public static final String MONITORING_SOURCE = "MONITORING_SOURCE";
+		public static final String ERROR_MESSAGE = "errorMessage";
 
 		@Autowired
 		TaskMonitoringHelper<String> taskMonitoringHelper;
-
-
 		private final String errorMessage;
-
-
 
 		public LogFilterEvent(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -77,8 +74,8 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 			// Extract the event source name (usually file name), or use empty string
 			// as default
 			String monitoringSource = "";
-			if (inputRecord.get("MONITORING_SOURCE") != null){
-				monitoringSource =  inputRecord.get("MONITORING_SOURCE").get(0).toString();
+			if (inputRecord.get(MONITORING_SOURCE) != null){
+				monitoringSource =  inputRecord.get(MONITORING_SOURCE).get(0).toString();
 			}
 
 			//If taskMonitorHelper configured - log the event. If not - ignore.
