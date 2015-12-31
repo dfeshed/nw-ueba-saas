@@ -250,8 +250,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             Feature feature = new Feature();
             feature.setName(featureName);
             feature.setValue(genericHistogram);
-            bucket.getAggregatedFeatures().put(featureName, feature);
-            featureBucketQueryService.updateBucket(bucket);
+            Map<String, Feature> featureMap = bucket.getAggregatedFeatures();
+            featureMap.put(featureName, feature);
+            featureBucketQueryService.updateBucketFeatureMap(bucket.getBucketId(), featureMap, collectionName);
         }
     }
 

@@ -1,8 +1,10 @@
 package fortscale.aggregation.feature.event;
 
+import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service to provide basic query functionality of aggregated events
@@ -16,6 +18,6 @@ public interface FeatureBucketQueryService {
                                                                String ContextName, Long startTime, Long endTime);
     FeatureBucket getFeatureBucketsById(String bucketId, String collectionName);
     void addBucket(FeatureBucket bucket, String collectionName);
-    void updateBucket(FeatureBucket bucket);
+    void updateBucketFeatureMap(String bucketId, Map<String, Feature> featureMap, String collectionName);
 
 }

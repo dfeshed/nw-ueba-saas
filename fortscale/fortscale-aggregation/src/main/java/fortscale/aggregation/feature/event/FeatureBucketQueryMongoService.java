@@ -1,11 +1,13 @@
 package fortscale.aggregation.feature.event;
 
+import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +51,10 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
     }
 
     @Override
-    public void updateBucket(FeatureBucket bucket) {
-        mongoTemplate.save(bucket);
+    public void updateBucketFeatureMap(String bucketId, Map<String, Feature> featureMap, String collectionName) {
+        Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
+        mongoTemplate.updateFirst(query, Update.update(FeatureBucket.AGGREGATED_FEATURES_FIELD, featureMap),
+                FeatureBucket.class, collectionName);
     }
 
     private Criteria createContextCriteria(String contextType, String contextName) {
