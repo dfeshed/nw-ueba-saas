@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
 
 public class EntityEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private static final String SKIP_SENDING_ENTITY_EVENTS_PROPERTY = "fortscale.skip.sending.entity.events";
-	private static final String OUTPUT_TOPIC_PROPERTY = "fortscale.output.topic";
+	private static final String OUTPUT_TOPIC_NAME_PROPERTY = "kafka.entity.event.topic";
 
 	private EntityEventService entityEventService;
 	private KafkaEntityEventSender sender;
@@ -33,7 +33,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		boolean skipBoolean = resolver.resolveBooleanValue(skipString);
 
 		// Get output Kafka topic name
-		String outputTopicName = config.get(OUTPUT_TOPIC_PROPERTY, null);
+		String outputTopicName = config.get(OUTPUT_TOPIC_NAME_PROPERTY, null);
 		Assert.hasText(outputTopicName);
 
 		// Create an entity event to Kafka sender

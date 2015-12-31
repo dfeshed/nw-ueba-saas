@@ -2,14 +2,18 @@ package fortscale.streaming.service;
 
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.task.TaskContext;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Configurable(preConstruction = true)
 public class AggregatedFeatureAndEntityEventsMetricsService {
-	private static final String DATA_SOURCE_COUNTER_NAME_FORMAT = "%s-counter";
+	@Value("${fortscale.aggregation.events.counter.name.suffix}")
+	private String dataSourceCounterNameSuffix;
 
 	private TaskContext context;
 	private Map<String, Counter> counters;
@@ -22,7 +26,7 @@ public class AggregatedFeatureAndEntityEventsMetricsService {
 
 	public void updateMetrics(String dataSource) {
 		if (StringUtils.hasText(dataSource)) {
-			String counterName = String.format(DATA_SOURCE_COUNTER_NAME_FORMAT, dataSource);
+			String counterName = String.format("%s%s", dataSource, dataSourceCounterNameSuffix);
 			incCounter(counterName);
 		}
 	}

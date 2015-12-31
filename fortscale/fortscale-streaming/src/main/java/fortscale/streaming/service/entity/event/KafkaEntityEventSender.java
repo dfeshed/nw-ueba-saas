@@ -35,4 +35,7 @@ public class KafkaEntityEventSender implements IEntityEventSender {
 			collector.send(new OutgoingMessageEnvelope(new SystemStream(KAFKA_SYSTEM, stream), entityEvent.toJSONString()));
 		}
 	}
+
+	@Override
+	public void close() {}
 }
