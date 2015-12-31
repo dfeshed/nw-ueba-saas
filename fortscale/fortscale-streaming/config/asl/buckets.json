@@ -969,6 +969,28 @@
                         "groupBy": ["country"]
                     },
                     "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+                },
+                {
+                    "name": "high_score_date_time_events_counter",
+                    "featureNamesMap": {},
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+                    "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+                },
+                {
+                    "name": "country_with_high_score_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["country"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+                    "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+                },
+                {
+                    "name": "failure_code_with_high_score_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["failure_code"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+                    "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
                 }
             ]
         },
@@ -1008,6 +1030,28 @@
                         "groupBy": ["country"]
                     },
                     "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+                },
+                {
+                    "name": "high_score_date_time_events_counter",
+                    "featureNamesMap": {},
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+                    "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+                },
+                {
+                    "name": "country_with_high_score_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["country"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+                    "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+                },
+                {
+                    "name": "failure_code_with_high_score_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["failure_code"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+                    "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
                 }
             ]
         },
