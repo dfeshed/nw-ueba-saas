@@ -269,4 +269,35 @@ public class ApiUserControllerTest {
 
 	}
 
+	@Test
+    public void testGetRelatedSourceMachines() throws Exception {
+
+        // Expect route to be defined
+        mockMvc.perform(get("/api/user/some@user.name/target_machines")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andReturn();
+
+        // Expect route to return BAD_REQUEST when time_range is not greater then 0
+        mockMvc.perform(get("/api/user/some@user.name/target_machines")
+                .param("time_range", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Expect route to return BAD_REQUEST when limit is not greater then 0
+        mockMvc.perform(get("/api/user/some@user.name/target_machines")
+                .param("limit", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+
+        mockMvc.perform(get("/api/user/login4768usr1@somebigcompany.com/target_machines")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+	}
 }

@@ -2,11 +2,16 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
+import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.services.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
@@ -15,6 +20,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.web.rest.Utils.BadRequestException;
+import fortscale.web.rest.Utils.UserUtils;
+import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.json.JSONException;
@@ -50,6 +58,12 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
+
+	@Autowired
+	UserUtils userUtils;
 
 	private static final String DEFAULT_SORT_FIELD = "username";
 
@@ -468,6 +482,38 @@ public class ApiUserController extends BaseController{
 		}
 		return ret;
 	}
+
+    @RequestMapping(value = "/{normalized_username}/target_machines", method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<Pair<String, Double>>> getRelatedSourceMachines(
+            @PathVariable String normalized_username,
+            @RequestParam(required = false, defaultValue = "90", value = "time_range") Integer timePeriodInDays,
+            @RequestParam(required = false, defaultValue = "5", value = "limit") Integer limit
+    ) {
+
+        // Validations
+        if (timePeriodInDays <= 0) {
+            throw new BadRequestException("time_range param must be greater then 0.");
+        }
+
+        if (limit <= 0) {
+            throw new BadRequestException("limit param must be greater then 0.");
+        }
+
+		SupportingInformationGenericData<Double> supportingInformationData;
+
+		try {
+			SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", "kerberos_logins", "destination_machine", "Count");
+			supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), 90);
+		} catch(SupportingInformationException e) {
+			supportingInformationData = null;
+		}
+
+        DataBean<List<Pair<String, Double>>> response = new DataBean<>();
+        response.setData(userUtils.getListFromSupportingInformation(supportingInformationData, limit));
+        return response;
+    }
 
 
 }
