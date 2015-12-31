@@ -1,5 +1,8 @@
 package fortscale.collection.jobs.gds;
 
+import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
+import fortscale.collection.jobs.gds.state.GDSConfigurationState;
+import fortscale.collection.jobs.gds.state.SchemaDefinitionState;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.InitPartConfiguration;
@@ -13,9 +16,9 @@ import java.util.Map;
  * @author gils
  * 30/12/2015
  */
-public class GDSInitConfigurator extends GDSBaseConfigurator {
+public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
-    private static Logger logger = Logger.getLogger(GDSInitConfigurator.class);
+    private static Logger logger = Logger.getLogger(GDSSchemaConfigurator.class);
 
     private ConfigurationService initConfigurationService;
 
@@ -28,7 +31,7 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
     private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
     private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
 
-    public GDSInitConfigurator(GDSConfigurationState gdsConfigurationState) {
+    public GDSSchemaConfigurator(GDSConfigurationState gdsConfigurationState) {
         super(gdsConfigurationState);
         initConfigurationService = new InitPartConfiguration();
     }
@@ -39,9 +42,9 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
         String additionalFieldsCSV="";
         String additionalScoreFieldsCSV="";
 
-        GDSConfigurationState.SchemaDefinitionsState schemaDefinitionsState = gdsConfigurationState.getSchemaDefinitionsState();
+        SchemaDefinitionState schemaDefinitionState = gdsConfigurationState.getSchemaDefinitionState();
 
-        Map<String, ConfigurationParam> paramsMap = schemaDefinitionsState.getParamsMap();
+        Map<String, ConfigurationParam> paramsMap = schemaDefinitionState.getParamsMap();
 
         paramsMap.put("dataSourceName", new ConfigurationParam("dataSourceName", false, gdsConfigurationState.getDataSourceName()));
         paramsMap.put("dataSourceType", new ConfigurationParam("dataSourceType", false, gdsConfigurationState.getEntityType().name().toLowerCase()));
@@ -50,22 +53,22 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
         String dataSourceName = gdsConfigurationState.getDataSourceName();
 
         System.out.println(String.format("Does %s data source have additional fields (y/n)", gdsConfigurationState.getDataSourceName()));
-        String result = gdsInputHandler.getInput("include_additional_fields");
-        if(isYesAnswer(result))
+        String result = gdsInputHandler.getInput();
+        if(GDSUserInputHelper.isYesAnswer(result))
         {
             additionalFieldsCSV=",";
 
             System.out.println(String.format("Please enter %s data source additional fields csv style (i.e url STRING,application STRING  etc): ", gdsConfigurationState.getDataSourceName()));
 
-            additionalFieldsCSV += gdsInputHandler.getInput("additional_fields");;
+            additionalFieldsCSV += gdsInputHandler.getInput();
 
             System.out.println(String.format("Does %s data source have additional score fields (y/n)", gdsConfigurationState.getDataSourceName()));
-            result = gdsInputHandler.getInput("include_additional_score_fields");
+            result = gdsInputHandler.getInput();
 
-            if(isYesAnswer(result)) {
+            if(GDSUserInputHelper.isYesAnswer(result)) {
                 additionalScoreFieldsCSV=",";
                 System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ", gdsConfigurationState.getDataSourceName()));
-                additionalScoreFieldsCSV += gdsInputHandler.getInput("additional_score_fields");
+                additionalScoreFieldsCSV += gdsInputHandler.getInput();
             }
         }
 
@@ -89,16 +92,16 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
                 paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_resolving");
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_geolocated");
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_machine_normalization");
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
 
                 paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
@@ -114,31 +117,31 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
                 paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_resolving");
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_geo_located");
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_machine_normalization");
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
 
                 paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_ip_resolving");
-                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_ip_geo_located");
-                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_machine_normalization");
-                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", GDSUserInputHelper.isYesAnswer(result),""));
                 break;
             }
             case "customized_auth_event" :
@@ -149,30 +152,30 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
                 paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_resolved");
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_ip_geo_located");
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_source_machine_normalization");
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_ip_resolved");
-                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_ip_geo_located");
-                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag", GDSUserInputHelper.isYesAnswer(result),""));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
-                result = gdsInputHandler.getInput("is_target_machine_normalized");
-                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", isYesAnswer(result),""));
+                result = gdsInputHandler.getInput();
+                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag", GDSUserInputHelper.isYesAnswer(result),""));
                 break;
 
             }
@@ -180,7 +183,7 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
 
         //delimiter
         System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
-        String delimiter = gdsInputHandler.getInput("data_schema_delimiter");
+        String delimiter = gdsInputHandler.getInput();
         paramsMap.put("dataDelimiter", new ConfigurationParam("delimiter",false,delimiter));
 
         //table name
@@ -206,21 +209,22 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
 
         //top score
         System.out.println(String.format("Dose %s Have top table schema (y/n) ?",dataSourceName));
-        String brResult =gdsInputHandler.getInput("additional_score_fields").toLowerCase();
+        String brResult =gdsInputHandler.getInput().toLowerCase();
         paramsMap.put("topSchemaFlag", new ConfigurationParam("topSchemaFlaf",brResult.equals("y") || brResult.equals("yes"),""));
 
         initConfigurationService.setConfigurationParams(paramsMap);
-        System.out.println("Finish to configure the Schema part");
 
-        System.out.println("Do you want to apply changes? (y/n)");
+        System.out.println("Finished to configure new data source Schema. Do you want to apply changes now? (y/n)");
 
-        if (isYesAnswer(gdsInputHandler.getInput("is_apply_changes"))) {
+        if (GDSUserInputHelper.isYesAnswer(gdsInputHandler.getInput())) {
             apply();
         }
-    }
 
-    private static boolean isYesAnswer(String input) {
-        return input.toLowerCase().equals("y") || input.toLowerCase().equals("yes");
+        System.out.println("Do you want to reset schema changes? (y/n)");
+
+        if (GDSUserInputHelper.isYesAnswer(gdsInputHandler.getInput())) {
+            reset();
+        }
     }
 
     @Override
@@ -232,8 +236,7 @@ public class GDSInitConfigurator extends GDSBaseConfigurator {
         initConfigurationService.done();
     }
 
-    @Override
-    public void revert() throws Exception {
-
+    public void reset() throws Exception {
+        gdsConfigurationState.reset();
     }
 }

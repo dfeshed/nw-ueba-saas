@@ -1,13 +1,15 @@
 package fortscale.collection.jobs.gds;
 
+import fortscale.collection.jobs.gds.state.GDSConfigurationState;
+
 /**
  * @author gils
  *         30/12/2015
  */
-public class GDSCollectionConfigurator implements GDSConfigurator{
+public class GDSCollectionConfigurator extends GDSBaseConfigurator{
 
     public GDSCollectionConfigurator(GDSConfigurationState gdsConfigurationState) {
-
+        super(gdsConfigurationState);
     }
 
     @Override
@@ -21,7 +23,7 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
-    public void revert() throws Exception {
+    public void reset() throws Exception {
 
     }
 }

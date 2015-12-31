@@ -28,7 +28,7 @@ public abstract class ConfigurationService {
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();
 
-	public  boolean done(){
+	public boolean done(){
         Boolean result = true;
         if (fileWriterToConfigure != null) {
             try {

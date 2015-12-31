@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.gds.state.GDSConfigurationState;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -37,7 +38,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	}
 
 	private void handleMainMenu() throws Exception {
-		GDSMenuPrintHelper.printMainMenu(true);
+		GDSMenuPrinterHelper.printMainMenu(true);
 
 		System.out.println("Please enter your choice:");
 		String stepInput = gdsInputHandler.getInput();
@@ -55,7 +56,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 			String stepInputNormalized = stepInput.trim();
 			switch (stepInputNormalized) {
 				case "1":
-					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSInitConfigurator(gdsConfigurationState));
+					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSSchemaConfigurator(gdsConfigurationState));
 					configuratorsMap.get(stepInputNormalized).configure();
 					break;
 				case "2":
@@ -63,42 +64,40 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					configuratorsMap.get(stepInputNormalized).configure();
 					break;
 				case "3":
-					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSStreamingConfigurator(gdsConfigurationState));
+					configuratorsMap.putIfAbsent(stepInputNormalized, new GDSEnrichmentConfigurator(gdsConfigurationState));
 					configuratorsMap.get(stepInputNormalized).configure();
 					break;
 				case "4":
-					applyDirtyConfigurations();
+					applyConfigurations();
 					break;
 				case "5":
-					revertDirtyConfigurations(gdsConfigurationState);
+					resetConfigurations(gdsConfigurationState);
 					break;
 				case "6":
 					System.exit(0);
 					break;
 				default: // illegal operation
-					GDSMenuPrintHelper.printMainMenu(false);
-
-					System.out.println("Illegal input. Please enter your choice [1-6]:");
-
-					illegalInput = false;
-
+					illegalInput = true;
 					break;
 			}
 
 			if (!illegalInput) {
-				System.out.println("");
-				GDSMenuPrintHelper.printMainMenu(false);
-				System.out.println("Please enter your choice:");
+				GDSMenuPrinterHelper.printNewMainMenuIteration();
+			}
+			else {
+				GDSMenuPrinterHelper.printMainMenuAfterFailure();
 			}
 			stepInput = gdsInputHandler.getInput();
 		}
 	}
 
-	private void revertDirtyConfigurations(GDSConfigurationState gdsConfigurationState) {
-		gdsConfigurationState.clear();
+	private void resetConfigurations(GDSConfigurationState gdsConfigurationState) {
+		gdsConfigurationState.reset();
+
+		System.out.println("Configuration was reset successfully.");
 	}
 
-	private void applyDirtyConfigurations() throws Exception {
+	private void applyConfigurations() throws Exception {
 		List<GDSConfigurator> dirtyConfigurators = findDirtyConfigurations();
 		for (GDSConfigurator dirtyConfigurator : dirtyConfigurators) {
 			dirtyConfigurator.apply();

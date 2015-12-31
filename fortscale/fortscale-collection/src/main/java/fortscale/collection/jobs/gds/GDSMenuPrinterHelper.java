@@ -4,7 +4,7 @@ package fortscale.collection.jobs.gds;
  * @author gils
  * 30/12/2015
  */
-public class GDSMenuPrintHelper {
+public class GDSMenuPrinterHelper {
     public static void printMainMenu(boolean includeMainMenuHeader) {
         if (includeMainMenuHeader) {
             printMainMenuHeader();
@@ -12,9 +12,9 @@ public class GDSMenuPrintHelper {
 
         System.out.println("1.\tSchema definition (HDFS/Impala)\n" +
                 "2.\tCollection definition\n" +
-                "3.\tStreaming definition\n" +
+                "3.\tEnrichment definition\n" +
                 "4.\tApply all changes\n" +
-                "5.\tRevert all changes\n" +
+                "5.\tReset all changes\n" +
                 "6.\tQuit\n");
     }
 
@@ -30,5 +30,16 @@ public class GDSMenuPrintHelper {
         System.out.println("         access_event            - user* , time*, source? (resolving,geo location)?  ");
         System.out.println("         auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
         System.out.println("         customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
+    }
+
+    public static void printMainMenuAfterFailure() {
+        GDSMenuPrinterHelper.printMainMenu(false);
+        System.out.println("Illegal input. Please enter your choice [1-6]:");
+    }
+
+    public static void printNewMainMenuIteration() {
+        System.out.println("");
+        GDSMenuPrinterHelper.printMainMenu(false);
+        System.out.println("Please enter your choice [1-6]:");
     }
 }

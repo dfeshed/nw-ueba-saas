@@ -7,5 +7,5 @@ package fortscale.collection.jobs.gds;
 interface GDSConfigurator {
     void configure() throws Exception;
     void apply() throws Exception;
-    void revert() throws Exception;
+    void reset() throws Exception;
 }
