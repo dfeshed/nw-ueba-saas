@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class FeatureBucketsReaderService {
         return featureBucketsMongoStore.getFeatureBucket(featureBucketConf, bucketId);
     }
 
-    public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime) {
-        return featureBucketsMongoStore.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime);
+    public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
+        return featureBucketsMongoStore.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
     }
 }
