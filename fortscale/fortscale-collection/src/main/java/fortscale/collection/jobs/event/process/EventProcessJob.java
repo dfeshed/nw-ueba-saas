@@ -275,7 +275,7 @@ public class EventProcessJob implements Job {
 			return true;
 		}
 	}
-	
+
 	protected boolean processLine(String line, String fileName) throws IOException {
 		// process each line
 		Record rec = morphline.process(line, fileName);

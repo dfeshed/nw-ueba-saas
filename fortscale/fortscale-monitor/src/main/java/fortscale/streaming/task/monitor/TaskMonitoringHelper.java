@@ -114,7 +114,7 @@ public class TaskMonitoringHelper<T> {
     public void handleUnFilteredEvents(T key, Long dateTimeUnix){
 
         TaskMonitoringDTO node = getNode(key);
-        String dateAsString = DateFormatUtils.ISO_DATETIME_FORMAT.format(dateTimeUnix);
+        String dateAsString = DateFormatUtils.format(dateTimeUnix*1000,"yyyy-MM-DD HH:mm:ss");
         node.updateFirstLastEventInWindow(dateTimeUnix, dateAsString);
         node.increaseNotFilteredEvents(); //Count not filtered events per window
     }
