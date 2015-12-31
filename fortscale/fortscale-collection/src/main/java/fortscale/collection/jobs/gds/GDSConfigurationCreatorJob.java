@@ -49,6 +49,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 		GDSConfigurationState gdsConfigurationState = new GDSConfigurationState();
 
+		boolean illegalInput = false;
+
 		while (true) {
 			String stepInputNormalized = stepInput.trim();
 			switch (stepInputNormalized) {
@@ -77,10 +79,18 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					GDSMenuPrintHelper.printMainMenu(false);
 
 					System.out.println("Illegal input. Please enter your choice [1-6]:");
-					stepInput = gdsInputHandler.getInput();
+
+					illegalInput = false;
 
 					break;
 			}
+
+			if (!illegalInput) {
+				System.out.println("");
+				GDSMenuPrintHelper.printMainMenu(false);
+				System.out.println("Please enter your choice:");
+			}
+			stepInput = gdsInputHandler.getInput();
 		}
 	}
 
