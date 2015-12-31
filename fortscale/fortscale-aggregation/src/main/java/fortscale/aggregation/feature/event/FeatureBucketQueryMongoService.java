@@ -38,9 +38,9 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
     }
 
     @Override
-    public FeatureBucket getFeatureBucketsById(String bucketId) {
+    public FeatureBucket getFeatureBucketsById(String bucketId, String collectionName) {
         Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
-        return mongoTemplate.findOne(query, FeatureBucket.class);
+        return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
     }
 
     @Override

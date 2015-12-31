@@ -223,8 +223,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             DateTime end, GenericHistogram genericHistogram, String featureName) {
         long startTime = start.getMillis() / 1000;
         long endTime = end.getMillis() / 1000;
+        String collectionName = "aggr_" + key + "_" + dataSource + "_" + timeSpan;
         String bucketId = "fixed_duration_" + timeSpan + "_" + startTime + "_" + key + " _" + username;
-        FeatureBucket bucket = featureBucketQueryService.getFeatureBucketsById(bucketId);
+        FeatureBucket bucket = featureBucketQueryService.getFeatureBucketsById(bucketId, collectionName);
         if (bucket == null) {
             bucket = new FeatureBucket();
             bucket.setBucketId(bucketId);
@@ -244,7 +245,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             Map<String, String> contextFieldNameToValueMap = new HashMap();
             contextFieldNameToValueMap.put(key, username);
             bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
-            featureBucketQueryService.addBucket(bucket, "aggr_" + key + "_" + dataSource + "_" + timeSpan);
+            featureBucketQueryService.addBucket(bucket, collectionName);
         } else {
             Feature feature = new Feature();
             feature.setName(featureName);

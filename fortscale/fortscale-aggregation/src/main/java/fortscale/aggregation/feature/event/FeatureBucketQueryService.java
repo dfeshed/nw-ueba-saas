@@ -14,7 +14,7 @@ public interface FeatureBucketQueryService {
 
     List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(String featureName, String contextType,
                                                                String ContextName, Long startTime, Long endTime);
-    FeatureBucket getFeatureBucketsById(String bucketId);
+    FeatureBucket getFeatureBucketsById(String bucketId, String collectionName);
     void addBucket(FeatureBucket bucket, String collectionName);
     void updateBucket(FeatureBucket bucket);
 
