@@ -16,9 +16,7 @@ public class ApplicationConfigurationRepositoryImpl implements ApplicationConfig
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<ApplicationConfiguration> findAll() {
-        return mongoTemplate.findAll(ApplicationConfiguration.class);
-    }
+
 
     /**
      * Iterates through Map, and upserts each config item.

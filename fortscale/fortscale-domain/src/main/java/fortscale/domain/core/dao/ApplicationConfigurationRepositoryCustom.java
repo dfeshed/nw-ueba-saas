@@ -8,7 +8,5 @@ import java.util.Map;
 
 public interface ApplicationConfigurationRepositoryCustom {
 
-    List<ApplicationConfiguration> findAll();
-
     void updateConfigItems(Map<String, String> configItems);
 }
