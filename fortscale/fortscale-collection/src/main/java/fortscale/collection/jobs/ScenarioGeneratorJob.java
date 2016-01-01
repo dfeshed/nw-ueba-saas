@@ -233,8 +233,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate,
                 minNumberOfFailureAnomalies, maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user,
                 computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.FAILURE,
-                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "number_of_failed_" +
-                        DataSource.kerberos_logins, "failure_code_histogram"));
+                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "number_of_failed_keberos_logins_daily",
+                "failure_code_histogram"));
         indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate,
                 minNumberOfDestMachineAnomalies, maxNumberOfDestMachineAnomalies, anomalousHour, anomalousHour,
                 user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.TIME,
@@ -439,7 +439,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
                 //TODO - check this logic
                 if (!dt.equals(anomalyDate)) {
-                    createScoredBucket(user.getUsername(), aggrFeatureName, dataSource.name(), "daily", bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
+                    createScoredBucket(user.getUsername(), aggrFeatureName, dataSource.name(), "daily", bucket.getKey(),
+                            bucket.getKey().plusDays(1).minusMillis(1), 0);
                 }
             }
             //create daily bucket
@@ -513,54 +514,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             String dstMachine, int indicatorScore, String dc, String computerDomain, String clientAddress,
             EventFailReason reason, EvidenceTimeframe timeframe, EvidenceType evidenceType, String anomalyTypeFieldName,
             String histogramName) throws HdfsException, IOException {
-        //TODO - decide what to do with this
-        /*switch (reason) {
-            case TIME: {
-                if (evidenceType == EvidenceType.AnomalySingleEvent) {
-                    anomalyTypeFieldName = "event_time";
-                } else {
-                    switch (dataSource) {
-                        case ssh: {
-                            if (timeframe == EvidenceTimeframe.Daily) {
-                                anomalyTypeFieldName = "number_of_ssh_daily";
-                            } else {
-                                anomalyTypeFieldName = "number_of_ssh_events_hourly";
-                            }
-                            break;
-                        }
-                        case kerberos_logins: {
-                            anomalyTypeFieldName = "number_of_kerberos_logins_" + timeframe.name().toLowerCase();
-                            break;
-                        }
-                    }
-                }
-                histogramName = "number_of_events_per_hour_histogram";
-                break;
-            }
-            case FAILURE: {
-                if (evidenceType == EvidenceType.AnomalySingleEvent) {
-                    anomalyTypeFieldName = "event_time";
-                } else {
-                    switch (dataSource) {
-                        case ssh: {
-                            if (timeframe == EvidenceTimeframe.Daily) {
-                                anomalyTypeFieldName = "number_of_failed_ssh_daily";
-                            } else {
-                                anomalyTypeFieldName = "number_of_failed_ssh_events_hourly";
-                            }
-                            histogramName = "failure_code_histogram";
-                            break;
-                        }
-                        case kerberos_logins: {
-                            anomalyTypeFieldName = "number_of_failed";
-                            histogramName = "failure_code_histogram";
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }*/
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
