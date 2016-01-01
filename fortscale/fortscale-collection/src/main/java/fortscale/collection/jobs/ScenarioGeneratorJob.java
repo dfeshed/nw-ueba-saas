@@ -455,18 +455,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                             randomDate.toDate(), randomDate.toDate(), dataSource, indicatorScore + 0.0,
                             anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, EvidenceTimeframe.Hourly));
                 } else {
-                    List<FeatureBucket> buckets = featureBucketQueryService.getFeatureBucketsByContextAndTimeRange(
-                            "aggr_" + KEY + "_" + dataSource + "_" + "daily", KEY, user.getUsername(),
-                            anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis());
-                    int numberOfEvents = numberOfAnomalies;
-                    if (!buckets.isEmpty()) {
-                        numberOfEvents += ((GenericHistogram)buckets.get(0).getAggregatedFeatures().get(histogramName).
-                                getValue()).getTotalCount();
-                    }
+                    //TODO - fix bug in number of events
                     indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalyAggregatedEvent,
                             anomalyDate.toDate(), anomalyDate.plusDays(1).minusMillis(1).toDate(), dataSource,
                             indicatorScore + 0.0, anomalyTypeFieldName + "_" + dataSource + "_" + "daily",
-                            ((double)numberOfAnomalies) + "", numberOfEvents, EvidenceTimeframe.Daily));
+                            ((double)numberOfAnomalies) + "", numberOfAnomalies, EvidenceTimeframe.Daily));
                 }
             }
         }
