@@ -239,9 +239,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 "failure_code_histogram"));
         indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate,
                 minNumberOfDestMachineAnomalies, maxNumberOfDestMachineAnomalies, anomalousHour, anomalousHour,
-                user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.TIME,
-                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, "number_of_" + DataSource.ssh +
-                        "_events_" + EvidenceTimeframe.Hourly.name().toLowerCase(),
+                user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.DEST,
+                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, "distinct_number_of_dst_machines_" +
+                        DataSource.ssh + "_" + EvidenceTimeframe.Hourly.name().toLowerCase(),
                 "number_of_events_per_hour_histogram"));
         //TODO - generate last indicator
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
@@ -549,16 +549,30 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             addToBucketMap(randomDate, bucketMap);
             //create only one indicator
             if (i == 0) {
-                if (reason == EventFailReason.TIME) {
-                    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-                    indicators.add(createIndicator(user.getUsername(), evidenceType,
-                            randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-                            anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe));
+                if (evidenceType == EvidenceType.AnomalySingleEvent) {
+                    if (reason == EventFailReason.TIME) {
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+                        indicators.add(createIndicator(user.getUsername(), evidenceType,
+                                randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+                                anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe));
+                    } else {
+                        indicators.add(createIndicator(user.getUsername(), evidenceType,
+                                randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+                                anomalyTypeFieldName, ((double)numberOfAnomalies) + "", numberOfAnomalies, timeframe));
+                    }
                 } else {
-                    indicators.add(createIndicator(user.getUsername(), evidenceType,
-                            randomDate.toDate(), randomDate.plusDays(1).minusMillis(1).toDate(), dataSource.name(),
-                            indicatorScore + 0.0, anomalyTypeFieldName, ((double)numberOfAnomalies) + "",
-                            numberOfAnomalies, timeframe));
+                    randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+                    if (timeframe == EvidenceTimeframe.Hourly) {
+                        indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+                                randomDate.plusHours(1).minusMillis(1).toDate(), dataSource.name(), indicatorScore +
+                                        0.0, anomalyTypeFieldName, ((double)numberOfAnomalies) + "", numberOfAnomalies,
+                                timeframe));
+                    } else {
+                        indicators.add(createIndicator(user.getUsername(), evidenceType, anomalyDate.toDate(),
+                                anomalyDate.plusDays(1).minusMillis(1).toDate(), dataSource.name(), indicatorScore +
+                                        0.0, anomalyTypeFieldName, ((double)numberOfAnomalies) + "", numberOfAnomalies,
+                                timeframe));
+                    }
                 }
             }
         }
