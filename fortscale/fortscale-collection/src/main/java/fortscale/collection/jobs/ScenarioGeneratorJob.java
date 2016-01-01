@@ -560,16 +560,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                                 anomalyTypeFieldName, ((double)numberOfAnomalies) + "", numberOfAnomalies, timeframe));
                     }
                 } else {
-                    randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
                     DateTime endDate;
                     if (timeframe == EvidenceTimeframe.Hourly) {
+                        randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
                         endDate = randomDate.plusHours(1);
                     } else {
+                        randomDate = anomalyDate;
                         endDate = randomDate.plusDays(1);
                     }
                     indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
                             endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
-                            anomalyTypeFieldName + "_" + EvidenceTimeframe.Hourly.name().toLowerCase(),
+                            anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(),
                             ((double)numberOfAnomalies) + "", numberOfAnomalies, timeframe));
                 }
             }
