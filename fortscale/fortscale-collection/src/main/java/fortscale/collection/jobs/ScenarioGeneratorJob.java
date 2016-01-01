@@ -222,10 +222,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         createLoginEvents(user, computer, dstMachine, DataSource.kerberos_logins,
                 computerDomain, dc, clientAddress, anomalyDate, "number_of_events_per_hour_histogram",
-                "number_of_failed_" + DataSource.kerberos_logins + "_" + EvidenceTimeframe.Daily.name().toLowerCase());
+                "number_of_failed_" + DataSource.kerberos_logins);
         createLoginEvents(user, computer, dstMachine, DataSource.ssh, computerDomain, dc, clientAddress, anomalyDate,
-                "number_of_events_per_hour_histogram", "distinct_number_of_dst_machines_" + DataSource.ssh + "_" +
-                        EvidenceTimeframe.Hourly.name().toLowerCase());
+                "number_of_events_per_hour_histogram", "distinct_number_of_dst_machines_" + DataSource.ssh);
         List<Evidence> indicators = new ArrayList();
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate, minNumberOfTimeAnomalies,
                 maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
@@ -442,15 +441,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
                 //TODO - check this logic
                 if (!dt.equals(anomalyDate)) {
-                    createScoredBucket(user.getUsername(), aggrFeatureName, dataSource.name(), "daily", bucket.getKey(),
-                            bucket.getKey().plusDays(1).minusMillis(1), 0);
+                    createScoredBucket(user.getUsername(), aggrFeatureName + "_hourly", dataSource.name(), "hourly",
+                            bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
                 }
             }
             //create daily bucket
             createBucket(user.getUsername(), dataSource.name(), "daily", dt, dt.plusDays(1).minusMillis(1),
                     dailyHistogram, featureName);
             if (!dt.equals(anomalyDate)) {
-                createScoredBucket(user.getUsername(), aggrFeatureName, dataSource.name(), "daily", dt,
+                createScoredBucket(user.getUsername(), aggrFeatureName + "_daily", dataSource.name(), "daily", dt,
                         dt.plusDays(1).minusMillis(1), 0);
             }
             dt = dt.plusDays(1);
@@ -584,14 +583,19 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(user.getUsername(), dataSource.name(), "hourly", bucket.getKey(), bucket.getKey().plusHours(1).
                     minusMillis(1), genericHistogram, histogramName);
-            createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), "hourly",
-                    bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), (int)dailyHistogram.getTotalCount());
+            if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
+                createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), "hourly",
+                        bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1),
+                        (int)dailyHistogram.getTotalCount());
+            }
         }
         //create daily bucket
         createBucket(user.getUsername(), dataSource.name(), "daily", anomalyDate, anomalyDate.plusDays(1).
                         minusMillis(1), dailyHistogram, histogramName);
-        createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), "daily", anomalyDate,
-                anomalyDate.plusDays(1).minusMillis(1), (int)dailyHistogram.getTotalCount());
+        if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
+            createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), "daily", anomalyDate,
+                    anomalyDate.plusDays(1).minusMillis(1), (int)dailyHistogram.getTotalCount());
+        }
         return indicators;
     }
 
