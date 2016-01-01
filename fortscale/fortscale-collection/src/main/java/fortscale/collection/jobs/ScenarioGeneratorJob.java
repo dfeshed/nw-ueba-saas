@@ -330,7 +330,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
         Random random = new Random();
         DateTime dt = anomalyDate.minusDays(numOfDaysBack);
-        while (dt.isBefore(anomalyDate)) {
+        while (dt.isBefore(anomalyDate.minusMillis(1))) {
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
             } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
@@ -455,8 +455,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                             randomDate.toDate(), randomDate.toDate(), dataSource, indicatorScore + 0.0,
                             anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, EvidenceTimeframe.Hourly));
                 } else {
+                    List<FeatureBucket> buckets = featureBucketQueryService.getFeatureBucketsByContextAndTimeRange(
+                            "aggr_" + KEY + "_" + dataSource + "_" + "daily", KEY, user.getUsername(),
+                            anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis());
                     int numberOfEvents = numberOfAnomalies;
-                    //TODO - fix numberOfEvents bug!!!!!!!!!!!!!!
+                    if (!buckets.isEmpty()) {
+                        numberOfEvents += ((GenericHistogram)buckets.get(0).getAggregatedFeatures().get(histogramName).
+                                getValue()).getTotalCount();
+                    }
                     indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalyAggregatedEvent,
                             anomalyDate.toDate(), anomalyDate.plusDays(1).minusMillis(1).toDate(), dataSource,
                             indicatorScore + 0.0, anomalyTypeFieldName + "_" + dataSource + "_" + "daily",
