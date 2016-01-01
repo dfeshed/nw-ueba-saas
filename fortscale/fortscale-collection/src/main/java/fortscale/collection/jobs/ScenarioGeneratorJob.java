@@ -233,7 +233,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 EvidenceTimeframe.Daily));
         indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate,
                 minNumberOfDestMachineAnomalies, maxNumberOfDestMachineAnomalies, anomalousHour, anomalousHour,
-                user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.TIME,
+                user, computer, dstMachine, 0, computerDomain, dc, clientAddress, EventFailReason.TIME,
                 EvidenceTimeframe.Hourly));
         //TODO - generate last indicator
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
@@ -551,7 +551,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 if (dataSource == DataSource.ssh) {
                     indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalyAggregatedEvent,
                             randomDate.toDate(), randomDate.plusDays(1).minusMillis(1).toDate(), dataSource.name(),
-                            indicatorScore + 0.0, anomalyTypeFieldName + "_" + dataSource + "_" +
+                            indicatorScore + 0.0, anomalyTypeFieldName + "_" + dataSource + "_events_" +
                                     timeframe.name().toLowerCase(), ((double)numberOfAnomalies) + "", numberOfAnomalies,
                             timeframe));
                 } else {
@@ -577,7 +577,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(user.getUsername(), dataSource.name(), "hourly", bucket.getKey(), bucket.getKey().plusHours(1).
-                            minusMillis(1), genericHistogram, histogramName);
+                    minusMillis(1), genericHistogram, histogramName);
+            createScoredBucket(user.getUsername(), "number_of_", dataSource.name() + "_events_", "hourly",
+                    bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), (int)dailyHistogram.getTotalCount());
         }
         //create daily bucket
         createBucket(user.getUsername(), dataSource.name(), "daily", anomalyDate, anomalyDate.plusDays(1).
