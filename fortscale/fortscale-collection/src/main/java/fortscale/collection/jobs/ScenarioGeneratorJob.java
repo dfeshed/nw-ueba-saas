@@ -222,9 +222,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //generate scenario
         createLoginEvents(user, computer, dstMachine, DataSource.kerberos_logins,
                 computerDomain, dc, clientAddress, anomalyDate, "number_of_events_per_hour_histogram",
-                "number_of_failed_kerberos_logins_daily");
+                "number_of_failed_" + DataSource.kerberos_logins + "_" + EvidenceTimeframe.Daily.name().toLowerCase());
         createLoginEvents(user, computer, dstMachine, DataSource.ssh, computerDomain, dc, clientAddress, anomalyDate,
-                "number_of_events_per_hour_histogram", "number_of_ssh_events_hourly");
+                "number_of_events_per_hour_histogram", "number_of_" + DataSource.ssh + "_events_" + EvidenceTimeframe.
+                        Hourly.name().toLowerCase());
         List<Evidence> indicators = new ArrayList();
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate, minNumberOfTimeAnomalies,
                 maxNumberOfTimeAnomalies, minHourForAnomaly, maxHourForAnomaly, user, computer, dstMachine, eventScore,
@@ -233,12 +234,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate,
                 minNumberOfFailureAnomalies, maxNumberOfFailureAnomalies, minHourForAnomaly, maxHourForAnomaly, user,
                 computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.FAILURE,
-                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "number_of_failed_keberos_logins_daily",
+                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "number_of_failed_" + DataSource.
+                        kerberos_logins + "_" + EvidenceTimeframe.Daily.name().toLowerCase(),
                 "failure_code_histogram"));
         indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate,
                 minNumberOfDestMachineAnomalies, maxNumberOfDestMachineAnomalies, anomalousHour, anomalousHour,
                 user, computer, dstMachine, eventScore, computerDomain, dc, clientAddress, EventFailReason.TIME,
-                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, "number_of_ssh_events_hourly",
+                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, "number_of_" + DataSource.ssh +
+                        "_events_" + EvidenceTimeframe.Hourly.name().toLowerCase(),
                 "number_of_events_per_hour_histogram"));
         //TODO - generate last indicator
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
