@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class AggregatedEventQueryMongoService implements AggregatedEventQueryService {
 
-    private static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
+    public static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
 
     @Autowired
     private MongoTemplate mongoTemplate;
