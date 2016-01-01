@@ -503,12 +503,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             IOException {
         String anomalyTypeFieldName, histogramName;
         //TODO - decide what to do with this
-        if (reason == EventFailReason.TIME) {
-            anomalyTypeFieldName = "event_time";
+        if (dataSource == DataSource.ssh) {
+            anomalyTypeFieldName = "number_of";
             histogramName = "number_of_events_per_hour_histogram";
         } else {
-            anomalyTypeFieldName = "number_of_failed";
-            histogramName = "failure_code_histogram";
+            if (reason == EventFailReason.TIME) {
+                anomalyTypeFieldName = "event_time";
+                histogramName = "number_of_events_per_hour_histogram";
+            } else {
+                anomalyTypeFieldName = "number_of_failed";
+                histogramName = "failure_code_histogram";
+            }
         }
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
@@ -545,7 +550,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             if (i == 0) {
                 if (dataSource == DataSource.ssh) {
                     indicators.add(createIndicator(user.getUsername(), EvidenceType.AnomalyAggregatedEvent,
-                            anomalyDate.toDate(), anomalyDate.plusDays(1).minusMillis(1).toDate(), dataSource.name(),
+                            randomDate.toDate(), randomDate.plusDays(1).minusMillis(1).toDate(), dataSource.name(),
                             indicatorScore + 0.0, anomalyTypeFieldName + "_" + dataSource + "_" +
                                     timeframe.name().toLowerCase(), ((double)numberOfAnomalies) + "", numberOfAnomalies,
                             timeframe));
