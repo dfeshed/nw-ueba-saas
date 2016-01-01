@@ -20,6 +20,7 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -178,7 +179,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String computerDomain = "FORTSCALE";
         String dc = "FS-DC-01$";
 
-        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC);
+        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
+                .withHourOfDay(0)
+                .withMinuteOfHour(0)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
         if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SATURDAY) {
             anomalyDate = anomalyDate.minusDays(1);
         } else if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SUNDAY) {
@@ -291,8 +296,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Map<String, Object> additionalInfoMap = new HashMap();
         additionalInfoMap.put("total", count);
         List<String> dataSources = Arrays.asList(new String[] { dataSource });
-        AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggrFeatureEventBuilderService.
-                buildEvent(dataSource, featureType, aggregatedFeatureName, count + 0.0, additionalInfoMap, bucketConfName, context, startTime, endTime, dataSources, new Date().getTime()));
+        JSONObject event = aggrFeatureEventBuilderService.buildEvent(dataSource, featureType, aggregatedFeatureName,
+                count + 0.0, additionalInfoMap, bucketConfName, context, startTime, endTime, dataSources,
+                new Date().getTime());
+        event.put(AggrEvent.EVENT_FIELD_SCORE, 0.0);
+        AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(event);
         aggregatedEventQueryMongoService.insertAggregatedEvent(collectionName, aggrEvent);
     }
 
@@ -357,17 +365,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
                         "number_of_events_per_hour_histogram");
             }
-            DateTime midnight = dt
-                    .withHourOfDay(0)
-                    .withMinuteOfHour(0)
-                    .withSecondOfMinute(0)
-                    .withMillisOfSecond(0);
             //create daily bucket
-            createBucket(user.getUsername(), dataSource, "daily", midnight, midnight.plusDays(1).
-                            minusMillis(1), dailyHistogram, "number_of_events_per_hour_histogram");
+            createBucket(user.getUsername(), dataSource, "daily", dt, dt.plusDays(1).minusMillis(1), dailyHistogram,
+                    "number_of_events_per_hour_histogram");
             if (!dt.equals(anomalyDate)) {
-                createScoredBucket(user.getUsername(), "number_of_failed", dataSource, "daily", midnight,
-                        midnight.plusDays(1).minusMillis(1), 0);
+                createScoredBucket(user.getUsername(), "number_of_failed", dataSource, "daily", dt,
+                        dt.plusDays(1).minusMillis(1), 0);
             }
             dt = dt.plusDays(1);
         }
