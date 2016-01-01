@@ -747,7 +747,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(user.getAdministratorAccount()).append(SEPARATOR)
                 .append(user.getExecutiveAccount()).append(SEPARATOR)
                 .append(user.getUserServiceAccount()).append(SEPARATOR)
-                .append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
                 .append(status).append(SEPARATOR)
                 .append(authMethod).append(SEPARATOR)
                 .append(authMethodScore).append(SEPARATOR)
