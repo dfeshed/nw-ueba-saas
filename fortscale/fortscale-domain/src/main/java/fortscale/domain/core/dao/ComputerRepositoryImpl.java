@@ -59,6 +59,11 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		return mongoTemplate.find(query(where(Computer.NAME_FIELD).in(machineNames)), Computer.class);
 	}
 
+	@Override public List<Computer> getComputersOfType(ComputerUsageType type, int limit) {
+		return mongoTemplate.find(query(where(Computer.getUsageClassfierField(ComputerUsageClassifier.
+				USAGE_TYPE_FIELD)).is(type)).limit(limit), Computer.class);
+	}
+
 	@Override
 	public List<String> findNameByIsSensitive(Boolean isSensitiveMachine) {
 		Query query = new Query();

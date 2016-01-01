@@ -13,6 +13,7 @@ public interface ComputerRepositoryCustom {
 	Date getLatestWhenChanged();
 	void updateSensitiveMachine(Computer computer, boolean isSensitiveMachine);
 	List<Computer> getComputersFromNames(List<String> machinesNames);
+	List<Computer> getComputersOfType(ComputerUsageType type, int limit);
 	List<String> findNameByIsSensitive(Boolean isSensitiveMachine);
 	long getNumberOfSensitiveMachines();
 	long getNumberOfMachinesOfType(ComputerUsageType type);
