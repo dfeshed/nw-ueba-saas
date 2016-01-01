@@ -618,7 +618,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private DateTime generateRandomTimeForAnomaly(DateTime dt, int minHour, int maxHour) {
         Random random = new Random();
-        int hour = random.nextInt(maxHour - minHour) + minHour;
+        int hour;
+        if (maxHour == minHour) {
+            hour = maxHour;
+        } else {
+            hour = random.nextInt(maxHour - minHour) + minHour;
+        }
         return dt.withHourOfDay(hour)
                 .withMinuteOfHour(random.nextInt(60))
                 .withSecondOfMinute(random.nextInt(60))
@@ -738,16 +743,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int eventScore = Math.max(Math.max(dateTimeScore, authMethodScore), Math.max(normalizedSrcMachineScore,
                 normalizedDstMachineScore));
         long timestamp = new Date().getTime();
-        StringBuilder sb = new StringBuilder()
-                .append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
+        StringBuilder sb = new StringBuilder().append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
                 .append(dt.getMillis() / 1000).append(SEPARATOR)
                 .append(dateTimeScore).append(SEPARATOR)
                 .append(user.getUsername()).append(SEPARATOR)
                 .append(user.getUsername()).append(SEPARATOR)
                 .append(user.getAdministratorAccount()).append(SEPARATOR)
                 .append(user.getExecutiveAccount()).append(SEPARATOR)
-                .append(user.getUserServiceAccount()).append(SEPARATOR)
-                .append(status).append(SEPARATOR)
+                .append(user.getUserServiceAccount()).append(SEPARATOR).append(status).append(SEPARATOR)
                 .append(authMethod).append(SEPARATOR)
                 .append(authMethodScore).append(SEPARATOR)
                 .append(clientAddress).append(SEPARATOR)
