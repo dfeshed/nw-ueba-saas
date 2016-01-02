@@ -51,6 +51,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private static final String SEPARATOR = ",";
     private static final String BUCKET_PREFIX = "fixed_duration_";
     private static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
+    private static final String NORMALIZED_USERNAME_HISTOGRAM = "normalized_username_histogram";
     private static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
     private static final DateTimeFormatter HDFS_TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -246,6 +247,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
         //generate scenario
         List<Evidence> indicators = new ArrayList();
+
         //create baseline
         createLoginEvents(user, computer, new String[] { dstMachine }, DataSource.kerberos_logins,
                 computerDomain, dc, clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.
@@ -255,6 +257,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine }, DataSource.ssh,
                 computerDomain, dc, clientAddress, "destination_machine_histogram",
                 "distinct_number_of_dst_machines_" + DataSource.ssh);
+
         //create anomalies
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
@@ -276,6 +279,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         { anomalousMachine }, indicatorScore, eventScore, computerDomain, dc, clientAddress,
                 EventFailReason.DEST, EvidenceTimeframe.Hourly, EvidenceType.AnomalySingleEvent, "destination_machine",
                 HOURLY_HISTOGRAM, "Accepted"));
+
         //create alert
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity);
@@ -336,8 +340,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             }
             bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt,
                     anomalyDate, aggrFeatureName);
-            bucketCreationAux(bucketMap, DESTINATION_MACHINE, dstMachine, dataSource, featureName, dt, anomalyDate,
-                    aggrFeatureName);
+            GenericHistogram inverseHistogram = new GenericHistogram();
+            inverseHistogram.add(user.getUsername(), 1.0);
+            createBucket(DESTINATION_MACHINE, dstMachine, dataSource.name(), EvidenceTimeframe.Daily.name().
+                    toLowerCase(), dt, dt.plusDays(1).minusMillis(1), inverseHistogram, NORMALIZED_USERNAME_HISTOGRAM);
             dt = dt.plusDays(1);
         }
     }
@@ -397,13 +403,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     lineToWrite = buildKerberosHDFSLine(randomDate, user, computer, dstMachine, eventScore, reason,
                             computerDomain, dc, clientAddress, status);
                     break;
-                }
-                case ssh: {
+                } case ssh: {
                     dstMachine = dstMachines[i];
                     lineToWrite = buildSshHDFSLine(randomDate, user, computer, dstMachine, eventScore, reason,
                             clientAddress, status);
                     break;
-                }
+                } case vpn: break; //TODO - implement
             }
             service.writeLineToHdfs(lineToWrite, randomDate.getMillis());
             service_top.writeLineToHdfs(lineToWrite, randomDate.getMillis());
@@ -438,10 +443,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().
                         toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
                 histogramName);
+        GenericHistogram inverseHistogram = new GenericHistogram();
+        inverseHistogram.add(user.getUsername(), 1.0);
         //TODO - check the logic of this ([0])
         createBucket(DESTINATION_MACHINE, dstMachines[0], dataSource.name(), EvidenceTimeframe.Daily.name().
-                        toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
-                histogramName);
+                toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), inverseHistogram,
+                NORMALIZED_USERNAME_HISTOGRAM);
         if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
             createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), EvidenceTimeframe.Daily.
                             name().toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1),
@@ -831,7 +838,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
             GenericHistogram genericHistogram = new GenericHistogram();
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
-            dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(key, value, dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
                     bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
             //TODO - check this logic
@@ -839,7 +845,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 createScoredBucket(value, aggrFeatureName, dataSource.name(), EvidenceTimeframe.Hourly.name().
                                 toLowerCase(), bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
             }
-
+            dailyHistogram.add(genericHistogram);
         }
         //create daily bucket
         createBucket(key, value, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
