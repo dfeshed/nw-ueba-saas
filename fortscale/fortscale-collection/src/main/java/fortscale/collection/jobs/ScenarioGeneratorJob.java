@@ -330,14 +330,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             logger.error("no desktop machines found");
             return;
         }
-        Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines, maxNumberOfDestMachines);
+        Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines,
+                maxNumberOfDestMachines);
         String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
-        Set<String> anomalousMachinesSet = generateRandomDestinationMachines(machines, numberOfAnomaliesIndicator1, numberOfAnomaliesIndicator1);
+        Set<String> anomalousMachinesSet = generateRandomDestinationMachines(machines, numberOfAnomaliesIndicator1,
+                numberOfAnomaliesIndicator1);
         String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
         //generate scenario
         List<Evidence> indicators = new ArrayList();
 
-        createLoginEvents(user, computer, baseLineMachines, DataSource.kerberos_logins, computerDomain, dc, clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.kerberos_logins);
+        createLoginEvents(user, computer, baseLineMachines, DataSource.kerberos_logins, computerDomain, dc,
+                clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.kerberos_logins);
 
         //create anomalies
         indicators.add(createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(), anomalyDate.
