@@ -43,6 +43,30 @@
 					<value>sshETL.csv</value>
 				</entry>
 				<entry>
+					<key>impalaTableName-vpn</key>
+					<value>${impala.score.vpn.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-vpn</key>
+					<value>${hdfs.user.processeddata.vpnscores.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-vpn</key>
+					<value>vpnETL.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-amt</key>
+					<value>${impala.score.amt.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-amt</key>
+					<value>${hdfs.user.processeddata.amtscores.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-amt</key>
+					<value>amtETL.csv</value>
+				</entry>
+				<entry>
 					<key>numOfDaysBack</key>
 					<value>30</value>
 				</entry>
