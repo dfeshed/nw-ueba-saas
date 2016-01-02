@@ -1,17 +1,13 @@
 package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
-
-import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.services.impl.SpringService;
+import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;

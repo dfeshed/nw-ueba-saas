@@ -1,33 +1,25 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToString;
+import com.google.common.collect.Iterables;
+import fortscale.services.impl.SpringService;
+import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
+import fortscale.streaming.service.FortscaleValueResolver;
+import fortscale.utils.StringPredicates;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import org.apache.commons.lang.StringUtils;
+import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.samza.config.Config;
-import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
-import com.google.common.collect.Iterables;
-
-import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.services.impl.SpringService;
-import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
-import fortscale.utils.StringPredicates;
-import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
