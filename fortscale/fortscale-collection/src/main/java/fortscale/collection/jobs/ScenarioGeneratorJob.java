@@ -110,10 +110,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         numOfDaysBack = jobDataMapExtension.getJobDataMapIntValue(map, "numOfDaysBack");
         maxHourOfWork = jobDataMapExtension.getJobDataMapIntValue(map, "maxHourOfWork");
         minHourOfWork = jobDataMapExtension.getJobDataMapIntValue(map, "minHourOfWork");
-        numberOfMaxEventsPerTimePeriod = jobDataMapExtension.getJobDataMapIntValue(map,
-                "numberOfMaxEventsPerTimePeriod");
-        numberOfMinEventsPerTimePeriod = jobDataMapExtension.getJobDataMapIntValue(map,
-                "numberOfMinEventsPerTimePeriod");
         limitNumberOfDestinationMachines = jobDataMapExtension.getJobDataMapIntValue(map,
                 "limitNumberOfDestinationMachines");
         standardDeviation = jobDataMapExtension.getJobDataMapIntValue(map, "standardDeviation");
@@ -187,18 +183,19 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //TODO - extract these general scenario fields
         String samaccountname = "alrusr51";
         String domain = "somebigcompany.com";
-        String timeSpan = "Hourly";
         int indicatorScore = 98;
         int eventScore = 98;
-        String title = "Suspicious " + timeSpan + " User Activity";
-        int alertScore = 80;
-        Severity alertSeverity = Severity.High;
+        String title = "Suspicious Daily User Activity";
+        int alertScore = 90;
+        Severity alertSeverity = Severity.Critical;
         String computerDomain = "FORTSCALE";
         String dc = "FS-DC-01$";
         int minHourForAnomaly = 3;
         int maxHourForAnomaly = 5;
         int minNumberOfDestMachines = 2;
         int maxNumberOfDestMachines = 3;
+        numberOfMaxEventsPerTimePeriod = 5;
+        numberOfMinEventsPerTimePeriod = 2;
         //TODO - extract these specific indicator fields
         int minNumberOfAnomaliesIndicator1 = 2;
         int maxNumberOfAnomaliesIndicator1 = 3;
@@ -284,8 +281,81 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 indicators, alertScore, alertSeverity);
     }
 
-    private void generateScenario2() {
-        //TODO - implement
+    /**
+     *
+     * This method generates scenario2 as described here:
+     * https://fortscale.atlassian.net/browse/FV-9288
+     *
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws HdfsException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    private void generateScenario2()
+            throws IOException, HdfsException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+        //TODO - extract these general scenario fields
+        String samaccountname = "adminusr25fs";
+        String domain = "somebigcompany.com";
+        int indicatorScore = 98;
+        String title = "Suspicious Hourly Privileged Account Activity";
+        int alertScore = 90;
+        Severity alertSeverity = Severity.Critical;
+        String computerDomain = "FORTSCALE";
+        String dc = "FS-DC-01$";
+        int minHourForAnomaly = 9;
+        int maxHourForAnomaly = 5;
+        int minNumberOfDestMachines = 10;
+        int maxNumberOfDestMachines = 30;
+        numberOfMaxEventsPerTimePeriod = 10;
+        numberOfMinEventsPerTimePeriod = 30;
+        //TODO - extract these specific indicator fields
+        int numberOfAnomaliesIndicator1 = 60;
+
+        String clientAddress = generateRandomIPAddress();
+        String username = samaccountname + "@" + domain;
+        String srcMachine = samaccountname + "_PC";
+        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
+        if (computer == null) {
+            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
+            return;
+        }
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            logger.error("user {} not found - exiting", username);
+            return;
+        }
+        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop,
+                limitNumberOfDestinationMachines);
+        if (machines.isEmpty()) {
+            logger.error("no desktop machines found");
+            return;
+        }
+        Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines,
+                maxNumberOfDestMachines);
+        String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
+        Set<String> anomalousMachinesSet = generateRandomDestinationMachines(machines, numberOfAnomaliesIndicator1,
+                numberOfAnomaliesIndicator1);
+        String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
+        //generate scenario
+        List<Evidence> indicators = new ArrayList();
+
+        createLoginEvents(user, computer, baseLineMachines, DataSource.kerberos_logins, computerDomain, dc,
+                clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.kerberos_logins);
+
+        //create anomalies
+        indicators.add(createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(), anomalyDate.
+                plusDays(1).minusMillis(1).toDate(), NORMALIZED_USERNAME, 50.0, "tag", "admin", 1, EvidenceTimeframe.
+                Daily));
+        indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, numberOfAnomaliesIndicator1,
+                numberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, anomalousMachines,
+                indicatorScore, 50, computerDomain, dc, clientAddress, EventFailReason.TIME, EvidenceTimeframe.Daily,
+                EvidenceType.AnomalyAggregatedEvent, "distinct_number_of_dst_machines_" + DataSource.kerberos_logins,
+                HOURLY_HISTOGRAM, "0x0"));
+
+        //create alert
+        createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
+                indicators, alertScore, alertSeverity);
     }
 
     private void generateScenario3() {
@@ -428,8 +498,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
                     histogramName);
             createBucket(DESTINATION_MACHINE, dstMachines[0], dataSource.name(), EvidenceTimeframe.Hourly.name().
-                            toLowerCase(),
-                    bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, histogramName);
+                            toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, histogramName);
             if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
                 createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(),
                         EvidenceTimeframe.Hourly.name().toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).
@@ -533,8 +602,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private String buildSshHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
             EventFailReason reason, String clientAddress, String status) {
-
-
         //TODO - extract this to parameter?
         String authMethod = "password";
 

@@ -79,14 +79,6 @@
 					<value>8</value>
 				</entry>
 				<entry>
-					<key>numberOfMaxEventsPerTimePeriod</key>
-					<value>5</value>
-				</entry>
-				<entry>
-					<key>numberOfMinEventsPerTimePeriod</key>
-					<value>2</value>
-				</entry>
-				<entry>
 					<key>limitNumberOfDestinationMachines</key>
 					<value>100</value>
 				</entry>
