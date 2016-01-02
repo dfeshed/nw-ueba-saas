@@ -51,6 +51,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private static final String SEPARATOR = ",";
     private static final String BUCKET_PREFIX = "fixed_duration_";
     private static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
+    private static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
+    private static final DateTimeFormatter HDFS_TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private UserService userService;
@@ -80,6 +82,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private int morningMedianHour;
     private int afternoonMedianHour;
     private boolean skipWeekend;
+    private DateTime anomalyDate;
 
     private enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE }
     private enum DataSource { kerberos_logins, ssh, vpn, amt }
@@ -117,6 +120,16 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         morningMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "morningMedianHour");
         afternoonMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "afternoonMedianHour");
         skipWeekend = jobDataMapExtension.getJobDataMapBooleanValue(map, "skipWeekend", true);
+        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
+                .withHourOfDay(0)
+                .withMinuteOfHour(0)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
+        if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SATURDAY) {
+            anomalyDate = anomalyDate.minusDays(1);
+        } else if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+            anomalyDate = anomalyDate.minusDays(2);
+        }
         logger.info("Job initialized");
 	}
 
@@ -196,16 +209,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int minNumberOfAnomaliesIndicator4 = 1;
         int maxNumberOfAnomaliesIndicator4 = 1;
 
-        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
-                .withHourOfDay(0)
-                .withMinuteOfHour(0)
-                .withSecondOfMinute(0)
-                .withMillisOfSecond(0);
-        if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SATURDAY) {
-            anomalyDate = anomalyDate.minusDays(1);
-        } else if (skipWeekend && anomalyDate.getDayOfWeek() == DateTimeConstants.SUNDAY) {
-            anomalyDate = anomalyDate.minusDays(2);
-        }
         int anomalousHour = generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly).
                 getHourOfDay();
         String clientAddress = generateRandomIPAddress();
@@ -245,34 +248,34 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<Evidence> indicators = new ArrayList();
         //create baseline
         createLoginEvents(user, computer, new String[] { dstMachine }, DataSource.kerberos_logins,
-                computerDomain, dc, clientAddress, anomalyDate, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.
+                computerDomain, dc, clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.
                         kerberos_logins);
         createLoginEvents(user, computer, baseLineMachines, DataSource.ssh, computerDomain, dc, clientAddress,
-                anomalyDate, "destination_machine_histogram", "distinct_number_of_dst_machines_" + DataSource.ssh);
+                "destination_machine_histogram", "distinct_number_of_dst_machines_" + DataSource.ssh);
         createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine }, DataSource.ssh,
-                computerDomain, dc, clientAddress, anomalyDate, "destination_machine_histogram",
+                computerDomain, dc, clientAddress, "destination_machine_histogram",
                 "distinct_number_of_dst_machines_" + DataSource.ssh);
         //create anomalies
-        indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate, minNumberOfAnomaliesIndicator1,
+        indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { dstMachine }, indicatorScore, eventScore, computerDomain, dc, clientAddress,
                 EventFailReason.TIME, EvidenceTimeframe.Hourly, EvidenceType.AnomalySingleEvent, "event_time",
                 HOURLY_HISTOGRAM, "0x0"));
-        indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate,
-                minNumberOfAnomaliesIndicator2, maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly,
+        indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
+                maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly,
                 user, computer, new String[] { dstMachine }, indicatorScore, eventScore, computerDomain, dc,
                 clientAddress, EventFailReason.FAILURE, EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent,
                 "number_of_failed_" + DataSource.kerberos_logins, "failure_code_histogram", "0x12"));
-        indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate,
-                minNumberOfAnomaliesIndicator3, maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour,
+        indicators.addAll(createLoginAnomalies(DataSource.ssh, minNumberOfAnomaliesIndicator3,
+                maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour,
                 user, computer, anomalousMachines, indicatorScore, 50, computerDomain, dc, clientAddress,
                 EventFailReason.TIME, EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent,
                 "distinct_number_of_dst_machines_" + DataSource.ssh, HOURLY_HISTOGRAM, "Accepted"));
-        indicators.addAll(createLoginAnomalies(DataSource.ssh, anomalyDate, minNumberOfAnomaliesIndicator4,
+        indicators.addAll(createLoginAnomalies(DataSource.ssh, minNumberOfAnomaliesIndicator4,
                 maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { anomalousMachine }, indicatorScore, eventScore, computerDomain, dc, clientAddress,
                 EventFailReason.DEST, EvidenceTimeframe.Hourly, EvidenceType.AnomalySingleEvent, "destination_machine",
-                HOURLY_HISTOGRAM, "0x0"));
+                HOURLY_HISTOGRAM, "Accepted"));
         //create alert
         createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity);
@@ -297,7 +300,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param dc
      * @param computerDomain
      * @param clientAddress
-     * @param anomalyDate
      * @param featureName
      * @param aggrFeatureName
      * @throws ClassNotFoundException
@@ -307,7 +309,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws HdfsException
      */
     private void createLoginEvents(User user, Computer computer, String[] dstMachines, DataSource dataSource,
-            String dc, String computerDomain, String clientAddress, DateTime anomalyDate, String featureName,
+            String dc, String computerDomain, String clientAddress, String featureName,
             String aggrFeatureName) throws ClassNotFoundException, IllegalAccessException, InstantiationException,
             IOException, HdfsException {
         Random random = new Random();
@@ -325,11 +327,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
             Map<DateTime, Integer> bucketMap = new HashMap();
             for (int j = 0; j < numberOfMorningEvents; j++) {
-                eventGeneratorAux(dt, morningMedianHour, bucketMap, dataSource, user, computer, dstMachine,
+                baseLineGeneratorAux(dt, morningMedianHour, bucketMap, dataSource, user, computer, dstMachine,
                         computerDomain, dc, clientAddress, 0);
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
-                eventGeneratorAux(dt, afternoonMedianHour, bucketMap, dataSource, user, computer, dstMachine,
+                baseLineGeneratorAux(dt, afternoonMedianHour, bucketMap, dataSource, user, computer, dstMachine,
                         computerDomain, dc, clientAddress, 0);
             }
             bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt,
@@ -345,7 +347,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * This method generates a random number of time login anomalies
      *
      * @param dataSource
-     * @param anomalyDate
      * @param minNumberOfAnomalies
      * @param maxNumberOfAnomalies
      * @param minHourForAnomaly
@@ -366,7 +367,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws IOException
      * @return
      */
-    private List<Evidence> createLoginAnomalies(DataSource dataSource, DateTime anomalyDate, int minNumberOfAnomalies,
+    private List<Evidence> createLoginAnomalies(DataSource dataSource, int minNumberOfAnomalies,
             int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
             String[] dstMachines, int indicatorScore, int eventScore, String dc, String computerDomain,
             String clientAddress, EventFailReason reason, EvidenceTimeframe timeframe, EvidenceType evidenceType,
@@ -428,10 +429,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                             toLowerCase(),
                     bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, histogramName);
             if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
-                createScoredBucket(user.getUsername(), anomalyTypeFieldName + "_" + EvidenceTimeframe.Hourly.name().
-                                toLowerCase(), dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
-                        bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), (int)dailyHistogram.
-                                getTotalCount());
+                createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(),
+                        EvidenceTimeframe.Hourly.name().toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).
+                                minusMillis(1), (int)dailyHistogram.getTotalCount());
             }
         }
         //create daily bucket
@@ -443,9 +443,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
                 histogramName);
         if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
-            createScoredBucket(user.getUsername(), anomalyTypeFieldName + "_" + EvidenceTimeframe.Daily.name().
-                            toLowerCase(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), anomalyDate,
-                    anomalyDate.plusDays(1).minusMillis(1), (int)dailyHistogram.getTotalCount());
+            createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), EvidenceTimeframe.Daily.
+                            name().toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1),
+                    (int)dailyHistogram.getTotalCount());
         }
         return indicators;
     }
@@ -468,8 +468,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private String buildKerberosHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
             EventFailReason reason, String domain, String dc, String clientAddress, String failureCode) {
-        DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
-        DateTimeFormatter hdfsTimestampFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         String srcClass = "Desktop";
         String dstClass = "Server";
         int dateTimeScore = 0;
@@ -487,7 +485,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         long timestamp = new Date().getTime();
         String serviceId = domain + "\\" + dc;
         StringBuilder sb = new StringBuilder()
-                .append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
+                .append(HDFS_TIMESTAMP_FORMAT.print(dt)).append(SEPARATOR)
                 .append(dt.getMillis() / 1000).append(SEPARATOR)
                 .append(dateTimeScore).append(SEPARATOR)
                 .append(user.getUsername()).append(SEPARATOR)
@@ -513,7 +511,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
                 .append(eventScore).append(SEPARATOR)
                 .append(timestamp).append(SEPARATOR)
-                .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
+                .append(HDFS_FOLDER_FORMAT.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
 
@@ -533,8 +531,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private String buildSshHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
             EventFailReason reason, String clientAddress, String status) {
-        DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
-        DateTimeFormatter hdfsTimestampFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
 
         //TODO - extract this to parameter?
         String authMethod = "password";
@@ -554,7 +551,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         int eventScore = score;
         long timestamp = new Date().getTime();
-        StringBuilder sb = new StringBuilder().append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
+        StringBuilder sb = new StringBuilder().append(HDFS_TIMESTAMP_FORMAT.print(dt)).append(SEPARATOR)
                 .append(dt.getMillis() / 1000).append(SEPARATOR)
                 .append(dateTimeScore).append(SEPARATOR)
                 .append(user.getUsername()).append(SEPARATOR)
@@ -579,7 +576,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(srcClass).append(SEPARATOR)
                 .append(dstClass).append(SEPARATOR)
                 .append(timestamp).append(SEPARATOR)
-                .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
+                .append(HDFS_FOLDER_FORMAT.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
 
@@ -599,12 +596,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private String buildVpnHDFSLine(DateTime dt, User user, Computer srcMachine, String localIp, int score,
             EventFailReason reason, String country, String status) {
-        DateTimeFormatter hdfsFolderFormat = DateTimeFormat.forPattern("yyyyMMdd");
-        DateTimeFormatter hdfsTimestampFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-
-        //TODO - check if this is not the other way around with locaIp, check if should extract as well
+        //TODO - check if this is not the other way around with localIp, check if should extract as well
         String sourceIp = generateRandomIPAddress();
-
         String region = "Blantyre";
         String countryCode = "MW";
         String city = "Blantyre";
@@ -621,7 +614,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         int eventScore = score;
         long timestamp = new Date().getTime();
-        StringBuilder sb = new StringBuilder().append(hdfsTimestampFormat.print(dt)).append(SEPARATOR)
+        StringBuilder sb = new StringBuilder().append(HDFS_TIMESTAMP_FORMAT.print(dt)).append(SEPARATOR)
                 .append(dt.getMillis() / 1000).append(SEPARATOR)
                 .append(dateTimeScore).append(SEPARATOR)
                 .append(username).append(SEPARATOR)
@@ -641,8 +634,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(isp).append(SEPARATOR)
                 .append(ipUsage).append(SEPARATOR)
                 .append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
-                .append(eventScore).append(SEPARATOR).append(timestamp).append(SEPARATOR)
-                .append(hdfsFolderFormat.print(dt)).append(SEPARATOR);
+                .append(eventScore).append(SEPARATOR)
+                .append(timestamp).append(SEPARATOR)
+                .append(HDFS_FOLDER_FORMAT.print(dt)).append(SEPARATOR);
         return sb.toString();
     }
 
@@ -762,16 +756,20 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             DateTime start, DateTime end, int count) {
         long startTime = start.getMillis() / 1000;
         long endTime = end.getMillis() / 1000;
-        String collectionName = AggregatedEventQueryMongoService.SCORED_AGGR_EVENT_COLLECTION_PREFIX + aggrFeatureName;
+        //TODO - add update to existing bucket, same as the above method
+        String collectionName = AggregatedEventQueryMongoService.SCORED_AGGR_EVENT_COLLECTION_PREFIX + aggrFeatureName +
+                "_" + timeSpan;
         String featureType = "F";
-        String aggregatedFeatureName = "number_of_" + aggrFeatureName;
+        String aggregatedFeatureName = aggrFeatureName + "_" + timeSpan;
         String bucketConfName = NORMALIZED_USERNAME + "_" + dataSource + "_" + timeSpan;
         Map<String, String> context = new HashMap();
         context.put(NORMALIZED_USERNAME, username);
         Map<String, Object> additionalInfoMap = new HashMap();
         additionalInfoMap.put("total", count);
         List<String> dataSources = Arrays.asList(new String[] { dataSource });
-        JSONObject event = aggrFeatureEventBuilderService.buildEvent(dataSource, featureType, aggregatedFeatureName, count + 0.0, additionalInfoMap, bucketConfName, context, startTime, endTime, dataSources, new Date().getTime());
+        JSONObject event = aggrFeatureEventBuilderService.buildEvent(dataSource, featureType, aggregatedFeatureName,
+                count + 0.0, additionalInfoMap, bucketConfName, context, startTime, endTime, dataSources,
+                new Date().getTime());
         event.put(AggrEvent.EVENT_FIELD_SCORE, 0.0);
         AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(event);
         aggregatedEventQueryMongoService.insertAggregatedEvent(collectionName, aggrEvent);
@@ -794,9 +792,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param score
      * @throws HdfsException
      */
-    private void eventGeneratorAux(DateTime dt, int medianHour, Map<DateTime, Integer> bucketMap, DataSource dataSource,
-            User user, Computer computer, String dstMachine, String computerDomain, String dc, String clientAddress,
-            int score) throws HdfsException, IOException {
+    private void baseLineGeneratorAux(DateTime dt, int medianHour, Map<DateTime, Integer> bucketMap,
+            DataSource dataSource, User user, Computer computer, String dstMachine, String computerDomain, String dc,
+            String clientAddress, int score) throws HdfsException, IOException {
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
@@ -805,12 +803,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         addToBucketMap(dateTime, bucketMap);
         switch (dataSource) {
             case kerberos_logins: lineToWrite = buildKerberosHDFSLine(dateTime, user, computer, dstMachine, score,
-                    EventFailReason.TIME, computerDomain, dc, clientAddress, "0x0"); break;
-            case ssh: {
-                lineToWrite = buildSshHDFSLine(dateTime, user, computer, dstMachine, score, EventFailReason.TIME,
-                        clientAddress, "Accepted");
-                break;
-            }
+                    EventFailReason.NONE, computerDomain, dc, clientAddress, "0x0"); break;
+            case ssh: lineToWrite = buildSshHDFSLine(dateTime, user, computer, dstMachine, score, EventFailReason.NONE,
+                        clientAddress, "Accepted"); break;
+            case vpn: break; //TODO - implement
         }
         service.writeLineToHdfs(lineToWrite, dateTime.getMillis());
     }
@@ -840,9 +836,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
             //TODO - check this logic
             if (!dt.equals(anomalyDate)) {
-                createScoredBucket(value, aggrFeatureName + "_" + EvidenceTimeframe.Hourly.name().
-                                toLowerCase(), dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
-                        bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
+                createScoredBucket(value, aggrFeatureName, dataSource.name(), EvidenceTimeframe.Hourly.name().
+                                toLowerCase(), bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
             }
 
         }
@@ -850,9 +845,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         createBucket(key, value, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
                 plusDays(1).minusMillis(1), dailyHistogram, featureName);
         if (!dt.equals(anomalyDate)) {
-            createScoredBucket(value, aggrFeatureName + "_" + EvidenceTimeframe.Daily.name().
-                    toLowerCase(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
-                    plusDays(1).minusMillis(1), 0);
+            createScoredBucket(value, aggrFeatureName, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(),
+                    dt, dt.plusDays(1).minusMillis(1), 0);
         }
     }
 
