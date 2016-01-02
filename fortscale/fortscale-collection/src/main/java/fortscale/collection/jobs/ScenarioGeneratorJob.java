@@ -194,8 +194,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int maxHourForAnomaly = 5;
         int minNumberOfDestMachines = 2;
         int maxNumberOfDestMachines = 3;
-        numberOfMaxEventsPerTimePeriod = 5;
         numberOfMinEventsPerTimePeriod = 2;
+        numberOfMaxEventsPerTimePeriod = 5;
         //TODO - extract these specific indicator fields
         int minNumberOfAnomaliesIndicator1 = 2;
         int maxNumberOfAnomaliesIndicator1 = 3;
@@ -307,8 +307,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int maxHourForAnomaly = 5;
         int minNumberOfDestMachines = 10;
         int maxNumberOfDestMachines = 30;
-        numberOfMaxEventsPerTimePeriod = 10;
-        numberOfMinEventsPerTimePeriod = 30;
+        numberOfMinEventsPerTimePeriod = 10;
+        numberOfMaxEventsPerTimePeriod = 30;
         //TODO - extract these specific indicator fields
         int numberOfAnomaliesIndicator1 = 60;
 
@@ -325,23 +325,19 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             logger.error("user {} not found - exiting", username);
             return;
         }
-        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop,
-                limitNumberOfDestinationMachines);
+        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop, limitNumberOfDestinationMachines);
         if (machines.isEmpty()) {
             logger.error("no desktop machines found");
             return;
         }
-        Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines,
-                maxNumberOfDestMachines);
+        Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines, maxNumberOfDestMachines);
         String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
-        Set<String> anomalousMachinesSet = generateRandomDestinationMachines(machines, numberOfAnomaliesIndicator1,
-                numberOfAnomaliesIndicator1);
+        Set<String> anomalousMachinesSet = generateRandomDestinationMachines(machines, numberOfAnomaliesIndicator1, numberOfAnomaliesIndicator1);
         String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
         //generate scenario
         List<Evidence> indicators = new ArrayList();
 
-        createLoginEvents(user, computer, baseLineMachines, DataSource.kerberos_logins, computerDomain, dc,
-                clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.kerberos_logins);
+        createLoginEvents(user, computer, baseLineMachines, DataSource.kerberos_logins, computerDomain, dc, clientAddress, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.kerberos_logins);
 
         //create anomalies
         indicators.add(createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(), anomalyDate.
