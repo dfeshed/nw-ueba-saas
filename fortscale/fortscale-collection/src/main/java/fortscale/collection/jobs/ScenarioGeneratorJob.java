@@ -229,7 +229,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         String service = "sausr29fs";
         Computer serviceMachine = new Computer();
-        computer.setName(service.toUpperCase() + "_PC");
+        serviceMachine.setName(service.toUpperCase() + "_PC");
         String anomalousMachine = service.toUpperCase() + "_SRV";
         User serviceAccount = new User();
         serviceAccount.setUsername(service + "@" + domain);
