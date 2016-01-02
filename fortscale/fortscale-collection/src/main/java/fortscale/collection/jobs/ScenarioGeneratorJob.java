@@ -207,7 +207,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         int anomalousHour = generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly).
                 getHourOfDay();
-        String anomalousMachine = "srvusr21";
         String clientAddress = generateRandomIPAddress();
         String username = samaccountname + "@" + domain;
         String srcMachine = samaccountname + "_PC";
@@ -228,6 +227,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             logger.error("no server machines found");
             return;
         }
+        String service = "sausr29fs";
+        Computer serviceMachine = new Computer();
+        computer.setName(service.toUpperCase() + "_PC");
+        String anomalousMachine = service.toUpperCase() + "_SRC";
+        User serviceAccount = new User();
+        serviceAccount.setUsername(service + "@" + domain);
+        serviceAccount.setUserServiceAccount(true);
         Set<String> baseLineMachinesSet = generateRandomDestinationMachines(machines, minNumberOfDestMachines,
                 maxNumberOfDestMachines);
         String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
@@ -242,6 +248,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         kerberos_logins);
         createLoginEvents(user, computer, baseLineMachines, DataSource.ssh, computerDomain, dc, clientAddress,
                 anomalyDate, HOURLY_HISTOGRAM, "distinct_number_of_dst_machines_" + DataSource.ssh);
+        createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine }, DataSource.ssh,
+                computerDomain, dc, clientAddress, anomalyDate, HOURLY_HISTOGRAM, "distinct_number_of_dst_machines_" +
+                        DataSource.ssh);
         //create anomalies
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
