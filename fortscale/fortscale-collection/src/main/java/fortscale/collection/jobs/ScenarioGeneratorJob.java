@@ -222,7 +222,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             logger.error("user {} not found - exiting", username);
             return;
         }
-        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Server, limitNumberOfDestinationMachines);
+        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Server,
+                limitNumberOfDestinationMachines);
         if (machines.isEmpty()) {
             logger.error("no server machines found");
             return;
@@ -374,11 +375,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (int i = 0; i < numberOfAnomalies; i++) {
             DateTime randomDate = generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly);
             String lineToWrite = null;
+            String dstMachine = null;
             switch (dataSource) {
-                case kerberos_logins: lineToWrite = buildKerberosHDFSLine(randomDate, user, computer, dstMachines[0],
-                        eventScore, reason, computerDomain, dc, clientAddress, status); break;
+                case kerberos_logins: {
+                    dstMachine = dstMachines[0];
+                    lineToWrite = buildKerberosHDFSLine(randomDate, user, computer, dstMachine, eventScore, reason,
+                            computerDomain, dc, clientAddress, status);
+                    break;
+                }
                 case ssh: {
-                    lineToWrite = buildSshHDFSLine(randomDate, user, computer, dstMachines[i], eventScore, reason,
+                    dstMachine = dstMachines[i];
+                    lineToWrite = buildSshHDFSLine(randomDate, user, computer, dstMachine, eventScore, reason,
                             clientAddress, status);
                     break;
                 }
@@ -389,7 +396,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             //create only one indicator
             if (i == 0) {
                 indicatorCreationAux(evidenceType, reason, indicators, user, randomDate, dataSource, indicatorScore,
-                        anomalyTypeFieldName, timeframe, numberOfAnomalies, anomalyDate);
+                        anomalyTypeFieldName, timeframe, numberOfAnomalies, anomalyDate, dstMachine, computer.
+                                getName());
             }
         }
         //TODO - try to use the aux method for this as well
@@ -841,17 +849,26 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      */
     private void indicatorCreationAux(EvidenceType evidenceType, EventFailReason reason, List<Evidence> indicators,
             User user, DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
-            EvidenceTimeframe timeframe, int numberOfAnomalies, DateTime anomalyDate) {
+            EvidenceTimeframe timeframe, int numberOfAnomalies, DateTime anomalyDate, String dstMachine,
+            String srcMachine) {
         if (evidenceType == EvidenceType.AnomalySingleEvent) {
-            if (reason == EventFailReason.TIME) {
-                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-                indicators.add(createIndicator(user.getUsername(), evidenceType,
+            switch (reason) {
+                case TIME: {
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+                    indicators.add(createIndicator(user.getUsername(), evidenceType,
+                            randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+                            anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe));
+                    break;
+                }
+                case DEST: indicators.add(createIndicator(user.getUsername(), evidenceType,
                         randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-                        anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe));
-            } else {
-                indicators.add(createIndicator(user.getUsername(), evidenceType,
+                        anomalyTypeFieldName, dstMachine, 1, timeframe)); break;
+                case SOURCE: indicators.add(createIndicator(user.getUsername(), evidenceType,
                         randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-                        anomalyTypeFieldName, ((double)numberOfAnomalies) + "", numberOfAnomalies, timeframe));
+                        anomalyTypeFieldName, srcMachine, 1, timeframe)); break;
+                case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
+                        randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+                        anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, timeframe)); break;
             }
         } else {
             DateTime endDate;
@@ -862,10 +879,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 randomDate = anomalyDate;
                 endDate = randomDate.plusDays(1);
             }
-            indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-                    endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
-                    anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(),
-                    ((double)numberOfAnomalies) + "", numberOfAnomalies, timeframe));
+            indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(), endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies, timeframe));
         }
     }
 
