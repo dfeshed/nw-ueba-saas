@@ -112,4 +112,8 @@ public class AggrFeatureEventService implements IAggrFeatureEventService{
             }
         }
     }
+
+    @Override public void sendEvents(long curEventTime) {
+        // do nothing
+    }
 }

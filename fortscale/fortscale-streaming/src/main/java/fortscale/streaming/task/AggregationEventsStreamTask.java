@@ -5,6 +5,8 @@ import com.google.common.collect.Iterables;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.services.impl.SpringService;
+import fortscale.streaming.service.FortscaleValueResolver;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
@@ -28,13 +30,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
 	private String dateFieldName;
+	private Boolean skipSendingAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
-		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 
 		Config fieldsSubset = config.subset("fortscale.");
@@ -45,8 +48,10 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		}
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
-		
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
+
+		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
+
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 
@@ -56,11 +61,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
 
 	}
-	
-	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+
+	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
 	}
 
+	private Boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
+		return resolver.resolveBooleanValue(getConfigString(config, string));
+	}
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
@@ -70,7 +78,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		// Get Event
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
-		
+
 		//Add data source to the event. In the future it should already be part of the event.
 		if(!event.containsKey(dataSourceFieldName)){
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
