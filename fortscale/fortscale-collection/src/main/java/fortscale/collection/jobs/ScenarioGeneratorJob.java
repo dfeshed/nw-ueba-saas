@@ -230,7 +230,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String service = "sausr29fs";
         Computer serviceMachine = new Computer();
         computer.setName(service.toUpperCase() + "_PC");
-        String anomalousMachine = service.toUpperCase() + "_SRC";
+        String anomalousMachine = service.toUpperCase() + "_SRV";
         User serviceAccount = new User();
         serviceAccount.setUsername(service + "@" + domain);
         serviceAccount.setUserServiceAccount(true);
@@ -547,7 +547,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 .append(user.getUsername()).append(SEPARATOR)
                 .append(user.getAdministratorAccount()).append(SEPARATOR)
                 .append(user.getExecutiveAccount()).append(SEPARATOR)
-                .append(user.getUserServiceAccount()).append(SEPARATOR).append(status).append(SEPARATOR)
+                .append(user.getUserServiceAccount()).append(SEPARATOR)
+                .append(status).append(SEPARATOR)
                 .append(authMethod).append(SEPARATOR)
                 .append(authMethodScore).append(SEPARATOR)
                 .append(clientAddress).append(SEPARATOR)
