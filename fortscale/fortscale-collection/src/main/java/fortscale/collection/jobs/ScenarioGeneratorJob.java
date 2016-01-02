@@ -337,8 +337,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 baseLineGeneratorAux(dt, afternoonMedianHour, bucketMap, dataSource, user, computer, dstMachine,
                         computerDomain, dc, clientAddress, 0);
             }
-            bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt,
-                    anomalyDate, aggrFeatureName);
+            bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt, anomalyDate, aggrFeatureName);
             bucketCreationAux(bucketMap, DESTINATION_MACHINE, dstMachine, dataSource, featureName, dt, anomalyDate,
                     aggrFeatureName);
             dt = dt.plusDays(1);
@@ -423,7 +422,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
             GenericHistogram genericHistogram = new GenericHistogram();
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
-            dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Hourly.name().
                     toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
                     histogramName);
@@ -435,6 +433,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         EvidenceTimeframe.Hourly.name().toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).
                                 minusMillis(1), (int)dailyHistogram.getTotalCount());
             }
+            dailyHistogram.add(genericHistogram);
         }
         //create daily bucket
         createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().
