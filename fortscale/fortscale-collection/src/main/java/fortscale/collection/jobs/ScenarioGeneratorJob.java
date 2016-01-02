@@ -46,7 +46,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
     private static final String CONTEXT = "classpath*:META-INF/spring/collection-context.xml";
     private static final String SPLIT_STRATEGY = "fortscale.utils.hdfs.split.DailyFileSplitStrategy";
-    private static final String KEY = "normalized_username";
+    private static final String NORMALIZED_USERNAME = "normalized_username";
+    private static final String DESTINATION_MACHINE = "destination_machine";
     private static final String SEPARATOR = ",";
     private static final String BUCKET_PREFIX = "fixed_duration_";
     private static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
@@ -317,20 +318,24 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
                 dt = dt.plusDays(1);
             }
+            String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
             int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
                     + numberOfMinEventsPerTimePeriod;
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
                     numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
             Map<DateTime, Integer> bucketMap = new HashMap();
             for (int j = 0; j < numberOfMorningEvents; j++) {
-                eventGeneratorAux(dt, morningMedianHour, bucketMap, dataSource, user, computer, dstMachines,
+                eventGeneratorAux(dt, morningMedianHour, bucketMap, dataSource, user, computer, dstMachine,
                         computerDomain, dc, clientAddress, 0);
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
-                eventGeneratorAux(dt, afternoonMedianHour, bucketMap, dataSource, user, computer, dstMachines,
+                eventGeneratorAux(dt, afternoonMedianHour, bucketMap, dataSource, user, computer, dstMachine,
                         computerDomain, dc, clientAddress, 0);
             }
-            bucketCreationAux(bucketMap, user, dataSource, featureName, dt, anomalyDate, aggrFeatureName);
+            bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt,
+                    anomalyDate, aggrFeatureName);
+            bucketCreationAux(bucketMap, DESTINATION_MACHINE, dstMachine, dataSource, featureName, dt, anomalyDate,
+                    aggrFeatureName);
             dt = dt.plusDays(1);
         }
     }
@@ -416,7 +421,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             GenericHistogram genericHistogram = new GenericHistogram();
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
-            createBucket(user.getUsername(), dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
+            createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Hourly.name().
+                    toLowerCase(), bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram,
+                    histogramName);
+            createBucket(DESTINATION_MACHINE, dstMachines[0], dataSource.name(), EvidenceTimeframe.Hourly.name().
+                            toLowerCase(),
                     bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, histogramName);
             if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
                 createScoredBucket(user.getUsername(), anomalyTypeFieldName + "_" + EvidenceTimeframe.Hourly.name().
@@ -426,8 +435,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             }
         }
         //create daily bucket
-        createBucket(user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), anomalyDate,
-                anomalyDate.plusDays(1).minusMillis(1), dailyHistogram, histogramName);
+        createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().
+                        toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
+                histogramName);
+        //TODO - check the logic of this ([0])
+        createBucket(DESTINATION_MACHINE, dstMachines[0], dataSource.name(), EvidenceTimeframe.Daily.name().
+                        toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
+                histogramName);
         if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
             createScoredBucket(user.getUsername(), anomalyTypeFieldName + "_" + EvidenceTimeframe.Daily.name().
                             toLowerCase(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), anomalyDate,
@@ -651,7 +665,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
             String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
             EvidenceTimeframe evidenceTimeframe) {
-        Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, KEY, username,
+        Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
                 evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
                 anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
         evidencesService.saveEvidenceInRepository(indicator);
@@ -681,7 +695,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      *
      * This method generates a single bucket
      *
-     * @param username
+     * @param key
+     * @param value
      * @param dataSource
      * @param timeSpan
      * @param start
@@ -689,20 +704,20 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param genericHistogram
      * @param featureName
      */
-    private void createBucket(String username, String dataSource, String timeSpan, DateTime start,
+    private void createBucket(String key, String value, String dataSource, String timeSpan, DateTime start,
             DateTime end, GenericHistogram genericHistogram, String featureName) {
         long startTime = start.getMillis() / 1000;
         long endTime = end.getMillis() / 1000;
-        String collectionName = "aggr_" + KEY + "_" + dataSource + "_" + timeSpan;
-        String bucketId = BUCKET_PREFIX + timeSpan + "_" + startTime + "_" + KEY + " _" + username;
+        String collectionName = "aggr_" + key + "_" + dataSource + "_" + timeSpan;
+        String bucketId = BUCKET_PREFIX + timeSpan + "_" + startTime + "_" + key + " _" + value;
         FeatureBucket bucket = featureBucketQueryService.getFeatureBucketsById(bucketId, collectionName);
         if (bucket == null) {
             bucket = new FeatureBucket();
             bucket.setBucketId(bucketId);
             bucket.setCreatedAt(new Date());
-            bucket.setContextFieldNames(Arrays.asList(new String[]{ KEY }));
+            bucket.setContextFieldNames(Arrays.asList(new String[]{ key }));
             bucket.setDataSources(Arrays.asList(new String[]{ dataSource }));
-            bucket.setFeatureBucketConfName(KEY + "_" + dataSource + "_" + timeSpan);
+            bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
             bucket.setStrategyId(BUCKET_PREFIX + timeSpan + "_" + startTime);
             bucket.setStartTime(startTime);
             bucket.setEndTime(endTime);
@@ -713,7 +728,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             features.put(featureName, feature);
             bucket.setAggregatedFeatures(features);
             Map<String, String> contextFieldNameToValueMap = new HashMap();
-            contextFieldNameToValueMap.put(KEY, username);
+            contextFieldNameToValueMap.put(key, value);
             bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
             featureBucketQueryService.addBucket(bucket, collectionName);
         } else {
@@ -750,9 +765,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String collectionName = AggregatedEventQueryMongoService.SCORED_AGGR_EVENT_COLLECTION_PREFIX + aggrFeatureName;
         String featureType = "F";
         String aggregatedFeatureName = "number_of_" + aggrFeatureName;
-        String bucketConfName = KEY + "_" + dataSource + "_" + timeSpan;
+        String bucketConfName = NORMALIZED_USERNAME + "_" + dataSource + "_" + timeSpan;
         Map<String, String> context = new HashMap();
-        context.put(KEY, username);
+        context.put(NORMALIZED_USERNAME, username);
         Map<String, Object> additionalInfoMap = new HashMap();
         additionalInfoMap.put("total", count);
         List<String> dataSources = Arrays.asList(new String[] { dataSource });
@@ -772,6 +787,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param dataSource
      * @param user
      * @param computer
+     * @param dstMachine
      * @param computerDomain
      * @param dc
      * @param clientAddress
@@ -779,16 +795,14 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @throws HdfsException
      */
     private void eventGeneratorAux(DateTime dt, int medianHour, Map<DateTime, Integer> bucketMap, DataSource dataSource,
-            User user, Computer computer, String[] dstMachines, String computerDomain, String dc, String clientAddress,
+            User user, Computer computer, String dstMachine, String computerDomain, String dc, String clientAddress,
             int score) throws HdfsException, IOException {
-        Random random = new Random();
         HDFSProperties hdfsProperties = dataSourceToHDFSProperties.get(dataSource);
         HdfsService service = new HdfsService(hdfsProperties.getHdfsPartition(), hdfsProperties.getFileName(),
                 partitionStrategy, splitStrategy, hdfsProperties.getImpalaTable(), 1, 0, SEPARATOR);
         DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork, minHourOfWork);
         String lineToWrite = null;
         addToBucketMap(dateTime, bucketMap);
-        String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
         switch (dataSource) {
             case kerberos_logins: lineToWrite = buildKerberosHDFSLine(dateTime, user, computer, dstMachine, score,
                     EventFailReason.TIME, computerDomain, dc, clientAddress, "0x0"); break;
@@ -806,14 +820,15 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * This method is a helper method for bucket creation
      *
      * @param bucketMap
-     * @param user
+     * @param key
+     * @param value
      * @param dataSource
      * @param featureName
      * @param dt
      * @param anomalyDate
      * @param aggrFeatureName
      */
-    private void bucketCreationAux(Map<DateTime, Integer> bucketMap, User user, DataSource dataSource,
+    private void bucketCreationAux(Map<DateTime, Integer> bucketMap, String key, String value, DataSource dataSource,
             String featureName, DateTime dt, DateTime anomalyDate, String aggrFeatureName) {
         //create hourly buckets
         GenericHistogram dailyHistogram = new GenericHistogram();
@@ -821,21 +836,21 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             GenericHistogram genericHistogram = new GenericHistogram();
             genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
             dailyHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
-            createBucket(user.getUsername(), dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
+            createBucket(key, value, dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
                     bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
             //TODO - check this logic
             if (!dt.equals(anomalyDate)) {
-                createScoredBucket(user.getUsername(), aggrFeatureName + "_" + EvidenceTimeframe.Hourly.name().
+                createScoredBucket(value, aggrFeatureName + "_" + EvidenceTimeframe.Hourly.name().
                                 toLowerCase(), dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
                         bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
             }
 
         }
         //create daily bucket
-        createBucket(user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
+        createBucket(key, value, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
                 plusDays(1).minusMillis(1), dailyHistogram, featureName);
         if (!dt.equals(anomalyDate)) {
-            createScoredBucket(user.getUsername(), aggrFeatureName + "_" + EvidenceTimeframe.Daily.name().
+            createScoredBucket(value, aggrFeatureName + "_" + EvidenceTimeframe.Daily.name().
                     toLowerCase(), dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
                     plusDays(1).minusMillis(1), 0);
         }
