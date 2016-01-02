@@ -51,7 +51,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private static final String SEPARATOR = ",";
     private static final String BUCKET_PREFIX = "fixed_duration_";
     private static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
-    private static final String NORMALIZED_USERNAME_HISTOGRAM = "normalized_username_histogram";
     private static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
     private static final DateTimeFormatter HDFS_TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -340,10 +339,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             }
             bucketCreationAux(bucketMap, NORMALIZED_USERNAME, user.getUsername(), dataSource, featureName, dt,
                     anomalyDate, aggrFeatureName);
-            GenericHistogram inverseHistogram = new GenericHistogram();
-            inverseHistogram.add(user.getUsername(), 1.0);
-            createBucket(DESTINATION_MACHINE, dstMachine, dataSource.name(), EvidenceTimeframe.Daily.name().
-                    toLowerCase(), dt, dt.plusDays(1).minusMillis(1), inverseHistogram, NORMALIZED_USERNAME_HISTOGRAM);
+            bucketCreationAux(bucketMap, DESTINATION_MACHINE, dstMachine, dataSource, featureName, dt, anomalyDate,
+                    aggrFeatureName);
             dt = dt.plusDays(1);
         }
     }
@@ -443,12 +440,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         createBucket(NORMALIZED_USERNAME, user.getUsername(), dataSource.name(), EvidenceTimeframe.Daily.name().
                         toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
                 histogramName);
-        GenericHistogram inverseHistogram = new GenericHistogram();
-        inverseHistogram.add(user.getUsername(), 1.0);
         //TODO - check the logic of this ([0])
         createBucket(DESTINATION_MACHINE, dstMachines[0], dataSource.name(), EvidenceTimeframe.Daily.name().
-                toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), inverseHistogram,
-                NORMALIZED_USERNAME_HISTOGRAM);
+                        toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1), dailyHistogram,
+                histogramName);
         if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
             createScoredBucket(user.getUsername(), anomalyTypeFieldName, dataSource.name(), EvidenceTimeframe.Daily.
                             name().toLowerCase(), anomalyDate, anomalyDate.plusDays(1).minusMillis(1),
