@@ -247,10 +247,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 computerDomain, dc, clientAddress, anomalyDate, HOURLY_HISTOGRAM, "number_of_failed_" + DataSource.
                         kerberos_logins);
         createLoginEvents(user, computer, baseLineMachines, DataSource.ssh, computerDomain, dc, clientAddress,
-                anomalyDate, HOURLY_HISTOGRAM, "distinct_number_of_dst_machines_" + DataSource.ssh);
+                anomalyDate, "destination_machine_histogram", "distinct_number_of_dst_machines_" + DataSource.ssh);
         createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine }, DataSource.ssh,
-                computerDomain, dc, clientAddress, anomalyDate, HOURLY_HISTOGRAM, "distinct_number_of_dst_machines_" +
-                        DataSource.ssh);
+                computerDomain, dc, clientAddress, anomalyDate, "destination_machine_histogram",
+                "distinct_number_of_dst_machines_" + DataSource.ssh);
         //create anomalies
         indicators.addAll(createLoginAnomalies(DataSource.kerberos_logins, anomalyDate, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
