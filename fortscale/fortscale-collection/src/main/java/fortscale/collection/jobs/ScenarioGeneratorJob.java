@@ -120,7 +120,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         morningMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "morningMedianHour");
         afternoonMedianHour = jobDataMapExtension.getJobDataMapIntValue(map, "afternoonMedianHour");
         skipWeekend = jobDataMapExtension.getJobDataMapBooleanValue(map, "skipWeekend", true);
-        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
+        anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
                 .withHourOfDay(0)
                 .withMinuteOfHour(0)
                 .withSecondOfMinute(0)
