@@ -128,19 +128,13 @@ public class EntityEventBuilder {
 	}
 
 	private JSONObject createEntityEvent(EntityEventData entityEventData) {
-		/*
-		 * NOTE: When not in a BDP run, the 'not included' set is empty,
-		 * so adding it is redundant. But when in a BDP run, we want to
-		 * create the entity event from all its aggregated feature events.
-		 */
-		Set<AggrEvent> allAggrFeatureEvents = new HashSet<>();
-		allAggrFeatureEvents.addAll(entityEventData.getIncludedAggrFeatureEvents());
-		allAggrFeatureEvents.addAll(entityEventData.getNotIncludedAggrFeatureEvents());
+		entityEventData.getIncludedAggrFeatureEvents().addAll(entityEventData.getNotIncludedAggrFeatureEvents());
+		entityEventData.getNotIncludedAggrFeatureEvents().clear();
 
 		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
 
-		for (AggrEvent aggrFeatureEvent : allAggrFeatureEvents) {
+		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
 			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
 			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));

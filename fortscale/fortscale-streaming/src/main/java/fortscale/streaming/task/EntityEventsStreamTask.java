@@ -19,7 +19,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private static final String OUTPUT_TOPIC_NAME_PROPERTY = "kafka.entity.event.topic";
 
 	private EntityEventService entityEventService;
-	private KafkaEntityEventSender sender;
+	private String outputTopicName;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -33,11 +33,12 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		boolean skipBoolean = resolver.resolveBooleanValue(skipString);
 
 		// Get output Kafka topic name
-		String outputTopicName = config.get(OUTPUT_TOPIC_NAME_PROPERTY, null);
-		Assert.hasText(outputTopicName);
-
-		// Create an entity event to Kafka sender
-		sender = new KafkaEntityEventSender(skipBoolean ? null : outputTopicName);
+		if (skipBoolean) {
+			outputTopicName = null;
+		} else {
+			outputTopicName = config.get(OUTPUT_TOPIC_NAME_PROPERTY, null);
+			Assert.hasText(outputTopicName);
+		}
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
-			sender.setCollector(collector);
+			KafkaEntityEventSender sender = new KafkaEntityEventSender(outputTopicName, collector);
 			entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
 		}
 	}

@@ -14,18 +14,13 @@ public class KafkaEntityEventSender implements IEntityEventSender {
 	private MessageCollector collector;
 
 	/**
-	 * @param stream The Kafka topic incoming entity events will be sent to.
-	 *               If !StringUtils.hasText(stream), all incoming entity events will be discarded.
+	 * @param stream    The Kafka topic incoming entity events will be sent to.
+	 *                  If !StringUtils.hasText(stream), all incoming entity events will be discarded.
+	 * @param collector The message collector that will be used when sending incoming entity events.
+	 *                  If collector == null, incoming entity events will be discarded.
 	 */
-	public KafkaEntityEventSender(String stream) {
+	public KafkaEntityEventSender(String stream, MessageCollector collector) {
 		this.stream = stream;
-	}
-
-	/**
-	 * @param collector The message collector that will be used when sending future incoming entity events.
-	 *                  If collector == null, future incoming entity events will be discarded.
-	 */
-	public void setCollector(MessageCollector collector) {
 		this.collector = collector;
 	}
 
