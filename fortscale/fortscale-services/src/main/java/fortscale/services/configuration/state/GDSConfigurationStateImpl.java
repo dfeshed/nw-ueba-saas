@@ -1,47 +1,43 @@
-package fortscale.collection.jobs.gds.state;
-
-import fortscale.collection.jobs.gds.GDSEntityType;
+package fortscale.services.configuration.state;
 
 /**
  * @author gils
  * 30/12/2015
  */
-public class GDSConfigurationState implements Resettable{
+public class GDSConfigurationStateImpl implements Resettable{
 
-    private String dataSourceName;
-    private GDSEntityType entityType;
-    private String currentDataSources;
-
+    private BaseDefinitionState baseDefinitionState = new BaseDefinitionState();
     private SchemaDefinitionState schemaDefinitionState = new SchemaDefinitionState();
     private CollectionDefinitionState collectionDefinitionState = new CollectionDefinitionState();
     private EnrichmentDefinitionState enrichmentDefinitionState = new EnrichmentDefinitionState();
 
     public String getDataSourceName() {
-        return dataSourceName;
+        return baseDefinitionState.getDataSourceName();
     }
 
     public void setDataSourceName(String dataSourceName) {
-        this.dataSourceName = dataSourceName;
+
+        baseDefinitionState.setDataSourceName(dataSourceName);
     }
 
     public GDSEntityType getEntityType() {
-        return entityType;
+        return baseDefinitionState.getEntityType();
     }
 
     public void setEntityType(GDSEntityType entityType) {
-        this.entityType = entityType;
+        baseDefinitionState.setEntityType(entityType);
     }
 
     public boolean isDataSourceAlreadyDefined() {
-        return dataSourceName != null && entityType != null;
+        return baseDefinitionState.getDataSourceName() != null && baseDefinitionState.getEntityType() != null;
     }
 
-    public String getCurrentDataSources() {
-        return currentDataSources;
+    public String getExistingDataSources() {
+        return baseDefinitionState.getExistingDataSources();
     }
 
-    public void setCurrentDataSources(String currentDataSources) {
-        this.currentDataSources = currentDataSources;
+    public void setExistingDataSources(String currentDataSources) {
+        this.baseDefinitionState.setExistingDataSources(currentDataSources);
     }
 
     public SchemaDefinitionState getSchemaDefinitionState() {
@@ -69,10 +65,7 @@ public class GDSConfigurationState implements Resettable{
     }
 
     public void reset() {
-        dataSourceName = null;
-        entityType = null;
-        currentDataSources = null;
-
+        baseDefinitionState.reset();
         schemaDefinitionState.reset();
         collectionDefinitionState.reset();
         enrichmentDefinitionState.reset();

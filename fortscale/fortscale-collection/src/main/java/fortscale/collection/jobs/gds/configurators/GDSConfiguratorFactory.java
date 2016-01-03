@@ -10,21 +10,21 @@ import java.util.EnumMap;
  * 03/01/2016
  */
 public class GDSConfiguratorFactory {
-    private EnumMap<GDSConfiguratorType, GDSConfigurator> configuratorsMap =
-            new EnumMap<>(GDSConfiguratorType.class);
+    private EnumMap<GDSConfigurationType, GDSConfigurator> configuratorsMap =
+            new EnumMap<>(GDSConfigurationType.class);
 
-    public GDSConfigurator getConfigurator(GDSConfiguratorType gdsConfiguratorType) throws GDSConfigurationException {
-        Class<? extends GDSConfigurator> gdsConfiguratorClass = gdsConfiguratorType.getGDSConfiguratorClass();
-        if (configuratorsMap.containsKey(gdsConfiguratorType)) {
-            return configuratorsMap.get(gdsConfiguratorType);
+    public GDSConfigurator getConfigurator(GDSConfigurationType gdsConfigurationType) throws GDSConfigurationException {
+        Class<? extends GDSConfigurator> gdsConfiguratorClass = gdsConfigurationType.getGDSConfiguratorClass();
+        if (configuratorsMap.containsKey(gdsConfigurationType)) {
+            return configuratorsMap.get(gdsConfigurationType);
         }
         else {
             try {
                 GDSConfigurator gdsConfigurator = gdsConfiguratorClass.newInstance();
-                configuratorsMap.put(gdsConfiguratorType, gdsConfigurator);
+                configuratorsMap.put(gdsConfigurationType, gdsConfigurator);
                 return gdsConfigurator;
             } catch (InstantiationException | IllegalAccessException e) {
-                throw new GDSConfigurationException("Could not create configurator for type " + gdsConfiguratorType.name(), e);
+                throw new GDSConfigurationException("Could not create configurator for type " + gdsConfigurationType.name(), e);
             }
 
         }

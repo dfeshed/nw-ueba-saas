@@ -1,6 +1,5 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,7 @@ public class InitPartConfiguration extends ConfigurationService {
 	private File secondFileToConfigure;
 	private FileWriter secondFileWriterToConfigure;
 
-	public InitPartConfiguration()
+    public InitPartConfiguration()
 	{
 		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
 		this.fileToConfigurePath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
@@ -48,63 +47,38 @@ public class InitPartConfiguration extends ConfigurationService {
         try {
             String line = "";
 
-			ConfigurationParam configurationResult = getParamConfiguration(configurationParams,"dataSourceName");
-            String dataSourceName = configurationResult.getParamValue();
+            String dataSourceName = gdsConfigurationState.getDataSourceName();
 
-			//configurationResult = getParamConfiguration(configurationParams,"dataSourceType");
-            //String dataSourceType = result != null ? configurationResult.getParamValue() : null;
+			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			configurationResult = getParamConfiguration(configurationParams,"dataSourceLists");
-			String dataSourceList  = configurationResult.getParamValue();
+			boolean hasSourceIp = gdsConfigurationState.getSchemaDefinitionState().isHasSourceIp();
 
-			configurationResult = getParamConfiguration(configurationParams,"sourceIpFlag");
-			Boolean sourceIpFlag = configurationResult.getParamFlag();
+			boolean hasTargetIp = gdsConfigurationState.getSchemaDefinitionState().isHasTargetIp();
 
-			configurationResult = getParamConfiguration(configurationParams,"targetIpFlag");
-			Boolean targetIpFlag = configurationResult.getParamFlag();
+			String dataFields = gdsConfigurationState.getSchemaDefinitionState().getDataFields();
 
-			configurationResult = getParamConfiguration(configurationParams,"dataFields");
-			String dataFields = configurationResult.getParamValue();
+			String enrichFields = gdsConfigurationState.getSchemaDefinitionState().getEnrichFields();
 
+			String enrichDelimiter = gdsConfigurationState.getSchemaDefinitionState().getEnrichDelimiter();
 
-			configurationResult = getParamConfiguration(configurationParams,"enrichFields");
-			String enrichFields = configurationResult.getParamValue();
+			String enrichTableName = gdsConfigurationState.getSchemaDefinitionState().getEnrichTableName();
 
-			configurationResult = getParamConfiguration(configurationParams,"enrichDelimiter");
-			String enrichDelimiter = configurationResult.getParamValue();
+			String scoreFields = gdsConfigurationState.getSchemaDefinitionState().getScoreFields();
 
+			String scoreDelimiter = gdsConfigurationState.getSchemaDefinitionState().getScoreDelimiter();
 
-			configurationResult = getParamConfiguration(configurationParams,"enrichTableName");
-			String enrichTableName = configurationResult.getParamValue();
+			String scoreTableName = gdsConfigurationState.getSchemaDefinitionState().getScoreTableName();
 
+			boolean topSchemaFlag = gdsConfigurationState.getSchemaDefinitionState().isHasTopSchema();
 
-			configurationResult = getParamConfiguration(configurationParams,"scoreFields");
-			String scoreFields = configurationResult.getParamValue();
+			boolean normalizedUserNameField = gdsConfigurationState.getSchemaDefinitionState().isHasNormalizedUserNameField();
 
-			configurationResult = getParamConfiguration(configurationParams,"scoreDelimiter");
-			String scoreDelimiter = configurationResult.getParamValue();
+			String dataDelimiter = gdsConfigurationState.getSchemaDefinitionState().getDataDelimiter();
 
-
-			configurationResult = getParamConfiguration(configurationParams,"scoreTableName");
-			String scoreTableName = configurationResult.getParamValue();
-
-
-			configurationResult = getParamConfiguration(configurationParams,"topSchemaFlag");
-			Boolean topSchemaFlag = configurationResult.getParamFlag();
-
-			configurationResult = getParamConfiguration(configurationParams,"normalizedUserNameField");
-			String normalizedUserNameField = configurationResult.getParamValue();
-
-			configurationResult = getParamConfiguration(configurationParams,"dataDelimiter");
-			String dataDelimiter = configurationResult.getParamValue();
-
-			configurationResult = getParamConfiguration(configurationParams,"dataTableName");
-			String dataTableName = configurationResult.getParamValue();
-
+			String dataTableName = gdsConfigurationState.getSchemaDefinitionState().getDataTableName();
 
 
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
-
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);
@@ -127,7 +101,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            if (sourceIpFlag!=null && sourceIpFlag) {
+            if (hasSourceIp) {
                 line = String.format("impala.data.%s.table.field.source=source_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -145,7 +119,7 @@ public class InitPartConfiguration extends ConfigurationService {
                 writeLineToFile(line, secondFileWriterToConfigure, true);
             }
 
-            if (targetIpFlag!=null && targetIpFlag) {
+            if (hasTargetIp) {
                 line = String.format("impala.data.%s.table.field.target=target_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -298,7 +272,7 @@ public class InitPartConfiguration extends ConfigurationService {
 			writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Top Score schema
-            if (configurationParams.containsKey("topSchemaFlag") && topSchemaFlag) {
+            if (topSchemaFlag) {
                 line = "########### Top Score Schema";
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);

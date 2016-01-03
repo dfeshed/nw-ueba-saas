@@ -1,60 +1,70 @@
 package fortscale.collection.jobs.gds.populators;
 
+import fortscale.collection.jobs.gds.GDSInputHandler;
+import fortscale.collection.jobs.gds.GDSMenuPrinterHelper;
+import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
-import fortscale.collection.jobs.gds.state.GDSConfigurationState;
-import fortscale.collection.jobs.gds.state.SchemaDefinitionState;
 import fortscale.services.configuration.ConfigurationParam;
+import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author gils
  * 03/01/2016
  */
-public class SchemaDefinitionCLIPopulator extends GDSBaseCLIPopulator{
+public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulator{
 
-    public SchemaDefinitionCLIPopulator(GDSConfigurationState gdsConfigurationState) {
-        super(gdsConfigurationState);
-    }
+    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+
+    @Value("${fortscale.data.source}")
+    private String currentDataSources = "ssh,vpn"; // TODO fix
+
+    //TODO - Generate this auto from the entities  properties
+    private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+    private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+    private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE";
+    private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
+    private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
+    private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
+    private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
+
 
     @Override
-    public void populateConfigurationData() throws Exception {
-        super.populateConfigurationData();
+    public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        populateBaseDataSourceDefinitions(paramsMap);
 
         String additionalFieldsCSV="";
         String additionalScoreFieldsCSV="";
 
-        SchemaDefinitionState schemaDefinitionState = gdsConfigurationState.getSchemaDefinitionState();
+        String dataSourceName = paramsMap.get("dataSourceName").getParamValue();
+        String dataSourceType = paramsMap.get("dataSourceType").getParamValue();
 
-        Map<String, ConfigurationParam> paramsMap = schemaDefinitionState.getParamsMap();
-
-        paramsMap.put("dataSourceName", new ConfigurationParam("dataSourceName", false, gdsConfigurationState.getDataSourceName()));
-        paramsMap.put("dataSourceType", new ConfigurationParam("dataSourceType", false, gdsConfigurationState.getEntityType().name().toLowerCase()));
-        paramsMap.put("dataSourceLists", new ConfigurationParam("dataSourceLists", false, gdsConfigurationState.getCurrentDataSources()));
-
-        String dataSourceName = gdsConfigurationState.getDataSourceName();
-
-        System.out.println(String.format("Does %s data source have additional fields (y/n)", gdsConfigurationState.getDataSourceName()));
+        System.out.println(String.format("Does %s data source have additional fields (y/n)", paramsMap.get("dataSourceName")));
         String result = gdsInputHandler.getInput();
         if(GDSUserInputHelper.isConfirmed(result))
         {
             additionalFieldsCSV=",";
 
-            System.out.println(String.format("Please enter %s data source additional fields csv style (i.e url STRING,application STRING  etc): ", gdsConfigurationState.getDataSourceName()));
+            System.out.println(String.format("Please enter %s data source additional fields csv style (i.e url STRING,application STRING  etc): ", paramsMap.get("dataSourceName")));
 
             additionalFieldsCSV += gdsInputHandler.getInput();
 
-            System.out.println(String.format("Does %s data source have additional score fields (y/n)", gdsConfigurationState.getDataSourceName()));
+            System.out.println(String.format("Does %s data source have additional score fields (y/n)", paramsMap.get("dataSourceName")));
             result = gdsInputHandler.getInput();
 
             if(GDSUserInputHelper.isConfirmed(result)) {
                 additionalScoreFieldsCSV=",";
-                System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ", gdsConfigurationState.getDataSourceName()));
+                System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ", paramsMap.get("dataSourceName")));
                 additionalScoreFieldsCSV += gdsInputHandler.getInput();
             }
         }
 
-        switch(gdsConfigurationState.getEntityType().name().toLowerCase())
+        switch(dataSourceType)
         {
             case "base":
             {
@@ -190,9 +200,23 @@ public class SchemaDefinitionCLIPopulator extends GDSBaseCLIPopulator{
         paramsMap.put("scoreTableName", new ConfigurationParam("TableName",false,tableName));
 
         //top score
-        System.out.println(String.format("Dose %s Have top table schema (y/n) ?",dataSourceName));
+        System.out.println(String.format("Does %s Have top table schema (y/n) ?",dataSourceName));
         String brResult =gdsInputHandler.getInput().toLowerCase();
         paramsMap.put("topSchemaFlag", new ConfigurationParam("topSchemaFlaf",brResult.equals("y") || brResult.equals("yes"),""));
 
+        return paramsMap;
+    }
+
+    private void populateBaseDataSourceDefinitions(Map<String, ConfigurationParam> paramsMap) throws Exception {
+        System.out.println("Please enter the data source name: ");
+        String dataSourceName = gdsInputHandler.getInput();
+
+        GDSMenuPrinterHelper.printDataSourceTypeMenuOptions(dataSourceName);
+        String dataSourceType = gdsInputHandler.getInput();
+
+        paramsMap.put("dataSourceName", new ConfigurationParam("dataSourceName", false, dataSourceName));
+        paramsMap.put("dataSourceType", new ConfigurationParam("dataSourceType", false, dataSourceType.toLowerCase()));
+
+        paramsMap.put("dataSourceLists", new ConfigurationParam("dataSourceLists", false, currentDataSources));
     }
 }

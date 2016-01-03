@@ -1,5 +1,6 @@
 package fortscale.services.configuration;
 
+import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,9 @@ public abstract class ConfigurationService {
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
     protected Map<String,ConfigurationParam> configurationParams;
+	protected GDSConfigurationStateImpl gdsConfigurationState;
 
-    public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
+	public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
         this.configurationParams = configurationParams;
     }
 
@@ -35,7 +37,7 @@ public abstract class ConfigurationService {
                 fileWriterToConfigure.close();
             } catch (IOException exception) {
                 logger.error("There was an exception during the file - {} closing  , cause - {} ", fileToConfigure.getName(), exception.getMessage());
-                System.out.println(String.format("There was an exception during execution please see more info at the log "));
+                System.out.println("There was an exception during execution please see more info at the log ");
                 result=false;
 
             }
@@ -61,7 +63,7 @@ public abstract class ConfigurationService {
 		catch (Exception e)
 		{
 			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
+			System.out.println("There was an exception during execution please see more info at the log ");
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -72,5 +74,9 @@ public abstract class ConfigurationService {
 		if (configurationParams.containsKey(key))
 			return configurationParams.get(key);
 		return null;
+	}
+
+	public void setGDSConfigurationState(GDSConfigurationStateImpl gdsConfigurationState) {
+		this.gdsConfigurationState = gdsConfigurationState;
 	}
 }

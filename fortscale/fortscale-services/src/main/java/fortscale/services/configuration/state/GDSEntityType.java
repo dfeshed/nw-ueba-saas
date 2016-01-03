@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.gds;
+package fortscale.services.configuration.state;
 
 /**
  * @author gils

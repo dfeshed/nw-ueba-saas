@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.gds.state;
+package fortscale.services.configuration.state;
 
 import fortscale.services.configuration.ConfigurationParam;
 
@@ -9,7 +9,7 @@ import java.util.Map;
  * @author gils
  * 31/12/2015
  */
-public class SchemaDefinitionState implements Resettable{
+public class EnrichmentDefinitionState implements GDSConfigurationState{
     private Map<String, ConfigurationParam> paramsMap = new HashMap<>();
 
     public Map<String, ConfigurationParam> getParamsMap() {

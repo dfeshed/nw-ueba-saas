@@ -1,8 +1,11 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.collection.jobs.gds.*;
-import fortscale.collection.jobs.gds.state.GDSConfigurationState;
-import org.springframework.beans.factory.annotation.Value;
+import fortscale.collection.jobs.gds.GDSConfigurator;
+import fortscale.services.configuration.ConfigurationParam;
+import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSEntityType;
+
+import java.util.Map;
 
 /**
  * @author gils
@@ -10,30 +13,17 @@ import org.springframework.beans.factory.annotation.Value;
  */
 abstract class GDSBaseConfigurator implements GDSConfigurator {
 
-    protected GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+    protected GDSConfigurationStateImpl gdsConfigurationState = new GDSConfigurationStateImpl();
 
-    protected GDSConfigurationState gdsConfigurationState;
+    public GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+        ConfigurationParam dataSourceName = configurationParams.get("dataSourceName");
+        ConfigurationParam dataSourceType = configurationParams.get("dataSourceType");
+        ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");
 
-    @Value("${fortscale.data.source}")
-    private String currentDataSources;
+        gdsConfigurationState.setDataSourceName(dataSourceName.getParamValue());
+        gdsConfigurationState.setEntityType(GDSEntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
+        gdsConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
 
-    public void init(GDSConfigurationState gdsConfigurationState) {
-        this.gdsConfigurationState = gdsConfigurationState;
-    }
-
-    public void configure() throws Exception {
-        if (!gdsConfigurationState.isDataSourceAlreadyDefined()) {
-            System.out.println("Please enter the data source name: ");
-            String dataSourceName = gdsInputHandler.getInput();
-
-            gdsConfigurationState.setDataSourceName(dataSourceName);
-
-            GDSMenuPrinterHelper.printDataSourceTypeMenuOptions(dataSourceName);
-            String dataSourceType = gdsInputHandler.getInput();
-
-            gdsConfigurationState.setEntityType(GDSEntityType.valueOf(dataSourceType.toUpperCase()));
-
-            gdsConfigurationState.setCurrentDataSources(currentDataSources);
-        }
+        return gdsConfigurationState;
     }
 }
