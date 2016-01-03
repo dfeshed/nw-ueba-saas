@@ -37,9 +37,32 @@ public class GDSMenuPrinterHelper {
         System.out.println("Illegal input. Please enter your choice [1-6]:");
     }
 
-    public static void printNewMainMenuIteration() {
+    public static void printNextMainMenu() {
         System.out.println("");
         GDSMenuPrinterHelper.printMainMenu(false);
+        System.out.println("Please enter your choice [1-6]:");
+    }
+
+    public static void printEnrichmentMenu() {
+        System.out.println("Enrichment Tasks");
+        System.out.println("----------------");
+
+        System.out.println("1.\tUser Normalization task\n" +
+                "2.\tIP Resolving task\n" +
+                "3.\tComputer Tagging task\n" +
+                "4.\tGeo Location task\n" +
+                "5.\tUser Mongo Update task\n" +
+                "6.\tHDFS Writer task\n");
+    }
+
+    public static void printEnrichmentMenuAfterFailure() {
+        GDSMenuPrinterHelper.printEnrichmentMenu();
+        System.out.println("Illegal input. Please enter your choice [1-6]:");
+    }
+
+    public static void printNextEnrichmentMenu() {
+        System.out.println("");
+        GDSMenuPrinterHelper.printEnrichmentMenu();
         System.out.println("Please enter your choice [1-6]:");
     }
 }

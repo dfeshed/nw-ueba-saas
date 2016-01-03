@@ -14,31 +14,31 @@ import java.io.IOException;
 public class InitPartConfiguration extends ConfigurationService {
 
 	private String secondFileToConfigurePath; //Will represent the streaming overriding file
-	private File secoundFileToConfigure;
+	private File secondFileToConfigure;
 	private FileWriter secondFileWriterToConfigure;
 
 	public InitPartConfiguration()
 	{
 		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
-		this.fileToConfigurePath = this.root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
+		this.fileToConfigurePath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
 		this.secondFileToConfigurePath = root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties";
 	}
 
 	@Override
 	public boolean init() {
-		Boolean result = false;
+		Boolean result;
 		try {
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
-			this.secoundFileToConfigure = new File(this.secondFileToConfigurePath);
-			this.secondFileWriterToConfigure = new FileWriter(this.secoundFileToConfigure, true);
+			this.secondFileToConfigure = new File(this.secondFileToConfigurePath);
+			this.secondFileWriterToConfigure = new FileWriter(this.secondFileToConfigure, true);
 			result = true;
 		} catch (Exception e) {
 			logger.error("There was an exception during InitPartConfiguration init part execution - {} ", e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
+			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
-
 		}
+
 		return result;
 	}
 
@@ -46,61 +46,60 @@ public class InitPartConfiguration extends ConfigurationService {
 	public  boolean applyConfiguration() throws Exception{
 
         try {
-            Boolean result = false;
             String line = "";
 
 			ConfigurationParam configurationResult = getParamConfiguration(configurationParams,"dataSourceName");
-            String dataSourceName = result != null ? configurationResult.getParamValue() : null;
+            String dataSourceName = configurationResult.getParamValue();
 
 			//configurationResult = getParamConfiguration(configurationParams,"dataSourceType");
             //String dataSourceType = result != null ? configurationResult.getParamValue() : null;
 
 			configurationResult = getParamConfiguration(configurationParams,"dataSourceLists");
-			String dataSourceList  = result != null ? configurationResult.getParamValue() : null;
+			String dataSourceList  = configurationResult.getParamValue();
 
 			configurationResult = getParamConfiguration(configurationParams,"sourceIpFlag");
-			Boolean sourceIpFlag = result != null ? configurationResult.getParamFlag() : null;
+			Boolean sourceIpFlag = configurationResult.getParamFlag();
 
 			configurationResult = getParamConfiguration(configurationParams,"targetIpFlag");
-			Boolean targetIpFlag = result != null ? configurationResult.getParamFlag() : null;
+			Boolean targetIpFlag = configurationResult.getParamFlag();
 
 			configurationResult = getParamConfiguration(configurationParams,"dataFields");
-			String dataFields = result != null ? configurationResult.getParamValue() : null;
+			String dataFields = configurationResult.getParamValue();
 
 
 			configurationResult = getParamConfiguration(configurationParams,"enrichFields");
-			String enrichFields = result != null ? configurationResult.getParamValue() : null;
+			String enrichFields = configurationResult.getParamValue();
 
 			configurationResult = getParamConfiguration(configurationParams,"enrichDelimiter");
-			String enrichDelimiter = result != null ? configurationResult.getParamValue() : null;
+			String enrichDelimiter = configurationResult.getParamValue();
 
 
 			configurationResult = getParamConfiguration(configurationParams,"enrichTableName");
-			String enrichTableName = result != null ? configurationResult.getParamValue() : null;
+			String enrichTableName = configurationResult.getParamValue();
 
 
 			configurationResult = getParamConfiguration(configurationParams,"scoreFields");
-			String scoreFields = result != null ? configurationResult.getParamValue() : null;
+			String scoreFields = configurationResult.getParamValue();
 
 			configurationResult = getParamConfiguration(configurationParams,"scoreDelimiter");
-			String scoreDelimiter = result != null ? configurationResult.getParamValue() : null;
+			String scoreDelimiter = configurationResult.getParamValue();
 
 
 			configurationResult = getParamConfiguration(configurationParams,"scoreTableName");
-			String scoreTableName = result != null ? configurationResult.getParamValue() : null;
+			String scoreTableName = configurationResult.getParamValue();
 
 
 			configurationResult = getParamConfiguration(configurationParams,"topSchemaFlag");
-			Boolean topSchemaFlag = result != null ? configurationResult.getParamFlag() : null;
+			Boolean topSchemaFlag = configurationResult.getParamFlag();
 
 			configurationResult = getParamConfiguration(configurationParams,"normalizedUserNameField");
-			String normalizedUserNameField = result != null ? configurationResult.getParamValue() : null;
+			String normalizedUserNameField = configurationResult.getParamValue();
 
 			configurationResult = getParamConfiguration(configurationParams,"dataDelimiter");
-			String dataDelimiter = result != null ? configurationResult.getParamValue() : null;
+			String dataDelimiter = configurationResult.getParamValue();
 
 			configurationResult = getParamConfiguration(configurationParams,"dataTableName");
-			String dataTableName = result != null ? configurationResult.getParamValue() : null;
+			String dataTableName = configurationResult.getParamValue();
 
 
 
@@ -112,7 +111,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile("\n", secondFileWriterToConfigure, true);
             writeLineToFile("\n", secondFileWriterToConfigure, true);
 
-            line = String.format("########################################### New Configuration For Generic Data Source  ########################################################");
+            line = "########################################### New Configuration For Generic Data Source  ########################################################";
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -172,7 +171,7 @@ public class InitPartConfiguration extends ConfigurationService {
 			writeLineToFile(line, fileWriterToConfigure, true);
 			writeLineToFile(line, secondFileWriterToConfigure, true);
 
-            line = String.format("########### Data Schema");
+            line = "########### Data Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
 
             line = String.format("impala.%s.have.data=true", dataSourceName);
@@ -214,7 +213,7 @@ public class InitPartConfiguration extends ConfigurationService {
 
 
             //Enrich fields
-            line = String.format("########### Enrich Schema");
+            line = "########### Enrich Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -256,7 +255,7 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Score
-            line = String.format("########### Score Schema");
+            line = "########### Score Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -300,7 +299,7 @@ public class InitPartConfiguration extends ConfigurationService {
 
             //Top Score schema
             if (configurationParams.containsKey("topSchemaFlag") && topSchemaFlag) {
-                line = String.format("########### Top Score Schema");
+                line = "########### Top Score Schema";
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
 
@@ -373,7 +372,6 @@ public class InitPartConfiguration extends ConfigurationService {
 			writeLineToFile(line, fileWriterToConfigure, true);
 
 
-
             secondFileWriterToConfigure.flush();
             fileWriterToConfigure.flush();
         }
@@ -382,22 +380,17 @@ public class InitPartConfiguration extends ConfigurationService {
             return false;
         }
 
-
 		return  true;
-
-
 	}
 
     @Override
 	public boolean done() {
-
-
 		if (secondFileWriterToConfigure != null) {
 			try {
 				secondFileWriterToConfigure.close();
 			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", secoundFileToConfigure.getName(), exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", secondFileToConfigure.getName(), exception.getMessage());
+				System.out.println("There was an exception during execution please see more info at the log ");
 				return false;
 
 			}
@@ -406,6 +399,4 @@ public class InitPartConfiguration extends ConfigurationService {
 
 		return super.done();
 	}
-
-
 }

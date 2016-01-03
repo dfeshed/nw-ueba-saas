@@ -7,7 +7,7 @@ import java.util.Set;
  * @author gils
  * 30/12/2015
  */
-interface GDSInputHandler {
+public interface GDSInputHandler {
     String getInput() throws Exception;
     String getInput(String paramName) throws Exception;
     Map<String, String> getInput(Set<String> paramNames);

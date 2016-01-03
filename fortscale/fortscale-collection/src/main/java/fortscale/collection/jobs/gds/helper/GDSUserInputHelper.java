@@ -5,7 +5,7 @@ package fortscale.collection.jobs.gds.helper;
  * 31/12/2015
  */
 public class GDSUserInputHelper {
-    public static boolean isYesAnswer(String input) {
+    public static boolean isConfirmed(String input) {
         return input.toLowerCase().equals("y") || input.toLowerCase().equals("yes");
     }
 }

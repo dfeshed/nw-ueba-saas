@@ -16,10 +16,6 @@ public class SchemaDefinitionState implements Resettable{
         return paramsMap;
     }
 
-    public void setParamsMap(Map<String, ConfigurationParam> paramsMap) {
-        this.paramsMap = paramsMap;
-    }
-
     @Override
     public void reset() {
         paramsMap.clear();

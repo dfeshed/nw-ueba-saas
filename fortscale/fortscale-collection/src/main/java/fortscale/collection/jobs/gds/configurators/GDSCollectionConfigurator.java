@@ -1,6 +1,4 @@
-package fortscale.collection.jobs.gds;
-
-import fortscale.collection.jobs.gds.state.GDSConfigurationState;
+package fortscale.collection.jobs.gds.configurators;
 
 /**
  * @author gils
@@ -8,8 +6,7 @@ import fortscale.collection.jobs.gds.state.GDSConfigurationState;
  */
 public class GDSCollectionConfigurator extends GDSBaseConfigurator{
 
-    public GDSCollectionConfigurator(GDSConfigurationState gdsConfigurationState) {
-        super(gdsConfigurationState);
+    public GDSCollectionConfigurator() {
     }
 
     @Override

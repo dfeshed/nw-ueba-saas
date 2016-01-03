@@ -1,13 +1,17 @@
-package fortscale.collection.jobs.gds;
+package fortscale.collection.jobs.gds.populators;
 
+import fortscale.collection.jobs.gds.GDSEntityType;
+import fortscale.collection.jobs.gds.GDSInputHandler;
+import fortscale.collection.jobs.gds.GDSMenuPrinterHelper;
+import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.state.GDSConfigurationState;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author gils
- * 30/12/2015
+ * 03/01/2016
  */
-abstract class GDSBaseConfigurator implements GDSConfigurator{
+abstract class GDSBaseCLIPopulator implements GDSUserConfigurationPopulator {
 
     protected GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
 
@@ -16,11 +20,12 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
     @Value("${fortscale.data.source}")
     private String currentDataSources;
 
-    public GDSBaseConfigurator(GDSConfigurationState gdsConfigurationState) {
+    public GDSBaseCLIPopulator(GDSConfigurationState gdsConfigurationState) {
         this.gdsConfigurationState = gdsConfigurationState;
     }
 
-    public void configure() throws Exception {
+    @Override
+    public void populateConfigurationData() throws Exception {
         if (!gdsConfigurationState.isDataSourceAlreadyDefined()) {
             System.out.println("Please enter the data source name: ");
             String dataSourceName = gdsInputHandler.getInput();
