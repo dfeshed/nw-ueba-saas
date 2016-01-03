@@ -76,7 +76,9 @@ public class MorphlinesItemsProcessor implements Closeable {
 		record.put(ITEM_CONTEXT, itemContext);
 
 		record =  process(record);
-		record.removeAll(ITEM_CONTEXT);
+		if (record!=null) {
+			record.removeAll(ITEM_CONTEXT);
+		}
 		return record;
 	}
 
