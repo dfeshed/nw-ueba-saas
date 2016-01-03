@@ -23,13 +23,13 @@ public class KafkaModelBuildingListenerTest {
 		String modelConfName = "testModelConf";
 		String sessionId = "mySession";
 		String contextId = "testContextId";
-		Date endTime = new Date();
+		Date endTime = new Date(1287576000000L);
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);
 		expectedJson.put("sessionId", sessionId);
 		expectedJson.put("contextId", contextId);
-		expectedJson.put("endTime", endTime.toString());
+		expectedJson.put("endTime", "2010-10-20 12:00:00 UTC");
 		expectedJson.put("success", true);
 		expectedJson.put("message", ModelBuildingStatus.SUCCESS.getMessage());
 

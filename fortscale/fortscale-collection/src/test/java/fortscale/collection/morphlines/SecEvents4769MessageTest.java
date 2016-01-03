@@ -22,8 +22,8 @@ import static junitparams.JUnitParamsRunner.$;
 @RunWith(JUnitParamsRunner.class)
 public class SecEvents4769MessageTest {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readSecEvt_syslog.conf";
-	private String conf4769File = "resources/conf-files/processSecEvt4769_syslog.conf";
+	private String confFile = "resources/conf-files/securityevents/syslog/readSecEvt.conf";
+	private String conf4769File = "resources/conf-files/securityevents/syslog/processSecEvt4769.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 

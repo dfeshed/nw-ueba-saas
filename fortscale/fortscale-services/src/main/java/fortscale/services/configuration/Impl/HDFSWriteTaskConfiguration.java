@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +42,27 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	public Boolean Configure() throws Exception {
         try {
             String line = "";
-            String fieldList = configurationParams.get("fieldList").getParamValue();
-            String delimiter = configurationParams.get("delimiter").getParamValue();
-            String hdfsPath = configurationParams.get("hdfsPath").getParamValue();
-            String fileName = configurationParams.get("fileName").getParamValue();
-            String tableName = configurationParams.get("tableName").getParamValue();
-            String partitionStrategy = configurationParams.get("partitionStrategy").getParamValue();
-            String discriminatorsFields = configurationParams.get("discriminatorsFields").getParamValue();
+
+			ConfigurationParam result = getParamConfiguration(configurationParams,"fieldList");
+            String fieldList = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"delimiter");
+            String delimiter = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"hdfsPath");
+            String hdfsPath = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"fileName");
+            String fileName = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"tableName");
+            String tableName = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"partitionStrategy");
+            String partitionStrategy = result != null ? result.getParamValue() : null;
+
+			 result = getParamConfiguration(configurationParams,"discriminatorsFields");
+            String discriminatorsFields = result != null ? result.getParamValue() : null;
 
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");

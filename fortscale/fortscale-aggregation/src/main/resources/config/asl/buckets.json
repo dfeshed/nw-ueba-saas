@@ -91,7 +91,7 @@
     },
     {
       "name": "normalized_username_kerberos_logins_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -260,7 +260,7 @@
     },
     {
       "name": "normalized_username_ssh_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -421,7 +421,7 @@
     },
     {
       "name": "normalized_username_vpn_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -536,7 +536,7 @@
     },
     {
       "name": "normalized_username_vpn_session_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -631,7 +631,7 @@
     },
     {
       "name": "normalized_username_amt_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -952,13 +952,6 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
           "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -976,6 +969,28 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_date_time_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+        },
+        {
+          "name": "country_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+        },
+        {
+          "name": "failure_code_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["failure_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         }
       ]
     },
@@ -986,7 +1001,7 @@
         "normalized_username"
       ],
       "dataSources": [
-        "ssh"
+        "crmsf"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -998,13 +1013,6 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
           "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
@@ -1022,6 +1030,28 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "high_score_date_time_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
+          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+        },
+        {
+          "name": "country_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["country"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+        },
+        {
+          "name": "failure_code_with_high_score_histogram",
+          "featureNamesMap": {
+            "groupBy": ["failure_code"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
         }
       ]
     },
