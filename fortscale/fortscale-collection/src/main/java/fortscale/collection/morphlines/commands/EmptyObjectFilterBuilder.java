@@ -84,6 +84,8 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 				if (isAllFieldValueEmpty) {
 					// drop record
 					logger.debug("EmptyObjectFilter command droped record because {} contains only empty values. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
+					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+							"EmptyObjectFilter command droped record because {} contains only empty values", field);
 					return true;
 				}
 			}

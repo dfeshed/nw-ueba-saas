@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -14,6 +15,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -46,6 +48,10 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 		String eventType = "";
 		@Value("${mophline.cmd.overflow:false}")
 		private boolean runCmd;
+
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
 
 		protected OverFlowFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
@@ -91,6 +97,8 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 			}
 			if (counter > threshold) {
 				// drop record
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+						"Overflow threshold was reached");
 				return true;
 			}
 			return super.doProcess(inputRecord);

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -44,6 +45,10 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 
 		@Autowired
 		private ComputerRepository computerRepository;
+
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
 		private String serviceNameField;
 		private String regex;
 		private Pattern regexMatcher;
@@ -93,6 +98,8 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			if (m.matches()) {
 				serviceName = m.replaceAll(regexReplacement);
 			} else {
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+						"Service name not match regular expression");
 				return true;
 			}
 
@@ -102,6 +109,8 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 				return super.doProcess(inputRecord);
 			} else {
 				logger.debug("Filter event since service name [{}] is not a computer.", serviceName);
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+						"Service name is not computer");
 				return true;
 			}
 		}

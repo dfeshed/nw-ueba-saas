@@ -3,12 +3,14 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -51,6 +53,8 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
         StringValueResolver stringValueResolver;
         ApplicationContext applicationContext;
 
+        @Autowired
+        MorphlineCommandMonitoringHelper commandMonitoringHelper;
 
 
         public FieldFilter(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -80,6 +84,8 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
             if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
+                commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+                        "FieldFilter command droped record because %s is in the black list of field %s", fieldContent, fieldName);
 				return true;
             }
 

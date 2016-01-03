@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -13,6 +14,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -39,7 +41,11 @@ public class RegexMatchBuilder implements CommandBuilder {
 		private Pattern pattern;
 		private boolean dropOnMatch;
 		private boolean dropOnMissMatch;
-		
+
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
+
 		public RegexMatch(CommandBuilder builder, Config config, Command parent,
 				Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -55,11 +61,17 @@ public class RegexMatchBuilder implements CommandBuilder {
 			String value = RecordExtensions.getStringValue(record, fieldName);
 			boolean match = (value!=null && pattern.matcher(value).matches());
 			
-			if (dropOnMatch && match)
+			if (dropOnMatch && match) {
+				commandMonitoringHelper.addFilteredEventToMonitoring(record,
+						"Filtered on field % matched", fieldName);
 				return true;
+			}
 			
-			if (dropOnMissMatch && !match)
+			if (dropOnMissMatch && !match) {
+				commandMonitoringHelper.addFilteredEventToMonitoring(record,
+						"Filtered on field % not matched", fieldName);
 				return true;
+			}
 			
 			return super.doProcess(record);
 		}
