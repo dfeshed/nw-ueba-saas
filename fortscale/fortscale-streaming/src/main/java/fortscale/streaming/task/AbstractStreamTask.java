@@ -39,6 +39,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected  FortscaleStringValueResolver res;
 
+	//this is for testing purposes only!!!
+	public static boolean initialized = false;
+
 
 
 	protected TaskMonitoringHelper taskMonitoringHelper;
@@ -67,6 +70,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(TaskCoordinatorException.class, 1);
 	}
 
+	/**
+	 * //this is for testing purposes only!!!
+	 * Can only be obtained when one task runs at a time as it is static!!!
+	 * @return
+	 */
+	public static Boolean isInitialized(){
+		return initialized;
+	}
+
 	public void init(Config config, TaskContext context) throws Exception {
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
@@ -81,6 +93,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		wrappedInit(config, context);
 
 		logger.info("Task init finished");
+		initialized = true;
 	}
 
 	private void initTaskMonitoringHelper(Config config) {
