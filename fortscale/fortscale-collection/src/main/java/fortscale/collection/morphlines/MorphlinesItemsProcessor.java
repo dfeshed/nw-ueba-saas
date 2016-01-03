@@ -3,6 +3,7 @@ package fortscale.collection.morphlines;
 import java.io.Closeable;
 import java.io.IOException;
 
+import fortscale.collection.ItemContext;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
@@ -19,7 +20,7 @@ import org.springframework.util.Assert;
  */
 public class MorphlinesItemsProcessor implements Closeable {
 
-	public static final String MONITORING_SOURCE = "MONITORING_SOURCE";
+	public static final String ITEM_CONTEXT = "ITEM_CONTEXT";
 	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class);
 	
 	private Command morphline;
@@ -63,18 +64,20 @@ public class MorphlinesItemsProcessor implements Closeable {
 	/**
 	 *
 	 * @param item - the record to process - mandatory
-	 * @param source - name of origion where the data come from, I.E. file name,
-	 *               	for monitoring purposes. - source can be null.
+	 * @param itemContext - name of origion where the data come from, I.E. file name,
+	 *               	for monitoring purposes. - itemContext can be null.
 	 * @return
 	 */
-	public Record process(String item, String source) {
+	public Record process(String item, ItemContext itemContext) {
 
 		// create a record that holds the input string
 		Record record = new Record();
 		record.put(Fields.MESSAGE, item);
-		record.put(MONITORING_SOURCE, source);
+		record.put(ITEM_CONTEXT, itemContext);
 
-		return process(record);
+		record =  process(record);
+		record.put(ITEM_CONTEXT, null);
+		return record;
 	}
 
 	@Override

@@ -3,14 +3,12 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
-import fortscale.streaming.task.monitor.TaskMonitoringHelper;
-import org.apache.commons.lang.StringUtils;
+import fortscale.collection.ItemContext;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
@@ -55,11 +53,10 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public class LogFilterEvent extends AbstractCommand  {
 
-		public static final String MONITORING_SOURCE = "MONITORING_SOURCE";
+		public static final String ITEM_CONTEXT = "ITEM_CONTEXT";
 		public static final String ERROR_MESSAGE = "errorMessage";
 
-		@Autowired
-		TaskMonitoringHelper<String> taskMonitoringHelper;
+
 		private final String errorMessage;
 
 		public LogFilterEvent(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -73,15 +70,20 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 
 			// Extract the event source name (usually file name), or use empty string
 			// as default
-			String monitoringSource = "";
-			if (inputRecord.get(MONITORING_SOURCE) != null){
-				monitoringSource =  inputRecord.get(MONITORING_SOURCE).get(0).toString();
+			ItemContext monitoringSource=null;
+			if (inputRecord.get(ITEM_CONTEXT) != null){
+				monitoringSource =  (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
+				//If taskMonitorHelper configured - log the event. If not - ignore.
+				if (monitoringSource.getTaskMonitoringHelper()!=null && monitoringSource.getTaskMonitoringHelper().isMonitoredTask()){
+					String sourceName = monitoringSource.getSourceName();
+					if (sourceName == null){
+						sourceName = "";
+					}
+					monitoringSource.getTaskMonitoringHelper().countNewFilteredEvents(sourceName,this.errorMessage);
+				}
 			}
 
-			//If taskMonitorHelper configured - log the event. If not - ignore.
-			if (taskMonitoringHelper!=null && taskMonitoringHelper.isMonitoredTask()){
-				taskMonitoringHelper.countNewFilteredEvents(monitoringSource,this.errorMessage);
-			}
+
 
 			//Continue to process
 			return super.doProcess(inputRecord);

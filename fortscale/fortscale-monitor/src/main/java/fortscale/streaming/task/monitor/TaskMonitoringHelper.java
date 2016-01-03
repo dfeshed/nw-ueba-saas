@@ -46,7 +46,7 @@ public class TaskMonitoringHelper<T> {
     public static final String TOTAL_EVENTS_LABEL = "Total Events";
     public static final String NOT_FILTERED_EVENTS_LABEL = "Processed Event";
     public  static final String EVENTS_TYPE="EVENTS";
-    private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - Reason ";
+    private static final String FILTERED_EVENTS_PREFIX = "Filter Events Reason- ";
 
 
     private boolean isMonitoredTask;
