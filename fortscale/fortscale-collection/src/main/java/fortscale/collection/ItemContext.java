@@ -10,6 +10,9 @@ public class ItemContext {
     private String sourceName;
     private TaskMonitoringHelper<String> taskMonitoringHelper;
 
+    public ItemContext() {
+    }
+
     public ItemContext(String sourceName, TaskMonitoringHelper<String> taskMonitoringHelper) {
         this.sourceName = sourceName;
         this.taskMonitoringHelper = taskMonitoringHelper;

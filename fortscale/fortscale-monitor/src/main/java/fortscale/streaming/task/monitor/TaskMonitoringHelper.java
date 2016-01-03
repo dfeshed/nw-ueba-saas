@@ -7,7 +7,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -156,11 +157,11 @@ public class TaskMonitoringHelper<T> {
         if (CollectionUtils.isNotEmpty(stepsAndStatus)){
             int count=0;
             for (Pair<String, Steps> pair : stepsAndStatus){
-                if (Steps.SATARTED.equals(pair.getSecond())){
-                    jobMonitorReporter.startStep(monitorId, pair.getFirst(),count);
+                if (Steps.SATARTED.equals(pair.getValue())){
+                    jobMonitorReporter.startStep(monitorId, pair.getKey(),count);
                     count ++;
                 } else {
-                    jobMonitorReporter.finishStep(monitorId, pair.getFirst());
+                    jobMonitorReporter.finishStep(monitorId, pair.getKey());
                 }
             }
         }
@@ -170,7 +171,7 @@ public class TaskMonitoringHelper<T> {
         if (CollectionUtils.isNotEmpty(errors)){
             int count=0;
             for (Pair<String, String> error : errors){
-               jobMonitorReporter.error(monitorId,error.getFirst(), error.getSecond());
+               jobMonitorReporter.error(monitorId,error.getKey(), error.getValue());
             }
         }
     }
@@ -223,13 +224,13 @@ public class TaskMonitoringHelper<T> {
     }
 
     public void startStep(String name){
-        stepsAndStatus.add(new Pair<String, Steps>(name, Steps.SATARTED));
+        stepsAndStatus.add(new ImmutablePair<String, Steps>(name, Steps.SATARTED));
     }
     public void finishStep(String name){
-        stepsAndStatus.add(new Pair<String, Steps>(name, Steps.FINISHED));
+        stepsAndStatus.add(new ImmutablePair<String, Steps>(name, Steps.FINISHED));
     }
     public void error(String step, String excpetion){
-        errors.add(new Pair<String, String>(step,excpetion));
+        errors.add(new ImmutablePair<String, String>(step,excpetion));
     }
 
     private enum Steps{
