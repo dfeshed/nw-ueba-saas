@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.event.process;
 
+import fortscale.collection.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -104,9 +105,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 
-	@Override protected boolean processLine(String line, String fileName) throws IOException {
+	@Override protected boolean processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record rec = morphline.process(line,fileName);
+		Record rec = morphline.process(line,itemContext);
 		Record record = null;
 		if (rec==null)
 			return false;

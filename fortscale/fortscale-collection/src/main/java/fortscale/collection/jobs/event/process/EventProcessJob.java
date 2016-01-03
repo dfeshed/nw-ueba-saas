@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.ItemContext;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -29,7 +30,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -238,13 +238,22 @@ public class EventProcessJob implements Job {
 		Arrays.sort(files);
 		return files;
 	}
-	
-	
-	
+
+
+	/**
+	 * Iterate each line of the file and process each line.
+	 *
+	 * Pay attention - if override the method, make sure to set updateItemContext
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
 	protected boolean processFile(File file) throws IOException {
 
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
+		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
+
 			
 		try {
 			int lineCounter = 0;
@@ -253,7 +262,7 @@ public class EventProcessJob implements Job {
 
 				//count that new event trying to processed from specific file
 				taskMonitoringHelper.handleNewEvent(file.getName());
-				processLine(line,file.getName());
+				processLine(line,itemContext);
 			}
 			
 			// flush hadoop
@@ -280,9 +289,13 @@ public class EventProcessJob implements Job {
 		}
 	}
 
-	protected boolean processLine(String line, String fileName) throws IOException {
+
+
+	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record rec = morphline.process(line, fileName);
+
+		//I assume that this.itemContext updated once for each file.
+		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
 			return false;
@@ -313,7 +326,7 @@ public class EventProcessJob implements Job {
 			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
 
 			//If success - write the event to monitoring. filed event monitoing handled by monitoring
-			taskMonitoringHelper.handleUnFilteredEvents(fileName,timestamp);
+			taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
 			return true;
 		} else {
 			return false;

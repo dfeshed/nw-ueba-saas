@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.event.process;
 
+import fortscale.collection.ItemContext;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
@@ -48,9 +49,9 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	}
 	
 	@Override
-	protected boolean processLine(String line, String fileName) throws IOException {
+	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record record = morphline.process(line,fileName);
+		Record record = morphline.process(line,itemContext);
 		
 		// skip records that failed on parsing
 		if (record==null) 
