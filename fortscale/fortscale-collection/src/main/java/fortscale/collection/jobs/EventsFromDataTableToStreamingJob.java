@@ -154,7 +154,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
                     }
                 //metric based throttling
                 } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
-                    listenToMetrics(latestEpochTimeSent);
+                    synchronize(latestEpochTimeSent);
                 }
 
                 timestampCursor = nextTimestampCursor;
@@ -210,4 +210,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         }
     }
 
+    @Override public boolean synchronize(long latestEpochTimeSent) {
+        return metricsKafkaSynchronizer.synchronize(latestEpochTimeSent);
+    }
 }

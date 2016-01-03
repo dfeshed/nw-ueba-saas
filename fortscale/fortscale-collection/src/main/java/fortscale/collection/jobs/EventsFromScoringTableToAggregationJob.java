@@ -1,7 +1,7 @@
 package fortscale.collection.jobs;
 
+import fortscale.utils.kafka.KafkaBatchSender;
 import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -28,7 +28,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
     private int hoursToRun;
     private String dataSources;
     private DateTime startTime;
-    private BatchToSend batchToSend;
+    private KafkaBatchSender kafkaBatchSender;
 
     private void populateDataSourceToParametersMap(JobDataMap map, String securityDataSources)
             throws JobExecutionException {
@@ -56,7 +56,8 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
         getGenericJobParameters(map);
         populateDataSourceToParametersMap(map, dataSources);
-        batchToSend = new BatchToSend(jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
+        kafkaBatchSender = new KafkaBatchSender(metricsKafkaSynchronizer,
+                jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
                 jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER),
                 jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER));
     }
@@ -73,8 +74,8 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
             }
             startTime = startTime.plusHours(1);
         }
-        batchToSend.flushMessages();
-        batchToSend.shutDown();
+        kafkaBatchSender.flushMessages();
+        kafkaBatchSender.shutDown();
         finishStep();
     }
 
@@ -98,7 +99,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
                     json.put(DATA_SOURCE_FIELD, dataSource);
-                    batchToSend.send(json.toJSONString(JSONStyle.NO_COMPRESS),
+                    kafkaBatchSender.send(json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
                 timestampCursor = nextTimestampCursor;
@@ -109,72 +110,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
         }
     }
 
-    private class BatchToSend {
-
-        private Queue<Message> messages;
-        private int maxSize;
-        private KafkaEventsWriter streamWriter;
-        private String topic;
-        private String partitionKey;
-
-        public BatchToSend(int maxSize, String topic, String partitionKey) {
-            this.maxSize = maxSize;
-            this.topic = topic;
-            this.partitionKey = partitionKey;
-            messages = new LinkedList();
-            streamWriter = new KafkaEventsWriter(topic);
-        }
-
-        public void shutDown() {
-            try {
-                streamWriter.close();
-            } catch (Exception ex) {}
-        }
-
-        public void flushMessages() throws JobExecutionException {
-            logger.info("flushing {} messages", messages.size());
-            long latestEpochTimeSent = 0;
-            int messagesSent = 0;
-            for (Message message: messages) {
-                logger.debug("sending message {} to topic {} - {} ", messagesSent, topic, message.messageString);
-                try {
-                    streamWriter.send(partitionKey, message.messageString);
-                } catch (Exception ex) {
-                    logger.error("failed to send message to topic {}", topic);
-                    throw new JobExecutionException(ex);
-                }
-                logger.debug("{} messages sent", messagesSent++);
-                latestEpochTimeSent = message.epochTime;
-            }
-            if (latestEpochTimeSent > 0) {
-                logger.info("{} messages sent, waiting for last message time {}", messagesSent, latestEpochTimeSent);
-                listenToMetrics(latestEpochTimeSent);
-            }
-            logger.info("finished flushing, clearing queue");
-            messages.clear();
-        }
-
-        public void send(String messageStr, long epochTime)
-                throws JobExecutionException {
-            messages.add(new Message(messageStr, epochTime));
-            if (messages.size() < maxSize) {
-                return;
-            }
-            flushMessages();
-        }
-
-        private class Message {
-
-            private String messageString;
-            private long epochTime;
-
-            private Message(String messageString, long epochTime) {
-                this.messageString = messageString;
-                this.epochTime = epochTime;
-            }
-
-        }
-
+    @Override public boolean synchronize(long latestEpochTimeSent) {
+        return metricsKafkaSynchronizer.synchronize(latestEpochTimeSent);
     }
-
 }
