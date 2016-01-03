@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.MorphlineConfigService;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -48,6 +49,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	public final class EventsJoiner extends AbstractCommand {
+
 		
 		private List<String> keys;
 		private List<String> mergeFields;
@@ -59,6 +61,9 @@ public class EventsJoinerBuilder implements CommandBuilder {
         private boolean processRecord;
 		private Long cacheRecordTtl;
 		private long minimalRecordTs = Long.MAX_VALUE;
+
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
 
 		public EventsJoiner(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -107,8 +112,11 @@ public class EventsJoinerBuilder implements CommandBuilder {
 				// mark command as successful, do not pass the record
 				// to chained child command to halt execution
 
-                if(processRecord)
-                    return super.doProcess(inputRecord);
+                if(processRecord) {
+					return super.doProcess(inputRecord);
+				}
+				//Drop record
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "Saved to cache" );
 				return true;
 			} else {
 				// check if the time delta between the events is within the 
@@ -121,8 +129,10 @@ public class EventsJoinerBuilder implements CommandBuilder {
 					// to a new session
 					cache.store(key, inputRecord);
 
-                    if(processRecord)
-                        return super.doProcess(inputRecord);
+                    if(processRecord) {
+						return super.doProcess(inputRecord);
+					}
+					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "Delta greater then threshold" );
 					return true;
 				} else {
 					// get the fields to merge from the previous record and put them 

@@ -286,4 +286,6 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="localOverride" value="true" />
 	</bean>
+
+	<bean class="fortscale.collection.monitoring.MorphlineCommandMonitoringHelper"/>
 </beans>

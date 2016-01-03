@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -14,6 +15,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import com.typesafe.config.Config;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Command that succeeds if all field values of the given named fields are not
@@ -41,6 +43,9 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 		private final List<String> filterFields;
 		private final String renderedConfig; // cached value
 
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
 		public EmptyObjectFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -57,6 +62,8 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 				if (fieldValues.isEmpty()) {
 					// drop record
 					logger.debug("EmptyObjectFilter command droped record because {} does not contains any value. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
+					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+							"EmptyObjectFilter command droped record because %s does not contains any value", field);
 					return true;
 				}
 				boolean isAllFieldValueEmpty = true;

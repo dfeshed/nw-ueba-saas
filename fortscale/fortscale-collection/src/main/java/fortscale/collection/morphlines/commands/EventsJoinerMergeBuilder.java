@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.utils.time.TimestampUtils;
 import org.kitesdk.morphline.api.Command;
@@ -9,6 +10,7 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -49,6 +51,9 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
         private long timeToCacheMiliSec;
         private String timeField;
 
+		@Autowired
+		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
 		public EventsJoinerMerge(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
@@ -70,6 +75,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "No Previous Event and dropWhenNoMatch is true");
 				return true;
 			}
 

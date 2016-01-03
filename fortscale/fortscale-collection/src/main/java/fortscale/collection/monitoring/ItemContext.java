@@ -1,4 +1,4 @@
-package fortscale.collection;
+package fortscale.collection.monitoring;
 
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 

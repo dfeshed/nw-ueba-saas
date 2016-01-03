@@ -8,7 +8,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -33,8 +32,8 @@ public class TaskMonitoringHelper<T> {
     @Autowired
     private SpringPropertiesUtil messages;
 
-    private List<Pair<String, Steps>> stepsAndStatus = new ArrayList<>();
-    private List<Pair<String,String>> errors = new ArrayList<>();
+    private List<ImmutablePair<String, Steps>> stepsAndStatus = new ArrayList<>();
+    private List<ImmutablePair<String,String>> errors = new ArrayList<>();
 
 
     //Node is the task for specific data source and last state
@@ -156,12 +155,12 @@ public class TaskMonitoringHelper<T> {
     private void saveMonitorSteps(String monitorId){
         if (CollectionUtils.isNotEmpty(stepsAndStatus)){
             int count=0;
-            for (Pair<String, Steps> pair : stepsAndStatus){
-                if (Steps.SATARTED.equals(pair.getValue())){
-                    jobMonitorReporter.startStep(monitorId, pair.getKey(),count);
+            for (ImmutablePair<String, Steps> ImmutablePair : stepsAndStatus){
+                if (Steps.SATARTED.equals(ImmutablePair.getValue())){
+                    jobMonitorReporter.startStep(monitorId, ImmutablePair.getKey(),count);
                     count ++;
                 } else {
-                    jobMonitorReporter.finishStep(monitorId, pair.getKey());
+                    jobMonitorReporter.finishStep(monitorId, ImmutablePair.getKey());
                 }
             }
         }
@@ -170,7 +169,7 @@ public class TaskMonitoringHelper<T> {
     private void saveMonitorErrors(String monitorId){
         if (CollectionUtils.isNotEmpty(errors)){
             int count=0;
-            for (Pair<String, String> error : errors){
+            for (ImmutablePair<String, String> error : errors){
                jobMonitorReporter.error(monitorId,error.getKey(), error.getValue());
             }
         }

@@ -3,7 +3,7 @@ package fortscale.collection.morphlines;
 import java.io.Closeable;
 import java.io.IOException;
 
-import fortscale.collection.ItemContext;
+import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
