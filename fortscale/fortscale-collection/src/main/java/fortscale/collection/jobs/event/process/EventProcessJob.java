@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.ItemContext;
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;

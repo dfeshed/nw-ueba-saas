@@ -1,11 +1,9 @@
 package fortscale.collection.jobs.event.process;
 
-import fortscale.collection.ItemContext;
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
-import fortscale.services.ipresolving.IseResolver;
 import fortscale.services.ipresolving.PxGridResolver;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
