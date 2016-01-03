@@ -9,11 +9,9 @@ public interface IUserTable {
 	public String getSecUsernames();
 	public String getSshUsernames();
 	public String getVpnUsernames();
-	public String getAmtUsernames();
 	public Double getSecScore();
 	public Double getSshScore();
 	public Double getVpnScore();
-	public Double getAmtScore();
 	public Double getTotalScore();
 	public String getDisplayName();
 	public String getJobTitle();
@@ -49,7 +47,6 @@ public interface IUserTable {
 	public Long getLastActivityTime();
 	public Long getSshLastActivityTime();
 	public Long getVpnLastActivityTime();
-	public Long getAmtLastActivityTime();
 	public Long getLoginLastActivityTime();
 	public Boolean getIsUserAccountService();
 	public Boolean getIsUserAdministrator();

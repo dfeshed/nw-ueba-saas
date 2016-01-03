@@ -10,11 +10,6 @@
 
 	<import resource="classpath*:META-INF/spring/streaming-context.xml" />
 
-	<!-- Configure filters objects for different datasource and last_state -->
-	<bean id="amtScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
-		<constructor-arg name="eventScoreField" value="eventscore"/>
-		<constructor-arg name="threshold" value="50"/>
-	</bean>
 
 	<bean id="4769ScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
 		<constructor-arg name="eventScoreField" value="eventscore"/>
