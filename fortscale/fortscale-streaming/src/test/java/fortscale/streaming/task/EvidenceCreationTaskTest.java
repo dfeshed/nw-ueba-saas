@@ -1,18 +1,10 @@
 package fortscale.streaming.task;
 
-import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.domain.core.dao.EvidencesRepository;
-import fortscale.entity.event.EntityEventConfService;
-import fortscale.services.EvidencesService;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -32,25 +24,6 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
     //expected messages for output topic
     private String outEvent1 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451144083000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 15:34:43\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451144083000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":60,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451144083000}";
     private String outEvent2 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451146702000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 16:18:22\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451146702000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":70,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451146702000}";
-
-//    @Mock
-//    @Autowired
-//    private MongoDbUtilService mongoDbUtilService;
-//    @Autowired
-//    @Mock
-//    private EvidencesRepository evidencesRepository;
-//    @Autowired
-//    @Mock
-//    private EvidencesService evidencesService;
-//    @Autowired
-//    @Mock
-//    private DataEntitiesConfig DataEntitiesConfig;
-//    @Mock
-//    @Autowired
-//    MongoTemplate mongoTemplate;
-//    @Mock
-//    @Autowired
-//    EntityEventConfService entityEventConfService;
 
     @Before
     public void setup() throws IOException {
@@ -76,20 +49,12 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
 
         startJob();
 
-        // Validate that restored is empty.
-//        assertEquals(0, task.initFinished().getCount());
-//        assertEquals(0, task.restored().size());
-//        assertEquals(0, task.received().size());
 
         // Send some messages to input stream.
-//        Thread.sleep(120000);
         send(event1);
         send(event2);
-        //wait for events to be sent
-        Thread.sleep(10000);
 
         // Validate that messages appear in store stream.
-//        List<String> messages = readAll(outputTopic, 5, "testShouldStartTaskForFirstTime");
         List<String> messages = readMessages(2L, outputTopic);
 
         org.json.JSONObject jsonInEvent1 = new org.json.JSONObject(messages.get(0));

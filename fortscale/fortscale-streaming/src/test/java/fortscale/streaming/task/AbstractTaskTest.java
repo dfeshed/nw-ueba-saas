@@ -1,14 +1,12 @@
 package fortscale.streaming.task;
 
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import kafka.admin.TopicCommand;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
 import kafka.javaapi.FetchResponse;
-import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.producer.Producer;
 import kafka.message.MessageAndOffset;
@@ -21,11 +19,18 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.samza.config.MapConfig;
+import org.apache.samza.container.TaskName;
 import org.apache.samza.job.ApplicationStatus;
 import org.apache.samza.job.StreamJob;
 import org.apache.samza.job.StreamJobFactory;
 import org.apache.samza.job.local.ThreadJobFactory;
+import org.apache.samza.metrics.MetricsRegistry;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.StreamTask;
+import org.apache.samza.task.TaskContext;
 import org.hsqldb.lib.StringUtil;
 
 import java.io.FileInputStream;
@@ -34,11 +39,9 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Created by rans on 29/12/15.
@@ -53,22 +56,22 @@ public class AbstractTaskTest {
     protected EmbeddedZookeeper zkServer;
     protected ZkClient zkClient;
     protected KafkaServer kafkaServer;
-    protected ConsumerConnector consumer;
     protected SimpleConsumer simpleConsumer;
     protected Producer<String, String> producer;
     protected StreamJobFactory jobFactory;
     protected Map<String,String> jobConfig;
     protected StreamJob job;
-    protected StreamTask task;
+//    protected StreamTask task;
     protected int brokerPort;
     protected String clientName;
 
+    protected KeyValueStore keyValueStore;
     /**
      * Perform initialization of Samza, Kafka, etc.
      * @param propertiesPath
      * @throws IOException
      */
-    protected void setupBefore(String propertiesPath, String springContextFile) throws IOException {
+    protected void setupBefore(String propertiesPath, String springContextFile) throws IOException{
         // setup Zookeeper
         zkConnect = TestZKUtils.zookeeperConnect();
         zkServer = new EmbeddedZookeeper(zkConnect);
@@ -93,7 +96,6 @@ public class AbstractTaskTest {
 
         // setup simple consumer
         Properties consumerProperties = TestUtils.createConsumerProperties(zkServer.connectString(), "group0", "consumer0", -1);
-        consumer = kafka.consumer.Consumer.createJavaConsumerConnector(new ConsumerConfig(consumerProperties));
         clientName = "Client_" + inputTopic + "_0";
         simpleConsumer = new SimpleConsumer("localhost", brokerPort, 100000, 64 * 1024, clientName);
 
@@ -111,7 +113,6 @@ public class AbstractTaskTest {
      * Clean up when job finishes
      */
     protected void cleanupAfter(){
-        consumer.shutdown();
         if (simpleConsumer != null) simpleConsumer.close();
         producer.close();
         kafkaServer.shutdown();
@@ -125,7 +126,7 @@ public class AbstractTaskTest {
      * @throws IOException
      */
     protected void loadProperties(String propertiesPath, String springContextFile) throws IOException {
-        jobConfig = new HashedMap();
+        jobConfig = new HashMap<String, String>();
         Properties prop = new Properties();
         prop.load(new FileInputStream(propertiesPath));
         Enumeration e = prop.propertyNames();

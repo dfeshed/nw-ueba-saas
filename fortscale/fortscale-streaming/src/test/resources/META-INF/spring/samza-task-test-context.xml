@@ -2,11 +2,11 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:mockito="http://www.mockito.org/spring/mockito"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                        http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+                        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
 
 
@@ -14,35 +14,45 @@
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
-    <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-services-entities-context.xml" />
     <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+
+    <bean id="adUserParser" class="fortscale.utils.actdir.ADParser" />
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <constructor-arg value="256" />
+        <property name="iterations" value="1000" />
+    </bean>
+    <bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
+
 
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming,fortscale.services" />
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming,fortscale.services,fortscale.monitor" />
 
+    <bean name="fongo" class="com.github.fakemongo.Fongo">
+        <constructor-arg value="InMemoryMongo" />
+    </bean>
+    <bean id="mongo" factory-bean="fongo" factory-method="getMongo" />
+    <mongo:db-factory id="mongoDbFactory" mongo-ref="mongo" />
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+    </bean>
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
-
     <bean id="evidencesService" class="fortscale.services.impl.EvidencesServiceImpl"/>
-
     <bean id="userSupportingInformationService" class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
-
     <!-- User service and user service dependencies -->
-
     <bean id="userService" class="fortscale.services.impl.UserServiceImpl"/>
-
     <bean id="usernameService" class="fortscale.services.impl.UsernameService"/>
-
     <bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
     <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
     <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
     <bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
+    <bean id="userMachineDAO" class="fortscale.domain.ad.dao.impl.UserMachineDAOImpl"/>
+    <bean id="loginDAO" class="fortscale.domain.fe.dao.impl.LoginDAOImpl"/>
+    <bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>
 
     <!-- group by tags service cache that uses memory based implementation -->
     <bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
