@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -66,7 +67,7 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 			// mark command as successful, do not pass the record
 			// to chained child command to halt execution
 			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-					"Event Joiner Store");
+					CollectionMessages.EVENT_JOINER_STORE);
 			return true;
 		}
 		

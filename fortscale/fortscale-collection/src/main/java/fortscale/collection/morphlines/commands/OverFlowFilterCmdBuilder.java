@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -98,7 +99,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 			if (counter > threshold) {
 				// drop record
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-						"Overflow threshold was reached");
+						CollectionMessages.OVERFLOW_THRESHOLD_WAS_REACHED);
 				return true;
 			}
 			return super.doProcess(inputRecord);

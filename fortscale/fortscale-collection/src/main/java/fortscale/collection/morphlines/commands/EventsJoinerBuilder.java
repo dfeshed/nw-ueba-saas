@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.MorphlineConfigService;
 import org.kitesdk.morphline.api.Command;
@@ -116,7 +117,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 					return super.doProcess(inputRecord);
 				}
 				//Drop record
-				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "Saved to cache" );
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
 				return true;
 			} else {
 				// check if the time delta between the events is within the 
@@ -132,7 +133,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
                     if(processRecord) {
 						return super.doProcess(inputRecord);
 					}
-					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "Delta greater then threshold" );
+					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.DELTA_GREATER_THEN_THRESHOLD);
 					return true;
 				} else {
 					// get the fields to merge from the previous record and put them 

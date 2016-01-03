@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * empty string and fails otherwise.
  */
 public class EmptyObjectFilterBuilder implements CommandBuilder {
+
 	private static Logger logger = Logger.getLogger(EmptyObjectFilterBuilder.class);
 
 	@Override
@@ -63,7 +65,7 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 					// drop record
 					logger.debug("EmptyObjectFilter command droped record because {} does not contains any value. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-							"EmptyObjectFilter command droped record because %s does not contains any value", field);
+							CollectionMessages.NOT_CONTAINS_ANY_VALUE, field);
 					return true;
 				}
 				boolean isAllFieldValueEmpty = true;
@@ -85,7 +87,7 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 					// drop record
 					logger.debug("EmptyObjectFilter command droped record because {} contains only empty values. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-							"EmptyObjectFilter command droped record because {} contains only empty values", field);
+							CollectionMessages.CONTAINS_ONLY_EMPTY_VALUES, field);
 					return true;
 				}
 			}

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -63,13 +64,13 @@ public class RegexMatchBuilder implements CommandBuilder {
 			
 			if (dropOnMatch && match) {
 				commandMonitoringHelper.addFilteredEventToMonitoring(record,
-						"Filtered on field % matched", fieldName);
+						CollectionMessages.FILTERED_ON_FIELD_MATCHED, fieldName);
 				return true;
 			}
 			
 			if (dropOnMissMatch && !match) {
 				commandMonitoringHelper.addFilteredEventToMonitoring(record,
-						"Filtered on field % not matched", fieldName);
+						CollectionMessages.FILTERED_ON_FIELD_NOT_MATCHED, fieldName);
 				return true;
 			}
 			

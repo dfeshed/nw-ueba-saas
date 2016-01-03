@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.utils.time.TimestampUtils;
@@ -42,7 +43,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	public static final class EventsJoinerMerge extends AbstractCommand {
-		
+
 		private List<String> keys;
 		private List<String> mergeFields;
 		private EventsJoinerCache cache;
@@ -75,7 +76,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
-				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, "No Previous Event and dropWhenNoMatch is true");
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.NO_PREVIOUS_EVENT_AND_DROP_WHEN_NO_MATCH_IS_TRUE);
 				return true;
 			}
 

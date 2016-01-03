@@ -9,8 +9,13 @@ public class MorphlineCommandMonitoringHelper {
 
     public static final String ITEM_CONTEXT = "ITEM_CONTEXT";
 
+    public void addFilteredEventToMonitoring(Record inputRecord, CollectionMessages errorMessage, String... args){
+       addFilteredEventToMonitoring(inputRecord, errorMessage.getMessageId(),args);
+
+    }
+
     public void addFilteredEventToMonitoring(Record inputRecord, String errorMessage, String... args){
-         // Extract the event source name (usually file name), or use empty string
+        // Extract the event source name (usually file name), or use empty string
         // as default
         ItemContext monitoringSource=null;
         if (inputRecord.get(ITEM_CONTEXT) != null){

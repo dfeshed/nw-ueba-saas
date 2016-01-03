@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -24,7 +25,7 @@ import fortscale.services.computer.filtering.FilterMachinesService;
 
 public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
-    @Override
+	@Override
     public Command build(Config config, Command parent, Command child,
             MorphlineContext context) {
         return new FilterOUMachine(this, config, parent, child, context);
@@ -90,7 +91,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         		}else{
         			logger.error("could not match hostname to the regex {} : {}",regex, computerName);
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-							"Could not match hostname to the regex %s", regex);
+							CollectionMessages.COULD_NOT_MATCH_HOSTNAME_TO_THE_REGEX, regex);
         			return true;
         		}
         	} 
@@ -101,7 +102,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         	boolean filter = service.toFilter(computerName);
         	if (filter){
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-						"Hostname in filter list");
+						CollectionMessages.HOSTNAME_IN_FILTER_LIST);
         		return true;
         	}else{
         		return super.doProcess(inputRecord);

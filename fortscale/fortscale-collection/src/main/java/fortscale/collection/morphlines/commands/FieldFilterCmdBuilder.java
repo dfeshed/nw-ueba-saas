@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -26,7 +27,7 @@ import fortscale.collection.morphlines.RegexMatcherFileList;
 import fortscale.utils.logging.Logger;
 
 public class FieldFilterCmdBuilder implements CommandBuilder{
-	private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
+    private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
 	
 	@Override
     public Collection<String> getNames() {
@@ -85,7 +86,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
                 commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
-                        "FieldFilter command droped record because %s is in the black list of field %s", fieldContent, fieldName);
+                        CollectionMessages.BLACK_LIST_FILTER, fieldContent, fieldName);
 				return true;
             }
 
