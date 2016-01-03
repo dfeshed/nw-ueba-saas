@@ -16,12 +16,16 @@ You will need the following things properly installed on your computer:
 * [Bower](http://bower.io/)
 * [Ember CLI](http://www.ember-cli.com/)
 
-Once those are installed, you must setup the Node and Bower dependencies for both EmberJS projects:
+Once those are installed, you must setup the Node and Bower dependencies for the 3 EmberJS projects in the `client` subdirectory; namely `component-lib`, `style-guide` and `sa`:
+
 ```
-$ cd client/sa
+$ cd client/component-lib
 $ npm install
 $ bower install
-$ cd lib/dashboard
+$ cd ../style-guide
+$ npm install
+$ bower install
+$ cd ../sa
 $ npm install
 $ bower install
 ```
