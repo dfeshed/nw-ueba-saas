@@ -1,12 +1,13 @@
 package fortscale.aggregation.feature.functions;
 
+import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.FeatureValue;
+import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,37 +15,35 @@ import java.util.Map;
 public class AggrFeatureValue implements Serializable, FeatureValue {
 	private static final long serialVersionUID = 1L;
 
+
 	protected final static String AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS = "total";
 	public static final String FEATURE_VALUE_TYPE = "aggr_feature_value";
 
 	private Object value;
 	private Map<String, Object> additionalInformationMap;
 
-    @JsonCreator
-    public AggrFeatureValue(@JsonProperty("value") Object value){
-        this.value = value;
-    }
-	
+	public AggrFeatureValue(){}
+
 	public AggrFeatureValue(Object value, Long total){
 		this.value = value;
 		setTotal(total);
 	}
-	
+
 	public void setTotal(Long total){
 		putAdditionalInformation(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS, total);
 	}
-	
+
 	public Long getTotal(){
-		return (Long) additionalInformationMap.get(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS);
+		return ConversionUtils.convertToLong( additionalInformationMap.get(AGGR_FEATURE_TOTAL_NUMBER_OF_EVENTS) );
 	}
-	
+
 	public void putAdditionalInformation (String key, Object value){
 		if(additionalInformationMap == null){
 			additionalInformationMap = new HashMap<String, Object>();
 		}
 		additionalInformationMap.put(key, value);
 	}
-	
+
 	public Object getAdditionalInformation (String key){
 		return additionalInformationMap == null ? null : additionalInformationMap.get(key);
 	}
@@ -65,7 +64,7 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 			Map<String, Object> additionalInformationMap) {
 		this.additionalInformationMap = additionalInformationMap;
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
