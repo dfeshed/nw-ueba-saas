@@ -272,7 +272,7 @@ public class CleanJob extends FortscaleJob {
 	private boolean checkAndStopAllRelevantServices() {
 		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName, true);
 		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName, true);
-		boolean kafkaServiceStartedSuccess = checkAndStopService(kafkaServiceName, false);
+		boolean kafkaServiceStartedSuccess = checkAndStopService(kafkaServiceName, true);
 		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStartedSuccess;
 	}
 

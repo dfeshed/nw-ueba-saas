@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.ml.model.Model;
 
+import javax.persistence.Transient;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -24,8 +25,10 @@ public class CategoryRarityModel implements Model {
 	private double[] buckets;
 	private int totalEvents;
 	@JsonIgnore
+	@Transient
 	private int minEvents;
 	@JsonIgnore
+	@Transient
 	private int maxNumOfRareFeatures;
 
 	public CategoryRarityModel(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<Integer, Double> occurrencesToNumOfFeatures) {

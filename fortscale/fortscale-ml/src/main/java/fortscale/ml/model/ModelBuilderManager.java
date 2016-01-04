@@ -9,6 +9,7 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -67,7 +68,16 @@ public class ModelBuilderManager {
         long numOfFailures = 0;
 
         for (String contextId : contextIds) {
-            if (build(listener, sessionId, contextId, currentEndTime)) {
+            // Run retriever, builder and store steps
+            ModelBuildingStatus status = process(sessionId, contextId, currentEndTime);
+
+            // If it exists, inform listener about the results
+            if (listener != null) {
+                listener.modelBuildingStatus(modelConf.getName(), sessionId, contextId, currentEndTime, status);
+            }
+
+            // Update metrics
+            if (status.equals(ModelBuildingStatus.SUCCESS)) {
                 numOfSuccesses++;
             } else {
                 numOfFailures++;
@@ -75,32 +85,40 @@ public class ModelBuilderManager {
         }
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
-                modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
+                modelConf.getName(), sessionId, TimeUtils.getUtcFormat(currentEndTime), numOfSuccesses, numOfFailures);
     }
 
-    private boolean build(IModelBuildingListener listener, String sessionId, String contextId, Date endTime) {
-        ModelBuildingStatus status = ModelBuildingStatus.SUCCESS;
+    private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
+        Object modelBuilderData;
+        Model model;
 
-        Object modelBuilderData = dataRetriever.retrieve(contextId, endTime);
+        // Retriever
+        try {
+            modelBuilderData = dataRetriever.retrieve(contextId, endTime);
+        } catch (Exception e) {
+            modelBuilderData = null;
+        }
         if (modelBuilderData == null) {
-            status = ModelBuildingStatus.RETRIEVER_FAILURE;
-        } else {
-            Model model = modelBuilder.build(modelBuilderData);
-            if (model == null) {
-                status = ModelBuildingStatus.BUILDER_FAILURE;
-            } else {
-                try {
-                    modelStore.save(modelConf, sessionId, contextId, model, endTime);
-                } catch (Exception e) {
-                    status = ModelBuildingStatus.STORE_FAILURE;
-                }
-            }
+            return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
 
-        if (listener != null) {
-            listener.modelBuildingStatus(modelConf.getName(), sessionId, contextId, endTime, status);
+        // Builder
+        try {
+            model = modelBuilder.build(modelBuilderData);
+        } catch (Exception e) {
+            model = null;
+        }
+        if (model == null) {
+            return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
-        return status.equals(ModelBuildingStatus.SUCCESS);
+        // Store
+        try {
+            modelStore.save(modelConf, sessionId, contextId, model, endTime);
+        } catch (Exception e) {
+            return ModelBuildingStatus.STORE_FAILURE;
+        }
+
+        return ModelBuildingStatus.SUCCESS;
     }
 }

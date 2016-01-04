@@ -30,6 +30,48 @@
       }
     ]
   },
+  "ScoredDataToBucketCreation": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "aggr_%%%prefix@@@date:::startTime###FeatureBucketMetadata@@@date:::endTime"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "aggr_@@@prefix###feature_buckets_store"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###metrics"
+      }
+    ]
+  },
+  "AggregatedEventsToEntityEvents": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix###entity_event_%%%prefix###streaming_models@@@regex:::modelName!!!aggr_event_"
+      }
+    ],
+    "otherSteps": [
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "entity_events_store"
+      },
+      {
+        "technology": "KAFKA",
+        "strategy": "DELETE",
+        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###fortscale-entity-event###metrics"
+      }
+    ]
+  },
   "ScoredDataToSMARTEvents": {
     "timeBasedSteps": [
       {
@@ -129,6 +171,18 @@
     ]
   },
   "AfterEnriched": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",
@@ -153,6 +207,18 @@
     ]
   },
   "AfterScored": {
+    "timeBasedSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
+      }
+    ],
     "otherSteps": [
       {
         "technology": "MONGO",

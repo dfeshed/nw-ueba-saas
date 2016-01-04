@@ -76,9 +76,9 @@ public class WameTest {
 								"2015-12-22T15:04:24.000+0000,4724,IDAN-DEV,Idan.Admin.B,TEST-DEV,usr1"
 						),
 						$(
-								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,IDAN-DEV,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,TEST-DEV,,Password Reset",
+								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,,,Password Reset",
 								(String)null,
-								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,IDAN-DEV,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,TEST-DEV,,Password Reset"
+								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,,,,,,,,,,,,,,,,,,,,,,,,,Password Reset,SUCCESS,,,,,,,,Password Reset"
 						)
 				)
 

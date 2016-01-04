@@ -38,7 +38,7 @@ public class StreamingAggrTaskContextTestInt {
 		configMap.put("fortscale.feature.buckets.store.name", "feature_buckets_store");
 		MapConfig mapConfig = new MapConfig(configMap);
 		@SuppressWarnings("unused")
-		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig));
+		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig), true);
 	}
 	
 	private static class TaskContextImpl implements TaskContext{

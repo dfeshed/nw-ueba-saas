@@ -19,7 +19,7 @@ public class TestUtils {
     static Integer currentYear;
     static String year;
 
-    static void init(String dateFormat, String timezone){
+    public static void init(String dateFormat, String timezone){
         tz = TimeZone.getTimeZone(timezone);
         calendar.setTimeZone(tz);
         currentYear = calendar.get(Calendar.YEAR);
@@ -27,8 +27,7 @@ public class TestUtils {
         sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         sdf.setTimeZone(tz);
     }
-    @SuppressWarnings("deprecation")
-	static Date constuctDate(String inDate){
+    @SuppressWarnings("deprecation") public static Date constuctDate(String inDate){
         try {
             Date parsedDate = sdf.parse(year + " " + inDate);
             Date currentDate = calendar.getTime();
@@ -43,10 +42,10 @@ public class TestUtils {
         }
     }
 
-    static String getOutputDate(Date date){
+    public static String getOutputDate(Date date){
         return getOutputDate(date, "yyyy-MM-dd HH:mm:ss");
     }
-    static String getOutputDate(Date date, String dateFormat){
+    public static String getOutputDate(Date date, String dateFormat){
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
         Calendar cal = Calendar.getInstance();
@@ -55,7 +54,7 @@ public class TestUtils {
         return formatter.format(date);
     }
 
-    static Long getUnixDate(Date date){
+    public static Long getUnixDate(Date date){
         return date.getTime() / 1000;
     }
 }

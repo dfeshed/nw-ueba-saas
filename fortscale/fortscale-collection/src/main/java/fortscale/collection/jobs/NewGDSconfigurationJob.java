@@ -1,10 +1,13 @@
 package fortscale.collection.jobs;
 
+import fortscale.services.configuration.ConfigurationParam;
+import fortscale.services.configuration.ConfigurationService;
+import fortscale.services.configuration.Impl.*;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
+
 
 import java.io.*;
 import java.util.LinkedHashMap;
@@ -17,40 +20,57 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(NewGDSconfigurationJob.class);
 
-	private String dataSourceName;
-	private String dataFieldsCsv;
-	private String enrichFieldsCsv;
-	private String scoreFieldsCsv;
-	private Boolean sourceIpResolvingFlag;
-	private Boolean targetIpResolvingFlag;
-	private Boolean sourceMachineNameFlag;
-	private Boolean targetMachineNameFlag;
-    private Boolean sourceIpFlag;
-    private Boolean targetIpFlag;
-	private String usernameFieldName;
-	private String lastState;
-	private Boolean sourceGeoLocatedFlag;
-	private Boolean tartgetGeoLocatedFlag;
-    private Boolean sourceFlag;
-    private Boolean targetFlag;
-	private String root;
-	private String collectionPath;
-	private String streamingPath;
-
-	private Map<String,String> dataFelds;
-	private Map<String,String> enrichFelds;
-	private Map<String,String> scoreFelds;
-
-	private static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
-
-
     @Value("${fortscale.data.source}")
     private String currentDataSources;
 
+	private ConfigurationParam dataSourceNameParam;
+	private ConfigurationParam dataSourceType;
+	private ConfigurationParam dataFelds;
+	private ConfigurationParam enrichFelds;
+	private ConfigurationParam scoreFelds;
+    private Map<String,ConfigurationParam> paramsMap = new LinkedHashMap<>();
+	private Map<String,String> additionalFieldsMap;
+	private Map<String,String> additionalScoreFieldsMap;
+	private Boolean executionResult = true;
+	private ConfigurationService initConfigurationService;
+	private ConfigurationService userNormalizationTaskService;
+	private ConfigurationService ipResolvingTaskService;
+	private ConfigurationService computerTaggingTaskService;
+	private ConfigurationService geoLocationTaskService;
+	private ConfigurationService userMongoUpdateTaskService;
+    private ConfigurationService hdfsTaskService;
+	private String dataSourceName;
 
-    @Override
+
+	//TODO - Generate this auto from the entities  properties
+	private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+	private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE";
+	private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
+	private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
+	private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
+	private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
+
+
+
+
+
+
+
+
+	@Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.debug("Initializing Configuration GDS Job");
+		additionalFieldsMap = new LinkedHashMap<>();
+		additionalScoreFieldsMap = new LinkedHashMap<>();
+        ipResolvingTaskService = new IpResolvingTaskConfiguration();
+        initConfigurationService = new InitPartConfiguration();
+        userNormalizationTaskService = new UserNormalizationTaskConfiguration();
+        computerTaggingTaskService = new ComputerTaggingClassConfiguration();
+        geoLocationTaskService = new GeoLocationConfiguration();
+        userMongoUpdateTaskService = new UserMongoUpdateConfiguration();
+        hdfsTaskService = new HDFSWriteTaskConfiguration();
+
 
         logger.debug("Job Initialized");
     }
@@ -62,27 +82,19 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		System.out.println("Please enter the new data source name: ");
-		this.dataSourceName = br.readLine();
+		String dataSourceNameString = br.readLine();
+		this.dataSourceNameParam = new ConfigurationParam("dataSourceName",false,dataSourceNameString);
+		dataSourceName = this.dataSourceNameParam.getParamValue();
 
-		this.dataFelds = new LinkedHashMap<>();
-		this.enrichFelds = new LinkedHashMap<>();
-		this.scoreFelds = new LinkedHashMap<>();
-		sourceGeoLocatedFlag=false;
-		tartgetGeoLocatedFlag=false;
-		sourceIpResolvingFlag=false;
-		targetIpResolvingFlag=false;
-		sourceMachineNameFlag=false;
-		targetMachineNameFlag=false;
-		sourceIpFlag=false;
-		targetIpFlag=false;
-        sourceFlag=false;
-        targetFlag=false;
-		dataFieldsCsv="";
-		enrichFieldsCsv="";
-		scoreFieldsCsv="";
-		root = System.getProperty("user.home");
-		collectionPath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/";
-		streamingPath = root+"/fortscale/streaming/";
+
+		System.out.println(String.format("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ",dataSourceName));
+        System.out.println(String.format("* - meaning mandatory field ? -meaning optioinal field: ",dataSourceName));
+		System.out.println("         base                    - user* , time*  ");
+		System.out.println("         access_event            - user* , time*, source? (resolving,geo location)?  ");
+		System.out.println("         auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
+		System.out.println("         customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
+		String dataSourceTypeString = br.readLine();
+		this.dataSourceType = new ConfigurationParam("dataSourceType",false,dataSourceTypeString);
 
 
 		System.out.println("Do you want to configure the schema part (y/n)?");
@@ -109,645 +121,217 @@ public class NewGDSconfigurationJob extends FortscaleJob {
      * This section will configure the Init configuration (The part that support the schema (HDFS paths and impala tables)
      * @param br - Will hold the scanner for tracing the user input
      */
-    public void initPartConfiguration(BufferedReader br){
+    public Boolean initPartConfiguration(BufferedReader br) throws Exception {
 
-        File collectionOverridingFile = new File(collectionPath+"resources/fortscale-collection-overriding.properties");
-        FileWriter collectionOverridingfileWriter=null;
-		File streamingOverridingFile = new File (streamingPath+"config/fortscale-overriding-streaming.properties");
-		FileWriter streamingOverridingfileWriter=null;
-		String brResult="";
-		String showMessage="";
+		String additionalFieldsCSV="";
+		String additionalScoreFieldsCSV="";
+		String result = "";
+		String line ="";
+
+		paramsMap.put(this.dataSourceNameParam.getParamName(),this.dataSourceNameParam);
+		paramsMap.put(this.dataSourceType.getParamName(),this.dataSourceType);
+        paramsMap.put("dataSourceLists", new ConfigurationParam("dataSourceLists",false,currentDataSources));
+
+
+		//Additional Fields
+		System.out.println(String.format("Does %s data source have additional fields (y/n)",dataSourceName));
+		result = br.readLine();
+		if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"))
+		{
+			additionalFieldsCSV=",";
+			System.out.println(String.format("Please enter %s data source additional fields csv style  (i.e url STRING,application STRING  etc): ",dataSourceName));
+			additionalFieldsCSV += br.readLine();
+			//spilitCSVtoMap(additionalFieldsCSV,additionalFieldsMap);
+
+			System.out.println(String.format("Does %s data source have additional score fields (y/n)",dataSourceName));
+			result = br.readLine();
+			if(result.toLowerCase().equals("y") || result.toLowerCase().equals("yes")) {
+				additionalScoreFieldsCSV=",";
+				System.out.println(String.format("Please enter %s data source additional score fields csv style  (i.e url_score STRING,application_score STRING  etc): ",dataSourceName));
+				additionalScoreFieldsCSV += br.readLine();
+				//spilitCSVtoMap(additionalScoreFieldsCSV,additionalScoreFieldsMap);
+			}
+		}
+
+		switch(dataSourceType.getParamValue())
+		{
+			case "base":
+			{
+				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,BASE_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,BASE_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,BASE_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",false,""));
+				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
+			}
+
+			case "access_event":
+			{
+				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+","+SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+
+				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
+
+
+			}
+			case "auth_event":
+			{
+				paramsMap.put("dataFields", new ConfigurationParam("dataFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+
+				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
+
+				System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
+
+
+
+			}
+			case "customized_auth_event" :
+			{
+				paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV));
+				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
+				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+
+				System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
+
+				System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+
+				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
+				result = br.readLine();
+				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
+
+			}
+		}
 
         try{
-            collectionOverridingfileWriter = new FileWriter(collectionOverridingFile,true);
-			streamingOverridingfileWriter=new FileWriter(streamingOverridingFile,true);
-
-            Boolean result = false;
-            System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
-
-            collectionOverridingfileWriter.write("\n");
-            collectionOverridingfileWriter.write("\n");
-			streamingOverridingfileWriter.write("\n");
-			streamingOverridingfileWriter.write("\n");
-
-			String line = String.format("########################################### New Configuration For Generic Data Source  ########################################################");
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
-
-			//Configure the data source list
-			writeLineToFile(String.format("fortscale.data.source=%s,%s",currentDataSources,dataSourceName),collectionOverridingfileWriter,true);
-
-			line = String.format("########################################### %s ########################################################",dataSourceName);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line, streamingOverridingfileWriter, true);
-
-            System.out.println(String.format("Dose %s Have data schema (for ETL) (y/n) ?",dataSourceName));
-			brResult =br.readLine().toLowerCase();
-            result = brResult.equals("y") || brResult.equals("yes");
-
-            //Data part
-            if(result)
-            {
-				//fields
-                System.out.println(String.format("Please enter the fields for %s data schema at csv style with data types  (i.e ussername STRING,target_score DOUBLE)",dataSourceName));
-                dataFieldsCsv = br.readLine();
-
-				//keep the field definition at map of <Field name,Data type> for validation
-				spilitCSVtoMap(dataFieldsCsv,this.dataFelds);
-
-                //write the username configuration at the streaming overriding for the enrich part
-				showMessage = String.format("Please enter the \"username\" field name (i.e account_name or user_id ):");
-                System.out.println(showMessage);
-                usernameFieldName =  br.readLine().toLowerCase();
-
-				//validation of the username field
-				usernameFieldName = validatedFieldExietInSchema(usernameFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-                line=String.format("impala.data.%s.table.field.username=%s",dataSourceName,usernameFieldName);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-				//write the source_ip field configuration at the streaming overriding for the enrich part
-				System.out.println(String.format("Does %s will have source ip field  (i.e spurce_ip or client_address ) (y/n)?",this.dataSourceName));
-				brResult =br.readLine().toLowerCase();
-				sourceIpFlag = brResult.equals("y") || brResult.equals("yes");
-
-				if (sourceIpFlag) {
-					showMessage = String.format("Please enter the \"source ip\" field name (i.e source_ip or client_address ):");
-					System.out.println(showMessage);
-					String sourceIpFieldName = br.readLine().toLowerCase();
-
-					//validation of the SOURCE IP  field
-					sourceIpFieldName = validatedFieldExietInSchema(sourceIpFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-					line = String.format("impala.data.%s.table.field.source_ip=%s", dataSourceName, sourceIpFieldName);
-					writeLineToFile(line, streamingOverridingfileWriter, true);
-					writeLineToFile(line,collectionOverridingfileWriter,true);
-
-					//Geo location task
-					System.out.println(String.format("Does %s supposed to geo locate the source ip (y/n)?", dataSourceName));
-					brResult =br.readLine().toLowerCase();
-					sourceGeoLocatedFlag = brResult.equals("y") || brResult.equals("yes");
-
-
-
-
-					System.out.println(String.format("Does %s will have source ip resolving (y/n)?",this.dataSourceName));
-					brResult =br.readLine().toLowerCase();
-					sourceIpResolvingFlag = brResult.equals("y") || brResult.equals("yes");
-
-					if (!sourceIpResolvingFlag)
-					{
-						System.out.println(String.format("Does %s will have machine name from raw data (y/n)?",this.dataSourceName));
-						brResult =br.readLine().toLowerCase();
-						sourceMachineNameFlag = brResult.equals("y") || brResult.equals("yes");
-
-					}
-
-					if (sourceIpResolvingFlag || sourceMachineNameFlag) {
-
-						//write the source_ip field configuration at the streaming overriding for the enrich part
-						showMessage=String.format("Please enter the \"source machine\" field name that will contain the source ip resolving result or the machine name (i.e hostname ):");
-						System.out.println(showMessage);
-						String sourceMachineFieldName = br.readLine().toLowerCase();
-
-						//validation of the SOURCE machine  field
-						sourceMachineFieldName = validatedFieldExietInSchema(sourceMachineFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-						line = String.format("impala.data.%s.table.field.source=%s", dataSourceName, sourceMachineFieldName);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-
-						//write the source machien classification field configuration at the streaming overriding for the enrich part
-						showMessage=String.format("Please enter the \"source machine\" class field name, this field will contain if this is a Desktop or Server   (i.e src_class ):");
-						System.out.println(showMessage);
-						String srClassFieldName = br.readLine().toLowerCase();
-
-						//validation of the source machine class  field
-						srClassFieldName = validatedFieldExietInSchema(srClassFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-						line = String.format("impala.data.%s.table.field.src_class=%s", dataSourceName, srClassFieldName);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-
-						//configure the normalized_src_machine
-						//validation of the normalized_src_machine  field
-						String normalizedSrcMachine = "normalized_src_machine";
-						normalizedSrcMachine =validatedFieldExietInSchema(normalizedSrcMachine,this.dataFelds,dataFieldsCsv,"autoAddition");
-
-						line = String.format("impala.data.%s.table.field.normalized_src_machine=%s", dataSourceName, normalizedSrcMachine);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-					}
-
-				}
-
-                /*
-                //no source ip - maybe this event have any other source kind representation - source device/computer/website/file etc
-                else
-                {
-                    System.out.println(String.format("Does %s will have source name from raw data (i.e source machine/user/device/website  ) (y/n)?",this.dataSourceName));
-                    brResult =br.readLine().toLowerCase();
-                    sourceFlag = brResult.equals("y") || brResult.equals("yes");
-
-                    if(sourceFlag)
-                    {
-                        //configure the normalized_src_machine
-                        //validation of the normalized_src_machine  field
-                        String normalizedSrcMachine = "normalized_src_machine";
-                        normalizedSrcMachine =validatedFieldExietInSchema(normalizedSrcMachine,this.dataFelds,dataFieldsCsv,"autoAddition");
-
-                        line = String.format("impala.data.%s.table.field.normalized_src_machine=%s", dataSourceName, normalizedSrcMachine);
-                        writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                    }
-                }
-                */
-
-
-				//write the target_ip field configuration at the streaming overriding for the enrich part
-				System.out.println(String.format("Does %s will have target ip field  (i.e target_ip  )(y/n)?",this.dataSourceName));
-				brResult =br.readLine().toLowerCase();
-				targetIpFlag = brResult.equals("y") || brResult.equals("yes");
-
-				if (targetIpFlag) {
-					showMessage=String.format("Please enter the \"target ip\" field name (i.e target_ip ):");
-					System.out.println(showMessage);
-					String targetIpFieldName = br.readLine().toLowerCase();
-
-					//validation of the target ip  field
-					targetIpFieldName = validatedFieldExietInSchema(targetIpFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-					line = String.format("impala.data.%s.table.field.target_ip=%s", dataSourceName, targetIpFieldName);
-					writeLineToFile(line, streamingOverridingfileWriter, true);
-					writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-					System.out.println(String.format("Does %s supposed to geo locate the target ip (y/n)?", dataSourceName));
-					brResult =br.readLine().toLowerCase();
-					tartgetGeoLocatedFlag = brResult.equals("y") || brResult.equals("yes");
-
-
-					System.out.println(String.format("Does %s will have target ip resolving (y/n)?",this.dataSourceName));
-					brResult =br.readLine().toLowerCase();
-					targetIpResolvingFlag = brResult.equals("y") || brResult.equals("yes");
-
-
-					if (!targetIpResolvingFlag)
-					{
-						System.out.println(String.format("Does %s will have machine name from raw data (y/n)?",this.dataSourceName));
-						brResult =br.readLine().toLowerCase();
-						targetMachineNameFlag = brResult.equals("y") || brResult.equals("yes");
-
-					}
-
-
-					if(targetIpResolvingFlag || targetMachineNameFlag) {
-
-						//write the target_ip field configuration at the streaming overriding for the enrich part
-						showMessage=String.format("Please enter the \"target machine\" field name that will contain the target ip resolving result in case that %s doesnt contain target ip keep this empty  (i.e target_machine ):", this.dataSourceName);
-						System.out.println(showMessage);
-						String targetMachineFieldName = br.readLine().toLowerCase();
-
-						//validation of the target machine  field
-						targetMachineFieldName = validatedFieldExietInSchema(targetMachineFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-						line = String.format("impala.data.%s.table.field.target=%s", dataSourceName, targetMachineFieldName);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-
-						//write the dest machine classification field configuration at the streaming overriding for the enrich part
-						showMessage=String.format("Please enter the \"target machine\" class field name, this field will contain if this is a Desktop or Server (i.e dst_class ):");
-						System.out.println(showMessage);
-						String dstClassFieldName = br.readLine().toLowerCase();
-
-						//validation of the target machine class  field
-						dstClassFieldName = validatedFieldExietInSchema(dstClassFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-
-						line = String.format("impala.data.%s.table.field.dst_class=%s", dataSourceName, dstClassFieldName);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-						//configure the normalized_dst_machine
-						//validation of the normalized_dst_machine  field
-						String normalizedDstMachine = "normalized_dst_machine";
-						normalizedDstMachine =validatedFieldExietInSchema(normalizedDstMachine,this.dataFelds,dataFieldsCsv,"autoAddition");
-
-						//configure the normalized_dst_machine
-						line = String.format("impala.data.%s.table.field.normalized_dst_machine=%s", dataSourceName,normalizedDstMachine);
-						writeLineToFile(line, streamingOverridingfileWriter, true);
-						writeLineToFile(line,collectionOverridingfileWriter,true);
-					}
-				}
-
-                //no target ip - maybe this event have any other target kind representation - target device/computer/website/file etc
-                else
-                {
-                    System.out.println(String.format("Does %s will have target name from raw data (i.e target machine/user/device/website  ) (y/n)?",this.dataSourceName));
-                    brResult =br.readLine().toLowerCase();
-                    targetFlag = brResult.equals("y") || brResult.equals("yes");
-
-                    if(targetFlag)
-                    {
-                        //configure the normalized_dst_machine
-                        //validation of the normalized_dst_machine  field
-                        String normalizedDstMachine = "normalized_dst_machine";
-                        normalizedDstMachine =validatedFieldExietInSchema(normalizedDstMachine,this.dataFelds,dataFieldsCsv,"autoAddition");
-
-                        //configure the normalized_dst_machine
-                        line = String.format("impala.data.%s.table.field.normalized_dst_machine=%s", dataSourceName,normalizedDstMachine);
-                        writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                        //write the target_ip field configuration at the streaming overriding for the enrich part
-                        showMessage=String.format("Please enter the \"target\" field name that will contain the target name  (i.e target_user ):");
-                        System.out.println(showMessage);
-                        String targetFieldName = br.readLine().toLowerCase();
-
-                        //validation of the target machine  field
-                        targetFieldName = validatedFieldExietInSchema(targetFieldName,this.dataFelds,dataFieldsCsv,showMessage);
-
-                        line = String.format("impala.data.%s.table.field.target=%s", dataSourceName, targetFieldName);
-                        writeLineToFile(line, streamingOverridingfileWriter, true);
-                        writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                    }
-                }
-
-
-
-				//validation of the target machine class  field
-				 validatedFieldExietInSchema("date_time_unix",this.dataFelds,dataFieldsCsv,"autoAddition");
-
-				line=String.format("impala.data.%s.table.field.epochtime=date_time_unix",dataSourceName);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                //configure the normalized_username
-                //validation of the normalized_username  field
-                String normalizedUserName = "normalized_username";
-                validatedFieldExietInSchema(normalizedUserName,this.dataFelds,dataFieldsCsv,"autoAddition");
-
-
-				line = String.format("########### Data Schema");
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                line=String.format("impala.%s.have.data=true",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
-
-                //delimiter
-                System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
-                String delimiter = br.readLine();
-                line = String.format("impala.data.%s.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-                //table name
-                System.out.println(String.format("Please enter the %s data table name  (i.e sshdata )",dataSourceName));
-                String dataTableName = br.readLine();
-                line = String.format("impala.data.%s.table.name=%s",dataSourceName,dataTableName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-
-                //hdfs paths
-                line = String.format("hdfs.user.data.%s.path=${hdfs.user.data.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-                //hdfs retention
-                line = String.format("hdfs.user.data.%s.retention=90",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-
-
-
-				//is sensitive machien field
-				line = String.format("impala.data.%s.table.field.is_sensitive_machine=is_sensitive_machine",dataSourceName);
-
-				//validation of the target machine class  field
-				validatedFieldExietInSchema("is_sensitive_machine",this.dataFelds,dataFieldsCsv,"autoAddition");
-
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-                //partition type
-                line = String.format("impala.data.%s.table.partition.type=monthly",dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-				//align the field list csv
-				dataFieldsCsv = convertDataSchemaMapToCSVlist(this.dataFelds);
-
-				line=String.format("impala.data.%s.table.fields=%s",dataSourceName,dataFieldsCsv);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-
-
-            }
-
-            System.out.println(String.format("Dose %s Have enrich schema (y/n)?",dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			result = brResult.equals("y") || brResult.equals("yes");
-
-
-            //Enrich  part
-            if(result)
-            {
-				writeLineToFile("\n",collectionOverridingfileWriter,true);
-				writeLineToFile("\n",streamingOverridingfileWriter,true);
-
-				line = String.format("########### Enrich Schema");
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-                line=String.format("impala.%s.have.enrich=true",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-				//fields
-				this.enrichFieldsCsv = this.dataFieldsCsv;
-
-
-
-                //System.out.println(String.format("Please enter addition fields for %s enrich schema csv style with data types no need to enter the %s data schema again   (i.e )",dataSourceName,dataSourceName));
-                //String enrichAdditionFields = ""+br.readLine();
-
-				//if (enrichAdditionFields.length()>0)
-				//	this.enrichFieldsCsv+=String.format(",%s",enrichAdditionFields);
-
-				spilitCSVtoMap(this.enrichFieldsCsv,this.enrichFelds);
-
-
-				//Validate geo location fields if needed for source ip
-				if(sourceGeoLocatedFlag)
-				{
-                    showMessage = String.format("Please enter the source country to geo locate (i.e src_country )");
-                    System.out.println(showMessage);
-                    String srcCountryFiledName = br.readLine();
-                    validatedFieldExietInSchema(srcCountryFiledName,this.enrichFelds,enrichFieldsCsv,showMessage);
-
-					validatedFieldExietInSchema("src_longtitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_latitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_countryIsoCode",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_region",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_city",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_isp",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("src_usageType",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-
-
-				}
-
-				//Validate geo location fields if needed for target ip
-				if(tartgetGeoLocatedFlag)
-				{
-
-                    showMessage = String.format("Please enter the target country to geo locate (i.e dst_country )");
-                    System.out.println(showMessage);
-                    String dstCountryFiledName = br.readLine();
-                    validatedFieldExietInSchema(dstCountryFiledName,this.enrichFelds,enrichFieldsCsv,showMessage);
-
-
-					validatedFieldExietInSchema("dst_longtitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_latitude",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_countryIsoCode",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_region",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_city",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_isp",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-					validatedFieldExietInSchema("dst_usageType",this.enrichFelds,enrichFieldsCsv,"autoAddition");
-
-
-				}
-
-
-				//align the field list csv
-				this.enrichFieldsCsv = convertDataSchemaMapToCSVlist(this.enrichFelds);
-
-
-				line = String.format("impala.enricheddata.%s.table.fields=%s",dataSourceName,this.enrichFieldsCsv);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-				//delimiter
-                System.out.println(String.format("Please enter the %s enrich schema delimiter  (i.e | or , )",dataSourceName));
-                String delimiter = br.readLine();
-				line = String.format("impala.enricheddata.%s.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-				//table name
-                System.out.println(String.format("Please enter the %s enrich table name  (i.e sshenriched )",dataSourceName));
-                String tableName = br.readLine();
-				line = String.format("impala.enricheddata.%s.table.name=%s",dataSourceName,tableName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-				//hdfs path
-				line = String.format("hdfs.user.enricheddata.%s.path=${hdfs.user.enricheddata.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-                //hdfs retention
-                line = String.format("hdfs.user.enricheddata.%s.retention=90",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
-
-				//hdfs file name
-				line = String.format("hdfs.enricheddata.%s.file.name=${impala.enricheddata.%s.table.name}.csv",dataSourceName,dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-
-				//partition strategy
-				line = String.format("impala.enricheddata.%s.table.partition.type=daily",dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-            }
-
-			line = String.format("########### Score Schema");
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-			this.scoreFieldsCsv = this.enrichFieldsCsv;
-
-            //Score part
-            System.out.println(String.format("Please enter the score fields for %s the score schema in csv style with data types  (i.e date_time_score DOUBLE,target_score DOUBLE)",dataSourceName));
-            String fields = br.readLine();
-
-			if (fields.length()>0)
-				this.scoreFieldsCsv+=String.format(",%s",fields);
-
-
-
-			//fields
-			line = String.format("impala.score.%s.table.fields=%s",dataSourceName,this.scoreFieldsCsv);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
-
 
 			//delimiter
-            System.out.println(String.format("Please enter the %s score schema delimiter  (i.e | or , )",dataSourceName));
-            String delimiter = br.readLine();
-			line = String.format("impala.score.%s.table.delimiter=%s",dataSourceName,delimiter);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
+			System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
+			String delimiter = br.readLine();
+			paramsMap.put("dataDelimiter", new ConfigurationParam("delimiter",false,delimiter));
+
+
 
 			//table name
-            System.out.println(String.format("Please enter the %s score table name  (i.e sshscores )",dataSourceName));
-            String tableName = br.readLine();
-			line = String.format("impala.score.%s.table.name=%s",dataSourceName,tableName);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
-
-			//hdfs path
-			line = String.format("hdfs.user.processeddata.%s.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line,streamingOverridingfileWriter,true);
-
-            //hdfs retention
-            line = String.format("hdfs.user.processeddata.%s.retention=90",dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-            writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-			//partition strategy
-			line=String.format("impala.score.%s.table.partition.type=daily",dataSourceName);
-			writeLineToFile(line,collectionOverridingfileWriter,true);
-			writeLineToFile(line, streamingOverridingfileWriter, true);
+			String tableName = dataSourceName+"data";
+			paramsMap.put("dataTableName", new ConfigurationParam("TableName",false,tableName));
 
 
 
-            System.out.println(String.format("Dose %s Have top table schema (y/n) ?",dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			result = brResult.equals("y") || brResult.equals("yes");
+			//sensitive_machine
+			paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"is_sensitive_machine"));
 
 
-            if(result) {
-                //Top score part
+			//Enrich
 
-				line = String.format("########### Top Score Schema");
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-                line=String.format("impala.%s.have.topScore=true",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
+			//delimiter
+			paramsMap.put("enrichDelimiter", new ConfigurationParam("delimiter",false,delimiter));
 
 
-				//fields
-				line = String.format("impala.score.%s.top.table.fields=%s",dataSourceName,this.scoreFieldsCsv);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-				//delimiter
-				line = String.format("impala.score.%s.top.table.delimiter=%s",dataSourceName,delimiter);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-				//table name
-				line = String.format("impala.score.%s.top.table.name=%s",dataSourceName,tableName+"_top");
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-				//hdfs path
-				line=String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s",dataSourceName,dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-                //hdfs retention
-                line = String.format("hdfs.user.processeddata.%s.top.retention=90",dataSourceName);
-                writeLineToFile(line,collectionOverridingfileWriter,true);
-                writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-				//partition startegy
-				line=String.format("impala.score.%s.top.table.partition.type=daily",dataSourceName);
-				writeLineToFile(line,collectionOverridingfileWriter,true);
-				writeLineToFile(line,streamingOverridingfileWriter,true);
-
-
-            }
-
-            line=String.format("%s.EventsJoiner.ttl=86400",dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-
-            line=String.format("kafka.%s.message.record.field.data_source=data_source",dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-
-            line=String.format("kafka.%s.message.record.field.last_state=last_state",dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-
-            line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-
-            line=String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}",dataSourceName,dataSourceName,dataSourceName,dataSourceName);
-            writeLineToFile(line,collectionOverridingfileWriter,true);
-
-
-            line="read"+dataSourceName.toUpperCase()+".morphline=file:resources/conf-files/processread"+dataSourceName.toUpperCase()+"ParsingOngoingEvents.conf";
-            writeLineToFile(line,collectionOverridingfileWriter,true);
+			//table name
+			tableName = dataSourceName+"enriched";
+			paramsMap.put("enrichTableName", new ConfigurationParam("TableName",false,tableName));
 
 
 
+			//Score
+
+			//delimiter
+			paramsMap.put("scoreDelimiter", new ConfigurationParam("delimiter",false,","));
+
+			//table name
+			tableName = dataSourceName+"score";
+			paramsMap.put("scoreTableName", new ConfigurationParam("TableName",false,tableName));
+
+
+			//top score
+			System.out.println(String.format("Dose %s Have top table schema (y/n) ?",dataSourceName));
+			String brResult =br.readLine().toLowerCase();
+			paramsMap.put("topSchemaFlag", new ConfigurationParam("topSchemaFlaf",brResult.equals("y") || brResult.equals("yes"),""));
 
 
 
+            //Service configuration
+            initConfigurationService.setConfigurationParams(paramsMap);
+			if (initConfigurationService.Init())
+				executionResult = initConfigurationService.Configure();
 
-            collectionOverridingfileWriter.flush();
-			streamingOverridingfileWriter.flush();
+			initConfigurationService.Done();
 
+
+			System.out.println(String.format("Finish to configure the Schema part"));
         }
         catch (Exception exception)
         {
             logger.error("There was an exception during execution - {} ",exception.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
+			executionResult = false;
 
         }
 
-        finally {
-            if (collectionOverridingfileWriter != null)
-            {
-               try {
-                   collectionOverridingfileWriter.close();
-               }
-               catch (IOException exception)
-               {
-                   logger.error("There was an exception during the file - {} closing  , cause - {} ",collectionOverridingFile.getName(),exception.getMessage());
-				   System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-               }
-
-            }
-
-			if (streamingOverridingfileWriter != null)
-			{
-				try {
-					streamingOverridingfileWriter.close();
-				}
-				catch (IOException exception)
-				{
-					logger.error("There was an exception during the file - {} closing  , cause - {} ",streamingOverridingFile.getName(),exception.getMessage());
-					System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-				}
-
-			}
-        }
-
-
+		return executionResult;
 
     }
 
@@ -758,10 +342,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	 */
 	public void streamingConfiguration(BufferedReader br){
 
-		String configFilesPath = streamingPath+"config/";
-		Boolean result = false;
-		lastState="etl";
-
+		Boolean result;
 		try {
 
 
@@ -770,7 +351,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 			if (result)
 				//Enrich part
-				enrichStereamingConfiguration(br, configFilesPath);
+				enrichStereamingConfiguration(br);
 		}
 
 		catch (Exception e)
@@ -791,24 +372,15 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	}
 
-
 	/**
 	 * This method will configure the entire enrich parts at the streaming
 	 * @param br
-	 * @param configFilesPath
+	 * @param
 	 */
-	private void enrichStereamingConfiguration(BufferedReader br,String configFilesPath){
 
+	private void enrichStereamingConfiguration(BufferedReader br){
 
 		String line="";
-		//Open the streaming overriding file
-		File streamingOverridingFile = new File (configFilesPath + "fortscale-overriding-streaming.properties");
-		FileWriter streamingOverridingFileWriter = null;
-
-
-		File taskPropertiesFile = null;
-		FileWriter taskPropertiesFileWriter=null;
-		Boolean result = false;
 
 
 		try {
@@ -817,126 +389,437 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			System.out.println(String.format("Dose %s use the general GDS streaming topology   (y/n) ?",dataSourceName));
 			String brResult =br.readLine().toLowerCase();
 			Boolean topolegyResult = brResult.equals("y") || brResult.equals("yes");
+			paramsMap.put("topologyFlag",new ConfigurationParam("topologyFlag",true,""));
+			paramsMap.put("lastState", new ConfigurationParam("lastState",false,"etl"));
+            paramsMap.put("taskName",new ConfigurationParam("taskName",false,"UsernameNormalizationAndTaggingTask"));
+
+            System.out.println(String.format("Dose %s have target username to normalized (y/n) ?",dataSourceName));
+            brResult =br.readLine().toLowerCase();
+            Boolean targetNormalizationFlag = brResult.equals("y") || brResult.equals("yes");
 
 
-			streamingOverridingFileWriter =  new FileWriter(streamingOverridingFile, true);
+            //in case there is a target user to be normalize also
+            if(targetNormalizationFlag)
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
+            else if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+                //in case there is machine to normalized and tag
+            else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
+                paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                //in case there is ip to geo locate
+            else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
+                paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+            else
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
 
 
-			//Normalized User Name and user Tagging task
-
-			System.out.println(String.format("Going to configure the Normalized Username and tagging task for %s",dataSourceName));
-
-			//open the task properties file
-			taskPropertiesFile = new File(configFilesPath + "username-normalization-tagging-task.properties");
-			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
-
-			taskPropertiesFileWriter.write("\n");
-			taskPropertiesFileWriter.write("\n");
-
-			configureNormalizeUserNameTask(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
-
-			System.out.println(String.format("End configure the Normalized Username and tagging task for %s", dataSourceName));
+            //User name field
+            paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,"username"));
 
 
+            //Domain field  - for the enrich part
+            System.out.println(String.format("Dose %s have a field that contain the user domain  (y/n) ?",dataSourceName));
+            brResult =br.readLine().toLowerCase();
+            Boolean domainResult = brResult.equals("y") || brResult.equals("yes");
+
+            if (domainResult)
+            {
+                //Domain field  - for the enrich part
+                System.out.println(String.format("pleaase enter the field name that will contain the user Domain value :"));
+                brResult =br.readLine().toLowerCase();
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+            }
+            else {
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+
+                //In case of fake domain - enter the actual domain value the PS want
+                paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+            }
+
+            //Normalized_username field
+            paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
 
 
 
+            //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
+            //Normalizing service
+            System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
+            String updateOnlyResult = br.readLine().toLowerCase();
+            Boolean updateOnly = updateOnlyResult.equals("y") ||updateOnlyResult.toLowerCase().equals("yes");
 
-			//Ip Resolving task
-			if (sourceIpResolvingFlag || targetIpResolvingFlag) {
+            if (updateOnly) {
+                //Service  name
+                paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName",false,"SecurityUsernameNormalizationService"));
+                paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag",true,"true"));
 
+            } else {
+                paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName",false,"genericUsernameNormalizationService"));
+                paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag",false,"false"));
+            }
+
+			//Service configuration
+
+            userNormalizationTaskService.setConfigurationParams(paramsMap);
+			executionResult = userNormalizationTaskService.Init();
+			if (executionResult)
+				executionResult = userNormalizationTaskService.Configure();
+
+
+
+            //Configure the taarget user name normalization
+            if(executionResult && targetNormalizationFlag)
+            {
+
+                if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
+                    paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+                    //in case there is machine to normalized and tag
+                else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
+                    paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                    //in case there is ip to geo locate
+                else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
+                    paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+                else
+                    paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
+
+                paramsMap.put("lastState", new ConfigurationParam("lastState",false,"UsernameNormalizationAndTaggingTask"));
+                paramsMap.put("taskName",new ConfigurationParam("taskName",false,"UsernameNormalizationAndTaggingTask_target"));
+
+
+                System.out.println(String.format("Please enter the second username field to normalize :"));
+                brResult =br.readLine().toLowerCase();
+
+                paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,brResult));
+
+                //Domain field  - for the enrich part
+                System.out.println(String.format("Dose %s have a field that contain the target user domain  (y/n) ?",dataSourceName));
+                brResult =br.readLine().toLowerCase();
+                domainResult = brResult.equals("y") || brResult.equals("yes");
+
+                if (domainResult)
+                {
+                    //Domain field  - for the enrich part
+                    System.out.println(String.format("pleaase enter the field name that will contain the target user Domain value :"));
+                    brResult =br.readLine().toLowerCase();
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+
+                }
+                else {
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, dataSourceName+"Connect"));
+
+
+                }
+                System.out.println(String.format("Please enter the field name of the field that will contain the second normalized user name :"));
+                brResult =br.readLine().toLowerCase();
+                //Normalized_username field
+                paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
+
+                userNormalizationTaskService.setConfigurationParams(paramsMap);
+				executionResult = userNormalizationTaskService.Init();
+				if(executionResult)
+                	executionResult = userNormalizationTaskService.Configure();
+
+
+            }
+
+            userNormalizationTaskService.Done();
+
+
+			if (executionResult) {
+				System.out.println(String.format("End configure the Normalized Username and tagging task for %s", dataSourceName));
+				paramsMap.put("lastState", new ConfigurationParam("lastState", false, "UsernameNormalizationAndTaggingTask"));
+			}
+
+
+
+			//source Ip Resolving task
+			if (paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag() && executionResult) {
 
 				System.out.println(String.format("Going to configure the IP resolving task for %s", dataSourceName));
 
-				//open the task properties file
-				taskPropertiesFile = new File(configFilesPath + "ip-resolving-task.properties");
-				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
+				System.out.println(String.format("Dose %s resolving is restricted to AD name (in case of true and the machine doesnt exist in the AD it will not return it as resolved value) (y/n) ?", dataSourceName));
+				brResult = br.readLine().toLowerCase();
+				Boolean restrictToAD = brResult.equals("y") || brResult.equals("yes");
 
-				taskPropertiesFileWriter.write("\n");
-				taskPropertiesFileWriter.write("\n");
+				paramsMap.put("restrictToAD", new ConfigurationParam("restrictToAD", restrictToAD, ""));
 
-				configureIpResolving(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
+				System.out.println(String.format("Dose %s resolving use the machine short name (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.com) (y/n) ?", dataSourceName));
+				brResult = br.readLine().toLowerCase();
+				Boolean shortNameUsage = brResult.equals("y") || brResult.equals("yes");
 
-				System.out.println(String.format("End configure the IP resolving task for %s", dataSourceName));
+				paramsMap.put("shortNameUsage", new ConfigurationParam("shortNameUsage", shortNameUsage, ""));
+
+				System.out.println(String.format("Dose %s resolving need to remove last dot from the resolved server name  (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.) (y/n) ?", dataSourceName));
+				brResult = br.readLine().toLowerCase();
+				Boolean removeLastDotUsage = brResult.equals("y") || brResult.equals("yes");
+
+				paramsMap.put("removeLastDotUsage", new ConfigurationParam("removeLastDotUsage", removeLastDotUsage, ""));
+
+				System.out.println(String.format("Dose %s resolving need to drop in case of resolving fail (y/n) ?", dataSourceName));
+				brResult = br.readLine().toLowerCase();
+				Boolean dropOnFailUsage = brResult.equals("y") || brResult.equals("yes");
+
+				paramsMap.put("dropOnFailUsage", new ConfigurationParam("dropOnFailUsage", dropOnFailUsage, ""));
+
+				System.out.println(String.format("Dose %s resolving need to override the source ip field with the resolving value (y/n) ?", dataSourceName));
+				brResult = br.readLine().toLowerCase();
+				Boolean overrideIpWithHostNameUsage = brResult.equals("y") || brResult.equals("yes");
+
+				paramsMap.put("overrideIpWithHostNameUsage", new ConfigurationParam("overrideIpWithHostNameUsage", overrideIpWithHostNameUsage, ""));
+
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_sourceIp"));
+				if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag())
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-resolved"));
+
+				else
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-resolved"));
+
+				paramsMap.put("ipField", new ConfigurationParam("ipField", false, String.format("${impala.data.%s.table.field.source}",dataSourceName)));
+				paramsMap.put("host", new ConfigurationParam("host", false, String.format("${impala.data.%s.table.field.source_name}",dataSourceName)));
 
 
+				//Service configuration
+				ipResolvingTaskService.setConfigurationParams(paramsMap);
+				executionResult = ipResolvingTaskService.Init();
+				if (executionResult)
+					executionResult = ipResolvingTaskService.Configure();
+
+
+				if (executionResult)
+					paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
 
 
 			}
+
+			//target ip resolving
+			if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag() && executionResult) {
+
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_targetIp"));
+				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-resolved"));
+				paramsMap.put("ipField", new ConfigurationParam("ipField", false,  String.format("${impala.data.%s.table.field.target}",dataSourceName)));
+				paramsMap.put("host", new ConfigurationParam("host", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
+
+				if (ipResolvingTaskService.Init())
+                {
+                    ipResolvingTaskService.setConfigurationParams(paramsMap);
+					executionResult = ipResolvingTaskService.Init();
+					if (executionResult)
+						executionResult = ipResolvingTaskService.Configure();
+
+                }
+
+
+
+				paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
+
+
+			}
+
+            ipResolvingTaskService.Done();
+			System.out.println(String.format("End configure the IP resolving task for %s", dataSourceName));
 
 
 			//Computer tagging task
-			if (sourceIpResolvingFlag || targetIpResolvingFlag) {
-
+			if (((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())) && executionResult)
+			{
 				System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "ComputerTaggingClusteringTask"));
 
-				//open the task properties file
-				taskPropertiesFile = new File(configFilesPath + "computer-tagging-clustering-task.properties");
-				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
+				if((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered_to_geo_location"));
+				else
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered"));
 
-				taskPropertiesFileWriter.write("\n");
-				taskPropertiesFileWriter.write("\n");
+				// configure new configuration for the new dta source for source_ip
+				System.out.println(String.format("Dose %s source machine need to be added to the computer document in case he is missing (y/n) ?", dataSourceName));
+				Boolean ensureComputerExist = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
+				paramsMap.put("createNewComputerFlag",new ConfigurationParam("createNewComputerFlag",ensureComputerExist,""));
+				paramsMap.put("srcMachineClassifier", new ConfigurationParam("srcMachineClassifier",false, String.format("${impala.data.%s.table.field.src_class}",dataSourceName)));
+				paramsMap.put("srcHost", new ConfigurationParam("srcHost", false,  String.format("${impala.data.%s.table.field.source_name}",dataSourceName)));
+				paramsMap.put("srcClusteringField", new ConfigurationParam("srcClusteringField",false, String.format("${impala.data.%s.table.field.normalized_src_machine}",dataSourceName)));
+				paramsMap.put("dstMachineClassifier", new ConfigurationParam("dstMachineClassifier",false, String.format("${impala.data.%s.table.field.dst_class}",dataSourceName)));
+				paramsMap.put("dstClusteringField", new ConfigurationParam("dstClusteringField",false, String.format("${impala.data.%s.table.field.normalized_dst_machine}",dataSourceName)));
+				paramsMap.put("dstHost", new ConfigurationParam("dstHost", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
 
-				configureComputerTaggingTask(taskPropertiesFileWriter,taskPropertiesFile,topolegyResult,br);
+				//Service configuration
+				computerTaggingTaskService.setConfigurationParams(paramsMap);
+				executionResult = computerTaggingTaskService.Init();
+				if (executionResult)
+					executionResult = computerTaggingTaskService.Configure();
 
-				System.out.println(String.format("End configure the Computer tagging and normalization task for %s", dataSourceName));
+
+				if(executionResult) {
+					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "ComputerTaggingClusteringTask"));
+					System.out.println(String.format("End configure the Computer Tagging task for %s", dataSourceName));
+				}
 
 
+                computerTaggingTaskService.Done();
 
 			}
 
+			//Source Geo Location
+			if(paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()  && executionResult) {
+
+				System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "source_VpnEnrichTask"));
+
+				if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-geolocated"));
+				else
+					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-geolocated"));
+
+				paramsMap.put("ipField", new ConfigurationParam("ipField",false,"${impala.data.%s.table.field.source_ip}"));
+				paramsMap.put("countryField", new ConfigurationParam("ipField",false,"src_country"));
+				paramsMap.put("longtitudeField", new ConfigurationParam("ipField",false,"src_longtitudeField"));
+				paramsMap.put("latitudeField", new ConfigurationParam("ipField",false,"src_latitudeField"));
+				paramsMap.put("countryIsoCodeField", new ConfigurationParam("ipField",false,"src_countryIsoCodeField"));
+				paramsMap.put("regionField", new ConfigurationParam("ipField",false,"src_regionField"));
+				paramsMap.put("cityField", new ConfigurationParam("ipField",false,"src_cityField"));
+				paramsMap.put("ispField", new ConfigurationParam("ipField",false,"src_ispField"));
+				paramsMap.put("usageTypeField", new ConfigurationParam("ipField",false,"src_usageTypeField"));
+				paramsMap.put("doSessionUpdateFlag", new ConfigurationParam("ipField",false,""));
+				paramsMap.put("doDataBuckets", new ConfigurationParam("ipField",false,""));
+				paramsMap.put("doGeoLocation", new ConfigurationParam("ipField",true,""));
 
 
+				//Service configuration
+				geoLocationTaskService.setConfigurationParams(paramsMap);
+				executionResult = geoLocationTaskService.Init();
+				if (executionResult)
+					executionResult = geoLocationTaskService.Configure();
 
-			if(sourceGeoLocatedFlag || tartgetGeoLocatedFlag) {
 
-				System.out.println(String.format("Going to configure the GeoLocation task for %s", dataSourceName));
+				if (executionResult)
+				{
+					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "VpnEnrichTask"));
+				}
 
-
-				//open the task properties file
-				taskPropertiesFile = new File(configFilesPath + "vpn-geolocation-session-update-task.properties");
-				taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
-
-				taskPropertiesFileWriter.write("\n");
-				taskPropertiesFileWriter.write("\n");
-
-				configureGeoLocationTask(taskPropertiesFileWriter,taskPropertiesFile, topolegyResult, br, sourceGeoLocatedFlag, tartgetGeoLocatedFlag);
-
-				System.out.println(String.format("End configure the GeoLocation task for %s", dataSourceName));
 			}
 
+			//Target Geo Location
+			if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()  && executionResult) {
 
-			//User Mongo update task
-			System.out.println(String.format("Going to configure the UserMongoUpdate task for %s (i.e we use it for user last activity update) ", dataSourceName));
-
-
-			//open the task properties file
-			taskPropertiesFile = new File(configFilesPath + "user-mongo-update-task.properties");
-			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
-
-			taskPropertiesFileWriter.write("\n");
-			taskPropertiesFileWriter.write("\n");
-
-			configureUserMongoUpdateTask(taskPropertiesFileWriter, taskPropertiesFile, topolegyResult, br);
-
-			System.out.println(String.format("End configure the UserMongoUpdate task for %s", dataSourceName));
+				System.out.println(String.format("Going to configure the target ip at  GeoLocation task for %s", dataSourceName));
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "target_VpnEnrichTask"));
 
 
+				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-geolocated"));
 
-            //HDFS Write - for enrich
-			System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s (i.e we use it for user last activity update) ", dataSourceName));
+				paramsMap.put("ipField", new ConfigurationParam("ipField",false,"${impala.data.%s.table.field.target}"));
+				paramsMap.put("countryField", new ConfigurationParam("countryField",false,"dst_country"));
+				paramsMap.put("longtitudeField", new ConfigurationParam("longtitudeField",false,"dst_longtitudeField"));
+				paramsMap.put("latitudeField", new ConfigurationParam("latitudeField",false,"dst_latitudeField"));
+				paramsMap.put("countryIsoCodeField", new ConfigurationParam("countryIsoCodeField",false,"dst_countryIsoCodeField"));
+				paramsMap.put("regionField", new ConfigurationParam("regionField",false,"dst_regionField"));
+				paramsMap.put("cityField", new ConfigurationParam("cityField",false,"dst_cityField"));
+				paramsMap.put("ispField", new ConfigurationParam("ispField",false,"dst_ispField"));
+				paramsMap.put("usageTypeField", new ConfigurationParam("usageTypeField",false,"dst_usageTypeField"));
+				paramsMap.put("doSessionUpdateFlag", new ConfigurationParam("doSessionUpdateFlag",false,""));
+				paramsMap.put("doDataBuckets", new ConfigurationParam("doDataBuckets",false,""));
+				paramsMap.put("doGeoLocation", new ConfigurationParam("doGeoLocation",true,""));
+
+                geoLocationTaskService.setConfigurationParams(paramsMap);
+				executionResult = geoLocationTaskService.Init();
+				if (executionResult)
+					executionResult = geoLocationTaskService.Configure();
 
 
-			//open the task properties file
-			taskPropertiesFile = new File(configFilesPath + "hdfs-events-writer-task.properties");
-			taskPropertiesFileWriter = new FileWriter(taskPropertiesFile, true);
+				if (executionResult)
+				{
+					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "VpnEnrichTask"));
+				}
 
-			taskPropertiesFileWriter.write("\n");
-			taskPropertiesFileWriter.write("\n");
+                geoLocationTaskService.Done();
 
-			configureHDFSWruteTask(taskPropertiesFileWriter, taskPropertiesFile, topolegyResult, br, "enrich");
+			}
+			System.out.println(String.format("End configure the GeoLocation task for %s", dataSourceName));
 
-			System.out.println(String.format("End configure the HDFS write task for %s", dataSourceName));
+
+			//USER MONGO UPDATE
+			if (executionResult) {
+
+
+				//User Mongo update task
+				System.out.println(String.format("Going to configure the UserMongoUpdate task for %s (i.e we use it for user last activity update) ", dataSourceName));
+
+				paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("UserMongoUpdateStreamTask",dataSourceName)));
+                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, ""));
+
+
+				//Status field value
+				System.out.println(String.format("Do you want to update last activity for any raw that came and not only successed events (y/n)? "));
+				brResult =br.readLine().toLowerCase();
+				Boolean anyRow = brResult.equals("y") || brResult.equals("yes");
+				paramsMap.put("anyRow", new ConfigurationParam("anyRow", anyRow, ""));
+
+
+				if (!anyRow) {
+
+					//configure the field that represent the status
+					//System.out.println(String.format("Please enter the field that will hold the message status   (i.e status,failure_code):"));
+					//String statusFieldName =  br.readLine().toLowerCase();
+					paramsMap.put("statusFieldName", new ConfigurationParam("statusFieldName", false, "status"));
+
+					//SUCCESS  value
+					System.out.println(String.format("Please enter value that mark event as successed (i.c Accepted for ssh or SUCCESS for vpn 0x0 for kerberos ) :"));
+					String successValue = br.readLine();
+					paramsMap.put("successValue", new ConfigurationParam("successValue", false, successValue));
+
+				}
+
+
+				userMongoUpdateTaskService.setConfigurationParams(paramsMap);
+				executionResult = userMongoUpdateTaskService.Init();
+				if (executionResult)
+					executionResult = userMongoUpdateTaskService.Configure();
+				userMongoUpdateTaskService.Done();
+				System.out.println(String.format("End configure the UserMongoUpdate task for %s", dataSourceName));
+			}
+
+			//HDFS - WRITE
+			if (executionResult) {
+
+
+				//HDFS Write - for enrich
+				System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s  ", dataSourceName));
+
+                paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("enriched_HDFSWriterStreamTask")));
+
+
+				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-enriched-after-write"));
+				paramsMap.put("fieldList", new ConfigurationParam("fieldList",false,String.format("${impala.enricheddata.%s.table.fields}",dataSourceName)));
+				paramsMap.put("delimiter", new ConfigurationParam("delimiter",false,String.format("${impala.enricheddata.%s.table.delimiter}",dataSourceName)));
+				paramsMap.put("tableName", new ConfigurationParam("tableName",false,String.format("${impala.enricheddata.%s.table.name}",dataSourceName)));
+				paramsMap.put("hdfsPath", new ConfigurationParam("hdfsPath",false,String.format("${hdfs.user.enricheddata.%s.path}",dataSourceName)));
+				paramsMap.put("fileName", new ConfigurationParam("fileName",false,String.format("${hdfs.enricheddata.%s.file.name}",dataSourceName)));
+				paramsMap.put("partitionStrategy", new ConfigurationParam("partitionStrategy",false,String.format("${impala.enricheddata.%s.table.partition.type}",dataSourceName)));
+
+
+				//todo -  add the anility to configure this param
+				paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,""));
+
+
+
+
+               hdfsTaskService.setConfigurationParams(paramsMap);
+                executionResult = hdfsTaskService.Init();
+                if (executionResult)
+                    executionResult = hdfsTaskService.Configure();
+                hdfsTaskService.Done();
+
+				if (executionResult)
+				{
+					paramsMap.put("lastState", new ConfigurationParam("lastState", false, "enriched_HDFSWriterStreamTask"));
+
+				}
+
+				System.out.println(String.format("End configure the HDFS write task for %s", dataSourceName));
+
+			}
 
 
          
@@ -944,911 +827,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
+			logger.error("There was an exception during the execution - {}",e);
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
-
-
-
-
-
-	}
-
-
-	/**
-	 * Private method that will write line into a given file
-	 * @param line -  the line to write
-	 * @param writer - the write of the file
-	 * @param withNewLine - flag that will sign if need to add new line
-	 */
-	private void writeLineToFile(String line, FileWriter writer, boolean withNewLine){
-		try {
-			writer.write(line);
-			if (withNewLine)
-				writer.write("\n");
-		}
-
-		catch (Exception e)
-		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-	}
-
-	/**
-	 * Will configure the user normalization and tagging streaming task
-	 * @param taskPropertiesFileWriter - The writer of the task properties
-	 * @param taskPropertiesFile - The task properties fiel
-	 * @param topolegyResult - The flag that will sign the topolegy path (generic or specific)
-	 * @param br - The buffer reader
-	 */
-	private void configureNormalizeUserNameTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-            //regiular user name normalization - each line must have at least username field
-
-
-            //in case there is a target user to be normalize also
-            if(targetFlag)
-                configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user");
-            //in case there is ip that need to be resolved
-			else if (sourceIpResolvingFlag || targetIpResolvingFlag)
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving");
-            //in case there is machine to normalized and tag
-			else if (sourceMachineNameFlag || targetMachineNameFlag)
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging");
-            //in case there is ip to geo locate
-			else if (sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location");
-			else
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask",lastState,"fortscale-generic-data-access-normalized-tagged-event");
-
-
-			//User name field
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.username.field=%s", this.dataSourceName, usernameFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//Domain field  - for the enrich part
-			System.out.println(String.format("Please enter the Domain field name (i.e account_domain) in case %s data source doesn't have domain field please enter \"fake\":", dataSourceName));
-			String domainFieldName = br.readLine().toLowerCase();
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.field=%s", dataSourceName, domainFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//In case of fake domain - enter the actual domain value the PS want
-			System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty value for keeping the name without domain): "));
-			String domainValue = br.readLine();
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.domain.fake=%s", dataSourceName, domainValue);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//Normalized_username field
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.normalizedusername.field=${impala.table.fields.normalized.username}",this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//partition field name  (today we use for all the username)
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.partition.field=%s", this.dataSourceName, usernameFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			//TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
-			//Normalizing service
-			System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
-            String updateOnlyResult = br.readLine().toLowerCase();
-			Boolean updateOnly = updateOnlyResult.equals("y") ||updateOnlyResult.toLowerCase().equals("yes");
-
-			if (updateOnly) {
-				line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=SecurityUsernameNormalizationService", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=true", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			} else {
-
-				line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask.normalization.service=genericUsernameNormalizationService", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.updateOnly=false", this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			}
-
-
-			//classifier value
-			line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask.classifier=%s", this.dataSourceName, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			writeLineToFile("\n", taskPropertiesFileWriter, true);
-			writeLineToFile("#############", taskPropertiesFileWriter, true);
-
-            lastState="UsernameNormalizationAndTaggingTask";
-
-
-            //target  normalization - for example target user
-            if(targetFlag)
-            {
-                if (sourceIpResolvingFlag || targetIpResolvingFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving");
-                else if (sourceMachineNameFlag || targetMachineNameFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging");
-                else if (sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location");
-                else
-                    configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"UsernameNormalizationAndTaggingTask_target",lastState,"fortscale-generic-data-access-normalized-tagged-event");
-
-
-                //target User name field
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.username.field=${impala.data.%s.table.field.target}", this.dataSourceName, usernameFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //Domain field  - for the enrich part
-                System.out.println(String.format("Please enter the Domain field name (i.e account_domain) in case %s data source doesn't have domain field please enter \"fake\":", dataSourceName));
-                domainFieldName = br.readLine().toLowerCase();
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.domain.field=%s", dataSourceName, domainFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //In case of fake domain - enter the actual domain value the PS want
-                System.out.println(String.format("If you chose a \"fake\" domain please enter the fix domain value for using (i.e vpnConnect,sshConnect or empty value for keeping the name without domain): "));
-                domainValue = br.readLine();
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.domain.fake=%s", dataSourceName, domainValue);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //Normalized_username field
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.normalizedusername.field=${impala.data.%s.table.field.normalized_dst_machine}",this.dataSourceName,this.dataSourceName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                //partition field name  (today we use for all the username)
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.partition.field=%s", this.dataSourceName, usernameFieldName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-                //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
-                //Normalizing service
-                System.out.println(String.format("Does the %s data source should contain target users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):",this.dataSourceName));
-                updateOnly = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
-
-                if (updateOnly) {
-                    line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask_target.normalization.service=SecurityUsernameNormalizationService", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                    line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.updateOnly=true", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                } else {
-
-                    line = String.format("fortscale.events.entry.%S_UsernameNormalizationAndTaggingTask_target.normalization.service=genericUsernameNormalizationService", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                    line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.updateOnly=false", this.dataSourceName);
-                    writeLineToFile(line, taskPropertiesFileWriter, true);
-                }
-
-
-                //classifier value
-                line = String.format("fortscale.events.entry.%s_UsernameNormalizationAndTaggingTask_target.classifier=%s", this.dataSourceName, this.dataSourceName);
-                writeLineToFile(line, taskPropertiesFileWriter, true);
-
-                writeLineToFile("\n", taskPropertiesFileWriter, true);
-                writeLineToFile("#############", taskPropertiesFileWriter, true);
-
-            }
-
-
-			//flush the writer for username-normalization-tagging-task.properties
-			taskPropertiesFileWriter.flush();
-		}
-		catch (Exception e)
-		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			}
-			catch (IOException exception)
-			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-
-	}
-	private void configureIpResolving(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			// configure new configuration for the new dta source for source_ip
-
-
-
-			System.out.println(String.format("Dose %s resolving is restricted to AD name (in case of true and the machine doesnt exist in the AD it will not return it as resolved value) (y/n) ?", dataSourceName));
-			String brResult =br.readLine().toLowerCase();
-			Boolean restrictToAD = brResult.equals("y") || brResult.equals("yes");
-
-			System.out.println(String.format("Dose %s resolving use the machine short name (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.com) (y/n) ?", dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			Boolean shortNameUsage = brResult.equals("y") || brResult.equals("yes");
-
-			System.out.println(String.format("Dose %s resolving need to remove last dot from the resolved server name  (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.) (y/n) ?", dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			Boolean removeLastDotUsage = brResult.equals("y") || brResult.equals("yes");
-
-			System.out.println(String.format("Dose %s resolving need to drop in case of resolving fail (y/n) ?", dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			Boolean dropOnFailUsage = brResult.equals("y") || brResult.equals("yes");
-
-			System.out.println(String.format("Dose %s resolving need to override the source ip field with the resolving value (y/n) ?", dataSourceName));
-			brResult =br.readLine().toLowerCase();
-			Boolean overrideIpWithHostNameUsage = brResult.equals("y") || brResult.equals("yes");
-
-			//source ip configuration for resolving the ip
-			if (sourceIpResolvingFlag) {
-
-				//in case of no target to resolve
-				if (!targetIpResolvingFlag)
-					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_sourceIp",lastState,"fortscale-generic-data-access-ip-resolved");
-				else
-					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_sourceIp",lastState,"fortscale-generic-data-access-source-ip-resolved");
-
-
-				//partition field name  (today we use for all the username)
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.partition.field=${impala.data.%s.table.field.username}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//source ip field
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.ip.field=${impala.data.%s.table.field.source_ip}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//hostname
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.host.field=${impala.data.%s.table.field.source}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//time stamp
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.timestamp.field=${impala.data.%s.table.field.epochtime}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//restric to AD
-
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.restrictToADName=%s", this.dataSourceName, restrictToAD.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//short name
-
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.shortName=%s", this.dataSourceName, shortNameUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Remove last Dot
-
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.isRemoveLastDot=%s", this.dataSourceName, removeLastDotUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Drop When Fail
-
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.dropWhenFail=%s", this.dataSourceName, dropOnFailUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//Override IP with Hostname
-
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_sourceIp.overrideIPWithHostname=%s", this.dataSourceName, overrideIpWithHostNameUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				lastState="IpResolvingStreamTask_sourceIp";
-
-
-			}
-
-			//reslove also a target ip
-			if (targetIpResolvingFlag) {
-
-				writeLineToFile("", taskPropertiesFileWriter, true);
-
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"IpResolvingStreamTask_targetIp",lastState,"fortscale-generic-data-access-ip-resolved");
-
-
-				//partition field name  (today we use for all the username)
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.partition.field=${impala.data.%s.table.field.username}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//target ip field
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.ip.field=${impala.data.%s.table.field.target_ip}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//target machine
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.host.field=${impala.data.%s.table.field.target}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//time stamp
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.timestamp.field=${impala.data.%s.table.field.epochtime}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//restric to AD
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.restrictToADName=%s", this.dataSourceName, restrictToAD.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//short name
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.shortName=%s", this.dataSourceName, shortNameUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Remove last Dot
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.isRemoveLastDot=%s", this.dataSourceName, removeLastDotUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Drop When Fail
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.dropWhenFail=%s", this.dataSourceName, dropOnFailUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//Override IP with Hostname
-				line = String.format("fortscale.events.entry.%s_IpResolvingStreamTask_targetIp.overrideIPWithHostname=%s", this.dataSourceName, overrideIpWithHostNameUsage.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				lastState="IpResolvingStreamTask";
-
-			}
-
-			//flush the writer for ip-resolving-task.properties
-			taskPropertiesFileWriter.flush();
-		}
-
-		catch(Exception e)
-		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			}
-			catch (IOException exception)
-			{
-
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-
-	}
-	private void configureComputerTaggingTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br){
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			if(sourceGeoLocatedFlag || tartgetGeoLocatedFlag)
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"ComputerTaggingClusteringTask",lastState,"fortscale-generic-data-access-computer-tagged-clustered_to_geo_location");
-			else
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"ComputerTaggingClusteringTask",lastState,"fortscale-generic-data-access-computer-tagged-clustered");
-
-
-
-			//partition field name  (today we use for all the username)
-			line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.partition.field=${impala.data.%s.table.field.username}", this.dataSourceName, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			//only in case there is a source ip that should be resolving
-			if (sourceIpResolvingFlag) {
-				//hostname
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.source.hostname.field=${impala.data.%s.table.field.source}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//classification
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.source.classification.field=${impala.data.%s.table.field.src_class}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Normalized_src_machine (clustering)
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.source.clustering.field=${impala.data.%s.table.field.normalized_src_machine}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				// configure new configuration for the new dta source for source_ip
-				System.out.println(String.format("Dose %s source machine need to be added to the computer document in case he is missing (y/n) ?", dataSourceName));
-				Boolean ensureComputerExist = br.readLine().toLowerCase().equals("y") || br.readLine().toLowerCase().equals("yes");
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.source.create-new-computer-instances=%s", this.dataSourceName, ensureComputerExist.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			}
-
-			if (targetIpResolvingFlag) {
-				//hostname
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.destination.hostname.field=${impala.data.%s.table.field.target}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//classification
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.destination.classification.field=${impala.data.%s.table.field.dst_class}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//Normalized_src_machine (clustering)
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.destination.clustering.field=${impala.data.%s.table.field.normalized_dst_machine}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				// configure new configuration for the new dta source for source_ip
-				System.out.println(String.format("Dose %s target machine need to be added to the computer document in case he is missing (y/n) ?", dataSourceName));
-				String brResult =br.readLine().toLowerCase();
-				Boolean ensureComputerExist = brResult.equals("y") || brResult.equals("yes");
-
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.destination.create-new-computer-instances=%s", this.dataSourceName, ensureComputerExist.toString());
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				// configure the is sensitive machine field
-				line = String.format("fortscale.events.entry.%s_ComputerTaggingClusteringTask.destination.is-sensitive-machine.field=${impala.data.%s.table.field.is_sensitive_machine}", this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				lastState="ComputerTaggingClusteringTask";
-
-			}
-
-			//flush the writer for computer-tagging-clustering-task.properties
-			taskPropertiesFileWriter.flush();
-		}
-
-		catch(Exception e){
-
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			}
-			catch (IOException exception)
-			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-
-	}
-	private void configureGeoLocationTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br,Boolean sourceGeoLocatedFlag,Boolean tartgetGeoLocatedFlag) {
-
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-
-
-			if (sourceGeoLocatedFlag) {
-
-				if (tartgetGeoLocatedFlag)
-					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"source_VpnEnrichTask",lastState,"fortscale-generic-data-access-source-ip-geolocated");
-				else
-					configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"source_VpnEnrichTask",lastState,"fortscale-generic-data-access-ip-geolocated");
-
-				//source ip field
-				line = String.format("%s.%s_source_VpnEnrichTask.ip.field=${impala.data.%s.table.field.source_ip}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//country ip field
-				line = String.format("%s.%s_source_VpnEnrichTask.country.field=src_country",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//longtitude  field
-				line = String.format("%s.%s_source_VpnEnrichTask.longtitude.field=src_longtitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//latitude  field
-				line = String.format("%s.%s_source_VpnEnrichTask.latitude.field=src_latitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//countryIsoCode field
-				line = String.format("%s.%s_source_VpnEnrichTask.countryIsoCode.field=src_countryIsoCode",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//region  field
-				line = String.format("%s.%s_source_VpnEnrichTask.region.field=src_region",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//city field
-				line = String.format("%s.%s_source_VpnEnrichTask.city.field=src_city",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//isp field
-				line = String.format("%s.%s_source_VpnEnrichTask.isp.field=isp",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//usageType field
-				line = String.format("%s.%s_source_VpnEnrichTask.usageType.field=src_usageType",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//put session update configuration as false  field
-				line = String.format("%s.%s_source_VpnEnrichTask.doSessionUpdate=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//put data bucket as false field
-				line = String.format("%s.%s_source_VpnEnrichTask.doDataBuckets=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//put geo location as true field
-				line = String.format("%s.%s_source_VpnEnrichTask.doGeoLocation=true",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//partition field name  (today we use for all the username)
-				line = String.format("%s.%s_source_VpnEnrichTask.partition.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//username
-				line = String.format("%s.%s_source_VpnEnrichTask.username.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				lastState="VpnEnrichTask";
-
-
-
-			}
-
-			if (tartgetGeoLocatedFlag) {
-
-				configureTaskMandatoryConfiguration(taskPropertiesFileWriter,topolegyResult,"dest_VpnEnrichTask","VpnEnrichTask","fortscale-generic-data-access-target-ip-geolocated");
-
-				//target ip field
-				line = String.format("%s.%s_dest_VpnEnrichTask.ip.field=${impala.data.%s.table.field.target_ip}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//country ip field
-				line = String.format("%s.%s_dest_VpnEnrichTask.country.field=dest_country",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//longtitude  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.longtitude.field=dest_longtitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//latitude  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.latitude.field=dest_latitude",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//countryIsoCode field
-				line = String.format("%s.%s_dest_VpnEnrichTask.countryIsoCode.field=dest_countryIsoCode",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//region  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.region.field=dest_region",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//city field
-				line = String.format("%s.%s_dest_VpnEnrichTask.city.field=dest_city",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//isp field
-				line = String.format("%s.%s_dest_VpnEnrichTask.isp.field=dest_isp",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//usageType field
-				line = String.format("%s.%s_dest_VpnEnrichTask.usageType.field=dest_usageType",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//put session update configuration as false  field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doSessionUpdate=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//put data bucket as false field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doDataBuckets=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//put geo location as true field
-				line = String.format("%s.%s_dest_VpnEnrichTask.doGeoLocation=true",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-				//partition field name  (today we use for all the username)
-				line = String.format("%s.%s_dest_VpnEnrichTask.partition.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				//username
-				line = String.format("%s.%s_dest_VpnEnrichTask.username.field=${impala.data.%s.table.field.username}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-
-				lastState="VpnEnrichTask";
-
-
-
-
-			}
-
-
-			//flush the writer for vpn-geolocation-session-update-task.properties
-			taskPropertiesFileWriter.flush();
-
-
-		} catch (Exception e) {
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			}
-			catch (IOException exception)
-			{
-				logger.error("There was an exception during the file - {} closing  , cause - {} ",taskPropertiesFile.getName(),exception.getMessage());
-
-			}
-		}
-	}
-	private void configureUserMongoUpdateTask(FileWriter taskPropertiesFileWriter,File taskPropertiesFile, Boolean topolegyResult,BufferedReader br) {
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			configureTaskMandatoryConfiguration(taskPropertiesFileWriter, topolegyResult, "UserMongoUpdateStreamTask", lastState, "");
-
-			//classifier value
-			line = String.format("%s.%s_UserMongoUpdateStreamTask.classifier=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, this.dataSourceName.toLowerCase());
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//Status field value
-			System.out.println(String.format("Do you want to update last activity for any raw that came and not only successed events (y/n)? "));
-			String brResult =br.readLine().toLowerCase();
-			Boolean anyRow = brResult.equals("y") || brResult.equals("yes");
-
-
-			if (anyRow) {
-				line = String.format("%s.%s_UserMongoUpdateStreamTask.success.field=#AnyRow#", FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				line = String.format("%s.%s_UserMongoUpdateStreamTask.success.value=#NotRelevant#",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			}
-			else {
-				//configure the field that represent the status
-				System.out.println(String.format("Please enter the field that will hold the message status   (i.e status,failure_code):"));
-				String statusFieldName =  br.readLine().toLowerCase();
-				line = String.format("%s.%s_UserMongoUpdateStreamTask.success.field=%s", FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,statusFieldName);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-				//SUCCESS  value
-				System.out.println(String.format("Please enter value that mark event as successed (i.c Accepted for ssh or SUCCESS for vpn 0x0 for kerberos ) :"));
-				String successValue = br.readLine();
-				line = String.format("%s.%s_UserMongoUpdateStreamTask.success.value=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, successValue);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			}
-
-
-			//logusername
-			line = String.format("%s.%s_UserMongoUpdateStreamTask.logusername.field=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, usernameFieldName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//normalized_username
-			line = String.format("%s.%s_UserMongoUpdateStreamTask.username.field=normalized_username",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			//TODO - NOT SURE THIS FILED IS NEEDED , NET TO VALIDATE AND IF NOT TO REMOVE IT
-			line = String.format("%s.%s_UserMongoUpdateStreamTask.UserMongoUpdateStreamTask.updateOnly=false",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//flush the writer for user-mongo-update-task.properties
-			taskPropertiesFileWriter.flush();
-
-
-
-		} catch (Exception e) {
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-		} finally {
-			try {
-				taskPropertiesFileWriter.close();
-			} catch (IOException exception) {
-
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
-
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-	}
-	private void configureHDFSWruteTask(FileWriter taskPropertiesFileWriter, File taskPropertiesFile, Boolean topolegyResult, BufferedReader br,String step){
-
-		try {
-			String line = "";
-			line = String.format("# %s", this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-			configureTaskMandatoryConfiguration(taskPropertiesFileWriter, topolegyResult, "enriched_HDFSWriterStreamTask", lastState, "fortscale-generic-data-access-enriched-after-write");
-
-			//bdp routing value
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.bdp.output.topics=",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//time stamp field
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.timestamp.field=${impala.data.%s.table.field.epochtime}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//normalized_username
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.username.field=normalized_username",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//enrich fields
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.fields=${impala.enricheddata.%s.table.fields}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//seperator fields
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.separator=${impala.enricheddata.%s.table.delimiter}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//hdfs path
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.hdfs.root=${hdfs.user.enricheddata.%s.path}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//file name
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.file.name=${hdfs.enricheddata.%s.file.name}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//table name  fields
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.table.name=${impala.enricheddata.%s.table.name}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//partition strategy fields
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.partition.strategy=${impala.enricheddata.%s.table.partition.type}",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//partition strategy fields
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.split.strategy=fortscale.utils.hdfs.split.DailyFileSplitStrategy",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//discriminator
-			System.out.println(String.format("Please enter the fields that be used as discriminators csv style (i.c resord_number,target_machine ) :"));
-			String discriminatorsFields = br.readLine().toLowerCase();
-			line = String.format("%s.%s_HDFSWriterStreamTask.discriminator.fields=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, discriminatorsFields);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-			//flush buffer size
-			writeLineToFile("# Buffer no more than 10000 events before flushing to HDFS", taskPropertiesFileWriter, true);
-			line = String.format("%s.%s_enriched_HDFSWriterStreamTask.events.flush.threshold=10000",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName);
-			writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-
-            //Key-Value store configuration
-
-            line = String.format("stores.hdfs-write-%sEnrich.factory=org.apache.samza.storage.kv.KeyValueStorageEngineFactory", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.changelog=kafka.hdfs-write-crmsfEnrich-changelog", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.key.serde=string", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.msg.serde=timebarrier", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("# This property is set to the number of key/value pairs that should be kept in this in-memory buffer, per task instance. The number cannot be greater than stores.*.object.cache.size.");
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.write.batch.size=25", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("# This property determines the number of objects to keep in Samza's cache, per task instance. This same cache is also used for write buffering (see stores.*.write.batch.size). A value of 0 disables all caching and batching.");
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.object.cache.size=100", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("# The size of LevelDB's block cache in bytes, per container. Note that this is an off-heap memory allocation, so the container's total memory use is the maximum JVM heap size plus the size of this cache.");
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.container.cache.size.bytes=2000", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("# The amount of memory (in bytes) that LevelDB uses for buffering writes before they are written to disk.");
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-            line = String.format("stores.hdfs-write-%sEnrich.container.write.buffer.size.bytes=1000", this.dataSourceName);
-            writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-
-			//flush the writer for hdfs write of enrich part
-			taskPropertiesFileWriter.flush();
-
-            lastState="enriched_HDFSWriterStreamTask";
-
-		}
-		catch (Exception e)
-		{
-			logger.error("There was an exception during the execution - {}",e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-		}
-
-		finally {
-			try {
-				taskPropertiesFileWriter.close();
-			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", taskPropertiesFile.getName(), exception.getMessage());
-
-				System.out.println(String.format("There was an exception during execution please see more info at the log "));
-
-			}
-		}
-
-	}
-
-	private void configureTaskMandatoryConfiguration(FileWriter taskPropertiesFileWriter ,Boolean topolegyResult, String name,String lastState,String outputTopic){
-		String line ="";
-		//name
-		line = String.format("%s.name.%s_%s=%s_%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, name,this.dataSourceName,name);
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-		//data source
-		line = String.format("%s.%s_%s.data.source=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,name, this.dataSourceName.toLowerCase());
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-		//last state
-		line = String.format("%s.%s_%s.last.state=%s",FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName,name,lastState);
-		writeLineToFile(line, taskPropertiesFileWriter, true);
-
-
-		if(!StringUtils.isBlank(outputTopic)) {
-			//GDS general topology
-			if (topolegyResult) {
-				line = String.format("%s.%s_%s.output.topic=%s", FORTSCALE_CONFIGURATION_PREFIX, this.dataSourceName, name, outputTopic);
-				writeLineToFile(line, taskPropertiesFileWriter, true);
-			} else {
-
-				System.out.println("Not supported yet via  this configuration tool ");
-				//TODO - Need to add the topic configuration  also for task.inputs and fortscale.events.entry.<dataSource>_UsernameNormalizationAndTaggingTask.output.topic
-
-			}
-		}
-
-	}
-
-	private String validatedFieldExietInSchema(String fieldName,Map<String,String> fieldsSchema,String fields,String showMessage) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		boolean exist =  fieldsSchema.containsKey(fieldName);
-		boolean result = false;
-
-		while (!exist) {
-
-			if (showMessage.equals("autoAddition")){
-				System.out.println(String.format("The %s field does not exist on the data schema you inserted going to be added automatically  ", fieldName));
-				fields += String.format(",%s STRING", fieldName);
-				this.dataFelds.put(fieldName, "STRING");
-				break;
-
-			}
-			else {
-				System.out.println(String.format("The %s field does not exist on the data schema you inserted do you want to add it (y/n)?", fieldName));
-				String brResult = br.readLine().toLowerCase();
-				result = brResult.equals("y") || brResult.equals("yes");
-				if (result) {
-					this.dataFelds.put(fieldName, "STRING");
-					break;
-				}
-				System.out.println(String.format(showMessage, fieldName));
-				fieldName = br.readLine().toLowerCase();
-				exist = fieldsSchema.containsKey(fieldName);
-			}
-		}
-
-			return fieldName;
-
-
-
-	}
-
-	private String convertDataSchemaMapToCSVlist(Map<String, String> updatedDataSourceSchema){
-		String result = "";
-
-		for (Map.Entry<String,String> entry :updatedDataSourceSchema.entrySet())
-		{
-			result+=entry.getKey()+" "+entry.getValue()+",";
-
-		}
-
-		return result.substring(0,result.length()-1);
 	}
 
 	private void spilitCSVtoMap(String fieldsCsv,Map<String,String> feldSchema) {
@@ -1861,8 +842,6 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			//this.scoreFelds.put(fieldDefSep[0],fieldDefSep[1]);
 		}
 	}
-
-
 
     @Override
     protected int getTotalNumOfSteps() { return 1; }
@@ -1886,7 +865,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	   }
 	   catch(Exception e)
 	   {
-		   logger.error("There was an exception during the execution - {}",e.getMessage());
+		   logger.error("There was an exception during the execution - {}",e);
 		   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 	   }
 
