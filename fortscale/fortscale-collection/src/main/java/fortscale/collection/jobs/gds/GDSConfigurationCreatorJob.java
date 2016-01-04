@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.jobs.gds.configurators.GDSConfigurationType;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
+import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
@@ -56,7 +56,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 		GDSConfiguratorFactory gdsConfiguratorFactory = new GDSConfiguratorFactory();
 
-		Map<String, GDSConfigurationType> mainMenuOptionToConfigurationType = createMainMenuOptionToConfigurationType();
+		Map<String, GDSConfiguratorType> mainMenuOptionToConfigurationType = createMainMenuOptionToConfigurationType();
 
 		while (true) {
 			String inputErrorMessage = null;
@@ -65,10 +65,10 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 			switch (stepInputNormalized) {
 				case "1":
 				case "2":
-					GDSConfigurationType gdsConfigurationType = mainMenuOptionToConfigurationType.get(stepInputNormalized);
+					GDSConfiguratorType gdsConfiguratorType = mainMenuOptionToConfigurationType.get(stepInputNormalized);
 
 					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
-					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfigurationType);
+					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
 
 					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
 
@@ -76,7 +76,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println("Configuration does not contain any changes to be applied.");
 					}
 					else {
-						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfigurationType);
+						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
 						currConfigurationState = configurator.configure(configurationParams);
 
 						System.out.println("Finished to configure. Do you want to apply changes now? (y/n)");
@@ -131,11 +131,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	}
 
-	private Map<String, GDSConfigurationType> createMainMenuOptionToConfigurationType() {
-		Map<String, GDSConfigurationType> mainMenuOptionToConfigurationType = new HashMap<>();
+	private Map<String, GDSConfiguratorType> createMainMenuOptionToConfigurationType() {
+		Map<String, GDSConfiguratorType> mainMenuOptionToConfigurationType = new HashMap<>();
 
-		mainMenuOptionToConfigurationType.put("1", GDSConfigurationType.SCHEMA);
-		mainMenuOptionToConfigurationType.put("2", GDSConfigurationType.COLLECTION);
+		mainMenuOptionToConfigurationType.put("1", GDSConfiguratorType.SCHEMA);
+		mainMenuOptionToConfigurationType.put("2", GDSConfiguratorType.COLLECTION);
 
 		return mainMenuOptionToConfigurationType;
 	}
@@ -153,15 +153,15 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		}
 	}
 
-	private Map<String, GDSConfigurationType> createEnrichmentMenuOptionToConfigurationType() {
-		Map<String, GDSConfigurationType> enrichmentMenuOptionToConfigurationType = new HashMap<>();
+	private Map<String, GDSConfiguratorType> createEnrichmentMenuOptionToConfigurationType() {
+		Map<String, GDSConfiguratorType> enrichmentMenuOptionToConfigurationType = new HashMap<>();
 
-		enrichmentMenuOptionToConfigurationType.put("1", GDSConfigurationType.USER_NORMALIZATION);
-		enrichmentMenuOptionToConfigurationType.put("2", GDSConfigurationType.IP_RESOLVING);
-		enrichmentMenuOptionToConfigurationType.put("3", GDSConfigurationType.COMPUTER_TAGGING);
-		enrichmentMenuOptionToConfigurationType.put("4", GDSConfigurationType.GEO_LOCATION);
-		enrichmentMenuOptionToConfigurationType.put("5", GDSConfigurationType.USER_MONGO_UPDATE);
-		enrichmentMenuOptionToConfigurationType.put("6", GDSConfigurationType.HDFS_WRITE);
+		enrichmentMenuOptionToConfigurationType.put("1", GDSConfiguratorType.USER_NORMALIZATION);
+		enrichmentMenuOptionToConfigurationType.put("2", GDSConfiguratorType.IP_RESOLVING);
+		enrichmentMenuOptionToConfigurationType.put("3", GDSConfiguratorType.COMPUTER_TAGGING);
+		enrichmentMenuOptionToConfigurationType.put("4", GDSConfiguratorType.GEO_LOCATION);
+		enrichmentMenuOptionToConfigurationType.put("5", GDSConfiguratorType.USER_MONGO_UPDATE);
+		enrichmentMenuOptionToConfigurationType.put("6", GDSConfiguratorType.HDFS_WRITE);
 
 		return enrichmentMenuOptionToConfigurationType;
 	}
@@ -171,7 +171,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		String stepInput = gdsInputHandler.getInput();
 
 		GDSConfiguratorFactory gdsConfiguratorFactory = new GDSConfiguratorFactory();
-		Map<String, GDSConfigurationType> enrichmentMenuOptionToConfigurationType = createEnrichmentMenuOptionToConfigurationType();
+		Map<String, GDSConfiguratorType> enrichmentMenuOptionToConfigurationType = createEnrichmentMenuOptionToConfigurationType();
 
 		while (true) {
 			String inputErrorMessage = null;
@@ -184,10 +184,10 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				case "4":
 				case "5":
 				case "6":
-					GDSConfigurationType gdsConfigurationType = enrichmentMenuOptionToConfigurationType.get(stepInputNormalized);
+					GDSConfiguratorType gdsConfiguratorType = enrichmentMenuOptionToConfigurationType.get(stepInputNormalized);
 
 					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
-					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfigurationType);
+					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
 
 					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
 
@@ -196,7 +196,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					}
 					else {
 
-						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfigurationType);
+						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
 						currConfigurationState = configurator.configure(configurationParams);
 
 						System.out.println("Finished to configure. Do you want to apply changes now? (y/n)");

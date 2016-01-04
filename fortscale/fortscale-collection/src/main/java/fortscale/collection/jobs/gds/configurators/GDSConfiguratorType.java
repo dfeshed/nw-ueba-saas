@@ -6,9 +6,9 @@ import fortscale.collection.jobs.gds.GDSConfigurator;
  * @author gils
  * 03/01/2016
  */
-public enum GDSConfigurationType {
-    COLLECTION(GDSCollectionConfigurator.class),
+public enum GDSConfiguratorType {
     SCHEMA(GDSSchemaConfigurator.class),
+    COLLECTION(GDSCollectionConfigurator.class),
     USER_NORMALIZATION(GDSUserNormalizationConfigurator.class),
     IP_RESOLVING(GDSIPResolvingConfigurator.class),
     COMPUTER_TAGGING(GDSComputerTaggingConfigurator.class),
@@ -18,7 +18,7 @@ public enum GDSConfigurationType {
 
     private Class<? extends GDSConfigurator> gdsConfiguratorClass;
 
-    GDSConfigurationType(Class<? extends GDSConfigurator> gdsConfiguratorClass) {
+    GDSConfiguratorType(Class<? extends GDSConfigurator> gdsConfiguratorClass) {
         this.gdsConfiguratorClass = gdsConfiguratorClass;
     }
 
