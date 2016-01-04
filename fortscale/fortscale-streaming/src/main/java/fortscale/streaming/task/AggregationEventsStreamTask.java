@@ -1,8 +1,6 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -18,6 +16,7 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
 	private String dateFieldName;
+	private Boolean skipSendingAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
@@ -25,9 +24,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-		
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
+		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
+
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 
@@ -35,7 +34,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
+
 	}
+
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
