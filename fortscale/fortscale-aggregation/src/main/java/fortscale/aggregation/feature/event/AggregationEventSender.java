@@ -2,7 +2,7 @@ package fortscale.aggregation.feature.event;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsKafkaSynchronizer;
-import fortscale.utils.kafka.MultiTopicsKafkaBatchSender;
+import fortscale.utils.kafka.MultiTopicsKafkaSender;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -21,7 +21,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 	private KafkaEventsWriter eventsWriter;
 
 	private String fTopic;
-	private MultiTopicsKafkaBatchSender multiTopicsKafkaBatchSender;
+	private MultiTopicsKafkaSender multiTopicsKafkaSender;
 	private String pTopic;
 
 	private int batchSize;
@@ -32,7 +32,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 				jobToMonitor, timeToWaitInMilliseconds, retries);
 		// Create multi-topics kakfa sender.
 		// As our application acts as single node, there's no need in the partition key
-		multiTopicsKafkaBatchSender = new MultiTopicsKafkaBatchSender(metricsKafkaSynchronizer, batchSize,
+		multiTopicsKafkaSender = new MultiTopicsKafkaSender(metricsKafkaSynchronizer, batchSize,
 				Arrays.asList(fTopic, pTopic), "");
 	}
 
@@ -48,7 +48,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 		}
 
 		try {
-			multiTopicsKafkaBatchSender.send(topicToSend, eventValue, timestamp);
+			multiTopicsKafkaSender.send(topicToSend, eventValue, timestamp);
 		}
 		catch (Exception ex) {
 			logger.error("Failed to send message to topic {}", topicToSend);

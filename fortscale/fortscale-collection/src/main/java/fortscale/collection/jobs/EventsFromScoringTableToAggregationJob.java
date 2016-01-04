@@ -1,6 +1,6 @@
 package fortscale.collection.jobs;
 
-import fortscale.utils.kafka.KafkaBatchSender;
+import fortscale.utils.kafka.KafkaSender;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -28,7 +28,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
     private int hoursToRun;
     private String dataSources;
     private DateTime startTime;
-    private KafkaBatchSender kafkaBatchSender;
+    private KafkaSender kafkaSender;
 
     private void populateDataSourceToParametersMap(JobDataMap map, String securityDataSources)
             throws JobExecutionException {
@@ -56,7 +56,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
         startTime = new DateTime(jobDataMapExtension.getJobDataMapLongValue(map, "startTime"));
         getGenericJobParameters(map);
         populateDataSourceToParametersMap(map, dataSources);
-        kafkaBatchSender = new KafkaBatchSender(metricsKafkaSynchronizer,
+        kafkaSender = new KafkaSender(metricsKafkaSynchronizer,
                 jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE),
                 jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER),
                 jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER));
@@ -74,8 +74,8 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
             }
             startTime = startTime.plusHours(1);
         }
-        kafkaBatchSender.flushMessages();
-        kafkaBatchSender.shutDown();
+        kafkaSender.flushMessages();
+        kafkaSender.shutDown();
         finishStep();
     }
 
@@ -99,7 +99,7 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
                     json.put(DATA_SOURCE_FIELD, dataSource);
-                    kafkaBatchSender.send(json.toJSONString(JSONStyle.NO_COMPRESS),
+                    kafkaSender.send(json.toJSONString(JSONStyle.NO_COMPRESS),
                             convertToLong(result.get(dataSourceParams.get(EPOCH_TIME_FIELD_JOB_PARAMETER))));
                 }
                 timestampCursor = nextTimestampCursor;
