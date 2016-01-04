@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.smart;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
 import fortscale.utils.time.TimestampUtils;
 import org.quartz.JobDataMap;
@@ -19,12 +20,13 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private static final String CHECK_RETRIES_ARG = "checkRetries";
 
 	@Autowired
-	private EntityEventService entityEventService;
+	private EntityEventDataStore entityEventDataStore;
 
 	private long startTimeInSeconds;
 	private long endTimeInSeconds;
 	private long timeIntervalInSeconds;
 	private KafkaThrottlerEntityEventSender sender;
+	private EntityEventService entityEventService;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -40,6 +42,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		int batchSize = jobDataMapExtension.getJobDataMapIntValue(jobDataMap, BATCH_SIZE_ARG);
 		int checkRetries = jobDataMapExtension.getJobDataMapIntValue(jobDataMap, CHECK_RETRIES_ARG);
 		sender = new KafkaThrottlerEntityEventSender(batchSize, checkRetries);
+		entityEventService = new EntityEventService(entityEventDataStore);
 	}
 
 	@Override
