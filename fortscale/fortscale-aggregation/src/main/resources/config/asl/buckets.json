@@ -982,15 +982,15 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.country_score >= 50)]"}
         },
         {
           "name": "failure_code_with_high_score_histogram",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": ["status"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.status_score >= 50)]"}
         }
       ]
     },
@@ -1043,15 +1043,15 @@
             "groupBy": ["country"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.countryscore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.country_score >= 50)]"}
         },
         {
           "name": "failure_code_with_high_score_histogram",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": ["status"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.failure_codescore >= 50)]"}
+          "filter": {"jsonPath": "[?(@.status_score >= 50)]"}
         }
       ]
     },
