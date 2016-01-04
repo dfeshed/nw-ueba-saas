@@ -1,7 +1,6 @@
-package fortscale.collection.jobs.smart;
+package fortscale.utils.kafka;
 
 import fortscale.utils.ConversionUtils;
-import fortscale.utils.kafka.IMetricsDecider;
 import org.json.JSONObject;
 import org.springframework.util.Assert;
 

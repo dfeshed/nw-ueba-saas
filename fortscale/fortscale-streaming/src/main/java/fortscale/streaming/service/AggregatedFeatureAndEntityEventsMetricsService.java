@@ -14,6 +14,8 @@ import java.util.Map;
 public class AggregatedFeatureAndEntityEventsMetricsService {
 	@Value("${fortscale.aggregation.events.counter.name.suffix}")
 	private String dataSourceCounterNameSuffix;
+	@Value("${fortscale.samza.aggregation.prevalence.stats.metrics.class}")
+	private String metricsClassName;
 
 	private TaskContext context;
 	private Map<String, Counter> counters;
@@ -26,22 +28,21 @@ public class AggregatedFeatureAndEntityEventsMetricsService {
 
 	public void updateMetrics(String dataSource) {
 		if (StringUtils.hasText(dataSource)) {
-			String counterName = String.format("%s%s", dataSource, dataSourceCounterNameSuffix);
-			incCounter(counterName);
+			incCounter(dataSource);
 		}
 	}
 
-	private void incCounter(String counterName) {
-		Counter counter = getCounter(counterName);
-		counter.inc();
+	private void incCounter(String dataSource) {
+		getCounter(dataSource).inc();
 	}
 
-	private Counter getCounter(String counterName) {
-		Counter counter = counters.get(counterName);
+	private Counter getCounter(String dataSource) {
+		Counter counter = counters.get(dataSource);
 
 		if (counter == null) {
-			counter = context.getMetricsRegistry().newCounter(getClass().getName(), counterName);
-			counters.put(counterName, counter);
+			String counterName = String.format("%s%s", dataSource, dataSourceCounterNameSuffix);
+			counter = context.getMetricsRegistry().newCounter(metricsClassName, counterName);
+			counters.put(dataSource, counter);
 		}
 
 		return counter;

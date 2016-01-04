@@ -74,7 +74,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
+	public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
 		String collectionName = getCollectionName(entityEventName);
 		/*
 		 * NOTE: Existence of collections should be checked directly against Mongo,
@@ -84,13 +84,13 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		 * takes a long time.
 		 */
 		if (mongoTemplate.collectionExists(collectionName)) {
-			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
-			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+			long fromTimeSeconds = TimestampUtils.convertToSeconds(fromTime.getTime());
+			long toTimeSeconds = TimestampUtils.convertToSeconds(toTime.getTime());
 
 			Query query = new Query();
-			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
-			query.addCriteria(where(EntityEventData.START_TIME_FIELD).lt(endTimeSeconds));
-			query.with(new Sort(Direction.ASC, EntityEventData.START_TIME_FIELD));
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).gte(fromTimeSeconds));
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(toTimeSeconds));
+			query.with(new Sort(Direction.ASC, EntityEventData.END_TIME_FIELD));
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		}
 
@@ -118,6 +118,10 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(EntityEventData.START_TIME_FIELD, Direction.ASC));
+
+			// End time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(EntityEventData.END_TIME_FIELD, Direction.ASC));
 
 			// Modified at date (TTL)
 			int daysToRetainDocument = EXPIRE_AFTER_DAYS_DEFAULT;

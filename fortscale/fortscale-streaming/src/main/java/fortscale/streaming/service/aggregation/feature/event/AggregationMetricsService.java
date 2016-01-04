@@ -17,7 +17,7 @@ public class AggregationMetricsService {
 	private static final String AGGREGATION_EVENT_TYPE_COUNTER_FORMAT = "aggregated-%s-event-sent-count";
 	private static final String AGGREGATION_FEATURE_EVENT_COUNTER_FORMAT = "%s-sent-count";
 	
-	@Value("${streaming.event.field.type}")
+    @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
     @Value("${streaming.event.field.type.aggr_event}")
     private String eventTypeFieldValue;
@@ -34,32 +34,29 @@ public class AggregationMetricsService {
     private Map<String, Counter> counters = new HashMap<>();
     
     public AggregationMetricsService(TaskContext context){
-    	this.context = context;
+        this.context = context;
     }
 	
 	public void sentEvent(JSONObject event){
 		String aggregatedFeatureType = aggrFeatureEventBuilderService.getAggregatedFeatureType(event);
-		String aggregatedEventTypeCounterStr = String.format(AGGREGATION_EVENT_TYPE_COUNTER_FORMAT, aggregatedFeatureType);
-		incCounter(aggregatedEventTypeCounterStr);
+		incCounter(AGGREGATION_EVENT_TYPE_COUNTER_FORMAT, aggregatedFeatureType);
 		
 		String aggregatedFeatureName = aggrFeatureEventBuilderService.getAggregatedFeatureName(event);
-		String aggregatedFeatureEventCounterStr =  String.format(AGGREGATION_FEATURE_EVENT_COUNTER_FORMAT, aggregatedFeatureName);
-		incCounter(aggregatedFeatureEventCounterStr);
+		incCounter(AGGREGATION_FEATURE_EVENT_COUNTER_FORMAT, aggregatedFeatureName);
 	}
 	
-	private Counter getCounter(String counterName){
-		Counter counter = counters.get(counterName);
+	private Counter getCounter(String format, String typeOrName){
+		Counter counter = counters.get(typeOrName);
 		if(counter == null){
+			String counterName = String.format(format, typeOrName);
 			counter = context.getMetricsRegistry().newCounter(getClass().getName(), counterName);
-			counters.put(counterName, counter);
+			counters.put(typeOrName, counter);
 		}
 		
 		return counter;
 	}
 	
-	private void incCounter(String counterName){
-		Counter counter = getCounter(counterName);
-		counter.inc();
+	private void incCounter(String format, String typeOrName){
+		getCounter(format, typeOrName).inc();
 	}
-
 }

@@ -75,7 +75,7 @@ public class EntityEventBuilder {
 
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds, IEntityEventSender sender, boolean updateStore) {
 		List<EntityEventData> listOfEntityEventData = entityEventDataStore
-				.getEntityEventDataInTimeRange(entityEventConf.getName(), startTime, endTime);
+				.getEntityEventDataWithEndTimeInRange(entityEventConf.getName(), startTime, endTime);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
 			if (updateStore) {

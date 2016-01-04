@@ -4,18 +4,27 @@ import fortscale.utils.kafka.IMetricsDecider;
 import org.json.JSONObject;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class CaptorMetricsDecider implements IMetricsDecider {
-	private String metricToCapture;
-	private Object capturedMetric;
+	private Collection<String> metricsToCapture;
+	private Map<String, Object> capturedMetrics;
 
 	/**
-	 * @param metricToCapture The key of the metric that needs to be captured.
-	 *                        This key cannot be null, empty or blank.
+	 * @param metricsToCapture The keys of the metrics that need to be captured.
+	 *                         This collection cannot be null or empty.
+	 *                         The keys cannot be null, empty or blank.
 	 */
-	public CaptorMetricsDecider(String metricToCapture) {
-		Assert.hasText(metricToCapture);
-		this.metricToCapture = metricToCapture;
-		this.capturedMetric = null;
+	public CaptorMetricsDecider(Collection<String> metricsToCapture) {
+		Assert.notEmpty(metricsToCapture);
+		for (String metricToCapture : metricsToCapture) {
+			Assert.hasText(metricToCapture);
+		}
+
+		this.metricsToCapture = metricsToCapture;
+		this.capturedMetrics = new HashMap<>();
 	}
 
 	@Override
@@ -24,14 +33,16 @@ public class CaptorMetricsDecider implements IMetricsDecider {
 			return false;
 		}
 
-		if (metrics.has(metricToCapture)) {
-			capturedMetric = metrics.get(metricToCapture);
+		for (String metricToCapture : metricsToCapture) {
+			if (metrics.has(metricToCapture)) {
+				capturedMetrics.put(metricToCapture, metrics.get(metricToCapture));
+			}
 		}
 
-		return capturedMetric != null;
+		return capturedMetrics.size() == metricsToCapture.size();
 	}
 
-	public Object getCapturedMetric() {
-		return capturedMetric;
+	public Map<String, Object> getCapturedMetricsMap() {
+		return capturedMetrics;
 	}
 }

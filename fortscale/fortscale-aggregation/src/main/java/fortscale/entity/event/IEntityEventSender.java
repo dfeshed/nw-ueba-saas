@@ -8,9 +8,4 @@ public interface IEntityEventSender {
 	 *                    If entityEvent == null, the entity event will be discarded.
 	 */
 	public void send(JSONObject entityEvent);
-
-	/**
-	 * Closes the entity event sender.
-	 */
-	public void close();
 }

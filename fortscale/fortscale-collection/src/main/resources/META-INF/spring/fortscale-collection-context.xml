@@ -269,6 +269,6 @@
 	<!-- Entity events related beans -->
 	<bean id="entityEventService" class="fortscale.entity.event.EntityEventService" scope="singleton"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService" scope="singleton"/>
-	<!-- TODO: Not really used - Can this be null somehow? If not, need to autowire nested beans as well -->
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
+	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 </beans>

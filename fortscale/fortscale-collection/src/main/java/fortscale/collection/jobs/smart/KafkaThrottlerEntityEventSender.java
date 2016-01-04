@@ -6,6 +6,7 @@ import fortscale.entity.event.IEntityEventSender;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
+import fortscale.utils.kafka.ReachSumMetricsDecider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -31,20 +32,21 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 	private String counterNameSuffix;
 	@Value("${broker.list}")
 	private String brokerList;
-	@Value("${fortscale.aggregation.events.counter.creation.job}")
+	@Value("${fortscale.samza.aggregation.prevalence.stats.metrics.task}")
 	private String counterCreationJob;
-	@Value("${fortscale.aggregation.events.counter.creation.class}")
+	@Value("${fortscale.samza.aggregation.prevalence.stats.metrics.class}")
 	private String counterCreationClass;
 	@Value("${kafka.entity.event.topic}")
 	private String outputTopicName;
 
 	private int batchSize;
 	private int checkRetries;
-	private List<JSONObject> entityEvents;
 	private List<String> metricsOfEntityEvents;
 	private String zookeeper;
 	private int port;
 	private KafkaEventsWriter kafkaEventsWriter;
+	private int batchCounter;
+	private long counterMetricsSum;
 
 	public KafkaThrottlerEntityEventSender(int batchSize, int checkRetries) {
 		Assert.isTrue(batchSize > 0);
@@ -53,7 +55,6 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 
 		this.batchSize = batchSize;
 		this.checkRetries = checkRetries;
-		this.entityEvents = new ArrayList<>();
 		this.metricsOfEntityEvents = new ArrayList<>();
 		this.zookeeper = brokerListSplit[0];
 		this.port = Integer.parseInt(brokerListSplit[1]);
@@ -62,21 +63,23 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		for (EntityEventConf entityEventConf : entityEventConfService.getEntityEventDefinitions()) {
 			metricsOfEntityEvents.add(getCounterName(entityEventConf));
 		}
+
+		this.batchCounter = 0;
+		this.counterMetricsSum = getCounterMetricsSum();
 	}
 
 	@Override
 	public void send(JSONObject entityEvent) {
 		if (entityEvent == null) {
 			return;
-		} else {
-			entityEvents.add(entityEvent);
 		}
 
-		if (entityEvents.size() == batchSize) {
-			long initialCounterMetricsSum = getCounterMetricsSum();
-			sendEntityEvents();
+		kafkaEventsWriter.send(null, entityEvent.toJSONString(JSONStyle.NO_COMPRESS));
+		batchCounter++;
+
+		if (batchCounter == batchSize) {
 			ReachSumMetricsDecider decider = new ReachSumMetricsDecider(
-					metricsOfEntityEvents, initialCounterMetricsSum + batchSize);
+					metricsOfEntityEvents, counterMetricsSum + batchSize);
 			boolean result = MetricsReader.waitForMetrics(
 					zookeeper, port, counterCreationClass, counterCreationJob,
 					decider, MILLISECONDS_TO_WAIT, checkRetries);
@@ -85,13 +88,11 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 				String errorMsg = "Waiting for processing of entity events timed out.";
 				logger.error(errorMsg);
 				throw new RuntimeException(errorMsg);
+			} else {
+				counterMetricsSum += batchSize;
+				batchCounter = 0;
 			}
 		}
-	}
-
-	@Override
-	public void close() {
-		sendEntityEvents();
 	}
 
 	private String getCounterName(EntityEventConf entityEventConf) {
@@ -101,26 +102,17 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 	private long getCounterMetricsSum() {
 		long counterMetricsSum = 0;
 
-		for (String metric : metricsOfEntityEvents) {
-			CaptorMetricsDecider captor = new CaptorMetricsDecider(metric);
-			boolean result = MetricsReader.waitForMetrics(
-					zookeeper, port, counterCreationClass, counterCreationJob,
-					captor, MILLISECONDS_TO_WAIT, checkRetries);
-			Long counter = ConversionUtils.convertToLong(captor.getCapturedMetric());
+		CaptorMetricsDecider captor = new CaptorMetricsDecider(metricsOfEntityEvents);
+		MetricsReader.waitForMetrics(zookeeper, port, counterCreationClass, counterCreationJob,
+				captor, MILLISECONDS_TO_WAIT, checkRetries);
 
-			if (result && counter != null) {
+		for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
+			Long counter = ConversionUtils.convertToLong(capturedMetric);
+			if (counter != null) {
 				counterMetricsSum += counter;
 			}
 		}
 
 		return counterMetricsSum;
-	}
-
-	private void sendEntityEvents() {
-		for (JSONObject entityEvent : entityEvents) {
-			kafkaEventsWriter.send(null, entityEvent.toJSONString(JSONStyle.NO_COMPRESS));
-		}
-
-		entityEvents.clear();
 	}
 }

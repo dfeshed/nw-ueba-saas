@@ -77,9 +77,9 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     @Override
-    public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
+    public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
         List<EntityEventData> returnedList = new ArrayList<>();
-        for (EntityEventData fromMongo : super.getEntityEventDataInTimeRange(entityEventName, startTime, endTime)) {
+        for (EntityEventData fromMongo : super.getEntityEventDataWithEndTimeInRange(entityEventName, fromTime, toTime)) {
             EntityEventData fromSamza = entityEventStore.get(getEntityEventDataKey(fromMongo));
             if (fromSamza == null) {
                 returnedList.add(fromMongo);

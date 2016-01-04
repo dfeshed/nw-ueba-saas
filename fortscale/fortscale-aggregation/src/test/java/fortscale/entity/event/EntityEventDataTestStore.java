@@ -40,20 +40,20 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataInTimeRange(String entityEventName, Date startTime, Date endTime) {
-		long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
-		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+	public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
+		long fromTimeSeconds = TimestampUtils.convertToSeconds(fromTime.getTime());
+		long toTimeSeconds = TimestampUtils.convertToSeconds(toTime.getTime());
 
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();
 			EntityEventData value = entry.getValue();
-			if (StringUtils.startsWith(key, entityEventName) && startTimeSeconds <= value.getStartTime() && value.getEndTime() <= endTimeSeconds) {
+			if (StringUtils.startsWith(key, entityEventName) && fromTimeSeconds <= value.getEndTime() && value.getEndTime() <= toTimeSeconds) {
 				listOfEntityEventData.add(value);
 			}
 		}
 
-		Collections.sort(listOfEntityEventData, new EntityEventDataStartTimeComparator());
+		Collections.sort(listOfEntityEventData, new EntityEventDataEndTimeComparator());
 		return listOfEntityEventData;
 	}
 
@@ -77,6 +77,13 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 		@Override
 		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
 			return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
+		}
+	}
+
+	private static final class EntityEventDataEndTimeComparator implements Comparator<EntityEventData> {
+		@Override
+		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+			return Long.compare(entityEventData1.getEndTime(), entityEventData2.getEndTime());
 		}
 	}
 
