@@ -14,7 +14,7 @@ import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;

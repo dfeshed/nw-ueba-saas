@@ -1,6 +1,7 @@
 package fortscale.streaming.scorer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.event.EventMessage;
 import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
 import fortscale.utils.ConversionUtils;
 import org.apache.samza.config.Config;

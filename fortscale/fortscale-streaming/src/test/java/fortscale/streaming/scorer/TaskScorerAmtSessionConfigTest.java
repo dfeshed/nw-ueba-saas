@@ -1,5 +1,6 @@
 package fortscale.streaming.scorer;
 
+import fortscale.common.event.EventMessage;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.junit.Assert;

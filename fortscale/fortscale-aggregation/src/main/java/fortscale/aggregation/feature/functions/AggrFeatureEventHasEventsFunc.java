@@ -6,7 +6,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 /**

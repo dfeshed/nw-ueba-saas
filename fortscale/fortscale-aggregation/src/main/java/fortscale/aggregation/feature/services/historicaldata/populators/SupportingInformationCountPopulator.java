@@ -1,14 +1,13 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.context.annotation.Scope;

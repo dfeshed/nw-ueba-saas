@@ -3,7 +3,7 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.*;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;

@@ -4,6 +4,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 
 import java.util.regex.Pattern;
 
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.Config;
 
 public abstract class RegexScorer extends AbstractScorer {

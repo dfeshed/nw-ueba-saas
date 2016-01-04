@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 

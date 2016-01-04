@@ -563,5 +563,6 @@
 		<module>fortscale-collection</module>
 		<module>fortscale-streaming</module>
 		<module>fortscale-flume</module>
+		<module>fortscale-common</module>
 	</modules>
 </project>

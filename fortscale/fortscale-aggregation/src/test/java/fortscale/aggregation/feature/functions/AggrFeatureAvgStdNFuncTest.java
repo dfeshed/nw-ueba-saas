@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Matchers.anyString;
 
 /**
  * Created by amira on 18/06/2015.

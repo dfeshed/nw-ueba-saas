@@ -6,9 +6,10 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureNumericValue;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.ConversionUtils;
@@ -108,7 +109,7 @@ public class AggrFeatureMaxIntegerFunc implements IAggrFeatureFunction, IAggrFea
 
 	
 	@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-	public class AggrFeatureMaxValue extends AggrFeatureValue{
+	public class AggrFeatureMaxValue extends AggrFeatureValue {
 		private Integer comparedValue;
 		
 		public AggrFeatureMaxValue(Object value, Integer comparedValue, Long total){

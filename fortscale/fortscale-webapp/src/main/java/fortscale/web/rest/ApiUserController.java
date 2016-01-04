@@ -8,7 +8,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
-import fortscale.services.exceptions.InvalidValueException;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;

@@ -111,9 +111,11 @@ public class ModelBuilderManager {
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
+        Date startTime = new Date(endTime.getTime()-modelConf.getDataRetrieverConf().getTimeRangeInSeconds());
+
         // Store
         try {
-            modelStore.save(modelConf, sessionId, contextId, model, endTime);
+            modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             return ModelBuildingStatus.STORE_FAILURE;
         }

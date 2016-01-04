@@ -2,8 +2,8 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 
 import java.util.Map;

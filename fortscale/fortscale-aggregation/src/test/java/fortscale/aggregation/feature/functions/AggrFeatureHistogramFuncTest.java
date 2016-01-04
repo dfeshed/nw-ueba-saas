@@ -1,11 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureNumericValue;
-import fortscale.aggregation.feature.FeatureStringValue;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureStringValue;
+import fortscale.common.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;

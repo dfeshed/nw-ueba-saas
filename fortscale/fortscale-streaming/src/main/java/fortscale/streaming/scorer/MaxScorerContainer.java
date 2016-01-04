@@ -3,6 +3,7 @@ package fortscale.streaming.scorer;
 import java.util.ArrayList;
 import java.util.List;
 
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.Config;
 
 public class MaxScorerContainer extends ScorerContainer {

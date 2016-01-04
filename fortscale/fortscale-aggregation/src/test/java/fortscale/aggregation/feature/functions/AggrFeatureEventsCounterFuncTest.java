@@ -5,16 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.FeatureNumericValue;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 
 /**
  * Created by orend on 26/07/2015.
