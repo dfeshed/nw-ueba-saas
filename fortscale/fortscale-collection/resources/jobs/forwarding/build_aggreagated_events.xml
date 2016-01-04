@@ -7,7 +7,7 @@
 
     <schedule>
         <job>
-            <name>MongoToKafka</name>
+            <name>AggregationEvents</name>
             <group>Forwarding</group>
             <description>Forwards objects from Mongo to Kafka topics</description>
             <job-class>fortscale.collection.jobs.BuildAggregatedEventsJob</job-class>
