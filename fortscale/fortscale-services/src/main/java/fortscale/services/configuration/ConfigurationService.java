@@ -1,6 +1,6 @@
 package fortscale.services.configuration;
 
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public abstract class ConfigurationService {
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
     protected Map<String,ConfigurationParam> configurationParams;
-	protected GDSConfigurationStateImpl gdsConfigurationState;
+	protected GDSCompositeConfigurationState gdsConfigurationState;
 
 	public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
         this.configurationParams = configurationParams;
@@ -76,7 +76,7 @@ public abstract class ConfigurationService {
 		return null;
 	}
 
-	public void setGDSConfigurationState(GDSConfigurationStateImpl gdsConfigurationState) {
+	public void setGDSConfigurationState(GDSCompositeConfigurationState gdsConfigurationState) {
 		this.gdsConfigurationState = gdsConfigurationState;
 	}
 }

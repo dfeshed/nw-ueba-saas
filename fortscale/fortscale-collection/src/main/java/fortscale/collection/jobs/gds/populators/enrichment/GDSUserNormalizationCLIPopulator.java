@@ -4,7 +4,7 @@ import fortscale.collection.jobs.gds.GDSInputHandler;
 import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
     private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
 
     @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
+    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
         Map<String, ConfigurationParam> paramsMap = new HashMap<>();
 
         String dataSourceName = currentConfigurationState.getDataSourceName();

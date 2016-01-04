@@ -4,7 +4,7 @@ import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.*;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 import fortscale.utils.logging.Logger;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ public class GDSEnrichmentConfigurator implements GDSConfigurator{
      * This method will configure the entire streaming configuration - Enrich , Single model/score, Aggregation
      * @param configurationParams
      */
-    public GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         return null;
 //
 //        super.configure(configurationParams);

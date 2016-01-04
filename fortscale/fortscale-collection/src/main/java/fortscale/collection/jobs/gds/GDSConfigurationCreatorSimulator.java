@@ -5,6 +5,8 @@ import fortscale.utils.logging.Logger;
 import java.io.IOException;
 
 /**
+ * Generic Data Source configuration creator job runner
+ *
  * @author gils
  * 29/12/2015
  */
@@ -20,8 +22,8 @@ public class GDSConfigurationCreatorSimulator {
         }
         catch(Exception e)
         {
-            logger.error("There was an exception during the execution - {}", e);
-            System.out.println("There was an exception during execution. please see more info at the log");
+            logger.error("Exception during execution - {}", e);
+            System.out.println("Exception during execution. please see more info at the log");
         }
     }
 }

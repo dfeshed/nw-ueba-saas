@@ -9,7 +9,12 @@ import fortscale.collection.jobs.gds.GDSConfigurator;
 public enum GDSConfigurationType {
     COLLECTION(GDSCollectionConfigurator.class),
     SCHEMA(GDSSchemaConfigurator.class),
-    ENRICHMENT(GDSEnrichmentConfigurator.class);
+    USER_NORMALIZATION(GDSUserNormalizationConfigurator.class),
+    IP_RESOLVING(GDSIPResolvingConfigurator.class),
+    COMPUTER_TAGGING(GDSComputerTaggingConfigurator.class),
+    GEO_LOCATION(GDSGeoLocationConfigurator.class),
+    USER_MONGO_UPDATE(GDSUserMongoUpdateConfigurator.class),
+    HDFS_WRITE(GDSHDFSWriterConfigurator.class);
 
     private Class<? extends GDSConfigurator> gdsConfiguratorClass;
 

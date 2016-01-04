@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
-    public GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) {
+    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) {
         return null;
     }
 

@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.gds.populators.enrichment;
 
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
 
     @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
+    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
 
         Map<String, ConfigurationParam> paramsMap = new HashMap<>();
 

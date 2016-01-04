@@ -4,7 +4,7 @@ package fortscale.services.configuration.state;
  * @author gils
  * 30/12/2015
  */
-public class GDSConfigurationStateImpl implements Resettable{
+public class GDSCompositeConfigurationState implements Resettable{
 
     private BaseDefinitionState baseDefinitionState = new BaseDefinitionState();
     private SchemaDefinitionState schemaDefinitionState = new SchemaDefinitionState();

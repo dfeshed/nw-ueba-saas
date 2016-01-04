@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.state.GDSEntityType;
 
 import java.util.Map;
@@ -13,9 +13,9 @@ import java.util.Map;
  */
 abstract class GDSBaseConfigurator implements GDSConfigurator {
 
-    protected GDSConfigurationStateImpl gdsConfigurationState = new GDSConfigurationStateImpl();
+    protected GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
 
-    public GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         ConfigurationParam dataSourceName = configurationParams.get("dataSourceName");
         ConfigurationParam dataSourceType = configurationParams.get("dataSourceType");
         ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");

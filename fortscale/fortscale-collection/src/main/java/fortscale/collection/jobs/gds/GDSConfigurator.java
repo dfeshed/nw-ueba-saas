@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ import java.util.Map;
  * 30/12/2015
  */
 public interface GDSConfigurator {
-    GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) throws Exception;
+    GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception;
     void apply() throws Exception;
     void reset() throws Exception;
 }

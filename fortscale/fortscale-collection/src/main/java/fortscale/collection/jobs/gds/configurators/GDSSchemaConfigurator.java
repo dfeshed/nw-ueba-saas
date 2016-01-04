@@ -4,7 +4,7 @@ import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.InitPartConfiguration;
-import fortscale.services.configuration.state.GDSConfigurationStateImpl;
+import fortscale.services.configuration.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.state.GDSEntityType;
 import fortscale.services.configuration.state.SchemaDefinitionState;
 import fortscale.utils.logging.Logger;
@@ -21,11 +21,11 @@ public class GDSSchemaConfigurator implements GDSConfigurator {
 
     private static Logger logger = Logger.getLogger(GDSSchemaConfigurator.class);
 
-    private GDSConfigurationStateImpl gdsConfigurationState = new GDSConfigurationStateImpl();
+    private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
 
     private ConfigurationService initConfigurationService = new InitPartConfiguration();
 
-    public GDSConfigurationStateImpl configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         ConfigurationParam dataSourceName = configurationParams.get("dataSourceName");
         ConfigurationParam dataSourceType = configurationParams.get("dataSourceType");
         ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");
@@ -88,6 +88,7 @@ public class GDSSchemaConfigurator implements GDSConfigurator {
         initConfigurationService.done();
     }
 
+    @Override
     public void reset() throws Exception {
         gdsConfigurationState.reset();
     }
