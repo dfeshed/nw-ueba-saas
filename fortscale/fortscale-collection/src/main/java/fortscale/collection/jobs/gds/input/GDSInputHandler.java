@@ -1,9 +1,11 @@
-package fortscale.collection.jobs.gds;
+package fortscale.collection.jobs.gds.input;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
+ * Interface for generic data source input handler
+ *
  * @author gils
  * 30/12/2015
  */

@@ -1,10 +1,12 @@
-package fortscale.services.configuration.state;
+package fortscale.services.configuration;
 
 /**
+ * Enum of logical entity types
+ *
  * @author gils
  * 30/12/2015
  */
-public enum GDSEntityType {
+public enum EntityType {
     BASE,
     ACCESS_EVENT,
     AUTH_EVENT,

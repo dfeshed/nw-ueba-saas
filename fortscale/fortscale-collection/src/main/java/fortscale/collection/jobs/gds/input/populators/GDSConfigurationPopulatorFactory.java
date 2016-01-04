@@ -1,10 +1,11 @@
-package fortscale.collection.jobs.gds;
+package fortscale.collection.jobs.gds.input.populators;
 
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
-import fortscale.collection.jobs.gds.populators.GDSSchemaDefinitionCLIPopulator;
-import fortscale.collection.jobs.gds.populators.enrichment.*;
+import fortscale.collection.jobs.gds.input.populators.enrichment.*;
 
 /**
+ * Factory class of populators
+ *
  * @author gils
  * 03/01/2016
  */

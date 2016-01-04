@@ -1,10 +1,12 @@
-package fortscale.services.configuration.state;
+package fortscale.services.configuration.gds.state;
 
 /**
+ * Enrichment definition state
+ *
  * @author gils
  * 31/12/2015
  */
-public class EnrichmentDefinitionState implements GDSConfigurationState{
+public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
     private UserNormalizationState userNormalizationState = new UserNormalizationState();
     private IPResolvingState ipResolvingState = new IPResolvingState();
@@ -17,11 +19,7 @@ public class EnrichmentDefinitionState implements GDSConfigurationState{
         return ipResolvingState;
     }
 
-    @Override
-    public void reset() {
-    }
-
-    public static class UserNormalizationState {
+    public static class UserNormalizationState implements GDSConfigurationState{
         private String userNameField;
         private String domainField;
         private String domainValue;
@@ -76,9 +74,19 @@ public class EnrichmentDefinitionState implements GDSConfigurationState{
         public void setUpdateOnly(String updateOnly) {
             this.updateOnly = updateOnly;
         }
+
+        @Override
+        public void reset() {
+            userNameField = null;
+            domainField = null;
+            domainValue = null;
+            normalizedUserNameField = null;
+            normalizeServiceName = null;
+            updateOnly = null;
+        }
     }
 
-    public static class IPResolvingState {
+    public static class IPResolvingState implements GDSConfigurationState{
 
         private boolean restrictToAD;
         private boolean shortNameUsage;
@@ -134,5 +142,21 @@ public class EnrichmentDefinitionState implements GDSConfigurationState{
         public void setHostField(String hostField) {
             this.hostField = hostField;
         }
+
+        @Override
+        public void reset() {
+            restrictToAD = false;
+            shortNameUsage = false;
+            dropOnFailUsage = false;
+            overrideIpWithHostNameUsage = false;
+            ipField = null;
+            hostField = null;
+        }
+    }
+
+    @Override
+    public void reset() {
+        userNormalizationState.reset();
+        ipResolvingState.reset();
     }
 }

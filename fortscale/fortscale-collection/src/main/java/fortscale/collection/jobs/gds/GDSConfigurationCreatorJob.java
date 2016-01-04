@@ -1,23 +1,25 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.gds.configurators.GDSConfigurator;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
 import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
-import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
+import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
+import fortscale.collection.jobs.gds.input.GDSInputHandler;
+import fortscale.collection.jobs.gds.input.populators.GDSConfigurationPopulatorFactory;
+import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Generic Data Source configuration creator - job implementation
+ * Generic Data Source configuration creator job implementation
  *
  * Created by idanp on 12/1/2015.
  */
@@ -25,7 +27,19 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(GDSConfigurationCreatorJob.class);
 
-	private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+	private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
+
+	private GDSCompositeConfigurationState currConfigurationState = new GDSCompositeConfigurationState();
+
+	private GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
+
+	private GDSConfiguratorFactory gdsConfiguratorFactory = new GDSConfiguratorFactory();
+
+	private Map<String, GDSConfiguratorType> mainMenuOptionToConfigurationType = createMainMenuOptionToConfigurationType();
+
+	private Map<String, GDSConfiguratorType> enrichmentMenuOptionToConfigurationType = createEnrichmentMenuOptionToConfigurationType();
+
+	private Queue<GDSConfigurator> dirtyConfiguratorsQueue = new LinkedList<>();
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -53,22 +67,14 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	private void handleMainMenuUserInput(String optionInput) throws Exception {
 
-		GDSCompositeConfigurationState currConfigurationState = new GDSCompositeConfigurationState();
-
-		GDSConfiguratorFactory gdsConfiguratorFactory = new GDSConfiguratorFactory();
-
-		Map<String, GDSConfiguratorType> mainMenuOptionToConfigurationType = createMainMenuOptionToConfigurationType();
-
 		while (true) {
 			String inputErrorMessage = null;
 
 			String stepInputNormalized = optionInput.trim();
 			switch (stepInputNormalized) {
 				case "1":
-				case "2":
 					GDSConfiguratorType gdsConfiguratorType = mainMenuOptionToConfigurationType.get(stepInputNormalized);
 
-					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
 					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
 
 					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
@@ -91,24 +97,27 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							configurator.reset();
 						}
+						else {
+							dirtyConfiguratorsQueue.add(configurator);
+						}
 					}
 					break;
-				case "3":
+				case "2":
 					if (canEnterEnrichmentPhase(currConfigurationState)) {
 						GDSMenuPrinterHelper.printEnrichmentMenu();
-						handleEnrichmentConfiguration(currConfigurationState);
+						handleEnrichmentConfiguration();
 					}
 					else {
 						inputErrorMessage = "Could not enter enrichment phase. Schema must be defined first.";
 					}
 					break;
+				case "3":
+					applyAllDirtyConfigurators();
+					break;
 				case "4":
-					applyConfigurations();
+					resetConfigurators(currConfigurationState);
 					break;
 				case "5":
-					resetConfigurations(currConfigurationState);
-					break;
-				case "6":
 					System.exit(0);
 					break;
 				default: // illegal operation
@@ -136,21 +145,22 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		Map<String, GDSConfiguratorType> mainMenuOptionToConfigurationType = new HashMap<>();
 
 		mainMenuOptionToConfigurationType.put("1", GDSConfiguratorType.SCHEMA);
-		mainMenuOptionToConfigurationType.put("2", GDSConfiguratorType.COLLECTION);
 
 		return mainMenuOptionToConfigurationType;
 	}
 
-	private void resetConfigurations(GDSCompositeConfigurationState gdsConfigurationState) {
+	private void resetConfigurators(GDSCompositeConfigurationState gdsConfigurationState) {
 		gdsConfigurationState.reset();
-
-		System.out.println("Configuration was reset successfully.");
 	}
 
-	private void applyConfigurations() throws Exception {
-		List<GDSConfigurator> dirtyConfigurators = findDirtyConfigurations();
-		for (GDSConfigurator dirtyConfigurator : dirtyConfigurators) {
-			dirtyConfigurator.apply();
+	private void applyAllDirtyConfigurators() throws Exception {
+		Iterator<GDSConfigurator> gdsConfiguratorIterator = dirtyConfiguratorsQueue.iterator();
+		while (gdsConfiguratorIterator.hasNext()) {
+			GDSConfigurator gdsDirtyConfigurator = gdsConfiguratorIterator.next();
+
+			gdsDirtyConfigurator.apply();
+
+			gdsConfiguratorIterator.remove();
 		}
 	}
 
@@ -167,12 +177,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		return enrichmentMenuOptionToConfigurationType;
 	}
 
-	private void handleEnrichmentConfiguration(GDSCompositeConfigurationState currConfigurationState) throws Exception {
+	private void handleEnrichmentConfiguration() throws Exception {
 		System.out.println("Please enter your choice:");
 		String stepInput = gdsInputHandler.getInput();
-
-		GDSConfiguratorFactory gdsConfiguratorFactory = new GDSConfiguratorFactory();
-		Map<String, GDSConfiguratorType> enrichmentMenuOptionToConfigurationType = createEnrichmentMenuOptionToConfigurationType();
 
 		while (true) {
 			String inputErrorMessage = null;
@@ -215,10 +222,12 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 					break;
 				case "7":
-					applyConfigurations();
+					applyAllDirtyConfigurators();
+					System.out.println("All configuration changes applied successfully.");
 					break;
 				case "8":
-					resetConfigurations(currConfigurationState);
+					resetConfigurators(currConfigurationState);
+					System.out.println("Configuration was reset successfully.");
 					break;
 				case "9":
 					System.exit(0);
@@ -236,10 +245,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 			}
 			stepInput = gdsInputHandler.getInput();
 		}
-	}
-
-	private List<GDSConfigurator> findDirtyConfigurations() {
-		return null; // TODO implement
 	}
 
 	@Override

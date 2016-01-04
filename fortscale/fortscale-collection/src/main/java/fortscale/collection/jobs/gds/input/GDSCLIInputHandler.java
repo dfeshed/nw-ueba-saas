@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.gds;
+package fortscale.collection.jobs.gds.input;
 
 import fortscale.utils.logging.Logger;
 
@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Command line implementation of Generic data source Input handler
+ *
  * @author gils
  * 30/12/2015
  */
-public class GDSStandardInputHandler implements GDSInputHandler {
-    private static Logger logger = Logger.getLogger(GDSStandardInputHandler.class);
+public class GDSCLIInputHandler implements GDSInputHandler {
+    private static Logger logger = Logger.getLogger(GDSCLIInputHandler.class);
 
     private BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 

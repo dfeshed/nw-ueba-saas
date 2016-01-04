@@ -1,25 +1,21 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
+import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.InitPartConfiguration;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
-import fortscale.services.configuration.state.GDSEntityType;
-import fortscale.services.configuration.state.SchemaDefinitionState;
-import fortscale.utils.logging.Logger;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 
 import java.util.Map;
 
 /**
- * Configure the Init configuration - The part that support the schema (HDFS paths and impala tables)
+ * Schema configurator implementation (HDFS paths and impala tables)
  *
  * @author gils
  * 30/12/2015
  */
 public class GDSSchemaConfigurator implements GDSConfigurator {
-
-    private static Logger logger = Logger.getLogger(GDSSchemaConfigurator.class);
 
     private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
 
@@ -31,51 +27,52 @@ public class GDSSchemaConfigurator implements GDSConfigurator {
         ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");
 
         gdsConfigurationState.setDataSourceName(dataSourceName.getParamValue());
-        gdsConfigurationState.setEntityType(GDSEntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
+        gdsConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
         gdsConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
 
-        SchemaDefinitionState schemaDefinitionState = gdsConfigurationState.getSchemaDefinitionState();
+        GDSSchemaDefinitionState GDSSchemaDefinitionState = gdsConfigurationState.getGDSSchemaDefinitionState();
         Boolean sourceIpFlag = configurationParams.get("sourceIpFlag").getParamFlag();
-        schemaDefinitionState.setHasSourceIp(sourceIpFlag);
+        GDSSchemaDefinitionState.setHasSourceIp(sourceIpFlag);
 
         Boolean targetIpFlag = configurationParams.get("targetIpFlag").getParamFlag();
-        schemaDefinitionState.setHasTargetIp(targetIpFlag);
+        GDSSchemaDefinitionState.setHasTargetIp(targetIpFlag);
 
         String dataFields = configurationParams.get("dataFields").getParamValue();
-        schemaDefinitionState.setDataFields(dataFields);
+        GDSSchemaDefinitionState.setDataFields(dataFields);
 
         String enrichFields = configurationParams.get("enrichFields").getParamValue();
-        schemaDefinitionState.setEnrichFields(enrichFields);
+        GDSSchemaDefinitionState.setEnrichFields(enrichFields);
 
         String enrichDelimiter = configurationParams.get("enrichDelimiter").getParamValue();
-        schemaDefinitionState.setEnrichDelimiter(enrichDelimiter);
+        GDSSchemaDefinitionState.setEnrichDelimiter(enrichDelimiter);
 
         String enrichTableName = configurationParams.get("enrichTableName").getParamValue();
-        schemaDefinitionState.setEnrichTableName(enrichTableName);
+        GDSSchemaDefinitionState.setEnrichTableName(enrichTableName);
 
         String scoreFields = configurationParams.get("scoreFields").getParamValue();
-        schemaDefinitionState.setScoreFields(scoreFields);
+        GDSSchemaDefinitionState.setScoreFields(scoreFields);
 
         String scoreDelimiter = configurationParams.get("scoreDelimiter").getParamValue();
-        schemaDefinitionState.setScoreDelimiter(scoreDelimiter);
+        GDSSchemaDefinitionState.setScoreDelimiter(scoreDelimiter);
 
         String scoreTableName = configurationParams.get("scoreTableName").getParamValue();
-        schemaDefinitionState.setScoreTableName(scoreTableName);
+        GDSSchemaDefinitionState.setScoreTableName(scoreTableName);
 
         Boolean topSchemaFlag = configurationParams.get("topSchemaFlag").getParamFlag();
-        schemaDefinitionState.setHasTopSchema(topSchemaFlag);
+        GDSSchemaDefinitionState.setHasTopSchema(topSchemaFlag);
 
         // TODO how do we get it?
 //        Boolean normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamFlag();
-//        schemaDefinitionState.setHasNormalizedUserNameField(normalizedUserNameField);
+//        GDSSchemaDefinitionState.setHasNormalizedUserNameField(normalizedUserNameField);
 
         String dataDelimiter = configurationParams.get("dataDelimiter").getParamValue();
-        schemaDefinitionState.setDataDelimiter(dataDelimiter);
+        GDSSchemaDefinitionState.setDataDelimiter(dataDelimiter);
 
         String dataTableName = configurationParams.get("dataTableName").getParamValue();
-        schemaDefinitionState.setDataTableName(dataTableName);
+        GDSSchemaDefinitionState.setDataTableName(dataTableName);
 
         initConfigurationService.setGDSConfigurationState(gdsConfigurationState);
+
         return gdsConfigurationState;
     }
 
@@ -90,6 +87,7 @@ public class GDSSchemaConfigurator implements GDSConfigurator {
 
     @Override
     public void reset() throws Exception {
+        // in this case of schema reset we will actually reset all configuration definitions
         gdsConfigurationState.reset();
     }
 }

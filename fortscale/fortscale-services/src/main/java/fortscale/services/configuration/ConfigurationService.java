@@ -1,6 +1,6 @@
 package fortscale.services.configuration;
 
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

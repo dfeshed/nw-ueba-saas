@@ -1,20 +1,22 @@
-package fortscale.collection.jobs.gds.populators.enrichment;
+package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.GDSInputHandler;
-import fortscale.collection.jobs.gds.GDSStandardInputHandler;
+import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
+import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Computer tagging command line populator
+ *
  * @author gils
  * 03/01/2016
  */
 public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator{
 
-    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+    private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
@@ -23,7 +25,6 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        //Computer tagging task
         if (((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())))
         {
             System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));

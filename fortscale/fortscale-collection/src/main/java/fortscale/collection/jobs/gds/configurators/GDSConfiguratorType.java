@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.collection.jobs.gds.GDSConfigurator;
-
 /**
+ * Enum of configurator types associated to their configurator class
+ *
  * @author gils
  * 03/01/2016
  */

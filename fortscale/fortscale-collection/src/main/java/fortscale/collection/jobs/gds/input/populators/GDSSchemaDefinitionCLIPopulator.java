@@ -1,27 +1,30 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.input.populators;
 
-import fortscale.collection.jobs.gds.GDSInputHandler;
-import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
-import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
+import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
+import fortscale.collection.jobs.gds.input.GDSInputHandler;
+import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Schema definition command-line interface populator
+ *
  * @author gils
  * 03/01/2016
  */
 public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulator {
 
-    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+    private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
+    // TODO check if property available
     @Value("${fortscale.data.source}")
-    private String currentDataSources = "ssh,vpn"; // TODO fix
+    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,amt,vpn_session,amtsession,crmsf";
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";

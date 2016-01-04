@@ -1,20 +1,22 @@
-package fortscale.collection.jobs.gds.populators.enrichment;
+package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.GDSInputHandler;
-import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
+import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
+import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * User Mongo update command line populator
+ *
  * @author gils
- *         03/01/2016
+ * 03/01/2016
  */
 public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator {
-    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+    private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {

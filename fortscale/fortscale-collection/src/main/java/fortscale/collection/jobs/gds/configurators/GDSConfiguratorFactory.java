@@ -1,17 +1,17 @@
 package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationException;
-import fortscale.collection.jobs.gds.GDSConfigurator;
 
 import java.util.EnumMap;
 
 /**
+ * Configurator's factory class
+ *
  * @author gils
  * 03/01/2016
  */
 public class GDSConfiguratorFactory {
-    private EnumMap<GDSConfiguratorType, GDSConfigurator> configuratorsMap =
-            new EnumMap<>(GDSConfiguratorType.class);
+    private EnumMap<GDSConfiguratorType, GDSConfigurator> configuratorsMap =  new EnumMap<>(GDSConfiguratorType.class);
 
     public GDSConfigurator getConfigurator(GDSConfiguratorType gdsConfiguratorType) throws GDSConfigurationException {
         Class<? extends GDSConfigurator> gdsConfiguratorClass = gdsConfiguratorType.getGDSConfiguratorClass();

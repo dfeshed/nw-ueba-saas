@@ -1,6 +1,8 @@
 package fortscale.collection.jobs.gds;
 
 /**
+ * Generic data source configuration exception representation
+ *
  * @author gils
  * 03/01/2016
  */

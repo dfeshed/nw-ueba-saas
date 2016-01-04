@@ -1,12 +1,16 @@
-package fortscale.services.configuration.state;
+package fortscale.services.configuration.gds.state;
+
+import fortscale.services.configuration.EntityType;
 
 /**
+ * Generic data source base definition state
+ *
  * @author gils
  * 03/01/2016
  */
 public class GDSBaseDefinitionState implements GDSConfigurationState{
     private String dataSourceName;
-    private GDSEntityType entityType;
+    private EntityType entityType;
     private String existingDataSources;
 
     public String getDataSourceName() {
@@ -17,11 +21,11 @@ public class GDSBaseDefinitionState implements GDSConfigurationState{
         this.dataSourceName = dataSourceName;
     }
 
-    public GDSEntityType getEntityType() {
+    public EntityType getEntityType() {
         return entityType;
     }
 
-    public void setEntityType(GDSEntityType entityType) {
+    public void setEntityType(EntityType entityType) {
         this.entityType = entityType;
     }
 

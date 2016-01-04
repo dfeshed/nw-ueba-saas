@@ -1,10 +1,12 @@
-package fortscale.services.configuration.state;
+package fortscale.services.configuration.gds.state;
 
 /**
+ * Schema definition state
+ *
  * @author gils
  * 31/12/2015
  */
-public class SchemaDefinitionState implements GDSConfigurationState{
+public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private boolean hasSourceIp;
     private boolean hasTargetIp;
     private String dataFields;

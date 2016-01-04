@@ -1,22 +1,20 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.IpResolvingTaskConfiguration;
-import fortscale.services.configuration.state.EnrichmentDefinitionState;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
-import fortscale.utils.logging.Logger;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
 
 /**
+ * IP Resolving configurator implementation
+ *
  * @author gils
  * 04/01/2016
  */
 public class GDSIPResolvingConfigurator implements GDSConfigurator {
-
-    private static Logger logger = Logger.getLogger(GDSIPResolvingConfigurator.class);
 
     private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
 
@@ -25,7 +23,7 @@ public class GDSIPResolvingConfigurator implements GDSConfigurator {
     @Override
     public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        EnrichmentDefinitionState.IPResolvingState ipResolvingState = gdsConfigurationState.getEnrichmentDefinitionState().getIpResolvingState();
+        GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = gdsConfigurationState.getGDSEnrichmentDefinitionState().getIpResolvingState();
 
         ConfigurationParam restrictToAD = configurationParams.get("restrictToAD");
         ConfigurationParam shortNameUsage = configurationParams.get("shortNameUsage");
@@ -57,6 +55,6 @@ public class GDSIPResolvingConfigurator implements GDSConfigurator {
 
     @Override
     public void reset() throws Exception {
-        gdsConfigurationState.reset();
+        gdsConfigurationState.getGDSEnrichmentDefinitionState().getIpResolvingState().reset();
     }
 }

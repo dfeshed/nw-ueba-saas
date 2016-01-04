@@ -51,31 +51,31 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			boolean hasSourceIp = gdsConfigurationState.getSchemaDefinitionState().isHasSourceIp();
+			boolean hasSourceIp = gdsConfigurationState.getGDSSchemaDefinitionState().isHasSourceIp();
 
-			boolean hasTargetIp = gdsConfigurationState.getSchemaDefinitionState().isHasTargetIp();
+			boolean hasTargetIp = gdsConfigurationState.getGDSSchemaDefinitionState().isHasTargetIp();
 
-			String dataFields = gdsConfigurationState.getSchemaDefinitionState().getDataFields();
+			String dataFields = gdsConfigurationState.getGDSSchemaDefinitionState().getDataFields();
 
-			String enrichFields = gdsConfigurationState.getSchemaDefinitionState().getEnrichFields();
+			String enrichFields = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichFields();
 
-			String enrichDelimiter = gdsConfigurationState.getSchemaDefinitionState().getEnrichDelimiter();
+			String enrichDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichDelimiter();
 
-			String enrichTableName = gdsConfigurationState.getSchemaDefinitionState().getEnrichTableName();
+			String enrichTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichTableName();
 
-			String scoreFields = gdsConfigurationState.getSchemaDefinitionState().getScoreFields();
+			String scoreFields = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreFields();
 
-			String scoreDelimiter = gdsConfigurationState.getSchemaDefinitionState().getScoreDelimiter();
+			String scoreDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreDelimiter();
 
-			String scoreTableName = gdsConfigurationState.getSchemaDefinitionState().getScoreTableName();
+			String scoreTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreTableName();
 
-			boolean topSchemaFlag = gdsConfigurationState.getSchemaDefinitionState().isHasTopSchema();
+			boolean topSchemaFlag = gdsConfigurationState.getGDSSchemaDefinitionState().isHasTopSchema();
 
-			boolean normalizedUserNameField = gdsConfigurationState.getSchemaDefinitionState().isHasNormalizedUserNameField();
+			boolean normalizedUserNameField = gdsConfigurationState.getGDSSchemaDefinitionState().isHasNormalizedUserNameField();
 
-			String dataDelimiter = gdsConfigurationState.getSchemaDefinitionState().getDataDelimiter();
+			String dataDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getDataDelimiter();
 
-			String dataTableName = gdsConfigurationState.getSchemaDefinitionState().getDataTableName();
+			String dataTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getDataTableName();
 
 
             System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
@@ -366,9 +366,7 @@ public class InitPartConfiguration extends ConfigurationService {
 				logger.error("There was an exception during the file - {} closing  , cause - {} ", secondFileToConfigure.getName(), exception.getMessage());
 				System.out.println("There was an exception during execution please see more info at the log ");
 				return false;
-
 			}
-
 		}
 
 		return super.done();

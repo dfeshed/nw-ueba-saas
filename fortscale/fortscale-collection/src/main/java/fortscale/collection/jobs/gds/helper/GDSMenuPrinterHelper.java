@@ -1,6 +1,8 @@
 package fortscale.collection.jobs.gds.helper;
 
 /**
+ * Helper class for Generic data source menu printing
+ *
  * @author gils
  * 30/12/2015
  */
@@ -13,11 +15,10 @@ public class GDSMenuPrinterHelper {
         System.out.println("");
 
         System.out.println("1.\tSchema definition (HDFS/Impala)\n" +
-                "2.\tCollection definition\n" +
-                "3.\tEnrichment definition\n" +
-                "4.\tApply all changes\n" +
-                "5.\tReset all changes\n" +
-                "6.\tQuit\n");
+                "2.\tEnrichment definition\n" +
+                "3.\tApply all changes\n" +
+                "4.\tReset all changes\n" +
+                "5.\tQuit\n");
     }
 
     private static void printMainMenuHeader() {
@@ -47,6 +48,7 @@ public class GDSMenuPrinterHelper {
     }
 
     public static void printEnrichmentMenu() {
+        System.out.println("");
         System.out.println("Enrichment Tasks Settings");
         System.out.println("----------------");
 

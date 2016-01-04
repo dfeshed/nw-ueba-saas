@@ -1,21 +1,19 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.collection.jobs.gds.GDSConfigurator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.HDFSWriteTaskConfiguration;
-import fortscale.services.configuration.state.GDSCompositeConfigurationState;
-import fortscale.utils.logging.Logger;
+import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 
 import java.util.Map;
 
 /**
+ * HDFS Writer configurator implementation
+ *
  * @author gils
  * 04/01/2016
  */
 public class GDSHDFSWriterConfigurator implements GDSConfigurator {
-
-    private static Logger logger = Logger.getLogger(GDSHDFSWriterConfigurator.class);
 
     private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
 
