@@ -3,6 +3,7 @@ package fortscale.collection.jobs.gds;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
+import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generic Data Source configuration creator job implementation
+ * Generic Data Source configuration creator - job implementation
  *
  * Created by idanp on 12/1/2015.
  */
@@ -45,12 +46,12 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		GDSMenuPrinterHelper.printMainMenu(true);
 
 		System.out.println("Please enter your choice:");
-		String stepInput = gdsInputHandler.getInput();
+		String optionInput = gdsInputHandler.getInput();
 
-		handleConfiguration(stepInput);
+		handleMainMenuUserInput(optionInput);
 	}
 
-	private void handleConfiguration(String stepInput) throws Exception {
+	private void handleMainMenuUserInput(String optionInput) throws Exception {
 
 		GDSCompositeConfigurationState currConfigurationState = new GDSCompositeConfigurationState();
 
@@ -61,7 +62,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		while (true) {
 			String inputErrorMessage = null;
 
-			String stepInputNormalized = stepInput.trim();
+			String stepInputNormalized = optionInput.trim();
 			switch (stepInputNormalized) {
 				case "1":
 				case "2":
@@ -122,7 +123,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				GDSMenuPrinterHelper.printMainMenuAfterFailure(inputErrorMessage);
 			}
 
-			stepInput = gdsInputHandler.getInput();
+			optionInput = gdsInputHandler.getInput();
 		}
 	}
 

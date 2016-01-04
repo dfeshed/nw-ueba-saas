@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.gds.populators;
 
 import fortscale.collection.jobs.gds.GDSInputHandler;
-import fortscale.collection.jobs.gds.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.GDSStandardInputHandler;
+import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;

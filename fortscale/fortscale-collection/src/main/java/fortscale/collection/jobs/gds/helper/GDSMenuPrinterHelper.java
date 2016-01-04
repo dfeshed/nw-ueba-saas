@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.gds;
+package fortscale.collection.jobs.gds.helper;
 
 /**
  * @author gils
