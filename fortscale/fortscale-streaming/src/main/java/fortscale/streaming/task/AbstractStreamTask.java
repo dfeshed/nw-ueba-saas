@@ -104,8 +104,12 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		wrappedInit(config, context);
 
 		logger.info("Task init finished");
-		initialized = true;
-		taskContext = context;
+
+		//set the properties for test purpose only
+		if (Boolean.valueOf(config.get("test.task.enabled"))) {
+			initialized = true;
+			taskContext = context;
+		}
 	}
 
 	private void initTaskMonitoringHelper(Config config) {

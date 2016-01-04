@@ -1,7 +1,5 @@
 package fortscale.streaming.task;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import kafka.admin.TopicCommand;
 import kafka.api.FetchRequest;
@@ -17,20 +15,12 @@ import kafka.server.KafkaServer;
 import kafka.utils.*;
 import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.samza.config.MapConfig;
-import org.apache.samza.container.TaskName;
 import org.apache.samza.job.ApplicationStatus;
 import org.apache.samza.job.StreamJob;
 import org.apache.samza.job.StreamJobFactory;
 import org.apache.samza.job.local.ThreadJobFactory;
-import org.apache.samza.metrics.MetricsRegistry;
-import org.apache.samza.storage.kv.Entry;
-import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.SystemStreamPartition;
-import org.apache.samza.task.StreamTask;
-import org.apache.samza.task.TaskContext;
 import org.hsqldb.lib.StringUtil;
 
 import java.io.FileInputStream;
@@ -61,7 +51,6 @@ public class AbstractTaskTest {
     protected StreamJobFactory jobFactory;
     protected Map<String,String> jobConfig;
     protected StreamJob job;
-//    protected StreamTask task;
     protected int brokerPort;
     protected String clientName;
 
@@ -136,6 +125,8 @@ public class AbstractTaskTest {
             logger.info("---update key:" + key + ", value: " +value);
             jobConfig.put(key, value);
         }
+        //add property to support testing
+        jobConfig.put("test.task.enabled", "true");
         //set additional properties
         jobConfig.put("bootstrap.servers", "localhost:" + brokerPort);
         jobConfig.put("kafka.producer.bootstrap.servers", "localhost:" + brokerPort);

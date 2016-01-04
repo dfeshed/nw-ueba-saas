@@ -1,11 +1,14 @@
 package fortscale.streaming.task;
 
+import fortscale.domain.core.EntityTags;
+import fortscale.streaming.alert.subscribers.SmartAlertCreationSubscriber;
+import fortscale.streaming.service.SpringService;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.json.JSONException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -16,19 +19,16 @@ import java.lang.reflect.Method;
  */
 public class AlertGeneratorTaskTest extends AbstractTaskTest{
     protected static final String STREAMING_CONFIG_FILE = "alert-generator-task.properties";
-    protected final static String SPRING_CONTEXT_FIILE = "classpath*:META-INF/spring/samza-task-test-context.xml";
+    protected final static String SPRING_CONTEXT_FIILE = "classpath*:META-INF/spring/streaming-AlertGeneratorTask-test-context.xml";
     private static final String KEY_VALUE_STORE_TABLE_NAME = "entity-tags-cache";
 
 
 
-    private static final String event1 = "[\"service\"]";
-    private static final String event2 = "[\"admin\"]";
-    private static final String event3 = "[\"executive\"]";
+    private static final String eventTag1 = "[\"service\",\"admin\"]";
 
     private static final String tagKey1 = "EntityTags{entityName='1', entityType=User}";
     private static final String tagValue1 = "EntityTags{entityName='1', entityType=User}";
 
-    private KeyValueStore<String, String> tagsCacheStore;
 
     @Before
     public void setup() throws IOException {
@@ -36,7 +36,7 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
         inputTopic = "user-tag-service-cache-updates";
         String propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
 
-        super.setupBefore(propertiesPath, null);
+        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE);
     }
 
     @After
@@ -52,13 +52,8 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
 
         startJob();
-//        this.tagsCacheStore = (KeyValueStore<String, String>) context.getStore(ENTITY_TAGS_CACHE);
 
-
-
-        send(event1);
-        send(event2);
-        send(event3);
+        send(eventTag1);
 
         //retrieve KeyValueStore
         Class c = Class.forName(jobConfig.get("task.class"));
@@ -67,15 +62,18 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
         o = m.invoke(null, KEY_VALUE_STORE_TABLE_NAME);
         keyValueStore = (KeyValueStore)o;
 
-        // Validate that messages appear in store stream.
-//        List<String> messages = readAll(outputTopic, 5, "testShouldStartTaskForFirstTime");
+        //Wait for keyvalue store to get the data inserted
+        int i = 0;
+        while (
+            !keyValueStore.all().hasNext() && i < 20)
+        {
+            Thread.sleep(2000L);
+        }
 
-//        assertEquals(event1, messages.get(0));
-//        assertEquals(event2, messages.get(1));
-        Thread.sleep(20000);
-        Thread.sleep(20000);
-
-        JSONAssert.assertEquals(keyValueStore.get(tagKey1).toString(), tagValue1, false);
+        SmartAlertCreationSubscriber smartAlertCreationSubscriber = (SmartAlertCreationSubscriber)SpringService.getInstance().resolve("smartAlertCreationSubscriber");
+        Assert.assertEquals(tagValue1, keyValueStore.get(tagKey1).toString());
+        Assert.assertEquals("service", ((EntityTags)keyValueStore.get("EntityTags{entityName='1', entityType=User}")).getTags().get(0));
+        Assert.assertEquals("admin", ((EntityTags)keyValueStore.get("EntityTags{entityName='1', entityType=User}")).getTags().get(1));
         stopJob();
 
     }
