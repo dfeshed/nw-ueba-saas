@@ -12,6 +12,7 @@ import java.util.*;
 public class UserUtils {
 
     /**
+     * Converts SupportingInformationGenericData into a limited List<Pair<String, Double>>
      *
      * @param supportingInformationData Supporting information data
      * @param limit The limit of the returned list
