@@ -77,7 +77,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "scored___entity_event%%%prefix@@@date:::startTime###streaming_models@@@regex:::modelName!!!entity_event_"
+        "dataSources": "scored___entity_event###streaming_models@@@regex:::modelName!!!entity_event_"
       }
     ],
     "otherSteps": [
