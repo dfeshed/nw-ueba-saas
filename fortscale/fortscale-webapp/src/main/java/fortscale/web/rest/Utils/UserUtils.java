@@ -11,6 +11,12 @@ import java.util.*;
 @Service
 public class UserUtils {
 
+    /**
+     *
+     * @param supportingInformationData Supporting information data
+     * @param limit The limit of the returned list
+     * @return List<Pair>
+     */
     public List<Pair<String, Double>> getListFromSupportingInformation (SupportingInformationGenericData<Double> supportingInformationData, Integer limit) {
         List<Pair<String, Double>> entitiesList = new ArrayList<>();
 

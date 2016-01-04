@@ -483,6 +483,14 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
+	/**
+	 * rest for /{normalized_username}/target_machines. Kerberos_logins only.
+	 *
+	 * @param normalized_username User's normalized username
+	 * @param timePeriodInDays Time period in days
+	 * @param limit The max amount of returned data
+	 * @return DataBean<List>
+	 */
     @RequestMapping(value = "/{normalized_username}/target_machines", method = RequestMethod.GET)
     @ResponseBody
     @LogException
@@ -501,8 +509,8 @@ public class ApiUserController extends BaseController{
             throw new BadRequestException("limit param must be greater then 0.");
         }
 
+		// Create populator and get supporting information data
 		SupportingInformationGenericData<Double> supportingInformationData;
-
 		try {
 			SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", "kerberos_logins", "destination_machine", "Count");
 			supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), timePeriodInDays);
@@ -510,6 +518,7 @@ public class ApiUserController extends BaseController{
 			supportingInformationData = null;
 		}
 
+		// Convert supporting information data into a list.
         DataBean<List<Pair<String, Double>>> response = new DataBean<>();
         response.setData(userUtils.getListFromSupportingInformation(supportingInformationData, limit));
         return response;
