@@ -1,8 +1,11 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.populators.enrichment;
 
+import fortscale.collection.jobs.gds.GDSInputHandler;
+import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,8 +13,15 @@ import java.util.Map;
  * 03/01/2016
  */
 public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator{
+
+    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
+
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        String dataSourceName = currentConfigurationState.getDataSourceName();
 
         //Computer tagging task
         if (((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())))
@@ -35,12 +45,11 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
             paramsMap.put("dstClusteringField", new ConfigurationParam("dstClusteringField",false, String.format("${impala.data.%s.table.field.normalized_dst_machine}",dataSourceName)));
             paramsMap.put("dstHost", new ConfigurationParam("dstHost", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
 
-            computerTaggingTaskService.setConfigurationParams(paramsMap);
-
             paramsMap.put("lastState", new ConfigurationParam("lastState", false, "ComputerTaggingClusteringTask"));
             System.out.println(String.format("End configure the Computer Tagging task for %s", dataSourceName));
 
         }
 
+        return paramsMap;
     }
 }

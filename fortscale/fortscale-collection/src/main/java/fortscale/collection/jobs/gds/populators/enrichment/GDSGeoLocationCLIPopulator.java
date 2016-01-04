@@ -1,8 +1,9 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.populators.enrichment;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,9 +11,14 @@ import java.util.Map;
  * 03/01/2016
  */
 public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
+
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
-//Source Geo Location
+
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        String dataSourceName = currentConfigurationState.getDataSourceName();
+
         if(paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) {
 
             System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
@@ -61,29 +67,10 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
             paramsMap.put("DoesssionUpdateFlag", new ConfigurationParam("DoesssionUpdateFlag",false,""));
             paramsMap.put("doDataBuckets", new ConfigurationParam("doDataBuckets",false,""));
             paramsMap.put("doGeoLocation", new ConfigurationParam("doGeoLocation",true,""));
-
-//            geoLocationTaskService.setConfigurationParams(paramsMap);
-//
-//            System.out.println("Finished to configure source geo location streaming task. Do you want to apply changes now? (y/n)");
-//
-//            if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//                if (geoLocationTaskService.init()) {
-//                    geoLocationTaskService.applyConfiguration();
-//                }
-//            }
-//
-//            System.out.println("Do you want to reset source geo location streaming task changes? (y/n)");
-//
-//            if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//                reset();
-//            }
-//
-//            paramsMap.put("lastState", new ConfigurationParam("lastState", false, "VpnEnrichTask"));
-//
-//            geoLocationTaskService.done();
-
         }
         System.out.println(String.format("End configure the GeoLocation task for %s", dataSourceName));
+
+        return paramsMap;
     }
 
 }

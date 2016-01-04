@@ -1,9 +1,12 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.populators.enrichment;
 
+import fortscale.collection.jobs.gds.GDSInputHandler;
+import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,9 +14,14 @@ import java.util.Map;
  *         03/01/2016
  */
 public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator {
+    private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
+
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
-        //USER MONGO UPDATE
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        String dataSourceName = currentConfigurationState.getDataSourceName();
+
         System.out.println(String.format("Going to configure the UserMongoUpdate task for %s (i.e we use it for user last activity update) ", dataSourceName));
 
         paramsMap.put("taskName", new ConfigurationParam("taskName", false, String.format("UserMongoUpdateStreamTask",dataSourceName)));
@@ -37,24 +45,8 @@ public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator
             paramsMap.put("successValue", new ConfigurationParam("successValue", false, gdsInputHandler.getInput()));
         }
 
-
-//        userMongoUpdateTaskService.setConfigurationParams(paramsMap);
-//        System.out.println("Finished to configure user mongo update streaming task. Do you want to apply changes now? (y/n)");
-//
-//        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//            if (userMongoUpdateTaskService.init()) {
-//                userMongoUpdateTaskService.applyConfiguration();
-//            }
-//        }
-//
-//        System.out.println("Do you want to reset user mongo update streaming task changes? (y/n)");
-//
-//        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//            reset();
-//        }
-//
-//        userMongoUpdateTaskService.done();
         System.out.println(String.format("End configure the UserMongoUpdate task for %s", dataSourceName));
 
+        return paramsMap;
     }
 }

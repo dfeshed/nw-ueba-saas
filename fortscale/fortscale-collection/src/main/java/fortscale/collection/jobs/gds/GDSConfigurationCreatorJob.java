@@ -4,7 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.gds.configurators.GDSConfigurationType;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
-import fortscale.collection.jobs.gds.populators.GDSConfigurationPopulator;
+import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 import fortscale.utils.logging.Logger;

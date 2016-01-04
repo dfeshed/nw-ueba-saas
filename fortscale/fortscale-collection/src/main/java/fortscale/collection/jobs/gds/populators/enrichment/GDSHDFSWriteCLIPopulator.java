@@ -1,8 +1,9 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.populators.enrichment;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,9 +11,14 @@ import java.util.Map;
  * 03/01/2016
  */
 public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
+
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
-        //HDFS - WRITE
+
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        String dataSourceName = currentConfigurationState.getDataSourceName();
+
         System.out.println(String.format("Going to configure the HDFS write task for the enrich for %s  ", dataSourceName));
 
         paramsMap.put("taskName", new ConfigurationParam("taskName", false, "enriched_HDFSWriterStreamTask"));
@@ -27,22 +33,6 @@ public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
 
         //todo -  add the anility to configure this param
         paramsMap.put("discriminatorsFields", new ConfigurationParam("discriminatorsFields",false,""));
-
-//        hdfsTaskService.setConfigurationParams(paramsMap);
-//        System.out.println("Finished to configure hdfs write streaming task. Do you want to apply changes now? (y/n)");
-//
-//        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//            if (hdfsTaskService.init()) {
-//                hdfsTaskService.applyConfiguration();
-//            }
-//        }
-//
-//        System.out.println("Do you want to reset hdfs write streaming task changes? (y/n)");
-//
-//        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-//            reset();
-//        }
-//        hdfsTaskService.done();
 
         paramsMap.put("lastState", new ConfigurationParam("lastState", false, "enriched_HDFSWriterStreamTask"));
 

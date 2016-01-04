@@ -2,6 +2,7 @@ package fortscale.collection.jobs.gds.populators;
 
 import fortscale.collection.jobs.gds.GDSInputHandler;
 import fortscale.collection.jobs.gds.GDSStandardInputHandler;
+import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import org.springframework.beans.factory.annotation.Value;
 
 /**

@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.gds.populators;
+package fortscale.collection.jobs.gds.populators.enrichment;
 
 import fortscale.collection.jobs.gds.GDSInputHandler;
 import fortscale.collection.jobs.gds.GDSStandardInputHandler;
@@ -13,15 +13,16 @@ import java.util.Map;
  * @author gils
  * 03/01/2016
  */
-public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator{
+public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
 
-}
     private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
-
-    Map<String, ConfigurationParam> paramsMap = new HashMap<>();
 
     @Override
     public Map<String, ConfigurationParam> populateConfigurationData(GDSConfigurationStateImpl currentConfigurationState) throws Exception {
+        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        String dataSourceName = currentConfigurationState.getDataSourceName();
+
         //source Ip Resolving task
         if (paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) {
 
@@ -56,7 +57,7 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator{
             paramsMap.put("ipField", new ConfigurationParam("ipField", false, String.format("${impala.data.%s.table.field.source}", dataSourceName)));
             paramsMap.put("host", new ConfigurationParam("host", false, String.format("${impala.data.%s.table.field.source_name}", dataSourceName)));
 
-            paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
+            paramsMap.put("lastState", new ConfigurationParam("lastState", false, "IpResolvingStreamTask"));
         }
 
 
@@ -65,12 +66,14 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator{
 
             paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_targetIp"));
             paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-resolved"));
-            paramsMap.put("ipField", new ConfigurationParam("ipField", false,  String.format("${impala.data.%s.table.field.target}",dataSourceName)));
-            paramsMap.put("host", new ConfigurationParam("host", false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
+            paramsMap.put("ipField", new ConfigurationParam("ipField", false, String.format("${impala.data.%s.table.field.target}", dataSourceName)));
+            paramsMap.put("host", new ConfigurationParam("host", false, String.format("${impala.data.%s.table.field.target_name}", dataSourceName)));
 
             System.out.println("Finished to configure IP resolving streaming task for target. Do you want to apply changes now? (y/n)");
 
-            paramsMap.put("lastState", new ConfigurationParam("lastState",false,"IpResolvingStreamTask"));
+            paramsMap.put("lastState", new ConfigurationParam("lastState", false, "IpResolvingStreamTask"));
         }
 
+        return paramsMap;
     }
+}

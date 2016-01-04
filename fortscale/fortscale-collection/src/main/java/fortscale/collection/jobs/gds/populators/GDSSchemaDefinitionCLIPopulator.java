@@ -4,6 +4,7 @@ import fortscale.collection.jobs.gds.GDSInputHandler;
 import fortscale.collection.jobs.gds.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.GDSStandardInputHandler;
 import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
+import fortscale.collection.jobs.gds.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.state.GDSConfigurationStateImpl;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author gils
  * 03/01/2016
  */
-public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulator{
+public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulator {
 
     private GDSInputHandler gdsInputHandler = new GDSStandardInputHandler();
 
