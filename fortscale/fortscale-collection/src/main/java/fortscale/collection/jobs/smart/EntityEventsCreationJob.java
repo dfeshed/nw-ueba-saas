@@ -73,7 +73,6 @@ public class EntityEventsCreationJob extends FortscaleJob {
 					System.currentTimeMillis(), sender, false);
 		}
 
-		sender.close();
 		finishStep();
 	}
 }
