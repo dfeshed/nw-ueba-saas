@@ -2,7 +2,7 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
@@ -27,7 +27,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	
 	private static final String EVENT_TYPE_FIELD_NAME_PROPERTY = "${streaming.event.field.type}";
 	
-	private FortscaleStringValueResolver fortscaleStringValueResolver;
+	private FortscaleValueResolver fortscaleValueResolver;
 	
 	private Map<String, List<String>> eventTypeToFeatureFullPath = new HashMap<>();
 	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
@@ -40,8 +40,8 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {	
-		fortscaleStringValueResolver = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-		eventTypeFieldName = fortscaleStringValueResolver.resolveStringValue(EVENT_TYPE_FIELD_NAME_PROPERTY);
+		fortscaleValueResolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+		eventTypeFieldName = fortscaleValueResolver.resolveStringValue(EVENT_TYPE_FIELD_NAME_PROPERTY);
 		
 		// Get configuration properties for each event type
 		Config fieldsSubset = config.subset("fortscale.event.type.");
@@ -67,7 +67,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	}
 	
 	private List<String> resolveStringValues(Config config, String string) {
-		return fortscaleStringValueResolver.resolveStringValues(getConfigStringList(config, string));
+		return fortscaleValueResolver.resolveStringValues(getConfigStringList(config, string));
 	}
 		
 	/** Process incoming events and update the user models stats */

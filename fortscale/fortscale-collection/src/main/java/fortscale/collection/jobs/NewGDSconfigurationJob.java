@@ -44,9 +44,9 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 	//TODO - Generate this auto from the entities  properties
 	private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
-	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+	private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
 	private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE";
-	private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,src_country STRING,src_longtitude STRING,src_latitude STRING,src_countryIsoCode STRING,src_region STRING,src_city STRING,src_isp STRING,src_usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
+	private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
 	private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
 	private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
 	private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
@@ -162,6 +162,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,BASE_SCHEMA_FIELDS_AS_CSV+additionalFieldsCSV+additionalScoreFieldsCSV));
 				paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",false,""));
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
 			}
 
 			case "access_event":
@@ -185,6 +186,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 				paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                break;
 
 
 			}
@@ -221,6 +223,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
 
 
 
@@ -257,6 +260,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
 				result = br.readLine();
 				paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",result.toLowerCase().equals("y") || result.toLowerCase().equals("yes"),""));
+                break;
 
 			}
 		}
@@ -277,7 +281,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//sensitive_machine
-			paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"${fortscale.tags.sensitive}"));
+			paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"is_sensitive_machine"));
 
 
 			//Enrich
@@ -310,13 +314,14 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
             //Service configuration
-
-
             initConfigurationService.setConfigurationParams(paramsMap);
 			if (initConfigurationService.Init())
 				executionResult = initConfigurationService.Configure();
 
 			initConfigurationService.Done();
+
+
+			System.out.println(String.format("Finish to configure the Schema part"));
         }
         catch (Exception exception)
         {
@@ -396,13 +401,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //in case there is a target user to be normalize also
             if(targetNormalizationFlag)
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
-            else if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                 //in case there is machine to normalized and tag
-            else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
                 paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
                 //in case there is ip to geo locate
-            else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+            else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
                 paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
             else
                 paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
@@ -411,11 +416,26 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             //User name field
             paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,"username"));
 
-            //Domain field  - for the enrich part
-            paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
 
-            //In case of fake domain - enter the actual domain value the PS want
-            paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+            //Domain field  - for the enrich part
+            System.out.println(String.format("Dose %s have a field that contain the user domain  (y/n) ?",dataSourceName));
+            brResult =br.readLine().toLowerCase();
+            Boolean domainResult = brResult.equals("y") || brResult.equals("yes");
+
+            if (domainResult)
+            {
+                //Domain field  - for the enrich part
+                System.out.println(String.format("pleaase enter the field name that will contain the user Domain value :"));
+                brResult =br.readLine().toLowerCase();
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+            }
+            else {
+                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+
+                //In case of fake domain - enter the actual domain value the PS want
+                paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+            }
 
             //Normalized_username field
             paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
@@ -451,13 +471,13 @@ public class NewGDSconfigurationJob extends FortscaleJob {
             if(executionResult && targetNormalizationFlag)
             {
 
-                if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() || paramsMap.get("targetIpResolvingFlag").getParamFlag())
+                if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
                     paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
                     //in case there is machine to normalized and tag
-                else if (paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag())
+                else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
                     paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
                     //in case there is ip to geo locate
-                else if (paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+                else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
                     paramsMap.put("outPutTopic",new ConfigurationParam("outPutTopic",false,"fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
                 else
                     paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
@@ -472,19 +492,35 @@ public class NewGDSconfigurationJob extends FortscaleJob {
                 paramsMap.put("userNameField", new ConfigurationParam("userNameField",false,brResult));
 
                 //Domain field  - for the enrich part
-                paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName",false,"fake"));
+                System.out.println(String.format("Dose %s have a field that contain the target user domain  (y/n) ?",dataSourceName));
+                brResult =br.readLine().toLowerCase();
+                domainResult = brResult.equals("y") || brResult.equals("yes");
 
-                //In case of fake domain - enter the actual domain value the PS want
-                paramsMap.put("domainValue", new ConfigurationParam("domainValue",false,""));
+                if (domainResult)
+                {
+                    //Domain field  - for the enrich part
+                    System.out.println(String.format("pleaase enter the field name that will contain the target user Domain value :"));
+                    brResult =br.readLine().toLowerCase();
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, brResult));
+
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+
+                }
+                else {
+                    paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+					paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, dataSourceName+"Connect"));
 
 
+                }
                 System.out.println(String.format("Please enter the field name of the field that will contain the second normalized user name :"));
                 brResult =br.readLine().toLowerCase();
                 //Normalized_username field
                 paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,brResult));
 
                 userNormalizationTaskService.setConfigurationParams(paramsMap);
-                executionResult = userNormalizationTaskService.Configure();
+				executionResult = userNormalizationTaskService.Init();
+				if(executionResult)
+                	executionResult = userNormalizationTaskService.Configure();
 
 
             }
@@ -500,7 +536,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//source Ip Resolving task
-			if (paramsMap.get("sourceIpResolvingFlag").getParamFlag() && executionResult) {
+			if (paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag() && executionResult) {
 
 				System.out.println(String.format("Going to configure the IP resolving task for %s", dataSourceName));
 
@@ -535,7 +571,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				paramsMap.put("overrideIpWithHostNameUsage", new ConfigurationParam("overrideIpWithHostNameUsage", overrideIpWithHostNameUsage, ""));
 
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_sourceIp"));
-				if (paramsMap.get("targetIpResolvingFlag").getParamFlag())
+				if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag())
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-resolved"));
 
 				else
@@ -559,7 +595,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//target ip resolving
-			if (paramsMap.get("targetIpResolvingFlag").getParamFlag() && executionResult) {
+			if (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag() && executionResult) {
 
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "IpResolvingStreamTask_targetIp"));
 				paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-resolved"));
@@ -569,7 +605,10 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 				if (ipResolvingTaskService.Init())
                 {
                     ipResolvingTaskService.setConfigurationParams(paramsMap);
-                    executionResult = ipResolvingTaskService.Configure();
+					executionResult = ipResolvingTaskService.Init();
+					if (executionResult)
+						executionResult = ipResolvingTaskService.Configure();
+
                 }
 
 
@@ -584,12 +623,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 
 			//Computer tagging task
-			if ((paramsMap.get("sourceMachineNormalizationFlag").getParamFlag() || paramsMap.get("targetMachineNormalizationFlag").getParamFlag()) && executionResult)
+			if (((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())) && executionResult)
 			{
 				System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "ComputerTaggingClusteringTask"));
 
-				if(paramsMap.get("sourceIpGeoLocationFlag").getParamFlag() || paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+				if((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered_to_geo_location"));
 				else
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-computer-tagged-clustered"));
@@ -623,12 +662,12 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//Source Geo Location
-			if(paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()  && executionResult) {
+			if(paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()  && executionResult) {
 
 				System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "source_VpnEnrichTask"));
 
-				if(paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
+				if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag())
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-source-ip-geolocated"));
 				else
 					paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-ip-geolocated"));
@@ -662,7 +701,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 			}
 
 			//Target Geo Location
-			if(paramsMap.get("targetIpGeoLocationFlag").getParamFlag()  && executionResult) {
+			if(paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()  && executionResult) {
 
 				System.out.println(String.format("Going to configure the target ip at  GeoLocation task for %s", dataSourceName));
 				paramsMap.put("taskName", new ConfigurationParam("taskName", false, "target_VpnEnrichTask"));
@@ -788,7 +827,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 
 		catch(Exception e)
 		{
-			logger.error("There was an exception during the execution - {}",e.getMessage()!= null ? e.getMessage() : e.getCause().getMessage());
+			logger.error("There was an exception during the execution - {}",e);
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 		}
 	}
@@ -826,7 +865,7 @@ public class NewGDSconfigurationJob extends FortscaleJob {
 	   }
 	   catch(Exception e)
 	   {
-		   logger.error("There was an exception during the execution - {}",e.getMessage());
+		   logger.error("There was an exception during the execution - {}",e);
 		   System.out.println(String.format("There was an exception during execution please see more info at the log "));
 	   }
 

@@ -4,7 +4,7 @@ import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.common.util.GenericHistogram;
+import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -33,13 +33,9 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
-		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
-		Date startTime = new Date(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
-
 		List<AggrEvent> aggrEvents = aggregatedFeatureEventsReaderService
 				.findAggrEventsByContextIdAndTimeRange(
-				aggregatedFeatureEventConf, contextId, startTime, endTime);
+				aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (AggrEvent aggrEvent : aggrEvents) {

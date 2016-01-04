@@ -1,5 +1,6 @@
 package fortscale.services.configuration.Impl;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +44,28 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
         try {
             String line = "";
 
-            String sourceHostField = configurationParams.get("srcHost").getParamValue();
-            String targetHostField = configurationParams.get("dstHost").getParamValue();
-            String srcMachineClassifier = configurationParams.get("srcMachineClassifier").getParamValue();
-            String srcClusteringField = configurationParams.get("srcClusteringField").getParamValue();
-            Boolean createNewComputerFlag = configurationParams.get("createNewComputerFlag").getParamFlag();
-            String dstMachineClassifier = configurationParams.get("dstMachineClassifier").getParamValue();
-            String dstClusteringField = configurationParams.get("dstClusteringField").getParamValue();
+			ConfigurationParam result = getParamConfiguration(configurationParams,"srcHost");
+            String sourceHostField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"srcHost");
+            String targetHostField = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"srcMachineClassifier");
+            String srcMachineClassifier = result != null ? result.getParamValue() : null;
+
+
+			result = getParamConfiguration(configurationParams,"srcClusteringField");
+            String srcClusteringField = result != null ? result.getParamValue() : null;
+
+
+			result = getParamConfiguration(configurationParams,"createNewComputerFlag");
+            Boolean createNewComputerFlag =  result != null ? result.getParamFlag() : null;
+
+			result = getParamConfiguration(configurationParams,"dstMachineClassifier");
+            String dstMachineClassifier = result != null ? result.getParamValue() : null;
+
+			result = getParamConfiguration(configurationParams,"dstClusteringField");
+            String dstClusteringField = result != null ? result.getParamValue() : null;
 
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");

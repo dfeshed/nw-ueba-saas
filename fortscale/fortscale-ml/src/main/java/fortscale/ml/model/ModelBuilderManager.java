@@ -9,6 +9,7 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -84,7 +85,7 @@ public class ModelBuilderManager {
         }
 
         logger.info("modelConfName: {}, sessionId: {}, currentEndTime: {}, numOfSuccesses: {}, numOfFailures: {}.",
-                modelConf.getName(), sessionId, currentEndTime.toString(), numOfSuccesses, numOfFailures);
+                modelConf.getName(), sessionId, TimeUtils.getUtcFormat(currentEndTime), numOfSuccesses, numOfFailures);
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {

@@ -70,4 +70,12 @@ public abstract class ConfigurationService {
 			throw new Exception(e.getMessage());
 		}
 	}
+
+
+	protected ConfigurationParam getParamConfiguration (Map<String,ConfigurationParam> configurationParams, String key)
+	{
+		if (configurationParams.containsKey(key))
+			return configurationParams.get(key);
+		return null;
+	}
 }
