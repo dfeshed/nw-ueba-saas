@@ -3,6 +3,8 @@ package fortscale.collection.jobs.gds.input.populators;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
 import fortscale.collection.jobs.gds.input.populators.enrichment.*;
 
+import java.util.EnumMap;
+
 /**
  * Factory class of populators
  *
@@ -10,29 +12,35 @@ import fortscale.collection.jobs.gds.input.populators.enrichment.*;
  * 03/01/2016
  */
 public class GDSConfigurationPopulatorFactory {
+
+    private EnumMap<GDSConfiguratorType, GDSConfigurationPopulator> populatorsMap = new EnumMap<GDSConfiguratorType, GDSConfigurationPopulator>(GDSConfiguratorType.class);
+
     public GDSConfigurationPopulator getConfigurationPopulator(GDSConfiguratorType gdsConfiguratorType) {
         if (gdsConfiguratorType == GDSConfiguratorType.SCHEMA) {
-            return new GDSSchemaDefinitionCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSSchemaDefinitionCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.USER_NORMALIZATION) {
-            return new GDSUserNormalizationCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSUserNormalizationCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.IP_RESOLVING) {
-            return new GDSIPResolvingCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSIPResolvingCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.GEO_LOCATION) {
-            return new GDSGeoLocationCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSGeoLocationCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.COMPUTER_TAGGING) {
-            return new GDSComputerTaggingCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSComputerTaggingCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.USER_MONGO_UPDATE) {
-            return new GDSUserMongoUpdateCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSUserMongoUpdateCLIPopulator());
         }
         else if (gdsConfiguratorType == GDSConfiguratorType.HDFS_WRITE) {
-            return new GDSHDFSWriteCLIPopulator();
+            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSHDFSWriteCLIPopulator());
+        }
+        else {
+            throw new UnsupportedOperationException("Could not find configurator populator of type " + gdsConfiguratorType.name());
         }
 
-        throw new UnsupportedOperationException("Could not find configurator populator of type " + gdsConfiguratorType.name());
+        return populatorsMap.get(gdsConfiguratorType);
     }
 }
