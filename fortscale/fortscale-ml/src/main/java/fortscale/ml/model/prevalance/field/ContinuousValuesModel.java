@@ -92,7 +92,7 @@ public class ContinuousValuesModel {
 
 
 	public double calculateScore(Double val) {
-		if(val == null){
+		if(val == null || N < 2){
 			return 0;
 		}
 
