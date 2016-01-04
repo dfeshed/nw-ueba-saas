@@ -505,7 +505,7 @@ public class ApiUserController extends BaseController{
 
 		try {
 			SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", "kerberos_logins", "destination_machine", "Count");
-			supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), 90);
+			supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), timePeriodInDays);
 		} catch(SupportingInformationException e) {
 			supportingInformationData = null;
 		}

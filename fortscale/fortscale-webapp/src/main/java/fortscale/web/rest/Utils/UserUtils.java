@@ -10,25 +10,6 @@ import java.util.*;
 
 @Service
 public class UserUtils {
-//    public Map<String, Double> getListFromSupportingInformation (SupportingInformationGenericData<Double> supportingInformationData, Integer limit) {
-//        Map<String, Double> machinesList = new HashMap<>();
-//        Map<SupportingInformationKey, Double> supportingInformationMapData = supportingInformationData.getData();
-//
-//        Integer index = 0;
-//
-//        for (Map.Entry<SupportingInformationKey, Double> supportingInformationEntry :
-//                supportingInformationMapData.entrySet()) {
-//            String key = supportingInformationEntry.getKey().generateKey().get(0);
-//            Double value = supportingInformationEntry.getValue();
-//            machinesList.put(key, value);
-//            index += 1;
-//            if (index == limit) {
-//                break;
-//            }
-//        }
-//
-//        return machinesList;
-//    }
 
     public List<Pair<String, Double>> getListFromSupportingInformation (SupportingInformationGenericData<Double> supportingInformationData, Integer limit) {
         List<Pair<String, Double>> entitiesList = new ArrayList<>();
@@ -42,13 +23,15 @@ public class UserUtils {
                     supportingInformationMapData.entrySet()) {
                 String key = supportingInformationEntry.getKey().generateKey().get(0);
                 Double value = supportingInformationEntry.getValue();
-                entitiesList.add(key, value);
+                entitiesList.add(new Pair<>(key, value));
                 index += 1;
                 if (index == limit) {
                     break;
                 }
             }
         }
+
+
 
 
         return entitiesList;
