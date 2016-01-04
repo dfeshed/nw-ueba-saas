@@ -27,12 +27,29 @@ public class EventsPrevalenceModelStreamTaskManager {
 	
 	/** Process incoming events and update the user models stats */
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		process(envelope, collector, coordinator, true);
+	}
+
+	/** Process incoming events and update the user models stats */
+	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator, boolean modelBeforeScore) throws Exception {
+		if (modelBeforeScore) {
+			model(envelope, collector, coordinator);
+			score(envelope, collector, coordinator);
+		} else {
+			score(envelope, collector, coordinator);
+			model(envelope, collector, coordinator);
+		}
+	}
+
+	private void score(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		if (!skipScore) {
+			eventsScoreStreamTaskService.process(envelope, collector, coordinator);
+		}
+	}
+
+	private void model(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (!skipModel) {
 			eventsPrevalenceModelStreamTaskService.process(envelope, collector, coordinator);
-		}
-		
-		if(!skipScore){
-			eventsScoreStreamTaskService.process(envelope, collector, coordinator);
 		}
 	}
 
