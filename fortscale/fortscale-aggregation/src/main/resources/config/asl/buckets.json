@@ -983,26 +983,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "country_with_high_score_histogram",
+          "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": ["country"],
+            "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.country_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "failure_code_with_high_score_histogram",
+          "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["status"]
+            "groupBy": ["status"],
+            "maximize": ["status_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.status_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },
@@ -1044,26 +1045,27 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
-          "name": "high_score_date_time_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_events_counter_func"},
-          "filter": {"jsonPath": "[?(@.date_time_score >= 50)]"}
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "country_with_high_score_histogram",
+          "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": ["country"],
+            "maximize": ["countryscore"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.country_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
         {
-          "name": "failure_code_with_high_score_histogram",
+          "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["status"]
+            "groupBy": ["status"],
+            "maximize": ["status_score"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
-          "filter": {"jsonPath": "[?(@.status_score >= 50)]"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         }
       ]
     },

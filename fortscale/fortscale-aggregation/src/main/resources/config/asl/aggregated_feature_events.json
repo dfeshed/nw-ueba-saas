@@ -1253,7 +1253,7 @@
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-        "name": "has_high_score_date_time_events_crmsf_daily",
+        "name": "highest_score_over_date_time_events_crmsf_daily",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_daily",
         "numberOfBuckets": 1,
@@ -1262,16 +1262,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "has_high_score_date_time_events_crmsf_hourly",
+        "name": "highest_score_over_date_time_events_crmsf_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_hourly",
         "numberOfBuckets": 1,
@@ -1280,16 +1280,16 @@
         "anomalyType": "event_time",
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
-            "high_score_date_time_events_counter"
+          "pick": [
+            "highest_score_date_time"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_has_events_func"
+          "type": "aggr_feature_map_values_max_sum_func"
         }
       },
       {
-        "name": "distinct_number_of_country_with_high_score_crmsf_daily",
+        "name": "sum_of_highest_scores_over_country_crmsf_daily",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_daily",
         "numberOfBuckets": 1,
@@ -1298,17 +1298,18 @@
         "anomalyType": "country",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "country_with_high_score_histogram"
+          "pick": [
+            "country_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": true
+          "type": "aggr_feature_map_values_max_sum_func",
+          "includeValues": true,
+          "minScoreToInclude": 1
         }
       },
       {
-        "name": "distinct_number_of_country_with_high_score_crmsf_hourly",
+        "name": "sum_of_highest_scores_over_country_crmsf_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_hourly",
         "numberOfBuckets": 1,
@@ -1317,17 +1318,18 @@
         "anomalyType": "country",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "country_with_high_score_histogram"
+          "pick": [
+            "country_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": true
+          "type": "aggr_feature_map_values_max_sum_func",
+          "includeValues": true,
+          "minScoreToInclude": 1
         }
       },
       {
-        "name": "distinct_number_of_failure_code_with_high_score_crmsf_daily",
+        "name": "sum_of_highest_scores_over_failure_code_crmsf_daily",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_daily",
         "numberOfBuckets": 1,
@@ -1336,17 +1338,18 @@
         "anomalyType": "failure_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "failure_code_with_high_score_histogram"
+          "pick": [
+            "failure_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": true
+          "type": "aggr_feature_map_values_max_sum_func",
+          "includeValues": true,
+          "minScoreToInclude": 1
         }
       },
       {
-        "name": "distinct_number_of_failure_code_with_high_score_crmsf_hourly",
+        "name": "sum_of_highest_scores_over_failure_code_crmsf_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_hourly",
         "numberOfBuckets": 1,
@@ -1355,13 +1358,14 @@
         "anomalyType": "failure_code",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "failure_code_with_high_score_histogram"
+          "pick": [
+            "failure_code_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": true
+          "type": "aggr_feature_map_values_max_sum_func",
+          "includeValues": true,
+          "minScoreToInclude": 1
         }
       }
     ]
