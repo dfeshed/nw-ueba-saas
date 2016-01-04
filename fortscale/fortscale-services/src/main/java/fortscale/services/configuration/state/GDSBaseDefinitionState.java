@@ -4,7 +4,7 @@ package fortscale.services.configuration.state;
  * @author gils
  * 03/01/2016
  */
-public class BaseDefinitionState implements GDSConfigurationState{
+public class GDSBaseDefinitionState implements GDSConfigurationState{
     private String dataSourceName;
     private GDSEntityType entityType;
     private String existingDataSources;

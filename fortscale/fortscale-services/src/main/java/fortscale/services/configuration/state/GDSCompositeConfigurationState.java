@@ -6,38 +6,38 @@ package fortscale.services.configuration.state;
  */
 public class GDSCompositeConfigurationState implements Resettable{
 
-    private BaseDefinitionState baseDefinitionState = new BaseDefinitionState();
+    private GDSBaseDefinitionState GDSBaseDefinitionState = new GDSBaseDefinitionState();
     private SchemaDefinitionState schemaDefinitionState = new SchemaDefinitionState();
     private CollectionDefinitionState collectionDefinitionState = new CollectionDefinitionState();
     private EnrichmentDefinitionState enrichmentDefinitionState = new EnrichmentDefinitionState();
 
     public String getDataSourceName() {
-        return baseDefinitionState.getDataSourceName();
+        return GDSBaseDefinitionState.getDataSourceName();
     }
 
     public void setDataSourceName(String dataSourceName) {
 
-        baseDefinitionState.setDataSourceName(dataSourceName);
+        GDSBaseDefinitionState.setDataSourceName(dataSourceName);
     }
 
     public GDSEntityType getEntityType() {
-        return baseDefinitionState.getEntityType();
+        return GDSBaseDefinitionState.getEntityType();
     }
 
     public void setEntityType(GDSEntityType entityType) {
-        baseDefinitionState.setEntityType(entityType);
+        GDSBaseDefinitionState.setEntityType(entityType);
     }
 
     public boolean isDataSourceAlreadyDefined() {
-        return baseDefinitionState.getDataSourceName() != null && baseDefinitionState.getEntityType() != null;
+        return GDSBaseDefinitionState.getDataSourceName() != null && GDSBaseDefinitionState.getEntityType() != null;
     }
 
     public String getExistingDataSources() {
-        return baseDefinitionState.getExistingDataSources();
+        return GDSBaseDefinitionState.getExistingDataSources();
     }
 
     public void setExistingDataSources(String currentDataSources) {
-        this.baseDefinitionState.setExistingDataSources(currentDataSources);
+        this.GDSBaseDefinitionState.setExistingDataSources(currentDataSources);
     }
 
     public SchemaDefinitionState getSchemaDefinitionState() {
@@ -65,7 +65,7 @@ public class GDSCompositeConfigurationState implements Resettable{
     }
 
     public void reset() {
-        baseDefinitionState.reset();
+        GDSBaseDefinitionState.reset();
         schemaDefinitionState.reset();
         collectionDefinitionState.reset();
         enrichmentDefinitionState.reset();
