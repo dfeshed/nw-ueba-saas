@@ -20,12 +20,20 @@ public class UserUtils {
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     /**
-     * Validates any top_related routes.
      *
      * @param timePeriodInDays Time period in days
-     * @param limit List limit
+     * @param limit            List limit
      */
-    public void validateRelatedEntitiesArguments (Integer timePeriodInDays, Integer limit) {
+
+    /**
+     * Validates any top_related routes.
+     *
+     * @param dataEntitiesCSV  A CSV of required data entities
+     * @param featureName      The name of the required feature
+     * @param timePeriodInDays Time period in days
+     * @param limit            List limit
+     */
+    public void validateRelatedEntitiesArguments(String dataEntitiesCSV, String featureName, Integer timePeriodInDays, Integer limit) {
 
         if (timePeriodInDays <= 0) {
             throw new BadRequestException("time_range param must be greater then 0.");
@@ -35,21 +43,30 @@ public class UserUtils {
             throw new BadRequestException("limit param must be greater then 0.");
         }
 
+        if (dataEntitiesCSV.isEmpty()) {
+            throw new BadRequestException("data_entities must contain at least on data entity.");
+        }
+
+        if (featureName.isEmpty()) {
+            throw new BadRequestException("feature_name must contain a feature name.");
+        }
+
     }
 
     /**
      * Creates SupportingInformationGenericData from userName and time period.
+     *
      * @param normalized_username Normalized Username key
-     * @param timePeriodInDays Time period in days
+     * @param timePeriodInDays    Time period in days
      * @return SupportingInformationGenericData
      */
-    public SupportingInformationGenericData createSupportingInformationData(String normalized_username, Integer timePeriodInDays, String featureName) {
+    public SupportingInformationGenericData createSupportingInformationData(String dataEntity, String normalized_username, Integer timePeriodInDays, String featureName) {
         // Create populator and get supporting information data
         SupportingInformationGenericData<Double> supportingInformationData;
         try {
-            SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", "kerberos_logins", featureName, "Count");
+            SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", dataEntity, featureName, "Count");
             supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), timePeriodInDays);
-        } catch(SupportingInformationException e) {
+        } catch (RuntimeException e) {
             supportingInformationData = null;
         }
 
@@ -59,47 +76,86 @@ public class UserUtils {
     /**
      * Converts SupportingInformationGenericData into a limited List<Pair<String, Double>>
      *
-     * @param supportingInformationData Supporting information data
-     * @param limit The limit of the returned list
+     * @param supportingInformationDataList Supporting information data
+     * @param limit                         The limit of the returned list
      * @return List<Pair>
      */
-    public List<Pair<String, Double>> getListFromSupportingInformation (SupportingInformationGenericData<Double> supportingInformationData, Integer limit) {
-        List<Pair<String, Double>> entitiesList = new ArrayList<>();
+    public List<Pair<String, Double>> getListFromSupportingInformation(List<SupportingInformationGenericData<Double>> supportingInformationDataList, Integer limit) {
+//        List<Pair<String, Double>> entitiesList = new ArrayList<>();
+        HashMap<String, Double> entitiesList = new HashMap<>();
 
-        if (supportingInformationData != null) {
-            Map<SupportingInformationKey, Double> supportingInformationMapData = supportingInformationData.getData();
+        //populate entitiesList
+        for (SupportingInformationGenericData<Double> supportingInformationData : supportingInformationDataList) {
+            if (supportingInformationData != null) {
 
-            Integer index = 0;
+                // Convert mapData to List<Pair<String, Double>>
+                Map<SupportingInformationKey, Double> supportingInformationMapData = supportingInformationData.getData();
+                for (Map.Entry<SupportingInformationKey, Double> supportingInformationEntry :
+                        supportingInformationMapData.entrySet()) {
+                    String key = supportingInformationEntry.getKey().generateKey().get(0);
+                    Double value = supportingInformationEntry.getValue();
 
-            for (Map.Entry<SupportingInformationKey, Double> supportingInformationEntry :
-                    supportingInformationMapData.entrySet()) {
-                String key = supportingInformationEntry.getKey().generateKey().get(0);
-                Double value = supportingInformationEntry.getValue();
-                entitiesList.add(new Pair<>(key, value));
-                index += 1;
-                if (index == limit) {
-                    break;
+                    // Add or sum
+//                    if (entitiesList.contains())
+//                    entitiesList.add(new Pair<>(key, value));
+                    if(entitiesList.containsKey(key)) {
+                        entitiesList.replace(key, entitiesList.get(key), entitiesList.get(key) + value);
+                    } else {
+                        entitiesList.put(key, value);
+                    }
                 }
             }
         }
 
 
+        // get unsorted list
+        ArrayList<Pair<String, Double>> list = new ArrayList<>();
+        for (String key : entitiesList.keySet()) {
+            list.add(new Pair<>(key, entitiesList.get(key)));
+        }
 
+        // Sort list
+        list.sort(new Comparator<Pair<String, Double>>() {
+            @Override
+            public int compare(Pair<String, Double> o1, Pair<String, Double> o2) {
+                return (int) (o2.getValue() - o1.getValue());
+            }
+        });
 
-        return entitiesList;
+        // Limit list
+        ArrayList<Pair<String, Double>> entitiesLimitedList = new ArrayList<>();
+        for (int i = 0; i < entitiesList.size(); i += 1) {
+            if (i >= limit) {
+                break;
+            }
+            entitiesLimitedList.add(list.get(i));
+        }
+
+        return entitiesLimitedList;
     }
 
-    public DataBean<List<Pair<String, Double>>> getRelatedEntitiesResponse (String normalized_username, Integer limit, Integer timePeriodInDays, String featureName) {
+    private List<String> getListFromCSV(String csv) {
+        return Arrays.asList(csv.split(","));
+    }
+
+    public DataBean<List<Pair<String, Double>>> getRelatedEntitiesResponse(String dataEntitiesCSV, String normalized_username, Integer limit, Integer timePeriodInDays, String featureName) {
 
         // Validations
-        validateRelatedEntitiesArguments(timePeriodInDays, limit);
+        validateRelatedEntitiesArguments(dataEntitiesCSV, featureName, timePeriodInDays, limit);
 
         // Create supportingInformationData
-        SupportingInformationGenericData supportingInformationData = createSupportingInformationData(normalized_username, timePeriodInDays, featureName);
+        List<SupportingInformationGenericData<Double>> supportingInformationDataList = new ArrayList<>();
+        List<String> dataEntitiesList = getListFromCSV(dataEntitiesCSV);
+        for (String dataEntity : dataEntitiesList) {
+            SupportingInformationGenericData supportingInformationData = createSupportingInformationData(dataEntity, normalized_username, timePeriodInDays, featureName);
+            if (supportingInformationData != null) {
+                supportingInformationDataList.add(supportingInformationData);
+            }
+        }
 
         // Convert supporting information data into a list.
         DataBean<List<Pair<String, Double>>> response = new DataBean<>();
-        response.setData(getListFromSupportingInformation(supportingInformationData, limit));
+        response.setData(getListFromSupportingInformation(supportingInformationDataList, limit));
         return response;
     }
 

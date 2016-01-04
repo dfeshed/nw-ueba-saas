@@ -484,41 +484,35 @@ public class ApiUserController extends BaseController{
 	}
 
 	/**
-	 * rest for /{normalized_username}/target_machines. Kerberos_logins only.
+	 * rest for /{normalized_username}/related_entities.
 	 *
 	 * @param normalized_username User's normalized username
-	 * @param timePeriodInDays Time period in days
-	 * @param limit The max amount of returned data
+	 * @param timePeriodInDays    Time period in days
+	 * @param limit               The max amount of returned data
 	 * @return DataBean<List>
 	 */
-    @RequestMapping(value = "/{normalized_username}/target_machines", method = RequestMethod.GET)
-    @ResponseBody
-    @LogException
-    public DataBean<List<Pair<String, Double>>> getRelatedTargetMachines(
-            @PathVariable String normalized_username,
-            @RequestParam(required = false, defaultValue = "90", value = "time_range") Integer timePeriodInDays,
-            @RequestParam(required = false, defaultValue = "5", value = "limit") Integer limit
-    ) {
-		return userUtils.getRelatedEntitiesResponse(normalized_username,limit,timePeriodInDays,"destination_machine");
-    }
 
 	/**
-	 * rest for /{normalized_username}/target_machines. Kerberos_logins only.
 	 *
 	 * @param normalized_username User's normalized username
-	 * @param timePeriodInDays Time period in days
-	 * @param limit The max amount of returned data
-	 * @return DataBean<List>
+	 * @param timePeriodInDays    Time period in days
+	 * @param limit               The max amount of returned data
+	 * @param dataEntitiesString  A CSV of required data entities
+	 * @param featureName         Feature name. i.e. "destination_machine", "source_machine", "country"
+	 * @return
 	 */
-	@RequestMapping(value = "/{normalized_username}/source_machines", method = RequestMethod.GET)
+	@RequestMapping(value = "/{normalized_username}/related_entities", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Pair<String, Double>>> getRelatedSourceMachines(
+	public DataBean<List<Pair<String, Double>>> getRelatedEntities(
 			@PathVariable String normalized_username,
 			@RequestParam(required = false, defaultValue = "90", value = "time_range") Integer timePeriodInDays,
-			@RequestParam(required = false, defaultValue = "5", value = "limit") Integer limit
+			@RequestParam(required = false, defaultValue = "5", value = "limit") Integer limit,
+			@RequestParam(required = true, value = "data_entities") String dataEntitiesString,
+			@RequestParam(required = true, value = "feature_name") String featureName
 	) {
-		return userUtils.getRelatedEntitiesResponse(normalized_username,limit,timePeriodInDays,"source_machine");
+		return userUtils.getRelatedEntitiesResponse(dataEntitiesString, normalized_username, limit, timePeriodInDays, featureName);
 	}
+
 
 }
