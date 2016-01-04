@@ -87,7 +87,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         StringBuilder builder = new StringBuilder();
         for (String groupByFeatureName : groupByFeatureNames) {
             Feature featureToGroupBy = features.get(groupByFeatureName);
-            if (featureToGroupBy == null) {
+            if (featureToGroupBy == null || featureToGroupBy.getValue() == null) {
                 return null;
             }
             if(builder.length() > 0){
