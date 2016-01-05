@@ -259,6 +259,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 
