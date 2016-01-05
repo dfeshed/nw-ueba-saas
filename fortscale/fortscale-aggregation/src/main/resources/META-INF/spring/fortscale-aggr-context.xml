@@ -5,7 +5,7 @@
 		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 						
 	<bean id="featureBucketStrategyStore" class="fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyMongoStore"/>
-	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketStrategyMongoStore"/>
+	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
 	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
 	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
