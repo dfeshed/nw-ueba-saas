@@ -26,7 +26,6 @@ import org.apache.samza.task.TaskCoordinator.RequestScope;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import javax.management.monitor.Monitor;
 import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.*;
@@ -84,9 +83,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-
 		long windowDuration = config.getLong("task.window.ms");
 
 
@@ -107,8 +103,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			dataSourceToConfigsMap.get(configKey).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.output.topics", dsSettings))) {
-				writerConfiguration.outputTopics = getConfigStringList(config,
-						String.format("fortscale.events.entry.%s.output.topics", dsSettings));
+				writerConfiguration.outputTopics = getConfigStringList(config,String.format("fortscale.events.entry.%s.output.topics", dsSettings));
 			}
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.bdp.output.topics", dsSettings))) {
 				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
@@ -161,11 +156,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 
 
-	private List<String> resolveStringValues(Config config, String string, FortscaleStringValueResolver resolver) {
+	private List<String> resolveStringValues(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValues(getConfigStringList(config, string));
 	}
 
-	private String resolveStringValueDefault(Config config, String string, String def, FortscaleStringValueResolver resolver) {
+	private String resolveStringValueDefault(Config config, String string, String def, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(config.get(string, def));
 	}
 

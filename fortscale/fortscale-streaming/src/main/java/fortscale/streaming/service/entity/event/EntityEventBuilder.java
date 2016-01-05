@@ -3,6 +3,7 @@ package fortscale.streaming.service.entity.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataStore;
@@ -120,8 +121,11 @@ public class EntityEventBuilder {
 	private void createAndSendEntityEvent(EntityEventData entityEventData, String outputTopic, MessageCollector collector) {
 		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
+
 		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
-			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
+			String aggrFeatureEventName = AggregatedFeatureEventsConfUtilService
+					.buildFullAggregatedFeatureEventName(
+					aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
 			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}

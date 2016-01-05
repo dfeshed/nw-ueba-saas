@@ -1,3 +1,4 @@
+
 package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

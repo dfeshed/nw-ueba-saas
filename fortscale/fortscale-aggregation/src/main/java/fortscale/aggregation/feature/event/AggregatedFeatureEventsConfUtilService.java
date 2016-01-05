@@ -1,28 +1,26 @@
 package fortscale.aggregation.feature.event;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.functions.AggrFeatureHistogramFunc;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class AggregatedFeatureEventsConfUtilService {
 	private static final String OUTPUT_AGGREGATED_FEATURE_CONF_NAME_SUFFIX = "histogram";
 	
 	@Value("${streaming.event.field.type.aggr_event}")
-    private String eventTypeFieldValue;
+	private String eventTypeFieldValue;
 	
 	@Value("${streaming.aggr_event.field.context}")
 	private String contextFieldName;
@@ -32,15 +30,11 @@ public class AggregatedFeatureEventsConfUtilService {
 	}
 	
 	public String buildOutputBucketDataSource(AggregatedFeatureEventConf conf){
-		return String.format("%s.%s", eventTypeFieldValue, buildOutputAggregatedFeatureConfGroupByFieldName(conf));
+		return String.format("%s.%s", eventTypeFieldValue, buildFullAggregatedFeatureEventConfName(conf));
 	}
 	
 	public String buildOutputAggregatedFeatureConfName(AggregatedFeatureEventConf conf){
 		return String.format("%s_%s", conf.getName(), OUTPUT_AGGREGATED_FEATURE_CONF_NAME_SUFFIX);
-	}
-	
-	public String buildOutputAggregatedFeatureConfGroupByFieldName(AggregatedFeatureEventConf conf){
-		return String.format("%s.%s", conf.getBucketConfName(), conf.getName());
 	}
 	
 	public String buildAggregatedFeatureContextFieldName(String contextName){
@@ -51,13 +45,19 @@ public class AggregatedFeatureEventsConfUtilService {
 		String name = buildOutputAggregatedFeatureConfName(conf);
 		Map<String, List<String>> featureNamesMap = new HashMap<>();
 		List<String> features = new ArrayList<>();
-		features.add(buildOutputAggregatedFeatureConfGroupByFieldName(conf));
+		features.add(buildFullAggregatedFeatureEventConfName(conf));
 		featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, features);
 		ObjectMapper mapper = new ObjectMapper();
 		String aggrFeatureFuncJsonStr = mapper.writeValueAsString(new AggrFeatureHistogramFunc());
 		JSONObject aggrFeatureFuncJsonObject = (JSONObject) JSONValue.parseWithException(aggrFeatureFuncJsonStr);
-		AggregatedFeatureConf aggregatedFeatureConf = new AggregatedFeatureConf(name, featureNamesMap, aggrFeatureFuncJsonObject);
-		
-		return aggregatedFeatureConf;
+		return new AggregatedFeatureConf(name, featureNamesMap, aggrFeatureFuncJsonObject);
+	}
+	
+	public static String buildFullAggregatedFeatureEventName(String bucketConfName, String aggregatedFeatureEventName){
+		return String.format("%s.%s", bucketConfName, aggregatedFeatureEventName);
+	}
+	
+	public static String buildFullAggregatedFeatureEventConfName(AggregatedFeatureEventConf conf){
+		return buildFullAggregatedFeatureEventName(conf.getBucketConfName(), conf.getName());
 	}
 }

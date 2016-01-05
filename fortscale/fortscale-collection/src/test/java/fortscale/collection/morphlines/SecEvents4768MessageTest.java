@@ -27,8 +27,8 @@ import java.util.List;
 public class SecEvents4768MessageTest  extends FsParametrizedTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readSecEvt_syslog.conf";
-	private String conf4768File = "resources/conf-files/processSecEvt4768_syslog.conf";
+	private String confFile = "resources/conf-files/securityevents/syslog/readSecEvt.conf";
+	private String conf4768File = "resources/conf-files/securityevents/syslog/processSecEvt4768.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	public SecEvents4768MessageTest(String testCase, String line, String output) {
