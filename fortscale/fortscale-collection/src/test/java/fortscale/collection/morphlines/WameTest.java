@@ -71,14 +71,16 @@ public class WameTest {
 				$(
 						"Regular Event",
 						$(
-								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",\"Idan.Admin.B\",\"TEST-DEV\",usr1",
-								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",,\"TEST-DEV\",usr1",
+								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",\"Idan.Admin.B\",\"TEST-DEV\",usr1,fs-dc.FORSTCALE.DOM",
+								"\"2015-12-22T15:04:24.000+0000\",4724,\"IDAN-DEV\",,\"TEST-DEV\",usr1,fs-dc.FORSTCALE.DOM",
+								"\"2015-12-07T10:25:54.000+0200\",4722,SOMEBIGCOMPANY.COM,user100f,SOMEBIGCOMPANY.COM,user10f,fs-dc.FORSTCALE.DOM",
 								"\"2015-12-07T10:25:54.000+0200\",4722,SOMEBIGCOMPANY.COM,user100f,SOMEBIGCOMPANY.COM,user10f"
 						),
 						$(
-								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,,,,,,,,,,,,,,SUCCESS,,,,,Password Reset,IDAN-DEV,usr1,TEST-DEV,",
+								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,,,,,,,,,,,,,,SUCCESS,,,,,Password Reset,FORSTCALE.DOM,usr1,FORSTCALE.DOM,",
 								(String)null,
-								"2015-12-07 08:25:54,1449476754,user100f,,,,,,,,,,,,,,SUCCESS,,,,,Account Enabled,SOMEBIGCOMPANY.COM,user10f,SOMEBIGCOMPANY.COM,"
+								"2015-12-07 08:25:54,1449476754,user100f,,,,,,,,,,,,,,SUCCESS,,,,,Account Enabled,FORSTCALE.DOM,user10f,FORSTCALE.DOM,",
+								(String)null
 						)
 				)
 
