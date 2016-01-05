@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,18 +42,20 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		notListedHistogram.add("fifths", 5.0);
 		notListedHistogram.add("tenth", 10.0);
 
-		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("feature1", new Feature("feature1", histogram1));
-		bucket1FeatureMap.put("feature2", new Feature("feature2", notListedHistogram));
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram1),
+				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+		);
 
 		GenericHistogram histogram2 = new GenericHistogram();
 		histogram2.add("first", 1.0);
 		histogram2.add("second", 2.0);
 		String newOccurenceValue = "newOccurence";
 		histogram2.add(newOccurenceValue, 4.0);
-		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-		bucket2FeatureMap.put("feature1", new Feature("feature1", histogram2));
-		bucket2FeatureMap.put("feature2", new Feature("feature2", new FeatureNumericValue(42)));
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature2", 42)
+		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);
@@ -68,15 +71,15 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		AggrFeatureValue expectedAggrFeatureValue = createExpected(1, newOccurenceValue, histogram2);
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
 		Assert.assertTrue(actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES) instanceof Set);
-		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).size(), 
+		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).size(),
 				((Set<?>)actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).size());
-		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).toArray()[0], 
+		Assert.assertEquals(((Set<?>)expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).toArray()[0],
 				((Set<?>)actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES)).toArray()[0]);
-		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES), 
+		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES),
 				actualAggrFeatureValue.getAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES));
 		Assert.assertEquals(expectedAggrFeatureValue,actualAggrFeatureValue);
 	}
-	
+
 	private AggrFeatureValue createExpected(int numberOfNewOccurences, String newOccurenceValue, GenericHistogram ...genericHistograms){
 		AggrFeatureValue ret = new AggrFeatureValue(numberOfNewOccurences, 0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();
@@ -84,7 +87,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 			sumGenericHistogram.add(hist);
 		}
 		ret.setTotal((long) sumGenericHistogram.getTotalCount());
-		
+
 		Set<String> newOccurencesSet = new HashSet<>();
 		newOccurencesSet.add(newOccurenceValue);
 		ret.putAdditionalInformation(AggrFeatureEventNumberOfNewOccurencesFunc.NEW_OCCURENCES_VALUES, newOccurencesSet);
@@ -97,3 +100,4 @@ public class AggrFeatureEventNumberOfNewOccurencesFuncTest {
 		Assert.assertNull(function.calculateAggrFeature(null, new ArrayList<Map<String, Feature>>()));
 	}
 }
+

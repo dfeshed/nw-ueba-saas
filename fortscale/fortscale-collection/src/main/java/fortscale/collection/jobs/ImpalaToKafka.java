@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+import fortscale.utils.kafka.EqualityMetricsDecider;
 import fortscale.utils.kafka.IKafkaSynchronizer;
 import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.services.impl.RegexMatcher;
@@ -14,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -44,27 +46,29 @@ public abstract class ImpalaToKafka extends FortscaleJob implements IKafkaSynchr
     protected static final String RETRIES_PARAMETER = "retries";
     protected static final String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
 
-
+    @Value("${broker.list}")
+    protected String zookeeperConnection;
 
     @Autowired
     protected JdbcOperations impalaJdbcTemplate;
 
     //parameters:
-    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap();
+    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
     protected int checkRetries;
     protected String whereCriteria;
     protected String jobToMonitor;
     protected MetricsKafkaSynchronizer metricsKafkaSynchronizer;
+
 
     protected void getGenericJobParameters(JobDataMap map)
             throws JobExecutionException {
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
+        EqualityMetricsDecider decider = new EqualityMetricsDecider();
         if (map.containsKey(JOB_MONITOR_PARAMETER)) {
             metricsKafkaSynchronizer = new MetricsKafkaSynchronizer(
-                    jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER),
-                    jobToMonitor,
+                    jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER), jobToMonitor,
                     MILLISECONDS_TO_WAIT, checkRetries);
         }
         else {

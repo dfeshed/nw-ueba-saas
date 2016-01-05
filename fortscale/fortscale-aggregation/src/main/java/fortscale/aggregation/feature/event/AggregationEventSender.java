@@ -20,9 +20,9 @@ public class AggregationEventSender implements IAggregationEventSender {
 
 	private KafkaEventsWriter eventsWriter;
 
-	private String fTopic;
+	private static final String FTOPIC = "fortscale-aggregated-feature-f-event";
 	private MultiTopicsKafkaSender multiTopicsKafkaSender;
-	private String pTopic;
+	private static final String PTOPIC = "fortscale-aggregated-feature-p-event";
 
 	private int batchSize;
 
@@ -33,7 +33,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 		// Create multi-topics kakfa sender.
 		// As our application acts as single node, there's no need in the partition key
 		multiTopicsKafkaSender = new MultiTopicsKafkaSender(metricsKafkaSynchronizer, batchSize,
-				Arrays.asList(fTopic, pTopic), "");
+				Arrays.asList(FTOPIC, PTOPIC), "");
 	}
 
 	@Override public void send(boolean isOfTypeF, JSONObject event){
@@ -41,10 +41,10 @@ public class AggregationEventSender implements IAggregationEventSender {
 		long timestamp = event.getAsNumber(EPOCH_TIME_FIELD_JOB_PARAMETER).longValue();
 		String topicToSend;
 		if (isOfTypeF){
-			topicToSend = fTopic;
+			topicToSend = FTOPIC;
 		}
 		else {
-			topicToSend = pTopic;
+			topicToSend = PTOPIC;
 		}
 
 		try {
