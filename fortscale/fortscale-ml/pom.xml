@@ -59,10 +59,6 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<properties>
-		<samza.version>0.7.0</samza.version>
-	</properties>
-
 	<dependencies>
 
 		<!-- json parsing library -->

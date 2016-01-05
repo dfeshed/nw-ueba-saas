@@ -32,4 +32,8 @@
 		<constructor-arg name="threshold" value="50"/>
 	</bean>
 
+    <bean id="gdsScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
+        <constructor-arg name="eventScoreField" value="eventscore"/>
+        <constructor-arg name="threshold" value="50"/>
+    </bean>
 </beans>

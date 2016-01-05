@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.ml.model.prevalance.UserTimeBarrier;
-import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.exceptions.KeyValueDBException;
 
 /**
  * Barrier for events that holds a latest time stamp and discriminating fields 
@@ -38,16 +38,16 @@ public class BarrierService {
 	}
 	
 	
-	public void flushBarrier() throws LevelDbException {
+	public void flushBarrier() throws KeyValueDBException {
 		try {
 			store.flush();
 		} catch (Exception exception) {
 			logger.error("error flushing barrier", exception);
-			throw new LevelDbException("error while trying to do store flush", exception);
+			throw new KeyValueDBException("error while trying to do store flush", exception);
 		}
 	}
 	
-	public void updateBarrier(String username, long timestamp, JSONObject message) throws LevelDbException {
+	public void updateBarrier(String username, long timestamp, JSONObject message) throws KeyValueDBException {
 		if (username == null)
 			return;
 		
@@ -64,12 +64,12 @@ public class BarrierService {
 	}
 	
 	
-	protected void saveBarrierForUser(String username, UserTimeBarrier barrier) throws LevelDbException {
+	protected void saveBarrierForUser(String username, UserTimeBarrier barrier) throws KeyValueDBException {
 		try {
 			store.put(username, barrier);
 		} catch (Exception exception) {
 			logger.error(String.format("error storing barrier value for username: %s", username), exception);
-			throw new LevelDbException(String.format("error while trying to store user barrier %s", username), exception);
+			throw new KeyValueDBException(String.format("error while trying to store user barrier %s", username), exception);
 		}
 	}
 }

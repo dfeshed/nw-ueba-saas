@@ -15,8 +15,8 @@ import java.util.Map;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = AggrFeatureHistogramFunc.class, name = AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE),
 		@JsonSubTypes.Type(value = AggrFeatureAvgStdNFunc.class, name = AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE),
-		@JsonSubTypes.Type(value = AggrFeatureEventsCounterFunc.class, name = AggrFeatureEventsCounterFunc.AGGR_FEATURE_FUNCTION_TYPE),
-		@JsonSubTypes.Type(value = AggrFeatureMaxIntegerFunc.class, name = AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
+		@JsonSubTypes.Type(value = AggrFeatureSumFunc.class, name = AggrFeatureSumFunc.AGGR_FEATURE_FUNCTION_TYPE),
+		@JsonSubTypes.Type(value = AggrFeatureFeatureToMaxMapFunc.class, name = AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 
 public interface IAggrFeatureFunction {
