@@ -5,13 +5,14 @@ import fortscale.services.CachingService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -84,7 +85,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		KeyValueDbBasedCache<String, String> usernameStore = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
 		KeyValueDbBasedCache<String, ArrayList> samAccountNameStore = new KeyValueDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
@@ -99,13 +100,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
-			String usernameField = getConfigString(config, String.format("fortscale.events.entry.%s.username.field",configKey));
+			String usernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.username.field",configKey),res);
 			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
 					configKey));
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
 							+ ".domain.fake", configKey)) : "";
-			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events.entry.%s"
-					+ ".normalizedusername.field",configKey));
+			String normalizedUsernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s"
+					+ ".normalizedusername.field",configKey),res);
 			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
 			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
@@ -162,17 +163,17 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
-				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 				return;
 			}
 
 			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
 
 			if (usernameNormalizationConfig == null){
-				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			}
 
-			// get the normalized username from input record
+			// get the normalized username from input record - if he doesnt exist  its sign that we should normalized the username field
 			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				String messageText = (String)envelope.getMessage();
@@ -180,9 +181,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				String username = convertToString(message.get(usernameNormalizationConfig.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
-					String filteredEventLabel = "Message does not contains username in field " +
-							usernameNormalizationConfig.getUsernameField();
-					taskMonitoringHelper.countNewFilteredEvents(configKey,filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
 				}
 
@@ -204,8 +203,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
-					String filteredEventLabel = "User " + username + "does not exists";
-					taskMonitoringHelper.countNewFilteredEvents(configKey, filteredEventLabel);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);

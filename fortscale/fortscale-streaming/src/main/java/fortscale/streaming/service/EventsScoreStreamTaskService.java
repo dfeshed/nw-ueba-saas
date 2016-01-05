@@ -1,6 +1,7 @@
 package fortscale.streaming.service;
 
 import fortscale.ml.service.ModelService;
+import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
@@ -10,6 +11,8 @@ import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
+import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -39,15 +42,12 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 public class EventsScoreStreamTaskService {
 
 	private static final Logger logger = Logger.getLogger(EventsScoreStreamTaskService.class);
-	private static final String SCORED_EVENTS_COLLECTION_NAME_PREFIX = "scored_";
 
 	private ModelService modelService;
 
 	private String outputTopic;
 	private String bdpOutputTopic;
 	private boolean forwardEvent;
-	private String sourceType;
-	private String entityType;
 	private String timestampField;
 	private List<Scorer> scorersToRun;
 	
@@ -61,13 +61,13 @@ public class EventsScoreStreamTaskService {
 	private String eventTypeFieldName;
 
 	@Autowired
-	private EventPersistencyHandlerFactory eventPersitencyHandlerFactory;
+	private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
 
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
 		this.modelService = modelService;
 		// get task configuration parameters
-		sourceType = getConfigString(config, "fortscale.source.type");
-		entityType = getConfigString(config, "fortscale.entity.type");
+		String sourceType = getConfigString(config, "fortscale.source.type");
+		String entityType = getConfigString(config, "fortscale.entity.type");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		outputTopic = config.get("fortscale.output.topic", "");
 		forwardEvent = true;
@@ -105,11 +105,11 @@ public class EventsScoreStreamTaskService {
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		
 		// get the timestamp from the message
-		// the timestamp for now is only used for monitoring but later it will be used in order to recieve the right model.
+		// the timestamp for now is only used for monitoring but later it will be used in order to receive the right model.
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new StreamMessageNotContainFieldException(messageText, timestampField);
+			throw new FilteredEventException(MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
 		}
 
 		
@@ -151,10 +151,9 @@ public class EventsScoreStreamTaskService {
 			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
 		}
 
-		EventPersistencyHandler eventPersitencyHandler = eventPersitencyHandlerFactory.getEventPersitencyHandler(event);
-		if(eventPersitencyHandler != null){
-			eventPersitencyHandler.saveEvent(event, SCORED_EVENTS_COLLECTION_NAME_PREFIX);
+		EventPersistencyHandler eventPersistencyHandler = eventPersistencyHandlerFactory.getEventPersitencyHandler(event);
+		if (eventPersistencyHandler != null) {
+			eventPersistencyHandler.saveEvent(event);
 		}
-
 	}
 }

@@ -7,6 +7,7 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.config.Config;
@@ -49,9 +50,6 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * The level DB store name
 	 */
 	private static final String storeName = "user-mongo-update";
-	public static final String NO_LOG_USERNAME_IN_MESSAGE_LABEL = "No log username in message";
-	public static final String NO_USERNAME_FIELD_IN_MESSAGE_LABEL = "No username field  in message";
-	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL = "No timestamp field in message";
 
 	/**
 	 * Logger
@@ -146,13 +144,13 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			return;
 		}
 		// get the timestamp from the event
 		Long timestampSeconds = convertToLong(message.get(timestampField));
 		if (timestampSeconds == null) {
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_TIMESTAMP_FIELD_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
@@ -161,7 +159,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
 		if (normalizedUsername == null) {
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_USERNAME_FIELD_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 			logger.error("message {} does not contains username in field {}", messageText, usernameField);
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
@@ -172,7 +170,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		
 		DataSourceConfiguration dataSourceConfiguration = dataSourceConfigs.get(configKey);
 		if (dataSourceConfiguration == null) {
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			logger.error("No data source is defined for input topic {} ", configKey);
 			return;
 		}
@@ -180,7 +178,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		//get the actual username from the event - using for assigning to logusername
 		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.getLogUserNameField()));
 		if (logUserNameFromEvent == null) {
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_LOG_USERNAME_IN_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_LOG_USERNAME_IN_MESSAGE_LABEL);
 			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.getLogUserNameField());
 			return;
 		}

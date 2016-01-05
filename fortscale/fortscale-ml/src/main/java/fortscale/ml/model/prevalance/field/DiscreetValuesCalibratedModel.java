@@ -18,7 +18,7 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 
 	private static final String IGNORE_VALUES_CONFIG_FORMAT = "%s.%s.ignore.score.regex";
 	private static final String DISTINCT_VALUES_LIMIT_CONFIG_FORMAT = "%s.%s.distinct.values.limit";
-	public static final int DISTINCT_VALUES_LIMIT_DEFAULT = 1000;
+	public static final int DISTINCT_VALUES_LIMIT_DEFAULT = 500;
 	
 	private FeatureCalibration featureCalibration = new FeatureCalibration();
 	private Pattern ignoreValues;

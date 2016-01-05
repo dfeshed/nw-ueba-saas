@@ -10,7 +10,6 @@ import java.util.Map;
 import static fortscale.utils.ConversionUtils.convertToDouble;
 
 public class ContinuousHistogramModelBuilder implements IModelBuilder {
-    public static final String MODEL_BUILDER_TYPE = "continuous_data_histogram";
     private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());

@@ -1,0 +1,36 @@
+{
+  "ModelConfs": [
+    {
+      "name": "entity_event.normalized_username.daily",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "normalized_username_daily"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_daily"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "entity_event.normalized_username.hourly",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "normalized_username_hourly"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_hourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    }
+  ]
+}

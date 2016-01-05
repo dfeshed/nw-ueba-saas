@@ -8,6 +8,7 @@ import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.*;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
@@ -38,9 +39,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
-	public static final String NO_TIMESTAMP_FIELD_IN_MESSAGE_label = "No timestamp field in message";
-	public static final String FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL = "Failed to Send Event to Kafka";
-	public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "Event Older then NewestEvent";
+
 
 
 	/**
@@ -84,9 +83,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-
 		long windowDuration = config.getLong("task.window.ms");
 
 
@@ -107,8 +103,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			dataSourceToConfigsMap.get(configKey).add(writerConfiguration);
 
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.output.topics", dsSettings))) {
-				writerConfiguration.outputTopics = getConfigStringList(config,
-						String.format("fortscale.events.entry.%s.output.topics", dsSettings));
+				writerConfiguration.outputTopics = getConfigStringList(config,String.format("fortscale.events.entry.%s.output.topics", dsSettings));
 			}
 			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.bdp.output.topics", dsSettings))) {
 				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
@@ -161,11 +156,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 
 
-	private List<String> resolveStringValues(Config config, String string, FortscaleStringValueResolver resolver) {
+	private List<String> resolveStringValues(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValues(getConfigStringList(config, string));
 	}
 
-	private String resolveStringValueDefault(Config config, String string, String def, FortscaleStringValueResolver resolver) {
+	private String resolveStringValueDefault(Config config, String string, String def, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(config.get(string, def));
 	}
 
@@ -180,7 +175,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			return;
 		}
 
@@ -189,7 +184,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		if (writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
-			taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			return;
 		}
 
@@ -201,7 +196,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
-				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
 				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
 
@@ -235,7 +230,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
-								taskMonitoringHelper.countNewFilteredEvents(configKey, FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
+								taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output key %s after HDFS write",
 										  configKey, outputTopic), exception);
@@ -248,7 +243,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
 			} else {//Event filter becuase of  barrier
-				taskMonitoringHelper.countNewFilteredEvents(configKey, EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
 	}
@@ -261,7 +256,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message)) {
-				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), "MessageFilter: "+filter.getName());
+				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
 				return true;
 			}
 		}

@@ -3,7 +3,7 @@ package fortscale.streaming.task.enrichment;
 import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
@@ -50,7 +50,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		if (topicToServiceMap == null) {
 

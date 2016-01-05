@@ -89,7 +89,7 @@ public class EsperRulesTest {
 		//Notification for user without tag should be ignored
 		notification = new Evidence(EntityType.User,"entityTypeFieldName","user10@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
 		epService.getEPRuntime().sendEvent(notification);
-		EPAssertionUtil.assertAllBooleanTrue(new Boolean[] {!listener.isInvoked()});
+		EPAssertionUtil.assertAllBooleanTrue(new Boolean[] { !listener.isInvoked() });
 
 	}
 
@@ -195,15 +195,15 @@ public class EsperRulesTest {
 		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 
 		epService.getEPRuntime().sendEvent(entityEventMedium);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Medium" });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Medium"});
 
 		epService.getEPRuntime().sendEvent(entityEventHigh);
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "High" });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "High"});
 
 		epService.getEPRuntime().sendEvent(entityEventCritical);
 		epService.getEPRuntime().sendEvent(entityEventTooLow); // this one shouldn't affect
 		epService.getEPRuntime().sendEvent(entityEventIsAdmin); // this one shouldn't affect
-		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Critical" });
+		EPAssertionUtil.assertProps(listener.assertOneGetNewAndReset(), new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Critical"});
 	}
 
     /**
@@ -361,7 +361,7 @@ public class EsperRulesTest {
 		 public void testSmartEventWithNormalUserAccountWithNotificationOtherTag() throws Exception{
 
 
-		EPStatement stmt = initSmartEventWithNormalUserAccountWithNotification();
+		EPStatement stmt = initSmartEventWithSensetiveUserAccountWithNotification();
 		//listener catches only events that pass the rule
 		SupportUpdateListener listener = new SupportUpdateListener();
 		stmt.addListener(listener);
@@ -381,6 +381,34 @@ public class EsperRulesTest {
 		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 	}
 
+    /**
+     * Test normal user rule on user with notifiation, and with tag which is not admin, executive or service.
+     * @throws Exception
+     */
+    @Test
+    public void testSmartEventWithCustomTaggedUserAccountWithNotification() throws Exception{
+
+
+        EPStatement stmt = initSmartEventWithSensetiveUserAccountWithNotification();
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+        stmt.addListener(listener);
+
+        EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
+        Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
+
+        List<String> userTags = new ArrayList<>();
+        userTags.add("test");
+        EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
+        epService.getEPRuntime().sendEvent(notification);
+        epService.getEPRuntime().sendEvent(entityTags);
+        epService.getEPRuntime().sendEvent(entityEventLow);
+        EventBean result = listener.assertOneGetNewAndReset();
+
+        EPAssertionUtil.assertProps(result, new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Low"});
+    }
+
 	@Test
 	public void testSmartEventWithNormalUserAccountWithoutNotifications() throws Exception{
 
@@ -394,38 +422,87 @@ public class EsperRulesTest {
 		epService.getEPRuntime().sendEvent(entityEventLow);
 		EventBean result = listener.assertOneGetNewAndReset();
 
-		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Critical" });
+		EPAssertionUtil.assertProps(result, new String[]{"entityName", "severity"}, new Object[]{"user1@fs.com", "Critical"});
 
 	}
 
+    /**
+     * Test normal user rule on user without notification (other user have notification), and with tag which is not admin, executive or service.
+     * @throws Exception
+     */
+    @Test
+    public void testSmartEventWithCustomTaggedUserAndAdminAccountWithoutNotification() throws Exception{
 
+        EPStatement stmt = initSmartEventWithSensetiveUserAccountWithoutNotification();
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+
+        stmt.addListener(listener);
+
+        EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
+
+        List<String> userTags = new ArrayList<>();
+        userTags.add("test");
+        userTags.add("admin");
+        EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
+        epService.getEPRuntime().sendEvent(entityTags);
+        epService.getEPRuntime().sendEvent(entityEventLow);
+        EventBean result = listener.assertOneGetNewAndReset();
+
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
+
+    }
 
 	/**
 	 * Test normal user rule on user without notification (other user have notification), and with tag which is not admin, executive or service.
 	 * @throws Exception
 	 */
 	@Test
-	public void testSmartEventWithNormalUserAccountWithoutNotificationOtherTag() throws Exception{
+	public void testSmartEventWithCustomTaggedUserAccountWithoutNotification() throws Exception{
 
-		EPStatement stmt = initSmartEventWithNormalUserAccountWithoutNotification();
+		EPStatement stmt = initSmartEventWithSensetiveUserAccountWithoutNotification();
 		//listener catches only events that pass the rule
 		SupportUpdateListener listener = new SupportUpdateListener();
 
 		stmt.addListener(listener);
 
 		EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
-		Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user2@fs.com", EvidenceType.Notification,12345L ,12345L +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),65,Severity.Low,3,EvidenceTimeframe.Hourly);
 		List<String> userTags = new ArrayList<>();
-		userTags.add("LR");
+		userTags.add("test");
 		EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
 
-		epService.getEPRuntime().sendEvent(notification);
 		epService.getEPRuntime().sendEvent(entityTags);
 		epService.getEPRuntime().sendEvent(entityEventLow);
 		EventBean result = listener.assertOneGetNewAndReset();
 
 		EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
 	}
+
+    /**
+     * Test normal user rule on user without notification (other user have notification), and with tag which is not admin, executive or service.
+     * @throws Exception
+     */
+    @Test
+    public void testSmartEventWithNormalUserAccountWithoutNotificationOtherTag() throws Exception{
+
+        EPStatement stmt = initSmartEventWithSensetiveUserAccountWithoutNotification();
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+
+        stmt.addListener(listener);
+
+        EntityEvent entityEventLow =  new EntityEvent(1234L,99,55,new HashMap<String,String>(),"normalized_username_user1@fs.com",12345L,12345L,"entity_event_type",12345L,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
+        List<String> userTags = new ArrayList<>();
+        userTags.add("LR");
+        EntityTags entityTags = new EntityTags(EntityType.User,"user1@fs.com",userTags);
+
+        epService.getEPRuntime().sendEvent(entityTags);
+        epService.getEPRuntime().sendEvent(entityEventLow);
+        EventBean result = listener.assertOneGetNewAndReset();
+
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity" }, new Object[] { "user1@fs.com", "Low" });
+    }
 
     /**
      * Test normal user rule on user with notifiation, and with tag which is not admin, executive or service.
@@ -503,11 +580,11 @@ public class EsperRulesTest {
 
         epService.getEPRuntime().sendEvent(entityEventLowHourly);
         result = listener.assertOneGetNewAndReset();
-        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Hourly Activity For User Account" });
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Hourly Privileged Account Activity" });
 
         epService.getEPRuntime().sendEvent(entityEventLowDaily);
         result = listener.assertOneGetNewAndReset();
-        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Daily Activity For User Account" });
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Daily Privileged Account Activity" });
 
         //---sensitive user with notification
 
@@ -518,14 +595,13 @@ public class EsperRulesTest {
         epService.getEPRuntime().sendEvent(entityTags);
         epService.getEPRuntime().sendEvent(entityEventLowHourly);
         result = listener.assertOneGetNewAndReset();
-        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Hourly Activity For User Account" });
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Hourly Privileged Account Activity" });
 
         epService.getEPRuntime().sendEvent(entityEventLowDaily);
         result = listener.assertOneGetNewAndReset();
-        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Daily Activity For User Account" });
+        EPAssertionUtil.assertProps(result, new String[] { "entityName", "severity", "title" }, new Object[] { "user1@fs.com", "Low", "Suspicious Daily Privileged Account Activity" });
 
     }
-
 
     /**
      * Create esper statement (rule) for event on normal users with score above 50, with and without notification
@@ -558,8 +634,8 @@ public class EsperRulesTest {
                 + "when  (SmartEvent.score >= 95) then 'Critical' "
                 + "end as severity , "
                 + "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
-		        + "where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EntityTags('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ).std:groupwin(entityType,entityName).std:lastevent())"
-				+ "and SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
+                + "where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EntityTags.std:groupwin(entityType,entityName).std:lastevent())"
+                + "and SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
 
 
 
@@ -572,51 +648,50 @@ public class EsperRulesTest {
         return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
     }
 
-	/**
-	 * Create esper statement (rule) for event on normal users with score above 50, with and without notification
-	 * Normal users are users which don't have "admin", "service", or "executive" tags.
-	 * @return esper statment
-	 */
-	private EPStatement initSmartEventWithNormalUserAccountWithNotification() {
-		epService.destroy();
-		epService.initialize();
-		epService.getEPAdministrator().destroyAllStatements();
+    /**
+     * Create esper statement (rule) for event on normal users with score above 50, with and without notification
+     * Normal users are users which don't have "admin", "service", or "executive" tags.
+     * @return esper statment
+     */
+    private EPStatement initSmartEventWithNormalUserAccountWithNotification() {
+        epService.destroy();
+        epService.initialize();
+        epService.getEPAdministrator().destroyAllStatements();
 
-		long currentTimeStamp  = new Date().getTime();
+        long currentTimeStamp  = new Date().getTime();
 
-		String createTimestamp = "create variable Long currentTimestamp ="+(currentTimeStamp+(60*60*1000+60*60*1000)); // time now + 2 hours
-		String createLastEventTimestamp = "create variable Long lastEventTimestamp =" + (currentTimeStamp +(60*30*1000)); // half hour greater then the current timestamp
+        String createTimestamp = "create variable Long currentTimestamp ="+(currentTimeStamp+(60*60*1000+60*60*1000)); // time now + 2 hours
+        String createLastEventTimestamp = "create variable Long lastEventTimestamp =" + (currentTimeStamp +(60*30*1000)); // half hour greater then the current timestamp
 
         String enrichedEntityEvent = CREATE_ENRICHED_ENTITY_EVENT;
         String enrichEvidence = CREATE_ENRICHED_EVIDENCE;
         String hourlyContextByUser = CREATE_HOURLY_CONTEXT_BY_USER;
 
 
-		String jokerNormalUserAccount = "select"
+        String jokerNormalUserAccount = "select"
                 + " case when SmartEvent.entity_event_name = 'normalized_username_hourly' then 'Suspicious Hourly Activity For User Account'"
                 +" when  SmartEvent.entity_event_name = 'normalized_username_daily' then 'Suspicious Daily Activity For User Account'"
                 +" end as title,"
-				+ "case "
-				+ "when  (SmartEvent.score >= 50 and  SmartEvent.score < 60) then 'Low' "
-				+ "when  (SmartEvent.score >= 60 and  SmartEvent.score < 70) then 'Medium' "
-				+ "when  (SmartEvent.score >= 70 and  SmartEvent.score < 85) then 'High' "
-				+ "when  (SmartEvent.score >= 85) then 'Critical' "
-				+ "end as severity , "
-				+ "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
-				+ "where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EntityTags('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ).std:groupwin(entityType,entityName).std:lastevent())"
-				+ "and SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
+                + "case "
+                + "when  (SmartEvent.score >= 50 and  SmartEvent.score < 60) then 'Low' "
+                + "when  (SmartEvent.score >= 60 and  SmartEvent.score < 70) then 'Medium' "
+                + "when  (SmartEvent.score >= 70 and  SmartEvent.score < 85) then 'High' "
+                + "when  (SmartEvent.score >= 85) then 'Critical' "
+                + "end as severity , "
+                + "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
+                + "where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EntityTags.std:groupwin(entityType,entityName).std:lastevent())"
+                + "and SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
 
 
-		epService.getEPAdministrator().createEPL(createTimestamp);
-		epService.getEPAdministrator().createEPL(createLastEventTimestamp);
-		epService.getEPAdministrator().createEPL(enrichEvidence);
-		epService.getEPAdministrator().createEPL(enrichedEntityEvent);
-		epService.getEPAdministrator().createEPL(hourlyContextByUser);
+        epService.getEPAdministrator().createEPL(createTimestamp);
+        epService.getEPAdministrator().createEPL(createLastEventTimestamp);
+        epService.getEPAdministrator().createEPL(enrichEvidence);
+        epService.getEPAdministrator().createEPL(enrichedEntityEvent);
+        epService.getEPAdministrator().createEPL(hourlyContextByUser);
 
 
-		return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
-	}
-
+        return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
+    }
 
 	/**
 	 * Create esper statement (rule) for event on sensitive users with score above 50, with and without notification
@@ -637,20 +712,7 @@ public class EsperRulesTest {
 		String enrichEvidence = CREATE_ENRICHED_EVIDENCE;
 		String hourlyContextByUser = CREATE_HOURLY_CONTEXT_BY_USER;
 
-		String jokerNormalUserAccount = "select"
-                + " case when SmartEvent.entity_event_name = 'normalized_username_hourly' then 'Suspicious Hourly Activity For User Account'"
-                +" when  SmartEvent.entity_event_name = 'normalized_username_daily' then 'Suspicious Daily Activity For User Account'"
-                +" end as title,"
-				+ "case "
-				+ "when  (SmartEvent.score in [50:60)) then 'Low' "
-				+ "when  (SmartEvent.score in [60:70)) then 'Medium' "
-				+ "when  (SmartEvent.score in [70:85)) then 'High' "
-				+ "when  (SmartEvent.score >= 85) then 'Critical' "
-				+ "end as severity , "
-				+ "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score,Tags.tags as tags from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
-				+ "inner join EntityTags('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags)).std:groupwin(entityType,entityName).std:lastevent() as Tags "
-				+ "on  Tags.entityType = SmartEvent.entityType and Tags.entityName = SmartEvent.entityName "
-				+ "where  SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
+		String jokerNormalUserAccount = "select case when SmartEvent.entity_event_name = 'normalized_username_hourly' and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ) then 'Suspicious Hourly Privileged Account Activity' when SmartEvent.entity_event_name = 'normalized_username_daily' and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ) then 'Suspicious Daily Privileged Account Activity' when SmartEvent.entity_event_name = 'normalized_username_hourly' then 'Suspicious Hourly User Activity' when SmartEvent.entity_event_name = 'normalized_username_daily' then 'Suspicious Daily User Activity' end as title, case when (SmartEvent.score in [50:60) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Low' when (SmartEvent.score in [50:60) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Low' when (SmartEvent.score in [60:70) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Medium' when (SmartEvent.score in [60:70) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Medium' when (SmartEvent.score in [70:85) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'High' when (SmartEvent.score in [70:85) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'High' when (SmartEvent.score >= 85 and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Critical' when (SmartEvent.score >= 85 and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Critical' end as severity, Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score, Tags.tags as tags from EnrichedEntityEvent(score >= 50).std:groupwin(entityName,entityType).std:lastevent() as SmartEvent inner join EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags  on SmartEvent.entityName = Tags.entityName and SmartEvent.entityType = Tags.entityType  where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName  in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
 
 
 		epService.getEPAdministrator().createEPL(createTimestamp);
@@ -683,20 +745,7 @@ public class EsperRulesTest {
 		String hourlyContextByUser =CREATE_HOURLY_CONTEXT_BY_USER;
 
 
-		String jokerNormalUserAccount ="select"
-                + " case when SmartEvent.entity_event_name = 'normalized_username_hourly' then 'Suspicious Hourly Activity For User Account'"
-                +" when  SmartEvent.entity_event_name = 'normalized_username_daily' then 'Suspicious Daily Activity For User Account'"
-                +" end as title,"
-				+ "case "
-				+ "when  (SmartEvent.score in [50:65)) then 'Low' "
-				+ "when  (SmartEvent.score in [65:75)) then 'Medium' "
-				+ "when  (SmartEvent.score in [75:90)) then 'High' "
-				+ "when  (SmartEvent.score >= 90 ) then 'Critical' "
-				+ "end as severity , "
-				+ "SmartEvent.entityType as entityType, SmartEvent.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score , Tags.tags as tags from EnrichedEntityEvent(score >= 50).std:groupwin(entityType,entityName).std:lastevent() as SmartEvent "
-				+ "inner join EntityTags('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ).std:groupwin(entityType,entityName).std:lastevent() as Tags "
-				+ "on  Tags.entityType = SmartEvent.entityType and Tags.entityName = SmartEvent.entityName "
-				+ "where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
+		String jokerNormalUserAccount ="select case when SmartEvent.entity_event_name = 'normalized_username_hourly' and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ) then 'Suspicious Hourly Privileged Account Activity' when SmartEvent.entity_event_name = 'normalized_username_daily' and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) ) then 'Suspicious Daily Privileged Account Activity' when SmartEvent.entity_event_name = 'normalized_username_hourly' then 'Suspicious Hourly User Activity' when SmartEvent.entity_event_name = 'normalized_username_daily' then 'Suspicious Daily User Activity' end as title, case when (SmartEvent.score in [50:65) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Low' when (SmartEvent.score in [50:70) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Low' when (SmartEvent.score in [65:75) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Medium' when (SmartEvent.score in [70:80) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Medium' when (SmartEvent.score in [75:90) and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'High' when (SmartEvent.score in [80:95) and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'High' when (SmartEvent.score >= 90 and ('admin' = any(tags) or 'executive' = any(tags) or 'service' = any(tags) )) then 'Critical' when (SmartEvent.score >= 95 and ('admin' <> any(tags) and 'executive' <> any(tags) and 'service' <> any(tags) )) then 'Critical' end as severity, Tags.entityType as entityType, Tags.entityName as entityName, aggregated_feature_events, start_time_unix, end_time_unix, SmartEvent.score * 1.0 as score, Tags.tags as tags from EnrichedEntityEvent(score >= 50).std:groupwin(entityName,entityType).std:lastevent() as SmartEvent inner join EntityTags.std:groupwin(entityType,entityName).std:lastevent() as Tags  on SmartEvent.entityName = Tags.entityName and SmartEvent.entityType = Tags.entityType  where SmartEvent.entityType.toString() || '-' ||SmartEvent.entityName not in (select entityType.toString() || '-' ||entityName from EnrichedEvidence(evidenceType = EvidenceType.Notification).win:expr_batch(oldest_timestamp+(60*60*1000+30*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))).std:lastevent())";
 
 
 		epService.getEPAdministrator().createEPL(createTimestamp);

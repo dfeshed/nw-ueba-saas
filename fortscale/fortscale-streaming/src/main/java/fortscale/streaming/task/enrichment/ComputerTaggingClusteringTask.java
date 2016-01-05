@@ -9,13 +9,14 @@ import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -67,7 +68,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		// initialize the computer tagging service only once for all streaming task instances. Since we can
 		// host several task instances in this process, we want all of them to share the same computer and tagging cache
 		// instances. To do so, we can have the ComputerTaggingService defined as a static member and be shared
@@ -145,13 +146,12 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			JSONObject message = parseJsonMessage(envelope);
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
-				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 				return;
 			}
 			ComputerTaggingConfig config = configs.get(configKey);
 			if (configs == null) {
-				taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
-
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 				return;
 			}
 
