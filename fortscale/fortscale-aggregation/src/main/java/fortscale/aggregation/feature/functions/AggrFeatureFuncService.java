@@ -12,10 +12,12 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by amira on 17/06/2015.
  */
+@Component
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
