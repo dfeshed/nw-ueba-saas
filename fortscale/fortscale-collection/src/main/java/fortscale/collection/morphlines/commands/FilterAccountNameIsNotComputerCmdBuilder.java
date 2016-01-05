@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by shays on 12/29/2015.
@@ -52,9 +53,9 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 	@Configurable(preConstruction=true)
 	public class FilterAccountNameIsNotComputer extends AbstractCommand  {
 
-		public static final String FILTER_IF_NOT_COMPUTER = "filterIfNotComputer";
 
-		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
 
@@ -66,12 +67,12 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 		@Override
 		protected boolean doProcess(Record record) {
 
-			String account_name = (String)record.get("account_name").get(0);
+			String account_name =  (String)record.get("account_name").get(1); //getAccountName(record.get("account_name"));
 			Boolean isComputer = account_name.contains("$") ? true : false;
 			if (isComputer){
 				record.replaceValues("isComputer", isComputer);
 				record.replaceValues("account_name", account_name);
-				String account_domain = (String)record.get("account_domain").get(0);
+				String account_domain = (String)record.get("account_domain").get(1);
 				record.replaceValues("account_domain", account_domain);
 
 			} else{
@@ -84,4 +85,11 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 		}
 	}
 
+	private String getAccountName(List<String> parts) {
+		String result = "";
+		for (String part :parts){
+			result +=part;
+		}
+		return result;
+	}
 }
