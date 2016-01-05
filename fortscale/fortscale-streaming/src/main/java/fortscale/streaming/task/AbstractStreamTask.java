@@ -63,7 +63,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	public static void fillExceptionHandler(ExceptionHandler exceptionHandler){
-		exceptionHandler.configNumOfContinuesExceptionsToFilter(LevelDbException.class, 1);
+		exceptionHandler.configNumOfContinuesExceptionsToFilter(KeyValueDBException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(KafkaPublisherException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(HdfsException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(TaskCoordinatorException.class, 1);

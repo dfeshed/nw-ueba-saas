@@ -1,9 +1,5 @@
 package fortscale.streaming.cache;
 
-import com.google.common.cache.Cache;
-import fortscale.services.cache.MemoryBasedCache;
-import org.apache.samza.storage.kv.Entry;
-import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,16 +9,16 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class LevelDbBasedCacheTest {
+public class KeyValueDbBasedCacheTest {
 
-	private LevelDbBasedCache<String,String> subject;
+	private KeyValueDbBasedCache<String,String> subject;
 
 	private KeyValueStore<String,String> store;
 
 	@Before
 	public void setUp() {
 		store = mock(KeyValueStore.class);
-		subject = new LevelDbBasedCache<String,String>(store,String.class);
+		subject = new KeyValueDbBasedCache<String,String>(store,String.class);
 	}
 
 	@Test
