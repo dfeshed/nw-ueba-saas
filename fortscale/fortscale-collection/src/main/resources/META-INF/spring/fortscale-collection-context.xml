@@ -270,4 +270,10 @@
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
+	<!-- Entity events related beans -->
+	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" scope="singleton"/>
+	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore" scope="singleton"/>
+	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService" scope="singleton"/>
+	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
+	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 </beans>

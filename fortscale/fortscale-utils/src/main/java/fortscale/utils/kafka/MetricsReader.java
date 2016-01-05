@@ -5,19 +5,12 @@ import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
-
-import static fortscale.utils.ConversionUtils.convertToLong;
 
 public class MetricsReader {
-
     private static Logger logger = LoggerFactory.getLogger(MetricsReader.class);
 
     private static final String HEADER = "header";
@@ -26,25 +19,24 @@ public class MetricsReader {
     private static final int TIMEOUT = 10000;
     private static final int BUFFER_SIZE = 1024000;
 
-    /***
-     *
-     * This method listens to the metrics topic for the last message time to arrive
-     *
-     * @param zookeeper         zookeeper server
-     * @param port              port for the server
-     * @param headerToCheck     name of header in the json message
-     * @param jobToCheck        samza job to listen to
-     * @param metricsToExtract  name of metrics to listen to
-     * @param lastMessageTime   message time to compare
-     * @return
+    /**
+     * @param zookeeper                    zookeeper server
+     * @param port                         port for the server
+     * @param headerToCheck                name of header in the json message
+     * @param jobToCheck                   samza job to listen to
+     * @param decider                      decides whether the wanted metrics have arrived
+     * @param waitTimeBetweenMetricsChecks time in millis to wait between checks
+     * @param checkRetries                 max number of retries
+     * @return true iff the wanted metrics have arrived
      */
-    public static boolean waitForMetrics(String zookeeper, int port, String headerToCheck, String jobToCheck,
-                                  String metricsToExtract, long lastMessageTime,
-                                  int waitTimeBetweenMetricsChecks, int checkRetries) {
+    public static boolean waitForMetrics(
+            String zookeeper, int port, String headerToCheck, String jobToCheck,
+            IMetricsDecider decider, int waitTimeBetweenMetricsChecks, int checkRetries) {
+
         SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
-        long offset = 0, lastoffset = -1, currentTry = 0;
+        long offset = 0, lastOffset = -1, currentTry = 0;
         int partition = 0;
-        Long time = null;
+
         while (currentTry < checkRetries) {
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId("clientId")
@@ -63,77 +55,60 @@ public class MetricsReader {
                     break;
                 }
                 String message = convertPayloadToString(msg);
-                Map<String, Object> metricData = getMetricData(message, headerToCheck, metricsToExtract);
-                if (metricData.containsKey(JOB_NAME) && metricData.get(JOB_NAME).equals(jobToCheck)) {
-                    time = convertToLong(metricData.get(metricsToExtract));
-                    if (time != null && time == lastMessageTime) {
-                        logger.info(metricsToExtract + ":" + time + " reached");
-                        consumer.close();
-                        return true;
-                    }
+                JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
+                if (decider.decide(metrics)) {
+                    consumer.close();
+                    return true;
                 }
                 offset = msg.nextOffset();
             }
-            if (offset == lastoffset) {
+            if (offset == lastOffset) {
                 try {
-                    if (time != null) {
-                        logger.info("last message time is {}", time);
-                    }
                     logger.info("waiting for metrics topic to refresh");
                     Thread.sleep(waitTimeBetweenMetricsChecks);
                     currentTry++;
                 } catch (InterruptedException e) {
-                    logger.error("metrics counting of {} has been interrupted. Stopping...", metricsToExtract);
+                    logger.error("wait for metrics has been interrupted. stopping...", e);
                     consumer.close();
                     return false;
                 }
             } else {
                 currentTry = 0;
             }
-            lastoffset = offset;
+            lastOffset = offset;
         }
         logger.error("failed to get metrics data in {} retries", checkRetries);
         consumer.close();
         return false;
     }
 
-    /***
-     *
-     * This method converts the kafka message to string
-     *
-     * @param rawMsg  raw kafka message
-     * @return
+    /**
+     * @param rawMsg a raw Kafka message
+     * @return a String representation of the given raw Kafka message
      */
     private static String convertPayloadToString(MessageAndOffset rawMsg) {
         ByteBuffer buf = rawMsg.message().payload();
         byte[] dst = new byte[buf.limit()];
         buf.get(dst);
-        String str = new String(dst);
-        return str;
+        return new String(dst);
     }
 
     /**
-     * reads a metric json and extract from it the data we want (e.g. number of process calls)
-     * @param metric            a message from metrics stream
-     * @param header            the header within the metrics to extract are.
-     * @param metricsToExtract  requested data
-     * @return data
+     * @param message       a message from the metrics stream
+     * @param jobName       requested job name
+     * @param metricsHeader requested header where the wanted metrics are
+     * @return the wanted metrics if the header exists and the message is from the requested job, null otherwise
      */
-    private static Map <String, Object> getMetricData(String metric, String header, String metricsToExtract) {
-        Map <String, Object> metricaData = new HashMap();
-        if (metric.contains(header)) {
-            Object currValue;
-            try {
-                JSONObject bigJSON = new JSONObject(metric);
-                JSONObject innerJSON = bigJSON.getJSONObject(METRICS_TOPIC);
-                metricaData.put(JOB_NAME, bigJSON.getJSONObject(HEADER).getString(JOB_NAME));
-                currValue = innerJSON.getJSONObject(header).get(metricsToExtract);
-                metricaData.put(metricsToExtract, currValue);
-            } catch (JSONException ex) {
-                logger.error(ex.getMessage());
+    private static JSONObject getMetrics(String message, String jobName, String metricsHeader) {
+        JSONObject metrics = null;
+        try {
+            JSONObject messageJson = new JSONObject(message);
+            if (messageJson.getJSONObject(HEADER).getString(JOB_NAME).equals(jobName)) {
+                metrics = messageJson.getJSONObject(METRICS_TOPIC).getJSONObject(metricsHeader);
             }
+        } catch (Exception e) {
+            metrics = null;
         }
-        return metricaData;
+        return metrics;
     }
-
 }

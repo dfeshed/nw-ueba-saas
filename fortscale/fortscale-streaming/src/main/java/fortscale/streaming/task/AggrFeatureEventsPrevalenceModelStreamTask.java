@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
+import fortscale.streaming.service.AggregatedFeatureAndEntityEventsMetricsService;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -22,27 +23,23 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
-
 	private static final Logger logger = Logger.getLogger(AggrFeatureEventsPrevalenceModelStreamTask.class);
-	
 	private static final String EVENT_TYPE_FIELD_NAME_PROPERTY = "${streaming.event.field.type}";
-	
+
 	private FortscaleValueResolver fortscaleValueResolver;
-	
 	private Map<String, List<String>> eventTypeToFeatureFullPath = new HashMap<>();
-	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
+	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
 	private String eventTypeFieldName;
-	
+
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
-	
-	
-	
+	private AggregatedFeatureAndEntityEventsMetricsService aggregatedFeatureAndEntityEventsMetricsService;
+
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {	
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		fortscaleValueResolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		eventTypeFieldName = fortscaleValueResolver.resolveStringValue(EVENT_TYPE_FIELD_NAME_PROPERTY);
-		
+
 		// Get configuration properties for each event type
 		Config fieldsSubset = config.subset("fortscale.event.type.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".feature.full.path"))) {
@@ -50,7 +47,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 			List<String> featureFullPath = resolveStringValues(fieldsSubset, fieldConfigKey);
 			eventTypeToFeatureFullPath.put(eventType, featureFullPath);
 		}
-		
+
 		// Get configuration properties for each feature
 		fieldsSubset = config.subset("fortscale.");
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".fortscale.scorers"))) {
@@ -59,55 +56,61 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(featureEventConfig, context);
 			featureToEventsPrevalenceModelStreamTaskManagerMap.put(featureName, eventsPrevalenceModelStreamTaskManager);
 		}
-		
+
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-processed-count");
 		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggr-prevalence-skip-count");
-
+		aggregatedFeatureAndEntityEventsMetricsService = new AggregatedFeatureAndEntityEventsMetricsService(context);
 	}
-	
+
 	private List<String> resolveStringValues(Config config, String string) {
 		return fortscaleValueResolver.resolveStringValues(getConfigStringList(config, string));
 	}
-		
+
 	/** Process incoming events and update the user models stats */
-	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override
+	public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		
+		JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
+
 		String eventTypeFieldValue = convertToString(message.get(eventTypeFieldName));
-		if(StringUtils.isNotBlank(eventTypeFieldValue)){
+		if (StringUtils.isNotBlank(eventTypeFieldValue)) {
 			StringBuilder fullPathFeatureNameBuilder = new StringBuilder();
 			fullPathFeatureNameBuilder.append(eventTypeFieldValue);
-			for(String fieldName: eventTypeToFeatureFullPath.get(eventTypeFieldValue)){
+			for (String fieldName : eventTypeToFeatureFullPath.get(eventTypeFieldValue)) {
 				fullPathFeatureNameBuilder.append(".").append(message.get(fieldName));
 			}
-			
-			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureNameBuilder.toString());
-			if(eventsPrevalenceModelStreamTaskManager != null){
+
+			String fullPathFeatureName = fullPathFeatureNameBuilder.toString();
+			aggregatedFeatureAndEntityEventsMetricsService.updateMetrics(fullPathFeatureName);
+			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager =
+					featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureName);
+
+			if (eventsPrevalenceModelStreamTaskManager != null) {
 				eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
 				processedMessageCount.inc();
-			} else{
+			} else {
 				skippedMessageCount.inc();
 			}
-		} else{
+		} else {
 			logger.error("got an event with no {} field. event: {}", eventTypeFieldName, messageText);
 			skippedMessageCount.inc();
 		}
 	}
 
-	
-	
+
 	/** periodically save the state to mongodb as a secondary backing store */
-	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		for(EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager: featureToEventsPrevalenceModelStreamTaskManagerMap.values()){
+	@Override
+	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
+		for (EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager : featureToEventsPrevalenceModelStreamTaskManagerMap.values()) {
 			eventsPrevalenceModelStreamTaskManager.window(collector, coordinator);
 		}
 	}
 
 	/** save the state to mongodb when the job shutsdown */
-	@Override protected void wrappedClose() throws Exception {
-		for(EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager: featureToEventsPrevalenceModelStreamTaskManagerMap.values()){
+	@Override
+	protected void wrappedClose() throws Exception {
+		for (EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager : featureToEventsPrevalenceModelStreamTaskManagerMap.values()) {
 			eventsPrevalenceModelStreamTaskManager.close();
 		}
 		featureToEventsPrevalenceModelStreamTaskManagerMap.clear();

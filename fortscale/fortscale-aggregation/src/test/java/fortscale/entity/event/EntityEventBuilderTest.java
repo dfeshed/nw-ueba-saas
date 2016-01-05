@@ -1,24 +1,7 @@
-package fortscale.streaming.service.entity.event;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.entity.event.EntityEventConf;
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventDataStore;
 import net.minidev.json.JSONObject;
-
-import org.apache.samza.system.OutgoingMessageEnvelope;
-import org.apache.samza.task.MessageCollector;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
@@ -245,13 +232,12 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		builder.updateEntityEventData(wrapper2);
 		long estimatedFiringTimeInSecondsOfEntityEvent2 = (System.currentTimeMillis() / 1000) + secondsToWaitBeforeFiring;
 
-		String outputTopic = "testOutputTopic";
-		MessageCollector collector = mock(MessageCollector.class);
-		builder.fireEntityEvents(estimatedFiringTimeInSecondsOfEntityEvent1, outputTopic, collector);
-		verify(collector, times(1)).send(any(OutgoingMessageEnvelope.class));
+		IEntityEventSender sender = mock(IEntityEventSender.class);
+		builder.sendNewEntityEventsAndUpdateStore(estimatedFiringTimeInSecondsOfEntityEvent1, sender);
+		verify(sender, times(1)).send(any(JSONObject.class));
 
-		builder.fireEntityEvents(estimatedFiringTimeInSecondsOfEntityEvent2, outputTopic, collector);
-		verify(collector, times(2)).send(any(OutgoingMessageEnvelope.class));
+		builder.sendNewEntityEventsAndUpdateStore(estimatedFiringTimeInSecondsOfEntityEvent2, sender);
+		verify(sender, times(2)).send(any(JSONObject.class));
 
 		List<EntityEventData> allEntityEventData = entityEventDataStore.getEntityEventDataWithModifiedAtEpochtimeLte(DEFAULT_ENTITY_EVENT_NAME, Long.MAX_VALUE);
 		Assert.assertEquals(2, allEntityEventData.size());
