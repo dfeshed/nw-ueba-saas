@@ -22,7 +22,7 @@ public class AggrFeatureEventBatchService {
     private static final int DEFAULT_PAGE_SIZE = 1000;
 
     @Autowired
-    private IAggrFeatureEventFunctionsService aggrFeatureFuncService;
+    private IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
 
     @Autowired
     private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
@@ -60,7 +60,7 @@ public class AggrFeatureEventBatchService {
         List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
         bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
         for (AggregatedFeatureEventConf conf : aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList(bucket.getFeatureBucketConfName())) {
-            Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
+            Feature feature = aggrFeatureEventFunctionsService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
             saveEvent(conf, bucket, feature);
         }
     }

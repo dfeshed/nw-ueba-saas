@@ -11,7 +11,7 @@
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
-	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.IAggrFeatureFuncService"/>
+	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
 	<bean id="aggregatedEventQueryService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService"/>
 	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService"/>
@@ -23,6 +23,7 @@
 
     <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
 
+	<bean id="aggrFeatureEventFunctionsService" class="fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService" />
 	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
 	<bean id="aggrFeatureEventToSendRepository" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventToSendRepository" />
 </beans>
