@@ -1367,6 +1367,78 @@
           "includeValues": true,
           "minScoreToInclude": 1
         }
+      },
+      {
+        "name": "number_of_events_wame_daily",
+        "type": "F",
+        "bucketConfName": "normalized_username_wame_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+        "name": "number_of_events_wame_hourly",
+        "type": "F",
+        "bucketConfName": "normalized_username_wame_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "aggregated_feature_name_to_sum": [
+            "events_counter"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_events_counter_func"
+        },
+        "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+        "name": "highest_score_wame_daily",
+        "type": "P",
+        "bucketConfName": "normalized_username_wame_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "pick": [
+            "highest_score_date_time"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_map_values_max_sum_func"
+        }
+      },
+      {
+        "name": "highest_score_wame_hourly",
+        "type": "P",
+        "bucketConfName": "normalized_username_wame_hourly",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "anomalyType": "event_time",
+        "evidencesFilterStrategy": "HIGHEST_SCORE",
+        "aggregatedFeatureNamesMap": {
+          "pick": [
+            "highest_score_date_time"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_map_values_max_sum_func"
+        }
       }
     ]
   }
