@@ -1,5 +1,6 @@
 package fortscale.collection.monitoring;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.kitesdk.morphline.api.Record;
 
 /**
@@ -18,7 +19,7 @@ public class MorphlineCommandMonitoringHelper {
         // Extract the event source name (usually file name), or use empty string
         // as default
         ItemContext monitoringSource=null;
-        if (inputRecord.get(ITEM_CONTEXT) != null){
+        if (CollectionUtils.isNotEmpty(inputRecord.get(ITEM_CONTEXT))){
             monitoringSource =  (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
             //If taskMonitorHelper configured - log the event. If not - ignore.
             if (monitoringSource!=null && monitoringSource.getTaskMonitoringHelper()!=null && monitoringSource.getTaskMonitoringHelper().isMonitoredTask()){

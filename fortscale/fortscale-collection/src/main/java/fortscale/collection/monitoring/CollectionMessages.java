@@ -17,6 +17,7 @@ public enum CollectionMessages {
     HOSTNAME_IN_FILTER_LIST,
     OVERFLOW_THRESHOLD_WAS_REACHED,
     FILTERED_ON_FIELD_MATCHED,
+    CANNOT_PARSE_TIMESTAMP,
     FILTERED_ON_FIELD_NOT_MATCHED;
 
     public String getMessageId(){
