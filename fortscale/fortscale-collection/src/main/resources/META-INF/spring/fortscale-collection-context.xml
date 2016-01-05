@@ -267,10 +267,10 @@
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
 	<bean id="aggrFeatureEventBatchService" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService" scope="singleton"/>
-	<bean id="aggrFeatureEventFunctionsService" class="fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService" />
+	<bean id="aggrFeatureEventFunctionsService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService" />
 	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
 	<bean id="aggrFeatureEventToSendRepository" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventToSendRepository" />
-	
+
 	<!-- Entity events related beans -->
 	<bean id="entityEventService" class="fortscale.entity.event.EntityEventService" scope="singleton">
 		<constructor-arg ref="entityEventDataStore"/>
