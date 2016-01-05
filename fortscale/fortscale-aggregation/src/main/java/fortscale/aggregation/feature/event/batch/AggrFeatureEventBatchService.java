@@ -9,52 +9,96 @@ import fortscale.aggregation.feature.event.*;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class AggrFeatureEventBatchService {
 
-	@Autowired private IAggrFeatureEventFunctionsService aggrFeatureFuncService;
+    private static final int DEFAULT_PAGE_SIZE = 1000;
 
-	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+    @Autowired
+    private IAggrFeatureEventFunctionsService aggrFeatureFuncService;
 
-	@Autowired private FeatureBucketsReaderService featureBucketsReaderService;
+    @Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
-	@Autowired private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    @Autowired
+    private FeatureBucketsReaderService featureBucketsReaderService;
 
-	@Autowired private BucketConfigurationService bucketConfigurationService;
+    @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-	public void buildAndSave(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime) {
-		for (FeatureBucketConf featureBucketConf : bucketConfigurationService.getFeatureBucketConfs()) {
+    @Autowired
+    private BucketConfigurationService bucketConfigurationService;
 
-			for (FeatureBucket bucket : featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime)) {
-				List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
-				bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
-				for (AggregatedFeatureEventConf conf : aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList(bucket.getFeatureBucketConfName())) {
+    @Autowired
+    private AggrFeatureEventToSendRepository aggrFeatureEventToSendRepository;
 
-					Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
-					saveEvent(feature);
-					sendEvent(sender, conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
-				}
-			}
-		}
 
-	}
+    public void buildAndSave(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+        for(FeatureBucketConf featureBucketConf: bucketConfigurationService.getFeatureBucketConfs()){
+            int i = 0;
+            List<FeatureBucket> featureBuckets = null;
+            do {
+                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, FeatureBucket.START_TIME_FIELD);
+                featureBuckets = featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageRequest);
+                for (FeatureBucket bucket : featureBuckets) {
+                    buildAndSave(bucket);
+                }
+            }while(featureBuckets.size() == DEFAULT_PAGE_SIZE);
+        }
 
-	private void saveEvent(Feature feature) {
-		// TODO: 12/31/2015
-	}
+        sendEvents(sender, bucketStartTime, bucketEndTime);
+    }
 
-	private void sendEvent(IAggregationEventSender sender, AggregatedFeatureEventConf conf, Map<String, String> context,
-			Feature feature, Long startTimeSec, Long endTimeSec) {
-		if (sender != null) {
-			JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, context, feature, startTimeSec, endTimeSec);
+    private void buildAndSave(FeatureBucket bucket){
+        List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
+        bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
+        for (AggregatedFeatureEventConf conf : aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList(bucket.getFeatureBucketConfName())) {
+            Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
+            saveEvent(conf, bucket, feature);
+        }
+    }
 
-			boolean isOfTypeF = AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE.equals(conf.getType());
-			sender.send(isOfTypeF, event);
-		}
-	}
+    private void saveEvent(AggregatedFeatureEventConf conf, FeatureBucket bucket, Feature feature){
+        AggrFeatureEventToSend aggrFeatureEventToSend = new AggrFeatureEventToSend(bucket.getBucketId(), conf.getName(), bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
+    }
 
+    public void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+        if(sender != null) {
+            int i = 0;
+            List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
+            do{
+                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.START_TIME_FIELD);
+                aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeGtAndEndTimeLte(bucketStartTime, bucketEndTime, pageRequest);
+                for (AggrFeatureEventToSend aggrFeatureEventToSend: aggrFeatureEventToSendList){
+                    sendEvent(sender, aggrFeatureEventToSend);
+                }
+                i++;
+            } while(aggrFeatureEventToSendList.size() == DEFAULT_PAGE_SIZE);
+        }
+    }
+
+
+
+    private void sendEvent(IAggregationEventSender sender, AggrFeatureEventToSend aggrFeatureEventToSend){
+        AggregatedFeatureEventConf conf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(aggrFeatureEventToSend.getAggregatedFeatureEventConfName());
+        JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, aggrFeatureEventToSend.getContext(), aggrFeatureEventToSend.getFeature(), aggrFeatureEventToSend.getStartTime(), aggrFeatureEventToSend.getEndTime());
+
+        boolean isOfTypeF = AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE.equals(conf.getType());
+        sender.send(isOfTypeF, event);
+    }
+
+    public void deleteEvents(Long bucketStartTime, Long bucketEndTime){
+        aggrFeatureEventToSendRepository.deleteByEndTimeGtAndEndTimeLte(bucketStartTime, bucketEndTime);
+    }
+
+    public void deleteAllEvents(){
+        aggrFeatureEventToSendRepository.deleteAll();
+    }
 }

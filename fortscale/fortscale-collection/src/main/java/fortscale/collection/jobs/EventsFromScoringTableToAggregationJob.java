@@ -74,7 +74,6 @@ public class EventsFromScoringTableToAggregationJob extends ImpalaToKafka {
             }
             startTime = startTime.plusHours(1);
         }
-        kafkaSender.flushMessages();
         kafkaSender.shutDown();
         finishStep();
     }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -73,16 +74,19 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime) {
+	public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
 
 			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
 
+			if(pageable != null){
+				query.with(pageable);
+			}
 			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
 			return featureBuckets;
 		}
@@ -123,6 +127,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+
+			// end time + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC)
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
 			// TTL on CreatedAt

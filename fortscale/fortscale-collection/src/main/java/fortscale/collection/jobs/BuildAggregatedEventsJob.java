@@ -63,6 +63,9 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		// Run the aggregation event builder service
 		aggrFeatureEventBatchService.buildAndSave(eventSender, batchStartTime, batchEndTime);
 
+		// Delete events after sending
+		aggrFeatureEventBatchService.deleteEvents(batchStartTime, batchEndTime);
+
 		logger.info("Finish running build aggregated events job");
 	}
 }
