@@ -1,11 +1,9 @@
 package fortscale.web.rest.Utils;
 
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
 import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator;
 import fortscale.domain.historical.data.SupportingInformationKey;
-import fortscale.web.beans.DataBean;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,7 @@ import java.util.*;
 
 
 @Service
-public class UserUtils {
+public class UserRelatedEntitiesUtils {
 
     @Autowired
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
@@ -33,7 +31,7 @@ public class UserUtils {
      * @param timePeriodInDays Time period in days
      * @param limit            List limit
      */
-    public void validateRelatedEntitiesArguments(String dataEntitiesCSV, String featureName, Integer timePeriodInDays, Integer limit) {
+    private void validateRelatedEntitiesArguments(String dataEntitiesCSV, String featureName, Integer timePeriodInDays, Integer limit) {
 
         if (timePeriodInDays <= 0) {
             throw new BadRequestException("time_range param must be greater then 0.");
@@ -60,11 +58,13 @@ public class UserUtils {
      * @param timePeriodInDays    Time period in days
      * @return SupportingInformationGenericData
      */
-    public SupportingInformationGenericData createSupportingInformationData(String dataEntity, String normalized_username, Integer timePeriodInDays, String featureName) {
+    private SupportingInformationGenericData createSupportingInformationData(String dataEntity, String normalized_username, Integer timePeriodInDays, String featureName) {
         // Create populator and get supporting information data
         SupportingInformationGenericData<Double> supportingInformationData;
         try {
+            // Create populator
             SupportingInformationCountPopulator supportingInformationCountPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator("normalized_username", dataEntity, featureName, "Count");
+            // Get supporting information data from populator
             supportingInformationData = supportingInformationCountPopulator.createSupportingInformationData(normalized_username, new Date().getTime(), timePeriodInDays);
         } catch (RuntimeException e) {
             supportingInformationData = null;
@@ -80,7 +80,7 @@ public class UserUtils {
      * @param limit                         The limit of the returned list
      * @return List<Pair>
      */
-    public List<Pair<String, Double>> getListFromSupportingInformation(List<SupportingInformationGenericData<Double>> supportingInformationDataList, Integer limit) {
+    private List<Pair<String, Double>> getListFromSupportingInformationDataList(List<SupportingInformationGenericData<Double>> supportingInformationDataList, Integer limit) {
 //        List<Pair<String, Double>> entitiesList = new ArrayList<>();
         HashMap<String, Double> entitiesList = new HashMap<>();
 
@@ -96,9 +96,7 @@ public class UserUtils {
                     Double value = supportingInformationEntry.getValue();
 
                     // Add or sum
-//                    if (entitiesList.contains())
-//                    entitiesList.add(new Pair<>(key, value));
-                    if(entitiesList.containsKey(key)) {
+                    if (entitiesList.containsKey(key)) {
                         entitiesList.replace(key, entitiesList.get(key), entitiesList.get(key) + value);
                     } else {
                         entitiesList.put(key, value);
@@ -134,18 +132,30 @@ public class UserUtils {
         return entitiesLimitedList;
     }
 
+    /**
+     * Takes a CSV string and returns a list of Strings
+     *
+     * @param csv A CSV String
+     * @return List<String>
+     */
     private List<String> getListFromCSV(String csv) {
         return Arrays.asList(csv.split(","));
     }
 
-    public DataBean<List<Pair<String, Double>>> getRelatedEntitiesResponse(String dataEntitiesCSV, String normalized_username, Integer limit, Integer timePeriodInDays, String featureName) {
+    /**
+     * @param dataEntitiesCSV     A CSV of required data entities
+     * @param normalized_username Normalized Username
+     * @param timePeriodInDays    Time period in days
+     * @param featureName         The name of the required feature
+     * @return List<SupportingInformationGenericData> A list of supporting information data
+     */
+    private List<SupportingInformationGenericData<Double>> getSupportingInformationDataList(String dataEntitiesCSV, String normalized_username, int timePeriodInDays, String featureName) {
 
-        // Validations
-        validateRelatedEntitiesArguments(dataEntitiesCSV, featureName, timePeriodInDays, limit);
-
-        // Create supportingInformationData
+        // Create a list of SupportingInformationGenericData
         List<SupportingInformationGenericData<Double>> supportingInformationDataList = new ArrayList<>();
+        // Create a list of required data entities
         List<String> dataEntitiesList = getListFromCSV(dataEntitiesCSV);
+        // Iterate through data entities, and for each add SupportingInformationGenericData to list of SupportingInformationGenericData
         for (String dataEntity : dataEntitiesList) {
             SupportingInformationGenericData supportingInformationData = createSupportingInformationData(dataEntity, normalized_username, timePeriodInDays, featureName);
             if (supportingInformationData != null) {
@@ -153,10 +163,29 @@ public class UserUtils {
             }
         }
 
-        // Convert supporting information data into a list.
-        DataBean<List<Pair<String, Double>>> response = new DataBean<>();
-        response.setData(getListFromSupportingInformation(supportingInformationDataList, limit));
-        return response;
+        return supportingInformationDataList;
+    }
+
+    /**
+     * Takes dataEntitiesCSV, and for each data entity it creates a populator, gets data, and then comprises a sorted limited list of string:double pairs
+     *
+     * @param dataEntitiesCSV     A CSV of required data entities
+     * @param normalized_username Normalized Username
+     * @param limit               The limit of the returned list
+     * @param timePeriodInDays    Time period in days
+     * @param featureName         The name of the required feature
+     * @return List<Pair>         Returns a list of string:double pairs.
+     */
+    public List<Pair<String, Double>> getRelatedEntitiesList(String dataEntitiesCSV, String normalized_username, Integer limit, Integer timePeriodInDays, String featureName) {
+
+        // Validations
+        validateRelatedEntitiesArguments(dataEntitiesCSV, featureName, timePeriodInDays, limit);
+
+        // Create a list of supportingInformationData
+        List<SupportingInformationGenericData<Double>> supportingInformationDataList = getSupportingInformationDataList(dataEntitiesCSV, normalized_username, timePeriodInDays, featureName);
+
+        // Convert supporting information data list into a string:double Pair list.
+        return getListFromSupportingInformationDataList(supportingInformationDataList, limit);
     }
 
 

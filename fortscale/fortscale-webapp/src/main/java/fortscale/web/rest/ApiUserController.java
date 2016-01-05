@@ -2,16 +2,12 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
-import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.services.*;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
@@ -20,8 +16,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.web.rest.Utils.BadRequestException;
-import fortscale.web.rest.Utils.UserUtils;
+import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -63,7 +58,7 @@ public class ApiUserController extends BaseController{
 	private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
 	@Autowired
-	UserUtils userUtils;
+	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
 	private static final String DEFAULT_SORT_FIELD = "username";
 
@@ -511,7 +506,12 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = true, value = "data_entities") String dataEntitiesString,
 			@RequestParam(required = true, value = "feature_name") String featureName
 	) {
-		return userUtils.getRelatedEntitiesResponse(dataEntitiesString, normalized_username, limit, timePeriodInDays, featureName);
+
+		List<Pair<String, Double>> relatedEntitiesList = userRelatedEntitiesUtils
+				.getRelatedEntitiesList(dataEntitiesString, normalized_username, limit, timePeriodInDays, featureName);
+		DataBean<List<Pair<String, Double>>> response = new DataBean<>();
+		response.setData(relatedEntitiesList);
+		return response;
 	}
 
 
