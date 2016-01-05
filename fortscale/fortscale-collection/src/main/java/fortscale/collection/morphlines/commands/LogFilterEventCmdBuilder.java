@@ -56,8 +56,7 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 
 		public static final String ERROR_MESSAGE = "errorMessage";
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		private final String errorMessage;
 

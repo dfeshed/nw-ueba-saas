@@ -46,8 +46,7 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 		private List<String> keys;
 		private EventsJoinerCache cache;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
 		public EventsJoinerStore(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {

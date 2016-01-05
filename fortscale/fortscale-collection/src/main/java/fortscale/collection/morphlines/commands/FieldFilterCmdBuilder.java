@@ -54,8 +54,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
         StringValueResolver stringValueResolver;
         ApplicationContext applicationContext;
 
-        @Autowired
-        MorphlineCommandMonitoringHelper commandMonitoringHelper;
+        MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
         public FieldFilter(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {

@@ -46,6 +46,8 @@ public class EventsJoinerBuilder implements CommandBuilder {
 		return new EventsJoiner(this, config, parent, child, context);
 	}
 
+
+
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
@@ -63,8 +65,9 @@ public class EventsJoinerBuilder implements CommandBuilder {
 		private Long cacheRecordTtl;
 		private long minimalRecordTs = Long.MAX_VALUE;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 
 		public EventsJoiner(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);

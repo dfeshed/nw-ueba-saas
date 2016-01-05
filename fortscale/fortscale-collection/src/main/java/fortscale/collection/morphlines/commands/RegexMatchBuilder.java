@@ -43,8 +43,7 @@ public class RegexMatchBuilder implements CommandBuilder {
 		private boolean dropOnMatch;
 		private boolean dropOnMissMatch;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
 		public RegexMatch(CommandBuilder builder, Config config, Command parent,

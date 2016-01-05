@@ -47,8 +47,7 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 		@Autowired
 		private ComputerRepository computerRepository;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		private String serviceNameField;
 		private String regex;

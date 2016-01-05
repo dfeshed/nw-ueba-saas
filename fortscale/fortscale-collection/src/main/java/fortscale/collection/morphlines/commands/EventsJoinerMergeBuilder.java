@@ -52,8 +52,8 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
         private long timeToCacheMiliSec;
         private String timeField;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		public EventsJoinerMerge(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);

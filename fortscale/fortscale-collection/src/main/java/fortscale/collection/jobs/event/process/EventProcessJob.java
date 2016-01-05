@@ -301,7 +301,7 @@ public class EventProcessJob implements Job {
 			return false;
 		}
 		if (morphlineEnrichment != null) {
-			record = morphlineEnrichment.process(rec);
+			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
 				return false;
 			}

@@ -21,7 +21,7 @@ public class MorphlineCommandMonitoringHelper {
         if (inputRecord.get(ITEM_CONTEXT) != null){
             monitoringSource =  (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
             //If taskMonitorHelper configured - log the event. If not - ignore.
-            if (monitoringSource.getTaskMonitoringHelper()!=null && monitoringSource.getTaskMonitoringHelper().isMonitoredTask()){
+            if (monitoringSource!=null && monitoringSource.getTaskMonitoringHelper()!=null && monitoringSource.getTaskMonitoringHelper().isMonitoredTask()){
                 String sourceName = monitoringSource.getSourceName();
                 if (sourceName == null){
                     sourceName = "";

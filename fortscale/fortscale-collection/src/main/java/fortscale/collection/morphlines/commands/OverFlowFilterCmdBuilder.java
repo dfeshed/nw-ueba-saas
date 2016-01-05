@@ -50,8 +50,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 		@Value("${mophline.cmd.overflow:false}")
 		private boolean runCmd;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
 		protected OverFlowFilter(CommandBuilder builder, Config config,

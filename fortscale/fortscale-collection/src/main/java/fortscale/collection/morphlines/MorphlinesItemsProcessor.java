@@ -39,7 +39,14 @@ public class MorphlinesItemsProcessor implements Closeable {
 		open();
 	}
 
-	public Record process(Record record) {
+	public Record process(Record record, ItemContext itemContext) {
+
+		//Set item context
+		if (record!=null){
+			record.put(ITEM_CONTEXT, itemContext);
+		}
+
+
 		// re-open the morphline transaction is closed
 		if (isClosed)
 			open();
@@ -51,6 +58,11 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// record which are not been dropped on the way and with all the
 		// properties set by the etl
 		Record processed = sinkCommand.popRecord();
+
+		//Clean item context
+		if (processed!=null) {
+			processed.removeAll(ITEM_CONTEXT);
+		}
 
 		if (!success) {
 			logger.warn("error processing record {}", record);
@@ -73,13 +85,8 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// create a record that holds the input string
 		Record record = new Record();
 		record.put(Fields.MESSAGE, item);
-		record.put(ITEM_CONTEXT, itemContext);
+		return process(record, itemContext);
 
-		record =  process(record);
-		if (record!=null) {
-			record.removeAll(ITEM_CONTEXT);
-		}
-		return record;
 	}
 
 	@Override

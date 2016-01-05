@@ -46,8 +46,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
 		@Autowired
 		private FilterMachinesService service;
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 	    @Value("${machines.ou.filters:}")
 	    private String ouName; 

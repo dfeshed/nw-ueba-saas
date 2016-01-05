@@ -58,7 +58,7 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 			return false;
 		
 		// pass parsed records to the shared morphline
-		record = sharedMorphline.process(record);
+		record = sharedMorphline.process(record,null);
 		if (record==null)
 			return false;
 		

@@ -37,6 +37,8 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 		return new EmptyObjectFilter(this, config, parent, child, context);
 	}
 
+
+
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
@@ -45,8 +47,7 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 		private final List<String> filterFields;
 		private final String renderedConfig; // cached value
 
-		@Autowired
-		MorphlineCommandMonitoringHelper commandMonitoringHelper;
+		public MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		public EmptyObjectFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
