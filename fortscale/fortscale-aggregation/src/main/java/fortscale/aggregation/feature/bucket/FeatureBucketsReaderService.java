@@ -8,17 +8,17 @@ import java.util.List;
 public class FeatureBucketsReaderService {
 
     @Autowired
-    private FeatureBucketsMongoStore featureBucketsMongoStore;
+    private FeatureBucketsMongoStore featureBucketStrategyStore;
 
     public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime) {
-        return featureBucketsMongoStore.getFeatureBucketsByContextAndTimeRange(featureBucketConf, contextType, ContextName, bucketStartTime, bucketEndTime);
+        return featureBucketStrategyStore.getFeatureBucketsByContextAndTimeRange(featureBucketConf, contextType, ContextName, bucketStartTime, bucketEndTime);
     }
 
     public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId){
-        return featureBucketsMongoStore.getFeatureBucket(featureBucketConf, bucketId);
+        return featureBucketStrategyStore.getFeatureBucket(featureBucketConf, bucketId);
     }
 
     public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
-        return featureBucketsMongoStore.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
+        return featureBucketStrategyStore.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
     }
 }
