@@ -84,12 +84,5 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 
 		}
 	}
-
-	private String getAccountName(List<String> parts) {
-		String result = "";
-		for (String part :parts){
-			result +=part;
-		}
-		return result;
-	}
+	
 }
