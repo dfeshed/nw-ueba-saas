@@ -1,46 +1,44 @@
 package fortscale.collection.jobs.gds.input.populators;
 
-import fortscale.collection.jobs.gds.configurators.GDSConfiguratorType;
+import fortscale.collection.jobs.gds.GDSConfigurationException;
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.collection.jobs.gds.input.populators.enrichment.*;
 
 import java.util.EnumMap;
 
 /**
- * Factory class of populators
+ * Factory class of configuration populators
  *
  * @author gils
  * 03/01/2016
  */
 public class GDSConfigurationPopulatorFactory {
 
-    private EnumMap<GDSConfiguratorType, GDSConfigurationPopulator> populatorsMap = new EnumMap<GDSConfiguratorType, GDSConfigurationPopulator>(GDSConfiguratorType.class);
+    private EnumMap<GDSConfigurationType, Class<? extends GDSConfigurationPopulator>> configurationTypeToPopulatorMap = new EnumMap<>(GDSConfigurationType.class);
 
-    public GDSConfigurationPopulator getConfigurationPopulator(GDSConfiguratorType gdsConfiguratorType) {
-        if (gdsConfiguratorType == GDSConfiguratorType.SCHEMA) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSSchemaDefinitionCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.USER_NORMALIZATION) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSUserNormalizationCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.IP_RESOLVING) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSIPResolvingCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.GEO_LOCATION) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSGeoLocationCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.COMPUTER_TAGGING) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSComputerTaggingCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.USER_MONGO_UPDATE) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSUserMongoUpdateCLIPopulator());
-        }
-        else if (gdsConfiguratorType == GDSConfiguratorType.HDFS_WRITE) {
-            populatorsMap.putIfAbsent(gdsConfiguratorType, new GDSHDFSWriteCLIPopulator());
-        }
-        else {
-            throw new UnsupportedOperationException("Could not find configurator populator of type " + gdsConfiguratorType.name());
+    public GDSConfigurationPopulatorFactory() {
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.SCHEMA, GDSSchemaDefinitionCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.USER_NORMALIZATION, GDSUserNormalizationCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.IP_RESOLVING, GDSIPResolvingCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.COMPUTER_TAGGING, GDSGeoLocationCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.GEO_LOCATION, GDSComputerTaggingCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.USER_MONGO_UPDATE, GDSUserMongoUpdateCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.HDFS_WRITER, GDSHDFSWriteCLIPopulator.class);
+    }
+
+    private EnumMap<GDSConfigurationType, GDSConfigurationPopulator> populatorsMap = new EnumMap<>(GDSConfigurationType.class);
+
+    public GDSConfigurationPopulator getConfigurationPopulator(GDSConfigurationType gdsConfigurationType) throws GDSConfigurationException {
+        Class<? extends GDSConfigurationPopulator> gdsPopulatorClass = configurationTypeToPopulatorMap.get(gdsConfigurationType);
+        if (gdsPopulatorClass == null) {
+            throw new GDSConfigurationException("Could not find populator mapping for configuration type " + gdsConfigurationType.name());
         }
 
-        return populatorsMap.get(gdsConfiguratorType);
+        try {
+            populatorsMap.putIfAbsent(gdsConfigurationType,  gdsPopulatorClass.newInstance());
+            return populatorsMap.get(gdsConfigurationType);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new GDSConfigurationException("Could not create populator for configuration type " + gdsConfigurationType.name(), e);
+        }
     }
 }
