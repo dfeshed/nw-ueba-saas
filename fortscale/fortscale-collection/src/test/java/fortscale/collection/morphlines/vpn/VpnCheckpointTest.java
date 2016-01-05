@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static junitparams.JUnitParamsRunner.$;
@@ -47,8 +48,16 @@ public class VpnCheckpointTest {
 
 	@Test
 	@Parameters
-	public void test(String testCase, String inputLine, String expectedOutput) {
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+	public void test(String testCase, Object[] lines, Object[] outputs) {
+		List<String> events = new ArrayList<String>(lines.length);
+		for (Object line : lines)
+			events.add((String)line);
+
+		List<String> expected = new ArrayList<String>(outputs.length);
+		for (Object output : outputs)
+			expected.add((String)output);
+
+		morphlineTester.testMultipleLines(testCase, events, expected);
 	}
 	
 	
@@ -56,20 +65,81 @@ public class VpnCheckpointTest {
 	private Object[] parametersForTest() {
         return
         $(
-			$ (
-        	"Checkpoint Successful Connection",
-			"Nov 30 2015 21:40:33: %CHKPNT-6-031085: decrypt,10.156.22.181,inbound,Lan3,10.110.74.43,60607,224.0.0.252,5355,5355,udp,29, , , , , , , , , , , , ,ESP: 3DES + SHA1,10.110.74.43,IKE, , , , , , , , ,30Nov2015 21:40:33,0,VPN-1 & FireWall-1, , , , ,priya_murugesan, , ,udp-high-ports, , , , , , , , , , , , , , , , , , , , , , , ,031085, , , , , , , , , , , , ,RemoteAccess, , ,{686BDE51-7603-4B98-B4B1-599776346986},Access to Intranet, , , ,",
-			"2015-11-30 21:40:33,1448919633,priya_murugesan,10.110.74.43,224.0.0.252,SUCCESS,,,,,,,,,,,,,,"
+			$(
+				"Checkpoint Successful Connection",
+				$ (
+					"11/30/2015:17:40:17 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:17 GMT\" - End_time \"11/30/2015:17:40:17 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\""
+				),
+				$ (
+					"2015-11-30 17:40:17,1448905217,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,"
+				)
 			),
 			$ (
-			"Checkpoint Close Session No User",
-			"Nov 19 2015 14:17:05: %CHKPNT-6-999999: time=19Nov2015 14:17:05,action=allow,orig=192.168.179.90,i/f_dir=outbound,i/f_name=eth0,has_accounting=0,product=URL Filtering,__policy_id_tag=product,src=122.98.111.8,s_port=61044,dst=148.171.146.25,service=TCP.8080,d_port=8080,proto=tcp,appi_name=*** Confidential ***,app_desc=*** Confidential ***,app_id=1825177755,app_category=*** Confidential ***,matched_category=*** Confidential ***,app_properties=*** Confidential ***,app_risk=*** Confidential ***,app_rule_id=*** Confidential ***,app_rule_name=*** Confidential ***,proxy_src_ip=122.98.111.8,resource=*** Confidential ***,bytes=93161,sent_bytes=59143,received_bytes=32764,Suppressed logs=79,Referrer_self_uid=*** Confidential ***",
-			null
+				"Checkpoint Close Session with No Open Session (no local ip)",
+				$ (
+					"11/30/2015:18:28:58 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context rupesh_kumar09@202.7.39.57 - SessionId: 7260- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:38:57 GMT\" - End_time \"11/30/2015:18:28:58 GMT\" - Duration 00:50:01  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+				),
+				$ (
+					"2015-11-30 18:28:58,1448908138,rupesh_kumar09,202.7.39.57,,SUCCESS,,,,,,,,,739250,0,00:50:01,,,"
+				)
 			),
-			$ (
-			"Checkpoint Failed Connection No User",
-			"Nov 22 2015 07:09:31: %CHKPNT-6-031070: reject,122.98.54.80,inbound,daemon,63.91.129.97, ,122.98.54.80, , , , , , , , , , , , , , ,*** Confidential ***, , ,63.91.129.97,IKE,Quick Mode Failed to match proposal: Transform: 3DES  SHA1  Tunnel; Reason: Wrong value for: Authentication Algorithm, , , , , , , ,22Nov2015  7:09:31,0, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,031070, , , , , , , , , , , , ,Pune.Netscreen.VPN.community, , , , , , , ,\n",
-			null
+			$(
+				"1 start, 1 end",
+				$("11/30/2015:17:40:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:18:48:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context sankesh_kv@202.7.39.57 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+				),
+				$("2015-11-30 17:40:00,1448905200,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  "2015-11-30 18:48:00,1448909280,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,"
+				)
+			),
+			$(
+				"2 start, 1 end",
+				$("11/30/2015:17:40:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:17:45:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:45:00 GMT\" - Duration 00:05:00  - Total_bytes_send 0 - Total_bytes_recv 1989 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:18:48:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context sankesh_kv@202.7.39.57 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+				),
+				$("2015-11-30 17:40:00,1448905200,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  (String)null,
+				  "2015-11-30 18:48:00,1448909280,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,"
+				)
+			),
+			$(
+				"4 start with 2 different users, same session id, 2 ends (2 starts should be dropped):",
+				$("11/30/2015:17:40:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:17:45:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:45:00 GMT\" - Duration 00:05:00  - Total_bytes_send 0 - Total_bytes_recv 1989 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:17:41:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context rupesh_kumar09@71.231.181.17 - SessionId: 7558- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:17:46:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context rupesh_kumar09@71.231.181.17 - SessionId: 7558- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:45:00 GMT\" - Duration 00:05:00  - Total_bytes_send 0 - Total_bytes_recv 1989 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				  "11/30/2015:18:48:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context sankesh_kv@202.7.39.57 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+				  "11/30/2015:18:49:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context rupesh_kumar09@202.7.39.57 - SessionId: 7558- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+				),
+				$("2015-11-30 17:40:00,1448905200,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  (String)null,
+				  "2015-11-30 17:41:00,1448905260,rupesh_kumar09,202.7.39.57,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  (String)null,
+				  "2015-11-30 18:48:00,1448909280,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,",
+				  "2015-11-30 18:49:00,1448909340,rupesh_kumar09,202.7.39.57,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,"
+				)
+			),
+			$(
+				"4 start with 2 different users, 2 different session id per user, 4 ends (none should be dropped):",
+				$("11/30/2015:17:40:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				"11/30/2015:17:45:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7559- User sankesh_kv - Client_ip 79.231.181.18 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:45:00 GMT\" - Duration 00:05:00  - Total_bytes_send 0 - Total_bytes_recv 1989 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				"11/30/2015:17:41:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context rupesh_kumar09@71.231.181.17 - SessionId: 7568- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:40:00 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				"11/30/2015:17:46:00 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context rupesh_kumar09@71.231.181.17 - SessionId: 7569- User rupesh_kumar09 - Client_ip 202.7.39.58 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:45:00 GMT\" - Duration 00:05:00  - Total_bytes_send 0 - Total_bytes_recv 1989 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\"",
+				"11/30/2015:18:48:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context sankesh_kv@202.7.39.57 - SessionId: 7558- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+				"11/30/2015:18:49:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context rupesh_kumar09@202.7.39.57 - SessionId: 7568- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+				"11/30/2015:18:48:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context sankesh_kv@202.7.39.57 - SessionId: 7559- User sankesh_kv - Client_ip 71.231.181.17 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+				"11/30/2015:18:49:00 GMT VBLRB6XICONNECT01 0-PPE-3 : SSLVPN LOGOUT 2492757 0 : Context rupesh_kumar09@202.7.39.57 - SessionId: 7569- User rupesh_kumar09 - Client_ip 202.7.39.57 - Nat_ip \"Mapped Ip\" - Vserver 125.16.230.70:443 - Start_time \"11/30/2015:17:40:00 GMT\" - End_time \"11/30/2015:17:48:00 GMT\" - Duration 00:08:00  - Http_resources_accessed 82 - NonHttp_services_accessed 0 - Total_TCP_connections 168 - Total_UDP_flows 0 - Total_policies_allowed 168 - Total_policies_denied 0 - Total_bytes_send 505 - Total_bytes_recv 739250 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+				),
+				$("2015-11-30 17:40:00,1448905200,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  "2015-11-30 17:45:00,1448905500,sankesh_kv,79.231.181.18,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  "2015-11-30 17:41:00,1448905260,rupesh_kumar09,202.7.39.57,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  "2015-11-30 17:46:00,1448905560,rupesh_kumar09,202.7.39.58,10.68.248.8,SUCCESS,,,,,,,,,,,,,,",
+				  "2015-11-30 18:48:00,1448909280,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,",
+				  "2015-11-30 18:49:00,1448909340,rupesh_kumar09,202.7.39.57,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,",
+				  "2015-11-30 18:48:00,1448909280,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,",
+				  "2015-11-30 18:49:00,1448909340,rupesh_kumar09,202.7.39.57,10.68.248.8,SUCCESS,,,,,,,,,739250,505,00:08:00,,,"
+				)
 			)
         );
     }	

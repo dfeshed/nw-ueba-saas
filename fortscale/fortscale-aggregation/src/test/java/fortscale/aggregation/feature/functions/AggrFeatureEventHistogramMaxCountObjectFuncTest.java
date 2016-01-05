@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,17 +45,19 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		notListedHistogram.add("fifths", 5.0);
 		notListedHistogram.add("tenth", 10.0);
 
-		Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-		bucket1FeatureMap.put("feature1", new Feature("feature1", histogram1));
-		bucket1FeatureMap.put("feature2", new Feature("feature2", notListedHistogram));
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram1),
+				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+		);
 
 		GenericHistogram histogram2 = new GenericHistogram();
 		histogram2.add("eleventh", 11.0);
 		histogram2.add("thirteenth", 13.0);
 		histogram2.add(maxHistogramKey, 17.0);
-		Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-		bucket2FeatureMap.put("feature1", new Feature("feature1", histogram2));
-		bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature2", 42)
+		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
 		listOfFeatureMaps.add(bucket1FeatureMap);
