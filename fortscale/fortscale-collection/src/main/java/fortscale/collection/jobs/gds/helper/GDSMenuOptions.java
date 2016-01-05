@@ -4,7 +4,7 @@ package fortscale.collection.jobs.gds.helper;
  * @author gils
  * 05/01/2016
  */
-public class GDSMenuOptionsConsts {
+public class GDSMenuOptions {
 
     public static final String MAIN_MENU_SCHEMA_DEFINITION_OPTION = "1";
     public static final String MAIN_MENU_ENRICHMENT_DEFINITION_OPTION = "2";
