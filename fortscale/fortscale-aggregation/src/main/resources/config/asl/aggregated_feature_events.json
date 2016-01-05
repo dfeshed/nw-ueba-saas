@@ -1329,17 +1329,17 @@
         }
       },
       {
-        "name": "sum_of_highest_scores_over_failure_code_crmsf_daily",
+        "name": "sum_of_highest_scores_over_status_crmsf_daily",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "failure_code",
+        "anomalyType": "status",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pick": [
-            "failure_code_to_highest_score_map"
+            "status_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
@@ -1349,17 +1349,17 @@
         }
       },
       {
-        "name": "sum_of_highest_scores_over_failure_code_crmsf_hourly",
+        "name": "sum_of_highest_scores_over_status_crmsf_hourly",
         "type": "P",
         "bucketConfName": "normalized_username_crmsf_hourly",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "failure_code",
+        "anomalyType": "status",
         "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
         "aggregatedFeatureNamesMap": {
           "pick": [
-            "failure_code_to_highest_score_map"
+            "status_to_highest_score_map"
           ]
         },
         "aggregatedFeatureEventFunction": {
