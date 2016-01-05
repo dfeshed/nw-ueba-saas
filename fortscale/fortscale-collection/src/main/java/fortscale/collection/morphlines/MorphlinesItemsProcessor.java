@@ -3,6 +3,7 @@ package fortscale.collection.morphlines;
 import java.io.Closeable;
 import java.io.IOException;
 
+import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
@@ -19,7 +20,8 @@ import org.springframework.util.Assert;
  */
 public class MorphlinesItemsProcessor implements Closeable {
 
-	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class); 
+	public static final String ITEM_CONTEXT = "ITEM_CONTEXT";
+	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class);
 	
 	private Command morphline;
 	private boolean isClosed = true;
@@ -37,7 +39,14 @@ public class MorphlinesItemsProcessor implements Closeable {
 		open();
 	}
 
-	public Record process(Record record) {
+	public Record process(Record record, ItemContext itemContext) {
+
+		//Set item context
+		if (record!=null){
+			record.put(ITEM_CONTEXT, itemContext);
+		}
+
+
 		// re-open the morphline transaction is closed
 		if (isClosed)
 			open();
@@ -50,6 +59,11 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// properties set by the etl
 		Record processed = sinkCommand.popRecord();
 
+		//Clean item context
+		if (processed!=null) {
+			processed.removeAll(ITEM_CONTEXT);
+		}
+
 		if (!success) {
 			logger.warn("error processing record {}", record);
 			return null;
@@ -58,14 +72,21 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// return the result record
 		return processed;
 	}
-	
-	public Record process(String item) {
+
+	/**
+	 *
+	 * @param item - the record to process - mandatory
+	 * @param itemContext - name of origion where the data come from, I.E. file name,
+	 *               	for monitoring purposes. - itemContext can be null.
+	 * @return
+	 */
+	public Record process(String item, ItemContext itemContext) {
 
 		// create a record that holds the input string
 		Record record = new Record();
 		record.put(Fields.MESSAGE, item);
+		return process(record, itemContext);
 
-		return process(record);
 	}
 
 	@Override
