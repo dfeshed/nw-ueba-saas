@@ -14,11 +14,11 @@ public class GDSMenuPrinterHelper {
 
         System.out.println("");
 
-        System.out.println("1.\tSchema definition (HDFS/Impala)\n" +
-                "2.\tEnrichment definition\n" +
-                "3.\tApply all changes\n" +
-                "4.\tReset all changes\n" +
-                "5.\tQuit\n");
+        System.out.println(GDSMenuOptionsConsts.MAIN_MENU_SCHEMA_DEFINITION_OPTION + ".\tSchema definition (HDFS/Impala)\n" +
+                GDSMenuOptionsConsts.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION + ".\tEnrichment definition\n" +
+                GDSMenuOptionsConsts.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
+                GDSMenuOptionsConsts.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
+                GDSMenuOptionsConsts.MAIN_MENU_QUIT_OPTION + ".\tQuit\n");
     }
 
     private static void printMainMenuHeader() {
@@ -52,12 +52,15 @@ public class GDSMenuPrinterHelper {
         System.out.println("Enrichment Tasks Settings");
         System.out.println("----------------");
 
-        System.out.println("1.\tUser Normalization task\n" +
-                "2.\tIP Resolving task\n" +
-                "3.\tComputer Tagging task\n" +
-                "4.\tGeo Location task\n" +
-                "5.\tUser Mongo Update task\n" +
-                "6.\tHDFS Writer task\n");
+        System.out.println(GDSMenuOptionsConsts.ENRICHMENT_MENU_USER_NORMALIZATION_OPTION + ".\tUser Normalization task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_IP_RESOLVING_OPTION + ".\tIP Resolving task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_COMPUTER_TAGGING_OPTION + ".\tComputer Tagging task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_GEO_LOCATION_OPTION + ".\tGeo Location task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_MENU_USER_MONGO_UPDATE_OPTION + ".\tUser Mongo Update task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_HDFS_WRITER_OPTION + ".\tHDFS Writer task\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
+                GDSMenuOptionsConsts.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION + ".\tExit to Main menu\n");
     }
 
     public static void printEnrichmentMenuAfterFailure(String message) {

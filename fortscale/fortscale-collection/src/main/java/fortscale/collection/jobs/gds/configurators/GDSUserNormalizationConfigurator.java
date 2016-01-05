@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.Impl.UserNormalizationTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -14,16 +13,16 @@ import java.util.Map;
  * @author gils
  * 04/01/2016
  */
-public class GDSUserNormalizationConfigurator implements GDSConfigurator {
+public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
-    private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
-
-    private ConfigurationService userNormalizationTaskConfiguration = new UserNormalizationTaskConfiguration();
+    public GDSUserNormalizationConfigurator() {
+        configurationService = new UserNormalizationTaskConfiguration();
+    }
 
     @Override
     public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = gdsConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState();
+        GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState();
 
         ConfigurationParam userNameField = configurationParams.get("userNameField");
         ConfigurationParam domainField = configurationParams.get("domainFieldName");
@@ -39,22 +38,22 @@ public class GDSUserNormalizationConfigurator implements GDSConfigurator {
         userNormalizationState.setNormalizeServiceName(normalizeServiceName.getParamValue());
         userNormalizationState.setUpdateOnly(updateOnlyFlag.getParamValue());
 
-        userNormalizationTaskConfiguration.setGDSConfigurationState(gdsConfigurationState);
+        configurationService.setGDSConfigurationState(currGDSConfigurationState);
 
-        return gdsConfigurationState;
+        return currGDSConfigurationState;
     }
 
     @Override
     public void apply() throws Exception {
-        if (userNormalizationTaskConfiguration.init()) {
-            userNormalizationTaskConfiguration.applyConfiguration();
+        if (configurationService.init()) {
+            configurationService.applyConfiguration();
         }
 
-        userNormalizationTaskConfiguration.done();
+        configurationService.done();
     }
 
     @Override
     public void reset() throws Exception {
-        gdsConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState().reset();
+        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState().reset();
     }
 }

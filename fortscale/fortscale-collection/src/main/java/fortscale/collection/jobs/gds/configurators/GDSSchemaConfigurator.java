@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.ConfigurationService;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.InitPartConfiguration;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
@@ -15,22 +14,22 @@ import java.util.Map;
  * @author gils
  * 30/12/2015
  */
-public class GDSSchemaConfigurator implements GDSConfigurator {
+public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
-    private GDSCompositeConfigurationState gdsConfigurationState = new GDSCompositeConfigurationState();
-
-    private ConfigurationService initConfigurationService = new InitPartConfiguration();
+    public GDSSchemaConfigurator() {
+        configurationService = new InitPartConfiguration();
+    }
 
     public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         ConfigurationParam dataSourceName = configurationParams.get("dataSourceName");
         ConfigurationParam dataSourceType = configurationParams.get("dataSourceType");
         ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");
 
-        gdsConfigurationState.setDataSourceName(dataSourceName.getParamValue());
-        gdsConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
-        gdsConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
+        currGDSConfigurationState.setDataSourceName(dataSourceName.getParamValue());
+        currGDSConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
+        currGDSConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
 
-        GDSSchemaDefinitionState GDSSchemaDefinitionState = gdsConfigurationState.getGDSSchemaDefinitionState();
+        GDSSchemaDefinitionState GDSSchemaDefinitionState = currGDSConfigurationState.getGDSSchemaDefinitionState();
         Boolean sourceIpFlag = configurationParams.get("sourceIpFlag").getParamFlag();
         GDSSchemaDefinitionState.setHasSourceIp(sourceIpFlag);
 
@@ -71,23 +70,24 @@ public class GDSSchemaConfigurator implements GDSConfigurator {
         String dataTableName = configurationParams.get("dataTableName").getParamValue();
         GDSSchemaDefinitionState.setDataTableName(dataTableName);
 
-        initConfigurationService.setGDSConfigurationState(gdsConfigurationState);
+        configurationService.setGDSConfigurationState(currGDSConfigurationState);
 
-        return gdsConfigurationState;
+        return currGDSConfigurationState;
     }
 
     @Override
     public void apply() throws Exception {
-        if (initConfigurationService.init()) {
-            initConfigurationService.applyConfiguration();
+        if (configurationService.init()) {
+            configurationService.applyConfiguration();
         }
 
-        initConfigurationService.done();
+        configurationService.done();
     }
 
     @Override
     public void reset() throws Exception {
-        // in this case of schema reset we will actually reset all configuration definitions
-        gdsConfigurationState.reset();
+        // we suppose this will impact other configuration steps as well, therefor in this case of schema reset
+        // we will actually reset all configuration definitions
+        currGDSConfigurationState.reset();
     }
 }

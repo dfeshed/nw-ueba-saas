@@ -17,6 +17,11 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
+    public void setConfigurationState(GDSCompositeConfigurationState currConfigurationState) {
+        // TODO implement
+    }
+
+    @Override
     public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) {
         // TODO implement
         return null;
