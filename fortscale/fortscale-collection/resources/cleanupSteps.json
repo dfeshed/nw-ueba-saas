@@ -68,7 +68,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###fortscale-entity-event###metrics"
+        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###metrics"
       }
     ]
   },
@@ -77,7 +77,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "scored___entity_event###streaming_models@@@regex:::modelName!!!entity_event_"
+        "dataSources": "scored___entity_event%%%prefix###streaming_models@@@regex:::modelName!!!entity_event_"
       }
     ],
     "otherSteps": [
