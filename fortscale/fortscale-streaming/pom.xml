@@ -161,13 +161,12 @@
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-kv-rocksdb_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
-			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-core_${scala-kafka.version}</artifactId>
