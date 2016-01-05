@@ -36,11 +36,11 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
         inputTopic = "user-tag-service-cache-updates";
         String propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
 
-        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE);
+        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE, null);
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() throws IOException {
         super.cleanupAfter();
     }
 

@@ -32,17 +32,13 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         outputTopic = "fortscale-evidences";
         String propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
 
-        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE);
+        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE, null);
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() throws IOException {
         super.cleanupAfter();
     }
-
-
-
-
 
     @Test
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
@@ -57,16 +53,18 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         // Validate that messages appear in store stream.
         List<String> messages = readMessages(2L, outputTopic);
 
-        org.json.JSONObject jsonInEvent1 = new org.json.JSONObject(messages.get(0));
+        org.json.JSONObject jsonEvent1 = new org.json.JSONObject(messages.get(0));
         //remove element "id" as it is generated on the fly
-        jsonInEvent1.remove("id");
-        org.json.JSONObject jsonOutEvent1 = new org.json.JSONObject(outEvent1);
-        org.json.JSONObject jsonInEvent2 = new org.json.JSONObject(messages.get(1));
+        jsonEvent1.remove("id");
+        org.json.JSONObject jsonExpectedEvent1 = new org.json.JSONObject(outEvent1);
+        org.json.JSONObject jsonEvent2 = new org.json.JSONObject(messages.get(1));
         //remove element "id" as it is generated on the fly
-        jsonInEvent2.remove("id");
-        org.json.JSONObject jsonOutEvent2 = new org.json.JSONObject(outEvent2);
-        JSONAssert.assertEquals(jsonInEvent1, jsonOutEvent1, false);
-        JSONAssert.assertEquals(jsonInEvent2, jsonOutEvent2, false);
+        jsonEvent2.remove("id");
+        org.json.JSONObject jsonExpectedEvent2 = new org.json.JSONObject(outEvent2);
+        JSONAssert.assertEquals(jsonEvent1, jsonExpectedEvent1, false);
+        JSONAssert.assertEquals(jsonEvent2, jsonExpectedEvent2, false);
+
+        //stop the job
         stopJob();
 
     }

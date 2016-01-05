@@ -22,10 +22,9 @@ import org.apache.samza.job.StreamJobFactory;
 import org.apache.samza.job.local.ThreadJobFactory;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.hsqldb.lib.StringUtil;
+import org.junit.AfterClass;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -60,7 +59,7 @@ public class AbstractTaskTest {
      * @param propertiesPath
      * @throws IOException
      */
-    protected void setupBefore(String propertiesPath, String springContextFile) throws IOException{
+    protected void setupBefore(String propertiesPath, String springContextFile, Map<String, String> addInfo) throws IOException{
         // setup Zookeeper
         zkConnect = TestZKUtils.zookeeperConnect();
         zkServer = new EmbeddedZookeeper(zkConnect);
@@ -77,6 +76,7 @@ public class AbstractTaskTest {
         Properties properties = TestUtils.getProducerConfig("localhost:" + brokerPort);
         properties.setProperty("serializer.class", "kafka.serializer.StringEncoder");
         properties.setProperty("partitioner.class", "fortscale.utils.kafka.partitions.StringHashPartitioner");
+
         ProducerConfig producerConfig = new ProducerConfig(properties);
         producer = new Producer(producerConfig);
 
@@ -92,7 +92,7 @@ public class AbstractTaskTest {
         jobFactory = new ThreadJobFactory();
 
         //load properties file
-        loadProperties(propertiesPath, springContextFile);
+        loadProperties(propertiesPath, springContextFile, addInfo);
 
         // create topics
         createTopics();
@@ -101,7 +101,7 @@ public class AbstractTaskTest {
     /**
      * Clean up when job finishes
      */
-    protected void cleanupAfter(){
+    protected void cleanupAfter() throws IOException {
         if (simpleConsumer != null) simpleConsumer.close();
         producer.close();
         kafkaServer.shutdown();
@@ -109,12 +109,41 @@ public class AbstractTaskTest {
         zkServer.shutdown();
     }
 
+    @AfterClass
+    public static void deleteTmpFiles() throws IOException {
+        //delete kafka files under /tmp
+        File folder = new File("/tmp");
+        File[] files = folder.listFiles((dir, name) -> (name.matches( "kafka.*" ) || name.matches( "librocksdbjni.*\\.so" ) || name.matches( "idea_test_.*out" )));
+        for ( final File file : files ) {
+            delete(file);
+        }
+        //delete RocksDb files
+        folder = new File("./state");
+        files = folder.listFiles();
+        if (files != null) {
+            for (final File file : files) {
+                delete(file);
+            }
+        }
+    }
+    private static void delete(File f) throws IOException {
+        if (f.isDirectory()) {
+            File[] files = f.listFiles();
+            if (files != null) {
+                for (File c : files)
+                    delete(c);
+            }
+        }
+        if (!f.delete())
+            throw new FileNotFoundException("Failed to delete file: " + f);
+    }
+
     /**
      * Loads properties from samza properties file of the task
      * @param propertiesPath
      * @throws IOException
      */
-    protected void loadProperties(String propertiesPath, String springContextFile) throws IOException {
+    protected void loadProperties(String propertiesPath, String springContextFile, Map<String, String> addInfo) throws IOException {
         jobConfig = new HashMap<String, String>();
         Properties prop = new Properties();
         prop.load(new FileInputStream(propertiesPath));
@@ -136,7 +165,12 @@ public class AbstractTaskTest {
         if (!StringUtil.isEmpty(springContextFile)){
             jobConfig.put("fortscale.context", springContextFile);
         }
-
+        //set additional properties sent from the test
+        if (addInfo != null && addInfo.size() > 0){
+            for (String key : addInfo.keySet()){
+                jobConfig.put(key, addInfo.get(key));
+            }
+        }
     }
 
     /**
