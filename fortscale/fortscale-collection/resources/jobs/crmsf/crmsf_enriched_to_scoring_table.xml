@@ -24,7 +24,7 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>fortscale-crmsf-computer-tagged-clustered</value>
+					<value>fortscale-generic-data-access-enriched-after-write</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
