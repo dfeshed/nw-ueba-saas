@@ -2,7 +2,9 @@ package fortscale.entity.event;
 
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EntityEventDataTestStore implements EntityEventDataStore {
 	private Map<String, EntityEventData> entityEventDataMap = new HashMap<>();
@@ -29,14 +31,9 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 
 	@Override
 	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
-		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
-		for (EntityEventData entityEventData : getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime)) {
-			if (!entityEventData.isTransmitted()) {
-				listOfEntityEventData.add(entityEventData);
-			}
-		}
-
-		return listOfEntityEventData;
+		return getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime).stream()
+				.filter(entityEventData -> !entityEventData.isTransmitted())
+				.collect(Collectors.toList());
 	}
 
 	@Override

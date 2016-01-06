@@ -111,10 +111,7 @@ public class EntityEventService {
 
 	private Set<EntityEventBuilder> getAllEntityEventBuilders() {
 		Set<EntityEventBuilder> allEntityEventBuilders = new HashSet<>();
-		for (Set<EntityEventBuilder> builders : fullEventNameToBuilders.values()) {
-			allEntityEventBuilders.addAll(builders);
-		}
-
+		fullEventNameToBuilders.values().forEach(allEntityEventBuilders::addAll);
 		return allEntityEventBuilders;
 	}
 

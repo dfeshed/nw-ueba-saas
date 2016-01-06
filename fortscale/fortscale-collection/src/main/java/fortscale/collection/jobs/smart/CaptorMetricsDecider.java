@@ -19,9 +19,7 @@ public class CaptorMetricsDecider implements IMetricsDecider {
 	 */
 	public CaptorMetricsDecider(Collection<String> metricsToCapture) {
 		Assert.notEmpty(metricsToCapture);
-		for (String metricToCapture : metricsToCapture) {
-			Assert.hasText(metricToCapture);
-		}
+		metricsToCapture.forEach(Assert::hasText);
 
 		this.metricsToCapture = metricsToCapture;
 		this.capturedMetrics = new HashMap<>();
@@ -33,11 +31,9 @@ public class CaptorMetricsDecider implements IMetricsDecider {
 			return false;
 		}
 
-		for (String metricToCapture : metricsToCapture) {
-			if (metrics.has(metricToCapture)) {
-				capturedMetrics.put(metricToCapture, metrics.get(metricToCapture));
-			}
-		}
+		metricsToCapture.stream().filter(metrics::has)
+				.forEach(metricToCapture -> capturedMetrics.put(
+				metricToCapture, metrics.get(metricToCapture)));
 
 		return capturedMetrics.size() == metricsToCapture.size();
 	}

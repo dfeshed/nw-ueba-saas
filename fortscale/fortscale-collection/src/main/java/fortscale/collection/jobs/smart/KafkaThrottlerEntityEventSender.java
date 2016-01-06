@@ -60,9 +60,9 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		this.port = Integer.parseInt(brokerListSplit[1]);
 		this.kafkaEventsWriter = new KafkaEventsWriter(outputTopicName);
 
-		for (EntityEventConf entityEventConf : entityEventConfService.getEntityEventDefinitions()) {
-			metricsOfEntityEvents.add(getCounterName(entityEventConf));
-		}
+		entityEventConfService.getEntityEventDefinitions().stream()
+				.map(this::getCounterName)
+				.forEach(metricsOfEntityEvents::add);
 
 		this.batchCounter = 0;
 		this.counterMetricsSum = getCounterMetricsSum();

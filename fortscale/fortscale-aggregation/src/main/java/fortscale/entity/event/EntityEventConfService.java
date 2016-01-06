@@ -48,9 +48,7 @@ public class EntityEventConfService implements InitializingBean, ApplicationCont
 
 	public List<EntityEventConf> getEntityEventDefinitions() {
 		List<EntityEventConf> list = new ArrayList<>();
-		for (EntityEventConf entityEventConf : entityEventDefinitions.values()) {
-			list.add(entityEventConf);
-		}
+		entityEventDefinitions.values().forEach(list::add);
 		return list;
 	}
 
