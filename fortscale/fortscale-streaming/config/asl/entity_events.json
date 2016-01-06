@@ -189,7 +189,7 @@
             "distinct_yid_amt": ["normalized_username_amt_hourly.distinct_number_of_yid_amt_hourly"],
             "successful_crmsf": ["normalized_username_crmsf_hourly.number_of_successful_crmsf_events_hourly"],
             "failed_crmsf": ["normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly"],
-            "distinct_countries_crmsf": ["normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly"]
+            "distinct_countries_crmsf": ["normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly"],
             "wame_events":["normalized_username_wame_daily.normalized_username_wame_hourly"]
           },
           "alphas": {
