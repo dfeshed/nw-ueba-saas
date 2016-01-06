@@ -1,9 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +74,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		String collectionName = getCollectionName(featureBucketConf);
 
+		List<FeatureBucket> featureBuckets = new ArrayList<>();
+
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
 
@@ -87,12 +86,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			if(pageable != null){
 				query.with(pageable);
 			}
-			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-			return featureBuckets;
+			featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		}
-		else {
-			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
-		}
+
+		return featureBuckets;
 	}
 
 	private Criteria createContextCriteria(String contextType, String contextName) {
