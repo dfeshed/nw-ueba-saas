@@ -22,7 +22,7 @@ public class UserInactivityFeatureBucketStrategyFactorySamza extends AbstractUse
 	
 	@Override
 	public void init(ExtendedSamzaTaskContext context) {
-		featureBucketStrategyStore = new FeatureBucketStrategyLevelDbStore(context);
+		featureBucketStrategyStore = new FeatureBucketStrategyKeyValueDbStore(context);
 		for (UserInactivityFeatureBucketStrategy featureBucketStrategy : featureBucketStrategies) {
 			featureBucketStrategy.setFeatureBucketStrategyStore(featureBucketStrategyStore);
 		}

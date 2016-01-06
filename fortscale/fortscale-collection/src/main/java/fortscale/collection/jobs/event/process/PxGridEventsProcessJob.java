@@ -1,10 +1,9 @@
 package fortscale.collection.jobs.event.process;
 
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
-import fortscale.services.ipresolving.IseResolver;
 import fortscale.services.ipresolving.PxGridResolver;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
@@ -43,9 +42,9 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 	}
 
 	@Override
-	protected boolean processLine(String line) throws IOException {
+	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
+		Record record = morphline.process(line, itemContext);
 
 		// skip records that failed on parsing
 		if (record==null)

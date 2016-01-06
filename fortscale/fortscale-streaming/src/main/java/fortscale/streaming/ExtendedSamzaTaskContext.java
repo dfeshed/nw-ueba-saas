@@ -2,10 +2,13 @@ package fortscale.streaming;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.samza.Partition;
 import org.apache.samza.config.Config;
+import org.apache.samza.container.TaskName;
 import org.apache.samza.metrics.MetricsRegistry;
+import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.TaskContext;
 
 public class ExtendedSamzaTaskContext implements TaskContext{
@@ -35,13 +38,23 @@ public class ExtendedSamzaTaskContext implements TaskContext{
 	}
 
 	@Override
-	public Partition getPartition() {
-		return taskContext.getPartition();
+	public Set<SystemStreamPartition> getSystemStreamPartitions() {
+		return taskContext.getSystemStreamPartitions();
 	}
 
 	@Override
 	public Object getStore(String name) {
 		return taskContext.getStore(name);
+	}
+
+	@Override
+	public TaskName getTaskName() {
+		return taskContext.getTaskName();
+	}
+
+	@Override
+	public void setStartingOffset(SystemStreamPartition systemStreamPartition, String s) {
+		taskContext.setStartingOffset(systemStreamPartition, s);
 	}
 
 	public Config getConfig() {

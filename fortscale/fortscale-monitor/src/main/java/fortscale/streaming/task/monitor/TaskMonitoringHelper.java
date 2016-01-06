@@ -2,20 +2,28 @@ package fortscale.streaming.task.monitor;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.utils.spring.SpringPropertiesUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by shays on 05/11/2015.
  */
 
-public class TaskMonitoringHelper {
+/*
+T is the key of the logged entity
+ */
+
+public class TaskMonitoringHelper<T> {
 
     //Parameters for Window statistics monitoring
     @Autowired
@@ -24,9 +32,12 @@ public class TaskMonitoringHelper {
     @Autowired
     private SpringPropertiesUtil messages;
 
+    private List<ImmutablePair<String, Steps>> stepsAndStatus = new ArrayList<>();
+    private List<ImmutablePair<String,String>> errors = new ArrayList<>();
+
 
     //Node is the task for specific data source and last state
-    private Map<StreamingTaskDataSourceConfigKey, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
+    private Map<T, TaskMonitoringDTO> nodeMonitoringDetails = new HashMap<>();
 
     //Constant labels for JOB monitoring
     public static final String TOTAL_FILTERED_EVENTS_LABEL = "Filtered Events";
@@ -34,9 +45,8 @@ public class TaskMonitoringHelper {
     public static final String LAST_EVENT_TIME_LABEL = "Last Event Original Time";
     public static final String TOTAL_EVENTS_LABEL = "Total Events";
     public static final String NOT_FILTERED_EVENTS_LABEL = "Processed Event";
-    public static final String JOB_DATA_SOURCE = "Streaming";
     public  static final String EVENTS_TYPE="EVENTS";
-    private static final String FILTERED_EVENTS_PREFIX = "Filtered Events - Reason ";
+    private static final String FILTERED_EVENTS_PREFIX = "Filter Events Reason- ";
 
 
     private boolean isMonitoredTask;
@@ -49,7 +59,7 @@ public class TaskMonitoringHelper {
         this.isMonitoredTask = isMonitoredTask;
     }
 
-    private TaskMonitoringDTO getNode(StreamingTaskDataSourceConfigKey key){
+    private TaskMonitoringDTO getNode(T key){
         TaskMonitoringDTO node = nodeMonitoringDetails.get(key);
         if (node == null){
             node = new TaskMonitoringDTO();
@@ -63,7 +73,7 @@ public class TaskMonitoringHelper {
      * Called for each new event
      * doesn't matter if the event will be filtered or not
      */
-    public void handleNewEvent(StreamingTaskDataSourceConfigKey key){
+    public void handleNewEvent(T key){
         if (isMonitoredTask()) {
             TaskMonitoringDTO node = getNode(key);
             node.increaseTotalEventsCount();
@@ -76,7 +86,7 @@ public class TaskMonitoringHelper {
      * the counter of the cause increased
      * @param cause
      */
-    public void countNewFilteredEvents(StreamingTaskDataSourceConfigKey key, String cause, String... args){
+    public void countNewFilteredEvents(T key, String cause, String... args){
 
         //Get the text from messages file.
         String text = null;
@@ -101,10 +111,10 @@ public class TaskMonitoringHelper {
         nodeMonitoringDetails.clear();
     }
 
-    public void handleUnFilteredEvents(StreamingTaskDataSourceConfigKey key, Long dateTimeUnix, String dateAsString){
+    public void handleUnFilteredEvents(T key, Long dateTimeUnix){
 
         TaskMonitoringDTO node = getNode(key);
-
+        String dateAsString = DateFormatUtils.format(dateTimeUnix*1000,"yyyy-MM-DD HH:mm:ss");
         node.updateFirstLastEventInWindow(dateTimeUnix, dateAsString);
         node.increaseNotFilteredEvents(); //Count not filtered events per window
     }
@@ -115,7 +125,7 @@ public class TaskMonitoringHelper {
      * and how many filtered events per each cause.
      * If there where no filtered event, add one line of Filter events = 0
      */
-    public void saveJobStatusReport(String jobLabel,boolean saveOnlyIfDataExists){
+    public void saveJobStatusReport(String jobLabel,boolean saveOnlyIfDataExists, String jobDataSource){
 
         //If tasks is not monitored - stop saving and do nothing
         if (!isMonitoredTask()) {
@@ -129,13 +139,48 @@ public class TaskMonitoringHelper {
         }
 
         //Start saving:
-        String monitorId = jobMonitorReporter.startJob(JOB_DATA_SOURCE, jobLabel, 1, true);
+        String monitorId = jobMonitorReporter.startJob(jobDataSource, jobLabel, 1, true);
 
-        for (Map.Entry<StreamingTaskDataSourceConfigKey,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
-            StreamingTaskDataSourceConfigKey nodeKey = node.getKey();
+        saveMonitorSteps(monitorId);
+        saveMonitorRows(monitorId);
+        saveMonitorErrors(monitorId);
+
+        jobMonitorReporter.finishJob(monitorId);
+
+        //Reset counters per window
+        resetCountersPerWindow();
+
+    }
+
+    private void saveMonitorSteps(String monitorId){
+        if (CollectionUtils.isNotEmpty(stepsAndStatus)){
+            int count=0;
+            for (ImmutablePair<String, Steps> ImmutablePair : stepsAndStatus){
+                if (Steps.SATARTED.equals(ImmutablePair.getValue())){
+                    jobMonitorReporter.startStep(monitorId, ImmutablePair.getKey(),count);
+                    count ++;
+                } else {
+                    jobMonitorReporter.finishStep(monitorId, ImmutablePair.getKey());
+                }
+            }
+        }
+    }
+
+    private void saveMonitorErrors(String monitorId){
+        if (CollectionUtils.isNotEmpty(errors)){
+            int count=0;
+            for (ImmutablePair<String, String> error : errors){
+               jobMonitorReporter.error(monitorId,error.getKey(), error.getValue());
+            }
+        }
+    }
+
+    private void saveMonitorRows(String monitorId) {
+        for (Map.Entry<T,TaskMonitoringDTO> node: this.nodeMonitoringDetails.entrySet()){
+            T nodeKey = node.getKey();
             String nodePrefix = "";
             if (nodeKey != null) {
-                nodePrefix = node.getKey().getDataSource() + "/" + node.getKey().getLastState() + "- ";
+                nodePrefix = node.getKey().toString() + "- ";
             };
 
             TaskMonitoringDTO nodeData = node.getValue();
@@ -160,16 +205,7 @@ public class TaskMonitoringHelper {
 
 
         }
-
-
-        jobMonitorReporter.finishJob(monitorId);
-
-        //Reset counters per window
-        resetCountersPerWindow();
-
     }
-
-
 
 
     /**
@@ -185,4 +221,20 @@ public class TaskMonitoringHelper {
 
         jobMonitorReporter.addDataReceived(monitorId,dataReceived);
     }
+
+    public void startStep(String name){
+        stepsAndStatus.add(new ImmutablePair<String, Steps>(name, Steps.SATARTED));
+    }
+    public void finishStep(String name){
+        stepsAndStatus.add(new ImmutablePair<String, Steps>(name, Steps.FINISHED));
+    }
+    public void error(String step, String excpetion){
+        errors.add(new ImmutablePair<String, String>(step,excpetion));
+    }
+
+    private enum Steps{
+        SATARTED, FINISHED;
+    }
+
+
 }

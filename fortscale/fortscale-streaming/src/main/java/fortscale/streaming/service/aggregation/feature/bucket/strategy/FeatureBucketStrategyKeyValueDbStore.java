@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyStore {
+public class FeatureBucketStrategyKeyValueDbStore implements FeatureBucketStrategyStore {
 	private static final String STORE_NAME = "strategy_store";
 
 	private KeyValueStore<String, List<FeatureBucketStrategyData>> strategyStore;
 
 	@SuppressWarnings("unchecked")
-	public FeatureBucketStrategyLevelDbStore(ExtendedSamzaTaskContext context) {
+	public FeatureBucketStrategyKeyValueDbStore(ExtendedSamzaTaskContext context) {
 		strategyStore = (KeyValueStore<String, List<FeatureBucketStrategyData>>)context.getStore(STORE_NAME);
 	}
 
