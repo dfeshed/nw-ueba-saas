@@ -993,7 +993,7 @@
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "maximize": ["country_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
@@ -1055,7 +1055,7 @@
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "maximize": ["country_score"]
           },
           "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
         },
