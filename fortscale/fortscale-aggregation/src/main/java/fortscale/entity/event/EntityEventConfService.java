@@ -6,16 +6,19 @@ import groovy.json.JsonException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EntityEventConfService implements InitializingBean {
+public class EntityEventConfService implements InitializingBean, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(EntityEventConfService.class);
 
 	private static final String ENTITY_EVENTS_JSON_FIELD_NAME = "EntityEvents";
@@ -25,6 +28,7 @@ public class EntityEventConfService implements InitializingBean {
 	@Value("${fortscale.aggregation.entity.event.definitions.json.file.path}")
 	private String entityEventDefinitionsJsonFilePath;
 
+	private ApplicationContext applicationContext;
 	private Map<String, Object> globalParams;
 	private Map<String, EntityEventConf> entityEventDefinitions;
 
@@ -33,13 +37,18 @@ public class EntityEventConfService implements InitializingBean {
 		loadEntityEventsJsonFile();
 	}
 
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
 	public Map<String, Object> getGlobalParams() {
 		return globalParams;
 	}
 
 	public List<EntityEventConf> getEntityEventDefinitions() {
 		List<EntityEventConf> list = new ArrayList<>();
-		for(EntityEventConf entityEventConf: entityEventDefinitions.values()) {
+		for (EntityEventConf entityEventConf : entityEventDefinitions.values()) {
 			list.add(entityEventConf);
 		}
 		return list;
@@ -54,7 +63,8 @@ public class EntityEventConfService implements InitializingBean {
 		String errorMsg;
 
 		try {
-			entityEvents = (JSONObject)JSONValue.parseWithException(new FileReader(entityEventDefinitionsJsonFilePath));
+			Resource resource = applicationContext.getResource(entityEventDefinitionsJsonFilePath);
+			entityEvents = (JSONObject)JSONValue.parseWithException(resource.getInputStream());
 			entityEvents = (JSONObject)entityEvents.get(ENTITY_EVENTS_JSON_FIELD_NAME);
 		} catch (Exception e) {
 			errorMsg = String.format("Failed to parse JSON file %s", entityEventDefinitionsJsonFilePath);

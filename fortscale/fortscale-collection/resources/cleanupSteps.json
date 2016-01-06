@@ -56,10 +56,15 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix###entity_event_%%%prefix###streaming_models@@@regex:::modelName!!!aggr_event_"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###streaming_models@@@regex:::modelName!!!aggr_event_"
       }
     ],
     "otherSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "scored___aggr@@@prefix###entity_event_@@@prefix"
+      },
       {
         "technology": "STORE",
         "strategy": "DELETE",
@@ -68,33 +73,33 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###fortscale-entity-event###metrics"
+        "dataSources": "fortscale-aggregated-feature-f-event###fortscale-aggregated-feature-p-event###fortscale-aggr-feature-events-score###metrics"
       }
     ]
   },
-  "ScoredDataToSMARTEvents": {
+  "EntityEventsCreation": {
     "timeBasedSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###aggr_%%%prefix@@@date:::startTime###scored___%%%prefix@@@date:::start_time_unix###entity_event_%%%prefix@@@date:::startTime"
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_"
       }
     ],
     "otherSteps": [
       {
-        "technology": "STORE",
+        "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "aggr_@@@prefix###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store"
+        "dataSources": "scored___entity_event@@@prefix"
       },
       {
-        "technology": "MONGO",
-        "strategy": "RESTORE",
-        "dataSources": "streaming_models###FeatureBucketAggrMetadata###FeatureBucketAggrSendingQueue###FeatureBucketMetadata"
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats"
       },
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###__samza_checkpoint_aggregation-events-streaming_1-0###fortscale-aggregated-feature-f-event###__samza_checkpoint_fortscale-aggr-feature-events-prevalence-stats_1-0###fortscale-aggregated-feature-p-event###__samza_checkpoint_entity-events-streaming_1-0###fortscale-entity-event###__samza_checkpoint_alert-generator-task_1-0###fortscale-aggr-feature-events-score###__samza_checkpoint_entity-events-streaming_1-0###__samza_checkpoint_evidence-creation-task_1-0###metrics"
+        "dataSources": "fortscale-entity-event###metrics"
       }
     ]
   },

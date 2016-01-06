@@ -9,6 +9,7 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
