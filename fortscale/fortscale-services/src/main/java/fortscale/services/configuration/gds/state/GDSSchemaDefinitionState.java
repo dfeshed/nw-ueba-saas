@@ -127,6 +127,18 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 
     @Override
     public void reset() {
-        // TODO implement
+        hasSourceIp = false;
+        hasTargetIp = false;
+        dataFields = null;
+        enrichFields = null;
+        enrichDelimiter = null;
+        enrichTableName = null;
+        scoreFields = null;
+        scoreDelimiter = null;
+        scoreTableName = null;
+        hasTopSchema = false;
+        hasNormalizedUserNameField = false;
+        dataDelimiter = null;
+        dataTableName = null;
     }
 }

@@ -2,7 +2,6 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
-import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
         GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserMongoUpdateState();
 
@@ -33,17 +32,6 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
         userMongoUpdateState.setSuccessValue(successValue.getParamValue());
 
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
-
-        return currGDSConfigurationState;
-    }
-
-    @Override
-    public void apply() throws Exception {
-        if (configurationService.init()) {
-            configurationService.applyConfiguration();
-        }
-
-        configurationService.done();
     }
 
     @Override

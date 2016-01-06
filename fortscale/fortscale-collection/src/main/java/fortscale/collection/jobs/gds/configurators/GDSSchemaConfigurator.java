@@ -3,7 +3,6 @@ package fortscale.collection.jobs.gds.configurators;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.InitPartConfiguration;
-import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         configurationService = new InitPartConfiguration();
     }
 
-    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         ConfigurationParam dataSourceName = configurationParams.get("dataSourceName");
         ConfigurationParam dataSourceType = configurationParams.get("dataSourceType");
         ConfigurationParam dataSourceLists = configurationParams.get("dataSourceLists");
@@ -71,17 +70,6 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         GDSSchemaDefinitionState.setDataTableName(dataTableName);
 
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
-
-        return currGDSConfigurationState;
-    }
-
-    @Override
-    public void apply() throws Exception {
-        if (configurationService.init()) {
-            configurationService.applyConfiguration();
-        }
-
-        configurationService.done();
     }
 
     @Override

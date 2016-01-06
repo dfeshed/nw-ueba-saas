@@ -2,7 +2,6 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.HDFSWriteTaskConfiguration;
-import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getHdfsWriterState();
 
         ConfigurationParam fieldList = configurationParams.get("fieldList");
@@ -40,17 +39,6 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setDiscriminatorsFields(discriminatorsFields.getParamValue());
 
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
-
-        return currGDSConfigurationState;
-    }
-
-    @Override
-    public void apply() throws Exception {
-        if (configurationService.init()) {
-            configurationService.applyConfiguration();
-        }
-
-        configurationService.done();
     }
 
     @Override

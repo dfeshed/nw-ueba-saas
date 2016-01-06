@@ -81,7 +81,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfigurationType);
 
-					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState); // TODO need to send immutable state
+					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState); // TODO need to send immutable state so that populators cannot change the state
 
 					if (configurationParams.isEmpty()) {
 						System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
@@ -89,7 +89,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					else {
 						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfigurationType);
 						configurator.setConfigurationState(currConfigurationState);
-						currConfigurationState = configurator.configure(configurationParams);
+						configurator.configure(configurationParams);
 
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
@@ -205,7 +205,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
 						configurator.setConfigurationState(currConfigurationState);
-						currConfigurationState = configurator.configure(configurationParams);
+						configurator.configure(configurationParams);
 
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 

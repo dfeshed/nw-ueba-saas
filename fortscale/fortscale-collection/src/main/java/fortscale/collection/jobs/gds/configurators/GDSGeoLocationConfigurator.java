@@ -2,7 +2,6 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.GeoLocationConfiguration;
-import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public GDSCompositeConfigurationState configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
         GDSEnrichmentDefinitionState.GeoLocationState geoLocationState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getGeoLocationState();
 
         ConfigurationParam ipField = configurationParams.get("ipField");
@@ -50,21 +49,10 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
 
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
-
-        return currGDSConfigurationState;
-    }
-
-    @Override
-    public void apply() throws Exception {
-        if (configurationService.init()) {
-            configurationService.applyConfiguration();
-        }
-
-        configurationService.done();
     }
 
     @Override
     public void reset() throws Exception {
-        // TODO implement
+        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getGeoLocationState().reset();
     }
 }
