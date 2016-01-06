@@ -21,7 +21,7 @@ public class SecEventsSA4624Test {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	//empty morphline
 	private String confFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
-	private String conf4624File = "resources/conf-files/securityevents/securityAnalytics/read4624SecEvtOnlyComp.conf";
+	private String conf4624File = "resources/conf-files/securityevents/securityAnalytics/processSecEvt4624.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	
