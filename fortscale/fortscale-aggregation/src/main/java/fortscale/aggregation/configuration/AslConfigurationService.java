@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.bucket;
+package fortscale.aggregation.configuration;
 
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONArray;

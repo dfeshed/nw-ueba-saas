@@ -22,6 +22,7 @@
 	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
+	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />

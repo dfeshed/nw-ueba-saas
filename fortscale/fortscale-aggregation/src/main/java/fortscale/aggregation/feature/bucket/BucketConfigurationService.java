@@ -1,26 +1,18 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
+import fortscale.aggregation.configuration.AslConfigurationService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fortscale.aggregation.feature.extraction.Event;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 
 /**
  * Loads BucketConfs from JSON file.
