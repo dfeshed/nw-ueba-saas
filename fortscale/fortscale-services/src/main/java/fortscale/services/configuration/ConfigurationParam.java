@@ -39,4 +39,9 @@ public class ConfigurationParam {
 	public void setParamValue(String paramValue) {
 		this.paramValue = paramValue;
 	}
+
+	@Override
+	public String toString() {
+		return paramValue;
+	}
 }
