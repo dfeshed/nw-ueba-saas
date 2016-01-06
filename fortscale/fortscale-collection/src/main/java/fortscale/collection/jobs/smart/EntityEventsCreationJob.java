@@ -32,8 +32,11 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
 
+		// Use converter to ensure start and end times are in seconds
 		startTimeInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, START_TIME_IN_SECONDS_ARG);
+		startTimeInSeconds = TimestampUtils.convertToSeconds(startTimeInSeconds);
 		endTimeInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, END_TIME_IN_SECONDS_ARG);
+		endTimeInSeconds = TimestampUtils.convertToSeconds(endTimeInSeconds);
 		timeIntervalInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, TIME_INTERVAL_IN_SECONDS_ARG);
 		Assert.isTrue(startTimeInSeconds >= 0);
 		Assert.isTrue(endTimeInSeconds >= startTimeInSeconds);
