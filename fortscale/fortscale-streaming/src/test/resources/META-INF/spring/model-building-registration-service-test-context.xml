@@ -11,10 +11,6 @@
     <mockito:mock id="modelService" class="fortscale.ml.model.ModelService"/>
     <mockito:mock id="modelBuildingListener" class="fortscale.ml.model.listener.IModelBuildingListener"/>
     <mockito:mock id="modelBuildingStore" class="fortscale.streaming.service.model.ModelBuildingSamzaStore"/>
-    <bean id="regService" class="fortscale.streaming.service.model.ModelBuildingRegistrationService">
-        <constructor-arg index="0" ref="modelBuildingListener"/>
-        <constructor-arg index="1" ref="modelBuildingStore"/>
-    </bean>
 
     <context:spring-configured/>
     <context:annotation-config/>
