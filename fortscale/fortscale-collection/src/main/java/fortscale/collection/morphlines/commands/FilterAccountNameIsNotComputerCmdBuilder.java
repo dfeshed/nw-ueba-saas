@@ -53,7 +53,10 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 	@Configurable(preConstruction=true)
 	public class FilterAccountNameIsNotComputer extends AbstractCommand  {
 
-
+		//The field account_name arrive as list of string. Sometimes the account name may be in
+		//record.get("account_name").get(0) and sometimes record.get("account_name").get(1),
+		//But it always be the same for each call of the same morphline, so we get the index from the morphline
+		int indexOfAccountName;
 
 		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
@@ -61,13 +64,15 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 
 		public FilterAccountNameIsNotComputer(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
+			this.indexOfAccountName = getConfigs().getInt(config, "indexOfAccountName");
 			validateArguments();
 		}
 
 		@Override
 		protected boolean doProcess(Record record) {
 
-			String account_name =  (String)record.get("account_name").get(1); //getAccountName(record.get("account_name"));
+
+			String account_name =  (String)record.get("account_name").get(this.indexOfAccountName); //getAccountName(record.get("account_name"));
 			Boolean isComputer = account_name.contains("$") ? true : false;
 			if (isComputer){
 				record.replaceValues("isComputer", isComputer);
@@ -84,5 +89,5 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 
 		}
 	}
-	
+
 }
