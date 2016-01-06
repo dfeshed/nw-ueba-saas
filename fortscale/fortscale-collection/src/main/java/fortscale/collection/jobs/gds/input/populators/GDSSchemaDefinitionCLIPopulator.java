@@ -19,20 +19,30 @@ import java.util.Map;
  */
 public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulator {
 
-    private static final String DATA_SOURCE_NAME_PARAM = "dataSourceName";
-    private static final String DATA_SOURCE_TYPE_PARAM = "dataSourceType";
     private static final String DATA_SOURCE_LISTS = "dataSourceLists";
 
     private static final String ADDITIONAL_FIELDS_USER_END_MARK = "done";
     private static final String ADDITIONAL_FIELD_SCORE_FIELD_DOUBLE_DATA_TYPE = "DOUBLE";
 
-    private static final String SPACE = " ";
-    private static final String COMMA = ",";
-    private static final String EMPTY_STR = "";
     private static final String BASE_DATA_SOURCE_TYPE = "base";
     private static final String ACCESS_EVENT_DATA_SOURCE_TYPE = "access_event";
     private static final String AUTH_EVENT_DATA_SOURCE_TYPE = "auth_event";
     private static final String CUSTOMIZED_AUTH_EVENT_DATA_SOURCE_TYPE = "customized_auth_event";
+
+    private static final String DATA_SOURCE_NAME_PARAM = "dataSourceName";
+    private static final String DATA_SOURCE_TYPE_PARAM = "dataSourceType";
+    private static final String DATA_DELIMITER_PARAM = "dataDelimiter";
+    private static final String DATA_TABLE_NAME_PARAM = "dataTableName";
+    private static final String SENSITIVE_MACHINE_PARAM = "sensitive_machine";
+    private static final String ENRICH_DELIMITER_PARAM = "enrichDelimiter";
+    private static final String ENRICH_TABLE_NAME_PARAM = "enrichTableName";
+    private static final String SCORE_DELIMITER_PARAM = "scoreDelimiter";
+    private static final String SCORE_TABLE_NAME_PARAM = "scoreTableName";
+    private static final String TOP_SCHEMA_FLAG_PARAM = "topSchemaFlag";
+
+    private static final String SPACE = " ";
+    private static final String COMMA = ",";
+    private static final String EMPTY_STR = "";
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
@@ -59,43 +69,42 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         //paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
 
         String dataSourceName = paramsMap.get(DATA_SOURCE_NAME_PARAM).getParamValue();
+        String dataSourceType = paramsMap.get(DATA_SOURCE_TYPE_PARAM).getParamValue();
 
         AdditionalFieldsWrapper additionalFieldsWrapper = populateAdditionalFields(dataSourceName);
-
-        String dataSourceType = paramsMap.get(DATA_SOURCE_TYPE_PARAM).getParamValue();
 
         populateDataSourceTypeFields(paramsMap, dataSourceName, additionalFieldsWrapper, dataSourceType);
 
         //delimiter
         System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
         String delimiter = gdsInputHandler.getInput();
-        paramsMap.put("dataDelimiter", new ConfigurationParam("delimiter",false,delimiter));
+        paramsMap.put(DATA_DELIMITER_PARAM, new ConfigurationParam(DATA_DELIMITER_PARAM,false,delimiter));
 
         //table name
         String tableName = dataSourceName+"data";
-        paramsMap.put("dataTableName", new ConfigurationParam("TableName",false,tableName));
+        paramsMap.put(DATA_TABLE_NAME_PARAM, new ConfigurationParam(DATA_TABLE_NAME_PARAM,false,tableName));
 
         //sensitive_machine
-        paramsMap.put("sensitive_machine", new ConfigurationParam("sensitive_machine",false,"is_sensitive_machine"));
+        paramsMap.put(SENSITIVE_MACHINE_PARAM, new ConfigurationParam(SENSITIVE_MACHINE_PARAM,false,"is_sensitive_machine"));
 
         //delimiter
-        paramsMap.put("enrichDelimiter", new ConfigurationParam("delimiter",false,delimiter));
+        paramsMap.put(ENRICH_DELIMITER_PARAM, new ConfigurationParam(ENRICH_DELIMITER_PARAM,false,delimiter));
 
         //table name
         tableName = dataSourceName+"enriched";
-        paramsMap.put("enrichTableName", new ConfigurationParam("TableName",false,tableName));
+        paramsMap.put(ENRICH_TABLE_NAME_PARAM, new ConfigurationParam(ENRICH_TABLE_NAME_PARAM,false,tableName));
 
         //delimiter
-        paramsMap.put("scoreDelimiter", new ConfigurationParam("delimiter",false, GDSSchemaDefinitionCLIPopulator.COMMA));
+        paramsMap.put(SCORE_DELIMITER_PARAM, new ConfigurationParam(SCORE_DELIMITER_PARAM,false, GDSSchemaDefinitionCLIPopulator.COMMA));
 
         //table name
         tableName = dataSourceName+"score";
-        paramsMap.put("scoreTableName", new ConfigurationParam("TableName",false,tableName));
+        paramsMap.put(SCORE_TABLE_NAME_PARAM, new ConfigurationParam(SCORE_TABLE_NAME_PARAM,false,tableName));
 
         //top score
         System.out.println(String.format("Does %s Have top table schema (y/n) ?",dataSourceName));
         String inputResult = gdsInputHandler.getInput();
-        paramsMap.put("topSchemaFlag", new ConfigurationParam("topSchemaFlag", GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
+        paramsMap.put(TOP_SCHEMA_FLAG_PARAM, new ConfigurationParam(TOP_SCHEMA_FLAG_PARAM, GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
         return paramsMap;
     }
