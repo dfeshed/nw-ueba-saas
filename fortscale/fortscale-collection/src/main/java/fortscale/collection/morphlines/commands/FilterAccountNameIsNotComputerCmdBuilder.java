@@ -77,7 +77,7 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 			if (isComputer){
 				record.replaceValues("isComputer", isComputer);
 				record.replaceValues("account_name", account_name);
-				String account_domain = (String)record.get("account_domain").get(1);
+				String account_domain = (String)record.get("account_domain").get(this.indexOfAccountName);
 				record.replaceValues("account_domain", account_domain);
 
 			} else{
