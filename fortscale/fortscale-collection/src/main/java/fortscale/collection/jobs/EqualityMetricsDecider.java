@@ -29,6 +29,7 @@ public class EqualityMetricsDecider implements IMetricsDecider {
 		}
 
 		for (Map.Entry<String, Object> entry : keyToExpectedValueEntries) {
+			if (!metrics.has(entry.getKey())) return false;
 			Object actualValue = metrics.get(entry.getKey());
 			Object expectedValue = entry.getValue();
 
