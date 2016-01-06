@@ -20,7 +20,7 @@ public class AggrFeatureEventToSendRepositoryImpl implements AggrFeatureEventToS
 
 
     @Override
-    public List<AggrFeatureEventToSend> findByEndTimeGtAndEndTimeLte(Long lowerTimeSec, Long upperTimeSec, Pageable pageable) {
+    public List<AggrFeatureEventToSend> findByEndTimeBetween(Long lowerTimeSec, Long upperTimeSec, Pageable pageable) {
         Query query = new Query(where(AggrFeatureEventToSend.END_TIME_FIELD).gt(lowerTimeSec).and(AggrFeatureEventToSend.END_TIME_FIELD).lte(upperTimeSec));
         if(pageable != null){
             query.with(pageable);
@@ -29,7 +29,7 @@ public class AggrFeatureEventToSendRepositoryImpl implements AggrFeatureEventToS
     }
 
     @Override
-    public void deleteByEndTimeGtAndEndTimeLte(Long lowerTimeSec, Long upperTimeSec){
+    public void deleteByEndTimeBetween(Long lowerTimeSec, Long upperTimeSec){
         Query query = new Query(where(AggrFeatureEventToSend.END_TIME_FIELD).gt(lowerTimeSec).and(AggrFeatureEventToSend.END_TIME_FIELD).lte(upperTimeSec));
         mongoTemplate.remove(query, AggrFeatureEventToSend.class);
     }

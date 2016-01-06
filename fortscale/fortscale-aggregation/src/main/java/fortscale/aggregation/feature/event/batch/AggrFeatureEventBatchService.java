@@ -75,7 +75,7 @@ public class AggrFeatureEventBatchService {
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
             do{
                 PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.START_TIME_FIELD);
-                aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeGtAndEndTimeLte(bucketStartTime, bucketEndTime, pageRequest);
+                aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeBetween(bucketStartTime, bucketEndTime, pageRequest);
                 for (AggrFeatureEventToSend aggrFeatureEventToSend: aggrFeatureEventToSendList){
                     sendEvent(sender, aggrFeatureEventToSend);
                 }
@@ -95,7 +95,7 @@ public class AggrFeatureEventBatchService {
     }
 
     public void deleteEvents(Long bucketStartTime, Long bucketEndTime){
-        aggrFeatureEventToSendRepository.deleteByEndTimeGtAndEndTimeLte(bucketStartTime, bucketEndTime);
+        aggrFeatureEventToSendRepository.deleteByEndTimeBetween(bucketStartTime, bucketEndTime);
     }
 
     public void deleteAllEvents(){

@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface AggrFeatureEventToSendRepositoryCustom {
 
-    public List<AggrFeatureEventToSend> findByEndTimeGtAndEndTimeLte(Long lowerTimeSec, Long upperTimeSec, Pageable pageable);
-    public void deleteByEndTimeGtAndEndTimeLte(Long lowerTimeSec, Long upperTimeSec);
+    public List<AggrFeatureEventToSend> findByEndTimeBetween(Long lowerTimeSec, Long upperTimeSec, Pageable pageable);
+    public void deleteByEndTimeBetween(Long lowerTimeSec, Long upperTimeSec);
 }
