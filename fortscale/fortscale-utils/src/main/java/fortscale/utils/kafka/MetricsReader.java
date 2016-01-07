@@ -117,7 +117,7 @@ public class MetricsReader {
             String message = convertPayloadToString(msg);
             JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
             if (decider.decide(metrics)) {
-                return new MetricsResults(true, offset, null);
+                return new MetricsResults(true, currentOffset, null);
             }
             offset = msg.nextOffset();
         }
