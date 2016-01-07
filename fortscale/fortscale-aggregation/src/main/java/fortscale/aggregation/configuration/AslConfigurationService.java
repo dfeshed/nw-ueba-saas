@@ -27,7 +27,7 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
     protected abstract String getBaseConfJsonFilePath();
     protected abstract String getBaseOverridingConfJsonFolderPath();
     protected abstract String getAdditionalConfJsonFolderPath();
-    protected abstract String getConfNodeArrayName();
+    protected abstract String getConfNodeName();
     protected abstract void loadConfJson(JSONObject confJsonObject);
 
     @Override
@@ -44,9 +44,12 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
         List<InputStream> confJsonInputStreams = new ArrayList<>();
 
         Resource[] confJsonResources = null;
-        try {
-            confJsonResources = applicationContext.getResources(getBaseOverridingConfJsonFolderPath());
-        } catch (Exception e) {}
+        if(getBaseOverridingConfJsonFolderPath() != null) {
+            try {
+                confJsonResources = applicationContext.getResources(getBaseOverridingConfJsonFolderPath());
+            } catch (Exception e) {
+            }
+        }
 
         boolean isBaseOverridingExists = !(confJsonResources == null || confJsonResources.length == 0);
 
@@ -86,6 +89,10 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
     }
 
     private void loadAdditionalConfs() throws IllegalArgumentException  {
+        if(getAdditionalConfJsonFolderPath() == null){
+            return;
+        }
+
         List<InputStream> confJsonInputStreams = new ArrayList<>();
 
         Resource[] confJsonResources = null;
@@ -118,13 +125,16 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
     }
 
     private void loadConfInputStream(InputStream inputStream) throws IOException, ParseException {
-        JSONArray confsJson = null;
         JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(inputStream);
 
-        confsJson = (JSONArray) jsonObj.get(getConfNodeArrayName());
+        if(jsonObj.get(getConfNodeName()) instanceof JSONArray) {
+            JSONArray confsJson = (JSONArray) jsonObj.get(getConfNodeName());
 
-        for (Object obj : confsJson) {
-            loadConfJson((JSONObject) obj);
+            for (Object obj : confsJson) {
+                loadConfJson((JSONObject) obj);
+            }
+        } else{
+            loadConfJson((JSONObject) jsonObj.get(getConfNodeName()));
         }
     }
 

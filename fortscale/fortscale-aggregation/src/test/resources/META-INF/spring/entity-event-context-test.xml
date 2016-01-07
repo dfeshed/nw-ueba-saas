@@ -5,6 +5,7 @@
 		xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataTestStore"/>
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>

@@ -53,7 +53,7 @@ public class BucketConfigurationService extends AslConfigurationService {
     }
 
     @Override
-    protected String getConfNodeArrayName() {
+    protected String getConfNodeName() {
         return JSON_CONF_BUCKET_CONFS_NODE_NAME;
     }
 

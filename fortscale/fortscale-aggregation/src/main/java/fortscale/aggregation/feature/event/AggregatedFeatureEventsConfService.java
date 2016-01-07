@@ -62,7 +62,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	}
 
 	@Override
-	protected String getConfNodeArrayName() {
+	protected String getConfNodeName() {
 		return AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME;
 	}
 

@@ -28,6 +28,7 @@
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
 
 	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService"/>
+	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore"/>
 

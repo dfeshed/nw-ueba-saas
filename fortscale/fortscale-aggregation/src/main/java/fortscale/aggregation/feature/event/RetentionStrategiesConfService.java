@@ -42,7 +42,7 @@ public class RetentionStrategiesConfService extends AslConfigurationService {
     }
 
     @Override
-    protected String getConfNodeArrayName() {
+    protected String getConfNodeName() {
         return ARRAY_OF_RETENTION_STRATEGIES_JSON_FIELD_NAME;
     }
 
