@@ -90,8 +90,7 @@ public class UserRelatedEntitiesUtils {
 
                 // Convert mapData to List<Pair<String, Double>>
                 Map<SupportingInformationKey, Double> supportingInformationMapData = supportingInformationData.getData();
-                for (Map.Entry<SupportingInformationKey, Double> supportingInformationEntry :
-                        supportingInformationMapData.entrySet()) {
+                for (Map.Entry<SupportingInformationKey, Double> supportingInformationEntry :supportingInformationMapData.entrySet()) {
                     String key = supportingInformationEntry.getKey().generateKey().get(0);
                     Double value = supportingInformationEntry.getValue();
 

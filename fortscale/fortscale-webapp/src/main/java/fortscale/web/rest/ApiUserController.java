@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
@@ -53,9 +52,6 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
