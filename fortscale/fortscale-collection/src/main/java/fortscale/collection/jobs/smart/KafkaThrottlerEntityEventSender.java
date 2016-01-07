@@ -103,15 +103,22 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		long counterMetricsSum = 0;
 
 		CaptorMetricsDecider captor = new CaptorMetricsDecider(metricsOfEntityEvents);
-		MetricsReader.waitForMetrics(zookeeper, port, counterCreationClass, counterCreationJob,
-				captor, MILLISECONDS_TO_WAIT, checkRetries);
+		long offset = 0;
 
-		for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
-			Long counter = ConversionUtils.convertToLong(capturedMetric);
-			if (counter != null) {
-				counterMetricsSum += counter;
+		MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
+		do {
+			offset = metricsResults.getOffset();
+			metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, counterCreationClass, counterCreationJob, captor);
+
+			if(metricsResults.isFound()) {
+				for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
+					Long counter = ConversionUtils.convertToLong(capturedMetric);
+					if (counter != null) {
+						counterMetricsSum += counter;
+					}
+				}
 			}
-		}
+		}while(metricsResults != null && metricsResults.getOffset() > offset);// Looking for the last metric message.
 
 		return counterMetricsSum;
 	}
