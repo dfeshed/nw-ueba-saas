@@ -7,8 +7,8 @@ package fortscale.services.configuration.gds.state;
  * 31/12/2015
  */
 public class GDSSchemaDefinitionState implements GDSConfigurationState{
-    private boolean hasSourceIp;
-    private boolean hasTargetIp;
+    private boolean sourceIp;
+    private boolean targetIp;
     private String dataFields;
     private String enrichFields;
     private String enrichDelimiter;
@@ -16,25 +16,25 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private String scoreFields;
     private String scoreDelimiter;
     private String scoreTableName;
-    private boolean hasTopSchema;
-    private boolean hasNormalizedUserNameField;
+    private boolean topSchema;
+    private String normalizedUserNameField;
     private String dataDelimiter;
     private String dataTableName;
 
-    public boolean isHasSourceIp() {
-        return hasSourceIp;
+    public boolean hasSourceIp() {
+        return sourceIp;
     }
 
-    public void setHasSourceIp(boolean hasSourceIp) {
-        this.hasSourceIp = hasSourceIp;
+    public void setSourceIp(boolean sourceIp) {
+        this.sourceIp = sourceIp;
     }
 
-    public boolean isHasTargetIp() {
-        return hasTargetIp;
+    public boolean hasTargetIp() {
+        return targetIp;
     }
 
-    public void setHasTargetIp(boolean hasTargetIp) {
-        this.hasTargetIp = hasTargetIp;
+    public void setTargetIp(boolean targetIp) {
+        this.targetIp = targetIp;
     }
 
     public String getDataFields() {
@@ -93,20 +93,20 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.scoreTableName = scoreTableName;
     }
 
-    public boolean isHasTopSchema() {
-        return hasTopSchema;
+    public boolean hasTopSchema() {
+        return topSchema;
     }
 
-    public void setHasTopSchema(boolean hasTopSchema) {
-        this.hasTopSchema = hasTopSchema;
+    public void setTopSchema(boolean topSchema) {
+        this.topSchema = topSchema;
     }
 
-    public boolean isHasNormalizedUserNameField() {
-        return hasNormalizedUserNameField;
+    public String getNormalizedUserNameField() {
+        return normalizedUserNameField;
     }
 
-    public void setHasNormalizedUserNameField(boolean hasNormalizedUserNameField) {
-        this.hasNormalizedUserNameField = hasNormalizedUserNameField;
+    public void setNormalizedUserNameField(String normalizedUserNameField) {
+        this.normalizedUserNameField = normalizedUserNameField;
     }
 
     public String getDataDelimiter() {
@@ -127,8 +127,8 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 
     @Override
     public void reset() {
-        hasSourceIp = false;
-        hasTargetIp = false;
+        sourceIp = false;
+        targetIp = false;
         dataFields = null;
         enrichFields = null;
         enrichDelimiter = null;
@@ -136,8 +136,8 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         scoreFields = null;
         scoreDelimiter = null;
         scoreTableName = null;
-        hasTopSchema = false;
-        hasNormalizedUserNameField = false;
+        topSchema = false;
+        normalizedUserNameField = null;
         dataDelimiter = null;
         dataTableName = null;
     }

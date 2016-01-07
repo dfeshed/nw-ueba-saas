@@ -30,10 +30,10 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
         GDSSchemaDefinitionState GDSSchemaDefinitionState = currGDSConfigurationState.getGDSSchemaDefinitionState();
         Boolean sourceIpFlag = configurationParams.get("sourceIpFlag").getParamFlag();
-        GDSSchemaDefinitionState.setHasSourceIp(sourceIpFlag);
+        GDSSchemaDefinitionState.setSourceIp(sourceIpFlag);
 
         Boolean targetIpFlag = configurationParams.get("targetIpFlag").getParamFlag();
-        GDSSchemaDefinitionState.setHasTargetIp(targetIpFlag);
+        GDSSchemaDefinitionState.setTargetIp(targetIpFlag);
 
         String dataFields = configurationParams.get("dataFields").getParamValue();
         GDSSchemaDefinitionState.setDataFields(dataFields);
@@ -57,7 +57,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         GDSSchemaDefinitionState.setScoreTableName(scoreTableName);
 
         Boolean topSchemaFlag = configurationParams.get("topSchemaFlag").getParamFlag();
-        GDSSchemaDefinitionState.setHasTopSchema(topSchemaFlag);
+        GDSSchemaDefinitionState.setTopSchema(topSchemaFlag);
 
         // TODO how do we get it?
 //        Boolean normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamFlag();

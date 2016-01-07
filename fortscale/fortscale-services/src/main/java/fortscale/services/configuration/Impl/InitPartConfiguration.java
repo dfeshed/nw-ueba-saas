@@ -51,9 +51,9 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			boolean hasSourceIp = gdsConfigurationState.getGDSSchemaDefinitionState().isHasSourceIp();
+			boolean hasSourceIp = gdsConfigurationState.getGDSSchemaDefinitionState().hasSourceIp();
 
-			boolean hasTargetIp = gdsConfigurationState.getGDSSchemaDefinitionState().isHasTargetIp();
+			boolean hasTargetIp = gdsConfigurationState.getGDSSchemaDefinitionState().hasTargetIp();
 
 			String dataFields = gdsConfigurationState.getGDSSchemaDefinitionState().getDataFields();
 
@@ -69,16 +69,13 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String scoreTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreTableName();
 
-			boolean topSchemaFlag = gdsConfigurationState.getGDSSchemaDefinitionState().isHasTopSchema();
+			boolean hasTopSchema = gdsConfigurationState.getGDSSchemaDefinitionState().hasTopSchema();
 
-			boolean normalizedUserNameField = gdsConfigurationState.getGDSSchemaDefinitionState().isHasNormalizedUserNameField();
+			String normalizedUserNameField = gdsConfigurationState.getGDSSchemaDefinitionState().getNormalizedUserNameField();
 
 			String dataDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getDataDelimiter();
 
 			String dataTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getDataTableName();
-
-
-            System.out.println("Init Configuration - This part will responsible to the schema configuration (HDFS and Impala)");
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);
@@ -206,7 +203,6 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-
             //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
             //hdfs path
             line = String.format("hdfs.user.enricheddata.%s.path=${hdfs.user.enricheddata.path}/%s", dataSourceName, dataSourceName);
@@ -248,7 +244,6 @@ public class InitPartConfiguration extends ConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             writeLineToFile(line, secondFileWriterToConfigure, true);
 
-
             //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
             //hdfs path
             line = String.format("hdfs.user.processeddata.%s.path=${hdfs.user.processeddata.path}/%s", dataSourceName, dataSourceName);
@@ -272,7 +267,7 @@ public class InitPartConfiguration extends ConfigurationService {
 			writeLineToFile(line, secondFileWriterToConfigure, true);
 
             //Top Score schema
-            if (topSchemaFlag) {
+            if (hasTopSchema) {
                 line = "########### Top Score Schema";
                 writeLineToFile(line, fileWriterToConfigure, true);
                 writeLineToFile(line, secondFileWriterToConfigure, true);
@@ -335,16 +330,11 @@ public class InitPartConfiguration extends ConfigurationService {
             line = String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}", dataSourceName, dataSourceName, dataSourceName, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            line = String.format("kafka.%s.message.record.fields = ${impala.data.%s.table.fields},${kafka.%s.message.record.field.data_source},${kafka.%s.message.record.field.last_state}", dataSourceName, dataSourceName, dataSourceName, dataSourceName);
-            writeLineToFile(line, fileWriterToConfigure, true);
-
-
             line = "read" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/parse" + dataSourceName.toUpperCase() + ".conf";
             writeLineToFile(line, fileWriterToConfigure, true);
 
 			line = "enrich" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/enrichment/read" + dataSourceName.toUpperCase() + "_enrich.conf";
 			writeLineToFile(line, fileWriterToConfigure, true);
-
 
             secondFileWriterToConfigure.flush();
             fileWriterToConfigure.flush();

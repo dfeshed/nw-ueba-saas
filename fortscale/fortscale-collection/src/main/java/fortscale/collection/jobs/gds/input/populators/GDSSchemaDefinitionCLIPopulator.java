@@ -43,6 +43,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SPACE = " ";
     private static final String COMMA = ",";
     private static final String EMPTY_STR = "";
+    private static final String NORMALIZED_USER_NAME_FIELD_PARAM = "normalizedUserNameField";
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
@@ -65,8 +66,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
         populateBaseDataSourceDefinitions(paramsMap);
 
-        // TODO what to do with normalized username field?
-        //paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField",false,"${impala.table.fields.normalized.username}"));
+        paramsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
 
         String dataSourceName = paramsMap.get(DATA_SOURCE_NAME_PARAM).getParamValue();
         String dataSourceType = paramsMap.get(DATA_SOURCE_TYPE_PARAM).getParamValue();
