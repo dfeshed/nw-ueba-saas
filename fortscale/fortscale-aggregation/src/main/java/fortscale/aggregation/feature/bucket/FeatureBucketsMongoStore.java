@@ -71,7 +71,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
+	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		List<FeatureBucket> featureBuckets = new ArrayList<>();
@@ -128,8 +128,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 			// end time + start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC)
-					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC));
 
 			// TTL on CreatedAt
 			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;

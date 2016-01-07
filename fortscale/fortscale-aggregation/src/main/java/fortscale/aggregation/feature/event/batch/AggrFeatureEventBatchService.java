@@ -45,7 +45,7 @@ public class AggrFeatureEventBatchService {
             int i = 0;
             List<FeatureBucket> featureBuckets = null;
             do {
-                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, FeatureBucket.START_TIME_FIELD);
+                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE);
                 featureBuckets = featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageRequest);
                 for (FeatureBucket bucket : featureBuckets) {
                     buildAndSave(bucket);
@@ -74,7 +74,7 @@ public class AggrFeatureEventBatchService {
             int i = 0;
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
             do{
-                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.START_TIME_FIELD);
+                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.END_TIME_FIELD);
                 aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeBetween(bucketStartTime, bucketEndTime, pageRequest);
                 for (AggrFeatureEventToSend aggrFeatureEventToSend: aggrFeatureEventToSendList){
                     sendEvent(sender, aggrFeatureEventToSend);

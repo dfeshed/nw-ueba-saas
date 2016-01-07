@@ -13,9 +13,6 @@ import java.util.Map;
 
 
 @Document(collection = AggrFeatureEventToSend.COLLECTION_NAME)
-@CompoundIndexes({
-        @CompoundIndex(name="end_time_start_time", def = "{'endTime': -1, 'startTime': -1}"),
-})
 public class AggrFeatureEventToSend {
     public static final String COLLECTION_NAME = "AggrFeatureEventToSend";
 

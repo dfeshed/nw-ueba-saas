@@ -19,6 +19,6 @@ public class FeatureBucketsReaderService {
     }
 
     public List<FeatureBucket> getFeatureBucketsByTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
-        return featureBucketsMongoStore.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
+        return featureBucketsMongoStore.getFeatureBucketsByEndTimeBetweenTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
     }
 }

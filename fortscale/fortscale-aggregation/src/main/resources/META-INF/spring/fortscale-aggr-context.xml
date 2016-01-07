@@ -22,8 +22,4 @@
 
 
     <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
-
-	<bean id="aggrFeatureEventFunctionsService" class="fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService" />
-	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
-	<bean id="aggrFeatureEventToSendRepository" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventToSendRepository" />
 </beans>
