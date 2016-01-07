@@ -76,6 +76,8 @@ public class CleanJob extends FortscaleJob {
 	private String collectionServiceName;
 	@Value("${step.param}")
 	private String stepParam;
+	@Value("${brutal.delete}")
+	private String boolBrutalDelete;
 
 	private Date startTime;
 	private Date endTime;
@@ -84,6 +86,8 @@ public class CleanJob extends FortscaleJob {
 	private Technology technology;
 	private CleanupStep cleanupStep;
 	private String cleanupStepId;
+	//delete files physically
+	private boolean isBrutalDelete;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -112,6 +116,8 @@ public class CleanJob extends FortscaleJob {
 			return;
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
+		isBrutalDelete = jobDataMapExtension.getJobDataMapBooleanValue(map, boolBrutalDelete, true);
+		kafkaUtils.setIsBrutalDelete(isBrutalDelete);
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (map.containsKey(dataSourcesParam)) {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
@@ -213,10 +219,10 @@ public class CleanJob extends FortscaleJob {
         } else {
             switch (strategy) {
                 case DELETE:
-				case FASTDELETE: {
 					checkAndStopAllRelevantServices();
+                case FASTDELETE: {
                     //if fast delete - no validation is performed
-                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE);
+                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE, isBrutalDelete);
                     break;
                 }
                 case RESTORE: {
@@ -241,7 +247,7 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean deleteEntities(Technology technology, Map<String, String> toDelete, Date startDate, Date endDate,
-								   boolean doValidate) {
+								   boolean doValidate, boolean isBrutalDelete) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {

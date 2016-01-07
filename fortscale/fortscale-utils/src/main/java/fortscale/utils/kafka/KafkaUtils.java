@@ -28,6 +28,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     @Value("${kafka.data.folder}")
     private String kafkaDataFolder;
 
+    private boolean isBrutalDelete;
+
     /***
      *
      * This method deletes a given list of topics
@@ -110,7 +112,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         Collection<String> topics = getAllEntities();
         boolean success = false;
         logger.debug("found {} topics to delete", topics.size());
-        if (!doValidate) {
+        if (isBrutalDelete) {
             //delete physical files
             success = cleanKafakDataFolders(doValidate);
         } else {
@@ -180,4 +182,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         return true;
     }
 
+    public void setIsBrutalDelete(boolean isBrutalDelete) {
+        this.isBrutalDelete = isBrutalDelete;
+    }
 }
