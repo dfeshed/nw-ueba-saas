@@ -67,6 +67,7 @@ public class AggrFeatureEventBatchService {
 
     private void saveEvent(AggregatedFeatureEventConf conf, FeatureBucket bucket, Feature feature){
         AggrFeatureEventToSend aggrFeatureEventToSend = new AggrFeatureEventToSend(bucket.getBucketId(), conf.getName(), bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
+        aggrFeatureEventToSendRepository.save(aggrFeatureEventToSend);
     }
 
     public void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
