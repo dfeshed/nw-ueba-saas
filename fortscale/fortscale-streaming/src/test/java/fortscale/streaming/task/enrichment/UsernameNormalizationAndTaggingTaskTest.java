@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.UserService;
 import fortscale.services.impl.UserServiceImpl;
 import fortscale.services.impl.UsernameService;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
@@ -61,13 +61,13 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Set> userServiceStore = new KeyValueStoreMock<>();
 		userService = new UserServiceImpl();
-		userService.setCache(new LevelDbBasedCache<String, Set>(userServiceStore, Set.class));
+		userService.setCache(new KeyValueDbBasedCache<String, Set>(userServiceStore, Set.class));
 		task.topicToServiceMap.put("userUpdatesTopic", userService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> usernameStore = new KeyValueStoreMock<>();
 		usernameService = new UsernameService();
-		usernameService.setCache(new LevelDbBasedCache<String, String>(usernameStore, String.class));
+		usernameService.setCache(new KeyValueDbBasedCache<String, String>(usernameStore, String.class));
 		task.topicToServiceMap.put("usernameUpdatesTopic", usernameService);
 
 

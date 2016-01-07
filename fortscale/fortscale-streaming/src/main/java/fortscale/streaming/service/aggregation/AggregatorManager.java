@@ -138,6 +138,7 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
+		aggrEventTopologyService.setAggregatorManager(this);
 		
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());

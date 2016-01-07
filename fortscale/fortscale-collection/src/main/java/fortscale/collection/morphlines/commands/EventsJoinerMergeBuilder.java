@@ -1,6 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.utils.time.TimestampUtils;
 import org.kitesdk.morphline.api.Command;
@@ -9,6 +11,7 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -40,7 +43,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	public static final class EventsJoinerMerge extends AbstractCommand {
-		
+
 		private List<String> keys;
 		private List<String> mergeFields;
 		private EventsJoinerCache cache;
@@ -48,6 +51,9 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 		private boolean dropWhenNoMatch;
         private long timeToCacheMiliSec;
         private String timeField;
+
+
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		public EventsJoinerMerge(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -70,6 +76,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.NO_PREVIOUS_EVENT_AND_DROP_WHEN_NO_MATCH_IS_TRUE);
 				return true;
 			}
 

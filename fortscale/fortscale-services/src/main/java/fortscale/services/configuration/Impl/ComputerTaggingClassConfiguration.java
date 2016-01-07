@@ -20,8 +20,8 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 	}
 
 	@Override
-	public Boolean Init() {
-		super.Init();
+	public boolean init() {
+		super.init();
 		Boolean result = false;
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"computer-tagging-clustering-task.properties";
@@ -39,7 +39,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public boolean applyConfiguration() throws Exception {
 
         try {
             String line = "";
