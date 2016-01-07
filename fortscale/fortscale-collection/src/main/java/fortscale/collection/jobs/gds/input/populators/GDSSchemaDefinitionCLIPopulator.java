@@ -44,6 +44,13 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String COMMA = ",";
     private static final String EMPTY_STR = "";
     private static final String NORMALIZED_USER_NAME_FIELD_PARAM = "normalizedUserNameField";
+    private static final String DATA_FIELDS_PARAM = "dataFields";
+    private static final String ENRICH_FIELDS_PARAM = "enrichFields";
+    private static final String SCORE_FIELDS_PARAM = "scoreFields";
+    private static final String SOURCE_IP_FLAG_PARAM = "sourceIpFlag";
+    private static final String TARGET_IP_FLAG_PARAM = "targetIpFlag";
+    private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
+    private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
@@ -65,8 +72,6 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         Map<String, ConfigurationParam> paramsMap = new HashMap<>();
 
         populateBaseDataSourceDefinitions(paramsMap);
-
-        paramsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
 
         String dataSourceName = paramsMap.get(DATA_SOURCE_NAME_PARAM).getParamValue();
         String dataSourceType = paramsMap.get(DATA_SOURCE_TYPE_PARAM).getParamValue();
@@ -106,6 +111,8 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         String inputResult = gdsInputHandler.getInput();
         paramsMap.put(TOP_SCHEMA_FLAG_PARAM, new ConfigurationParam(TOP_SCHEMA_FLAG_PARAM, GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
+        paramsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
+
         return paramsMap;
     }
 
@@ -117,115 +124,115 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         {
             case BASE_DATA_SOURCE_TYPE:
             {
-                paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
-                paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",false,""));
-                paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
-                scoreFieldsCSV = "";
+                paramsMap.put(DATA_FIELDS_PARAM,new ConfigurationParam(DATA_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_FIELDS_PARAM,new ConfigurationParam(ENRICH_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_FIELDS_PARAM,new ConfigurationParam(SCORE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,false, EMPTY_STR));
+                paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,false, EMPTY_STR));
+                scoreFieldsCSV = EMPTY_STR;
                 break;
             }
 
             case ACCESS_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV() + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
-                paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+                paramsMap.put(DATA_FIELDS_PARAM,new ConfigurationParam(DATA_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_FIELDS_PARAM,new ConfigurationParam(ENRICH_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_FIELDS_PARAM,new ConfigurationParam(SCORE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV() + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
                 scoreFieldsCSV = SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV;
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
-                paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",false,""));
+                paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,false, EMPTY_STR));
                 break;
             }
             case AUTH_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put("dataFields", new ConfigurationParam("dataFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
-                paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+                paramsMap.put(DATA_FIELDS_PARAM, new ConfigurationParam(DATA_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_FIELDS_PARAM,new ConfigurationParam(ENRICH_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_FIELDS_PARAM,new ConfigurationParam(SCORE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_AUTH_SCHEMA_FIELDS_AS_CSV;
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
 
-                paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
+                paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
                 break;
             }
             case CUSTOMIZED_AUTH_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put("dataFields" ,new ConfigurationParam("dataFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("enrichFields",new ConfigurationParam("enrichFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put("scoreFields",new ConfigurationParam("scoreFields",false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
-                paramsMap.put("sourceIpFlag",new ConfigurationParam("sourceIpFlag",true,""));
+                paramsMap.put(DATA_FIELDS_PARAM ,new ConfigurationParam(DATA_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_FIELDS_PARAM,new ConfigurationParam(ENRICH_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_FIELDS_PARAM,new ConfigurationParam(SCORE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV;
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
-                paramsMap.put("targetIpFlag",new ConfigurationParam("targetIpFlag",true,""));
+                paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
                 inputResult = gdsInputHandler.getInput();
-                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult),""));
+                paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
                 break;
             }
         }
 
-        paramsMap.put("scoreFieldsCSV",new ConfigurationParam("scoreFieldsCSV",false, scoreFieldsCSV));
-        paramsMap.put("additionalScoreFieldsCSV",new ConfigurationParam("additionalScoreFieldsCSV",false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+        paramsMap.put(SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
+        paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
     }
 
     private void populateBaseDataSourceDefinitions(Map<String, ConfigurationParam> paramsMap) throws Exception {

@@ -37,8 +37,6 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setTableName(tableName.getParamValue());
         hdfsWriterState.setPartitionStrategy(partitionStrategy.getParamValue());
         hdfsWriterState.setDiscriminatorsFields(discriminatorsFields.getParamValue());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override

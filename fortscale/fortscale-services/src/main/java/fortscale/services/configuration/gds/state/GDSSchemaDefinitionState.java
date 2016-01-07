@@ -7,8 +7,8 @@ package fortscale.services.configuration.gds.state;
  * 31/12/2015
  */
 public class GDSSchemaDefinitionState implements GDSConfigurationState{
-    private boolean sourceIp;
-    private boolean targetIp;
+    private boolean hasSourceIp;
+    private boolean hasTargetIp;
     private String dataFields;
     private String enrichFields;
     private String enrichDelimiter;
@@ -22,19 +22,19 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private String dataTableName;
 
     public boolean hasSourceIp() {
-        return sourceIp;
+        return hasSourceIp;
     }
 
     public void setHasSourceIp(boolean sourceIp) {
-        this.sourceIp = sourceIp;
+        this.hasSourceIp = sourceIp;
     }
 
     public boolean hasTargetIp() {
-        return targetIp;
+        return hasTargetIp;
     }
 
     public void setHasTargetIp(boolean targetIp) {
-        this.targetIp = targetIp;
+        this.hasTargetIp = targetIp;
     }
 
     public String getDataFields() {
@@ -127,8 +127,8 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 
     @Override
     public void reset() {
-        sourceIp = false;
-        targetIp = false;
+        hasSourceIp = false;
+        hasTargetIp = false;
         dataFields = null;
         enrichFields = null;
         enrichDelimiter = null;

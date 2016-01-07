@@ -47,8 +47,6 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoSessionUpdateFlag(doSessionUpdateFlag.getParamFlag());
         geoLocationState.setDoDataBuckets(doDataBuckets.getParamFlag());
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override

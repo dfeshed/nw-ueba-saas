@@ -36,8 +36,6 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
         userNormalizationState.setNormalizedUserNameField(normalizedUserNameField.getParamValue());
         userNormalizationState.setNormalizeServiceName(normalizeServiceName.getParamValue());
         userNormalizationState.setUpdateOnly(updateOnlyFlag.getParamValue());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override

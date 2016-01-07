@@ -55,17 +55,14 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         Boolean topSchemaFlag = configurationParams.get("topSchemaFlag").getParamFlag();
         schemaDefinitionState.setHasTopSchema(topSchemaFlag);
 
-        // TODO how do we get it?
-//        Boolean normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamFlag();
-//        schemaDefinitionState.setHasNormalizedUserNameField(normalizedUserNameField);
+        String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
+        schemaDefinitionState.setNormalizedUserNameField(normalizedUserNameField);
 
         String dataDelimiter = configurationParams.get("dataDelimiter").getParamValue();
         schemaDefinitionState.setDataDelimiter(dataDelimiter);
 
         String dataTableName = configurationParams.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     private void configureBaseDefinitions(Map<String, ConfigurationParam> configurationParams) {
@@ -79,18 +76,32 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
     }
 
     private void configureStreamingTopologyDefinitions(Map<String, ConfigurationParam> configurationParams) {
-        boolean sourceIpResolvingFlag = configurationParams.get("sourceIpResolvingFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceIpResolvingRequired(sourceIpResolvingFlag);
-        boolean targetIpResolvingFlag = configurationParams.get("targetIpResolvingFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetIpResolvingRequired(targetIpResolvingFlag);
-        boolean sourceMachineNormalizationFlag = configurationParams.get("sourceMachineNormalizationFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceMachineNormalizationRequired(sourceMachineNormalizationFlag);
-        boolean targetMachineNormalizationFlag = configurationParams.get("targetMachineNormalizationFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetMachineNormalizationRequired(targetMachineNormalizationFlag);
-        boolean sourceIpGeoLocationFlag = configurationParams.get("sourceIpGeoLocationFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceIpGeoLocationRequired(sourceIpGeoLocationFlag);
-        boolean targetIpGeoLocationFlag = configurationParams.get("targetIpGeoLocationFlag").getParamFlag();
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetIpGeoLocationRequired(targetIpGeoLocationFlag);
+        if (configurationParams.containsKey("sourceIpResolvingFlag")) {
+            boolean sourceIpResolvingFlag = configurationParams.get("sourceIpResolvingFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceIpResolvingRequired(sourceIpResolvingFlag);
+        }
+        if (configurationParams.containsKey("targetIpResolvingFlag")) {
+            boolean targetIpResolvingFlag = configurationParams.get("targetIpResolvingFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetIpResolvingRequired(targetIpResolvingFlag);
+        }
+
+        if (configurationParams.containsKey("sourceMachineNormalizationFlag")) {
+            boolean sourceMachineNormalizationFlag = configurationParams.get("sourceMachineNormalizationFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceMachineNormalizationRequired(sourceMachineNormalizationFlag);
+        }
+        if (configurationParams.containsKey("targetMachineNormalizationFlag")) {
+            boolean targetMachineNormalizationFlag = configurationParams.get("targetMachineNormalizationFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetMachineNormalizationRequired(targetMachineNormalizationFlag);
+        }
+
+        if (configurationParams.containsKey("sourceIpGeoLocationFlag")) {
+            boolean sourceIpGeoLocationFlag = configurationParams.get("sourceIpGeoLocationFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceIpGeoLocationRequired(sourceIpGeoLocationFlag);
+        }
+        if (configurationParams.containsKey("targetIpGeoLocationFlag")) {
+            boolean targetIpGeoLocationFlag = configurationParams.get("targetIpGeoLocationFlag").getParamFlag();
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetIpGeoLocationRequired(targetIpGeoLocationFlag);
+        }
     }
 
     @Override

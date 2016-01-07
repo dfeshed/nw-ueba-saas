@@ -30,8 +30,6 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
         userMongoUpdateState.setAnyRow(anyRow.getParamFlag());
         userMongoUpdateState.setStatusFieldName(statusFieldName.getParamValue());
         userMongoUpdateState.setSuccessValue(successValue.getParamValue());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override

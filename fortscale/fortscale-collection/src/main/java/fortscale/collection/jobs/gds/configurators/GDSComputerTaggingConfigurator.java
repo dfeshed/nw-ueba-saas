@@ -38,8 +38,6 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         computerTaggingState.setCreateNewComputerFlag(createNewComputerFlag.getParamFlag());
         computerTaggingState.setDstMachineClassifier(dstMachineClassifier.getParamValue());
         computerTaggingState.setDstClusteringField(dstClusteringField.getParamValue());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override
