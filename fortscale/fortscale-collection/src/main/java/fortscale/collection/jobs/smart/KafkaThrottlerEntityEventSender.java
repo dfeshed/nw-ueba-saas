@@ -118,7 +118,7 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 					}
 				}
 			}
-		}while(metricsResults != null && metricsResults.getOffset() > offset);
+		}while(metricsResults != null && metricsResults.getOffset() > offset);// Looking for the last metric message.
 
 		return counterMetricsSum;
 	}
