@@ -21,7 +21,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
     private static final String TOPOLOGY_FLAG_PARAM = "topologyFlag";
     private static final String LAST_STATE_PARAM = "lastState";
     private static final String TASK_NAME_PARAM = "taskName";
-    private static final String OUTPUT_TOPIC_PARAM = "outPutTopic";
+    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
     private static final String USER_NAME_FIELD_PARAM = "userNameField";
     private static final String DOMAIN_FIELD_NAME_PARAM = "domainFieldName";
     private static final String DOMAIN_VALUE_PARAM = "domainValue";

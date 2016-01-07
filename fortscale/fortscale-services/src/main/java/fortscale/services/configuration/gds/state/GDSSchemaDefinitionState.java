@@ -25,7 +25,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         return sourceIp;
     }
 
-    public void setSourceIp(boolean sourceIp) {
+    public void setHasSourceIp(boolean sourceIp) {
         this.sourceIp = sourceIp;
     }
 
@@ -33,7 +33,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         return targetIp;
     }
 
-    public void setTargetIp(boolean targetIp) {
+    public void setHasTargetIp(boolean targetIp) {
         this.targetIp = targetIp;
     }
 
@@ -97,7 +97,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         return topSchema;
     }
 
-    public void setTopSchema(boolean topSchema) {
+    public void setHasTopSchema(boolean topSchema) {
         this.topSchema = topSchema;
     }
 
