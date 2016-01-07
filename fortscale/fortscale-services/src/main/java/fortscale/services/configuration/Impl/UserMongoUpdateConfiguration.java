@@ -19,9 +19,9 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 	}
 
 	@Override
-	public Boolean Init() {
-		super.Init();
-		Boolean result = false;
+	public boolean init() {
+		super.init();
+		Boolean result;
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"user-mongo-update-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -31,14 +31,13 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 			result = false;
-
 		}
-		return result;
 
+		return result;
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public boolean applyConfiguration() throws Exception {
         try {
             String line = "";
             String statusFieldName="";

@@ -23,8 +23,8 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 
 
 	@Override
-	public Boolean Init() {
-		super.Init();
+	public boolean init() {
+		super.init();
 		Boolean result = false;
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"ip-resolving-task.properties";
@@ -42,7 +42,7 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public boolean applyConfiguration() throws Exception {
         try {
             String line = "";
 			ConfigurationParam result = getParamConfiguration(configurationParams,"restrictToAD");
