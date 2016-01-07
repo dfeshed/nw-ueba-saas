@@ -20,12 +20,7 @@ public abstract class ConfigurationService {
 	protected String fileToConfigurePath;
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
-    protected Map<String,ConfigurationParam> configurationParams;
 	protected GDSCompositeConfigurationState gdsConfigurationState;
-
-	public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
-        this.configurationParams = configurationParams;
-    }
 
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();

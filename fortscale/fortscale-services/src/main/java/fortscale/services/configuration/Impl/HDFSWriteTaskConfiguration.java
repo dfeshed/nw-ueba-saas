@@ -22,7 +22,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	public boolean init() {
 		super.init();
 		Boolean result = false;
-		outPutTopicEntry = "output.topics";
+		outputTopicEntry = "output.topics";
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"hdfs-events-writer-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -40,6 +40,8 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topics";
+
         try {
             String line = "";
 
@@ -67,8 +69,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
-
-            mandatoryConfiguration();
+            writeMandatoryConfiguration();
 
             //bdp routing value
             line = String.format("%s.%s_%s.bdp.output.topics=", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);

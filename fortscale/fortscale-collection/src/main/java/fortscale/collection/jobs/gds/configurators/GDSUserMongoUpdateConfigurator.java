@@ -19,13 +19,15 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
+
+        Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
+
+        ConfigurationParam anyRow = paramsMap.get("anyRow");
+        ConfigurationParam statusFieldName = paramsMap.get("statusFieldName");
+        ConfigurationParam successValue = paramsMap.get("successValue");
 
         GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState();
-
-        ConfigurationParam anyRow = configurationParams.get("anyRow");
-        ConfigurationParam statusFieldName = configurationParams.get("statusFieldName");
-        ConfigurationParam successValue = configurationParams.get("successValue");
 
         userMongoUpdateState.setAnyRow(anyRow.getParamFlag());
         userMongoUpdateState.setStatusFieldName(statusFieldName.getParamValue());

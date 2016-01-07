@@ -38,6 +38,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topic";
         try {
             String line = "";
             String statusFieldName="";
@@ -61,7 +62,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 			fileWriterToConfigure.write("\n");
 
 
-            mandatoryConfiguration();
+            writeMandatoryConfiguration();
 
             //classifier value
             line = String.format("%s.%s_%s.classifier=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName.toLowerCase());

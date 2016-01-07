@@ -12,5 +12,5 @@ import java.util.Map;
  * 03/01/2016
  */
 public interface GDSConfigurationPopulator {
-    Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception;
+    Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception;
 }

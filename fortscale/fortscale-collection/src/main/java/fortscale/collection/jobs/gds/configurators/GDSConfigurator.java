@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface GDSConfigurator {
     void setConfigurationState(GDSCompositeConfigurationState currConfigurationState);
-    void configure(Map<String, ConfigurationParam> configurationParams) throws Exception;
+    void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception;
     void apply() throws Exception;
     void reset() throws Exception;
 }

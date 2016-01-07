@@ -43,6 +43,8 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topic";
+
         try {
             String line = "";
 			ConfigurationParam result = getParamConfiguration(configurationParams,"restrictToAD");
@@ -69,7 +71,7 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
-            mandatoryConfiguration();
+            writeMandatoryConfiguration();
 
             //partition field name  (today we use for all the username)
             line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);

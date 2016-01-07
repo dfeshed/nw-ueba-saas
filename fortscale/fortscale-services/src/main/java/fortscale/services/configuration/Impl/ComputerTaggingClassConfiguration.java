@@ -40,6 +40,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topic";
 
         try {
             String line = "";
@@ -71,7 +72,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 			fileWriterToConfigure.write("\n");
 
 
-            mandatoryConfiguration();
+            writeMandatoryConfiguration();
 
             //partition field name  (today we use for all the username)
             line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);

@@ -8,28 +8,18 @@ import org.apache.commons.lang.StringUtils;
 public abstract class StreamingConfigurationService extends ConfigurationService {
 
 	protected static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
-	protected String taskName;
-	protected Boolean topolegyResult;
-	protected String lastState;
-	protected String outPutTopic;
 	protected String dataSourceName;
-	protected String outPutTopicEntry;
 
 	@Override
 	public boolean init() {
 		this.fileToConfigurePath = this.root+"/fortscale/streaming/config/";
-		taskName = configurationParams.get("taskName").getParamValue();
-		topolegyResult = configurationParams.get("topologyFlag").getParamFlag();
-		lastState  = configurationParams.get("lastState").getParamValue();
-		outPutTopic = configurationParams.get("outPutTopic").getParamValue();
-		dataSourceName = configurationParams.get("dataSourceName").getParamValue();
-		outPutTopicEntry = "output.topic";
+		dataSourceName = gdsConfigurationState.getDataSourceName();
 		return true;
 	}
 
 	public abstract boolean applyConfiguration() throws Exception;
 
-	protected void mandatoryConfiguration () throws Exception{
+	protected void writeMandatoryConfiguration(String taskName, String lastState, String outputTopic, String outputTopicEntry, boolean isGenericTopology) throws Exception{
 		String line = "";
 
 
@@ -54,10 +44,9 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 		}
 
 
-		if(!StringUtils.isBlank(outPutTopic)) {
-			//GDS general topology
-			if (topolegyResult) {
-				line = String.format("%s.%s_%s.%s=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,outPutTopicEntry,outPutTopic);
+		if(!StringUtils.isBlank(outputTopic)) {
+			if (isGenericTopology) {
+				line = String.format("%s.%s_%s.%s=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, outputTopicEntry, outputTopic);
 				writeLineToFile(line, fileWriterToConfigure, true);
 			} else {
 

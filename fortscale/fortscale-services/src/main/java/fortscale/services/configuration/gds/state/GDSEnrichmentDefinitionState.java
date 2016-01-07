@@ -1,5 +1,8 @@
 package fortscale.services.configuration.gds.state;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Enrichment definition state
  *
@@ -8,12 +11,48 @@ package fortscale.services.configuration.gds.state;
  */
 public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
-    private UserNormalizationState userNormalizationState = new UserNormalizationState();
-    private IPResolvingState ipResolvingState = new IPResolvingState();
+    private List<UserNormalizationState> userNormalizationStates = new ArrayList<>();
+    private List<IPResolvingState> ipResolvingStates = new ArrayList<>();
     private ComputerTaggingState computerTaggingState = new ComputerTaggingState();
-    private GeoLocationState geoLocationState = new GeoLocationState();
+    private List<GeoLocationState> geoLocationStates = new ArrayList<>();
     private UserMongoUpdateState userMongoUpdateState = new UserMongoUpdateState();
     private HDFSWriterState hdfsWriterState = new HDFSWriterState();
+
+    public List<UserNormalizationState> getUserNormalizationStates() {
+        return userNormalizationStates;
+    }
+
+    public void setUserNormalizationStates(List<UserNormalizationState> userNormalizationStates) {
+        this.userNormalizationStates = userNormalizationStates;
+    }
+
+    public List<IPResolvingState> getIpResolvingState() {
+        return ipResolvingStates;
+    }
+
+    public void setIpResolvingState(List<IPResolvingState> ipResolvingState) {
+        this.ipResolvingStates = ipResolvingState;
+    }
+
+    public void setComputerTaggingState(ComputerTaggingState computerTaggingState) {
+        this.computerTaggingState = computerTaggingState;
+    }
+
+    public List<GeoLocationState> getGeoLocationStates() {
+        return geoLocationStates;
+    }
+
+    public void setGeoLocationStates(List<GeoLocationState> geoLocationStates) {
+        this.geoLocationStates = geoLocationStates;
+    }
+
+    public void setUserMongoUpdateState(UserMongoUpdateState userMongoUpdateState) {
+        this.userMongoUpdateState = userMongoUpdateState;
+    }
+
+    public void setHdfsWriterState(HDFSWriterState hdfsWriterState) {
+        this.hdfsWriterState = hdfsWriterState;
+    }
 
     public UserMongoUpdateState getUserMongoUpdateState() {
         return userMongoUpdateState;
@@ -23,20 +62,8 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return hdfsWriterState;
     }
 
-    public GeoLocationState getGeoLocationState() {
-        return geoLocationState;
-    }
-
     public ComputerTaggingState getComputerTaggingState() {
         return computerTaggingState;
-    }
-
-    public UserNormalizationState getUserNormalizationState() {
-        return userNormalizationState;
-    }
-
-    public IPResolvingState getIpResolvingState() {
-        return ipResolvingState;
     }
 
     public static class UserNormalizationState implements GDSConfigurationState{
@@ -496,10 +523,10 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
     @Override
     public void reset() {
-        userNormalizationState.reset();
-        ipResolvingState.reset();
+        userNormalizationStates.clear();
+        ipResolvingStates.clear();
         computerTaggingState.reset();
-        geoLocationState.reset();
+        geoLocationStates.clear();
         userMongoUpdateState.reset();
         hdfsWriterState.reset();
     }

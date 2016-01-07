@@ -19,16 +19,18 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
-        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
+    public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
+        Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
 
-        ConfigurationParam fieldList = configurationParams.get("fieldList");
-        ConfigurationParam delimiter = configurationParams.get("delimiter");
-        ConfigurationParam hdfsPath = configurationParams.get("hdfsPath");
-        ConfigurationParam fileName = configurationParams.get("fileName");
-        ConfigurationParam tableName = configurationParams.get("tableName");
-        ConfigurationParam partitionStrategy = configurationParams.get("partitionStrategy");
-        ConfigurationParam discriminatorsFields = configurationParams.get("discriminatorsFields");
+        ConfigurationParam fieldList = paramsMap.get("fieldList");
+        ConfigurationParam delimiter = paramsMap.get("delimiter");
+        ConfigurationParam hdfsPath = paramsMap.get("hdfsPath");
+        ConfigurationParam fileName = paramsMap.get("fileName");
+        ConfigurationParam tableName = paramsMap.get("tableName");
+        ConfigurationParam partitionStrategy = paramsMap.get("partitionStrategy");
+        ConfigurationParam discriminatorsFields = paramsMap.get("discriminatorsFields");
+
+        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
 
         hdfsWriterState.setFieldList(fieldList.getParamValue());
         hdfsWriterState.setDelimiter(delimiter.getParamValue());

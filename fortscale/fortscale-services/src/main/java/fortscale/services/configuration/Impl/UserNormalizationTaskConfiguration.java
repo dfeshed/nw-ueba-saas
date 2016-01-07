@@ -2,28 +2,21 @@ package fortscale.services.configuration.Impl;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 
 /**
  * Created by idanp on 12/20/2015.
  */
 public class UserNormalizationTaskConfiguration extends StreamingConfigurationService {
 
-
-
-
 	public UserNormalizationTaskConfiguration() {
-
-
 		logger = LoggerFactory.getLogger(UserNormalizationTaskConfiguration.class);
-
 	}
-
-
-
 
 	@Override
 	public boolean init() {
@@ -46,6 +39,17 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topic";
+        String taskName;
+        String lastState;
+        String outputTopic;
+        boolean isGenericTopology = true;
+
+        List<GDSEnrichmentDefinitionState.UserNormalizationState> userNormalizationStates = gdsConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates();
+
+        for (GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationConfig : userNormalizationStates) {
+
+        }
 
         try {
             String line = "";
@@ -73,7 +77,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
             fileWriterToConfigure.write("\n");
 
 
-            mandatoryConfiguration();
+            writeMandatoryConfiguration(taskName, lastState, outputTopic, outPutTopicEntry, true);
 
 
             //User name field configuration

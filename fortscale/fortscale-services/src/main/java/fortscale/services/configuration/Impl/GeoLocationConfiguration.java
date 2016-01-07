@@ -39,6 +39,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
+        String outPutTopicEntry = "output.topic";
         try {
             String line = "";
 
@@ -84,7 +85,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
-            mandatoryConfiguration();
+            writeMandatoryConfiguration();
 
             //source ip field
             line = String.format("%s.%s_%s.ip.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, ipField);

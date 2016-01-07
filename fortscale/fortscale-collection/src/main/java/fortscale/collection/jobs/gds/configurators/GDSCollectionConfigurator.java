@@ -22,7 +22,7 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
-    public void configure(Map<String, ConfigurationParam> configurationParams) {
+    public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) {
         // TODO implement
     }
 
