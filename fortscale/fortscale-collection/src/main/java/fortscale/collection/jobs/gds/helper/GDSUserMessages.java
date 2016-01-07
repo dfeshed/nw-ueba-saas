@@ -13,7 +13,7 @@ public class GDSUserMessages {
     public static final String RESET_CONFIRMATION_MESSAGE = "Do you want to reset changes? (y/n)";
     public static final String ILLEGAL_OPERATION_MESSAGE = "Illegal operation.";
     public static final String SUCCESSFULLY_RESET_MESSAGE = "Configuration was reset successfully.";
-    public static final String SCHEMA_IS_MANDATORY_BEFORE_ENRICHMENT_MESSAGE = "Could not enter enrichment phase. Schema must be defined first.";
+    public static final String SCHEMA_IS_MANDATORY_MESSAGE = "Could not enter this step. Schema must be defined first.";
     public static final String RESET_IN_PROGRESS_MESSAGE = "Resetting configuration changes..";
     public static final String RESET_COMPLETED_SUCCESSFULLY_MESSAGE = "Reset completed successfully";
     public static final String IGNORING_RESET_OPERATION_MESSAGE = "No configuration changes detected. Ignoring Reset operation.";

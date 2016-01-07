@@ -44,6 +44,7 @@ public class GDSMenuPrinterHelper {
 
         System.out.println(GDSMenuOptions.MAIN_MENU_SCHEMA_DEFINITION_OPTION + ".\tSchema definition (HDFS/Impala)\n" +
                 GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION + ".\tEnrichment definition\n" +
+                GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION + ".\tModel&Scoring definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
                 GDSMenuOptions.MAIN_MENU_QUIT_OPTION + ".\tQuit\n");
@@ -69,7 +70,7 @@ public class GDSMenuPrinterHelper {
     public static void printEnrichmentMenu() {
         System.out.println("");
         System.out.println("Enrichment Tasks Settings");
-        System.out.println("----------------");
+        System.out.println("-------------------------");
 
         System.out.println(GDSMenuOptions.ENRICHMENT_MENU_USER_NORMALIZATION_OPTION + ".\tUser Normalization task\n" +
                 GDSMenuOptions.ENRICHMENT_IP_RESOLVING_OPTION + ".\tIP Resolving task\n" +
@@ -80,6 +81,12 @@ public class GDSMenuPrinterHelper {
                 GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.ENRICHMENT_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
                 GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION + ".\tExit to Main menu\n");
+    }
+
+    public static void printModelAndScoringMenu() {
+        System.out.println("");
+        System.out.println("Model & Scoring Settings");
+        System.out.println("------------------------");
     }
 
     public static void printEnrichmentMenuAfterFailure(String message) {

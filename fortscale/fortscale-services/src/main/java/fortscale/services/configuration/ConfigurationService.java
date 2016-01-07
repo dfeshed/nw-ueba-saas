@@ -7,25 +7,22 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 
 /**
+ * Abstract implementation for Generic configuration services
+ *
  * Created by idanp on 12/20/2015.
  */
 public abstract class ConfigurationService {
 
 	protected static Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
-	protected static final String root = System.getProperty("user.home");
+
+	protected static final String USER_HOME_DIR = System.getProperty("user.home");
 
 	protected String fileToConfigurePath;
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
-    protected Map<String,ConfigurationParam> configurationParams;
 	protected GDSCompositeConfigurationState gdsConfigurationState;
-
-	public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
-        this.configurationParams = configurationParams;
-    }
 
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();
@@ -66,14 +63,6 @@ public abstract class ConfigurationService {
 			System.out.println("There was an exception during execution please see more info at the log ");
 			throw new Exception(e.getMessage());
 		}
-	}
-
-
-	protected ConfigurationParam getParamConfiguration (Map<String,ConfigurationParam> configurationParams, String key)
-	{
-		if (configurationParams.containsKey(key))
-			return configurationParams.get(key);
-		return null;
 	}
 
 	public void setGDSConfigurationState(GDSCompositeConfigurationState gdsConfigurationState) {

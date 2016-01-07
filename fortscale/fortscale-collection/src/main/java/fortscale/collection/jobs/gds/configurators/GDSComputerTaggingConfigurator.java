@@ -14,22 +14,38 @@ import java.util.Map;
  */
 public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
 
+    private static final String LAST_STATE_PARAM = "lastState";
+    private static final String TASK_NAME_PARAM = "taskName";
+    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
+
     public GDSComputerTaggingConfigurator() {
         configurationService = new ComputerTaggingClassConfiguration();
     }
 
     @Override
-    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
+    public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
+        Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
+
+        ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
+        ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
+        ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
+        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
+
+        ConfigurationParam sourceHost = paramsMap.get("sourceHost");
+        ConfigurationParam targetHost = paramsMap.get("targetHost");
+        ConfigurationParam srcMachineClassifier = paramsMap.get("srcMachineClassifier");
+        ConfigurationParam srcClusteringField = paramsMap.get("srcClusteringField");
+        ConfigurationParam createNewComputerFlag = paramsMap.get("createNewComputerFlag");
+        ConfigurationParam dstMachineClassifier = paramsMap.get("dstMachineClassifier");
+        ConfigurationParam dstClusteringField = paramsMap.get("dstClusteringField");
 
         GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState();
 
-        ConfigurationParam sourceHost = configurationParams.get("sourceHost");
-        ConfigurationParam targetHost = configurationParams.get("targetHost");
-        ConfigurationParam srcMachineClassifier = configurationParams.get("srcMachineClassifier");
-        ConfigurationParam srcClusteringField = configurationParams.get("srcClusteringField");
-        ConfigurationParam createNewComputerFlag = configurationParams.get("createNewComputerFlag");
-        ConfigurationParam dstMachineClassifier = configurationParams.get("dstMachineClassifier");
-        ConfigurationParam dstClusteringField = configurationParams.get("dstClusteringField");
+        computerTaggingState.setTaskName(taskName.getParamValue());
+        computerTaggingState.setLastState(lastState.getParamValue());
+        computerTaggingState.setOutputTopic(outputTopic.getParamValue());
+        computerTaggingState.setOutputTopicEntry(outputTopicEntry.getParamValue());
 
         computerTaggingState.setSourceHost(sourceHost.getParamValue());
         computerTaggingState.setTargetHost(targetHost.getParamValue());
