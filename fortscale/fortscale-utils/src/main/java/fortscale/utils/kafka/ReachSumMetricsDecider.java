@@ -42,6 +42,6 @@ public class ReachSumMetricsDecider implements IMetricsDecider {
 			}
 		}
 
-		return sum >= sumToReach;
+		return false;
 	}
 }
