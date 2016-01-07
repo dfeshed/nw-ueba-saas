@@ -71,15 +71,17 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
                 try {
                     TopicCommand.deleteTopic(zkClient, opts);
-                    zkClient.close();
+
                 } catch (AdminOperationException ex) {
                     logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
                     logger.error(ex.toString());
+                    zkClient.close();
                     return false;
                 }
             }
 
             logger.info("dropped all {} topics", topics.size());
+            zkClient.close();
             return true;
         }
 
