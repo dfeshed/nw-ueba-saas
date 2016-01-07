@@ -36,30 +36,37 @@ import static org.junit.Assert.assertEquals;
  * Created by rans on 29/12/15.
  */
 public class AbstractTaskTest {
+
+    //private variables
     private static Logger logger = Logger.getLogger(AbstractTaskTest.class);
+    private static int brokerId = 0;
+    private static String zkConnect = "";
+    private static EmbeddedZookeeper zkServer;
+    private static ZkClient zkClient;
+    private static KafkaServer kafkaServer;
+    private static int brokerPort;
+
+    //protected variables
     protected static final String STREAMING_CONFIG_PATH = "/fortscale/fortscale-core/fortscale/fortscale-streaming/config/";
-    protected int brokerId = 0;
-    protected String inputTopic = null;
+    static protected String inputTopic = null;
     protected String outputTopic = null;
-    protected String zkConnect = "";
-    protected EmbeddedZookeeper zkServer;
-    protected ZkClient zkClient;
-    protected KafkaServer kafkaServer;
-    protected SimpleConsumer simpleConsumer;
-    protected Producer<String, String> producer;
-    protected StreamJobFactory jobFactory;
-    protected Map<String,String> jobConfig;
+    static protected SimpleConsumer simpleConsumer;
+    static protected Producer<String, String> producer;
+    static protected StreamJobFactory jobFactory;
+    static protected Map<String,String> jobConfig;
     protected StreamJob job;
-    protected int brokerPort;
-    protected String clientName;
+    final static protected String clientName = "Client_test_0";
+    protected static String propertiesPath;
+    protected static String springContextFile;
+    protected static Map<String, String> addInfo;
 
     protected KeyValueStore keyValueStore;
     /**
      * Perform initialization of Samza, Kafka, etc.
-     * @param propertiesPath
      * @throws IOException
      */
-    protected void setupBefore(String propertiesPath, String springContextFile, Map<String, String> addInfo) throws IOException{
+    static protected void setupBefore() throws IOException{
+
         // setup Zookeeper
         zkConnect = TestZKUtils.zookeeperConnect();
         zkServer = new EmbeddedZookeeper(zkConnect);
@@ -72,6 +79,8 @@ public class AbstractTaskTest {
         Time mock = new MockTime();
         kafkaServer = TestUtils.createServer(config, mock);
 
+        //serup zkClient
+        zkClient = new ZkClient(zkConnect + "/", 6000, 6000, ZKStringSerializer$.MODULE$);
         //setup producer
         Properties properties = TestUtils.getProducerConfig("localhost:" + brokerPort);
         properties.setProperty("serializer.class", "kafka.serializer.StringEncoder");
@@ -80,19 +89,16 @@ public class AbstractTaskTest {
         ProducerConfig producerConfig = new ProducerConfig(properties);
         producer = new Producer(producerConfig);
 
-        //serup zkClient
-        zkClient = new ZkClient(zkConnect + "/", 6000, 6000, ZKStringSerializer$.MODULE$);
 
         // setup simple consumer
         Properties consumerProperties = TestUtils.createConsumerProperties(zkServer.connectString(), "group0", "consumer0", -1);
-        clientName = "Client_" + inputTopic + "_0";
         simpleConsumer = new SimpleConsumer("localhost", brokerPort, 100000, 64 * 1024, clientName);
 
         //job factory
         jobFactory = new ThreadJobFactory();
 
         //load properties file
-        loadProperties(propertiesPath, springContextFile, addInfo);
+        loadProperties();
 
         // create topics
         createTopics();
@@ -104,13 +110,15 @@ public class AbstractTaskTest {
     protected void cleanupAfter() throws IOException {
         if (simpleConsumer != null) simpleConsumer.close();
         producer.close();
-        kafkaServer.shutdown();
-        zkClient.close();
-        zkServer.shutdown();
+
     }
 
     @AfterClass
-    public static void deleteTmpFiles() throws IOException {
+    public static void afterClass() throws IOException {
+
+        zkClient.close();
+        kafkaServer.shutdown();
+        zkServer.shutdown();
         //delete kafka files under /tmp
         File folder = new File("/tmp");
         File[] files = folder.listFiles((dir, name) -> (name.matches( "kafka.*" ) || name.matches( "librocksdbjni.*\\.so" ) || name.matches( "idea_test_.*out" )));
@@ -140,10 +148,9 @@ public class AbstractTaskTest {
 
     /**
      * Loads properties from samza properties file of the task
-     * @param propertiesPath
      * @throws IOException
      */
-    protected void loadProperties(String propertiesPath, String springContextFile, Map<String, String> addInfo) throws IOException {
+    protected static void loadProperties() throws IOException {
         jobConfig = new HashMap<String, String>();
         Properties prop = new Properties();
         prop.load(new FileInputStream(propertiesPath));
@@ -176,7 +183,7 @@ public class AbstractTaskTest {
     /**
      * Creates the list of topics that are defined in the samza configuration file
      */
-    protected void createTopics(){
+    static protected void createTopics(){
         List<KafkaServer> servers = new ArrayList<KafkaServer>();
 
         String topics = jobConfig.get("task.inputs");
@@ -184,7 +191,11 @@ public class AbstractTaskTest {
         for (int i=0; i < topicsArray.length; i++) {
             String topic = topicsArray[i].substring("kafka.".length());
             String[] arguments = new String[]{"--topic", topic, "--partitions", "1", "--replication-factor", "1"};
-            TopicCommand.createTopic(zkClient, new TopicCommand.TopicCommandOptions(arguments));
+            try {
+                TopicCommand.createTopic(zkClient, new TopicCommand.TopicCommandOptions(arguments));
+            } catch (kafka.common.TopicExistsException ex){
+                //skip an existing topic
+            }
             servers.add(kafkaServer);
         }
     }

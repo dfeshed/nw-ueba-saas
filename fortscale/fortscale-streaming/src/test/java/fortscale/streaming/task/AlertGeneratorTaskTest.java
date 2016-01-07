@@ -5,10 +5,7 @@ import fortscale.streaming.alert.subscribers.SmartAlertCreationSubscriber;
 import fortscale.streaming.service.SpringService;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,14 +26,18 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
     private static final String tagKey1 = "EntityTags{entityName='1', entityType=User}";
     private static final String tagValue1 = "EntityTags{entityName='1', entityType=User}";
 
+    @BeforeClass
+    public static void beforeClass() throws IOException{
+        propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
+        springContextFile = SPRING_CONTEXT_FIILE;
+        addInfo = null;
+        setupBefore();
+    }
 
     @Before
     public void setup() throws IOException {
         //set topic names
         inputTopic = "user-tag-service-cache-updates";
-        String propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
-
-        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE, null);
     }
 
     @After

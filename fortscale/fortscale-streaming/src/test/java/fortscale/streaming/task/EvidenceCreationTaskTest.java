@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -25,14 +26,18 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
     private String outEvent1 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451144083000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 15:34:43\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451144083000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":60,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451144083000}";
     private String outEvent2 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451146702000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 16:18:22\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451146702000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":70,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451146702000}";
 
+    @BeforeClass
+    public static void beforeClass() throws IOException{
+        propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
+        springContextFile = SPRING_CONTEXT_FIILE;
+        addInfo = null;
+        setupBefore();
+    }
     @Before
     public void setup() throws IOException {
         //set topic names
         inputTopic = "fortscale-4769-event-score-after-write";
         outputTopic = "fortscale-evidences";
-        String propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
-
-        super.setupBefore(propertiesPath, SPRING_CONTEXT_FIILE, null);
     }
 
     @After
