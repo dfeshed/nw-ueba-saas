@@ -108,12 +108,21 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					}
 					break;
 				case GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION:
-					if (canEnterEnrichmentPhase(currConfigurationState)) {
+					if (canEnterEnrichmentStep(currConfigurationState)) {
 						GDSMenuPrinterHelper.printEnrichmentMenu();
 						handleEnrichmentConfiguration();
 					}
 					else {
-						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_BEFORE_ENRICHMENT_MESSAGE;
+						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
+					}
+					break;
+				case GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION:
+					if (canEnterModelAndScoringPhase(currConfigurationState)) {
+						GDSMenuPrinterHelper.printModelAndScoringMenu();
+						handleModelAndScoringConfiguration();
+					}
+					else {
+						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
 					}
 					break;
 				case GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION:
@@ -156,9 +165,12 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		}
 	}
 
-	private boolean canEnterEnrichmentPhase(GDSCompositeConfigurationState currConfigurationState) {
+	private boolean canEnterEnrichmentStep(GDSCompositeConfigurationState currConfigurationState) {
 		return currConfigurationState.isDataSourceAlreadyDefined();
+	}
 
+	private boolean canEnterModelAndScoringPhase(GDSCompositeConfigurationState currConfigurationState) {
+		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
 	private void resetConfigurators(GDSCompositeConfigurationState gdsConfigurationState) {
@@ -174,6 +186,10 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 			gdsConfiguratorIterator.remove();
 		}
+	}
+
+	private void handleModelAndScoringConfiguration() throws Exception {
+		// TBD
 	}
 
 	private void handleEnrichmentConfiguration() throws Exception {

@@ -22,36 +22,12 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return userNormalizationStates;
     }
 
-    public void setUserNormalizationStates(List<UserNormalizationState> userNormalizationStates) {
-        this.userNormalizationStates = userNormalizationStates;
-    }
-
     public List<IPResolvingState> getIpResolvingStates() {
         return ipResolvingStates;
     }
 
-    public void setIpResolvingState(List<IPResolvingState> ipResolvingState) {
-        this.ipResolvingStates = ipResolvingState;
-    }
-
-    public void setComputerTaggingState(ComputerTaggingState computerTaggingState) {
-        this.computerTaggingState = computerTaggingState;
-    }
-
     public List<GeoLocationState> getGeoLocationStates() {
         return geoLocationStates;
-    }
-
-    public void setGeoLocationStates(List<GeoLocationState> geoLocationStates) {
-        this.geoLocationStates = geoLocationStates;
-    }
-
-    public void setUserMongoUpdateState(UserMongoUpdateState userMongoUpdateState) {
-        this.userMongoUpdateState = userMongoUpdateState;
-    }
-
-    public void setHdfsWriterState(HDFSWriterState hdfsWriterState) {
-        this.hdfsWriterState = hdfsWriterState;
     }
 
     public UserMongoUpdateState getUserMongoUpdateState() {
