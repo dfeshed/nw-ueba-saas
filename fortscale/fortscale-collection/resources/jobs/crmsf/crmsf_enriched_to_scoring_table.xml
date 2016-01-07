@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>SshEnrichedToStreaming</name>
+			<name>CrmsfEnrichedToStreaming</name>
 			<group>CRMSF</group>
 			<description>Running enriched CRMSF scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
