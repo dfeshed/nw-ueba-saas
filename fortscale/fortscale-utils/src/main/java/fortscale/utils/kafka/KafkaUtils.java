@@ -43,8 +43,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteEntities(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        Object[] objectsArray = topics.toArray();
-        String[] topicsArray = Arrays.copyOf(objectsArray, objectsArray.length, String[].class);
+//        Object[] objectsArray = topics.toArray();
+//        String[] topicsArray = Arrays.copyOf(objectsArray, objectsArray.length, String[].class);
 
 
         if (isBrutalDelete) {
@@ -64,14 +64,19 @@ public class KafkaUtils extends CleanupDeletionUtil {
         } else {
 
             //delete using API
-            TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(topicsArray);
-            try {
-                TopicCommand.deleteTopic(zkClient, opts);
-                zkClient.close();
-            } catch (AdminOperationException ex) {
-                logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
-                logger.error(ex.toString());
-                return false;
+            for (String topic: topics) {
+
+                String[] cmdArray = new String[]{"--topic", topic};
+                TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(cmdArray);
+
+                try {
+                    TopicCommand.deleteTopic(zkClient, opts);
+                    zkClient.close();
+                } catch (AdminOperationException ex) {
+                    logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
+                    logger.error(ex.toString());
+                    return false;
+                }
             }
 
             logger.info("dropped all {} topics", topics.size());
