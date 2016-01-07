@@ -24,7 +24,7 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>${kafka.gds.struct.topic}</value>
+					<value>${kafka.generic.data.access.struct.topic}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
