@@ -156,7 +156,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
+        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -176,23 +176,11 @@
     ]
   },
   "AfterEnriched": {
-    "timeBasedSteps": [
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
-      }
-    ],
     "otherSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
