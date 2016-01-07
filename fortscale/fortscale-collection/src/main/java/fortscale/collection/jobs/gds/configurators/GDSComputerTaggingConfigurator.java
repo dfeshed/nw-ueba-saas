@@ -21,7 +21,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getComputerTaggingState();
+        GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState();
 
         ConfigurationParam sourceHost = configurationParams.get("sourceHost");
         ConfigurationParam targetHost = configurationParams.get("targetHost");
@@ -38,12 +38,10 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         computerTaggingState.setCreateNewComputerFlag(createNewComputerFlag.getParamFlag());
         computerTaggingState.setDstMachineClassifier(dstMachineClassifier.getParamValue());
         computerTaggingState.setDstClusteringField(dstClusteringField.getParamValue());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getComputerTaggingState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState().reset();
     }
 }

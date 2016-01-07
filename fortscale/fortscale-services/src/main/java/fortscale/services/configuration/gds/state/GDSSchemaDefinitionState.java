@@ -16,25 +16,25 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private String scoreFields;
     private String scoreDelimiter;
     private String scoreTableName;
-    private boolean hasTopSchema;
-    private boolean hasNormalizedUserNameField;
+    private boolean topSchema;
+    private String normalizedUserNameField;
     private String dataDelimiter;
     private String dataTableName;
 
-    public boolean isHasSourceIp() {
+    public boolean hasSourceIp() {
         return hasSourceIp;
     }
 
-    public void setHasSourceIp(boolean hasSourceIp) {
-        this.hasSourceIp = hasSourceIp;
+    public void setHasSourceIp(boolean sourceIp) {
+        this.hasSourceIp = sourceIp;
     }
 
-    public boolean isHasTargetIp() {
+    public boolean hasTargetIp() {
         return hasTargetIp;
     }
 
-    public void setHasTargetIp(boolean hasTargetIp) {
-        this.hasTargetIp = hasTargetIp;
+    public void setHasTargetIp(boolean targetIp) {
+        this.hasTargetIp = targetIp;
     }
 
     public String getDataFields() {
@@ -93,20 +93,20 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.scoreTableName = scoreTableName;
     }
 
-    public boolean isHasTopSchema() {
-        return hasTopSchema;
+    public boolean hasTopSchema() {
+        return topSchema;
     }
 
-    public void setHasTopSchema(boolean hasTopSchema) {
-        this.hasTopSchema = hasTopSchema;
+    public void setHasTopSchema(boolean topSchema) {
+        this.topSchema = topSchema;
     }
 
-    public boolean isHasNormalizedUserNameField() {
-        return hasNormalizedUserNameField;
+    public String getNormalizedUserNameField() {
+        return normalizedUserNameField;
     }
 
-    public void setHasNormalizedUserNameField(boolean hasNormalizedUserNameField) {
-        this.hasNormalizedUserNameField = hasNormalizedUserNameField;
+    public void setNormalizedUserNameField(String normalizedUserNameField) {
+        this.normalizedUserNameField = normalizedUserNameField;
     }
 
     public String getDataDelimiter() {
@@ -136,8 +136,8 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         scoreFields = null;
         scoreDelimiter = null;
         scoreTableName = null;
-        hasTopSchema = false;
-        hasNormalizedUserNameField = false;
+        topSchema = false;
+        normalizedUserNameField = null;
         dataDelimiter = null;
         dataTableName = null;
     }

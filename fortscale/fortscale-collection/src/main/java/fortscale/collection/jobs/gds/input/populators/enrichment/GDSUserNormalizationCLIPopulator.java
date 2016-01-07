@@ -17,6 +17,17 @@ import java.util.Map;
  */
 public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulator {
 
+    private static final String EMPTY_STR = "";
+    private static final String TOPOLOGY_FLAG_PARAM = "topologyFlag";
+    private static final String LAST_STATE_PARAM = "lastState";
+    private static final String TASK_NAME_PARAM = "taskName";
+    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+    private static final String USER_NAME_FIELD_PARAM = "userNameField";
+    private static final String DOMAIN_FIELD_NAME_PARAM = "domainFieldName";
+    private static final String DOMAIN_VALUE_PARAM = "domainValue";
+    private static final String NORMALIZE_SERVICE_NAME_PARAM = "normalizeServiceName";
+    private static final String UPDATE_ONLY_PARAM = "updateOnlyFlag";
+    private static final String NORMALIZED_USER_NAME_FIELD_PARAM = "normalizedUserNameField";
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
@@ -25,54 +36,53 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        // configure new Topic to the data source or use the GDS general topic
-        System.out.println(String.format("Does %s use the general GDS streaming topology (y/n) ?", dataSourceName));
-
-        paramsMap.put("topologyFlag", new ConfigurationParam("topologyFlag", true, ""));
-        paramsMap.put("lastState", new ConfigurationParam("lastState", false, "etl"));
-        paramsMap.put("taskName", new ConfigurationParam("taskName", false, "UsernameNormalizationAndTaggingTask"));
+        paramsMap.put(TOPOLOGY_FLAG_PARAM, new ConfigurationParam(TOPOLOGY_FLAG_PARAM, true, EMPTY_STR));
+        paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "etl"));
+        paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "UsernameNormalizationAndTaggingTask"));
 
         System.out.println(String.format("Does %s have target username to normalized (y/n) ?", dataSourceName));
+        boolean targetUserNormalizationRequired = GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput());
 
-        boolean targetNormalizationFlag = false;
+        boolean isSourceIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpResolvingRequired();
+        boolean isTargetIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired();
+        boolean isSourceMachineNormalizationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired();
+        boolean isTargetMachineNormalizationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired();
+        boolean isSourceIpGeoLocationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired();
+        boolean isTargetIpGeoLocationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired();
+
         //in case there is a target user to be normalize also
-        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-            targetNormalizationFlag = true;
-            paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
-        } else if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag())) {
-            paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+        if (targetUserNormalizationRequired) {
+            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_normalized_target_user"));
+        } else if (isSourceIpResolvingRequired || isTargetIpResolvingRequired) {
+            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
         }
         //in case there is machine to normalized and tag
-        else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag())) {
-            paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+        else if (isSourceMachineNormalizationRequired || isTargetMachineNormalizationRequired) {
+            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_computer_tagging"));
         }
         //in case there is ip to geo locate
-        else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag())) {
-            paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+        else if (isSourceIpGeoLocationRequired || isTargetIpGeoLocationRequired) {
+            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
         } else {
-            paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
+            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event"));
         }
 
         //User name field
-        paramsMap.put("userNameField", new ConfigurationParam("userNameField", false, "username"));
+        paramsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, "username"));
 
         //Domain field  - for the enrich part
-        System.out.println(String.format("Does %s have a field that contain the user domain  (y/n) ?", dataSourceName));
+        System.out.println(String.format("Does %s have a field that contain the user domain  (y/n)?", dataSourceName));
 
         if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
             //Domain field  - for the enrich part
-            System.out.println(String.format("pleaase enter the field name that will contain the user Domain value :"));
-
-            paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, gdsInputHandler.getInput()));
+            System.out.println("please enter the field name that will contain the user Domain value:");
+            paramsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, gdsInputHandler.getInput()));
         } else {
-            paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
+            paramsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, "fake"));
 
             //In case of fake domain - enter the actual domain value the PS want
-            paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+            paramsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, EMPTY_STR));
         }
-
-        //Normalized_username field
-        paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField", false, "${impala.table.fields.normalized.username}"));
 
         //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
         //Normalizing service
@@ -80,57 +90,58 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
 
         if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
             //Service  name
-            paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName", false, "SecurityUsernameNormalizationService"));
-            paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag", true, "true"));
+            paramsMap.put(NORMALIZE_SERVICE_NAME_PARAM, new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "SecurityUsernameNormalizationService"));
+            paramsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, true, "true"));
 
         } else {
-            paramsMap.put("normalizeSservieName", new ConfigurationParam("normalizeSservieName", false, "genericUsernameNormalizationService"));
-            paramsMap.put("updateOnlyFlag", new ConfigurationParam("updateOnlyFlag", false, "false"));
+            paramsMap.put(NORMALIZE_SERVICE_NAME_PARAM, new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "genericUsernameNormalizationService"));
+            paramsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, false, "false"));
         }
 
+        // TODO do we want to allow the user to flush/apply changes now?
 
-        if (targetNormalizationFlag) {
-            if ((paramsMap.containsKey("sourceIpResolvingFlag") && paramsMap.get("sourceIpResolvingFlag").getParamFlag()) || (paramsMap.containsKey("targetIpResolvingFlag") && paramsMap.get("targetIpResolvingFlag").getParamFlag()))
-                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
-                //in case there is machine to normalized and tag
-            else if ((paramsMap.containsKey("sourceMachineNormalizationFlag") && paramsMap.get("sourceMachineNormalizationFlag").getParamFlag()) || (paramsMap.containsKey("targetMachineNormalizationFlag") && paramsMap.get("targetMachineNormalizationFlag").getParamFlag()))
-                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
-                //in case there is ip to geo locate
-            else if ((paramsMap.containsKey("sourceIpGeoLocationFlag") && paramsMap.get("sourceIpGeoLocationFlag").getParamFlag()) || (paramsMap.containsKey("targetIpGeoLocationFlag") && paramsMap.get("targetIpGeoLocationFlag").getParamFlag()))
-                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
-            else
-                paramsMap.put("outPutTopic", new ConfigurationParam("outPutTopic", false, "fortscale-generic-data-access-normalized-tagged-event"));
+        if (targetUserNormalizationRequired) {
+            if (isSourceIpResolvingRequired || isTargetIpResolvingRequired) {
+                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
+            }
+            else if (isSourceMachineNormalizationRequired || isTargetMachineNormalizationRequired) {
+                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+            }
+            else if (isSourceIpGeoLocationRequired || isTargetIpGeoLocationRequired) {
+                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
+            }
+            else {
+                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event"));
+            }
 
-            paramsMap.put("lastState", new ConfigurationParam("lastState", false, "UsernameNormalizationAndTaggingTask"));
-            paramsMap.put("taskName", new ConfigurationParam("taskName", false, "UsernameNormalizationAndTaggingTask_target"));
+            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
+            paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "UsernameNormalizationAndTaggingTask_target"));
 
-            paramsMap.put("userNameField", new ConfigurationParam("userNameField", false, gdsInputHandler.getInput()));
+            System.out.println("Please enter the second username field to normalize:");
+            paramsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
             //Domain field  - for the enrich part
-            System.out.println(String.format("Does %s have a field that contain the target user domain  (y/n) ?", dataSourceName));
+            System.out.println(String.format("Does %s have a field that contain the target user domain  (y/n)?", dataSourceName));
 
             if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
                 //Domain field  - for the enrich part
-                System.out.println("Please enter the field name that will contain the target user Domain value :");
-
+                System.out.println("Please enter the field name that will contain the target user Domain value:");
                 paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, gdsInputHandler.getInput()));
 
-                paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, ""));
+                paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, EMPTY_STR));
 
             } else {
                 paramsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, "fake"));
                 paramsMap.put("domainValue", new ConfigurationParam("domainValue", false, dataSourceName + "Connect"));
-
-
             }
+
             System.out.println("Please enter the field name of the field that will contain the second normalized user name :");
+            paramsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
-            paramsMap.put("normalizedUserNameField", new ConfigurationParam("normalizedUserNameField", false, gdsInputHandler.getInput()));
-
-            System.out.println(String.format("End configure the Normalized Username and tagging task for %s", dataSourceName));
-            paramsMap.put("lastState", new ConfigurationParam("lastState", false, "UsernameNormalizationAndTaggingTask"));
-
+            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
         }
+
+        paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
 
         return paramsMap;
     }

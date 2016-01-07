@@ -20,7 +20,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
-        GDSEnrichmentDefinitionState.GeoLocationState geoLocationState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getGeoLocationState();
+        GDSEnrichmentDefinitionState.GeoLocationState geoLocationState = currGDSConfigurationState.getEnrichmentDefinitionState().getGeoLocationState();
 
         ConfigurationParam ipField = configurationParams.get("ipField");
         ConfigurationParam countryField = configurationParams.get("countryField");
@@ -47,12 +47,10 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoSessionUpdateFlag(doSessionUpdateFlag.getParamFlag());
         geoLocationState.setDoDataBuckets(doDataBuckets.getParamFlag());
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
-
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
     }
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getGeoLocationState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getGeoLocationState().reset();
     }
 }
