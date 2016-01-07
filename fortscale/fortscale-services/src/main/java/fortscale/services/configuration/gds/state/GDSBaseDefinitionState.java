@@ -11,6 +11,7 @@ import fortscale.services.configuration.EntityType;
 public class GDSBaseDefinitionState implements GDSConfigurationState{
     private String dataSourceName;
     private EntityType entityType;
+    // TODO move it outside
     private String existingDataSources;
 
     public String getDataSourceName() {

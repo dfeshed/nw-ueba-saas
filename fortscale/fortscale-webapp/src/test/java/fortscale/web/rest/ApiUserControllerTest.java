@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
@@ -7,6 +8,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.impl.UserScoreHistoryElement;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
