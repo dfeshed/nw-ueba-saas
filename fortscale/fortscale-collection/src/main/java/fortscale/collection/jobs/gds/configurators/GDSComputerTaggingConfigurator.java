@@ -14,6 +14,11 @@ import java.util.Map;
  */
 public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
 
+    private static final String LAST_STATE_PARAM = "lastState";
+    private static final String TASK_NAME_PARAM = "taskName";
+    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
+
     public GDSComputerTaggingConfigurator() {
         configurationService = new ComputerTaggingClassConfiguration();
     }
@@ -21,6 +26,11 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     @Override
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
+
+        ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
+        ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
+        ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
+        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
 
         ConfigurationParam sourceHost = paramsMap.get("sourceHost");
         ConfigurationParam targetHost = paramsMap.get("targetHost");
@@ -31,6 +41,11 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam dstClusteringField = paramsMap.get("dstClusteringField");
 
         GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState();
+
+        computerTaggingState.setTaskName(taskName.getParamValue());
+        computerTaggingState.setLastState(lastState.getParamValue());
+        computerTaggingState.setOutputTopic(outputTopic.getParamValue());
+        computerTaggingState.setOutputTopicEntry(outputTopicEntry.getParamValue());
 
         computerTaggingState.setSourceHost(sourceHost.getParamValue());
         computerTaggingState.setTargetHost(targetHost.getParamValue());

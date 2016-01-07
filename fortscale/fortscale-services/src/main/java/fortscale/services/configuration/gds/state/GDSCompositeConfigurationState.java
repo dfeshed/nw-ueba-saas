@@ -82,5 +82,6 @@ public class GDSCompositeConfigurationState implements Resettable{
         schemaDefinitionState.reset();
         collectionDefinitionState.reset();
         enrichmentDefinitionState.reset();
+        streamingTopologyDefinitionState.reset();
     }
 }

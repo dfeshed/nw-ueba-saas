@@ -1,7 +1,7 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -44,31 +44,19 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
             String statusFieldName="";
             String successValue="";
 
-			ConfigurationParam result = getParamConfiguration(configurationParams,"anyRow");
-
-            Boolean anyRow = result != null ? result.getParamFlag() : null;
-
-            if (!anyRow) {
-
-				result = getParamConfiguration(configurationParams,"statusFieldName");
-                statusFieldName = result != null ? result.getParamValue() : null;
-
-				result = getParamConfiguration(configurationParams,"statusFieldName");
-                successValue = result != null ? result.getParamValue() : null;
-            }
-            //String userNameField = configurationParams.get("userNameField").getParamValue();
-
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
+            GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = gdsConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState();
 
-            writeMandatoryConfiguration();
+            String taskName = userMongoUpdateState.getTaskName();
 
-            //classifier value
+            writeMandatoryConfiguration(taskName, userMongoUpdateState.getLastState(), userMongoUpdateState.getOutputTopic(), userMongoUpdateState.getOutputTopicEntry(), true);
+
             line = String.format("%s.%s_%s.classifier=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName.toLowerCase());
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            if (anyRow) {
+            if (userMongoUpdateState.isAnyRow()) {
                 line = String.format("%s.%s_%s.success.field=#AnyRow#", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 line = String.format("%s.%s_%s.success.value=#NotRelevant#", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);

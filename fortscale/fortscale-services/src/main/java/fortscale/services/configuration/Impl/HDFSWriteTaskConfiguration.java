@@ -1,7 +1,7 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -22,7 +22,6 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	public boolean init() {
 		super.init();
 		Boolean result = false;
-		outputTopicEntry = "output.topics";
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"hdfs-events-writer-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -40,36 +39,16 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
-        String outPutTopicEntry = "output.topics";
-
         try {
             String line = "";
+            GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = gdsConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
 
-			ConfigurationParam result = getParamConfiguration(configurationParams,"fieldList");
-            String fieldList = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"delimiter");
-            String delimiter = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"hdfsPath");
-            String hdfsPath = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"fileName");
-            String fileName = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"tableName");
-            String tableName = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"partitionStrategy");
-            String partitionStrategy = result != null ? result.getParamValue() : null;
-
-			 result = getParamConfiguration(configurationParams,"discriminatorsFields");
-            String discriminatorsFields = result != null ? result.getParamValue() : null;
-
-			fileWriterToConfigure.write("\n");
+            fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
-            writeMandatoryConfiguration();
+            String taskName = hdfsWriterState.getTaskName();
+
+            writeMandatoryConfiguration(taskName, hdfsWriterState.getLastState(), hdfsWriterState.getOutputTopic(), hdfsWriterState.getOutputTopicEntry(), true);
 
             //bdp routing value
             line = String.format("%s.%s_%s.bdp.output.topics=", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
@@ -84,27 +63,27 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //enrich fields
-            line = String.format("%s.%s_%s.fields=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, fieldList);
+            line = String.format("%s.%s_%s.fields=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getFieldList());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //seperator fields
-            line = String.format("%s.%s_%s.separator=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, delimiter);
+            line = String.format("%s.%s_%s.separator=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getDelimiter());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //hdfs path
-            line = String.format("%s.%s_%s.hdfs.root=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsPath);
+            line = String.format("%s.%s_%s.hdfs.root=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getHdfsPath());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //file name
-            line = String.format("%s.%s_%s.file.name=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, fileName);
+            line = String.format("%s.%s_%s.file.name=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getFileName());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //table name  fields
-            line = String.format("%s.%s_%s.table.name=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, tableName);
+            line = String.format("%s.%s_%s.table.name=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getTableName());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //partition strategy fields
-            line = String.format("%s.%s_%s.partition.strategy=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, partitionStrategy);
+            line = String.format("%s.%s_%s.partition.strategy=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getPartitionStrategy());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //split strategy fields
@@ -112,7 +91,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //discriminator
-            line = String.format("%s.%s_%s.discriminator.fields=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, discriminatorsFields);
+            line = String.format("%s.%s_%s.discriminator.fields=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hdfsWriterState.getDiscriminatorsFields());
             writeLineToFile(line, fileWriterToConfigure, true);
 
             //flush buffer size
