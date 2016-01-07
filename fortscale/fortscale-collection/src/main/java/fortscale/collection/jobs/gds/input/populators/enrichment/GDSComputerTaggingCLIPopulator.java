@@ -36,12 +36,12 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        if (currentConfigurationState.isSourceMachineNormalizationRequired() || currentConfigurationState.isTargetMachineNormalizationRequired())
+        if (currentConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired() || currentConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired())
         {
             System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "ComputerTaggingClusteringTask"));
 
-            if(currentConfigurationState.isSourceIpGeoLocationRequired() || currentConfigurationState.isTargetIpGeoLocationRequired())
+            if(currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired() || currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired())
             {
                 paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-computer-tagged-clustered_to_geo_location"));
             }

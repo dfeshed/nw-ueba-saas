@@ -37,7 +37,7 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        if (currentConfigurationState.isSourceIpResolvingRequired()) {
+        if (currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpResolvingRequired()) {
             System.out.println(String.format("Does %s resolving is restricted to AD name (in case of true and the machine doesn't exist in the AD it will not return it as resolved value) (y/n) ?", dataSourceName));
             paramsMap.put(RESTRICT_TO_AD_PARAM, new ConfigurationParam(RESTRICT_TO_AD_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
 
@@ -54,7 +54,7 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
             paramsMap.put(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, new ConfigurationParam(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
 
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "IpResolvingStreamTask_sourceIp"));
-            if (currentConfigurationState.isTargetIpResolvingRequired()) {
+            if (currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired()) {
                 paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-source-ip-resolved"));
             }
             else {
@@ -67,7 +67,7 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
             paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "IpResolvingStreamTask"));
         }
 
-        if (currentConfigurationState.isTargetIpResolvingRequired()) {
+        if (currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired()) {
 
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "IpResolvingStreamTask_targetIp"));
             paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-ip-resolved"));

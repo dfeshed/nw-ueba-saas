@@ -43,12 +43,12 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
         System.out.println(String.format("Does %s have target username to normalized (y/n) ?", dataSourceName));
         boolean targetUserNormalizationRequired = GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput());
 
-        boolean isSourceIpResolvingRequired = currentConfigurationState.isSourceIpResolvingRequired();
-        boolean isTargetIpResolvingRequired = currentConfigurationState.isTargetIpResolvingRequired();
-        boolean isSourceMachineNormalizationRequired = currentConfigurationState.isSourceMachineNormalizationRequired();
-        boolean isTargetMachineNormalizationRequired = currentConfigurationState.isTargetMachineNormalizationRequired();
-        boolean isSourceIpGeoLocationRequired = currentConfigurationState.isSourceIpGeoLocationRequired();
-        boolean isTargetIpGeoLocationRequired = currentConfigurationState.isTargetIpGeoLocationRequired();
+        boolean isSourceIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpResolvingRequired();
+        boolean isTargetIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired();
+        boolean isSourceMachineNormalizationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired();
+        boolean isTargetMachineNormalizationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired();
+        boolean isSourceIpGeoLocationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired();
+        boolean isTargetIpGeoLocationRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired();
 
         //in case there is a target user to be normalize also
         if (targetUserNormalizationRequired) {
