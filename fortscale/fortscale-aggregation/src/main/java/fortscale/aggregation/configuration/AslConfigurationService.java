@@ -13,8 +13,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by YaronDL on 1/6/2016.
@@ -44,48 +43,34 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
         List<InputStream> confJsonInputStreams = new ArrayList<>();
 
         Resource[] confJsonResources = null;
+        //load overriding base configuration if exist
         if(getBaseOverridingConfJsonFolderPath() != null) {
             try {
                 confJsonResources = applicationContext.getResources(getBaseOverridingConfJsonFolderPath());
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
 
-        boolean isBaseOverridingExists = !(confJsonResources == null || confJsonResources.length == 0);
-
-        //load overriding base configuration if exist
-        if(isBaseOverridingExists){
-            for(Resource confJsonResource: confJsonResources) {
-                try {
-                    confJsonInputStreams.add(confJsonResource.getInputStream());
-
-                } catch (Exception e) {
-                    String errorMsg = String.format("Failed to open json file %s", confJsonResource.getFilename());
-                    logger.error(errorMsg, e);
-                    throw new IllegalArgumentException(errorMsg, e);
-                }
-            }
-        } else{
-            //if base overriding configuration does not exist
+        //if base overriding configuration does not exist
+        if(confJsonResources == null || confJsonResources.length == 0){
+            Resource confJsonResource = null;
             try {
-                Resource confJsonResource = applicationContext.getResource(getBaseConfJsonFilePath());
-                confJsonInputStreams.add(confJsonResource.getInputStream());
+                confJsonResource = applicationContext.getResource(getBaseConfJsonFilePath());
             } catch (Exception e) {
                 String errorMsg = String.format("Failed to open json file %s", getBaseConfJsonFilePath());
                 logger.error(errorMsg, e);
                 throw new IllegalArgumentException(errorMsg, e);
             }
+
+            if(confJsonResource == null){
+                String errorMsg = String.format("json file %s doesn't exist.", getBaseConfJsonFilePath());
+                logger.error(errorMsg);
+                throw new IllegalArgumentException(errorMsg);
+            }
+            confJsonResources = new Resource[1];
+            confJsonResources[0] = confJsonResource;
         }
 
-        try{
-            for(InputStream inputStream: confJsonInputStreams) {
-                loadConfInputStream(inputStream);
-            }
-        } catch (Exception e) {
-            String errorMsg = String.format("Failed to load Configuration from json path %s", isBaseOverridingExists ? getBaseOverridingConfJsonFolderPath() : getBaseConfJsonFilePath());
-            logger.error(errorMsg, e);
-            throw new IllegalArgumentException(errorMsg, e);
-        }
+        loadConfResources(confJsonResources);
     }
 
     private void loadAdditionalConfs() throws IllegalArgumentException  {
@@ -93,35 +78,41 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
             return;
         }
 
-        List<InputStream> confJsonInputStreams = new ArrayList<>();
-
         Resource[] confJsonResources = null;
         try {
             confJsonResources = applicationContext.getResources(getAdditionalConfJsonFolderPath());
         } catch (Exception e) {}
 
         if(confJsonResources != null && confJsonResources.length > 0){
-            for(Resource confJsonResource: confJsonResources) {
-                try {
-                    confJsonInputStreams.add(confJsonResource.getInputStream());
+            loadConfResources(confJsonResources);
+        }
+    }
 
-                } catch (Exception e) {
-                    String errorMsg = String.format("Failed to open json file %s", confJsonResource.getFilename());
-                    logger.error(errorMsg, e);
-                    throw new IllegalArgumentException(errorMsg, e);
-                }
+    private void loadConfResources(Resource[] confJsonResources) throws IllegalArgumentException {
+        Map<String,InputStream> fileNameToInputStream = new HashMap<>();
+        for(Resource confJsonResource: confJsonResources) {
+            try {
+                InputStream inputStream = confJsonResource.getInputStream();
+                fileNameToInputStream.put(confJsonResource.getFilename(), inputStream);
+            } catch (Exception e) {
+                String errorMsg = String.format("Failed to open json file %s", confJsonResource.getFilename());
+                logger.error(errorMsg, e);
+                throw new IllegalArgumentException(errorMsg, e);
             }
         }
 
-        try {
-            for(InputStream inputStream: confJsonInputStreams) {
-                loadConfInputStream(inputStream);
+        Iterator<Map.Entry<String, InputStream>> inputStreamIter = fileNameToInputStream.entrySet().iterator();
+        while(inputStreamIter.hasNext()) {
+            Map.Entry<String, InputStream> entry = inputStreamIter.next();
+            try {
+                loadConfInputStream(entry.getValue());
+            } catch (Exception e) {
+                String errorMsg = String.format("Failed to load Configuration from json file %s", entry.getKey());
+                logger.error(errorMsg, e);
+                throw new IllegalArgumentException(errorMsg, e);
             }
-        } catch (Exception e) {
-            String errorMsg = String.format("Failed to load Configuration from json folder path %s", getAdditionalConfJsonFolderPath());
-            logger.error(errorMsg, e);
-            throw new IllegalArgumentException(errorMsg, e);
         }
+
     }
 
     private void loadConfInputStream(InputStream inputStream) throws IOException, ParseException {

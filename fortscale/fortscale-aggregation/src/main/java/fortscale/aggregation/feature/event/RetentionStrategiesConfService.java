@@ -49,7 +49,7 @@ public class RetentionStrategiesConfService extends AslConfigurationService {
     @Override
     protected void loadConfJson(JSONObject jsonObj){
 
-        String confAsString = ((JSONObject)jsonObj).toJSONString();
+        String confAsString = jsonObj.toJSONString();
         try {
             AggrFeatureRetentionStrategy aggrFeatureRetentionStrategy = (new ObjectMapper()).readValue(confAsString, AggrFeatureRetentionStrategy.class);
             aggrFeatureRetentionStrategies.put(aggrFeatureRetentionStrategy.getName(), aggrFeatureRetentionStrategy);

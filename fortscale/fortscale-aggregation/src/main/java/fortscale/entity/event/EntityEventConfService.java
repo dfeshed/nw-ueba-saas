@@ -4,16 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import groovy.json.JsonException;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,9 +19,9 @@ public class EntityEventConfService extends AslConfigurationService {
 	private static final String ENTITY_EVENT_DEFINITIONS_JSON_FIELD_NAME = "EntityEventDefinitions";
 
 	@Value("${fortscale.entity.event.definitions.json.file.path}")
-	private String entityEventGlobalParamsConfJsonFilePath;
+	private String entityEventDefinitionsConfJsonFilePath;
 	@Value("${fortscale.entity.event.definitions.conf.json.overriding.files.path}")
-	private String entityEventGlobalParamsConfJsonOverridingFilesPath;
+	private String entityEventDefinitionsConfJsonOverridingFilesPath;
 
 	@Autowired
 	private EntityEventGlobalParamsConfService entityEventGlobalParamsConfService;
@@ -40,12 +33,12 @@ public class EntityEventConfService extends AslConfigurationService {
 
 	@Override
 	protected String getBaseConfJsonFilePath() {
-		return entityEventGlobalParamsConfJsonFilePath;
+		return entityEventDefinitionsConfJsonFilePath;
 	}
 
 	@Override
 	protected String getBaseOverridingConfJsonFolderPath() {
-		return entityEventGlobalParamsConfJsonOverridingFilesPath;
+		return entityEventDefinitionsConfJsonOverridingFilesPath;
 	}
 
 	@Override

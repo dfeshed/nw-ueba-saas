@@ -68,7 +68,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	@Override
 	protected void loadConfJson(JSONObject jsonObj){
-		String confAsString = ((JSONObject)jsonObj).toJSONString();
+		String confAsString = jsonObj.toJSONString();
 		try {
 			AggregatedFeatureEventConf conf = (new ObjectMapper()).readValue(confAsString, AggregatedFeatureEventConf.class);
 			aggregatedFeatureEventConfList.add(conf);
