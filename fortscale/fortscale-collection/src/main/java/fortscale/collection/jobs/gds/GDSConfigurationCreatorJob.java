@@ -56,8 +56,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		logger.debug("Running Configuration Generic Data Source Tool");
 
 		handleMainMenu();
-
-		gdsInputHandler.close();
 	}
 
 	private void handleMainMenu() throws Exception {
