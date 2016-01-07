@@ -1,13 +1,12 @@
 package fortscale.ml.scorer.config;
 
-/**
- * Created by amira on 30/12/2015.
- */
-public class FieldValueScoreReducerConf implements IScorerConf{
-    public static final String SCORER_TYPE = "field_value_score_reducer";
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    @Override
-    public String getFactoryName() {
-        return SCORER_TYPE;
+//todo
+public class FieldValueScoreReducerConf extends AbstractScorerConf{
+    public static final String SCORER_TYPE = "field-value-score-reducer";
+
+    public FieldValueScoreReducerConf(@JsonProperty("name") String name) {
+        super(name);
     }
 }

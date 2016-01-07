@@ -1,9 +1,10 @@
-package fortscale.streaming.scorer;
+package fortscale.ml.scorer.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.springframework.util.Assert;
 
 import java.util.List;
-
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ReductionConfigurations {
 	private List<ReductionConfiguration> reductionConfigs;
 
@@ -32,7 +33,7 @@ public class ReductionConfigurations {
 		return reductionConfigs.hashCode();
 	}
 
-	protected static final class ReductionConfiguration {
+	public static final class ReductionConfiguration {
 		private String reducingFeatureName;
 		private double reducingFactor;
 		private double maxValueForFullyReduce;

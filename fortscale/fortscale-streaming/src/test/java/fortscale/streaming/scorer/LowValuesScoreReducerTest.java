@@ -9,12 +9,13 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 
 import fortscale.common.event.EventMessage;
+import fortscale.ml.scorer.config.ReductionConfigurations;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
+import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
 
 public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	private static final String CONFIG_FORMAT = configFormat();

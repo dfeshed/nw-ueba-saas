@@ -10,7 +10,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.service.model.ModelsCacheServiceSamza;
-import fortscale.streaming.service.scorer.ScorersService;
+import fortscale.ml.scorer.ScorersService;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;

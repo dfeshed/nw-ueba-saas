@@ -1,13 +1,31 @@
 package fortscale.ml.scorer.config;
 
-/**
- * Created by amira on 30/12/2015.
- */
-public class LinearScoreReducerConf implements IScorerConf{
-    public static final String SCORER_TYPE = "linear_score_reducer";
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    @Override
-    public String getFactoryName() {
-        return SCORER_TYPE;
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+public class LinearScoreReducerConf extends AbstractScorerConf {
+    public static final String SCORER_TYPE = "linear-score-reducer";
+
+    @JsonProperty("reduced-scorer")
+    private IScorerConf reducedScorer;
+    @JsonProperty("reducing-weight")
+    private double reductingWeight;
+
+    public LinearScoreReducerConf( @JsonProperty("name") String name,
+                                   @JsonProperty("reduced-scorer") IScorerConf reducedScorer,
+                                   @JsonProperty("reducing-weight") double reductingWeight) {
+        super(name);
+        this.reducedScorer = reducedScorer;
+        this.reductingWeight = reductingWeight;
     }
+
+    public IScorerConf getReducedScorer() {
+        return reducedScorer;
+    }
+
+    public double getReductingWeight() {
+        return reductingWeight;
+    }
+
 }

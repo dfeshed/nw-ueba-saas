@@ -1,4 +1,4 @@
-package fortscale.streaming.service.scorer;
+package fortscale.ml.scorer;
 
 import fortscale.ml.service.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
