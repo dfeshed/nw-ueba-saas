@@ -10,123 +10,77 @@ import fortscale.services.configuration.EntityType;
  */
 public class GDSCompositeConfigurationState implements Resettable{
 
-    private GDSBaseDefinitionState GDSBaseDefinitionState = new GDSBaseDefinitionState();
-    private GDSSchemaDefinitionState GDSSchemaDefinitionState = new GDSSchemaDefinitionState();
-    private GDSCollectionDefinitionState GDSCollectionDefinitionState = new GDSCollectionDefinitionState();
-    private GDSEnrichmentDefinitionState GDSEnrichmentDefinitionState = new GDSEnrichmentDefinitionState();
-
-    private boolean sourceIpResolvingRequired;
-    private boolean targetIpResolvingRequired;
-    private boolean sourceMachineNormalizationRequired;
-    private boolean targetMachineNormalizationRequired;
-    private boolean sourceIpGeoLocationRequired;
-    private boolean targetIpGeoLocationRequired;
-
-    public boolean isSourceIpResolvingRequired() {
-        return sourceIpResolvingRequired;
-    }
-
-    public void setSourceIpResolvingRequired(boolean sourceIpResolvingRequired) {
-        this.sourceIpResolvingRequired = sourceIpResolvingRequired;
-    }
-
-    public boolean isTargetIpResolvingRequired() {
-        return targetIpResolvingRequired;
-    }
-
-    public void setTargetIpResolvingRequired(boolean targetIpResolving) {
-        this.targetIpResolvingRequired = targetIpResolving;
-    }
-
-    public boolean isSourceMachineNormalizationRequired() {
-        return sourceMachineNormalizationRequired;
-    }
-
-    public void setSourceMachineNormalizationRequired(boolean sourceMachineNormalizationRequired) {
-        this.sourceMachineNormalizationRequired = sourceMachineNormalizationRequired;
-    }
-
-    public boolean isTargetMachineNormalizationRequired() {
-        return targetMachineNormalizationRequired;
-    }
-
-    public void setTargetMachineNormalizationRequired(boolean targetMachineNormalizationRequired) {
-        this.targetMachineNormalizationRequired = targetMachineNormalizationRequired;
-    }
-
-    public boolean isSourceIpGeoLocationRequired() {
-        return sourceIpGeoLocationRequired;
-    }
-
-    public void setSourceIpGeoLocationRequired(boolean sourceIpGeoLocationRequired) {
-        this.sourceIpGeoLocationRequired = sourceIpGeoLocationRequired;
-    }
-
-    public boolean isTargetIpGeoLocationRequired() {
-        return targetIpGeoLocationRequired;
-    }
-
-    public void setTargetIpGeoLocationRequired(boolean targetIpGeoLocationRequired) {
-        this.targetIpGeoLocationRequired = targetIpGeoLocationRequired;
-    }
+    private GDSBaseDefinitionState baseDefinitionState = new GDSBaseDefinitionState();
+    private GDSSchemaDefinitionState schemaDefinitionState = new GDSSchemaDefinitionState();
+    private GDSCollectionDefinitionState collectionDefinitionState = new GDSCollectionDefinitionState();
+    private GDSEnrichmentDefinitionState enrichmentDefinitionState = new GDSEnrichmentDefinitionState();
+    private GDSStreamingTopologyDefinitionState streamingTopologyDefinitionState = new GDSStreamingTopologyDefinitionState();
 
     public String getDataSourceName() {
-        return GDSBaseDefinitionState.getDataSourceName();
+        return baseDefinitionState.getDataSourceName();
     }
 
     public void setDataSourceName(String dataSourceName) {
 
-        GDSBaseDefinitionState.setDataSourceName(dataSourceName);
+        baseDefinitionState.setDataSourceName(dataSourceName);
     }
 
     public EntityType getEntityType() {
-        return GDSBaseDefinitionState.getEntityType();
+        return baseDefinitionState.getEntityType();
     }
 
     public void setEntityType(EntityType entityType) {
-        GDSBaseDefinitionState.setEntityType(entityType);
+        baseDefinitionState.setEntityType(entityType);
     }
 
     public boolean isDataSourceAlreadyDefined() {
-        return GDSBaseDefinitionState.getDataSourceName() != null && GDSBaseDefinitionState.getEntityType() != null;
+        return baseDefinitionState.getDataSourceName() != null && baseDefinitionState.getEntityType() != null;
     }
 
     public String getExistingDataSources() {
-        return GDSBaseDefinitionState.getExistingDataSources();
+        return baseDefinitionState.getExistingDataSources();
     }
 
     public void setExistingDataSources(String currentDataSources) {
-        this.GDSBaseDefinitionState.setExistingDataSources(currentDataSources);
+        this.baseDefinitionState.setExistingDataSources(currentDataSources);
     }
 
-    public GDSSchemaDefinitionState getGDSSchemaDefinitionState() {
-        return GDSSchemaDefinitionState;
+    public GDSSchemaDefinitionState getSchemaDefinitionState() {
+        return schemaDefinitionState;
     }
 
-    public void setGDSSchemaDefinitionState(GDSSchemaDefinitionState GDSSchemaDefinitionState) {
-        this.GDSSchemaDefinitionState = GDSSchemaDefinitionState;
+    public void setSchemaDefinitionState(GDSSchemaDefinitionState schemaDefinitionState) {
+        this.schemaDefinitionState = schemaDefinitionState;
     }
 
-    public GDSCollectionDefinitionState getGDSCollectionDefinitionState() {
-        return GDSCollectionDefinitionState;
+    public GDSCollectionDefinitionState getCollectionDefinitionState() {
+        return collectionDefinitionState;
     }
 
-    public void setGDSCollectionDefinitionState(GDSCollectionDefinitionState GDSCollectionDefinitionState) {
-        this.GDSCollectionDefinitionState = GDSCollectionDefinitionState;
+    public void setCollectionDefinitionState(GDSCollectionDefinitionState collectionDefinitionState) {
+        this.collectionDefinitionState = collectionDefinitionState;
     }
 
-    public GDSEnrichmentDefinitionState getGDSEnrichmentDefinitionState() {
-        return GDSEnrichmentDefinitionState;
+    public GDSEnrichmentDefinitionState getEnrichmentDefinitionState() {
+        return enrichmentDefinitionState;
     }
 
-    public void setGDSEnrichmentDefinitionState(GDSEnrichmentDefinitionState GDSEnrichmentDefinitionState) {
-        this.GDSEnrichmentDefinitionState = GDSEnrichmentDefinitionState;
+    public void setEnrichmentDefinitionState(GDSEnrichmentDefinitionState enrichmentDefinitionState) {
+        this.enrichmentDefinitionState = enrichmentDefinitionState;
+    }
+
+    public GDSStreamingTopologyDefinitionState getStreamingTopologyDefinitionState() {
+        return streamingTopologyDefinitionState;
+    }
+
+    public void setStreamingTopologyDefinitionState(GDSStreamingTopologyDefinitionState streamingTopologyDefinitionState) {
+        this.streamingTopologyDefinitionState = streamingTopologyDefinitionState;
     }
 
     public void reset() {
-        GDSBaseDefinitionState.reset();
-        GDSSchemaDefinitionState.reset();
-        GDSCollectionDefinitionState.reset();
-        GDSEnrichmentDefinitionState.reset();
+        baseDefinitionState.reset();
+        schemaDefinitionState.reset();
+        collectionDefinitionState.reset();
+        enrichmentDefinitionState.reset();
     }
 }

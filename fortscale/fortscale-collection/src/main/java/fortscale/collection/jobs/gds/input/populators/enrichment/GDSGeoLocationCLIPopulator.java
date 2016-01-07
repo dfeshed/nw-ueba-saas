@@ -25,7 +25,7 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
     private static final String CITY_FIELD_PARAM = "cityField";
     private static final String ISP_FIELD_PARAM = "ispField";
     private static final String USAGE_TYPE_FIELD_PARAM = "usageTypeField";
-    private static final String DOESSSION_UPDATE_FLAG_PARAM = "doSessionUpdateFlag";
+    private static final String DO_SESSSION_UPDATE_FLAG_PARAM = "doSessionUpdateFlag";
     private static final String DO_DATA_BUCKETS_PARAM = "doDataBuckets";
     private static final String DO_GEO_LOCATION_PARAM = "doGeoLocation";
     private static final String LAST_STATE_PARAM = "lastState";
@@ -37,12 +37,12 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        if(currentConfigurationState.isSourceIpGeoLocationRequired()) {
+        if(currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired()) {
 
             System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "source_VpnEnrichTask"));
 
-            if(currentConfigurationState.isTargetIpGeoLocationRequired()) {
+            if(currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired()) {
                 paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-source-ip-geolocated"));
             }
             else {
@@ -58,7 +58,7 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
             paramsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"src_cityField"));
             paramsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"src_ispField"));
             paramsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"src_usageTypeField"));
-            paramsMap.put(DOESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DOESSSION_UPDATE_FLAG_PARAM,false,""));
+            paramsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
             paramsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
             paramsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
 
@@ -66,7 +66,7 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
         }
 
         //Target Geo Location
-        if(currentConfigurationState.isTargetIpGeoLocationRequired()) {
+        if(currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired()) {
 
             System.out.println(String.format("Going to configure the target ip at  GeoLocation task for %s", dataSourceName));
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "target_VpnEnrichTask"));
@@ -82,7 +82,7 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
             paramsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"dst_cityField"));
             paramsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"dst_ispField"));
             paramsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"dst_usageTypeField"));
-            paramsMap.put(DOESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DOESSSION_UPDATE_FLAG_PARAM,false,""));
+            paramsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
             paramsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
             paramsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
 

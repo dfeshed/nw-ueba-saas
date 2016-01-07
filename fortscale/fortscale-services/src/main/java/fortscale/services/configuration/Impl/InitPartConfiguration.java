@@ -51,31 +51,31 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			boolean hasSourceIp = gdsConfigurationState.getGDSSchemaDefinitionState().hasSourceIp();
+			boolean hasSourceIp = gdsConfigurationState.getSchemaDefinitionState().hasSourceIp();
 
-			boolean hasTargetIp = gdsConfigurationState.getGDSSchemaDefinitionState().hasTargetIp();
+			boolean hasTargetIp = gdsConfigurationState.getSchemaDefinitionState().hasTargetIp();
 
-			String dataFields = gdsConfigurationState.getGDSSchemaDefinitionState().getDataFields();
+			String dataFields = gdsConfigurationState.getSchemaDefinitionState().getDataFields();
 
-			String enrichFields = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichFields();
+			String enrichFields = gdsConfigurationState.getSchemaDefinitionState().getEnrichFields();
 
-			String enrichDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichDelimiter();
+			String enrichDelimiter = gdsConfigurationState.getSchemaDefinitionState().getEnrichDelimiter();
 
-			String enrichTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getEnrichTableName();
+			String enrichTableName = gdsConfigurationState.getSchemaDefinitionState().getEnrichTableName();
 
-			String scoreFields = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreFields();
+			String scoreFields = gdsConfigurationState.getSchemaDefinitionState().getScoreFields();
 
-			String scoreDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreDelimiter();
+			String scoreDelimiter = gdsConfigurationState.getSchemaDefinitionState().getScoreDelimiter();
 
-			String scoreTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getScoreTableName();
+			String scoreTableName = gdsConfigurationState.getSchemaDefinitionState().getScoreTableName();
 
-			boolean hasTopSchema = gdsConfigurationState.getGDSSchemaDefinitionState().hasTopSchema();
+			boolean hasTopSchema = gdsConfigurationState.getSchemaDefinitionState().hasTopSchema();
 
-			String normalizedUserNameField = gdsConfigurationState.getGDSSchemaDefinitionState().getNormalizedUserNameField();
+			String normalizedUserNameField = gdsConfigurationState.getSchemaDefinitionState().getNormalizedUserNameField();
 
-			String dataDelimiter = gdsConfigurationState.getGDSSchemaDefinitionState().getDataDelimiter();
+			String dataDelimiter = gdsConfigurationState.getSchemaDefinitionState().getDataDelimiter();
 
-			String dataTableName = gdsConfigurationState.getGDSSchemaDefinitionState().getDataTableName();
+			String dataTableName = gdsConfigurationState.getSchemaDefinitionState().getDataTableName();
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);

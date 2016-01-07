@@ -21,7 +21,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserMongoUpdateState();
+        GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState();
 
         ConfigurationParam anyRow = configurationParams.get("anyRow");
         ConfigurationParam statusFieldName = configurationParams.get("statusFieldName");
@@ -36,7 +36,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserMongoUpdateState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState().reset();
     }
 }
 

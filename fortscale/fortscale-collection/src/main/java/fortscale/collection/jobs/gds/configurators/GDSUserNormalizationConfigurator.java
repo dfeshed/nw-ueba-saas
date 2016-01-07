@@ -21,7 +21,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState();
+        GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationState();
 
         ConfigurationParam userNameField = configurationParams.get("userNameField");
         ConfigurationParam domainField = configurationParams.get("domainFieldName");
@@ -42,6 +42,6 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getUserNormalizationState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationState().reset();
     }
 }

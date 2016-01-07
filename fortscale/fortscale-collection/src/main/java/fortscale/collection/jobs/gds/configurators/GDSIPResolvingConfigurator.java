@@ -21,7 +21,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
 
-        GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getIpResolvingState();
+        GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingState();
 
         ConfigurationParam restrictToAD = configurationParams.get("restrictToAD");
         ConfigurationParam shortNameUsage = configurationParams.get("shortNameUsage");
@@ -42,6 +42,6 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getIpResolvingState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingState().reset();
     }
 }

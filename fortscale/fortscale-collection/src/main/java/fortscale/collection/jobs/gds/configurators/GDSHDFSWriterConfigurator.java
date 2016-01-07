@@ -20,7 +20,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
-        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getGDSEnrichmentDefinitionState().getHdfsWriterState();
+        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
 
         ConfigurationParam fieldList = configurationParams.get("fieldList");
         ConfigurationParam delimiter = configurationParams.get("delimiter");
@@ -43,7 +43,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getGDSEnrichmentDefinitionState().getHdfsWriterState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState().reset();
     }
 }
 
