@@ -4,7 +4,7 @@ import com.google.common.base.Throwables;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
 import fortscale.ml.service.impl.ModelServiceImpl;
-import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.exceptions.KeyValueDBException;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
@@ -69,8 +69,8 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 	
 	
 	/** Update the user model in samza store 
-	 * @throws LevelDbException */
-	public void updateModel(String context, PrevalanceModel model) throws LevelDbException {
+	 * @throws fortscale.streaming.exceptions.KeyValueDBException */
+	public void updateModel(String context, PrevalanceModel model) throws KeyValueDBException {
 		try{
 			PrevalanceModelKey key = buildModelKey(context, model);
 			store.put(buildStoreKey(key.getModelName(),key.getContext()), model);
@@ -86,7 +86,7 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 		} catch(Exception exception){
 			String errorMessage =String.format("error storing value. model name: %s, username: %s", model.getModelName(), context); 
         	logger.error(errorMessage, exception);
-            throw new LevelDbException(errorMessage, exception);
+            throw new KeyValueDBException(errorMessage, exception);
         }
 	}
 	

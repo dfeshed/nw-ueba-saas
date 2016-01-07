@@ -19,7 +19,6 @@ import fortscale.streaming.service.aggregation.feature.bucket.repository.Feature
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.logging.Logger;
 
-import static fortscale.streaming.ConfigUtils.getConfigDouble;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 @Configurable(preConstruction=true)
@@ -41,14 +40,14 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.event.seconds}")
-	private long levelDbRetentionInEventSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.system.seconds}")
-	private long levelDbRetentionInSystemSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.window.in.system.seconds}")
-	private long levelDbRetentionWindowUpdateInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.event.seconds}")
+	private long keyValueDbRetentionInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.system.seconds}")
+	private long keyValueDbRetentionInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.window.in.system.seconds}")
+	private long keyValueDbRetentionWindowUpdateInSystemSeconds;
 	
-	private long lastLevelDbCleanupSystemEpochTime = 0;
+	private long lastKeyValueDbCleanupSystemEpochTime = 0;
 	
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
 	private long storeSyncThresholdInEventSeconds;
@@ -80,16 +79,16 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		} else {
 			syncAll();
 		}
-		levelDbCleanup();
+		keyValueDbCleanup();
 	}
 	
-	private void levelDbCleanup(){
-		if(lastLevelDbCleanupSystemEpochTime == 0 || lastLevelDbCleanupSystemEpochTime + levelDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
-			lastLevelDbCleanupSystemEpochTime = System.currentTimeMillis();
+	private void keyValueDbCleanup(){
+		if(lastKeyValueDbCleanupSystemEpochTime == 0 || lastKeyValueDbCleanupSystemEpochTime + keyValueDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
+			lastKeyValueDbCleanupSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			//remove from level db those buckets that contains old enough (configured) events and that was synced with mongo before enough (configured) time.
-			long endTime = lastEventEpochTime - levelDbRetentionInEventSeconds;
-			long syncTime = lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds;
+			long endTime = lastEventEpochTime - keyValueDbRetentionInEventSeconds;
+			long syncTime = lastKeyValueDbCleanupSystemEpochTime - keyValueDbRetentionInSystemSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(endTime, syncTime);
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
 				featureBucketStore.delete(getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));

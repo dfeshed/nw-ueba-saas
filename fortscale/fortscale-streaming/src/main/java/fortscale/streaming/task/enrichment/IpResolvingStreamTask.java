@@ -7,7 +7,7 @@ import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -72,27 +72,27 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
 
             // create leveldb based caches for ip resolving services (dhcp, ise, login, computer) and pass the caches to the ip resolving services
-            LevelDbBasedCache<String,DhcpEvent> dhcpCache = new LevelDbBasedCache<String, DhcpEvent>(
+            KeyValueDbBasedCache<String,DhcpEvent> dhcpCache = new KeyValueDbBasedCache<String, DhcpEvent>(
                     (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class);
             resolver.getDhcpResolver().setCache(dhcpCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
 
-            LevelDbBasedCache<String, IseEvent> iseCache = new LevelDbBasedCache<String,IseEvent>(
+            KeyValueDbBasedCache<String, IseEvent> iseCache = new KeyValueDbBasedCache<String,IseEvent>(
                     (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
 
-            LevelDbBasedCache<String, PxGridIPEvent> pxGridCache = new LevelDbBasedCache<String,PxGridIPEvent>(
+            KeyValueDbBasedCache<String, PxGridIPEvent> pxGridCache = new KeyValueDbBasedCache<String,PxGridIPEvent>(
                     (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
             resolver.getPxGridResolver().setCache(pxGridCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
-            LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
+            KeyValueDbBasedCache<String,ComputerLoginEvent> loginCache = new KeyValueDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
             resolver.getComputerLoginResolver().setCache(loginCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getComputerLoginResolver());
 
-            LevelDbBasedCache<String, Computer> computerCache = new LevelDbBasedCache<String, Computer>((
+            KeyValueDbBasedCache<String, Computer> computerCache = new KeyValueDbBasedCache<String, Computer>((
                     KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
             resolver.getComputerService().setCache(computerCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), resolver.getComputerService());

@@ -26,7 +26,7 @@ public class MorphlinesParseVpnTester extends MorphlinesTester {
         parsedRecord.put(Fields.MESSAGE, inputLine);
         for (MorphlinesItemsProcessor subject : subjects) {
             if (parsedRecord!=null)
-                parsedRecord = (Record) subject.process(parsedRecord);
+                parsedRecord = (Record) subject.process(parsedRecord,null);
         }
 
         if (null == expectedOutput) {

@@ -26,9 +26,9 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
 
 	@Override
-	public Boolean Init() {
+	public boolean init() {
 
-		super.Init();
+		super.init();
 		Boolean result = false;
 		try {
 			this.fileToConfigurePath =this.fileToConfigurePath+"username-normalization-tagging-task.properties";
@@ -45,7 +45,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public boolean applyConfiguration() throws Exception {
 
         try {
             String line = "";

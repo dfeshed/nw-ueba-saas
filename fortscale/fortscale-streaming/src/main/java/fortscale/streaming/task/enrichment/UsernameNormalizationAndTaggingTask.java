@@ -2,7 +2,7 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.FortscaleValueResolver;
@@ -87,8 +87,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
-		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
-		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
+		KeyValueDbBasedCache<String, String> usernameStore = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
+		KeyValueDbBasedCache<String, ArrayList> samAccountNameStore = new KeyValueDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
 		CachingService samAccountNameService = null;
 
@@ -144,7 +144,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService userService = tagService.getUserService();
 		// add the tagService to update input topics map
 		if (userService != null) {
-			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
+			userService.setCache(new KeyValueDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}

@@ -19,8 +19,8 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean Init() {
-		super.Init();
+	public boolean init() {
+		super.init();
 		Boolean result = false;
 		outPutTopicEntry = "output.topics";
 		try {
@@ -39,7 +39,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	}
 
 	@Override
-	public Boolean Configure() throws Exception {
+	public boolean applyConfiguration() throws Exception {
         try {
             String line = "";
 
