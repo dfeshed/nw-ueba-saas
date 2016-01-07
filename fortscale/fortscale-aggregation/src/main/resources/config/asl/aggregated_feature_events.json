@@ -419,7 +419,6 @@
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
-
       {
         "name": "number_of_failed_amt_daily",
         "type": "F",
@@ -429,12 +428,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -447,12 +446,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "failed_events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -508,7 +507,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -526,7 +525,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -568,8 +567,6 @@
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
-
-
       {
         "name": "highest_score_over_date_time_events_kerberos_logins_daily",
         "type": "P",
@@ -1156,7 +1153,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -1174,7 +1171,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -1192,7 +1189,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -1210,7 +1207,7 @@
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
@@ -1377,12 +1374,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "daily_feature_retention_strategy"
       },
@@ -1395,12 +1392,12 @@
         "waitAfterBucketCloseSeconds": 300,
         "evidencesFilterStrategy": "HIGHEST_SCORE",
         "aggregatedFeatureNamesMap": {
-          "aggregated_feature_name_to_sum": [
+          "sum": [
             "events_counter"
           ]
         },
         "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_events_counter_func"
+          "type": "aggr_feature_sum_func"
         },
         "retentionStrategyName": "hourly_feature_retention_strategy"
       },
