@@ -87,7 +87,7 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 					featureToEventsPrevalenceModelStreamTaskManagerMap.get(fullPathFeatureName);
 
 			if (eventsPrevalenceModelStreamTaskManager != null) {
-				eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+				eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator, false);
 				processedMessageCount.inc();
 			} else {
 				skippedMessageCount.inc();
