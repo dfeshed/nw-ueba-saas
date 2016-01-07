@@ -222,7 +222,7 @@ public class CleanJob extends FortscaleJob {
 					checkAndStopAllRelevantServices();
                 case FASTDELETE: {
                     //if fast delete - no validation is performed
-                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE, isBrutalDelete);
+                    success = deleteEntities(technology, dataSources, startTime, endTime, strategy == Strategy.DELETE);
                     break;
                 }
                 case RESTORE: {
@@ -247,7 +247,7 @@ public class CleanJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean deleteEntities(Technology technology, Map<String, String> toDelete, Date startDate, Date endDate,
-								   boolean doValidate, boolean isBrutalDelete) {
+								   boolean doValidate) {
 		boolean success = false;
 		switch (technology) {
 			case MONGO: {
