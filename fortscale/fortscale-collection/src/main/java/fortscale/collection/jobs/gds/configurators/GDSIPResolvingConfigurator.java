@@ -24,7 +24,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
 
-        List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates = currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingState();
+        List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates = currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates();
 
         addConfiguration(ipResolvingStates, configurationParams, GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY);
         addConfiguration(ipResolvingStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY);
@@ -48,12 +48,13 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ipResolvingState.setDropOnFailUsage(dropOnFailUsage.getParamFlag());
         ipResolvingState.setOverrideIpWithHostNameUsage(overrideIpWithHostNameUsage.getParamFlag());
         ipResolvingState.setHostField(updateOnlyFlag.getParamValue());
+        ipResolvingState.setRemoveLastDotUsage(removeLastDotUsage.getParamFlag());
 
         ipResolvingStates.add(ipResolvingState);
     }
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingState().clear();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates().clear();
     }
 }

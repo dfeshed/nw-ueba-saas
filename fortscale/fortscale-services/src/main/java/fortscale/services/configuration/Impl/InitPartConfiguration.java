@@ -19,8 +19,8 @@ public class InitPartConfiguration extends ConfigurationService {
     public InitPartConfiguration()
 	{
 		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
-		this.fileToConfigurePath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
-		this.secondFileToConfigurePath = root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties";
+		this.fileToConfigurePath = USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
+		this.secondFileToConfigurePath = USER_HOME_DIR + "/fortscale/streaming/config/fortscale-overriding-streaming.properties";
 	}
 
 	@Override

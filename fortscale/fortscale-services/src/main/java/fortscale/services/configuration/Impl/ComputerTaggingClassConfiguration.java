@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
+ * Implementation of Computer Tagging task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class ComputerTaggingClassConfiguration extends StreamingConfigurationService {
@@ -22,7 +24,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
     @Override
     public boolean init() {
         super.init();
-        Boolean result = false;
+        Boolean result;
         try {
             this.fileToConfigurePath = this.fileToConfigurePath+"computer-tagging-clustering-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -30,7 +32,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
             result = true;
         } catch (Exception e) {
             logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
-            System.out.println(String.format("There was an exception during execution please see more info at the log "));
+            System.out.println("There was an exception during execution please see more info at the log ");
             result = false;
 
         }
@@ -40,10 +42,8 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 
     @Override
     public boolean applyConfiguration() throws Exception {
-        String outPutTopicEntry = "output.topic";
-
         try {
-            String line = "";
+            String line;
 
             fileWriterToConfigure.write("\n");
             fileWriterToConfigure.write("\n");
@@ -83,8 +83,6 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
 
             }
             if (gdsConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired()) {
-
-
                 //source name
                 line = String.format("%s.%s_%s.destination.hostname.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, targetHostField);
                 writeLineToFile(line, fileWriterToConfigure, true);
@@ -103,13 +101,10 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
                 // configure the is sensitive machine field
                 line = String.format("%s.%s_%S.destination.is-sensitive-machine.field=${impala.data.%s.table.field.is_sensitive_machine}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-
-
             }
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("#############", fileWriterToConfigure, true);
-
 
             fileWriterToConfigure.flush();
         }

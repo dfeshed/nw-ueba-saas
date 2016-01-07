@@ -1,123 +1,114 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 
 /**
+ * Implementation of IP Resolving task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class IpResolvingTaskConfiguration extends StreamingConfigurationService {
 
+    public IpResolvingTaskConfiguration ()
+    {
+
+        logger = LoggerFactory.getLogger(IpResolvingTaskConfiguration.class);
+    }
 
 
+    @Override
+    public boolean init() {
+        super.init();
+        Boolean result;
+        try {
+            this.fileToConfigurePath = this.fileToConfigurePath+"ip-resolving-task.properties";
+            this.fileToConfigure = new File(this.fileToConfigurePath);
+            this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
+            result = true;
+        } catch (Exception e) {
+            logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+            System.out.println("There was an exception during execution please see more info at the log ");
+            result = false;
 
-	public IpResolvingTaskConfiguration ()
-	{
+        }
+        return result;
 
-		logger = LoggerFactory.getLogger(IpResolvingTaskConfiguration.class);
-	}
+    }
 
-
-	@Override
-	public boolean init() {
-		super.init();
-		Boolean result = false;
-		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"ip-resolving-task.properties";
-			this.fileToConfigure = new File(this.fileToConfigurePath);
-			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
-			result = true;
-		} catch (Exception e) {
-			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-			result = false;
-
-		}
-		return result;
-
-	}
-
-	@Override
-	public boolean applyConfiguration() throws Exception {
-        String outPutTopicEntry = "output.topic";
+    @Override
+    public boolean applyConfiguration() throws Exception {
 
         try {
-            String line = "";
-			ConfigurationParam result = getParamConfiguration(configurationParams,"restrictToAD");
-            Boolean restrictToAD = result != null ? result.getParamFlag() : null;
+            String line;
 
-			result = getParamConfiguration(configurationParams,"restrictToAD");
-            Boolean shortNameUsage = result != null ? result.getParamFlag() : null;
+            fileWriterToConfigure.write("\n");
+            fileWriterToConfigure.write("\n");
+            List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates = gdsConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates();
 
-			getParamConfiguration(configurationParams,"restrictToAD");
-            Boolean removeLastDotUsage = result != null ? result.getParamFlag() : null;
+            for (GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState : ipResolvingStates) {
+                String taskName = ipResolvingState.getTaskName();
+                String ipField = ipResolvingState.getIpField();
+                String hostField = ipResolvingState.getHostField();
+                boolean restrictToAD = ipResolvingState.isRestrictToAD();
+                boolean shortNameUsage = ipResolvingState.isShortNameUsage();
+                boolean removeLastDotUsage = ipResolvingState.isRemoveLastDotUsage();
+                boolean dropOnFailUsage = ipResolvingState.isDropOnFailUsage();
+                boolean overrideIpWithHostNameUsage = ipResolvingState.isOverrideIpWithHostNameUsage();
 
-			getParamConfiguration(configurationParams,"dropOnFailUsage");
-            Boolean dropOnFailUsage = result != null ? result.getParamFlag() : null;
+                writeMandatoryConfiguration(ipResolvingState.getTaskName(), ipResolvingState.getLastState(), ipResolvingState.getOutputTopic(), ipResolvingState.getOutputTopicEntry(), true);
 
-			getParamConfiguration(configurationParams,"overrideIpWithHostNameUsage");
-            Boolean overrideIpWithHostNameUsage = result != null ? result.getParamFlag() : null;
+                //partition field name  (today we use for all the username)
+                line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-			getParamConfiguration(configurationParams,"ipField");
-            String ipField = result != null ? result.getParamValue() : null;
+                //ip field
+                line = String.format("%s.%s_%s.ip.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, ipField);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-			getParamConfiguration(configurationParams,"host");
-            String hostField = result != null ? result.getParamValue() : null;
+                //hostname
+                line = String.format("%s.%s_%s.host.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hostField);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-			fileWriterToConfigure.write("\n");
-			fileWriterToConfigure.write("\n");
-
-            writeMandatoryConfiguration();
-
-            //partition field name  (today we use for all the username)
-            line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
-            writeLineToFile(line, fileWriterToConfigure, true);
-
-            //ip field
-            line = String.format("%s.%s_%s.ip.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, ipField);
-            writeLineToFile(line, fileWriterToConfigure, true);
-
-            //hostname
-            line = String.format("%s.%s_%s.host.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, hostField);
-            writeLineToFile(line, fileWriterToConfigure, true);
-
-            //time stamp
-            line = String.format("%s.%s_%s.timestamp.field=${impala.data.%s.table.field.epochtime}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
-            writeLineToFile(line, fileWriterToConfigure, true);
+                //time stamp
+                line = String.format("%s.%s_%s.timestamp.field=${impala.data.%s.table.field.epochtime}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
 
-            //restric to AD
+                //restric to AD
 
-            line = String.format("%s.%s_%s.restrictToADName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, restrictToAD.toString());
-            writeLineToFile(line, fileWriterToConfigure, true);
+                line = String.format("%s.%s_%s.restrictToADName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, restrictToAD);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-            //short name
+                //short name
 
-            line = String.format("%s.%s_%s.shortName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, shortNameUsage.toString());
-            writeLineToFile(line, fileWriterToConfigure, true);
+                line = String.format("%s.%s_%s.shortName=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, shortNameUsage);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-            //Remove last Dot
+                //Remove last Dot
 
-            line = String.format("%s.%s_%s.isRemoveLastDot=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, removeLastDotUsage.toString());
-            writeLineToFile(line, fileWriterToConfigure, true);
+                line = String.format("%s.%s_%s.isRemoveLastDot=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, removeLastDotUsage);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-            //Drop When Fail
+                //Drop When Fail
 
-            line = String.format("%s.%s_%s.dropWhenFail=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dropOnFailUsage.toString());
-            writeLineToFile(line, fileWriterToConfigure, true);
+                line = String.format("%s.%s_%s.dropWhenFail=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dropOnFailUsage);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
 
-            //Override IP with Hostname
+                //Override IP with Hostname
 
-            line = String.format("%s.%s_%s.overrideIPWithHostname=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, overrideIpWithHostNameUsage.toString());
-            writeLineToFile(line, fileWriterToConfigure, true);
+                line = String.format("%s.%s_%s.overrideIPWithHostname=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, overrideIpWithHostNameUsage);
+                writeLineToFile(line, fileWriterToConfigure, true);
 
-            writeLineToFile("\n", fileWriterToConfigure, true);
-            writeLineToFile("#############", fileWriterToConfigure, true);
+                writeLineToFile("\n", fileWriterToConfigure, true);
+                writeLineToFile("#############", fileWriterToConfigure, true);
+            }
 
 
             fileWriterToConfigure.flush();
@@ -130,8 +121,8 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
         }
 
 
-		return true;
+        return true;
 
 
-	}
+    }
 }

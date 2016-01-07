@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
+ * Implementation of Geo-location task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
@@ -21,7 +23,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	@Override
 	public boolean init() {
 		super.init();
-		Boolean result = false;
+		Boolean result;
 		try {
 			this.fileToConfigurePath = this.fileToConfigurePath+"hdfs-events-writer-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
@@ -40,7 +42,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 	@Override
 	public boolean applyConfiguration() throws Exception {
         try {
-            String line = "";
+            String line;
             GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = gdsConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
 
             fileWriterToConfigure.write("\n");
@@ -110,19 +112,19 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.msg.serde=timebarrier", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("# This property is set to the number of key/value pairs that should be kept in this in-memory buffer, per task instance. The number cannot be greater than stores.*.object.cache.size.");
+            line = "# This property is set to the number of key/value pairs that should be kept in this in-memory buffer, per task instance. The number cannot be greater than stores.*.object.cache.size.";
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.write.batch.size=25", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("# This property determines the number of objects to keep in Samza's cache, per task instance. This same cache is also used for write buffering (see stores.*.write.batch.size). A value of 0 disables all caching and batching.");
+            line = "# This property determines the number of objects to keep in Samza's cache, per task instance. This same cache is also used for write buffering (see stores.*.write.batch.size). A value of 0 disables all caching and batching.";
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.object.cache.size=100", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("# The size of LevelDB's block cache in bytes, per container. Note that this is an off-heap memory allocation, so the container's total memory use is the maximum JVM heap size plus the size of this cache.");
+            line = "# The size of LevelDB's block cache in bytes, per container. Note that this is an off-heap memory allocation, so the container's total memory use is the maximum JVM heap size plus the size of this cache.";
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.container.cache.size.bytes=2000", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("# The amount of memory (in bytes) that LevelDB uses for buffering writes before they are written to disk.");
+            line = "# The amount of memory (in bytes) that LevelDB uses for buffering writes before they are written to disk.";
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.container.write.buffer.size.bytes=1000", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);

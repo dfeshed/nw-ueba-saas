@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
+ * Implementation of User Mongo Update task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class UserMongoUpdateConfiguration  extends StreamingConfigurationService {
@@ -29,7 +31,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 			result = true;
 		} catch (Exception e) {
 			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
+			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
 		}
 
@@ -38,9 +40,8 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 
 	@Override
 	public boolean applyConfiguration() throws Exception {
-        String outPutTopicEntry = "output.topic";
         try {
-            String line = "";
+            String line;
             String statusFieldName="";
             String successValue="";
 

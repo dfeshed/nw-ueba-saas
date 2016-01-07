@@ -3,6 +3,8 @@ package fortscale.services.configuration;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * Abstract implementation for streaming configuration services
+ *
  * Created by idanp on 12/21/2015.
  */
 public abstract class StreamingConfigurationService extends ConfigurationService {
@@ -12,7 +14,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 
 	@Override
 	public boolean init() {
-		this.fileToConfigurePath = this.root+"/fortscale/streaming/config/";
+		this.fileToConfigurePath = USER_HOME_DIR + "/fortscale/streaming/config/";
 		dataSourceName = gdsConfigurationState.getDataSourceName();
 		return true;
 	}
@@ -20,8 +22,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 	public abstract boolean applyConfiguration() throws Exception;
 
 	protected void writeMandatoryConfiguration(String taskName, String lastState, String outputTopic, String outputTopicEntry, boolean isGenericTopology) throws Exception{
-		String line = "";
-
+		String line;
 
 		line = String.format("# %s",dataSourceName);
 		writeLineToFile(line, fileWriterToConfigure, true);
@@ -43,7 +44,6 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 			writeLineToFile(line, fileWriterToConfigure, true);
 		}
 
-
 		if(!StringUtils.isBlank(outputTopic)) {
 			if (isGenericTopology) {
 				line = String.format("%s.%s_%s.%s=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, outputTopicEntry, outputTopic);
@@ -52,10 +52,7 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 
 				System.out.println("Not supported yet via  this configuration tool ");
 				//TODO - Need to add the topic configuration  also for task.inputs and fortscale.events.entry.<dataSource>_UsernameNormalizationAndTaggingTask.output.topic
-
 			}
 		}
 	}
-
-
 }

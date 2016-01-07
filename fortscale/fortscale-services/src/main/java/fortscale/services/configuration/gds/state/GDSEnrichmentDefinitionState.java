@@ -26,7 +26,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         this.userNormalizationStates = userNormalizationStates;
     }
 
-    public List<IPResolvingState> getIpResolvingState() {
+    public List<IPResolvingState> getIpResolvingStates() {
         return ipResolvingStates;
     }
 
@@ -189,6 +189,15 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         private boolean overrideIpWithHostNameUsage;
         private String ipField;
         private String hostField;
+        private boolean removeLastDotUsage;
+
+        public boolean isRemoveLastDotUsage() {
+            return removeLastDotUsage;
+        }
+
+        public void setRemoveLastDotUsage(boolean removeLastDotUsage) {
+            this.removeLastDotUsage = removeLastDotUsage;
+        }
 
         public boolean isRestrictToAD() {
             return restrictToAD;
