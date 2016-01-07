@@ -1,50 +1,69 @@
 package fortscale.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import groovy.json.JsonException;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EntityEventConfService implements InitializingBean, ApplicationContextAware {
+public class EntityEventConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(EntityEventConfService.class);
 
-	private static final String ENTITY_EVENTS_JSON_FIELD_NAME = "EntityEvents";
-	private static final String GLOBAL_PARAMS_JSON_FIELD_NAME = "GlobalParams";
 	private static final String ENTITY_EVENT_DEFINITIONS_JSON_FIELD_NAME = "EntityEventDefinitions";
 
-	@Value("${fortscale.aggregation.entity.event.definitions.json.file.path}")
-	private String entityEventDefinitionsJsonFilePath;
+	@Value("${fortscale.entity.event.definitions.json.file.path}")
+	private String entityEventDefinitionsConfJsonFilePath;
+	@Value("${fortscale.entity.event.definitions.conf.json.overriding.files.path}")
+	private String entityEventDefinitionsConfJsonOverridingFilesPath;
 
-	private ApplicationContext applicationContext;
-	private Map<String, Object> globalParams;
-	private Map<String, EntityEventConf> entityEventDefinitions;
+	@Autowired
+	private EntityEventGlobalParamsConfService entityEventGlobalParamsConfService;
+
+	private Map<String, EntityEventConf> entityEventDefinitions = new HashMap<>();
+
+	private ObjectMapper objectMapper = new ObjectMapper();;
+
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		loadEntityEventsJsonFile();
+	protected String getBaseConfJsonFilePath() {
+		return entityEventDefinitionsConfJsonFilePath;
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	protected String getBaseOverridingConfJsonFolderPath() {
+		return entityEventDefinitionsConfJsonOverridingFilesPath;
 	}
 
-	public Map<String, Object> getGlobalParams() {
-		return globalParams;
+	@Override
+	protected String getAdditionalConfJsonFolderPath() {
+		return null;
 	}
+
+	@Override
+	protected String getConfNodeName() {
+		return ENTITY_EVENT_DEFINITIONS_JSON_FIELD_NAME;
+	}
+
+	@Override
+	protected void loadConfJson(JSONObject jsonObj){
+		String definitionAsString = jsonObj.toJSONString();
+		try {
+			EntityEventConf entityEventConf = objectMapper.readValue(definitionAsString, EntityEventConf.class);
+			this.entityEventDefinitions.put(entityEventConf.getName(), entityEventConf);
+		} catch (Exception e) {
+			String errorMsg = String.format("Failed to deserialize JSON %s", definitionAsString);
+			logger.error(errorMsg, e);
+			throw new JsonException(errorMsg, e);
+		}
+	}
+
 
 	public List<EntityEventConf> getEntityEventDefinitions() {
 		List<EntityEventConf> list = new ArrayList<>();
@@ -58,65 +77,7 @@ public class EntityEventConfService implements InitializingBean, ApplicationCont
 		return entityEventDefinitions.get(name);
 	}
 
-	private void loadEntityEventsJsonFile() {
-		JSONObject entityEvents;
-		String errorMsg;
-
-		try {
-			Resource resource = applicationContext.getResource(entityEventDefinitionsJsonFilePath);
-			entityEvents = (JSONObject)JSONValue.parseWithException(resource.getInputStream());
-			entityEvents = (JSONObject)entityEvents.get(ENTITY_EVENTS_JSON_FIELD_NAME);
-		} catch (Exception e) {
-			errorMsg = String.format("Failed to parse JSON file %s", entityEventDefinitionsJsonFilePath);
-			logger.error(errorMsg, e);
-			throw new JsonException(errorMsg, e);
-		}
-
-		if (entityEvents == null) {
-			errorMsg = String.format("JSON file %s does not contain field %s", entityEventDefinitionsJsonFilePath, ENTITY_EVENTS_JSON_FIELD_NAME);
-			logger.error(errorMsg);
-			throw new JsonException(errorMsg);
-		}
-
-		loadGlobalParams(entityEvents);
-		loadEntityEventDefinitions(entityEvents);
-	}
-
-	private void loadGlobalParams(JSONObject entityEvents) {
-		JSONObject globalParams = (JSONObject)entityEvents.get(GLOBAL_PARAMS_JSON_FIELD_NAME);
-		if (globalParams == null) {
-			String errorMsg = String.format("JSON file %s does not contain field %s", entityEventDefinitionsJsonFilePath, GLOBAL_PARAMS_JSON_FIELD_NAME);
-			logger.error(errorMsg);
-			throw new JsonException(errorMsg);
-		}
-
-		this.globalParams = new HashMap<>();
-		for (Map.Entry<String, Object> entry : globalParams.entrySet()) {
-			this.globalParams.put(entry.getKey(), entry.getValue());
-		}
-	}
-
-	private void loadEntityEventDefinitions(JSONObject entityEvents) {
-		JSONArray entityEventDefinitions = (JSONArray)entityEvents.get(ENTITY_EVENT_DEFINITIONS_JSON_FIELD_NAME);
-		String errorMsg;
-		if (entityEventDefinitions == null) {
-			errorMsg = String.format("JSON file %s does not contain array %s", entityEventDefinitionsJsonFilePath, ENTITY_EVENT_DEFINITIONS_JSON_FIELD_NAME);
-			logger.error(errorMsg);
-			throw new JsonException(errorMsg);
-		}
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		this.entityEventDefinitions = new HashMap<>();
-		for (Object definition : entityEventDefinitions) {
-			String definitionAsString = ((JSONObject)definition).toJSONString();
-			try {
-				EntityEventConf entityEventConf = objectMapper.readValue(definitionAsString, EntityEventConf.class);
-				this.entityEventDefinitions.put(entityEventConf.getName(), entityEventConf);
-			} catch (Exception e) {
-				errorMsg = String.format("Failed to deserialize JSON %s", definitionAsString);
-				logger.error(errorMsg, e);
-				throw new JsonException(errorMsg, e);
-			}
-		}
+	public Map<String, Object> getGlobalParams() {
+		return entityEventGlobalParamsConfService.getGlobalParams();
 	}
 }
