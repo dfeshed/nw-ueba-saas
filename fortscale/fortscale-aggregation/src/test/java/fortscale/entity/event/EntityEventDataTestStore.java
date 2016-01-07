@@ -1,9 +1,10 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventDataStore;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EntityEventDataTestStore implements EntityEventDataStore {
 	private Map<String, EntityEventData> entityEventDataMap = new HashMap<>();
@@ -24,25 +25,32 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 			}
 		}
 
-		Collections.sort(listOfEntityEventData, new Comparator<EntityEventData>() {
-			@Override
-			public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
-				return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
-			}
-		});
-
+		Collections.sort(listOfEntityEventData, new EntityEventDataStartTimeComparator());
 		return listOfEntityEventData;
 	}
 
 	@Override
 	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
+		return getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime).stream()
+				.filter(entityEventData -> !entityEventData.isTransmitted())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
+		long fromTimeSeconds = TimestampUtils.convertToSeconds(fromTime.getTime());
+		long toTimeSeconds = TimestampUtils.convertToSeconds(toTime.getTime());
+
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
-		for (EntityEventData entityEventData : getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime)) {
-			if (!entityEventData.isTransmitted()) {
-				listOfEntityEventData.add(entityEventData);
+		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
+			String key = entry.getKey();
+			EntityEventData value = entry.getValue();
+			if (StringUtils.startsWith(key, entityEventName) && fromTimeSeconds <= value.getEndTime() && value.getEndTime() <= toTimeSeconds) {
+				listOfEntityEventData.add(value);
 			}
 		}
 
+		Collections.sort(listOfEntityEventData, new EntityEventDataEndTimeComparator());
 		return listOfEntityEventData;
 	}
 
@@ -60,6 +68,20 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 
 	private static String getEntityEventDataMapKey(String entityEventName, String contextId, long startTime, long endTime) {
 		return String.format("%s.%s.%d.%d", entityEventName, contextId, startTime, endTime);
+	}
+
+	private static final class EntityEventDataStartTimeComparator implements Comparator<EntityEventData> {
+		@Override
+		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+			return Long.compare(entityEventData1.getStartTime(), entityEventData2.getStartTime());
+		}
+	}
+
+	private static final class EntityEventDataEndTimeComparator implements Comparator<EntityEventData> {
+		@Override
+		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+			return Long.compare(entityEventData1.getEndTime(), entityEventData2.getEndTime());
+		}
 	}
 
 	public void emptyEntityEventDataStore() {

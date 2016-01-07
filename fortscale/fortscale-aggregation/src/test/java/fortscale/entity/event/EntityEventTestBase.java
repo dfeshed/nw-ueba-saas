@@ -1,11 +1,10 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import net.minidev.json.JSONObject;
 
 import java.util.Collections;
 import java.util.HashMap;
