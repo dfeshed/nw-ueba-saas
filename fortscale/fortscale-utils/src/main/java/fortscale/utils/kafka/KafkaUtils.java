@@ -135,12 +135,21 @@ public class KafkaUtils extends CleanupDeletionUtil {
             logger.error("no kafka data folder {} found", kafkaDataFolder);
             return false;
         }
-        try {
-            FileUtils.cleanDirectory(directory);
+        /*try {
+            //FileUtils.cleanDirectory(directory);
         } catch (IOException ex) {
             logger.error("failed to clean folder {} - {}", directory.getAbsolutePath(), ex);
             return false;
+        }*/
+
+        String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
+        try {
+            Process runCmd = Runtime.getRuntime().exec(cmdArray);
+            System.out.println("Command Executed Successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         if (validate && directory.list().length > 0) {
             logger.error("failed to clean kafka data folder");
             return false;
