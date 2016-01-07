@@ -1108,6 +1108,44 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
+    },
+    {
+      "name": "normalized_username_wame_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_wame_hourly",
+      "expireAfterSeconds": 2592000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+
+        }
+      ]
     }
   ]
 }

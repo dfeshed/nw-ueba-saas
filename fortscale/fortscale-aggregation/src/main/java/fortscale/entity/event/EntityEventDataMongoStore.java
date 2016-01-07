@@ -10,7 +10,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -127,6 +129,30 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
+	public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
+		String collectionName = getCollectionName(entityEventName);
+		/*
+		 * NOTE: Existence of collections should be checked directly against Mongo,
+		 * and not with Mongo DB utils, since the later is maintained only in the
+		 * Entity Events task (and not in other tasks that only query the store).
+		 * Performance wise this is less recommended, since calling 'collectionExists'
+		 * takes a long time.
+		 */
+		if (mongoTemplate.collectionExists(collectionName)) {
+			long fromTimeSeconds = TimestampUtils.convertToSeconds(fromTime.getTime());
+			long toTimeSeconds = TimestampUtils.convertToSeconds(toTime.getTime());
+
+			Query query = new Query();
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).gt(fromTimeSeconds));
+			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(toTimeSeconds));
+			query.with(new Sort(Direction.ASC, EntityEventData.END_TIME_FIELD));
+			return mongoTemplate.find(query, EntityEventData.class, collectionName);
+		}
+
+		return Collections.emptyList();
+	}
+
+	@Override
 	public void storeEntityEventData(EntityEventData entityEventData) {
 		String entityEventName = entityEventData.getEntityEventName();
 		String collectionName = getCollectionName(entityEventName);
@@ -147,6 +173,10 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(EntityEventData.START_TIME_FIELD, Direction.ASC));
+
+			// End time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(EntityEventData.END_TIME_FIELD, Direction.ASC));
 
 			// Modified at date (TTL)
 			int daysToRetainDocument = EXPIRE_AFTER_DAYS_DEFAULT;
