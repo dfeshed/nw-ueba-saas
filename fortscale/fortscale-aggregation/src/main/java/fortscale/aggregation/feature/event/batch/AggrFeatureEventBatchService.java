@@ -50,6 +50,7 @@ public class AggrFeatureEventBatchService {
                 for (FeatureBucket bucket : featureBuckets) {
                     buildAndSave(bucket);
                 }
+                i++;
             }while(featureBuckets.size() == DEFAULT_PAGE_SIZE);
         }
 
