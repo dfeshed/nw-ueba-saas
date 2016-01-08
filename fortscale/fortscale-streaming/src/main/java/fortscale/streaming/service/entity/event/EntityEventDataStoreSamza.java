@@ -6,6 +6,7 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -70,10 +71,9 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
     }
 
-    @Override
-    public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
-        List<EntityEventData> listFromMongo = super.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventName, modifiedAtEpochtime);
-        return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
+    public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest){
+        List<EntityEventData> listFromMongo = super.getEntityEventDataThatWereNotTransmitted(entityEventName,pageRequest);
+        return getMergedListFromMongoAndSamza(listFromMongo, Long.MAX_VALUE);
     }
 
     @Override

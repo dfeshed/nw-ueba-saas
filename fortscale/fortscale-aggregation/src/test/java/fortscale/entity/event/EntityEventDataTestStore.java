@@ -2,6 +2,8 @@ package fortscale.entity.event;
 
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.*;
 
 public class EntityEventDataTestStore implements EntityEventDataStore {
@@ -28,14 +30,22 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
+	public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest){
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
-		for (EntityEventData entityEventData : getEntityEventDataWithModifiedAtEpochtimeLte(entityEventName, modifiedAtEpochtime)) {
-			if (!entityEventData.isTransmitted()) {
-				listOfEntityEventData.add(entityEventData);
+		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
+			String key = entry.getKey();
+			EntityEventData value = entry.getValue();
+			if (StringUtils.startsWith(key, entityEventName)) {
+				listOfEntityEventData.add(value);
 			}
 		}
 
+		Collections.sort(listOfEntityEventData, new EntityEventDataEndTimeComparator());
+		if(pageRequest != null) {
+			int fromIndex = pageRequest.getPageNumber() * pageRequest.getPageSize();
+			int toIndex = Math.min(fromIndex + pageRequest.getPageSize(), listOfEntityEventData.size());
+			listOfEntityEventData = listOfEntityEventData.subList(fromIndex, toIndex);
+		}
 		return listOfEntityEventData;
 	}
 
