@@ -49,7 +49,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     private List<EntityEventData> getMergedListFromMongoAndSamza(List<EntityEventData> entityEventDataListFromMongo, long modifiedAtEpochtimeLte) {
-        List<EntityEventData> resList = new ArrayList<>();
+        List<EntityEventData> resList = new ArrayList<>(entityEventDataListFromMongo.size());
 
         for(EntityEventData entityEventData: entityEventDataListFromMongo) {
             EntityEventData entityEventData1FromSamzaStore = entityEventStore.get(getEntityEventDataKey(entityEventData));

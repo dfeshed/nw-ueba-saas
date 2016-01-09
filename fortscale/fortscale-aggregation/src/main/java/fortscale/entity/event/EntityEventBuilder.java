@@ -19,7 +19,7 @@ import java.util.*;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
-	private static final int DEFAULT_PAGE_SIZE = 1000;
+	private static final int DEFAULT_PAGE_SIZE = 50000;
 
 	@Value("${streaming.event.field.type}")
 	private String eventTypeFieldName;
