@@ -35,7 +35,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();
 			EntityEventData value = entry.getValue();
-			if (StringUtils.startsWith(key, entityEventName)) {
+			if (StringUtils.startsWith(key, entityEventName) && !value.isTransmitted()) {
 				listOfEntityEventData.add(value);
 			}
 		}
