@@ -4,6 +4,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -62,11 +63,14 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
+	public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest) {
 		String collectionName = getCollectionName(entityEventName);
 		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
+			Query query = new Query();
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
+			if(pageRequest != null){
+				query.with(pageRequest);
+			}
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		}
 
@@ -109,10 +113,10 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 					.on(EntityEventData.CONTEXT_ID_FIELD, Direction.ASC)
 					.on(EntityEventData.START_TIME_FIELD, Direction.ASC));
 
-			// Transmitted + modified at date
+			// Transmitted + end time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(EntityEventData.TRANSMITTED_FIELD, Direction.ASC)
-					.on(EntityEventData.MODIFIED_AT_DATE_FIELD, Direction.ASC));
+					.on(EntityEventData.END_TIME_FIELD, Direction.ASC));
 
 			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
