@@ -5,6 +5,7 @@
 /.settings
 /RemoteSystemsTempFiles
 /Servers
+/.recommenders
 target
 testFile.log
 *.iml

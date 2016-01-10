@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
-import fortscale.services.configuration.Impl.InitPartConfiguration;
+import fortscale.services.configuration.Impl.SchemaDefinitionConfiguration;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 
 import java.util.Map;
@@ -16,52 +16,54 @@ import java.util.Map;
 public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
     public GDSSchemaConfigurator() {
-        configurationService = new InitPartConfiguration();
+        configurationService = new SchemaDefinitionConfiguration();
     }
 
-    public void configure(Map<String, ConfigurationParam> configurationParams) throws Exception {
-        configureBaseDefinitions(configurationParams);
+    public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
+        Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
 
-        configureStreamingTopologyDefinitions(configurationParams);
+        configureBaseDefinitions(paramsMap);
+
+        configureStreamingTopologyDefinitions(paramsMap);
 
         GDSSchemaDefinitionState schemaDefinitionState = currGDSConfigurationState.getSchemaDefinitionState();
-        boolean sourceIpFlag = configurationParams.get("sourceIpFlag").getParamFlag();
+        boolean sourceIpFlag = paramsMap.get("sourceIpFlag").getParamFlag();
         schemaDefinitionState.setHasSourceIp(sourceIpFlag);
 
-        boolean targetIpFlag = configurationParams.get("targetIpFlag").getParamFlag();
+        boolean targetIpFlag = paramsMap.get("targetIpFlag").getParamFlag();
         schemaDefinitionState.setHasTargetIp(targetIpFlag);
 
-        String dataFields = configurationParams.get("dataFields").getParamValue();
+        String dataFields = paramsMap.get("dataFields").getParamValue();
         schemaDefinitionState.setDataFields(dataFields);
 
-        String enrichFields = configurationParams.get("enrichFields").getParamValue();
+        String enrichFields = paramsMap.get("enrichFields").getParamValue();
         schemaDefinitionState.setEnrichFields(enrichFields);
 
-        String enrichDelimiter = configurationParams.get("enrichDelimiter").getParamValue();
+        String enrichDelimiter = paramsMap.get("enrichDelimiter").getParamValue();
         schemaDefinitionState.setEnrichDelimiter(enrichDelimiter);
 
-        String enrichTableName = configurationParams.get("enrichTableName").getParamValue();
+        String enrichTableName = paramsMap.get("enrichTableName").getParamValue();
         schemaDefinitionState.setEnrichTableName(enrichTableName);
 
-        String scoreFields = configurationParams.get("scoreFields").getParamValue();
+        String scoreFields = paramsMap.get("scoreFields").getParamValue();
         schemaDefinitionState.setScoreFields(scoreFields);
 
-        String scoreDelimiter = configurationParams.get("scoreDelimiter").getParamValue();
+        String scoreDelimiter = paramsMap.get("scoreDelimiter").getParamValue();
         schemaDefinitionState.setScoreDelimiter(scoreDelimiter);
 
-        String scoreTableName = configurationParams.get("scoreTableName").getParamValue();
+        String scoreTableName = paramsMap.get("scoreTableName").getParamValue();
         schemaDefinitionState.setScoreTableName(scoreTableName);
 
-        Boolean topSchemaFlag = configurationParams.get("topSchemaFlag").getParamFlag();
+        Boolean topSchemaFlag = paramsMap.get("topSchemaFlag").getParamFlag();
         schemaDefinitionState.setHasTopSchema(topSchemaFlag);
 
-        String normalizedUserNameField = configurationParams.get("normalizedUserNameField").getParamValue();
+        String normalizedUserNameField = paramsMap.get("normalizedUserNameField").getParamValue();
         schemaDefinitionState.setNormalizedUserNameField(normalizedUserNameField);
 
-        String dataDelimiter = configurationParams.get("dataDelimiter").getParamValue();
+        String dataDelimiter = paramsMap.get("dataDelimiter").getParamValue();
         schemaDefinitionState.setDataDelimiter(dataDelimiter);
 
-        String dataTableName = configurationParams.get("dataTableName").getParamValue();
+        String dataTableName = paramsMap.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
     }
 

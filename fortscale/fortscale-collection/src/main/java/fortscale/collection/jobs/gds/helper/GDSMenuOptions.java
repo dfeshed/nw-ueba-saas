@@ -8,9 +8,10 @@ public class GDSMenuOptions {
 
     public static final String MAIN_MENU_SCHEMA_DEFINITION_OPTION = "1";
     public static final String MAIN_MENU_ENRICHMENT_DEFINITION_OPTION = "2";
-    public static final String MAIN_MENU_APPLY_ALL_CHANGES_OPTION = "3";
-    public static final String MAIN_MENU_RESET_ALL_CHANGES_OPTION = "4";
-    public static final String MAIN_MENU_QUIT_OPTION = "5";
+    public static final String MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION = "3";
+    public static final String MAIN_MENU_APPLY_ALL_CHANGES_OPTION = "4";
+    public static final String MAIN_MENU_RESET_ALL_CHANGES_OPTION = "5";
+    public static final String MAIN_MENU_QUIT_OPTION = "6";
 
     public static final String ENRICHMENT_MENU_USER_NORMALIZATION_OPTION = "1";
     public static final String ENRICHMENT_IP_RESOLVING_OPTION = "2";

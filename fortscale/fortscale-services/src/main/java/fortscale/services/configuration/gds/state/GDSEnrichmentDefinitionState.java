@@ -1,5 +1,8 @@
 package fortscale.services.configuration.gds.state;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Enrichment definition state
  *
@@ -8,12 +11,24 @@ package fortscale.services.configuration.gds.state;
  */
 public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
-    private UserNormalizationState userNormalizationState = new UserNormalizationState();
-    private IPResolvingState ipResolvingState = new IPResolvingState();
+    private List<UserNormalizationState> userNormalizationStates = new ArrayList<>();
+    private List<IPResolvingState> ipResolvingStates = new ArrayList<>();
     private ComputerTaggingState computerTaggingState = new ComputerTaggingState();
-    private GeoLocationState geoLocationState = new GeoLocationState();
+    private List<GeoLocationState> geoLocationStates = new ArrayList<>();
     private UserMongoUpdateState userMongoUpdateState = new UserMongoUpdateState();
     private HDFSWriterState hdfsWriterState = new HDFSWriterState();
+
+    public List<UserNormalizationState> getUserNormalizationStates() {
+        return userNormalizationStates;
+    }
+
+    public List<IPResolvingState> getIpResolvingStates() {
+        return ipResolvingStates;
+    }
+
+    public List<GeoLocationState> getGeoLocationStates() {
+        return geoLocationStates;
+    }
 
     public UserMongoUpdateState getUserMongoUpdateState() {
         return userMongoUpdateState;
@@ -23,23 +38,58 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return hdfsWriterState;
     }
 
-    public GeoLocationState getGeoLocationState() {
-        return geoLocationState;
-    }
-
     public ComputerTaggingState getComputerTaggingState() {
         return computerTaggingState;
     }
 
-    public UserNormalizationState getUserNormalizationState() {
-        return userNormalizationState;
+    public static abstract class GDSStreamingTaskState implements GDSConfigurationState{
+        String taskName;
+        String lastState;
+        String outputTopic;
+        String outputTopicEntry;
+
+        public String getTaskName() {
+            return taskName;
+        }
+
+        public void setTaskName(String taskName) {
+            this.taskName = taskName;
+        }
+
+        public String getLastState() {
+            return lastState;
+        }
+
+        public void setLastState(String lastState) {
+            this.lastState = lastState;
+        }
+
+        public String getOutputTopic() {
+            return outputTopic;
+        }
+
+        public void setOutputTopic(String outputTopic) {
+            this.outputTopic = outputTopic;
+        }
+
+        public String getOutputTopicEntry() {
+            return outputTopicEntry;
+        }
+
+        public void setOutputTopicEntry(String outputTopicEntry) {
+            this.outputTopicEntry = outputTopicEntry;
+        }
+
+        @Override
+        public void reset() {
+            taskName = null;
+            lastState = null;
+            outputTopic = null;
+            outputTopicEntry = null;
+        }
     }
 
-    public IPResolvingState getIpResolvingState() {
-        return ipResolvingState;
-    }
-
-    public static class UserNormalizationState implements GDSConfigurationState{
+    public static class UserNormalizationState extends GDSStreamingTaskState {
         private String userNameField;
         private String domainField;
         private String domainValue;
@@ -97,6 +147,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             userNameField = null;
             domainField = null;
             domainValue = null;
@@ -106,7 +157,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         }
     }
 
-    public static class IPResolvingState implements GDSConfigurationState{
+    public static class IPResolvingState extends GDSStreamingTaskState{
 
         private boolean restrictToAD;
         private boolean shortNameUsage;
@@ -114,6 +165,15 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         private boolean overrideIpWithHostNameUsage;
         private String ipField;
         private String hostField;
+        private boolean removeLastDotUsage;
+
+        public boolean isRemoveLastDotUsage() {
+            return removeLastDotUsage;
+        }
+
+        public void setRemoveLastDotUsage(boolean removeLastDotUsage) {
+            this.removeLastDotUsage = removeLastDotUsage;
+        }
 
         public boolean isRestrictToAD() {
             return restrictToAD;
@@ -165,6 +225,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             restrictToAD = false;
             shortNameUsage = false;
             dropOnFailUsage = false;
@@ -174,7 +235,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         }
     }
 
-    public static class ComputerTaggingState implements GDSConfigurationState{
+    public static class ComputerTaggingState extends GDSStreamingTaskState{
 
         private String sourceHost;
         private String targetHost;
@@ -242,6 +303,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             sourceHost = null;
             targetHost = null;
             srcMachineClassifier = null;
@@ -252,7 +314,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         }
     }
 
-    public static class GeoLocationState implements GDSConfigurationState{
+    public static class GeoLocationState extends GDSStreamingTaskState{
         private String ipField;
         private String countryField;
         private String longitudeField;
@@ -364,6 +426,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             ipField = null;
             countryField= null;
             longitudeField= null;
@@ -379,7 +442,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         }
     }
 
-    public static class UserMongoUpdateState implements GDSConfigurationState{
+    public static class UserMongoUpdateState extends GDSStreamingTaskState{
         private boolean anyRow;
         private String statusFieldName;
         private String successValue;
@@ -410,13 +473,14 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             anyRow = false;
             statusFieldName = null;
             successValue = null;
         }
     }
 
-    public static class HDFSWriterState implements GDSConfigurationState{
+    public static class HDFSWriterState extends GDSStreamingTaskState{
         private String fieldList;
         private String delimiter;
         private String hdfsPath;
@@ -483,6 +547,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
         @Override
         public void reset() {
+            super.reset();
             fieldList = null;
             delimiter = null;
             hdfsPath = null;
@@ -496,10 +561,10 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
     @Override
     public void reset() {
-        userNormalizationState.reset();
-        ipResolvingState.reset();
+        userNormalizationStates.clear();
+        ipResolvingStates.clear();
         computerTaggingState.reset();
-        geoLocationState.reset();
+        geoLocationStates.clear();
         userMongoUpdateState.reset();
         hdfsWriterState.reset();
     }

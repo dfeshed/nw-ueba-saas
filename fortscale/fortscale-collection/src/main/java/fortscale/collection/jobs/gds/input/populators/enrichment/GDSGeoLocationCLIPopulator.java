@@ -30,68 +30,79 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
     private static final String DO_GEO_LOCATION_PARAM = "doGeoLocation";
     private static final String LAST_STATE_PARAM = "lastState";
 
-    @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+    private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+    private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
+    private static final String TARGET_IP_CONFIG_ENTRY = "target.";
 
-        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+    @Override
+    public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+
+        Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
+        HashMap<String, ConfigurationParam> sourceGeoLocationIpParamsMap = new HashMap<>();
+
+        configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceGeoLocationIpParamsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
         if(currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired()) {
 
             System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
-            paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "source_VpnEnrichTask"));
+            sourceGeoLocationIpParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "source_VpnEnrichTask"));
 
             if(currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired()) {
-                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-source-ip-geolocated"));
+                sourceGeoLocationIpParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-source-ip-geolocated"));
             }
             else {
-                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-ip-geolocated"));
+                sourceGeoLocationIpParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-ip-geolocated"));
             }
 
-            paramsMap.put(IP_FIELD_PARAM, new ConfigurationParam(IP_FIELD_PARAM,false,"${impala.data.%s.table.field.source_ip}"));
-            paramsMap.put(COUNTRY_FIELD_PARAM, new ConfigurationParam(COUNTRY_FIELD_PARAM,false,"src_country"));
-            paramsMap.put(LONGITUDE_FIELD_PARAM, new ConfigurationParam(LONGITUDE_FIELD_PARAM,false,"src_longtitudeField"));
-            paramsMap.put(LATITUDE_FIELD_PARAM, new ConfigurationParam(LATITUDE_FIELD_PARAM,false,"src_latitudeField"));
-            paramsMap.put(COUNTRY_ISO_CODE_FIELD_PARAM, new ConfigurationParam(COUNTRY_ISO_CODE_FIELD_PARAM,false,"src_countryIsoCodeField"));
-            paramsMap.put(REGION_FIELD_PARAM, new ConfigurationParam(REGION_FIELD_PARAM,false,"src_regionField"));
-            paramsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"src_cityField"));
-            paramsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"src_ispField"));
-            paramsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"src_usageTypeField"));
-            paramsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
-            paramsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
-            paramsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
+            sourceGeoLocationIpParamsMap.put(IP_FIELD_PARAM, new ConfigurationParam(IP_FIELD_PARAM,false,"${impala.data.%s.table.field.source_ip}"));
+            sourceGeoLocationIpParamsMap.put(COUNTRY_FIELD_PARAM, new ConfigurationParam(COUNTRY_FIELD_PARAM,false,"src_country"));
+            sourceGeoLocationIpParamsMap.put(LONGITUDE_FIELD_PARAM, new ConfigurationParam(LONGITUDE_FIELD_PARAM,false,"src_longtitudeField"));
+            sourceGeoLocationIpParamsMap.put(LATITUDE_FIELD_PARAM, new ConfigurationParam(LATITUDE_FIELD_PARAM,false,"src_latitudeField"));
+            sourceGeoLocationIpParamsMap.put(COUNTRY_ISO_CODE_FIELD_PARAM, new ConfigurationParam(COUNTRY_ISO_CODE_FIELD_PARAM,false,"src_countryIsoCodeField"));
+            sourceGeoLocationIpParamsMap.put(REGION_FIELD_PARAM, new ConfigurationParam(REGION_FIELD_PARAM,false,"src_regionField"));
+            sourceGeoLocationIpParamsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"src_cityField"));
+            sourceGeoLocationIpParamsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"src_ispField"));
+            sourceGeoLocationIpParamsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"src_usageTypeField"));
+            sourceGeoLocationIpParamsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
+            sourceGeoLocationIpParamsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
+            sourceGeoLocationIpParamsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
 
-            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "VpnEnrichTask"));
+            sourceGeoLocationIpParamsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "VpnEnrichTask"));
         }
 
         //Target Geo Location
         if(currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired()) {
+            HashMap<String, ConfigurationParam> targetGeoLocationIpParamsMap = new HashMap<>();
+
+            configurationsMap.put(GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY, targetGeoLocationIpParamsMap);
+
 
             System.out.println(String.format("Going to configure the target ip at  GeoLocation task for %s", dataSourceName));
-            paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "target_VpnEnrichTask"));
+            targetGeoLocationIpParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "target_VpnEnrichTask"));
 
-            paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-ip-geolocated"));
+            targetGeoLocationIpParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-ip-geolocated"));
 
-            paramsMap.put(IP_FIELD_PARAM, new ConfigurationParam(IP_FIELD_PARAM,false,"${impala.data.%s.table.field.target}"));
-            paramsMap.put(COUNTRY_FIELD_PARAM, new ConfigurationParam(COUNTRY_FIELD_PARAM,false,"dst_country"));
-            paramsMap.put(LONGITUDE_FIELD_PARAM, new ConfigurationParam(LONGITUDE_FIELD_PARAM,false,"dst_longtitudeField"));
-            paramsMap.put(LATITUDE_FIELD_PARAM, new ConfigurationParam(LATITUDE_FIELD_PARAM,false,"dst_latitudeField"));
-            paramsMap.put(COUNTRY_ISO_CODE_FIELD_PARAM, new ConfigurationParam(COUNTRY_ISO_CODE_FIELD_PARAM,false,"dst_countryIsoCodeField"));
-            paramsMap.put(REGION_FIELD_PARAM, new ConfigurationParam(REGION_FIELD_PARAM,false,"dst_regionField"));
-            paramsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"dst_cityField"));
-            paramsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"dst_ispField"));
-            paramsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"dst_usageTypeField"));
-            paramsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
-            paramsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
-            paramsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
+            targetGeoLocationIpParamsMap.put(IP_FIELD_PARAM, new ConfigurationParam(IP_FIELD_PARAM,false,"${impala.data.%s.table.field.target}"));
+            targetGeoLocationIpParamsMap.put(COUNTRY_FIELD_PARAM, new ConfigurationParam(COUNTRY_FIELD_PARAM,false,"dst_country"));
+            targetGeoLocationIpParamsMap.put(LONGITUDE_FIELD_PARAM, new ConfigurationParam(LONGITUDE_FIELD_PARAM,false,"dst_longtitudeField"));
+            targetGeoLocationIpParamsMap.put(LATITUDE_FIELD_PARAM, new ConfigurationParam(LATITUDE_FIELD_PARAM,false,"dst_latitudeField"));
+            targetGeoLocationIpParamsMap.put(COUNTRY_ISO_CODE_FIELD_PARAM, new ConfigurationParam(COUNTRY_ISO_CODE_FIELD_PARAM,false,"dst_countryIsoCodeField"));
+            targetGeoLocationIpParamsMap.put(REGION_FIELD_PARAM, new ConfigurationParam(REGION_FIELD_PARAM,false,"dst_regionField"));
+            targetGeoLocationIpParamsMap.put(CITY_FIELD_PARAM, new ConfigurationParam(CITY_FIELD_PARAM,false,"dst_cityField"));
+            targetGeoLocationIpParamsMap.put(ISP_FIELD_PARAM, new ConfigurationParam(ISP_FIELD_PARAM,false,"dst_ispField"));
+            targetGeoLocationIpParamsMap.put(USAGE_TYPE_FIELD_PARAM, new ConfigurationParam(USAGE_TYPE_FIELD_PARAM,false,"dst_usageTypeField"));
+            targetGeoLocationIpParamsMap.put(DO_SESSSION_UPDATE_FLAG_PARAM, new ConfigurationParam(DO_SESSSION_UPDATE_FLAG_PARAM,false,""));
+            targetGeoLocationIpParamsMap.put(DO_DATA_BUCKETS_PARAM, new ConfigurationParam(DO_DATA_BUCKETS_PARAM,false,""));
+            targetGeoLocationIpParamsMap.put(DO_GEO_LOCATION_PARAM, new ConfigurationParam(DO_GEO_LOCATION_PARAM,true,""));
 
-            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "VpnEnrichTask"));
+            targetGeoLocationIpParamsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "VpnEnrichTask"));
         }
 
         System.out.println(String.format("End configure the GeoLocation task for %s", dataSourceName));
 
-        return paramsMap;
+        return configurationsMap;
     }
 
 }

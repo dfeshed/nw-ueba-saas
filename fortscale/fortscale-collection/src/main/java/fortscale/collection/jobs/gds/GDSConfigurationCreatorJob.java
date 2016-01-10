@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.gds.configurators.GDSConfigurationResult;
 import fortscale.collection.jobs.gds.configurators.GDSConfigurator;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
@@ -56,8 +57,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		logger.debug("Running Configuration Generic Data Source Tool");
 
 		handleMainMenu();
-
-		gdsInputHandler.close();
 	}
 
 	private void handleMainMenu() throws Exception {
@@ -81,7 +80,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfigurationType);
 
-					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState); // TODO need to send immutable state so that populators cannot change the state
+					Map<String, Map<String, ConfigurationParam>> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);// TODO need to send immutable state so that populators cannot change the state
 
 					if (configurationParams.isEmpty()) {
 						System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
@@ -94,7 +93,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							configurator.apply();
+							GDSConfigurationResult configurationResult = configurator.apply();
+
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+
+							break;
 						}
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
@@ -108,12 +111,21 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					}
 					break;
 				case GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION:
-					if (canEnterEnrichmentPhase(currConfigurationState)) {
+					if (canEnterEnrichmentStep(currConfigurationState)) {
 						GDSMenuPrinterHelper.printEnrichmentMenu();
 						handleEnrichmentConfiguration();
 					}
 					else {
-						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_BEFORE_ENRICHMENT_MESSAGE;
+						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
+					}
+					break;
+				case GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION:
+					if (canEnterModelAndScoringPhase(currConfigurationState)) {
+						GDSMenuPrinterHelper.printModelAndScoringMenu();
+						handleModelAndScoringConfiguration();
+					}
+					else {
+						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
 					}
 					break;
 				case GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION:
@@ -156,9 +168,12 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		}
 	}
 
-	private boolean canEnterEnrichmentPhase(GDSCompositeConfigurationState currConfigurationState) {
+	private boolean canEnterEnrichmentStep(GDSCompositeConfigurationState currConfigurationState) {
 		return currConfigurationState.isDataSourceAlreadyDefined();
+	}
 
+	private boolean canEnterModelAndScoringPhase(GDSCompositeConfigurationState currConfigurationState) {
+		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
 	private void resetConfigurators(GDSCompositeConfigurationState gdsConfigurationState) {
@@ -170,10 +185,16 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		while (gdsConfiguratorIterator.hasNext()) {
 			GDSConfigurator gdsDirtyConfigurator = gdsConfiguratorIterator.next();
 
-			gdsDirtyConfigurator.apply();
+			GDSConfigurationResult configurationResult = gdsDirtyConfigurator.apply();
+
+			GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
 
 			gdsConfiguratorIterator.remove();
 		}
+	}
+
+	private void handleModelAndScoringConfiguration() throws Exception {
+		// TBD
 	}
 
 	private void handleEnrichmentConfiguration() throws Exception {
@@ -196,7 +217,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
 					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
 
-					Map<String, ConfigurationParam> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
+					Map<String, Map<String, ConfigurationParam>> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
 
 					if (configurationParams.isEmpty()) {
 						System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
@@ -210,7 +231,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							configurator.apply();
+							GDSConfigurationResult configurationResult = configurator.apply();
+
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+
+							break;
 						}
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
@@ -230,8 +255,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					System.out.println(GDSUserMessages.SUCCESSFULLY_RESET_MESSAGE);
 					break;
 				case GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION:
-					System.exit(0);
-					break;
+					return;
 				default: // illegal operation
 					inputErrorMessage = GDSUserMessages.ILLEGAL_OPERATION_MESSAGE;
 					break;

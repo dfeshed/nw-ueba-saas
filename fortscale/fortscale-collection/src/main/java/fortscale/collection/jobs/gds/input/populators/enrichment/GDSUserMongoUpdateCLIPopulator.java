@@ -22,11 +22,17 @@ public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator
     private static final String ANY_ROW_PARAM = "anyRow";
     private static final String STATUS_FIELD_NAME_PARAM = "statusFieldName";
     private static final String SUCCESS_VALUE_PARAM = "successValue";
+
+    private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
-        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+    public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+        Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
+        HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
@@ -49,6 +55,6 @@ public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator
 
         System.out.println(String.format("End configure the UserMongoUpdate task for %s", dataSourceName));
 
-        return paramsMap;
+        return configurationsMap;
     }
 }

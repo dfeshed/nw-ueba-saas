@@ -27,12 +27,17 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
     private static final String DST_MACHINE_CLASSIFIER_PARAM = "dstMachineClassifier";
     private static final String DST_CLUSTERING_FIELD = "dstClusteringField";
     private static final String DST_HOST = "dstHost";
+
+    private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+    public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+        Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
+        HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
 
-        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+        configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
@@ -63,6 +68,6 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
             System.out.println(String.format("End configure the Computer Tagging task for %s", dataSourceName));
         }
 
-        return paramsMap;
+        return configurationsMap;
     }
 }
