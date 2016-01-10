@@ -673,6 +673,15 @@ public class CategoryRarityModelTest {
 		public long time_bucket;
 		public String normalized_src_machine;
 		public String normalized_dst_machine;
+
+		@Override
+		public String toString() {
+			return num_of_events + "," + normalized_src_machine + "," + normalized_dst_machine + "," + time_bucket;
+		}
+
+		public String getFeature() {
+			return normalized_src_machine;
+		}
 	}
 
 	private String getAbsoluteFilePath(String fileName) throws FileNotFoundException {
@@ -688,9 +697,16 @@ public class CategoryRarityModelTest {
 		CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(',');
 		MappingIterator<TestEventsBatch> it = new CsvMapper().reader(TestEventsBatch.class).with(schema).readValues(csvFile);
 		List<TestEventsBatch> res = new ArrayList<>();
-		while (it.hasNext()){
-			TestEventsBatch event = it.next();
-			if (!StringUtils.isBlank(event.normalized_dst_machine)) {
+		TestEventsBatch event = null;
+		while (it.hasNext()) {
+			try {
+				event = it.next();
+			}
+			catch (RuntimeException e) {
+				System.err.println("last event succussfully processed: " + event.toString());
+				throw e;
+			}
+			if (!StringUtils.isBlank(event.getFeature())) {
 				res.add(event);
 			}
 		}
@@ -880,16 +896,14 @@ public class CategoryRarityModelTest {
 		ScenarioStats scenarioStats = new ScenarioStats();
 		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
-				int eventFeatureCount = featureValueToCountMap.getOrDefault(eventsBatch.normalized_dst_machine, 0);
+				int eventFeatureCount = featureValueToCountMap.getOrDefault(eventsBatch.getFeature(), 0);
 				Double score = calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
 				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
-				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.normalized_dst_machine, score, isScoreInteresting);
-				if (isScoreInteresting) {
-					if (printContextInfo) {
-						printEvent(eventsBatch.time_bucket, eventsBatch.normalized_dst_machine, score, featureValueToCountMap);
-					}
+				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.getFeature(), score, isScoreInteresting);
+				if (isScoreInteresting && printContextInfo) {
+					printEvent(eventsBatch.time_bucket, eventsBatch.getFeature(), score, featureValueToCountMap);
 				}
-				featureValueToCountMap.put(eventsBatch.normalized_dst_machine, eventFeatureCount + 1);
+				featureValueToCountMap.put(eventsBatch.getFeature(), eventFeatureCount + 1);
 			}
 		}
 		if (printContextInfo) {
@@ -1079,7 +1093,7 @@ public class CategoryRarityModelTest {
 
 		// assert stuff
 		int totalAnomalousUsers = getTotalAnomalousUsers(logNumOfEventsToUsersStatistics);
-		Assert.assertEquals(0.109, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
+		Assert.assertEquals(0.138, (double) totalAnomalousUsers / scenariosInfo.size(), 0.01);
 	}
 
 	private Integer getTotalAnomalousUsers(Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics) {
