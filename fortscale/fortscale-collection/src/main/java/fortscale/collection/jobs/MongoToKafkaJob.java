@@ -17,7 +17,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -145,11 +147,16 @@ public class MongoToKafkaJob extends FortscaleJob {
             if (lastMessageTime > 0) {
                 //throttling
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
-                boolean result = MetricsReader.waitForMetrics(brokerConnection.split(":")[0],
-                        Integer.parseInt(brokerConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                        String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime,
-                        MILLISECONDS_TO_WAIT, checkRetries);
-                if (result == true) {
+
+                Map<String, Object> keyToExpectedValueMap = new HashMap<>();
+                keyToExpectedValueMap.put(String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime);
+                EqualityMetricsDecider decider = new EqualityMetricsDecider(keyToExpectedValueMap);
+
+                boolean result = MetricsReader.waitForMetrics(
+                        brokerConnection.split(":")[0], Integer.parseInt(brokerConnection.split(":")[1]),
+                        jobClassToMonitor, jobToMonitor, decider, MILLISECONDS_TO_WAIT, checkRetries);
+
+                if (result) {
                     logger.info("last message in batch processed, moving to next batch");
                 } else {
                     logger.error("last message not yet processed or timed out");
@@ -209,7 +216,7 @@ public class MongoToKafkaJob extends FortscaleJob {
      */
     private List<KafkaEventsWriter> buildTopicsList(String topics) throws JobExecutionException {
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        List<KafkaEventsWriter> streamWriters = new ArrayList();
+        List<KafkaEventsWriter> streamWriters = new ArrayList<>();
         try {
             for (String topicName : topics.split(GENERAL_DELIMITER)) {
                 String topicPath = ZkUtils.getTopicPath(topicName);

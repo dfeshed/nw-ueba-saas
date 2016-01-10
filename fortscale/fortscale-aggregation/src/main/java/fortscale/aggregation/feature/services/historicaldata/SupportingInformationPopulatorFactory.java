@@ -44,6 +44,10 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
         }
     }
 
+    public SupportingInformationCountPopulator createSupportingInformationPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
+        return (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
+    }
+
     private SupportingInformationDataPopulator createAggregatedEventPopulator(String contextType, String dataEntity, String featureName, String aggregationFunction) {
         if (SupportingInformationAggrFunc.DistinctEventsByTime.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationDistinctEventsByTimePopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DISTINCT_EVENTS_BY_TIME_POPULATOR, contextType, dataEntity, featureName);

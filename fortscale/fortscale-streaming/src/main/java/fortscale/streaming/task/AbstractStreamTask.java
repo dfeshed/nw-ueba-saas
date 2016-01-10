@@ -25,7 +25,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
-
+	public static final String JOB_DATA_SOURCE = "Streaming";
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
 			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
@@ -39,7 +39,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 
-	protected TaskMonitoringHelper taskMonitoringHelper;
+	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
@@ -129,7 +129,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true, JOB_DATA_SOURCE);
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
@@ -142,7 +142,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void close() throws Exception {
 		try {
 			logger.info("initiating task close");
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true,JOB_DATA_SOURCE);
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
@@ -185,8 +185,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
-		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {

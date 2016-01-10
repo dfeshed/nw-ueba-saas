@@ -1,84 +1,69 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 
 /**
+ * Implementation of Computer Tagging task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class ComputerTaggingClassConfiguration extends StreamingConfigurationService {
 
 
-	public ComputerTaggingClassConfiguration ()
-	{
+    public ComputerTaggingClassConfiguration ()
+    {
 
-		logger = LoggerFactory.getLogger(ComputerTaggingClassConfiguration.class);
-	}
+        logger = LoggerFactory.getLogger(ComputerTaggingClassConfiguration.class);
+    }
 
-	@Override
-	public Boolean Init() {
-		super.Init();
-		Boolean result = false;
-		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"computer-tagging-clustering-task.properties";
-			this.fileToConfigure = new File(this.fileToConfigurePath);
-			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
-			result = true;
-		} catch (Exception e) {
-			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
-			result = false;
-
-		}
-		return result;
-
-	}
-
-	@Override
-	public Boolean Configure() throws Exception {
-
+    @Override
+    public boolean init() {
+        super.init();
+        Boolean result;
         try {
-            String line = "";
+            this.fileToConfigurePath = this.fileToConfigurePath+"computer-tagging-clustering-task.properties";
+            this.fileToConfigure = new File(this.fileToConfigurePath);
+            this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
+            result = true;
+        } catch (Exception e) {
+            logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+            System.out.println("There was an exception during execution please see more info at the log ");
+            result = false;
 
-			ConfigurationParam result = getParamConfiguration(configurationParams,"srcHost");
-            String sourceHostField = result != null ? result.getParamValue() : null;
+        }
+        return result;
 
-			result = getParamConfiguration(configurationParams,"srcHost");
-            String targetHostField = result != null ? result.getParamValue() : null;
+    }
 
-			result = getParamConfiguration(configurationParams,"srcMachineClassifier");
-            String srcMachineClassifier = result != null ? result.getParamValue() : null;
+    @Override
+    public boolean applyConfiguration() throws Exception {
+        try {
+            String line;
 
+            fileWriterToConfigure.write("\n");
+            fileWriterToConfigure.write("\n");
 
-			result = getParamConfiguration(configurationParams,"srcClusteringField");
-            String srcClusteringField = result != null ? result.getParamValue() : null;
+            GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = gdsConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState();
+            String taskName = computerTaggingState.getTaskName();
+            String sourceHostField = computerTaggingState.getSourceHost();
+            boolean createNewComputerFlag = computerTaggingState.isCreateNewComputerFlag();
+            String srcClusteringField = computerTaggingState.getSrcClusteringField();
+            String targetHostField = computerTaggingState.getTargetHost();
+            String dstClusteringField = computerTaggingState.getDstClusteringField();
+            String dstMachineClassifier = computerTaggingState.getDstMachineClassifier();
 
-
-			result = getParamConfiguration(configurationParams,"createNewComputerFlag");
-            Boolean createNewComputerFlag =  result != null ? result.getParamFlag() : null;
-
-			result = getParamConfiguration(configurationParams,"dstMachineClassifier");
-            String dstMachineClassifier = result != null ? result.getParamValue() : null;
-
-			result = getParamConfiguration(configurationParams,"dstClusteringField");
-            String dstClusteringField = result != null ? result.getParamValue() : null;
-
-			fileWriterToConfigure.write("\n");
-			fileWriterToConfigure.write("\n");
-
-
-            mandatoryConfiguration();
+            writeMandatoryConfiguration(taskName, computerTaggingState.getLastState(), computerTaggingState.getOutputTopic(), computerTaggingState.getOutputTopicEntry(), true);
 
             //partition field name  (today we use for all the username)
             line = String.format("%s.%s_%s.partition.field=${impala.data.%s.table.field.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            if (configurationParams.get("sourceMachineNormalizationFlag").getParamFlag()) {
-
+            if (gdsConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired()) {
 
                 //source name
                 line = String.format("%s.%s_%s.source.hostname.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, sourceHostField);
@@ -92,14 +77,12 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
                 line = String.format("%s.%s_%s.source.clustering.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, srcClusteringField);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
-                line = String.format("%s.%s_%s.source.create-new-computer-instances=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, createNewComputerFlag.toString());
+                line = String.format("%s.%s_%s.source.create-new-computer-instances=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, createNewComputerFlag);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
 
             }
-            if (configurationParams.get("targetMachineNormalizationFlag").getParamFlag()) {
-
-
+            if (gdsConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired()) {
                 //source name
                 line = String.format("%s.%s_%s.destination.hostname.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, targetHostField);
                 writeLineToFile(line, fileWriterToConfigure, true);
@@ -112,19 +95,16 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
                 line = String.format("%s.%s_%s.destination.clustering.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dstClusteringField);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
-                line = String.format("%s.%s_%s.destination.create-new-computer-instances=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, createNewComputerFlag.toString());
+                line = String.format("%s.%s_%s.destination.create-new-computer-instances=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, createNewComputerFlag);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
                 // configure the is sensitive machine field
                 line = String.format("%s.%s_%S.destination.is-sensitive-machine.field=${impala.data.%s.table.field.is_sensitive_machine}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-
-
             }
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("#############", fileWriterToConfigure, true);
-
 
             fileWriterToConfigure.flush();
         }
@@ -134,8 +114,8 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
             return false;
         }
 
-		return true;
-	}
+        return true;
+    }
 
 
 }

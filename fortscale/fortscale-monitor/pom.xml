@@ -64,7 +64,11 @@
 	</properties>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-services</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>junit</groupId>
