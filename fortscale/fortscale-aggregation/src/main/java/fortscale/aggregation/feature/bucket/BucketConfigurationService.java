@@ -14,12 +14,12 @@ import java.util.Map;
 
 /**
  * Loads BucketConfs from JSON file.
- * Provides API to get list of related BucketConfs for a given event based on the
- * context fields within the BucketConfs.
+ * Provides API to get list of related BucketConfs for a given
+ * event based on the context fields within the BucketConfs.
  */
 public class BucketConfigurationService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
-	public final static String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
+	public static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
 
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
@@ -56,7 +56,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 	@Override
 	protected void loadConfJson(JSONObject jsonObj) {
 		String bucketConfJson = jsonObj.toJSONString();
-		FeatureBucketConf bucketConf = null;
+		FeatureBucketConf bucketConf;
 
 		try {
 			bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);

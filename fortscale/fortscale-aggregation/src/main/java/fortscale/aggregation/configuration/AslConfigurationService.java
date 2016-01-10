@@ -14,7 +14,6 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public abstract class AslConfigurationService implements InitializingBean, ApplicationContextAware {
@@ -54,7 +53,7 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 
 		//if base overriding configuration does not exist
 		if (confJsonResources == null || confJsonResources.length == 0) {
-			Resource confJsonResource = null;
+			Resource confJsonResource;
 			try {
 				confJsonResource = applicationContext.getResource(getBaseConfJsonFilePath());
 			} catch (Exception e) {
@@ -103,9 +102,7 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 			}
 		}
 
-		Iterator<Map.Entry<String, InputStream>> inputStreamIterator = fileNameToInputStream.entrySet().iterator();
-		while (inputStreamIterator.hasNext()) {
-			Map.Entry<String, InputStream> entry = inputStreamIterator.next();
+		for (Map.Entry<String, InputStream> entry : fileNameToInputStream.entrySet()) {
 			try {
 				loadConfInputStream(entry.getValue());
 			} catch (Exception e) {
@@ -114,7 +111,6 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 				throw new IllegalArgumentException(errorMsg, e);
 			}
 		}
-
 	}
 
 	private void loadConfInputStream(InputStream inputStream) throws IOException, ParseException {

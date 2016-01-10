@@ -144,14 +144,19 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		} else {
 			List<String> dataSources = new ArrayList<>();
 			dataSources.add(aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf));
+
 			List<String> contextFieldNames = new ArrayList<>();
-			for (String contextName : conf.getBucketConf().getContextFieldNames()) {
-				contextFieldNames.add(aggregatedFeatureEventsConfUtilService.buildAggregatedFeatureContextFieldName(contextName));
-			}
-			String strategyName = outputBucketStrategy;
+			conf.getBucketConf().getContextFieldNames().forEach(
+					contextName -> contextFieldNames.add(
+					aggregatedFeatureEventsConfUtilService
+					.buildAggregatedFeatureContextFieldName(contextName)));
+
 			List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
 			aggrFeatureConfs.add(aggregatedFeatureConf);
-			FeatureBucketConf featureBucketConf = new FeatureBucketConf(outputBucketConfName, dataSources, contextFieldNames, strategyName, aggrFeatureConfs);
+			FeatureBucketConf featureBucketConf = new FeatureBucketConf(
+					outputBucketConfName, dataSources, contextFieldNames,
+					outputBucketStrategy, aggrFeatureConfs);
+
 			bucketConfigurationService.addNewBucketConf(featureBucketConf);
 		}
 	}
@@ -166,7 +171,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	}
 
 
-	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
+	public AggrFeatureRetentionStrategy getAggrFeatureRetentionStrategy(String strategyName) {
 		return retentionStrategiesConfService.getAggrFeatureRetentionStrategy(strategyName);
 	}
 }
