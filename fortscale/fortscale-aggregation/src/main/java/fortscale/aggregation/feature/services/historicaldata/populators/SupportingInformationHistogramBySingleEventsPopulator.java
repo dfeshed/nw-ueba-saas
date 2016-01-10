@@ -79,6 +79,12 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         }
     }
 
+    public SupportingInformationGenericData<Double> createSupportingInformationData(String contextValue, long endTime, Integer timePeriodInDays) {
+
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, endTime, timePeriodInDays);
+        return new SupportingInformationGenericData<>(histogramMap);
+    }
+
     /*
      * Fetch the relevant feature buckets based on the context value and time values.
      */

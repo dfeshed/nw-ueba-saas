@@ -56,10 +56,15 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###scored___aggr%%%prefix###entity_event_%%%prefix###streaming_models@@@regex:::modelName!!!aggr_event_"
+        "dataSources": "evidences@@@date:::startDate%%%evidenceType:::AnomalyAggregatedEvent###streaming_models@@@regex:::modelName!!!aggr_event_"
       }
     ],
     "otherSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "scored___aggr@@@prefix###entity_event_@@@prefix"
+      },
       {
         "technology": "STORE",
         "strategy": "DELETE",
@@ -77,10 +82,15 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "scored___entity_event%%%prefix###streaming_models@@@regex:::modelName!!!entity_event_"
+        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_"
       }
     ],
     "otherSteps": [
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "scored___entity_event@@@prefix"
+      },
       {
         "technology": "STORE",
         "strategy": "DELETE",
@@ -146,7 +156,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
+        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -166,23 +176,11 @@
     ]
   },
   "AfterEnriched": {
-    "timeBasedSteps": [
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
-      }
-    ],
     "otherSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
