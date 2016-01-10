@@ -1,26 +1,33 @@
 package fortscale.services.configuration.Impl;
 
 import fortscale.services.configuration.ConfigurationService;
+import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Set;
 
 /**
+ * Schema definition configuration implementation
+ *
  * Created by idanp on 12/20/2015.
  */
-public class InitPartConfiguration extends ConfigurationService {
+public class SchemaDefinitionConfiguration extends ConfigurationService {
 
-	private String secondFileToConfigurePath; //Will represent the streaming overriding file
-	private File secondFileToConfigure;
-	private FileWriter secondFileWriterToConfigure;
+    private static final String COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
+    private static final String STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/streaming/config/fortscale-overriding-streaming.properties";
 
-    public InitPartConfiguration()
+    private String streamingOverridingFilePath;
+	private File streamingOverridingFile;
+	private FileWriter streamingOverridingFileWriter;
+
+    public SchemaDefinitionConfiguration()
 	{
-		logger = LoggerFactory.getLogger(InitPartConfiguration.class);
-		this.fileToConfigurePath = root+"/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
-		this.secondFileToConfigurePath = root+"/fortscale/streaming/config/fortscale-overriding-streaming.properties";
+		logger = LoggerFactory.getLogger(SchemaDefinitionConfiguration.class);
+		this.fileToConfigurePath = USER_HOME_DIR + COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
+		this.streamingOverridingFilePath = USER_HOME_DIR + STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
 	}
 
 	@Override
@@ -29,11 +36,11 @@ public class InitPartConfiguration extends ConfigurationService {
 		try {
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
-			this.secondFileToConfigure = new File(this.secondFileToConfigurePath);
-			this.secondFileWriterToConfigure = new FileWriter(this.secondFileToConfigure, true);
+			this.streamingOverridingFile = new File(this.streamingOverridingFilePath);
+			this.streamingOverridingFileWriter = new FileWriter(this.streamingOverridingFile, true);
 			result = true;
 		} catch (Exception e) {
-			logger.error("There was an exception during InitPartConfiguration init part execution - {} ", e.getMessage());
+			logger.error("There was an exception during SchemaDefinitionConfiguration init part execution - {} ", e.getMessage());
 			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
 		}
@@ -51,40 +58,42 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			boolean hasSourceIp = gdsConfigurationState.getSchemaDefinitionState().hasSourceIp();
+            GDSSchemaDefinitionState schemaDefinitionState = gdsConfigurationState.getSchemaDefinitionState();
 
-			boolean hasTargetIp = gdsConfigurationState.getSchemaDefinitionState().hasTargetIp();
+            boolean hasSourceIp = schemaDefinitionState.hasSourceIp();
 
-			String dataFields = gdsConfigurationState.getSchemaDefinitionState().getDataFields();
+			boolean hasTargetIp = schemaDefinitionState.hasTargetIp();
 
-			String enrichFields = gdsConfigurationState.getSchemaDefinitionState().getEnrichFields();
+			String dataFields = schemaDefinitionState.getDataFields();
 
-			String enrichDelimiter = gdsConfigurationState.getSchemaDefinitionState().getEnrichDelimiter();
+			String enrichFields = schemaDefinitionState.getEnrichFields();
 
-			String enrichTableName = gdsConfigurationState.getSchemaDefinitionState().getEnrichTableName();
+			String enrichDelimiter = schemaDefinitionState.getEnrichDelimiter();
 
-			String scoreFields = gdsConfigurationState.getSchemaDefinitionState().getScoreFields();
+			String enrichTableName = schemaDefinitionState.getEnrichTableName();
 
-			String scoreDelimiter = gdsConfigurationState.getSchemaDefinitionState().getScoreDelimiter();
+			String scoreFields = schemaDefinitionState.getScoreFields();
 
-			String scoreTableName = gdsConfigurationState.getSchemaDefinitionState().getScoreTableName();
+			String scoreDelimiter = schemaDefinitionState.getScoreDelimiter();
 
-			boolean hasTopSchema = gdsConfigurationState.getSchemaDefinitionState().hasTopSchema();
+			String scoreTableName = schemaDefinitionState.getScoreTableName();
 
-			String normalizedUserNameField = gdsConfigurationState.getSchemaDefinitionState().getNormalizedUserNameField();
+			boolean hasTopSchema = schemaDefinitionState.hasTopSchema();
 
-			String dataDelimiter = gdsConfigurationState.getSchemaDefinitionState().getDataDelimiter();
+			String normalizedUserNameField = schemaDefinitionState.getNormalizedUserNameField();
 
-			String dataTableName = gdsConfigurationState.getSchemaDefinitionState().getDataTableName();
+			String dataDelimiter = schemaDefinitionState.getDataDelimiter();
+
+			String dataTableName = schemaDefinitionState.getDataTableName();
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);
-            writeLineToFile("\n", secondFileWriterToConfigure, true);
-            writeLineToFile("\n", secondFileWriterToConfigure, true);
+            writeLineToFile("\n", streamingOverridingFileWriter, true);
+            writeLineToFile("\n", streamingOverridingFileWriter, true);
 
             line = "########################################### New Configuration For Generic Data Source  ########################################################";
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //Configure the data source list
             line = String.format("fortscale.data.source=%s,%s",dataSourceList, dataSourceName);
@@ -92,55 +101,55 @@ public class InitPartConfiguration extends ConfigurationService {
 
             line = String.format("########################################### %s ########################################################", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = String.format("impala.data.%s.table.field.username=username", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             if (hasSourceIp) {
                 line = String.format("impala.data.%s.table.field.source=source_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.source_name=hostname", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.src_class=src_class", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.normalized_src_machine=normalized_src_machine", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
             }
 
             if (hasTargetIp) {
                 line = String.format("impala.data.%s.table.field.target=target_ip", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.target_name=target", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.dst_class=dst_class", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.data.%s.table.field.normalized_dst_machine=normalized_dst_machine", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
             }
 
             line = String.format("impala.data.%s.table.field.epochtime=date_time_unix", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
 			line = String.format("impala.data.%s.table.field.normalized_username=%s",dataSourceName,normalizedUserNameField);
 			writeLineToFile(line, fileWriterToConfigure, true);
-			writeLineToFile(line, secondFileWriterToConfigure, true);
+			writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = "########### Data Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
@@ -169,7 +178,7 @@ public class InitPartConfiguration extends ConfigurationService {
             //is sensitive machien field
             line = String.format("impala.data.%s.table.field.is_sensitive_machine=is_sensitive_machine", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //partition type
             line = String.format("impala.data.%s.table.partition.type=monthly", dataSourceName);
@@ -180,97 +189,97 @@ public class InitPartConfiguration extends ConfigurationService {
 
 
             writeLineToFile("\n", fileWriterToConfigure, true);
-            writeLineToFile("\n", secondFileWriterToConfigure, true);
+            writeLineToFile("\n", streamingOverridingFileWriter, true);
 
 
             //Enrich fields
             line = "########### Enrich Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = String.format("impala.%s.have.enrich=true", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             line = String.format("impala.enricheddata.%s.table.fields=%s", dataSourceName,enrichFields );
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = String.format("impala.enricheddata.%s.table.delimiter=%s", dataSourceName,enrichDelimiter );
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = String.format("impala.enricheddata.%s.table.name=%s", dataSourceName, enrichTableName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
             //hdfs path
             line = String.format("hdfs.user.enricheddata.%s.path=${hdfs.user.enricheddata.path}/%s", dataSourceName, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //hdfs retention
             line = String.format("hdfs.user.enricheddata.%s.retention=90", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //hdfs file name
             line = String.format("hdfs.enricheddata.%s.file.name=${impala.enricheddata.%s.table.name}.csv", dataSourceName, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //partition strategy
             line = String.format("impala.enricheddata.%s.table.partition.type=daily", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //Score
             line = "########### Score Schema";
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
             //fields
             line = String.format("impala.score.%s.table.fields=%s", dataSourceName,scoreFields );
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             line = String.format("impala.score.%s.table.delimiter=%s", dataSourceName,scoreDelimiter);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
             line = String.format("impala.score.%s.table.name=%s", dataSourceName,scoreTableName );
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
             //hdfs path
             line = String.format("hdfs.user.processeddata.%s.path=${hdfs.user.processeddata.path}/%s", dataSourceName, dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //hdfs retention
             line = String.format("hdfs.user.processeddata.%s.retention=90", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
             //partition strategy
             line = String.format("impala.score.%s.table.partition.type=daily", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            writeLineToFile(line, secondFileWriterToConfigure, true);
+            writeLineToFile(line, streamingOverridingFileWriter, true);
 
 			//hdfs file name
 			line = String.format("{hdfs.user.processeddata.%s.file.name=${impala.processeddata.%s.table.name}.csv", dataSourceName, dataSourceName);
 			writeLineToFile(line, fileWriterToConfigure, true);
-			writeLineToFile(line, secondFileWriterToConfigure, true);
+			writeLineToFile(line, streamingOverridingFileWriter, true);
 
             //Top Score schema
             if (hasTopSchema) {
                 line = "########### Top Score Schema";
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.%s.have.topScore=true", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
@@ -279,39 +288,39 @@ public class InitPartConfiguration extends ConfigurationService {
                 //fields
                 line = String.format("impala.score.%s.top.table.fields=%s", dataSourceName,scoreFields );
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 line = String.format("impala.score.%s.top.table.delimiter=%s", dataSourceName, scoreDelimiter);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
                 line = String.format("impala.score.%s.top.table.name=%s", dataSourceName, scoreTableName+"_top");
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
 				//hdfs file name
 				line = String.format("{hdfs.user.processeddata.%s.file.name=${impala.score.%s.top.table.name}.csv", dataSourceName, dataSourceName);
 				writeLineToFile(line, fileWriterToConfigure, true);
-				writeLineToFile(line, secondFileWriterToConfigure, true);
+				writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
                 //TODO - DOES WE NEED TO PUT IT OUT TO BE DYNAMIC??
                 //hdfs path
                 line = String.format("hdfs.user.processeddata.%s.top.path=${hdfs.user.processeddata.path}/%s_top", dataSourceName, dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
                 //hdfs retention
                 line = String.format("hdfs.user.processeddata.%s.top.retention=90", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
 
                 //partition strategy
                 line = String.format("impala.score.%s.top.table.partition.type=daily", dataSourceName);
                 writeLineToFile(line, fileWriterToConfigure, true);
-                writeLineToFile(line, secondFileWriterToConfigure, true);
+                writeLineToFile(line, streamingOverridingFileWriter, true);
 
             }
 
@@ -336,8 +345,11 @@ public class InitPartConfiguration extends ConfigurationService {
 			line = "enrich" + dataSourceName.toUpperCase() + ".morphline=file:resources/conf-files/enrichment/read" + dataSourceName.toUpperCase() + "_enrich.conf";
 			writeLineToFile(line, fileWriterToConfigure, true);
 
-            secondFileWriterToConfigure.flush();
+            streamingOverridingFileWriter.flush();
+            affectedConfigList.add(streamingOverridingFile.getAbsolutePath());
+
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch(Exception e){
             logger.error("There was an exception during execution - {} ",e.getMessage()!=null ? e.getMessage() : e.getCause().getMessage());
@@ -349,11 +361,11 @@ public class InitPartConfiguration extends ConfigurationService {
 
     @Override
 	public boolean done() {
-		if (secondFileWriterToConfigure != null) {
+		if (streamingOverridingFileWriter != null) {
 			try {
-				secondFileWriterToConfigure.close();
+				streamingOverridingFileWriter.close();
 			} catch (IOException exception) {
-				logger.error("There was an exception during the file - {} closing  , cause - {} ", secondFileToConfigure.getName(), exception.getMessage());
+				logger.error("There was an exception during the file - {} closing  , cause - {} ", streamingOverridingFile.getName(), exception.getMessage());
 				System.out.println("There was an exception during execution please see more info at the log ");
 				return false;
 			}
@@ -361,4 +373,9 @@ public class InitPartConfiguration extends ConfigurationService {
 
 		return super.done();
 	}
+
+    @Override
+    public Set<String> getAffectedConfigList() {
+        return affectedConfigList;
+    }
 }

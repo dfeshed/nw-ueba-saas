@@ -1,13 +1,15 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 
 /**
+ * Implementation of User Mongo Update task configuration
+ *
  * Created by idanp on 12/21/2015.
  */
 public class UserMongoUpdateConfiguration  extends StreamingConfigurationService {
@@ -23,13 +25,13 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 		super.init();
 		Boolean result;
 		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"user-mongo-update-task.properties";
+			this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "user-mongo-update-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;
 		} catch (Exception e) {
 			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
-			System.out.println(String.format("There was an exception during execution please see more info at the log "));
+			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
 		}
 
@@ -39,35 +41,23 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 	@Override
 	public boolean applyConfiguration() throws Exception {
         try {
-            String line = "";
+            String line;
             String statusFieldName="";
             String successValue="";
 
-			ConfigurationParam result = getParamConfiguration(configurationParams,"anyRow");
-
-            Boolean anyRow = result != null ? result.getParamFlag() : null;
-
-            if (!anyRow) {
-
-				result = getParamConfiguration(configurationParams,"statusFieldName");
-                statusFieldName = result != null ? result.getParamValue() : null;
-
-				result = getParamConfiguration(configurationParams,"statusFieldName");
-                successValue = result != null ? result.getParamValue() : null;
-            }
-            //String userNameField = configurationParams.get("userNameField").getParamValue();
-
 			fileWriterToConfigure.write("\n");
 			fileWriterToConfigure.write("\n");
 
+            GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = gdsConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState();
 
-            mandatoryConfiguration();
+            String taskName = userMongoUpdateState.getTaskName();
 
-            //classifier value
+            writeMandatoryConfiguration(taskName, userMongoUpdateState.getLastState(), userMongoUpdateState.getOutputTopic(), userMongoUpdateState.getOutputTopicEntry(), true);
+
             line = String.format("%s.%s_%s.classifier=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, dataSourceName.toLowerCase());
             writeLineToFile(line, fileWriterToConfigure, true);
 
-            if (anyRow) {
+            if (userMongoUpdateState.isAnyRow()) {
                 line = String.format("%s.%s_%s.success.field=#AnyRow#", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
                 writeLineToFile(line, fileWriterToConfigure, true);
                 line = String.format("%s.%s_%s.success.value=#NotRelevant#", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
@@ -97,6 +87,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {

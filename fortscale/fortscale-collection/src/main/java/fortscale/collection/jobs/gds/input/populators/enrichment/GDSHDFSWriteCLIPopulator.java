@@ -25,10 +25,14 @@ public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
     private static final String DISCRIMINATORS_FIELDS_PARAM = "discriminatorsFields";
     private static final String LAST_STATE_PARAM = "lastState";
 
-    @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+    private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
 
-        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+    @Override
+    public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+        Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
+        HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
@@ -50,6 +54,6 @@ public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
 
         System.out.println(String.format("End configure the HDFS write task for %s", dataSourceName));
 
-        return paramsMap;
+        return configurationsMap;
     }
 }

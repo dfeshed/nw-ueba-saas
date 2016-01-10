@@ -9,6 +9,8 @@ import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState
  */
 abstract class GDSBaseConfigurator implements GDSConfigurator{
 
+    protected static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+
     protected ConfigurationService configurationService;
 
     protected GDSCompositeConfigurationState currGDSConfigurationState;
@@ -18,11 +20,19 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
         this.currGDSConfigurationState = currConfigurationState;
     }
 
-    public void apply() throws Exception {
+    public GDSConfigurationResult apply() throws Exception {
+        configurationService.setGDSConfigurationState(currGDSConfigurationState);
+
         if (configurationService.init()) {
             configurationService.applyConfiguration();
         }
 
         configurationService.done();
+
+        GDSConfigurationResultImpl gdsConfigurationResult = new GDSConfigurationResultImpl();
+        gdsConfigurationResult.setSuccess(true);
+        gdsConfigurationResult.setAffectedConfigDescriptors(configurationService.getAffectedConfigList());
+
+        return gdsConfigurationResult;
     }
 }

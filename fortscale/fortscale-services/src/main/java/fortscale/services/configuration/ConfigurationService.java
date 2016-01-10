@@ -7,25 +7,27 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
+ * Abstract implementation for Generic configuration services
+ *
  * Created by idanp on 12/20/2015.
  */
 public abstract class ConfigurationService {
 
 	protected static Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
-	protected static final String root = System.getProperty("user.home");
+
+	protected static final String USER_HOME_DIR = System.getProperty("user.home");
 
 	protected String fileToConfigurePath;
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
-    protected Map<String,ConfigurationParam> configurationParams;
+
 	protected GDSCompositeConfigurationState gdsConfigurationState;
 
-	public void setConfigurationParams(Map<String, ConfigurationParam> configurationParams) {
-        this.configurationParams = configurationParams;
-    }
+	protected Set<String> affectedConfigList = new HashSet<>();
 
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();
@@ -56,8 +58,10 @@ public abstract class ConfigurationService {
 	protected void writeLineToFile(String line, FileWriter writer, boolean withNewLine) throws Exception{
 		try {
 			writer.write(line);
-			if (withNewLine)
+
+			if (withNewLine) {
 				writer.write("\n");
+			}
 		}
 
 		catch (Exception e)
@@ -68,13 +72,7 @@ public abstract class ConfigurationService {
 		}
 	}
 
-
-	protected ConfigurationParam getParamConfiguration (Map<String,ConfigurationParam> configurationParams, String key)
-	{
-		if (configurationParams.containsKey(key))
-			return configurationParams.get(key);
-		return null;
-	}
+	public abstract Set<String> getAffectedConfigList();
 
 	public void setGDSConfigurationState(GDSCompositeConfigurationState gdsConfigurationState) {
 		this.gdsConfigurationState = gdsConfigurationState;

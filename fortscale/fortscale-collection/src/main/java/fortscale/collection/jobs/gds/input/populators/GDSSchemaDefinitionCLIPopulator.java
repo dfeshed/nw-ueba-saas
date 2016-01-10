@@ -52,6 +52,8 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
     private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 
+    private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     // TODO check if property available
@@ -68,8 +70,11 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
 
     @Override
-    public Map<String, ConfigurationParam> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
-        Map<String, ConfigurationParam> paramsMap = new HashMap<>();
+    public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
+        Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
+        HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+        configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
         populateBaseDataSourceDefinitions(paramsMap);
 
@@ -107,13 +112,13 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         paramsMap.put(SCORE_TABLE_NAME_PARAM, new ConfigurationParam(SCORE_TABLE_NAME_PARAM,false,tableName));
 
         //top score
-        System.out.println(String.format("Does %s Have top table schema (y/n) ?",dataSourceName));
+        System.out.println(String.format("Does %s has top table schema (y/n) ?",dataSourceName));
         String inputResult = gdsInputHandler.getInput();
         paramsMap.put(TOP_SCHEMA_FLAG_PARAM, new ConfigurationParam(TOP_SCHEMA_FLAG_PARAM, GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 
         paramsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
 
-        return paramsMap;
+        return configurationsMap;
     }
 
     private void populateDataSourceTypeFields(Map<String, ConfigurationParam> paramsMap, String dataSourceName, AdditionalFieldsWrapper additionalFieldsWrapper, String dataSourceType) throws Exception {
