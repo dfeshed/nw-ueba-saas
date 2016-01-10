@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.gds.configurators.GDSConfigurationResult;
 import fortscale.collection.jobs.gds.configurators.GDSConfigurator;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
@@ -92,7 +93,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							configurator.apply();
+							GDSConfigurationResult configurationResult = configurator.apply();
+
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
 
 							break;
 						}
@@ -182,7 +185,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		while (gdsConfiguratorIterator.hasNext()) {
 			GDSConfigurator gdsDirtyConfigurator = gdsConfiguratorIterator.next();
 
-			gdsDirtyConfigurator.apply();
+			GDSConfigurationResult configurationResult = gdsDirtyConfigurator.apply();
+
+			GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
 
 			gdsConfiguratorIterator.remove();
 		}
@@ -226,7 +231,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							configurator.apply();
+							GDSConfigurationResult configurationResult = configurator.apply();
+
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
 
 							break;
 						}
@@ -248,8 +255,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					System.out.println(GDSUserMessages.SUCCESSFULLY_RESET_MESSAGE);
 					break;
 				case GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION:
-					System.exit(0);
-					break;
+					return;
 				default: // illegal operation
 					inputErrorMessage = GDSUserMessages.ILLEGAL_OPERATION_MESSAGE;
 					break;

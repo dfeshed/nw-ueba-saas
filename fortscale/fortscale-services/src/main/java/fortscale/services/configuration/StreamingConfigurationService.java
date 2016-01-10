@@ -2,6 +2,8 @@ package fortscale.services.configuration;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Set;
+
 /**
  * Abstract implementation for streaming configuration services
  *
@@ -54,5 +56,10 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 				//TODO - Need to add the topic configuration  also for task.inputs and fortscale.events.entry.<dataSource>_UsernameNormalizationAndTaggingTask.output.topic
 			}
 		}
+	}
+
+	@Override
+	public Set<String> getAffectedConfigList() {
+		return affectedFiles;
 	}
 }

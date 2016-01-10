@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Abstract implementation for Generic configuration services
@@ -23,6 +25,8 @@ public abstract class ConfigurationService {
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
 	protected GDSCompositeConfigurationState gdsConfigurationState;
+
+	protected Set<String> affectedFiles = new HashSet<>();;
 
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();
@@ -64,6 +68,8 @@ public abstract class ConfigurationService {
 			throw new Exception(e.getMessage());
 		}
 	}
+
+	public abstract Set<String> getAffectedConfigList();
 
 	public void setGDSConfigurationState(GDSCompositeConfigurationState gdsConfigurationState) {
 		this.gdsConfigurationState = gdsConfigurationState;
