@@ -273,6 +273,7 @@
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
 	<mongo:repositories base-package="fortscale.aggregation.feature.event.batch" />
+	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 
 	<!-- Entity events related beans -->
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" scope="singleton"/>
