@@ -4,10 +4,14 @@ import fortscale.aggregation.feature.event.AggregationEventSender;
 import fortscale.aggregation.feature.event.IAggregationEventSender;
 import fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Calendar;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -16,9 +20,9 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(BuildAggregatedEventsJob.class);
 
-	private static final String ENTITY_EVENTS_START_TIME_FIELD = "start_time_unix";
-	private static final String ENTITY_EVENTS_END_TIME_FIELD = "end_time_unix";
+	private static final String ENTITY_EVENTS_START_TIME_FIELD = "startTime";
 	private static final int DEFAULT_BATCH_SIZE = 1000;
+	private static final int DEFAULT_HOURS_TO_RUN = 24;
 	private final int DEFAULT_CHECK_RETRIES = 60;
 	protected static final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
@@ -37,7 +41,13 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		batchStartTime = jobDataMapExtension.getJobDataMapLongValue(map, ENTITY_EVENTS_START_TIME_FIELD);
-		batchEndTime = jobDataMapExtension.getJobDataMapLongValue(map, ENTITY_EVENTS_END_TIME_FIELD);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(batchStartTime);
+		int hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun", DEFAULT_HOURS_TO_RUN);
+		cal.add(Calendar.HOUR, hoursToRun);
+		batchStartTime = TimestampUtils.convertToSeconds(batchStartTime);
+		batchEndTime = TimestampUtils.convertToSeconds(cal.getTimeInMillis());
+
 		batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE);
 		jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
 		jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
