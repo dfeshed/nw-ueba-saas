@@ -13,8 +13,7 @@ public class MetricsKafkaSynchronizer implements IKafkaSynchronizer {
 
 	private static Logger logger = Logger.getLogger(MetricsKafkaSynchronizer.class);
 
-	//@Value("${kafka.broker.list:localhost:9092}") protected String zookeeperConnection;
-	protected String zookeeperConnection = "localhost:9092";
+	@Value("${broker.list}") protected String zookeeperConnection;
 
 	private EqualityMetricsDecider decider;
 	private String jobClassToMonitor;
