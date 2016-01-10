@@ -1,12 +1,10 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -73,6 +71,27 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 	}
 
+	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
+		String collectionName = getCollectionName(featureBucketConf);
+
+		List<FeatureBucket> featureBuckets = new ArrayList<>();
+
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
+
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
+
+			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
+
+			if(pageable != null){
+				query.with(pageable);
+			}
+			featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		}
+
+		return featureBuckets;
+	}
+
 	private Criteria createContextCriteria(String contextType, String contextName) {
 		Map<String, String> contextMap = new HashMap<>(1);
 		contextMap.put(contextType, contextName);
@@ -106,6 +125,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			// Start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+
+			// end time + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC));
 
 			// TTL on CreatedAt
 			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;

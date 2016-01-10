@@ -10,6 +10,7 @@ import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.util.Assert;
@@ -20,6 +21,8 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 
 	private EntityEventService entityEventService;
 	private String outputTopicName;
+
+	private Counter receivedMessageCount;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -46,6 +49,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		if (entityEventService != null) {
 			String messageText = (String)envelope.getMessage();
 			JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
+			receivedMessageCount.inc();
 			entityEventService.process(event);
 		}
 	}

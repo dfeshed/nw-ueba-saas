@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBCollection;
+import fortscale.utils.kafka.EqualityMetricsDecider;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.logging.Logger;

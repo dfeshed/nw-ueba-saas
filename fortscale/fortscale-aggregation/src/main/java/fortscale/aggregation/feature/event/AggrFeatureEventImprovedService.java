@@ -54,26 +54,17 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 
     private FeatureBucketsService featureBucketsService;
 
-    private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
+	private AggregatedFeatureEventsConfService aggrFeatureEventsConfService;
 
     public AggrFeatureEventImprovedService(AggregatedFeatureEventsConfService aggrFeatureEventsConfService, FeatureBucketsService featureBucketsService) {
-        this.featureBucketsService = featureBucketsService;
         Assert.notNull(aggrFeatureEventsConfService);
         Assert.notNull(featureBucketsService);
+
+		this.featureBucketsService = featureBucketsService;
+		this.aggrFeatureEventsConfService = aggrFeatureEventsConfService;
         List<AggregatedFeatureEventConf> aggrFeatureEventConfs = aggrFeatureEventsConfService.getAggregatedFeatureEventConfList();
         if(aggrFeatureEventConfs==null || aggrFeatureEventConfs.isEmpty()) {
             logger.info(INFO_MSG_NO_EVENT_CONFS);
-        }
-        
-        for(AggregatedFeatureEventConf eventConf : aggrFeatureEventConfs) {
-        	String bucketConfName = eventConf.getBucketConfName();
-        	List<AggregatedFeatureEventConf> bucketAggFeatureEventConfList = bucketConfName2FeatureEventConfMap.get(bucketConfName);
-        	if(bucketAggFeatureEventConfList == null){
-        		bucketAggFeatureEventConfList = new ArrayList<>();
-        		bucketConfName2FeatureEventConfMap.put(bucketConfName, bucketAggFeatureEventConfList);
-        	}
-        	
-        	bucketAggFeatureEventConfList.add(eventConf);
         }
     }
 
@@ -84,7 +75,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     public void newFeatureBuckets(List<FeatureBucket> buckets) {
     	List<FeatureBucketAggrMetadata> featureBucketAggrMetadataList = new ArrayList<>();
         for(FeatureBucket featureBucket : buckets) {
-        	if(bucketConfName2FeatureEventConfMap.get(featureBucket.getFeatureBucketConfName()) != null){
+        	if(aggrFeatureEventsConfService.getAggregatedFeatureEventConfList(featureBucket.getFeatureBucketConfName()) != null){
 	        	FeatureBucketAggrMetadata featureBucketAggrMetadata = new FeatureBucketAggrMetadata(featureBucket);
 	        	featureBucketAggrMetadataList.add(featureBucketAggrMetadata);
         	}
@@ -101,7 +92,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
         }
         
         for(FeatureBucket featureBucket : updatedFeatureBucketsWithNewEndTime) {
-        	if(bucketConfName2FeatureEventConfMap.get(featureBucket.getFeatureBucketConfName()) != null){
+        	if(aggrFeatureEventsConfService.getAggregatedFeatureEventConfList(featureBucket.getFeatureBucketConfName()) != null){
 				featureBucketAggrMetadataRepository.updateFeatureBucketsEndTime(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId(), featureBucket.getEndTime());
         	}
         }
@@ -129,28 +120,27 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     		FeatureBucket bucket = null;
     		List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
 
-    		List<AggregatedFeatureEventConf> featureEventConfList = bucketConfName2FeatureEventConfMap.get(featureBucketAggrSendingQueue.getFeatureBucketConfName());
-    		if(featureEventConfList != null){
-	    		for(AggregatedFeatureEventConf conf: featureEventConfList){
-	    			if(bucket == null){
-	    				bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
-	    				if(bucket == null){
-	    					String message = String.format("Couldn't send the aggregation event since the bucket was not found. conf name: %s bucketId: %s", featureBucketAggrSendingQueue.getFeatureBucketConfName(), featureBucketAggrSendingQueue.getBucketId());
-	    					logger.error(message);
-	    					throw new RuntimeException(message);
-	    				}
-	    				bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
-	    			}
-	    			// Calculating the new feature
-	                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
+    		List<AggregatedFeatureEventConf> featureEventConfList = aggrFeatureEventsConfService.getAggregatedFeatureEventConfList(featureBucketAggrSendingQueue.getFeatureBucketConfName());
+			for(AggregatedFeatureEventConf conf: featureEventConfList){
+				if(bucket == null){
+					bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
+					if(bucket == null){
+						String message = String.format("Couldn't send the aggregation event since the bucket was not found. conf name: %s bucketId: %s", featureBucketAggrSendingQueue.getFeatureBucketConfName(), featureBucketAggrSendingQueue.getBucketId());
+						logger.error(message);
+						throw new RuntimeException(message);
+					}
+					bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
+				}
+				// Calculating the new feature
+				Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
 
-	                // Building the event
-	                JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
+				// Building the event
+				JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
 
-	                // Sending the event
-	                sendEvent(event);
-	    		}
-    		}
+				// Sending the event
+				sendEvent(event);
+			}
+
     	}
     	featureBucketAggrSendingQueueRepository.deleteByFireTimeLessThan(fireTime);
 

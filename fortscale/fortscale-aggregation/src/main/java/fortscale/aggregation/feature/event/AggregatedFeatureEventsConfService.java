@@ -8,19 +8,12 @@ import fortscale.aggregation.feature.bucket.BucketAlreadyExistException;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -44,7 +37,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	// List of aggregated feature event configurations
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
-
+	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
 	@Override
 	protected String getBaseConfJsonFilePath() {
@@ -102,6 +95,12 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		List<AggregatedFeatureEventConf> returned = new ArrayList<>();
 		returned.addAll(aggregatedFeatureEventConfList);
 		return returned;
+	}
+
+	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList(String bucketConfName){
+		List<AggregatedFeatureEventConf> ret = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+
+		return ret != null ? ret : Collections.<AggregatedFeatureEventConf>emptyList();
 	}
 
 	public String getAnomalyType(String aggregatedFeatureName){
@@ -173,6 +172,14 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			String bucketConfName = conf.getBucketConfName();
 			FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(bucketConfName);
 			conf.setBucketConf(featureBucketConf);
+
+			List<AggregatedFeatureEventConf> bucketAggFeatureEventConfList = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+			if(bucketAggFeatureEventConfList == null){
+				bucketAggFeatureEventConfList = new ArrayList<>();
+				bucketConfName2FeatureEventConfMap.put(bucketConfName, bucketAggFeatureEventConfList);
+			}
+
+			bucketAggFeatureEventConfList.add(conf);
 		}
 	}
 

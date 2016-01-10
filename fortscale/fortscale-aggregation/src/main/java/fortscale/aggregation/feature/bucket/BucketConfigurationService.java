@@ -1,9 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import fortscale.aggregation.configuration.AslConfigurationService;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,6 +75,9 @@ public class BucketConfigurationService extends AslConfigurationService {
         }
     }
 
+    public Collection<FeatureBucketConf> getFeatureBucketConfs(){
+        return bucketConfs.values();
+    }
 
     public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
 

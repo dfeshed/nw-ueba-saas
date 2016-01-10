@@ -1,5 +1,8 @@
 package fortscale.collection.jobs;
 
+import fortscale.utils.kafka.EqualityMetricsDecider;
+import fortscale.utils.kafka.IKafkaSynchronizer;
+import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
@@ -25,7 +28,7 @@ import java.util.Map;
 
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
-public abstract class ImpalaToKafka extends FortscaleJob {
+public abstract class ImpalaToKafka extends FortscaleJob implements IKafkaSynchronizer {
 
     private static Logger logger = Logger.getLogger(ImpalaToKafka.class);
 
@@ -55,32 +58,22 @@ public abstract class ImpalaToKafka extends FortscaleJob {
     protected int checkRetries;
     protected String whereCriteria;
     protected String jobToMonitor;
-    protected String jobClassToMonitor;
+    protected MetricsKafkaSynchronizer metricsKafkaSynchronizer;
 
-    protected boolean listenToMetrics(long latestEpochTimeSent) throws JobExecutionException {
-        Map<String, Object> keyToExpectedValueMap = new HashMap<>();
-        keyToExpectedValueMap.put(String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent);
-        EqualityMetricsDecider decider = new EqualityMetricsDecider(keyToExpectedValueMap);
-
-        boolean result = MetricsReader.waitForMetrics(
-                zookeeperConnection.split(":")[0], Integer.parseInt(zookeeperConnection.split(":")[1]),
-                jobClassToMonitor, jobToMonitor, decider, MILLISECONDS_TO_WAIT, checkRetries);
-
-        if (!result) {
-            logger.error("last message not processed - timed out!");
-            throw new JobExecutionException();
-        }
-        logger.info("last message in batch processed, moving to next batch");
-        return true;
-    }
 
     protected void getGenericJobParameters(JobDataMap map)
             throws JobExecutionException {
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
+        jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
+        EqualityMetricsDecider decider = new EqualityMetricsDecider();
         if (map.containsKey(JOB_MONITOR_PARAMETER)) {
-            jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
-            jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER);
+            metricsKafkaSynchronizer = new MetricsKafkaSynchronizer(
+                    jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER), jobToMonitor,
+                    MILLISECONDS_TO_WAIT, checkRetries);
+        }
+        else {
+            metricsKafkaSynchronizer = new MetricsKafkaSynchronizer();
         }
     }
 

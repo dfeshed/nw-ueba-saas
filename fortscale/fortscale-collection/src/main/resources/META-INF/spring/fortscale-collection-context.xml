@@ -266,6 +266,15 @@
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
+	<bean id="aggrFeatureEventBatchService" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService" scope="singleton"/>
+	<bean id="aggrFeatureEventFunctionsService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService" />
+	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
+	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
+	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
+	<mongo:repositories base-package="fortscale.aggregation.feature.event.batch" />
+	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
+
 	<!-- Entity events related beans -->
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" scope="singleton"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore" scope="singleton"/>

@@ -22,6 +22,7 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -154,7 +155,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
                     }
                 //metric based throttling
                 } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
-                    listenToMetrics(latestEpochTimeSent);
+                    synchronize(latestEpochTimeSent);
                 }
 
                 timestampCursor = nextTimestampCursor;
@@ -210,4 +211,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         }
     }
 
+    @Override public boolean synchronize(long latestEpochTimeSent) {
+        return metricsKafkaSynchronizer.synchronize(latestEpochTimeSent);
+    }
 }
