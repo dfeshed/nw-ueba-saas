@@ -27,6 +27,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
     private static final String DOMAIN_VALUE_PARAM = "domainValue";
     private static final String NORMALIZE_SERVICE_NAME_PARAM = "normalizeServiceName";
     private static final String UPDATE_ONLY_PARAM = "updateOnlyFlag";
+    private static final String NORMALIZED_USER_NAME_FIELD_PARAM = "normalizedUserNameField";
 
     private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
     private static final String SOURCE_USERNAME_CONFIG_ENTRY = "source.";
@@ -105,6 +106,8 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             sourceUserParamsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, false, "false"));
         }
 
+        sourceUserParamsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
+
         if (targetUserNormalizationRequired) {
             HashMap<String, ConfigurationParam> targetUserParamsMap = new HashMap<>();
 
@@ -145,7 +148,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             }
 
             System.out.println("Please enter the field name of the field that will contain the second normalized user name :");
-            sourceUserParamsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
+            targetUserParamsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
             targetUserParamsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
         }
