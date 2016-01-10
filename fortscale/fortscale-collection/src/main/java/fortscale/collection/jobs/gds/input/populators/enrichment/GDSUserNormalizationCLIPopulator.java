@@ -106,6 +106,8 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             sourceUserParamsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, false, "false"));
         }
 
+        sourceUserParamsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
+
         if (targetUserNormalizationRequired) {
             HashMap<String, ConfigurationParam> targetUserParamsMap = new HashMap<>();
 

@@ -27,7 +27,7 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
         super.init();
         Boolean result;
         try {
-            this.fileToConfigurePath = this.fileToConfigurePath+"ip-resolving-task.properties";
+            this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "ip-resolving-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
@@ -110,8 +110,8 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
                 writeLineToFile("#############", fileWriterToConfigure, true);
             }
 
-
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
 
         catch (Exception e)
