@@ -10,7 +10,7 @@ public class GDSConfigurationResultImpl implements GDSConfigurationResult<String
 
     private boolean success;
     private String errorMessage;
-    private Set<String> affectedConfigList;
+    private Set<String> affectedConfigDescriptors;
 
     @Override
     public boolean isSuccess() {
@@ -22,8 +22,8 @@ public class GDSConfigurationResultImpl implements GDSConfigurationResult<String
         return errorMessage;
     }
 
-    public Set<String> getAffectedConfigList() {
-        return affectedConfigList;
+    public Set<String> getAffectedConfigDescriptors() {
+        return affectedConfigDescriptors;
     }
 
     public void setSuccess(boolean success) {
@@ -34,7 +34,7 @@ public class GDSConfigurationResultImpl implements GDSConfigurationResult<String
         this.errorMessage = errorMessage;
     }
 
-    public void setAffectedConfigList(Set<String> affectedFiles) {
-        this.affectedConfigList = affectedFiles;
+    public void setAffectedConfigDescriptors(Set<String> affectedFiles) {
+        this.affectedConfigDescriptors = affectedFiles;
     }
 }

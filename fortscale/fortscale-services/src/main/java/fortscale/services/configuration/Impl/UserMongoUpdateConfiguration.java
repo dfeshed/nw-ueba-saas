@@ -25,7 +25,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 		super.init();
 		Boolean result;
 		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"user-mongo-update-task.properties";
+			this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "user-mongo-update-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;

@@ -24,7 +24,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
         super.init();
         Boolean result;
         try {
-            this.fileToConfigurePath =this.fileToConfigurePath+"username-normalization-tagging-task.properties";
+            this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "username-normalization-tagging-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
