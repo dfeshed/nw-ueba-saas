@@ -14,6 +14,6 @@ import java.util.Map;
 public interface GDSConfigurator {
     void setConfigurationState(GDSCompositeConfigurationState currConfigurationState);
     void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception;
-    GDSConfigurationResult apply() throws Exception;
+    GDSConfigurationResult<String> apply() throws Exception;
     void reset() throws Exception;
 }

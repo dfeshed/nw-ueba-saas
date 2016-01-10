@@ -20,7 +20,7 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
         this.currGDSConfigurationState = currConfigurationState;
     }
 
-    public GDSConfigurationResult apply() throws Exception {
+    public GDSConfigurationResult<String> apply() throws Exception {
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
 
         if (configurationService.init()) {
