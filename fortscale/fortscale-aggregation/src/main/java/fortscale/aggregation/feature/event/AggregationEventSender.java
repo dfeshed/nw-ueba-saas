@@ -48,7 +48,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 			multiTopicsKafkaSender.send(topicToSend, eventValue, timestamp);
 		}
 		catch (Exception ex) {
-			logger.error("Failed to send message to topic {}", topicToSend);
+			logger.error("Failed to send message to topic {}. Error: {}", topicToSend, ex.getMessage());
 		}
 	}
 }
