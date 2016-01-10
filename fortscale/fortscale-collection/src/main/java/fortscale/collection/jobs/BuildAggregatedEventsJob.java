@@ -22,6 +22,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	private static final String ENTITY_EVENTS_START_TIME_FIELD = "startTime";
 	private static final int DEFAULT_BATCH_SIZE = 1000;
+	private static final int DEFAULT_HOURS_TO_RUN = 24;
 	private final int DEFAULT_CHECK_RETRIES = 60;
 	protected static final int MILLISECONDS_TO_WAIT = 1000 * 60;
 
@@ -42,7 +43,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		batchStartTime = jobDataMapExtension.getJobDataMapLongValue(map, ENTITY_EVENTS_START_TIME_FIELD);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(batchStartTime);
-		int hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun", DEFAULT_BATCH_SIZE);
+		int hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun", DEFAULT_HOURS_TO_RUN);
 		cal.add(Calendar.HOUR, hoursToRun);
 		batchStartTime = TimestampUtils.convertToSeconds(batchStartTime);
 		batchEndTime = TimestampUtils.convertToSeconds(cal.getTimeInMillis());
