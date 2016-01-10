@@ -21,7 +21,6 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(BuildAggregatedEventsJob.class);
 
 	private static final String ENTITY_EVENTS_START_TIME_FIELD = "startTime";
-	private static final String ENTITY_EVENTS_END_TIME_FIELD = "end_time_unix";
 	private static final int DEFAULT_BATCH_SIZE = 1000;
 	private final int DEFAULT_CHECK_RETRIES = 60;
 	protected static final int MILLISECONDS_TO_WAIT = 1000 * 60;
@@ -48,8 +47,6 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		batchStartTime = TimestampUtils.convertToSeconds(batchStartTime);
 		batchEndTime = TimestampUtils.convertToSeconds(cal.getTimeInMillis());
 
-
-		batchEndTime = jobDataMapExtension.getJobDataMapLongValue(map, ENTITY_EVENTS_END_TIME_FIELD);
 		batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE);
 		jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
 		jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
