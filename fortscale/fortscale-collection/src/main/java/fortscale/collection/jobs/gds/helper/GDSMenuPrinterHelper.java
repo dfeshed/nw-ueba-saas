@@ -107,7 +107,7 @@ public class GDSMenuPrinterHelper {
         boolean success = configurationResult.isSuccess();
 
         if (success) {
-            Set<String> affectedFiles = configurationResult.getAffectedConfigList();
+            Set<String> affectedFiles = configurationResult.getAffectedConfigDescriptors();
 
             System.out.println("Apply configuration succeeded. Affected files:");
             affectedFiles.stream().forEach(System.out::println);

@@ -34,9 +34,6 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 	private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
 
 	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
-	private static final String AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE = "user_checking_up_on_yids";
-	private static final String AMT_LOGIN_AS_MAIL_ANOMALY_TYPE = "amt_login_as_mail";
-	private static final String AMT_RESET_PASSWORD_ANOMALY_TYPE = "amt_reset_pwd";
 
 	public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
 		super(contextType, dataEntity, featureName);
@@ -137,9 +134,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 	}
 
 	@Override protected boolean isAnomalyIndicationRequired(Evidence evidence) {
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
-			   !AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
-			   !AMT_LOGIN_AS_MAIL_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
-			   !AMT_RESET_PASSWORD_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
+		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
+
 	}
 }

@@ -24,6 +24,7 @@ public abstract class ConfigurationService {
 	protected String fileToConfigurePath;
 	protected File fileToConfigure;
 	protected FileWriter fileWriterToConfigure;
+
 	protected GDSCompositeConfigurationState gdsConfigurationState;
 
 	protected Set<String> affectedConfigList = new HashSet<>();
@@ -57,8 +58,10 @@ public abstract class ConfigurationService {
 	protected void writeLineToFile(String line, FileWriter writer, boolean withNewLine) throws Exception{
 		try {
 			writer.write(line);
-			if (withNewLine)
+
+			if (withNewLine) {
 				writer.write("\n");
+			}
 		}
 
 		catch (Exception e)

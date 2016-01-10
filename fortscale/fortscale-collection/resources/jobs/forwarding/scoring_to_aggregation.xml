@@ -79,22 +79,6 @@
                     <value>${impala.score.kerberos_logins.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>impalaTableName-amt</key>
-                    <value>${impala.score.amt.table.name}</value>
-                </entry>
-                <entry>
-                    <key>epochtimeField-amt</key>
-                    <value>${impala.score.amt.table.field.epochtime}</value>
-                </entry>
-                <entry>
-                    <key>impalaTableFields-amt</key>
-                    <value>${impala.score.amt.table.fields}</value>
-                </entry>
-                <entry>
-                    <key>impalaTablePartitionType-amt</key>
-                    <value>${impala.score.amt.table.partition.type}</value>
-                </entry>
-                <entry>
                     <key>streamingTopic</key>
                     <value>fortscale-vpn-event-score-from-hdfs</value>
                 </entry>
