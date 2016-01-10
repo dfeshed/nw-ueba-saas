@@ -1,6 +1,5 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.utils.kafka.MultiTopicsKafkaSender;
 import fortscale.utils.logging.Logger;
@@ -16,9 +15,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 
 	private static Logger logger = Logger.getLogger(AggregationEventSender.class);
 
-	protected static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "epochtimeField";
-
-	private KafkaEventsWriter eventsWriter;
+	protected static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "start_time_unix";
 
 	private static final String FTOPIC = "fortscale-aggregated-feature-f-event";
 	private MultiTopicsKafkaSender multiTopicsKafkaSender;
