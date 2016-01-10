@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
-import fortscale.services.configuration.Impl.InitPartConfiguration;
+import fortscale.services.configuration.Impl.SchemaDefinitionConfiguration;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
     public GDSSchemaConfigurator() {
-        configurationService = new InitPartConfiguration();
+        configurationService = new SchemaDefinitionConfiguration();
     }
 
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
