@@ -16,15 +16,18 @@ import java.util.Set;
  */
 public class SchemaDefinitionConfiguration extends ConfigurationService {
 
-	private String streamingOverridingPath;
+    private static final String COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
+    private static final String STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/streaming/config/fortscale-overriding-streaming.properties";
+
+    private String streamingOverridingFilePath;
 	private File streamingOverridingFile;
 	private FileWriter streamingOverridingFileWriter;
 
     public SchemaDefinitionConfiguration()
 	{
 		logger = LoggerFactory.getLogger(SchemaDefinitionConfiguration.class);
-		this.fileToConfigurePath = USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
-		this.streamingOverridingPath = USER_HOME_DIR + "/fortscale/streaming/config/fortscale-overriding-streaming.properties";
+		this.fileToConfigurePath = USER_HOME_DIR + COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
+		this.streamingOverridingFilePath = USER_HOME_DIR + STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
 	}
 
 	@Override
@@ -33,7 +36,7 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 		try {
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
-			this.streamingOverridingFile = new File(this.streamingOverridingPath);
+			this.streamingOverridingFile = new File(this.streamingOverridingFilePath);
 			this.streamingOverridingFileWriter = new FileWriter(this.streamingOverridingFile, true);
 			result = true;
 		} catch (Exception e) {
@@ -347,7 +350,6 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 
             fileWriterToConfigure.flush();
             affectedConfigList.add(fileToConfigure.getAbsolutePath());
-
         }
         catch(Exception e){
             logger.error("There was an exception during execution - {} ",e.getMessage()!=null ? e.getMessage() : e.getCause().getMessage());

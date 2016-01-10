@@ -12,12 +12,17 @@ import java.util.Set;
 public abstract class StreamingConfigurationService extends ConfigurationService {
 
 	protected static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
+
+	private static final String FORTSCALE_STREAMING_CONFIG_RELATIVE_PATH = "/fortscale/streaming/config/";
+
+	protected static final String FORTSCALE_STREAMING_DIR_PATH = USER_HOME_DIR + FORTSCALE_STREAMING_CONFIG_RELATIVE_PATH;
+
 	protected String dataSourceName;
 
 	@Override
 	public boolean init() {
-		this.fileToConfigurePath = USER_HOME_DIR + "/fortscale/streaming/config/";
 		dataSourceName = gdsConfigurationState.getDataSourceName();
+
 		return true;
 	}
 

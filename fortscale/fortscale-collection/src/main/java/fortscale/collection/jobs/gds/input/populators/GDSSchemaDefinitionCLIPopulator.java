@@ -112,7 +112,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         paramsMap.put(SCORE_TABLE_NAME_PARAM, new ConfigurationParam(SCORE_TABLE_NAME_PARAM,false,tableName));
 
         //top score
-        System.out.println(String.format("Does %s Have top table schema (y/n) ?",dataSourceName));
+        System.out.println(String.format("Does %s has top table schema (y/n) ?",dataSourceName));
         String inputResult = gdsInputHandler.getInput();
         paramsMap.put(TOP_SCHEMA_FLAG_PARAM, new ConfigurationParam(TOP_SCHEMA_FLAG_PARAM, GDSUserInputHelper.isConfirmed(inputResult), EMPTY_STR));
 

@@ -21,11 +21,10 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
     @Override
     public boolean init() {
-
         super.init();
         Boolean result;
         try {
-            this.fileToConfigurePath =this.fileToConfigurePath+"username-normalization-tagging-task.properties";
+            this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "username-normalization-tagging-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
@@ -96,10 +95,10 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
                 writeLineToFile("\n", fileWriterToConfigure, true);
                 writeLineToFile("#############", fileWriterToConfigure, true);
-
             }
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {
@@ -110,7 +109,4 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
         return true;
 
     }
-
-
-
 }
