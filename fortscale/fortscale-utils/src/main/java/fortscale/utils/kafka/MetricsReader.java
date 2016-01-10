@@ -35,53 +35,94 @@ public class MetricsReader {
             String zookeeper, int port, String headerToCheck, String jobToCheck,
             IMetricsDecider decider, int waitTimeBetweenMetricsChecks, int checkRetries) {
 
-        SimpleConsumer consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
-        long offset = 0, lastOffset = -1, currentTry = 0;
-        int partition = 0;
+        SimpleConsumer consumer = null;
 
-        while (currentTry < checkRetries) {
-            FetchRequest fetchRequest = new FetchRequestBuilder()
-                    .clientId("clientId")
-                    .addFetch(METRICS_TOPIC, partition, offset, BUFFER_SIZE)
-                    .build();
-            FetchResponse messages = consumer.fetch(fetchRequest);
-            if (messages.hasError()) {
-                logger.error("failed to read from metrics topic - {}", messages.errorCode(METRICS_TOPIC, partition));
-                consumer.close();
-                return false;
-            }
-            for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
-                long currentOffset = msg.offset();
-                if (currentOffset < offset) {
-                    logger.warn("found an old offset: " + currentOffset + " expecting: " + offset);
-                    break;
-                }
-                String message = convertPayloadToString(msg);
-                JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
-                if (decider.decide(metrics)) {
-                    consumer.close();
+        try {
+            consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
+            long offset = 0, lastOffset = -1, currentTry = 0;
+            int partition = 0;
+
+            while (currentTry < checkRetries) {
+                MetricsResults metricsResults = testMetrics(consumer, offset, headerToCheck, jobToCheck, decider);
+                if(metricsResults.isFound()){
                     return true;
-                }
-                offset = msg.nextOffset();
-            }
-            if (offset == lastOffset) {
-                try {
-                    logger.info("waiting for metrics topic to refresh");
-                    Thread.sleep(waitTimeBetweenMetricsChecks);
-                    currentTry++;
-                } catch (InterruptedException e) {
-                    logger.error("wait for metrics has been interrupted. stopping...", e);
-                    consumer.close();
+                } else if(metricsResults.getError() != null){
                     return false;
                 }
-            } else {
-                currentTry = 0;
+
+                offset = metricsResults.getOffset();
+                if (offset == lastOffset) {
+                    try {
+                        logger.info("waiting for metrics topic to refresh");
+                        Thread.sleep(waitTimeBetweenMetricsChecks);
+                        currentTry++;
+                    } catch (InterruptedException e) {
+                        logger.error("wait for metrics has been interrupted. stopping...", e);
+                        return false;
+                    }
+                } else {
+                    currentTry = 0;
+                }
+                lastOffset = offset;
             }
-            lastOffset = offset;
+        } finally {
+            if(consumer != null) {
+                consumer.close();
+            }
         }
         logger.error("failed to get metrics data in {} retries", checkRetries);
         consumer.close();
         return false;
+    }
+
+    public static MetricsResults fetchMetric(long offset,
+                                      String zookeeper, int port, String headerToCheck, String jobToCheck,
+                                      IMetricsDecider decider) {
+        SimpleConsumer consumer = null;
+
+        try {
+            consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
+            return testMetrics(consumer, offset, headerToCheck, jobToCheck, decider);
+        } finally {
+            if(consumer != null) {
+                consumer.close();
+            }
+        }
+
+    }
+
+    private static MetricsResults testMetrics(SimpleConsumer consumer, long offset,
+            String headerToCheck, String jobToCheck,
+            IMetricsDecider decider) {
+
+
+        int partition = 0;
+
+        FetchRequest fetchRequest = new FetchRequestBuilder()
+                .clientId("clientId")
+                .addFetch(METRICS_TOPIC, partition, offset, BUFFER_SIZE)
+                .build();
+        FetchResponse messages = consumer.fetch(fetchRequest);
+        if (messages.hasError()) {
+            String errorMsg = String.format("failed to read from metrics topic - %s", messages.errorCode(METRICS_TOPIC, partition));
+            logger.error(errorMsg);
+            return new MetricsResults(false, offset,errorMsg);
+        }
+        for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
+            long currentOffset = msg.offset();
+            if (currentOffset < offset) {
+                logger.warn("found an old offset: " + currentOffset + " expecting: " + offset);
+                return new MetricsResults(false, offset,null);
+            }
+            String message = convertPayloadToString(msg);
+            JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
+            if (decider.decide(metrics)) {
+                return new MetricsResults(true, currentOffset, null);
+            }
+            offset = msg.nextOffset();
+        }
+
+        return new MetricsResults(false, offset,null);
     }
 
     /**
@@ -112,5 +153,29 @@ public class MetricsReader {
             metrics = null;
         }
         return metrics;
+    }
+
+    public static class MetricsResults{
+        boolean found;
+        long offset;
+        String error = null;
+
+        public MetricsResults(boolean found, long offset, String error) {
+            this.found = found;
+            this.offset = offset;
+            this.error = error;
+        }
+
+        public boolean isFound() {
+            return found;
+        }
+
+        public long getOffset() {
+            return offset;
+        }
+
+        public String getError() {
+            return error;
+        }
     }
 }
