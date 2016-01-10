@@ -25,7 +25,7 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
 		super.init();
 		Boolean result;
 		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"hdfs-events-writer-task.properties";
+			this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "hdfs-events-writer-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;
@@ -133,8 +133,8 @@ public class HDFSWriteTaskConfiguration extends StreamingConfigurationService {
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("#############", fileWriterToConfigure, true);
 
-
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {

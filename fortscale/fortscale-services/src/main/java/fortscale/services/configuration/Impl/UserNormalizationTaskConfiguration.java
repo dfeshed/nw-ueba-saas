@@ -21,7 +21,6 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
     @Override
     public boolean init() {
-
         super.init();
         Boolean result;
         try {
@@ -96,10 +95,10 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
 
                 writeLineToFile("\n", fileWriterToConfigure, true);
                 writeLineToFile("#############", fileWriterToConfigure, true);
-
             }
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {
@@ -110,7 +109,4 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
         return true;
 
     }
-
-
-
 }

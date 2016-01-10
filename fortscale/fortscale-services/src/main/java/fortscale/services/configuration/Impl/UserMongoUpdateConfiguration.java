@@ -87,6 +87,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {
