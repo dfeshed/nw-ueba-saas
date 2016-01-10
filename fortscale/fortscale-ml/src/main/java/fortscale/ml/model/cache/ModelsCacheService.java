@@ -1,4 +1,4 @@
-package fortscale.ml.service;
+package fortscale.ml.model.cache;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;

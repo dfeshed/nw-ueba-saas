@@ -2,7 +2,7 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.ModelCacheManager;
+import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelCacheInfo;
 import fortscale.streaming.ExtendedSamzaTaskContext;

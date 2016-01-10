@@ -2,7 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.FeatureScoreJsonEventHandler;
-import fortscale.ml.service.ModelsCacheService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;

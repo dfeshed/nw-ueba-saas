@@ -3,7 +3,7 @@ package fortscale.streaming.service.model;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.ModelCacheInfo;
-import fortscale.ml.service.ModelsCacheService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
