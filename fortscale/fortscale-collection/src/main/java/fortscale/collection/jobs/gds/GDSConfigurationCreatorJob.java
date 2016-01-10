@@ -260,6 +260,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							configurator.reset();
 						}
+						else {
+							dirtyConfiguratorsQueue.add(configurator);
+						}
 					}
 
 					break;

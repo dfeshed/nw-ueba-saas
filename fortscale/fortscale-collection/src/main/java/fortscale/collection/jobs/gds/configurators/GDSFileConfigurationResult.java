@@ -6,11 +6,11 @@ import java.util.Set;
  * @author gils
  * 10/01/2016
  */
-public class GDSConfigurationResultImpl implements GDSConfigurationResult<String> {
+public class GDSFileConfigurationResult implements GDSConfigurationResult<String> {
 
     private boolean success;
     private String errorMessage;
-    private Set<String> affectedConfigDescriptors;
+    private Set<String> affectedConfigFileNames;
 
     @Override
     public boolean isSuccess() {
@@ -23,7 +23,7 @@ public class GDSConfigurationResultImpl implements GDSConfigurationResult<String
     }
 
     public Set<String> getAffectedConfigDescriptors() {
-        return affectedConfigDescriptors;
+        return affectedConfigFileNames;
     }
 
     public void setSuccess(boolean success) {
@@ -35,6 +35,6 @@ public class GDSConfigurationResultImpl implements GDSConfigurationResult<String
     }
 
     public void setAffectedConfigDescriptors(Set<String> affectedFiles) {
-        this.affectedConfigDescriptors = affectedFiles;
+        this.affectedConfigFileNames = affectedFiles;
     }
 }
