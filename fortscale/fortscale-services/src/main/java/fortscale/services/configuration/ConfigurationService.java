@@ -26,7 +26,7 @@ public abstract class ConfigurationService {
 	protected FileWriter fileWriterToConfigure;
 	protected GDSCompositeConfigurationState gdsConfigurationState;
 
-	protected Set<String> affectedFiles = new HashSet<>();;
+	protected Set<String> affectedConfigList = new HashSet<>();
 
     public abstract boolean applyConfiguration() throws Exception;
 	public abstract boolean init();

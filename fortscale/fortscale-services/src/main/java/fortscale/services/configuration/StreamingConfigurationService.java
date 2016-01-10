@@ -60,6 +60,6 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 
 	@Override
 	public Set<String> getAffectedConfigList() {
-		return affectedFiles;
+		return affectedConfigList;
 	}
 }

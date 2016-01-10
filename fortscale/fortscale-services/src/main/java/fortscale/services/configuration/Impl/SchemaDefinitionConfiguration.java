@@ -343,10 +343,10 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 			writeLineToFile(line, fileWriterToConfigure, true);
 
             streamingOverridingFileWriter.flush();
-            affectedFiles.add(streamingOverridingFile.getName());
+            affectedConfigList.add(streamingOverridingFile.getAbsolutePath());
 
             fileWriterToConfigure.flush();
-            affectedFiles.add(fileToConfigure.getName());
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
 
         }
         catch(Exception e){
@@ -374,6 +374,6 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 
     @Override
     public Set<String> getAffectedConfigList() {
-        return affectedFiles;
+        return affectedConfigList;
     }
 }

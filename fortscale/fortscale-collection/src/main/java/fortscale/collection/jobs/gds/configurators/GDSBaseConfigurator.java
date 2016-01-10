@@ -33,6 +33,6 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
         gdsConfigurationResult.setSuccess(true);
         gdsConfigurationResult.setAffectedConfigList(configurationService.getAffectedConfigList());
 
-        return null;
+        return gdsConfigurationResult;
     }
 }
