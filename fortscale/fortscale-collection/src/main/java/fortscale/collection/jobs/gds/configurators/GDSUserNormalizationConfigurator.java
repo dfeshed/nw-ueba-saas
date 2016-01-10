@@ -27,8 +27,19 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
         List<GDSEnrichmentDefinitionState.UserNormalizationState> userNormalizationStates = currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates();
 
-        addConfiguration(userNormalizationStates, configurationParams, GDS_CONFIG_ENTRY + SOURCE_USERNAME_CONFIG_ENTRY);
-        addConfiguration(userNormalizationStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_USERNAME_CONFIG_ENTRY);
+        String sourceUsernameConfigKey = GDS_CONFIG_ENTRY + SOURCE_USERNAME_CONFIG_ENTRY;
+
+        if (configurationParams.containsKey(sourceUsernameConfigKey)) {
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setSourceUsernameResolvingRequired(true);
+            addConfiguration(userNormalizationStates, configurationParams, sourceUsernameConfigKey);
+        }
+
+        String targetUsernameConfigKey = GDS_CONFIG_ENTRY + TARGET_USERNAME_CONFIG_ENTRY;
+
+        if (configurationParams.containsKey(targetUsernameConfigKey)) {
+            currGDSConfigurationState.getStreamingTopologyDefinitionState().setTargetUsernameResolvingRequired(true);
+            addConfiguration(userNormalizationStates, configurationParams, targetUsernameConfigKey);
+        }
     }
 
     private void addConfiguration(List<GDSEnrichmentDefinitionState.UserNormalizationState> userNormalizationStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {

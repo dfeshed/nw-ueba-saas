@@ -5,12 +5,30 @@ package fortscale.services.configuration.gds.state;
  * 07/01/2016
  */
 public class GDSStreamingTopologyDefinitionState implements GDSConfigurationState{
+    private boolean sourceUsernameResolvingRequired;
+    private boolean targetUsernameResolvingRequired;
     private boolean sourceIpResolvingRequired;
     private boolean targetIpResolvingRequired;
     private boolean sourceMachineNormalizationRequired;
     private boolean targetMachineNormalizationRequired;
     private boolean sourceIpGeoLocationRequired;
     private boolean targetIpGeoLocationRequired;
+
+    public boolean isSourceUsernameResolvingRequired() {
+        return sourceUsernameResolvingRequired;
+    }
+
+    public void setSourceUsernameResolvingRequired(boolean sourceUsernameResolvingRequired) {
+        this.sourceUsernameResolvingRequired = sourceUsernameResolvingRequired;
+    }
+
+    public boolean isTargetUsernameResolvingRequired() {
+        return targetUsernameResolvingRequired;
+    }
+
+    public void setTargetUsernameResolvingRequired(boolean targetUsernameResolvingRequired) {
+        this.targetUsernameResolvingRequired = targetUsernameResolvingRequired;
+    }
 
     public boolean isSourceIpResolvingRequired() {
         return sourceIpResolvingRequired;

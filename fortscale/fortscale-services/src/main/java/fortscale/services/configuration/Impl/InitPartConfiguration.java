@@ -1,6 +1,7 @@
 package fortscale.services.configuration.Impl;
 
 import fortscale.services.configuration.ConfigurationService;
+import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -51,31 +52,33 @@ public class InitPartConfiguration extends ConfigurationService {
 
 			String dataSourceList  = gdsConfigurationState.getExistingDataSources();
 
-			boolean hasSourceIp = gdsConfigurationState.getSchemaDefinitionState().hasSourceIp();
+            GDSSchemaDefinitionState schemaDefinitionState = gdsConfigurationState.getSchemaDefinitionState();
 
-			boolean hasTargetIp = gdsConfigurationState.getSchemaDefinitionState().hasTargetIp();
+            boolean hasSourceIp = schemaDefinitionState.hasSourceIp();
 
-			String dataFields = gdsConfigurationState.getSchemaDefinitionState().getDataFields();
+			boolean hasTargetIp = schemaDefinitionState.hasTargetIp();
 
-			String enrichFields = gdsConfigurationState.getSchemaDefinitionState().getEnrichFields();
+			String dataFields = schemaDefinitionState.getDataFields();
 
-			String enrichDelimiter = gdsConfigurationState.getSchemaDefinitionState().getEnrichDelimiter();
+			String enrichFields = schemaDefinitionState.getEnrichFields();
 
-			String enrichTableName = gdsConfigurationState.getSchemaDefinitionState().getEnrichTableName();
+			String enrichDelimiter = schemaDefinitionState.getEnrichDelimiter();
 
-			String scoreFields = gdsConfigurationState.getSchemaDefinitionState().getScoreFields();
+			String enrichTableName = schemaDefinitionState.getEnrichTableName();
 
-			String scoreDelimiter = gdsConfigurationState.getSchemaDefinitionState().getScoreDelimiter();
+			String scoreFields = schemaDefinitionState.getScoreFields();
 
-			String scoreTableName = gdsConfigurationState.getSchemaDefinitionState().getScoreTableName();
+			String scoreDelimiter = schemaDefinitionState.getScoreDelimiter();
 
-			boolean hasTopSchema = gdsConfigurationState.getSchemaDefinitionState().hasTopSchema();
+			String scoreTableName = schemaDefinitionState.getScoreTableName();
 
-			String normalizedUserNameField = gdsConfigurationState.getSchemaDefinitionState().getNormalizedUserNameField();
+			boolean hasTopSchema = schemaDefinitionState.hasTopSchema();
 
-			String dataDelimiter = gdsConfigurationState.getSchemaDefinitionState().getDataDelimiter();
+			String normalizedUserNameField = schemaDefinitionState.getNormalizedUserNameField();
 
-			String dataTableName = gdsConfigurationState.getSchemaDefinitionState().getDataTableName();
+			String dataDelimiter = schemaDefinitionState.getDataDelimiter();
+
+			String dataTableName = schemaDefinitionState.getDataTableName();
 
             writeLineToFile("\n", fileWriterToConfigure, true);
             writeLineToFile("\n", fileWriterToConfigure, true);
