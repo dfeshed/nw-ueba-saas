@@ -68,4 +68,9 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates().clear();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "User Normalization Task";
+    }
 }

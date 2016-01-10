@@ -53,5 +53,10 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState().reset();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "User Mongo Update Task";
+    }
 }
 

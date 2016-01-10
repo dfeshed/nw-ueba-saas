@@ -59,5 +59,10 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState().reset();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "HDFS Writer Task";
+    }
 }
 

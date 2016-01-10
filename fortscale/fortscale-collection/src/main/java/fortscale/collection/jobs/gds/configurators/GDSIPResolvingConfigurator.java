@@ -57,4 +57,9 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates().clear();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "IP Resolving Task";
+    }
 }

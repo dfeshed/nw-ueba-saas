@@ -6,7 +6,7 @@ import java.util.Set;
  * @author gils
  * 10/01/2016
  */
-public class GDSFileConfigurationResult implements GDSConfigurationResult<String> {
+public class GDSFileBaseConfigurationResult implements GDSConfigurationResult<String> {
 
     private boolean success;
     private String errorMessage;

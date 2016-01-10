@@ -110,13 +110,13 @@ public class GDSMenuPrinterHelper {
         System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
     }
 
-    public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult) {
+    public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult, String configuratorName) {
         boolean success = configurationResult.isSuccess();
 
         if (success) {
             Set<String> affectedFiles = configurationResult.getAffectedConfigDescriptors();
 
-            System.out.println("Apply configuration succeeded. Affected files:");
+            System.out.println("Apply " + configuratorName + " configuration succeeded. Affected files:");
             affectedFiles.stream().forEach(System.out::println);
         }
         else {

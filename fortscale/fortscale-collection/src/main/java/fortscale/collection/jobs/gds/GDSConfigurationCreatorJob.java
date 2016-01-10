@@ -95,7 +95,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getConfiguratorName());
 
 							break;
 						}
@@ -200,7 +200,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 			GDSConfigurationResult<String> configurationResult = gdsDirtyConfigurator.apply();
 
-			GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+			GDSMenuPrinterHelper.printConfigurationResult(configurationResult, gdsDirtyConfigurator.getConfiguratorName());
 
 			gdsConfiguratorIterator.remove();
 		}
@@ -250,7 +250,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getConfiguratorName());
 
 							break;
 						}

@@ -68,4 +68,9 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getGeoLocationStates().clear();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "Geo Location Task";
+    }
 }

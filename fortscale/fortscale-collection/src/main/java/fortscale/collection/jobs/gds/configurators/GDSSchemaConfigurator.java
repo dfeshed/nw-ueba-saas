@@ -112,4 +112,9 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         // we will actually reset all configuration definitions
         currGDSConfigurationState.reset();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "Schema Definition";
+    }
 }

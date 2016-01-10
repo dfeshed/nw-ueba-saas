@@ -36,4 +36,10 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     public void reset() throws Exception {
         // TODO implement
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return null;
+        // TODO implement
+    }
 }

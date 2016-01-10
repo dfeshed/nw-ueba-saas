@@ -60,4 +60,9 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState().reset();
     }
+
+    @Override
+    public String getConfiguratorName() {
+        return "Computer Tagging Task";
+    }
 }

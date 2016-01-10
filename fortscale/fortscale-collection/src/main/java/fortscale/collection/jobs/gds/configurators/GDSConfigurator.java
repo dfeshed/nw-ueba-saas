@@ -16,4 +16,5 @@ public interface GDSConfigurator {
     void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception;
     GDSConfigurationResult<String> apply() throws Exception;
     void reset() throws Exception;
+    String getConfiguratorName();
 }
