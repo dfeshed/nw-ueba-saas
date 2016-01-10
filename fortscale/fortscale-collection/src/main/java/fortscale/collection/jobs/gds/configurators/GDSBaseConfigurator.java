@@ -20,7 +20,7 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
         this.currGDSConfigurationState = currConfigurationState;
     }
 
-    public void apply() throws Exception {
+    public GDSConfigurationResult apply() throws Exception {
         configurationService.setGDSConfigurationState(currGDSConfigurationState);
 
         if (configurationService.init()) {
@@ -28,5 +28,11 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
         }
 
         configurationService.done();
+
+        GDSConfigurationResultImpl gdsConfigurationResult = new GDSConfigurationResultImpl();
+        gdsConfigurationResult.setSuccess(true);
+        gdsConfigurationResult.setAffectedConfigList(configurationService.getAffectedConfigList());
+
+        return gdsConfigurationResult;
     }
 }

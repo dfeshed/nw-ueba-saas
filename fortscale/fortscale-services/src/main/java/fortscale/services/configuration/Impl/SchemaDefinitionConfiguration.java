@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Schema definition configuration implementation
@@ -342,7 +343,11 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 			writeLineToFile(line, fileWriterToConfigure, true);
 
             streamingOverridingFileWriter.flush();
+            affectedConfigList.add(streamingOverridingFile.getAbsolutePath());
+
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
+
         }
         catch(Exception e){
             logger.error("There was an exception during execution - {} ",e.getMessage()!=null ? e.getMessage() : e.getCause().getMessage());
@@ -366,4 +371,9 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 
 		return super.done();
 	}
+
+    @Override
+    public Set<String> getAffectedConfigList() {
+        return affectedConfigList;
+    }
 }

@@ -27,8 +27,9 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
-    public void apply() {
+    public GDSConfigurationResult apply() {
         // TODO implement
+        return null;
     }
 
     @Override

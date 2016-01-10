@@ -1,9 +1,11 @@
 package fortscale.collection.jobs.gds.helper;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
+import fortscale.collection.jobs.gds.configurators.GDSConfigurationResult;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper class for Generic data source menu printing
@@ -80,7 +82,7 @@ public class GDSMenuPrinterHelper {
                 GDSMenuOptions.ENRICHMENT_HDFS_WRITER_OPTION + ".\tHDFS Writer task\n" +
                 GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.ENRICHMENT_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
-                GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION + ".\tExit to Main menu\n");
+                GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION + ".\tReturn to Main menu\n");
     }
 
     public static void printModelAndScoringMenu() {
@@ -99,5 +101,19 @@ public class GDSMenuPrinterHelper {
         System.out.println("");
         GDSMenuPrinterHelper.printEnrichmentMenu();
         System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
+    }
+
+    public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult) {
+        boolean success = configurationResult.isSuccess();
+
+        if (success) {
+            Set<String> affectedFiles = configurationResult.getAffectedConfigList();
+
+            System.out.println("Apply configuration succeeded. Affected files:");
+            affectedFiles.stream().forEach(System.out::println);
+        }
+        else {
+            System.out.println("Apply configuration failed.");
+        }
     }
 }
