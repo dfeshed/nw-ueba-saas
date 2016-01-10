@@ -25,7 +25,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
         super.init();
         Boolean result;
         try {
-            this.fileToConfigurePath = this.fileToConfigurePath+"vpn-geolocation-session-update-task.properties";
+            this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "vpn-geolocation-session-update-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
@@ -127,6 +127,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
             }
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {

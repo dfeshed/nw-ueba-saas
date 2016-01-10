@@ -9,5 +9,5 @@ import java.util.Set;
 public interface GDSConfigurationResult<T> {
     boolean isSuccess();
     String errorMessage();
-    Set<T> getAffectedConfigList();
+    Set<T> getAffectedConfigDescriptors();
 }

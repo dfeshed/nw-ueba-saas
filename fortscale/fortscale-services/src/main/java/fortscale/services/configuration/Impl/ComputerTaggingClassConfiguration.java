@@ -26,7 +26,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
         super.init();
         Boolean result;
         try {
-            this.fileToConfigurePath = this.fileToConfigurePath+"computer-tagging-clustering-task.properties";
+            this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH + "computer-tagging-clustering-task.properties";
             this.fileToConfigure = new File(this.fileToConfigurePath);
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
@@ -107,6 +107,7 @@ public class ComputerTaggingClassConfiguration extends StreamingConfigurationSer
             writeLineToFile("#############", fileWriterToConfigure, true);
 
             fileWriterToConfigure.flush();
+            affectedConfigList.add(fileToConfigure.getAbsolutePath());
         }
         catch (Exception e)
         {

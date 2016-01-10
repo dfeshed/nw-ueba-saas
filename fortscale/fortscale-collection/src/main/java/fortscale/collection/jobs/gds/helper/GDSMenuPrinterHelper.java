@@ -47,6 +47,7 @@ public class GDSMenuPrinterHelper {
         System.out.println(GDSMenuOptions.MAIN_MENU_SCHEMA_DEFINITION_OPTION + ".\tSchema definition (HDFS/Impala)\n" +
                 GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION + ".\tEnrichment definition\n" +
                 GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION + ".\tModel&Scoring definition\n" +
+                GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION + ".\tAggregations definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
                 GDSMenuOptions.MAIN_MENU_QUIT_OPTION + ".\tQuit\n");
@@ -91,6 +92,12 @@ public class GDSMenuPrinterHelper {
         System.out.println("------------------------");
     }
 
+    public static void printAggregationsMenu() {
+        System.out.println("");
+        System.out.println("Aggregations Settings");
+        System.out.println("------------------------");
+    }
+
     public static void printEnrichmentMenuAfterFailure(String message) {
         GDSMenuPrinterHelper.printEnrichmentMenu();
         System.out.println(message);
@@ -107,7 +114,7 @@ public class GDSMenuPrinterHelper {
         boolean success = configurationResult.isSuccess();
 
         if (success) {
-            Set<String> affectedFiles = configurationResult.getAffectedConfigList();
+            Set<String> affectedFiles = configurationResult.getAffectedConfigDescriptors();
 
             System.out.println("Apply configuration succeeded. Affected files:");
             affectedFiles.stream().forEach(System.out::println);

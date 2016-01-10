@@ -29,10 +29,6 @@ public class UsernameServiceTest {
 	@Mock
 	private EventScoreDAO vpnDAO;
 	@Mock
-	private EventScoreDAO amtDAO;
-	@Mock
-	private EventScoreDAO amtsessionDAO;
-	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
 	@Mock
 	private CacheHandler<String, List<String>> sAMAccountNameToUsernameCache;
@@ -80,9 +76,6 @@ public class UsernameServiceTest {
 		when(loginDAO.getTableName()).thenReturn(LogEventsEnum.login.name());
 		when(sshDAO.getTableName()).thenReturn(LogEventsEnum.ssh.name());
 		when(vpnDAO.getTableName()).thenReturn(LogEventsEnum.vpn.name());
-		when(amtDAO.getTableName()).thenReturn(LogEventsEnum.amt.name());
-		when(amtsessionDAO.getTableName()).thenReturn(LogEventsEnum.amtsession.name());
-
 		// Act
 		usernameService.updateUsernameCaches();
 
