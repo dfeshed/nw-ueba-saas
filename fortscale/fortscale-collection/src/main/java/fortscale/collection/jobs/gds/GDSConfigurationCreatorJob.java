@@ -227,6 +227,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							configurator.apply();
+
+							break;
 						}
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
