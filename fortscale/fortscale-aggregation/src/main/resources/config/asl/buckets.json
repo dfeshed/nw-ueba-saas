@@ -956,6 +956,13 @@
                     }
                 },
                 {
+                    "name": "status_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["status"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+                },
+                {
                     "name": "highest_score_date_time",
                     "featureNamesMap": {
                         "maximize": ["date_time_score"]
@@ -1034,6 +1041,13 @@
                     "aggrFeatureFuncJson": {
                         "type": "aggr_feature_histogram_func"
                     }
+                },
+                {
+                    "name": "status_histogram",
+                    "featureNamesMap": {
+                        "groupBy": ["status"]
+                    },
+                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
                 },
                 {
                     "name": "highest_score_date_time",

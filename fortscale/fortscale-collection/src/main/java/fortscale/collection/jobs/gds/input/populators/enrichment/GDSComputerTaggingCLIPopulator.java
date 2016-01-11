@@ -35,14 +35,14 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
     @Override
     public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
         Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
-        HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
-
-        configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
-        if (currentConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired() || currentConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired())
-        {
+        if (currentConfigurationState.getStreamingTopologyDefinitionState().isSourceMachineNormalizationRequired() || currentConfigurationState.getStreamingTopologyDefinitionState().isTargetMachineNormalizationRequired()) {
+            HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
+
+            configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
+
             System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
             paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "ComputerTaggingClusteringTask"));
 
