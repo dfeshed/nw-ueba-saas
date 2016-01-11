@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.SchemaDefinitionConfiguration;
@@ -123,5 +124,10 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         // we suppose this will impact other configuration steps as well, therefor in this case of schema reset
         // we will actually reset all configuration definitions
         currGDSConfigurationState.reset();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.SCHEMA;
     }
 }

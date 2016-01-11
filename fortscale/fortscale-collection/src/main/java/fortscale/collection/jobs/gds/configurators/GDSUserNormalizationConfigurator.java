@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserNormalizationTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -70,5 +71,10 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates().clear();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.USER_NORMALIZATION;
     }
 }

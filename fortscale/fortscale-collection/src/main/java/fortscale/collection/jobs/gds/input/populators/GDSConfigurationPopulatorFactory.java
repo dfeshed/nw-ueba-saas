@@ -21,8 +21,8 @@ public class GDSConfigurationPopulatorFactory {
         configurationTypeToPopulatorMap.put(GDSConfigurationType.SCHEMA, GDSSchemaDefinitionCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.USER_NORMALIZATION, GDSUserNormalizationCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.IP_RESOLVING, GDSIPResolvingCLIPopulator.class);
-        configurationTypeToPopulatorMap.put(GDSConfigurationType.COMPUTER_TAGGING, GDSGeoLocationCLIPopulator.class);
-        configurationTypeToPopulatorMap.put(GDSConfigurationType.GEO_LOCATION, GDSComputerTaggingCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.COMPUTER_TAGGING, GDSComputerTaggingCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.GEO_LOCATION, GDSGeoLocationCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.USER_MONGO_UPDATE, GDSUserMongoUpdateCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.HDFS_WRITER, GDSHDFSWriteCLIPopulator.class);
 
