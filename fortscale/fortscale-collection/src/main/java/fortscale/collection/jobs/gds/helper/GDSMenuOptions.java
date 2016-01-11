@@ -12,7 +12,8 @@ public class GDSMenuOptions {
     public static final String MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION = "4";
     public static final String MAIN_MENU_APPLY_ALL_CHANGES_OPTION = "5";
     public static final String MAIN_MENU_RESET_ALL_CHANGES_OPTION = "6";
-    public static final String MAIN_MENU_QUIT_OPTION = "7";
+    public static final String MAIN_MENU_RESTORE_DEFAULTS_OPTION = "7";
+    public static final String MAIN_MENU_QUIT_OPTION = "8";
 
     public static final String ENRICHMENT_MENU_USER_NORMALIZATION_OPTION = "1";
     public static final String ENRICHMENT_IP_RESOLVING_OPTION = "2";

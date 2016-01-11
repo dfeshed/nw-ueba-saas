@@ -50,6 +50,7 @@ public class GDSMenuPrinterHelper {
                 GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION + ".\tAggregations definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
+                GDSMenuOptions.MAIN_MENU_RESTORE_DEFAULTS_OPTION + ".\tRestore Defaults\n" +
                 GDSMenuOptions.MAIN_MENU_QUIT_OPTION + ".\tQuit\n");
     }
 

@@ -45,6 +45,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	private Queue<GDSConfigurator> dirtyConfiguratorsQueue = new LinkedList<>();
 
+	// used to restore the default settings
+	private Queue<String> modifiedConfigurationFiles = new LinkedList<>();
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		logger.debug("Initializing Configuration GDS Job");
@@ -93,6 +96,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
+
+							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
 
 							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
 
@@ -157,6 +162,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						System.out.println(GDSUserMessages.IGNORING_RESET_OPERATION_MESSAGE);
 					}
 					break;
+				case GDSMenuOptions.MAIN_MENU_RESTORE_DEFAULTS_OPTION:
+					System.out.println(GDSUserMessages.RESTORE_IN_PROGRESS_MESSAGE);
+					restoreDefaults();
+					System.out.println(GDSUserMessages.RESTORE_COMPLETED_SUCCESSFULLY_MESSAGE);
+					break;
 				case GDSMenuOptions.MAIN_MENU_QUIT_OPTION:
 					System.exit(0);
 					break;
@@ -174,6 +184,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 			optionInput = gdsInputHandler.getInput();
 		}
+	}
+
+	private void restoreDefaults() {
+		// TODO go through modifiedConfigurationFiles and override with the default
+		modifiedConfigurationFiles.stream().forEach(modifiedFile -> System.out.print("Restoring " + modifiedFile));
 	}
 
 	private boolean canEnterEnrichmentStep(GDSCompositeConfigurationState currConfigurationState) {
@@ -214,6 +229,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		for (GDSConfigurator dirtyConfigurator : dirtyConfiguratorsToApply) {
 			GDSConfigurationResult<String> configurationResult = dirtyConfigurator.apply();
 
+			modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
 			GDSMenuPrinterHelper.printConfigurationResult(configurationResult, dirtyConfigurator.getType().getLabel());
 		}
 
@@ -263,6 +279,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
+
+							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
 
 							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
 
