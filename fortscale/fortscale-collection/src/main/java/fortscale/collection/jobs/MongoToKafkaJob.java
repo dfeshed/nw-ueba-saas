@@ -147,15 +147,12 @@ public class MongoToKafkaJob extends FortscaleJob {
             if (lastMessageTime > 0) {
                 //throttling
                 logger.info("throttling by last message metrics on job {}", jobToMonitor);
-
-                Map<String, Object> keyToExpectedValueMap = new HashMap<>();
+                Map<String, Object> keyToExpectedValueMap = new HashMap();
                 keyToExpectedValueMap.put(String.format("%s-last-message-epochtime", jobToMonitor), lastMessageTime);
                 EqualityMetricsDecider decider = new EqualityMetricsDecider(keyToExpectedValueMap);
-
                 boolean result = MetricsReader.waitForMetrics(
                         brokerConnection.split(":")[0], Integer.parseInt(brokerConnection.split(":")[1]),
                         jobClassToMonitor, jobToMonitor, decider, MILLISECONDS_TO_WAIT, checkRetries);
-
                 if (result) {
                     logger.info("last message in batch processed, moving to next batch");
                 } else {
