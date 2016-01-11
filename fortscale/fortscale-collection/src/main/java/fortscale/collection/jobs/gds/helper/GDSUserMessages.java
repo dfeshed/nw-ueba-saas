@@ -16,6 +16,8 @@ public class GDSUserMessages {
     public static final String SCHEMA_IS_MANDATORY_MESSAGE = "Could not enter this step. Schema must be defined first.";
     public static final String RESET_IN_PROGRESS_MESSAGE = "Resetting configuration changes..";
     public static final String RESET_COMPLETED_SUCCESSFULLY_MESSAGE = "Reset completed successfully";
+    public static final String RESTORE_IN_PROGRESS_MESSAGE = "Restoring changes..";
+    public static final String RESTORE_COMPLETED_SUCCESSFULLY_MESSAGE = "Restore operation completed successfully";
     public static final String IGNORING_RESET_OPERATION_MESSAGE = "No configuration changes detected. Ignoring Reset operation.";
     public static final String APPLY_ALL_ENDED_SECCESSFULLY_MESSAGE = "All configuration changes applied successfully.";
     public static final String NOTHING_TO_APPLY_MESSAGE = "No configuration changes detected. Nothing to apply.";

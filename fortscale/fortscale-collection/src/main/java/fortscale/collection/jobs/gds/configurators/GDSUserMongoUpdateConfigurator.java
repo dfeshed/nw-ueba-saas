@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -52,6 +53,11 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState().reset();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.USER_MONGO_UPDATE;
     }
 }
 

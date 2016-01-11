@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.ComputerTaggingClassConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -59,5 +60,10 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState().reset();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.COMPUTER_TAGGING;
     }
 }
