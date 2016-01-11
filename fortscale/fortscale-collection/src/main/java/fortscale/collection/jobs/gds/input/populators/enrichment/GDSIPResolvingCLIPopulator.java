@@ -38,13 +38,14 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
     @Override
     public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
         Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
-        HashMap<String, ConfigurationParam> sourceIPParamsMap = new HashMap<>();
-
-        configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceIPParamsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
         if (currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpResolvingRequired()) {
+            HashMap<String, ConfigurationParam> sourceIPParamsMap = new HashMap<>();
+
+            configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceIPParamsMap);
+
             System.out.println(String.format("Does %s resolving is restricted to AD name (in case of true and the machine doesn't exist in the AD it will not return it as resolved value) (y/n) ?", dataSourceName));
             sourceIPParamsMap.put(RESTRICT_TO_AD_PARAM, new ConfigurationParam(RESTRICT_TO_AD_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
 
