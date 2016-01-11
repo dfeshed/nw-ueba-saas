@@ -18,10 +18,9 @@ import fortscale.utils.logging.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Generic Data Source configuration creator job implementation
@@ -95,7 +94,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getConfiguratorName());
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
 
 							break;
 						}
@@ -140,7 +139,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				case GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION:
 					if (!dirtyConfiguratorsQueue.isEmpty()) {
 						System.out.println(GDSUserMessages.APPLY_IN_PROGRESS_MESSAGE);
-						applyAllDirtyConfigurators();
+						applyDirtyConfigurators();
 						System.out.println(GDSUserMessages.APPLY_COMPLETED_SUCCESSFULLY_MESSAGE);
 					}
 					else {
@@ -151,7 +150,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				case GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION:
 					if (!dirtyConfiguratorsQueue.isEmpty()) {
 						System.out.println(GDSUserMessages.RESET_IN_PROGRESS_MESSAGE);
-						resetConfigurators(currConfigurationState);
+						resetConfigurators();
 						System.out.println(GDSUserMessages.RESET_COMPLETED_SUCCESSFULLY_MESSAGE);
 					}
 					else {
@@ -189,21 +188,36 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
-	private void resetConfigurators(GDSCompositeConfigurationState gdsConfigurationState) {
-		gdsConfigurationState.reset();
+	private void resetConfigurators() {
+		currConfigurationState.reset();
+		dirtyConfiguratorsQueue.clear();
 	}
 
-	private void applyAllDirtyConfigurators() throws Exception {
-		Iterator<GDSConfigurator> gdsConfiguratorIterator = dirtyConfiguratorsQueue.iterator();
-		while (gdsConfiguratorIterator.hasNext()) {
-			GDSConfigurator gdsDirtyConfigurator = gdsConfiguratorIterator.next();
+	private void resetEnrichmentConfigurators(Collection<GDSConfigurationType> configurationTypesToReset) {
+		currConfigurationState.getEnrichmentDefinitionState().reset();
+		dirtyConfiguratorsQueue.removeIf(isInConfigurationTypes(configurationTypesToReset));
+	}
 
-			GDSConfigurationResult<String> configurationResult = gdsDirtyConfigurator.apply();
+	private Predicate<GDSConfigurator> isInConfigurationTypes(Collection<GDSConfigurationType> configuratorTypes) {
+		return configurator -> configuratorTypes.contains(configurator.getType());
+	}
 
-			GDSMenuPrinterHelper.printConfigurationResult(configurationResult, gdsDirtyConfigurator.getConfiguratorName());
+	private void applyDirtyConfigurators() throws Exception {
+		applyDirtyConfigurators(Arrays.asList(GDSConfigurationType.values()));
+	}
 
-			gdsConfiguratorIterator.remove();
+	private void applyDirtyConfigurators(Collection<GDSConfigurationType> configurationTypesToApply) throws Exception {
+		Predicate<GDSConfigurator> configurationTypesPredicate = isInConfigurationTypes(configurationTypesToApply);
+
+		List<GDSConfigurator> dirtyConfiguratorsToApply = dirtyConfiguratorsQueue.stream().filter(configurationTypesPredicate).collect(Collectors.toList());
+
+		for (GDSConfigurator dirtyConfigurator : dirtyConfiguratorsToApply) {
+			GDSConfigurationResult<String> configurationResult = dirtyConfigurator.apply();
+
+			GDSMenuPrinterHelper.printConfigurationResult(configurationResult, dirtyConfigurator.getType().getLabel());
 		}
+
+		dirtyConfiguratorsQueue.removeIf(configurationTypesPredicate);
 	}
 
 	private void handleModelAndScoringConfiguration() throws Exception {
@@ -250,7 +264,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getConfiguratorName());
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
 
 							break;
 						}
@@ -267,11 +281,11 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 					break;
 				case GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION:
-					applyAllDirtyConfigurators();
+					applyDirtyConfigurators(enrichmentMenuOptionToConfigurationType.values());
 					System.out.println(GDSUserMessages.APPLY_ALL_ENDED_SECCESSFULLY_MESSAGE);
 					break;
 				case GDSMenuOptions.ENRICHMENT_RESET_ALL_CHANGES_OPTION:
-					resetConfigurators(currConfigurationState);
+					resetEnrichmentConfigurators(enrichmentMenuOptionToConfigurationType.values());
 					System.out.println(GDSUserMessages.SUCCESSFULLY_RESET_MESSAGE);
 					break;
 				case GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION:

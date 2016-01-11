@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 
@@ -38,7 +39,7 @@ public class GDSCollectionConfigurator implements GDSConfigurator{
     }
 
     @Override
-    public String getConfiguratorName() {
+    public GDSConfigurationType getType() {
         return null;
         // TODO implement
     }

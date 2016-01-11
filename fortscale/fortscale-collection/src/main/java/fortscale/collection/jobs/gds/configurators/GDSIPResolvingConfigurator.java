@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.IpResolvingTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -59,7 +60,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public String getConfiguratorName() {
-        return "IP Resolving Task";
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.IP_RESOLVING;
     }
 }

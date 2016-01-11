@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.HDFSWriteTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -61,8 +62,8 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public String getConfiguratorName() {
-        return "HDFS Writer Task";
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.HDFS_WRITER;
     }
 }
 

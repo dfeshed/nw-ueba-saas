@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.SchemaDefinitionConfiguration;
@@ -114,7 +115,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public String getConfiguratorName() {
-        return "Schema Definition";
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.SCHEMA;
     }
 }

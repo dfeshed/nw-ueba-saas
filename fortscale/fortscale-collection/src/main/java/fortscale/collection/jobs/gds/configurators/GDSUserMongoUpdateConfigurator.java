@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -55,8 +56,8 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     }
 
     @Override
-    public String getConfiguratorName() {
-        return "User Mongo Update Task";
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.USER_MONGO_UPDATE;
     }
 }
 
