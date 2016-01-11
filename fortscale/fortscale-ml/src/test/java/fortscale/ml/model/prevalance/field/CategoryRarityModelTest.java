@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Consumer;
 
 @RunWith(JUnit4.class)
 public class CategoryRarityModelTest {
@@ -733,20 +734,20 @@ public class CategoryRarityModelTest {
 
 	/**
 	 * Print info about the context available when the given feature value was scored, e.g.:
-	 * #0  hostname_36643275                       : 4356   	0000000000111111111122222222223333
-	 * #1  hostname_16101171                       : 226    	0000000000111111111122
-	 * #2  service_name_177266206                  : 397    	00000000001111111111222
+	 * #0  hostname_36643275                       : events count 4356    (unique days 39)	0000000000111111111122222222223333
+	 * #1  hostname_16101171                       : events count 226     (unique days 12)	0000000000111111111122
+	 * #2  service_name_177266206                  : events count 397     (unique days 11) 	00000000001111111111222
 	 *
 	 * 		scoring hostname_74957113 which has 1 events. In total there are 4980 events spread across 3 features.
 	 * 		score: 100
-	 *
 	 * @param eventTime time in which the event has occurred.
 	 * @param featureValue the feature value who's been scored.
 	 * @param featureValueToCountMap context info - what feature values were encountered in the past, and how often.
+	 * @param featureValueToDaysMap context info - how many days each feature value has been encountered in the past.
 	 */
-	private void printEvent(long eventTime, String featureValue, Double score, Map<String, Integer> featureValueToCountMap) {
+	private void printEvent(long eventTime, String featureValue, Double score, Map<String, Integer> featureValueToCountMap, Map<String, Set<Date>> featureValueToDaysMap) {
 		List<String> featureValues = new ArrayList<>(featureValueToCountMap.keySet());
-		printFeatureValuesHistogram(featureValues, featureValueToCountMap);
+		printFeatureValuesHistogram(featureValues, featureValueToCountMap, featureValueToDaysMap);
 		int featureValueIndex = featureValues.indexOf(featureValue);
 		int totalNumOfEvents = 1;
 		for (int count : featureValueToCountMap.values()) {
@@ -767,16 +768,15 @@ public class CategoryRarityModelTest {
 
 	/**
 	 * Print the histogram of the distribution over feature values, e.g.:
-	 * #0  hostname_36643275                       : 4356   	0000000000111111111122222222223333
-	 * #1  hostname_16101171                       : 226    	0000000000111111111122
-	 * #2  service_name_177266206                  : 397    	00000000001111111111222
-	 *
-	 * @param featureValues the available feature values in the distribution.
+	 * #0  hostname_36643275                       : events count 4356    (unique days 39)	0000000000111111111122222222223333
+	 * #1  hostname_16101171                       : events count 226     (unique days 12)	0000000000111111111122
+	 * #2  service_name_177266206                  : events count 397     (unique days 11) 	00000000001111111111222
+	 *  @param featureValues the available feature values in the distribution.
 	 *                      The histogram's bars will be ordered according to featureValues.
 	 * @param featureValueToCountMap the distribution of feature values.
-	 *                               The keys of this map are the feature values contained in featureValues.
+	 * @param featureValueToDaysMap how many days each feature value has been encountered in the past
 	 */
-	private void printFeatureValuesHistogram(List<String> featureValues, Map<String, Integer> featureValueToCountMap) {
+	private void printFeatureValuesHistogram(List<String> featureValues, Map<String, Integer> featureValueToCountMap, Map<String, Set<Date>> featureValueToDaysMap) {
 		String BAR_COLORS[] = new String[]{"\033[36m", "\033[32m", "\033[33m", "\033[31m"};
 
 		for (int featureValueInd = 0; featureValueInd < featureValues.size(); featureValueInd++) {
@@ -796,12 +796,13 @@ public class CategoryRarityModelTest {
 			}
 			bar += COLOR_NORMAL;
 			String featureColor = getFeatureColor(featureValue);
-			println(String.format("#%-3d%s%s%s: %-7d\t%s",
+			println(String.format("#%-3d%s%s%s: events count %-7d (unique days %-2d)\t%s",
 					featureValueInd,
 					featureColor,
 					StringUtils.rightPad(StringUtils.isBlank(featureValue) ? EMPTY_STRING : featureValue, 40),
 					COLOR_NORMAL,
 					count,
+					featureValueToDaysMap.get(featureValue).size(),
 					bar));
 		}
 	}
@@ -846,10 +847,11 @@ public class CategoryRarityModelTest {
 			}
 
 			println("first time events:");
-			for (FeatureStats featureStats : featureTofeatureStats.values()) {
-				String date = getFormattedDate(featureStats.firstEventTime);
-				println(String.format("\t#%-8d %s", featureStats.firstEventIndex, date));
-			}
+			Consumer<FeatureStats> printFeatureStats = featureStats ->
+					println(String.format("\t#%-8d %s", featureStats.firstEventIndex, getFormattedDate(featureStats.firstEventTime)));
+			featureTofeatureStats.values().stream()
+					.sorted((featureStats1, featureStats2) -> (int) Math.signum(featureStats1.firstEventTime - featureStats2.firstEventTime))
+					.forEach(printFeatureStats);
 		}
 	}
 
@@ -893,6 +895,7 @@ public class CategoryRarityModelTest {
 		int maxRareCount = 10;
 		int maxNumOfRareFeatures = 6;
 		Map<String, Integer> featureValueToCountMap = new HashMap<>();
+		Map<String, Set<Date>> featureValueToDaysMap = new HashMap<>();
 		ScenarioStats scenarioStats = new ScenarioStats();
 		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
@@ -901,9 +904,12 @@ public class CategoryRarityModelTest {
 				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
 				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.getFeature(), score, isScoreInteresting);
 				if (isScoreInteresting && printContextInfo) {
-					printEvent(eventsBatch.time_bucket, eventsBatch.getFeature(), score, featureValueToCountMap);
+					printEvent(eventsBatch.time_bucket, eventsBatch.getFeature(), score, featureValueToCountMap, featureValueToDaysMap);
 				}
 				featureValueToCountMap.put(eventsBatch.getFeature(), eventFeatureCount + 1);
+				Set<Date> eventFeatureDays = featureValueToDaysMap.getOrDefault(eventsBatch.getFeature(), new HashSet<>());
+				eventFeatureDays.add(new Date(TimestampUtils.convertToMilliSeconds(eventsBatch.time_bucket / (60 * 60 * 24) * 60 * 60 * 24)));
+				featureValueToDaysMap.put(eventsBatch.getFeature(), eventFeatureDays);
 			}
 		}
 		if (printContextInfo) {
@@ -1071,7 +1077,7 @@ public class CategoryRarityModelTest {
 		Map<ScenarioInfo, ScenarioStats> scenarioToStats = new HashMap<>(scenariosInfo.size());
 		for (int i = 0; i < scenariosInfo.size(); i++) {
 			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
-			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
+			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " with " + scenarioInfo.numOfEvents + " events: " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
 			ScenarioStats scenarioStats = runRealScenario(scenarioInfo, minDate, 50, true);
 			scenarioToStats.put(scenarioInfo, scenarioStats);
 
