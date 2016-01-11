@@ -6,6 +6,7 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
