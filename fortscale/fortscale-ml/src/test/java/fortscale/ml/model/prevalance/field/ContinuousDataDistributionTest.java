@@ -29,7 +29,6 @@ public class ContinuousDataDistributionTest {
 	private static final double a1 = 35.0 / 3;
 	private static final double a2 = 100.0 / 3;
 	private static final double sensitivity = 1.0;
-	private static final double largestPValue = 0.2;
 	
 
 	private Config config;
@@ -86,6 +85,26 @@ public class ContinuousDataDistributionTest {
 	}
 
 	@Test
+	public void shouldScoreDecreasinglyAsSensitivityIncreases(){
+		double sensitivities[] = new double[]{1, 2, 3};
+		double expectedScores[] = new double[]{90, 81, 72};
+		for (int test = 0; test < sensitivities.length; test++) {
+			ContinuousDataDistribution distribution = create(10, 1.0);
+			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivities[test], true, true);
+			distribution.add(0, 0);
+			distribution.add(0.5, 0);
+			distribution.add(-1, 0);
+			for (int i = 0; i < 5; i++) {
+				distribution.add(0.15, 0);
+				distribution.add(-0.15, 0);
+			}
+
+			double score = calculateScore(distribution, 1, calibrationForContModel);
+			Assert.assertEquals(expectedScores[test], score, 0.0);
+		}
+	}
+
+	@Test
 	public void continuous_test_1() throws Exception {
 		runScenarioAndTestScores("src/test/model/continuousTest1.csv");
 	}
@@ -111,7 +130,7 @@ public class ContinuousDataDistributionTest {
 			}
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		double score = calculateScore(distribution, startVal, calibrationForContModel);
 		Assert.assertEquals(23.0, score, 0.1);
 
@@ -140,7 +159,7 @@ public class ContinuousDataDistributionTest {
 			}
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal * 2;
 		distribution.add(outlierVal, 0);
 
@@ -171,7 +190,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal + 1100;
 		distribution.add(outlierVal, 0);
 
@@ -222,7 +241,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal + 1.1;
 		distribution.add(outlierVal, 0);
 
@@ -273,7 +292,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal / 2;
 		distribution.add(outlierVal, 0);
 
@@ -327,7 +346,7 @@ public class ContinuousDataDistributionTest {
 	}
 
 	private double calculateScore(ContinuousDataDistribution distribution, double value) {
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 		return calculateScore(distribution, value, calibrationForContModel);
 	}
 
@@ -350,7 +369,7 @@ public class ContinuousDataDistributionTest {
 			}
 		
 
-			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, largestPValue, true, true);
+			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 			for (Long value : valueToScoreMap.keySet()) {
 				double score = calculateScore(distribution, value.doubleValue(), calibrationForContModel);
 				Assert.assertEquals(valueToScoreMap.get(value), score, 0.5);

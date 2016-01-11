@@ -4,16 +4,18 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -43,7 +45,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     private final static String storeConfigKeyFormat = "fortscale.%s.store";
 
     private final static String dhcpCacheKey = "dhcp-cache";
-    private final static String iseCacheKey = "ise-cache";
+	private final static String iseCacheKey = "ise-cache";
+    private final static String pxGridCacheKey = "pxgrid-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
@@ -56,7 +59,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
         // initialize the ip resolving service only once for all streaming task instances. Since we can
         // host several task instances in this process, we want all of them to share the same ip resolving cache
@@ -78,6 +81,11 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
+
+            KeyValueDbBasedCache<String, PxGridIPEvent> pxGridCache = new KeyValueDbBasedCache<String,PxGridIPEvent>(
+                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
+            resolver.getPxGridResolver().setCache(pxGridCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
             KeyValueDbBasedCache<String,ComputerLoginEvent> loginCache = new KeyValueDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
@@ -141,14 +149,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
             if (configKey == null){
-                taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, CANNOT_EXTRACT_STATE_MESSAGE);
+                taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
                 return;
             }
 
             EventResolvingConfig eventResolvingConfig = dataSourceToConfigurationMap.get(configKey);
 
             if (eventResolvingConfig == null){
-                taskMonitoringHelper.countNewFilteredEvents(configKey, NO_STATE_CONFIGURATION_MESSAGE);
+                taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
                 return;
             }
 

@@ -92,11 +92,7 @@ public class ContinuousValuesModel {
 
 
 	public double calculateScore(Double val) {
-		if(histogramStd == 0){
-			return 0;
-		}
-		
-		if(val == null){
+		if(val == null || N < 2){
 			return 0;
 		}
 		
@@ -107,7 +103,7 @@ public class ContinuousValuesModel {
 	}
 	
 	private double calculatScore(double val){
-		double z = (val - histogramAvg) / histogramStd;
+		double z = (val - histogramAvg) / (histogramStd + 0.000001);
 		TDistribution tDistribution = new TDistribution(N-1);
 
 		double p = z>0 ? tDistribution.density(z) + SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY : -1*tDistribution.density(z) - SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;

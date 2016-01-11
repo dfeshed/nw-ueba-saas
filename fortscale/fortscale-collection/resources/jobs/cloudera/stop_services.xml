@@ -19,7 +19,7 @@
                 </entry>
                 <entry>
                     <key>services</key>
-                    <value>${streaming.service.name},${kafka.service.name}</value>
+                    <value>${kafka.service.name},${streaming.service.name}</value>
                 </entry>
             </job-data-map>
         </job>

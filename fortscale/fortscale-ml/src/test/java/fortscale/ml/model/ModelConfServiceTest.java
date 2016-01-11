@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/model-conf-service-context.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/model-conf-service-test-context.xml"})
 public class ModelConfServiceTest {
     @Autowired
     ModelConfService modelConfService;

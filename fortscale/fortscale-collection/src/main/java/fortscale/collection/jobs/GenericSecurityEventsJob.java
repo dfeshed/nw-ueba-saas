@@ -128,6 +128,6 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	}
 		
 	protected Record processLine(String line) throws IOException {
-		return morphline.process(line);		
+		return morphline.process(line, null);
 	}
 }

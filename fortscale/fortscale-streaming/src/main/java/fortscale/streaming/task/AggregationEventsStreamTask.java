@@ -1,11 +1,7 @@
 package fortscale.streaming.task;
 
-import com.google.common.collect.Iterables;
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -14,18 +10,13 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
-	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
-	private String dataSourceFieldName;
 	private String dateFieldName;
+	private Boolean skipSendingAggregationEvents;
 
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
@@ -33,20 +24,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
+		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
 
-
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
-
-		Config fieldsSubset = config.subset("fortscale.");
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
-			String inputTopic = getConfigString(config, String.format("fortscale.%s.input.topic", eventType));
-			topicToDataSourceMap.put(inputTopic, eventType);
-		}
-		
-		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
-		
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config));
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
 		
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
 
@@ -56,23 +36,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
 
 	}
-	
-
 
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		processedMessageCount.inc();
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		// Get Event
+
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
-		
-		//Add data source to the event. In the future it should already be part of the event.
-		if(!event.containsKey(dataSourceFieldName)){
-			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
-		}
 
 		aggregatorManager.processEvent(event, collector);
 

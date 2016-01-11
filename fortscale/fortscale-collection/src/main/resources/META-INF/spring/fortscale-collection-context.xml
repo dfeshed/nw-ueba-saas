@@ -11,6 +11,8 @@
 	<mongo:repositories base-package="fortscale.domain.core.dao" />
 	<mongo:repositories base-package="fortscale.ml.service.dao" />
 
+
+
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
 		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
@@ -82,6 +84,25 @@
 		<constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
+	<bean id="pxGridResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+				<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${pxgrid.resolver.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.events.PxGridIPEvent" />
+	</bean>
+	<bean id="pxGridBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${pxgrid.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${pxgrid.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
 	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -117,6 +138,10 @@
 	<bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
+	</bean>
+	<bean id="pxGridResolver" class="fortscale.services.ipresolving.PxGridResolver" scope="singleton" >
+		<constructor-arg name="shouldUseBlackList" value="${pxgrid.resolver.shouldUseBlackList:true}" />
+		<constructor-arg name="ipBlackListCache" ref="pxGridBlacklistCache" />
 	</bean>
 	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
@@ -247,4 +272,20 @@
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
+	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper" scope="prototype">
+		<property name="isMonitoredTask" value="true"></property>
+	</bean>
+
+	<bean id="collectionMessage" class="fortscale.utils.spring.SpringPropertiesUtil">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="locations">
+			<list>
+				<value>classpath:META-INF/messages-collection.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="localOverride" value="true" />
+	</bean>
+
+	<bean class="fortscale.collection.monitoring.MorphlineCommandMonitoringHelper"/>
 </beans>
