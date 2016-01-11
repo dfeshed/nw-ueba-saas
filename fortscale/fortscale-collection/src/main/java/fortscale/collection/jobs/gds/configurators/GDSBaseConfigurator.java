@@ -29,7 +29,7 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
 
         configurationService.done();
 
-        GDSConfigurationResultImpl gdsConfigurationResult = new GDSConfigurationResultImpl();
+        GDSFileBaseConfigurationResult gdsConfigurationResult = new GDSFileBaseConfigurationResult();
         gdsConfigurationResult.setSuccess(true);
         gdsConfigurationResult.setAffectedConfigDescriptors(configurationService.getAffectedConfigList());
 

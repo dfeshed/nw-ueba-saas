@@ -50,6 +50,7 @@ public class GDSMenuPrinterHelper {
                 GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION + ".\tAggregations definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
+                GDSMenuOptions.MAIN_MENU_RESTORE_DEFAULTS_OPTION + ".\tRestore Defaults\n" +
                 GDSMenuOptions.MAIN_MENU_QUIT_OPTION + ".\tQuit\n");
     }
 
@@ -110,13 +111,13 @@ public class GDSMenuPrinterHelper {
         System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
     }
 
-    public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult) {
+    public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult, String configuratorName) {
         boolean success = configurationResult.isSuccess();
 
         if (success) {
             Set<String> affectedFiles = configurationResult.getAffectedConfigDescriptors();
 
-            System.out.println("Apply configuration succeeded. Affected files:");
+            System.out.println("Apply " + configuratorName + " configuration succeeded. Affected files:");
             affectedFiles.stream().forEach(System.out::println);
         }
         else {
