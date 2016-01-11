@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.RawModelScoreConfiguration;
@@ -96,6 +97,11 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 	@Override
 	public void reset() throws Exception {
 		currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState().reset();
+	}
+
+	@Override
+	public GDSConfigurationType getType() {
+		return GDSConfigurationType.RAW_MODEL_AND_SCORE;
 	}
 
 

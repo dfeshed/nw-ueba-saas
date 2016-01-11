@@ -272,7 +272,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
 							GDSConfigurationResult configurationResult = configurator.apply();
 
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult);
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult,configurator.getType().getLabel());
 
 							break;
 						}
