@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import com.google.common.collect.Iterables;
 
+import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -24,7 +25,10 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private static final String TASK_CONTROL_TOPIC = "fortscale-aggregation-events-streaming-control";
+
 	private AggregatorManager aggregatorManager;
+	private DataSourcesSyncTimer dataSourcesSyncTimer;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
 	private String dateFieldName;
@@ -36,6 +40,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+		dataSourcesSyncTimer = SpringService.getInstance().resolve(DataSourcesSyncTimer.class);
 
 
 		Config fieldsSubset = config.subset("fortscale.");
@@ -70,9 +75,15 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		processedMessageCount.inc();
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		if(TASK_CONTROL_TOPIC.equals(topic)){
+			dataSourcesSyncTimer.reset();
+			return;
+		}
+
+		processedMessageCount.inc();
+
 		// Get Event
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);

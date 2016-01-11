@@ -39,6 +39,10 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		Assert.isTrue(cycleLengthInSeconds > 0);
 		Assert.isTrue(waitingTimeBeforeNotification >= 0);
 
+		reset();
+	}
+
+	public void reset(){
 		lastCycleTime = -1;
 		lastEventEpochtime = 0;
 
