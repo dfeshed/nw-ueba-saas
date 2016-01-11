@@ -544,6 +544,7 @@ public class RawModelScoreConfiguration extends StreamingConfigurationService {
 
 
 			fileWriterToConfigure.flush();
+			affectedConfigList.add(fileToConfigure.getAbsolutePath());
 
 		} catch (Exception e) {
 			logger.error("There was an exception during execution - {} ", e);
