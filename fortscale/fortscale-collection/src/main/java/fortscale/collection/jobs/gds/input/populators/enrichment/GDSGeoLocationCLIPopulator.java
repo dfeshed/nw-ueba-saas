@@ -38,13 +38,13 @@ public class GDSGeoLocationCLIPopulator implements GDSConfigurationPopulator{
     public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
 
         Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
-        HashMap<String, ConfigurationParam> sourceGeoLocationIpParamsMap = new HashMap<>();
-
-        configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceGeoLocationIpParamsMap);
 
         String dataSourceName = currentConfigurationState.getDataSourceName();
 
         if(currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired()) {
+            HashMap<String, ConfigurationParam> sourceGeoLocationIpParamsMap = new HashMap<>();
+
+            configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceGeoLocationIpParamsMap);
 
             System.out.println(String.format("Going to configure the source ip at GeoLocation task for %s", dataSourceName));
             sourceGeoLocationIpParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "source_VpnEnrichTask"));

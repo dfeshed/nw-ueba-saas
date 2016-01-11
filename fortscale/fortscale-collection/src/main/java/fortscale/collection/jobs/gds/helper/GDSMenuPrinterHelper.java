@@ -82,8 +82,8 @@ public class GDSMenuPrinterHelper {
                 GDSMenuOptions.ENRICHMENT_GEO_LOCATION_OPTION + ".\tGeo Location task\n" +
                 GDSMenuOptions.ENRICHMENT_MENU_USER_MONGO_UPDATE_OPTION + ".\tUser Mongo Update task\n" +
                 GDSMenuOptions.ENRICHMENT_HDFS_WRITER_OPTION + ".\tHDFS Writer task\n" +
-                GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
-                GDSMenuOptions.ENRICHMENT_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
+                GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION + ".\tApply all Enrichment changes\n" +
+                GDSMenuOptions.ENRICHMENT_RESET_ALL_CHANGES_OPTION + ".\tReset all Enrichment changes\n" +
                 GDSMenuOptions.ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION + ".\tReturn to Main menu\n");
     }
 

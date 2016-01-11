@@ -137,7 +137,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             targetUserParamsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
             targetUserParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "UsernameNormalizationAndTaggingTask_target"));
 
-            System.out.println("Please enter the second username field to normalize:");
+            System.out.println("Please enter the target username field to normalize:");
             targetUserParamsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
             //Domain field  - for the enrich part
