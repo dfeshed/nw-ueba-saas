@@ -29,7 +29,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
-        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
+
 
         ConfigurationParam fieldList = paramsMap.get("fieldList");
         ConfigurationParam delimiter = paramsMap.get("delimiter");
@@ -44,7 +44,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setTaskName(taskName.getParamValue());
         hdfsWriterState.setLastState(lastState.getParamValue());
         hdfsWriterState.setOutputTopic(outputTopic.getParamValue());
-        hdfsWriterState.setOutputTopicEntry(outputTopicEntry.getParamValue());
+        hdfsWriterState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         hdfsWriterState.setFieldList(fieldList.getParamValue());
         hdfsWriterState.setDelimiter(delimiter.getParamValue());

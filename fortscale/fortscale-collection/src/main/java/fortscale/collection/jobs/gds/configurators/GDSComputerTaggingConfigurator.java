@@ -17,7 +17,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     private static final String LAST_STATE_PARAM = "lastState";
     private static final String TASK_NAME_PARAM = "taskName";
     private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
-    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
+    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSComputerTaggingConfigurator() {
         configurationService = new ComputerTaggingClassConfiguration();
@@ -30,7 +30,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
-        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
+
 
         ConfigurationParam sourceHost = paramsMap.get("sourceHost");
         ConfigurationParam targetHost = paramsMap.get("targetHost");
@@ -45,7 +45,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         computerTaggingState.setTaskName(taskName.getParamValue());
         computerTaggingState.setLastState(lastState.getParamValue());
         computerTaggingState.setOutputTopic(outputTopic.getParamValue());
-        computerTaggingState.setOutputTopicEntry(outputTopicEntry.getParamValue());
+        computerTaggingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         computerTaggingState.setSourceHost(sourceHost.getParamValue());
         computerTaggingState.setTargetHost(targetHost.getParamValue());
