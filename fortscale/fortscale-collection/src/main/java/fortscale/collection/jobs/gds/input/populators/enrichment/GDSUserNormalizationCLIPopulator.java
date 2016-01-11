@@ -94,16 +94,24 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
 
         //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
         //Normalizing service
-        System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appeare there (i.e what we do for kerberos) (y/n):", dataSourceName));
+        System.out.println(String.format("Does the %s data source should contain users on the AD and you want to drop event of users that are not appear there (i.e what we do for kerberos) (y/n):", dataSourceName));
 
+        ConfigurationParam serviceNameParam;
+        ConfigurationParam updateOnlyParam;
         if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
             //Service  name
-            sourceUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "SecurityUsernameNormalizationService"));
-            sourceUserParamsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, true, "true"));
+            serviceNameParam = new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "SecurityUsernameNormalizationService");
+            sourceUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, serviceNameParam);
+
+            updateOnlyParam = new ConfigurationParam(UPDATE_ONLY_PARAM, true, "true");
+            sourceUserParamsMap.put(UPDATE_ONLY_PARAM, updateOnlyParam);
 
         } else {
-            sourceUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "genericUsernameNormalizationService"));
-            sourceUserParamsMap.put(UPDATE_ONLY_PARAM, new ConfigurationParam(UPDATE_ONLY_PARAM, false, "false"));
+            serviceNameParam = new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "genericUsernameNormalizationService");
+            sourceUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, serviceNameParam);
+
+            updateOnlyParam = new ConfigurationParam(UPDATE_ONLY_PARAM, false, "false");
+            sourceUserParamsMap.put(UPDATE_ONLY_PARAM, updateOnlyParam);
         }
 
         sourceUserParamsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, "${impala.table.fields.normalized.username}"));
@@ -147,10 +155,13 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
                 targetUserParamsMap.put("domainValue", new ConfigurationParam("domainValue", false, dataSourceName + "Connect"));
             }
 
-            System.out.println("Please enter the field name of the field that will contain the second normalized user name :");
+            System.out.println("Please enter the field name of the field that will contain the target normalized user name:");
             targetUserParamsMap.put(NORMALIZED_USER_NAME_FIELD_PARAM, new ConfigurationParam(NORMALIZED_USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
             targetUserParamsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "UsernameNormalizationAndTaggingTask"));
+
+            targetUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, serviceNameParam);
+            targetUserParamsMap.put(UPDATE_ONLY_PARAM, updateOnlyParam);
         }
 
         return configurationsMap;
