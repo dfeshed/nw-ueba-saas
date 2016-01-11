@@ -189,6 +189,9 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	private void restoreDefaults() {
 		// TODO go through modifiedConfigurationFiles and override with the default
 		modifiedConfigurationFiles.stream().forEach(modifiedFile -> System.out.print("Restoring " + modifiedFile));
+		dirtyConfiguratorsQueue.clear();
+		currConfigurationState.reset();
+		modifiedConfigurationFiles.clear();
 	}
 
 	private boolean canEnterEnrichmentStep(GDSCompositeConfigurationState currConfigurationState) {
