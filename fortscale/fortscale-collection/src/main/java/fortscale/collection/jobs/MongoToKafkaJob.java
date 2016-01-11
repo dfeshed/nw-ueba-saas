@@ -130,7 +130,7 @@ public class MongoToKafkaJob extends FortscaleJob {
         while (counter < totalItems) {
             logger.info("handling items {} to {}", counter, batchSize + counter);
             mongoQuery.skip(counter);
-            List results = mongoTemplate.find(mongoQuery, clazz);
+            List results = mongoTemplate.find(mongoQuery, clazz, collectionName);
             long lastMessageTime = 0;
             for (Object object: results) {
                 String message = objectMapper.writeValueAsString(object);
