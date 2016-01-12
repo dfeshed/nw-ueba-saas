@@ -5,28 +5,36 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 @RunWith(JUnit4.class)
-public class TimeModelTest {
+public class TimeModelTest extends AbstractModelTest {
 	public static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
 	public static final int DAILY_BUCKET_SIZE = 60 * 10;
 
-	private double getScore(List<Long> times, long timeToScore) {
+	private double calcScore(List<Long> times, long timeToScore) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
 		for (long time : times) {
-			Double counter = timeToCounter.get(time);
-			if (counter == null) {
-				counter = 0D;
-			}
-			timeToCounter.put(time, counter + 1);
+			timeToCounter.put(time, timeToCounter.getOrDefault(time, 0D) + 1);
 		}
+		return calcScore(timeToCounter, timeToScore);
+	}
+
+	private double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
 		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, timeToCounter).calculateScore(timeToScore);
 	}
 
 	private void assertScore(List<Long> times, long timeToScore, double expected) {
-		Assert.assertEquals(expected, getScore(times, timeToScore), 0.00001);
+		Assert.assertEquals(expected, calcScore(times, timeToScore), 0.00001);
 	}
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 ****************** TEST VARIOUS SCENARIOS - FROM BASIC TO ADVANCED ******************
+	 *************************************************************************************
+	 *************************************************************************************/
 
 	@Test
 	public void elementaryCheck() {
@@ -149,7 +157,7 @@ public class TimeModelTest {
 			double prevScore = 100;
 			for (int j = 0; j < numberOfSteps; j++) {
 				times.add(epochSeconds);
-				score = getScore(times, epochSeconds);
+				score = calcScore(times, epochSeconds);
 				Assert.assertTrue(prevScore >= score);
 				prevCycleScores[j] = score;
 				prevScore = score;
@@ -160,19 +168,70 @@ public class TimeModelTest {
 				epochSeconds = 43200; //12PM UTC
 				for (int j = 0; j < numberOfSteps; j++) {
 					times.add(epochSeconds);
-					score = getScore(times, epochSeconds);
+					score = calcScore(times, epochSeconds);
 					Assert.assertTrue(prevCycleScores[j] >= score);
 					prevCycleScores[j] = score;
 					epochSeconds += step;
 				}
 				for (int j = numberOfSteps - 2; j < numberOfSteps; j++) {
 					times.add(epochSeconds);
-					score = getScore(times, epochSeconds);
+					score = calcScore(times, epochSeconds);
 					Assert.assertTrue(score <= scenarioScoreThresholds[scenario]);
 					prevCycleScores[j] = score;
 					epochSeconds += step;
 				}
 			}
 		}
+	}
+
+	/*************************************************************************************
+	 *************************************************************************************
+	 ***************************** TEST REAL DATA SCENARIOS ******************************
+	 ***************** THESE TESTS ARE MORE OF RESEARCH SCRIPTS THAN TESTS ***************
+	 ********* THEY ARE MEANT FOR RUNNING REAL DATA SCENARIOS AND THEN INSPECTING ********
+	 ************ THE RESULTS BY HANDS (ALTHOUGH ASSERTS COULD BE USED AS WELL) **********
+	 ************** READ AbstractModelTest.java'S DOCUMENTATION FOR MORE INFO ************
+	 *************************************************************************************
+	 *************************************************************************************/
+
+	private class TimeModelScenarioCallbacks implements ScenarioCallbacks {
+		private Map<Long, Double> timeToCounter;
+
+		@Override
+		public void onScenarioRunStart() {
+			timeToCounter = new HashMap<>();
+		}
+
+		@Override
+		public Double onScore(TestEventsBatch eventsBatch) {
+			return calcScore(timeToCounter, eventsBatch.time_bucket);
+		}
+
+		@Override
+		public void onPrintEvent(TestEventsBatch eventsBatch, Double score) {
+			println(eventsBatch + " -> " + score);
+		}
+
+		@Override
+		public void onFinishProcessEvent(TestEventsBatch eventsBatch) {
+			// note: the reason we calc timeInDay (and not use time_bucket) is that big scenarios
+			// take ridiculous amount of time otherwise. This of course should be fixed in the model
+			long timeInDay = eventsBatch.time_bucket % DAILY_TIME_RESOLUTION;
+			timeToCounter.put(timeInDay, timeToCounter.getOrDefault(timeInDay, 0D) + 1);
+		}
+	}
+
+	@Test
+	public void testRealScenarioSshSrcMachineUsername_278997272() throws IOException {
+		try {
+			runAndPrintRealScenario(new TimeModelScenarioCallbacks(), "username_278997272.csv", 0);
+		} catch (FileNotFoundException e) {
+			println("file not found");
+		}
+	}
+
+	@Test
+	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
+		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.055, 50, 920);
 	}
 }

@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
 import fortscale.utils.ConversionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
@@ -21,34 +22,52 @@ public class TimeModel implements Model {
 	public TimeModel(int timeResolution, int bucketSize, Map<?, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
-		int numOfBuckets = (int) Math.ceil(timeResolution / (double) bucketSize);
-		smoothedCounterBuckets = new ArrayList<>(numOfBuckets);
-		List<Boolean> bucketHits = new ArrayList<>(numOfBuckets);
-		for (int i = 0; i < numOfBuckets; i++) {
-			smoothedCounterBuckets.add(0d);
-			bucketHits.add(false);
-		}
 
-		for (Map.Entry<?, Double> entry : timeToCounter.entrySet()) {
-			long key = ConversionUtils.convertToLong(entry.getKey());
-			double counter = entry.getValue();
-			int bucketHit = getBucketIndex(key);
-			bucketHits.set(bucketHit, true);
-			cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit, counter);
-			for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
-				double addVal = counter * (1 - (distance - 1) / ((double) SMOOTHING_DISTANCE));
-				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit + distance, addVal);
-				cyclicallyAddToBucket(smoothedCounterBuckets, bucketHit - distance, addVal);
-			}
-		}
+		List<Double> bucketHits = calcBucketHits(timeToCounter);
+		smoothedCounterBuckets = calcSmoothedBucketHits(bucketHits);
 
-		List<Double> smoothedCountersThatWereHit = new ArrayList<>(numOfBuckets);
-		for (int i = 0; i < numOfBuckets; i++) {
-			if (bucketHits.get(i)) {
-				smoothedCountersThatWereHit.add(smoothedCounterBuckets.get(i));
-			}
-		}
+		List<Double> smoothedCountersThatWereHit = IntStream.range(0, bucketHits.size())
+				.filter(bucketInd -> bucketHits.get(bucketInd) > 0)
+				.mapToDouble(smoothedCounterBuckets::get)
+				.boxed()
+				.collect(Collectors.toList());
 		occurrencesHistogram = new OccurrencesHistogram(smoothedCountersThatWereHit);
+	}
+
+	private int calcNumOfBuckets() {
+		return (int) Math.ceil(timeResolution / bucketSize);
+	}
+
+	private List<Double> createInitializedBuckets() {
+		return IntStream.range(0, calcNumOfBuckets())
+				.map(a -> 0)
+				.asDoubleStream()
+				.boxed()
+				.collect(Collectors.toList());
+	}
+
+	private List<Double> calcBucketHits(Map<?, Double> timeToCounter) {
+		List<Double> bucketHits = createInitializedBuckets();
+		for (Map.Entry<?, Double> timeAndCounter: timeToCounter.entrySet()) {
+			int bucketHit = getBucketIndex(ConversionUtils.convertToLong(timeAndCounter.getKey()));
+			bucketHits.set(bucketHit, bucketHits.get(bucketHit) + timeAndCounter.getValue());
+		}
+		return bucketHits;
+	}
+
+	private List<Double> calcSmoothedBucketHits(List<Double> bucketHits) {
+		List<Double> smoothedBucketHits = createInitializedBuckets();
+		for (int bucketInd = 0; bucketInd < bucketHits.size(); bucketInd++) {
+			if (bucketHits.get(bucketInd) > 0) {
+				cyclicallyAddToBucket(smoothedBucketHits, bucketInd, bucketHits.get(bucketInd));
+				for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
+					double addVal = bucketHits.get(bucketInd) * (1 - (distance - 1) / ((double) SMOOTHING_DISTANCE));
+					cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
+					cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
+				}
+			}
+		}
+		return smoothedBucketHits;
 	}
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {

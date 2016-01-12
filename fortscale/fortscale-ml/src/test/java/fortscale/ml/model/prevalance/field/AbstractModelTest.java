@@ -381,11 +381,13 @@ public abstract class AbstractModelTest {
 	 * @param scenarioCallbacks callbacks needed when running the scenarios.
 	 * @param expectedPortionOfAnomalousUsers which portion of the users should be anomalous (used with assert).
 	 * @param minInterestingScore scores smaller than this number are considered not interesting, and won't be included in the result.
+	 * @param limitNumOfScenarios if there are more than limitNumOfScenarios scenarios, only the first limitNumOfScenarios will be run.
 	 */
-	protected void testRealScenariosHowManyAnomalousUsers(ScenarioCallbacks scenarioCallbacks, double expectedPortionOfAnomalousUsers, int minInterestingScore) throws IOException {
+	protected void testRealScenariosHowManyAnomalousUsers(ScenarioCallbacks scenarioCallbacks, double expectedPortionOfAnomalousUsers, int minInterestingScore, int limitNumOfScenarios) throws IOException {
 		ScenariosInfo scenariosInfo;
 		try {
 			scenariosInfo = new ScenariosInfo(getAbsoluteFilePath(SSH_REAL_DATA_PATH));
+			limitNumOfScenarios = Math.min(limitNumOfScenarios, scenariosInfo.size());
 		} catch (FileNotFoundException e) {
 			println("directory not found");
 			return;
@@ -394,12 +396,10 @@ public abstract class AbstractModelTest {
 
 		// run all the scenarios and create some statistics:
 		Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics = new HashMap<>();
-		Map<ScenarioInfo, ScenarioStats> scenarioToStats = new HashMap<>(scenariosInfo.size());
-		for (int i = 0; i < scenariosInfo.size(); i++) {
+		for (int i = 0; i < limitNumOfScenarios; i++) {
 			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
-			println("\nrunning scenario " + i + " / " + scenariosInfo.size() + " with " + scenarioInfo.numOfEvents + " events: " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
+			println("\nrunning scenario " + i + " / " + limitNumOfScenarios + " with " + scenarioInfo.numOfEvents + " events: " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
 			ScenarioStats scenarioStats = runRealScenario(scenarioCallbacks, scenarioInfo, minDate, minInterestingScore, true);
-			scenarioToStats.put(scenarioInfo, scenarioStats);
 
 			int logNumOfEvents = (int) (Math.log(scenarioInfo.numOfEvents) / Math.log(10));
 			UsersStatistics usersStatistics = logNumOfEventsToUsersStatistics.get(logNumOfEvents);
@@ -419,7 +419,17 @@ public abstract class AbstractModelTest {
 
 		// assert stuff
 		int totalAnomalousUsers = getTotalAnomalousUsers(logNumOfEventsToUsersStatistics);
-		Assert.assertEquals(expectedPortionOfAnomalousUsers, (double) totalAnomalousUsers / scenariosInfo.size(), 0.001);
+		Assert.assertEquals(expectedPortionOfAnomalousUsers, (double) totalAnomalousUsers / limitNumOfScenarios, 0.001);
+	}
+
+	/**
+	 * Test multiple scenarios to see how many users are anomalous.
+	 * @param scenarioCallbacks callbacks needed when running the scenarios.
+	 * @param expectedPortionOfAnomalousUsers which portion of the users should be anomalous (used with assert).
+	 * @param minInterestingScore scores smaller than this number are considered not interesting, and won't be included in the result.
+	 */
+	protected void testRealScenariosHowManyAnomalousUsers(ScenarioCallbacks scenarioCallbacks, double expectedPortionOfAnomalousUsers, int minInterestingScore) throws IOException {
+		testRealScenariosHowManyAnomalousUsers(scenarioCallbacks, expectedPortionOfAnomalousUsers, minInterestingScore, Integer.MAX_VALUE);
 	}
 
 	private Integer getTotalAnomalousUsers(Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics) {
