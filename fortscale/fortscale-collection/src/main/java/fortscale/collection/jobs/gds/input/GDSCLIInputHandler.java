@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.input;
 
+import fortscale.services.configuration.ConfigurationParam;
 import fortscale.utils.logging.Logger;
 
 import java.io.BufferedReader;
@@ -59,4 +60,11 @@ public class GDSCLIInputHandler implements GDSInputHandler {
             logger.error("Could not close input stream reader");
         }
     }
+
+	public ConfigurationParam getParamConfiguration (Map<String,ConfigurationParam> configurationParams, String key)
+	{
+		if (configurationParams.containsKey(key))
+			return configurationParams.get(key);
+		return null;
+	}
 }

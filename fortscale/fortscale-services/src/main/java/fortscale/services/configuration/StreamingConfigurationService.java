@@ -2,6 +2,10 @@ package fortscale.services.configuration;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.util.Set;
 
 /**
@@ -67,4 +71,56 @@ public abstract class StreamingConfigurationService extends ConfigurationService
 	public Set<String> getAffectedConfigList() {
 		return affectedConfigList;
 	}
+
+	protected void replaceValueInFile(String filePath ,String key,String replaceOrAddValue, Boolean override)
+	{
+		FileOutputStream out = null;
+		try {
+			File file = new File(filePath);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader br = new BufferedReader(fileReader);
+			String currentLine;
+			String newLine = "";
+
+
+			//start read the file lines
+			while ( (currentLine = br.readLine()) != null )
+			{
+				if (currentLine.contains(key))
+				{
+					if (override)
+						currentLine = currentLine.substring(0,currentLine.indexOf(key))+replaceOrAddValue;
+					else
+						currentLine = currentLine+replaceOrAddValue;
+
+				}
+				newLine += currentLine + "\n";
+			}
+
+			out = new FileOutputStream(filePath);
+			out.write(newLine.getBytes());
+		}
+		catch (Exception e)
+		{
+			logger.error("There was an exception during execution - {} ",e);
+		}
+
+		finally {
+			try {
+				if (out != null )
+					out.close();
+			}
+
+			catch (Exception e)
+			{
+				logger.error("Fail to close the {} file  - {} ",filePath,e);
+			}
+
+
+		}
+
+	}
+
+
+
 }

@@ -18,6 +18,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
     private static final String TARGET_IP_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSIPResolvingConfigurator() {
         configurationService = new IpResolvingTaskConfiguration();
@@ -42,6 +43,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam updateOnlyFlag = paramsMap.get("ipField");
         ConfigurationParam hostField = paramsMap.get("hostField");
 
+
         GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = new GDSEnrichmentDefinitionState.IPResolvingState();
 
         ipResolvingState.setRestrictToAD(restrictToAD.getParamFlag());
@@ -50,6 +52,8 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ipResolvingState.setOverrideIpWithHostNameUsage(overrideIpWithHostNameUsage.getParamFlag());
         ipResolvingState.setHostField(updateOnlyFlag.getParamValue());
         ipResolvingState.setRemoveLastDotUsage(removeLastDotUsage.getParamFlag());
+		ipResolvingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		ipResolvingState.setHostField(hostField.getParamValue());
 
         ipResolvingStates.add(ipResolvingState);
     }

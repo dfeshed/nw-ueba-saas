@@ -50,6 +50,8 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String TARGET_IP_FLAG_PARAM = "targetIpFlag";
     private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
     private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
+	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
+	private static final String ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP = "additionalFiledToScoreFieldMapCSV";
 
     private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
 
@@ -57,7 +59,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
     // TODO check if property available
     @Value("${fortscale.data.source}")
-    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,amt,vpn_session,amtsession,crmsf";
+    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf";
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
@@ -235,6 +237,10 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
         paramsMap.put(SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
         paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM , new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalFieldsCSV()));
+		paramsMap.put(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP , new ConfigurationParam(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,false,additionalFieldsWrapper.getAdditionalFiledToScoreFieldMapCSV()));
+
+
     }
 
     private void populateBaseDataSourceDefinitions(Map<String, ConfigurationParam> paramsMap) throws Exception {

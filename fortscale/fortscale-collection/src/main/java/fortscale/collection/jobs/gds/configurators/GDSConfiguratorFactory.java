@@ -24,6 +24,7 @@ public class GDSConfiguratorFactory {
         configurationTypeToConfiguratorMap.put(GDSConfigurationType.GEO_LOCATION, GDSGeoLocationConfigurator.class);
         configurationTypeToConfiguratorMap.put(GDSConfigurationType.USER_MONGO_UPDATE, GDSUserMongoUpdateConfigurator.class);
         configurationTypeToConfiguratorMap.put(GDSConfigurationType.HDFS_WRITER, GDSHDFSWriterConfigurator.class);
+		configurationTypeToConfiguratorMap.put(GDSConfigurationType.RAW_MODEL_AND_SCORE, GDSRAWModelAndScoreConfigurator.class);
     }
 
     private EnumMap<GDSConfigurationType, GDSConfigurator> configuratorsMap =  new EnumMap<>(GDSConfigurationType.class);
