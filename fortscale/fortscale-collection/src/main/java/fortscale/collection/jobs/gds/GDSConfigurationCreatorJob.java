@@ -43,6 +43,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 	private Map<String, GDSConfigurationType> enrichmentMenuOptionToConfigurationType = GDSMenuPrinterHelper.createEnrichmentMenuOptionToConfigurationType();
 
+	private Map<String, GDSConfigurationType> modelAndScoreMenuOptionToConfigurationType = GDSMenuPrinterHelper.createModelAndScoreMenuOptionToConfigurationType();
+
 	private Queue<GDSConfigurator> dirtyConfiguratorsQueue = new LinkedList<>();
 
 	// used to restore the default settings
@@ -240,7 +242,55 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	}
 
 	private void handleModelAndScoringConfiguration() throws Exception {
-		// TBD
+		System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
+		String stepInput = gdsInputHandler.getInput();
+		while (true) {
+			String inputErrorMessage = null;
+
+			String stepInputNormalized = stepInput.trim();
+			switch (stepInputNormalized) {
+				case GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION:
+				{
+					GDSConfigurationType gdsConfiguratorType = modelAndScoreMenuOptionToConfigurationType.get(stepInputNormalized);
+
+					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
+					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
+
+					Map<String, Map<String, ConfigurationParam>> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
+
+					if (configurationParams.isEmpty()) {
+						System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
+					}
+					else {
+
+						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
+						configurator.setConfigurationState(currConfigurationState);
+						configurator.configure(configurationParams);
+
+						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
+
+						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+							GDSConfigurationResult configurationResult = configurator.apply();
+
+							GDSMenuPrinterHelper.printConfigurationResult(configurationResult,configurator.getType().getLabel());
+
+							break;
+						}
+
+						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
+
+						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+							configurator.reset();
+						}
+					}
+
+					break;
+				}
+
+
+			}
+		}
+
 	}
 
 	private void handleAggregationsConfiguration() throws Exception {
