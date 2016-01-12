@@ -1,10 +1,7 @@
 package fortscale.streaming.task;
 
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
@@ -45,6 +42,7 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         super.cleanupAfter();
     }
 
+    @Ignore
     @Test
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
 
