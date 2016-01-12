@@ -70,8 +70,8 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 		String additionalFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
 		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFieldsCSV);
 
-		String additionalScoreFeldsCSV = paramsMap.get("additionalScoreFeldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFeldsCSV);
+		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
 
 		String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
 		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFiledToScoreFieldMapCSV);

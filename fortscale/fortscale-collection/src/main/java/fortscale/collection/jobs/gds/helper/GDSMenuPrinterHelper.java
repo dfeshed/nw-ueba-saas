@@ -41,8 +41,8 @@ public class GDSMenuPrinterHelper {
 	public static Map<String, GDSConfigurationType> createModelAndScoreMenuOptionToConfigurationType(){
 		Map<String, GDSConfigurationType> modelAndScoreMenuOptionToConfigurationType = new HashMap<>();
 		modelAndScoreMenuOptionToConfigurationType.put(GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION, GDSConfigurationType.RAW_MODEL_AND_SCORE);
-		modelAndScoreMenuOptionToConfigurationType.put(GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION, GDSConfigurationType.AGGREGATED_FEATURE_MODEL_AND_SCORE);
-		modelAndScoreMenuOptionToConfigurationType.put(GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION, GDSConfigurationType.ENTITY_EVENTS_MODEL_AND_SCORE);
+		modelAndScoreMenuOptionToConfigurationType.put(GDSMenuOptions.MODEL_AND_SCORE_AGGREGATED_FEATURE_OPTION, GDSConfigurationType.AGGREGATED_FEATURE_MODEL_AND_SCORE);
+		modelAndScoreMenuOptionToConfigurationType.put(GDSMenuOptions.MODEL_AND_SCORE_ENTITY_EVENT_OPTION, GDSConfigurationType.ENTITY_EVENTS_MODEL_AND_SCORE);
 		return modelAndScoreMenuOptionToConfigurationType;
 
 	}
@@ -57,7 +57,6 @@ public class GDSMenuPrinterHelper {
         System.out.println(GDSMenuOptions.MAIN_MENU_SCHEMA_DEFINITION_OPTION + ".\tSchema definition (HDFS/Impala)\n" +
                 GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION + ".\tEnrichment definition\n" +
                 GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION + ".\tModel&Scoring definition\n" +
-                GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION + ".\tAggregations definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESTORE_DEFAULTS_OPTION + ".\tRestore Defaults\n" +
