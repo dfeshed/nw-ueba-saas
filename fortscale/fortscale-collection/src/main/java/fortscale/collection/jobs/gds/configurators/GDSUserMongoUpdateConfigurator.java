@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -17,7 +18,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     private static final String LAST_STATE_PARAM = "lastState";
     private static final String TASK_NAME_PARAM = "taskName";
     private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
-    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
+    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "";
 
     public GDSUserMongoUpdateConfigurator() {
         configurationService = new UserMongoUpdateConfiguration();
@@ -31,7 +32,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
         ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
-        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
+
 
         ConfigurationParam anyRow = paramsMap.get("anyRow");
         ConfigurationParam statusFieldName = paramsMap.get("statusFieldName");
@@ -42,7 +43,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
         userMongoUpdateState.setTaskName(taskName.getParamValue());
         userMongoUpdateState.setLastState(lastState.getParamValue());
         userMongoUpdateState.setOutputTopic(outputTopic.getParamValue());
-        userMongoUpdateState.setOutputTopicEntry(outputTopicEntry.getParamValue());
+        userMongoUpdateState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         userMongoUpdateState.setAnyRow(anyRow.getParamFlag());
         userMongoUpdateState.setStatusFieldName(statusFieldName.getParamValue());
@@ -52,6 +53,11 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState().reset();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.USER_MONGO_UPDATE;
     }
 }
 

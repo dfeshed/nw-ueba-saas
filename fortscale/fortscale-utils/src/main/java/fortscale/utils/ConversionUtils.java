@@ -1,5 +1,7 @@
 package fortscale.utils;
 
+import java.util.Map;
+
 /**
  * Type conversion utility methods 
  */
@@ -88,6 +90,20 @@ public final class ConversionUtils {
 		} catch (Exception e) {}
 		return defaultValue;
 		
+	}
+
+
+	public static void splitCSVtoMap(String fieldsCsv, Map<String, String> feldSchema, String SplitingSimbol) {
+
+		if (fieldsCsv != null) {
+			String[] fieldsArray = fieldsCsv.split(SplitingSimbol);
+			for (String fieldDef : fieldsArray) {
+				String[] fieldDefSep = fieldDef.split(" ");
+				feldSchema.put(fieldDefSep[0], fieldDefSep[1]);
+				//this.enrichFelds.put(fieldDefSep[0],fieldDefSep[1]);
+				//this.scoreFelds.put(fieldDefSep[0],fieldDefSep[1]);
+			}
+		}
 	}
 	
 		

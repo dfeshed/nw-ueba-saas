@@ -20,6 +20,10 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private String normalizedUserNameField;
     private String dataDelimiter;
     private String dataTableName;
+	private String scoreFieldsCSV;
+	private String additionalScoreFieldsCSV;
+	private String additionalFieldsCSV;
+	private String additionalFiledToScoreFieldMapCSV;
 
     public boolean hasSourceIp() {
         return hasSourceIp;
@@ -125,7 +129,39 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.dataTableName = dataTableName;
     }
 
-    @Override
+	public String getScoreFieldsCSV() {
+		return scoreFieldsCSV;
+	}
+
+	public void setScoreFieldsCSV(String scoreFieldsCSV) {
+		this.scoreFieldsCSV = scoreFieldsCSV;
+	}
+
+	public String getAdditionalScoreFieldsCSV() {
+		return additionalScoreFieldsCSV;
+	}
+
+	public void setAdditionalScoreFieldsCSV(String additionalScoreFieldsCSV) {
+		this.additionalScoreFieldsCSV = additionalScoreFieldsCSV;
+	}
+
+	public String getAdditionalFieldsCSV() {
+		return additionalFieldsCSV;
+	}
+
+	public void setAdditionalFieldsCSV(String additionalFieldsCSV) {
+		this.additionalFieldsCSV = additionalFieldsCSV;
+	}
+
+	public String getAdditionalFiledToScoreFieldMapCSV() {
+		return additionalFiledToScoreFieldMapCSV;
+	}
+
+	public void setAdditionalFiledToScoreFieldMapCSV(String additionalFiledToScoreFieldMapCSV) {
+		this.additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV;
+	}
+
+	@Override
     public void reset() {
         hasSourceIp = false;
         hasTargetIp = false;
@@ -140,5 +176,8 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         normalizedUserNameField = null;
         dataDelimiter = null;
         dataTableName = null;
+		additionalFieldsCSV = null;
+		additionalScoreFieldsCSV = null;
+		additionalFiledToScoreFieldMapCSV = null;
     }
 }

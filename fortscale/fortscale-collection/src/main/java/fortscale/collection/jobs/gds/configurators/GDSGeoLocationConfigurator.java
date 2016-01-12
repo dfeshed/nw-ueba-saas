@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.GeoLocationConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -17,6 +18,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
     private static final String TARGET_IP_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSGeoLocationConfigurator() {
         configurationService = new GeoLocationConfiguration();
@@ -28,6 +30,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
 
         addConfiguration(geoLocationStates, configurationParams, GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY);
         addConfiguration(geoLocationStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY);
+
     }
 
     private void addConfiguration(List<GDSEnrichmentDefinitionState.GeoLocationState> geoLocationStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
@@ -46,6 +49,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         ConfigurationParam doDataBuckets = paramsMap.get("doDataBuckets");
         ConfigurationParam doGeoLocation = paramsMap.get("doGeoLocation");
 
+
         GDSEnrichmentDefinitionState.GeoLocationState geoLocationState = new GDSEnrichmentDefinitionState.GeoLocationState();
 
         geoLocationState.setIpField(ipField.getParamValue());
@@ -60,6 +64,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoSessionUpdateFlag(doSessionUpdateFlag.getParamFlag());
         geoLocationState.setDoDataBuckets(doDataBuckets.getParamFlag());
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
+		geoLocationState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         geoLocationStates.add(geoLocationState);
     }
@@ -67,5 +72,10 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getGeoLocationStates().clear();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.GEO_LOCATION;
     }
 }
