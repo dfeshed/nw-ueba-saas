@@ -26,6 +26,9 @@ public class ReachSumMetricsDecider implements IMetricsDecider {
 
 	@Override
 	public boolean decide(JSONObject metrics) {
+		if (metrics == null) {
+			return false;
+		}
 		long sum = 0;
 
 		for (String metricToSum : metricsToSum) {
