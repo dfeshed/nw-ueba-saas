@@ -29,7 +29,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		// Create the entity event service
 		EntityEventDataStore store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
 		entityEventService = new EntityEventService(store);
-		receivedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "received-message-count");
+		receivedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "entity-events-streaming-received-message-count");
 		
 		// Get skip sending entity events flag
 		String skipString = config.get(SKIP_SENDING_ENTITY_EVENTS_PROPERTY, Boolean.toString(false));

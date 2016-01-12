@@ -47,4 +47,8 @@ public class ReachSumMetricsDecider implements IMetricsDecider {
 
 		return false;
 	}
+
+	public void updateParams(long sumToReach) {
+		this.sumToReach += sumToReach;
+	}
 }
