@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * Model and scoring CLI populator
+ *
  * Created by idanp on 1/10/2016.
  */
 public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopulator {
@@ -34,23 +36,20 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
 		HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
 		GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
-		String stdinResult = "";
+		String stdinResult;
 
 		configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
 		String dataSourceName = currentConfigurationState.getDataSourceName();
 
-		System.out.println(String.format("Going to configure teh raw events model and score for %s  ", dataSourceName));
-
-
 		String scoreFeldsCSV = currentConfigurationState.getSchemaDefinitionState().getScoreFields();
-		String additionalScoreFeldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalScoreFieldsCSV();
+		String additionalScoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalScoreFieldsCSV();
 		String additionalFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFieldsCSV();
 		String additionalFiledToScoreFieldMapCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFiledToScoreFieldMapCSV();
 
 
 		paramsMap.put(SCORE_FIELDS_CSV_PARAM, new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false,scoreFeldsCSV));
-		paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalScoreFeldsCSV));
+		paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalScoreFieldsCSV));
 		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM, new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM, false, additionalFieldsCSV));
 		paramsMap.put(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,new ConfigurationParam(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,false,additionalFiledToScoreFieldMapCSV));
 
@@ -60,7 +59,7 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		paramsMap.put(DATA_SOURCE_KEY,new ConfigurationParam(DATA_SOURCE_KEY,false,"fortscale.events-prevalence-stream-managers.data-sources"));
 
 
-		Map<String,String> scoresFieldMap = new LinkedHashMap<String,String>();
+		Map<String,String> scoresFieldMap = new LinkedHashMap<>();
 		ConversionUtils.splitCSVtoMap(scoreFeldsCSV, scoresFieldMap, ",");
 
 		//For each potential basic score field ask if we want to populate it
@@ -76,7 +75,7 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 			}
 		}
 
-		ConfigurationParam result = null;
+		ConfigurationParam result;
 
 		result = gdsInputHandler.getParamConfiguration(paramsMap,"source_machine_score");
 		Boolean sourceMachienFlag = result != null ? result.getParamFlag() : false;
@@ -98,9 +97,6 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		paramsMap.put("countryToScoreFlag",new ConfigurationParam("countryToScoreFlag",countryToScoreFlag,""));
 		paramsMap.put("actionTypeToScoreFlag",new ConfigurationParam("actionTypeToScoreFlag",actionTypeToScoreFlag,""));
 		paramsMap.put("dateTimeToScoreFlag",new ConfigurationParam("dateTimeToScoreFlag",dateTimeToScoreFlag,""));
-
-
-
 
 		System.out.println(String.format("End configure the raw data model and score task for  %s", dataSourceName));
 

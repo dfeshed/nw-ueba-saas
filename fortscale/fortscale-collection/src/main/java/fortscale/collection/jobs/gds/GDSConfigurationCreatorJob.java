@@ -133,15 +133,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
 					}
 					break;
-				case GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION:
-					if (canEnterAggregationsStep(currConfigurationState)) {
-						GDSMenuPrinterHelper.printAggregationsMenu();
-						handleAggregationsConfiguration();
-					}
-					else {
-						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
-					}
-					break;
 				case GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION:
 					if (!dirtyConfiguratorsQueue.isEmpty()) {
 						System.out.println(GDSUserMessages.APPLY_IN_PROGRESS_MESSAGE);
@@ -203,10 +194,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
-	private boolean canEnterAggregationsStep(GDSCompositeConfigurationState currConfigurationState) {
-		return currConfigurationState.isDataSourceAlreadyDefined();
-	}
-
 	private void resetConfigurators() {
 		currConfigurationState.reset();
 		dirtyConfiguratorsQueue.clear();
@@ -247,6 +234,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 			String stepInputNormalized = stepInput.trim();
 			switch (stepInputNormalized) {
 				case GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION:
+				case GDSMenuOptions.MODEL_AND_SCORE_AGGREGATED_FEATURE_OPTION:
+				case GDSMenuOptions.MODEL_AND_SCORE_ENTITY_EVENT_OPTION:
 				{
 					GDSConfigurationType gdsConfiguratorType = modelAndScoreMenuOptionToConfigurationType.get(stepInputNormalized);
 
