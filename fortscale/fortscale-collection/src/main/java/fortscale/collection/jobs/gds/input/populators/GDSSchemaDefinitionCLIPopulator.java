@@ -59,7 +59,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
     // TODO check if property available
     @Value("${fortscale.data.source}")
-    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf";
+    private String currentDataSources;
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
