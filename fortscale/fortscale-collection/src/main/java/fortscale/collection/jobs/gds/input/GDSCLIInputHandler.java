@@ -6,6 +6,8 @@ import fortscale.utils.logging.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,21 @@ public class GDSCLIInputHandler implements GDSInputHandler {
     private static Logger logger = Logger.getLogger(GDSCLIInputHandler.class);
 
     private BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+    private static Set<String> legalYesNoInputVariations = new HashSet<>(Arrays.asList(new String[]{"yes", "y", "no", "n"}));
+
+    @Override
+    public boolean getYesNoInput() throws Exception {
+        String input = bufferedReader.readLine();
+
+        while (!legalYesNoInputVariations.contains(input.toLowerCase())) {
+            System.out.println("Illegal input. Please enter (y)es / (n)o");
+            input = bufferedReader.readLine();
+        }
+
+        return input.equals("yes") || input.equals("y");
+
+    }
 
     @Override
     public String getInput() throws IOException {
