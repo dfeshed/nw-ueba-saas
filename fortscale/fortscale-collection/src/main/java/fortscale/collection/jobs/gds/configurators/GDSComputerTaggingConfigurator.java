@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.ComputerTaggingClassConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -17,7 +18,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     private static final String LAST_STATE_PARAM = "lastState";
     private static final String TASK_NAME_PARAM = "taskName";
     private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
-    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
+    private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSComputerTaggingConfigurator() {
         configurationService = new ComputerTaggingClassConfiguration();
@@ -30,7 +31,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
-        ConfigurationParam outputTopicEntry = paramsMap.get(OUTPUT_TOPIC_ENTRY_PARAM);
+
 
         ConfigurationParam sourceHost = paramsMap.get("sourceHost");
         ConfigurationParam targetHost = paramsMap.get("targetHost");
@@ -45,7 +46,7 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
         computerTaggingState.setTaskName(taskName.getParamValue());
         computerTaggingState.setLastState(lastState.getParamValue());
         computerTaggingState.setOutputTopic(outputTopic.getParamValue());
-        computerTaggingState.setOutputTopicEntry(outputTopicEntry.getParamValue());
+        computerTaggingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         computerTaggingState.setSourceHost(sourceHost.getParamValue());
         computerTaggingState.setTargetHost(targetHost.getParamValue());
@@ -59,5 +60,10 @@ public class GDSComputerTaggingConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState().reset();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.COMPUTER_TAGGING;
     }
 }

@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.UserNormalizationTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -17,6 +18,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_USERNAME_CONFIG_ENTRY = "source.";
     private static final String TARGET_USERNAME_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSUserNormalizationConfigurator() {
         configurationService = new UserNormalizationTaskConfiguration();
@@ -52,6 +54,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
         ConfigurationParam normalizeServiceName = paramsMap.get("normalizeServiceName");
         ConfigurationParam updateOnlyFlag = paramsMap.get("updateOnlyFlag");
 
+
         GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = new GDSEnrichmentDefinitionState.UserNormalizationState();
 
         userNormalizationState.setUserNameField(userNameField.getParamValue());
@@ -60,6 +63,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
         userNormalizationState.setNormalizedUserNameField(normalizedUserNameField.getParamValue());
         userNormalizationState.setNormalizeServiceName(normalizeServiceName.getParamValue());
         userNormalizationState.setUpdateOnly(updateOnlyFlag.getParamValue());
+		userNormalizationState.setOutputTopic(OUTPUT_TOPIC_ENTRY_PARAM);
 
         userNormalizationStates.add(userNormalizationState);
     }
@@ -67,5 +71,10 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates().clear();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.USER_NORMALIZATION;
     }
 }

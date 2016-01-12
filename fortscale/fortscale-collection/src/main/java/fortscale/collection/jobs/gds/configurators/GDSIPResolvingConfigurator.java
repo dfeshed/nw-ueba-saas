@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.IpResolvingTaskConfiguration;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -17,6 +18,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
     private static final String TARGET_IP_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSIPResolvingConfigurator() {
         configurationService = new IpResolvingTaskConfiguration();
@@ -41,6 +43,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam updateOnlyFlag = paramsMap.get("ipField");
         ConfigurationParam hostField = paramsMap.get("hostField");
 
+
         GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = new GDSEnrichmentDefinitionState.IPResolvingState();
 
         ipResolvingState.setRestrictToAD(restrictToAD.getParamFlag());
@@ -49,6 +52,8 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ipResolvingState.setOverrideIpWithHostNameUsage(overrideIpWithHostNameUsage.getParamFlag());
         ipResolvingState.setHostField(updateOnlyFlag.getParamValue());
         ipResolvingState.setRemoveLastDotUsage(removeLastDotUsage.getParamFlag());
+		ipResolvingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		ipResolvingState.setHostField(hostField.getParamValue());
 
         ipResolvingStates.add(ipResolvingState);
     }
@@ -56,5 +61,10 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     @Override
     public void reset() throws Exception {
         currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates().clear();
+    }
+
+    @Override
+    public GDSConfigurationType getType() {
+        return GDSConfigurationType.IP_RESOLVING;
     }
 }

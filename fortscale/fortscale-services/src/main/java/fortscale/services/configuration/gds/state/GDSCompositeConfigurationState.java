@@ -15,6 +15,7 @@ public class GDSCompositeConfigurationState implements Resettable{
     private GDSCollectionDefinitionState collectionDefinitionState = new GDSCollectionDefinitionState();
     private GDSEnrichmentDefinitionState enrichmentDefinitionState = new GDSEnrichmentDefinitionState();
     private GDSStreamingTopologyDefinitionState streamingTopologyDefinitionState = new GDSStreamingTopologyDefinitionState();
+	private GDSRAWDataModelAndScoreState rawDataModelAndScoreState = new GDSRAWDataModelAndScoreState();
 
     public String getDataSourceName() {
         return baseDefinitionState.getDataSourceName();
@@ -77,11 +78,28 @@ public class GDSCompositeConfigurationState implements Resettable{
         this.streamingTopologyDefinitionState = streamingTopologyDefinitionState;
     }
 
-    public void reset() {
+	public GDSBaseDefinitionState getBaseDefinitionState() {
+		return baseDefinitionState;
+	}
+
+	public void setBaseDefinitionState(GDSBaseDefinitionState baseDefinitionState) {
+		this.baseDefinitionState = baseDefinitionState;
+	}
+
+	public GDSRAWDataModelAndScoreState getRawDataModelAndScoreState() {
+		return rawDataModelAndScoreState;
+	}
+
+	public void setRawDataModelAndScoreState(GDSRAWDataModelAndScoreState rawDataModelAndScoreState) {
+		this.rawDataModelAndScoreState = rawDataModelAndScoreState;
+	}
+
+	public void reset() {
         baseDefinitionState.reset();
         schemaDefinitionState.reset();
         collectionDefinitionState.reset();
         enrichmentDefinitionState.reset();
         streamingTopologyDefinitionState.reset();
+		rawDataModelAndScoreState.reset();
     }
 }
