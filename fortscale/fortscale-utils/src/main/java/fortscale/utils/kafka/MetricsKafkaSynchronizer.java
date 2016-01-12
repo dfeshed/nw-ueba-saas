@@ -1,6 +1,7 @@
 package fortscale.utils.kafka;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 /**
  * Created by tomerd on 31/12/2015.
  */
+@Configurable(preConstruction = true)
 public class MetricsKafkaSynchronizer implements IKafkaSynchronizer {
 
 	private static Logger logger = Logger.getLogger(MetricsKafkaSynchronizer.class);
