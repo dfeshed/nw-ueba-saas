@@ -47,7 +47,7 @@ public class AbstractTaskTest {
     private static int brokerPort;
 
     //protected variables
-    protected static final String STREAMING_CONFIG_PATH = "/fortscale/fortscale-core/fortscale/fortscale-streaming/config/";
+    protected static final String STREAMING_CONFIG_PATH = "config/";
     static protected String inputTopic = null;
     protected String outputTopic = null;
     static protected SimpleConsumer simpleConsumer;

@@ -28,7 +28,7 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
 
     @BeforeClass
     public static void beforeClass() throws IOException{
-        propertiesPath = System.getenv("HOME") + STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
+        propertiesPath = STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
         springContextFile = SPRING_CONTEXT_FIILE;
         addInfo = null;
         setupBefore();
