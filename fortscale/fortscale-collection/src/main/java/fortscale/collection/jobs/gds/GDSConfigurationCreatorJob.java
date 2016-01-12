@@ -6,7 +6,6 @@ import fortscale.collection.jobs.gds.configurators.GDSConfigurator;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
 import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserMessages;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
@@ -94,7 +93,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
 							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
@@ -106,7 +105,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							configurator.reset();
 						}
 						else {
@@ -280,7 +279,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
 							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
@@ -292,7 +291,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							configurator.reset();
 						}
 						else {

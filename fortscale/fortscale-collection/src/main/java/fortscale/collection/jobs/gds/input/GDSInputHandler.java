@@ -10,6 +10,7 @@ import java.util.Set;
  * 30/12/2015
  */
 public interface GDSInputHandler {
+    boolean getYesNoInput() throws Exception;
     String getInput() throws Exception;
     String getInput(String paramName) throws Exception;
     Map<String, String> getInput(Set<String> paramNames);
