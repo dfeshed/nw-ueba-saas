@@ -1142,6 +1142,15 @@
                         "type": "aggr_feature_sum_func"
                     }
 
+                },
+                {
+                    "name": "highest_score_date_time",
+                    "featureNamesMap": {
+                        "maximize": ["date_time_score"]
+                    },
+                    "aggrFeatureFuncJson": {
+                        "type": "aggr_feature_feature_to_max_map_func"
+                    }
                 }
             ]
         },
@@ -1163,6 +1172,15 @@
                         "type": "aggr_feature_sum_func"
                     }
 
+                },
+                {
+                    "name": "highest_score_date_time",
+                    "featureNamesMap": {
+                        "maximize": ["date_time_score"]
+                    },
+                    "aggrFeatureFuncJson": {
+                        "type": "aggr_feature_feature_to_max_map_func"
+                    }
                 }
             ]
         },
@@ -1204,6 +1222,16 @@
                     },
                     "aggrFeatureFuncJson": {
                         "type": "aggr_feature_histogram_func"
+                    }
+                },
+                {
+                    "name": "source_machine_to_highest_score_map",
+                    "featureNamesMap": {
+                        "groupBy": ["source_machine"],
+                        "maximize": ["normalized_src_machine_score"]
+                    },
+                    "aggrFeatureFuncJson": {
+                        "type": "aggr_feature_feature_to_max_map_func"
                     }
                 }
 
@@ -1247,6 +1275,16 @@
                     },
                     "aggrFeatureFuncJson": {
                         "type": "aggr_feature_histogram_func"
+                    }
+                },
+                {
+                    "name": "source_machine_to_highest_score_map",
+                    "featureNamesMap": {
+                        "groupBy": ["source_machine"],
+                        "maximize": ["normalized_src_machine_score"]
+                    },
+                    "aggrFeatureFuncJson": {
+                        "type": "aggr_feature_feature_to_max_map_func"
                     }
                 }
             ]
