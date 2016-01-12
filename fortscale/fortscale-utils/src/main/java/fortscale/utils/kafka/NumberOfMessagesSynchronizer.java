@@ -24,6 +24,7 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 	private String jobToMonitor;
 	int timeToWaitInMilliseconds;
 	int retries;
+	int batchSize;
 
 	public NumberOfMessagesSynchronizer() {
 		// Default constructor
@@ -32,12 +33,13 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 	public NumberOfMessagesSynchronizer(String jobClassToMonitor, String jobToMonitor,
 			int timeToWaitInMilliseconds, int retries, int batchSize) {
 		List<String> metrics = new ArrayList<String>();
-		metrics.add(jobToMonitor);
+		metrics.add(String.format("%s-received-message-count", jobToMonitor));
 		this.decider = new ReachSumMetricsDecider(metrics, batchSize);
 		this.jobClassToMonitor = jobClassToMonitor;
 		this.jobToMonitor = jobToMonitor;
 		this.timeToWaitInMilliseconds = timeToWaitInMilliseconds;
 		this.retries = retries;
+		this.batchSize = batchSize;
 	}
 
 	@Override public boolean synchronize(long latestEpochTimeSent) {
@@ -49,6 +51,7 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 			return false;
 		}
 		logger.info("last message in batch processed, moving to next batch");
+		decider.updateParams(batchSize);
 		return true;
 	}
 }
