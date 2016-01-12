@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.event;
 
 import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.utils.kafka.MultiTopicsKafkaSender;
+import fortscale.utils.kafka.NumberOfMessagesSynchronizer;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -25,8 +26,8 @@ public class AggregationEventSender implements IAggregationEventSender {
 
 	public AggregationEventSender(int batchSize, String jobClassToMonitor, String jobToMonitor, int timeToWaitInMilliseconds,
 			int retries){
-		MetricsKafkaSynchronizer metricsKafkaSynchronizer = new MetricsKafkaSynchronizer(jobClassToMonitor,
-				jobToMonitor, timeToWaitInMilliseconds, retries);
+		NumberOfMessagesSynchronizer metricsKafkaSynchronizer = new NumberOfMessagesSynchronizer(jobClassToMonitor,
+				jobToMonitor, timeToWaitInMilliseconds, retries, batchSize);
 		// Create multi-topics kakfa sender.
 		// As our application acts as single node, there's no need in the partition key
 		multiTopicsKafkaSender = new MultiTopicsKafkaSender(metricsKafkaSynchronizer, batchSize,
