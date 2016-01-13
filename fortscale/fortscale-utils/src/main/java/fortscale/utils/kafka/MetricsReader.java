@@ -95,13 +95,14 @@ public class MetricsReader {
 
     public static long getCounterMetricsSum(List<String> metrics, String zookeeper, int port,  String headerToCheck,
             String jobToCheck) {
-        long counterMetricsSum = 0;
+        long counterMetricsSum;
 
         CaptorMetricsDecider captor = new CaptorMetricsDecider(metrics);
-        long offset = 0;
+        long offset;
 
         MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
         do {
+            counterMetricsSum = 0;
             offset = metricsResults.getOffset();
             metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, headerToCheck, jobToCheck, captor);
 
@@ -113,7 +114,7 @@ public class MetricsReader {
                     }
                 }
             }
-        }while(metricsResults != null && metricsResults.getOffset() > offset);// Looking for the last metric message.
+        }while(metricsResults.getOffset() > offset);// Looking for the last metric message.
 
         return counterMetricsSum;
     }
