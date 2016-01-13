@@ -1,5 +1,6 @@
 package fortscale.utils.kafka;
 
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,15 +35,18 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 			int timeToWaitInMilliseconds, int retries, int batchSize) {
 		List<String> metrics = new ArrayList<String>();
 		metrics.add(String.format("%s-received-message-count", jobToMonitor));
-		this.decider = new ReachSumMetricsDecider(metrics, batchSize);
 		this.jobClassToMonitor = jobClassToMonitor;
 		this.jobToMonitor = jobToMonitor;
 		this.timeToWaitInMilliseconds = timeToWaitInMilliseconds;
 		this.retries = retries;
-		this.batchSize = batchSize;
+
+		long initializeMetricsSize = MetricsReader.getCounterMetricsSum(metrics, zookeeperConnection.split(":")[0],
+				Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor);
+		this.decider = new ReachSumMetricsDecider(metrics, initializeMetricsSize);
 	}
 
-	@Override public boolean synchronize(long latestEpochTimeSent) {
+	@Override public boolean synchronize(long numberOfSentEvents) {
+		decider.updateParams(numberOfSentEvents);
 		boolean result = MetricsReader.waitForMetrics(zookeeperConnection.split(":")[0],
 				Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
 				decider, timeToWaitInMilliseconds, retries);
@@ -51,7 +55,6 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 			return false;
 		}
 		logger.info("last message in batch processed, moving to next batch");
-		decider.updateParams(batchSize);
 		return true;
 	}
 }

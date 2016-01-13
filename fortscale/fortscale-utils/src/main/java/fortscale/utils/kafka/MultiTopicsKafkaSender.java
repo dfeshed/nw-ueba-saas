@@ -38,18 +38,22 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		}
 	}
 
+	@Override public void callSynchronizer(long epochTime) {
+		// Update the synchronizer with number of events
+		// This implementation currently works only with ReachSumMetricsDecider
+		// TODO: refctor to work with different deciders  
+		kafkaSynchronize.synchronize(messagesCounter);
+
+	}
+
 	public void send(String topic, String messageStr, long epochTime) throws Exception{
 		kafkaWriters.get(topic).send(messageStr, epochTime);
 		messagesCounter++;
 
 		if (messagesCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messagesCounter, epochTime);
-			callSynchronize(kafkaSynchronize, epochTime);
+			callSynchronizer(epochTime);
 			messagesCounter = 0;
 		}
-	}
-
-	private void callSynchronize(IKafkaSynchronizer kafkaSynchronize, long latestEpochTimeSent) {
-		kafkaSynchronize.synchronize(latestEpochTimeSent);
 	}
 }

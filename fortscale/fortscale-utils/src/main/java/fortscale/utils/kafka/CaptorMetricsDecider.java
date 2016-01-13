@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.smart;
+package fortscale.utils.kafka;
 
 import fortscale.utils.kafka.IMetricsDecider;
 import org.json.JSONObject;

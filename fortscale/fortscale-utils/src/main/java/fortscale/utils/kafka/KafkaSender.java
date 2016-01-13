@@ -36,6 +36,10 @@ public class KafkaSender implements IKafkaSender{
 		}
 	}
 
+	@Override public void callSynchronizer(long epochTime) {
+		kafkaSynchronize.synchronize(epochTime);
+	}
+
 	public void send(String messageStr, long epochTime)
 			throws Exception {
 		logger.debug("sending message to topic {} - {} ", topic, messageStr);
@@ -49,12 +53,8 @@ public class KafkaSender implements IKafkaSender{
 
 		if (messageCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messageCounter, epochTime);
-			callSynchronize(kafkaSynchronize, epochTime);
+			callSynchronizer(epochTime);
 			messageCounter = 0;
 		}
-	}
-
-	private void callSynchronize(IKafkaSynchronizer kafkaSynchronize, long latestEpochTimeSent) {
-		kafkaSynchronize.synchronize(latestEpochTimeSent);
 	}
 }

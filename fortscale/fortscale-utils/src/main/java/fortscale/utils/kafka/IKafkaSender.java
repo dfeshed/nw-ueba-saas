@@ -5,4 +5,5 @@ package fortscale.utils.kafka;
  */
 public interface IKafkaSender {
 	void shutDown();
+	void callSynchronizer(long epochTime);
 }
