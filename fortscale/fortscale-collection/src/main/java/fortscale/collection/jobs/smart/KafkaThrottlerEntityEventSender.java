@@ -66,7 +66,8 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		}
 
 		this.batchCounter = 0;
-		this.counterMetricsSum = getCounterMetricsSum();
+		this.counterMetricsSum = MetricsReader.getCounterMetricsSum(metricsOfEntityEvents, zookeeper, port,
+				counterCreationClass, counterCreationJob);
 	}
 
 	@Override
@@ -100,27 +101,4 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		return String.format("%s.%s%s", eventType, entityEventConf.getName(), counterNameSuffix);
 	}
 
-	private long getCounterMetricsSum() {
-		long counterMetricsSum = 0;
-
-		CaptorMetricsDecider captor = new CaptorMetricsDecider(metricsOfEntityEvents);
-		long offset = 0;
-
-		MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
-		do {
-			offset = metricsResults.getOffset();
-			metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, counterCreationClass, counterCreationJob, captor);
-
-			if(metricsResults.isFound()) {
-				for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
-					Long counter = ConversionUtils.convertToLong(capturedMetric);
-					if (counter != null) {
-						counterMetricsSum += counter;
-					}
-				}
-			}
-		}while(metricsResults != null && metricsResults.getOffset() > offset);// Looking for the last metric message.
-
-		return counterMetricsSum;
-	}
 }
