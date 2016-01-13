@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
@@ -47,19 +46,19 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
             configurationsMap.put(GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY, sourceIPParamsMap);
 
             System.out.println(String.format("Does %s resolving is restricted to AD name (in case of true and the machine doesn't exist in the AD it will not return it as resolved value) (y/n) ?", dataSourceName));
-            sourceIPParamsMap.put(RESTRICT_TO_AD_PARAM, new ConfigurationParam(RESTRICT_TO_AD_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
+            sourceIPParamsMap.put(RESTRICT_TO_AD_PARAM, new ConfigurationParam(RESTRICT_TO_AD_PARAM, gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
             System.out.println(String.format("Does %s resolving use the machine short name (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.com) (y/n) ?", dataSourceName));
-            sourceIPParamsMap.put(SHORT_NAME_USAGE_PARAM, new ConfigurationParam(SHORT_NAME_USAGE_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
+            sourceIPParamsMap.put(SHORT_NAME_USAGE_PARAM, new ConfigurationParam(SHORT_NAME_USAGE_PARAM, gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
             System.out.println(String.format("Does %s resolving need to remove last dot from the resolved server name  (i.e SERV1@DOMAINBLABLA instead of SERV1@DOMAINBLABLA.) (y/n) ?", dataSourceName));
-            sourceIPParamsMap.put(REMOVE_LAST_DOT_USAGE_PARAM, new ConfigurationParam(REMOVE_LAST_DOT_USAGE_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
+            sourceIPParamsMap.put(REMOVE_LAST_DOT_USAGE_PARAM, new ConfigurationParam(REMOVE_LAST_DOT_USAGE_PARAM, gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
             System.out.println(String.format("Does %s resolving need to drop in case of resolving fail (y/n) ?", dataSourceName));
-            sourceIPParamsMap.put(DROP_ON_FAIL_USAGE_PARAM, new ConfigurationParam(DROP_ON_FAIL_USAGE_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
+            sourceIPParamsMap.put(DROP_ON_FAIL_USAGE_PARAM, new ConfigurationParam(DROP_ON_FAIL_USAGE_PARAM, gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
             System.out.println(String.format("Does %s resolving need to override the source ip field with the resolving value (y/n) ?", dataSourceName));
-            sourceIPParamsMap.put(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, new ConfigurationParam(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()), EMPTY_STR));
+            sourceIPParamsMap.put(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, new ConfigurationParam(OVERRIDE_IP_WITH_HOST_NAME_USAGE_PARAM, gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
             sourceIPParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "IpResolvingStreamTask_sourceIp"));
             if (currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired()) {

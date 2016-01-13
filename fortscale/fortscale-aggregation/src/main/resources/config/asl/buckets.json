@@ -1,1294 +1,1360 @@
 {
-    "BucketConfs": [
+  "BucketConfs": [
+    {
+      "name": "normalized_username_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
         {
-            "name": "normalized_username_kerberos_logins_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "kerberos_logins"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "date_time_unix_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["two_minute_resolution_epochtime"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"],
-                        "maximize": ["normalized_dst_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "failure_code_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["failure_code"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "failure_code_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["failure_code"],
-                        "maximize": ["failure_codescore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.failure_code != '0x0')]"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
-            "name": "normalized_username_kerberos_logins_hourly",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "kerberos_logins"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"],
-                        "maximize": ["normalized_dst_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "failure_code_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["failure_code"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "failure_code_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["failure_code"],
-                        "maximize": ["failure_codescore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.failure_code != '0x0')]"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
-            "name": "normalized_username_ssh_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "ssh"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "date_time_unix_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["two_minute_resolution_epochtime"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "auth_method_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["auth_method"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"],
-                        "maximize": ["normalized_dst_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'Failed')]"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "highest_score_auth_method",
-                    "featureNamesMap": {
-                        "maximize": ["auth_method_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
+          "name": "destination_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
-            "name": "normalized_username_ssh_hourly",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
             ],
-            "dataSources": [
-                "ssh"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "auth_method_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["auth_method"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "destination_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["destination_machine"],
-                        "maximize": ["normalized_dst_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'Failed')]"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "highest_score_auth_method",
-                    "featureNamesMap": {
-                        "maximize": ["auth_method_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
+            "maximize": [
+              "normalized_src_machine_score"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
-            "name": "normalized_username_vpn_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
             ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "date_time_unix_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["two_minute_resolution_epochtime"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "country_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["country"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "hostname_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hostname"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'FAIL')]"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "country_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["country"],
-                        "maximize": ["countryscore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
+            "maximize": [
+              "normalized_dst_machine_score"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
-            "name": "normalized_username_vpn_hourly",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "country_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["country"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'FAIL')]"
-                    }
-                },
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["normalized_src_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "country_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["country"],
-                        "maximize": ["countryscore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
+          "name": "failure_code_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "failure_code"
             ]
-        },
-
-        {
-            "name": "normalized_username_vpn_session_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "vpn_session"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "sum_of_scores_rate_vpn_session",
-                    "featureNamesMap": {
-                        "sum": ["databucketScore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                },
-                {
-                    "name": "date_time_unix_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["two_minute_resolution_epochtime"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "country_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["country"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "hostname_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hostname"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "databucket_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["databucket"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
-            "name": "normalized_username_vpn_session_hourly",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
+          "name": "failure_code_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "failure_code"
             ],
-            "dataSources": [
-                "vpn_session"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "sum_of_scores_rate_vpn_session",
-                    "featureNamesMap": {
-                        "sum": ["databucketScore"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-                }
+            "maximize": [
+              "failure_codescore"
             ]
-        },
-
-        {
-            "name": "source_machine_kerberos_logins_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "source_machine"
-            ],
-            "dataSources": [
-                "kerberos_logins"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
-            "name": "destination_machine_kerberos_logins_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "destination_machine"
-            ],
-            "dataSources": [
-                "kerberos_logins"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
-            "name": "source_machine_ssh_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "source_machine"
-            ],
-            "dataSources": [
-                "ssh"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code != '0x0')]"
+          }
         },
         {
-            "name": "destination_machine_ssh_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "destination_machine"
-            ],
-            "dataSources": [
-                "ssh"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
             ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
-            "name": "source_machine_vpn_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "source_machine"
-            ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
             ]
-        },
-        {
-            "name": "destination_machine_vpn_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "destination_machine"
-            ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "country_vpn_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "country"
-            ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "city_vpn_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "city"
-            ],
-            "dataSources": [
-                "vpn"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "city_vpn_session_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "city"
-            ],
-            "dataSources": [
-                "vpn_session"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "normalized_username_crmsf_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "crmsf"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "success_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'Success')]"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status != 'Success')]"
-                    }
-                },
-                {
-                    "name": "country_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["country"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "status_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["status"]
-                    },
-                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "country_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["country"],
-                        "maximize": ["country_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "status_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["status"],
-                        "maximize": ["status_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "normalized_username_crmsf_hourly",
-            "expireAfterSeconds": 2592000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "crmsf"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "number_of_events_per_hour_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["hour"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "success_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status == 'Success')]"
-                    }
-                },
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.status != 'Success')]"
-                    }
-                },
-                {
-                    "name": "country_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["country"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "status_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["status"]
-                    },
-                    "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "country_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["country"],
-                        "maximize": ["country_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                },
-                {
-                    "name": "status_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["status"],
-                        "maximize": ["status_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "source_machine_crmsf_logins_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "source_machine"
-            ],
-            "dataSources": [
-                "crmsf"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "country_crmsf_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "country"
-            ],
-            "dataSources": [
-                "crmsf"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "normalized_username_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["normalized_username"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "normalized_username_wame_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "wame"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "normalized_username_wame_hourly",
-            "expireAfterSeconds": 2592000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "wame"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    }
-
-                },
-                {
-                    "name": "highest_score_date_time",
-                    "featureNamesMap": {
-                        "maximize": ["date_time_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "normalized_username_ntlm_daily",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "ntlm"
-            ],
-            "strategyName": "fixed_duration_daily",
-            "aggrFeatureConfs": [
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.error_code != '0x0')]"
-                    }
-                },
-                {
-                    "name": "success_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.error_code == '0x0')]"
-                    }
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["source_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-
-            ]
-        },
-        {
-            "name": "normalized_username_ntlm_hourly",
-            "expireAfterSeconds": 31536000,
-            "contextFieldNames": [
-                "normalized_username"
-            ],
-            "dataSources": [
-                "ntlm"
-            ],
-            "strategyName": "fixed_duration_hourly",
-            "aggrFeatureConfs": [
-                {
-                    "name": "failed_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.error_code != '0x0')]"
-                    }
-                },
-                {
-                    "name": "success_events_counter",
-                    "featureNamesMap": {},
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_sum_func"
-                    },
-                    "filter": {
-                        "jsonPath": "[?(@.error_code == '0x0')]"
-                    }
-                },
-                {
-                    "name": "source_machine_histogram",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_histogram_func"
-                    }
-                },
-                {
-                    "name": "source_machine_to_highest_score_map",
-                    "featureNamesMap": {
-                        "groupBy": ["source_machine"],
-                        "maximize": ["source_machine_score"]
-                    },
-                    "aggrFeatureFuncJson": {
-                        "type": "aggr_feature_feature_to_max_map_func"
-                    }
-                }
-            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
-
-    ]
+      ]
+    },
+    {
+      "name": "normalized_username_kerberos_logins_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "destination_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "failure_code_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "failure_code"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "failure_code_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "failure_code"
+            ],
+            "maximize": [
+              "failure_codescore"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code != '0x0')]"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_ssh_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "destination_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "auth_method_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "auth_method"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Failed')]"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_auth_method",
+          "featureNamesMap": {
+            "maximize": [
+              "auth_method_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_ssh_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "destination_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "auth_method_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "auth_method"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Failed')]"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_auth_method",
+          "featureNamesMap": {
+            "maximize": [
+              "auth_method_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "hostname_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hostname"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'FAIL')]"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "country_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "countryscore"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_vpn_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'FAIL')]"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "country_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "countryscore"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_vpn_session_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "vpn_session"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "sum_of_scores_rate_vpn_session",
+          "featureNamesMap": {
+            "sum": [
+              "databucketScore"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "hostname_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hostname"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "databucket_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "databucket"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_vpn_session_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "vpn_session"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sum_of_scores_rate_vpn_session",
+          "featureNamesMap": {
+            "sum": [
+              "databucketScore"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "source_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "destination_machine_kerberos_logins_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "kerberos_logins"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "source_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "destination_machine_ssh_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "source_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "destination_machine_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "destination_machine"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "country_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "country"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "city_vpn_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "city"
+      ],
+      "dataSources": [
+        "vpn"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "city_vpn_session_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "city"
+      ],
+      "dataSources": [
+        "vpn_session"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_crmsf_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Success')]"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status != 'Success')]"
+          }
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "status_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "country_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "country_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "status_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ],
+            "maximize": [
+              "status_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_crmsf_hourly",
+      "expireAfterSeconds": 2592000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Success')]"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status != 'Success')]"
+          }
+        },
+        {
+          "name": "country_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "status_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "country_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "country_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "status_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ],
+            "maximize": [
+              "status_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "source_machine_crmsf_logins_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "country_crmsf_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "country"
+      ],
+      "dataSources": [
+        "crmsf"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_wame_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_wame_hourly",
+      "expireAfterSeconds": 2592000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    }
+  ]
 }

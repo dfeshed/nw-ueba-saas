@@ -66,6 +66,18 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
         String dataTableName = paramsMap.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
+
+		String additionalFeldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFeldsCSV);
+
+		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
+
+		String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
+		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFiledToScoreFieldMapCSV);
+
+
+
     }
 
     private void configureBaseDefinitions(Map<String, ConfigurationParam> configurationParams) {
