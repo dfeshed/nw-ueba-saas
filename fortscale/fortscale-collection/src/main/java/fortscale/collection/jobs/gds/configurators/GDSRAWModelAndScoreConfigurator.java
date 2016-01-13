@@ -41,7 +41,7 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
 
 		ConfigurationParam scoreFeldsCSV  = gdsInputHandler.getParamConfiguration(paramsMap, SCORE_FIELDS_CSV_PARAM);
-		ConfigurationParam additionalScoreFeldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_SCORE_FIELDS_CSV_PARAM);
+		ConfigurationParam additionalScoreFieldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_SCORE_FIELDS_CSV_PARAM);
 		ConfigurationParam additionalFieldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELDS_CSV_PARAM);
 		ConfigurationParam additionalFiledToScoreFieldMapCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP);
 
@@ -55,7 +55,7 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 		//Fields map (basic and additional)
 		ConversionUtils.splitCSVtoMap(scoreFeldsCSV.getParamValue(), scoresFieldMap, ",");
-		ConversionUtils.splitCSVtoMap(additionalScoreFeldsCSV.getParamValue(), additionalScoreFeldsMap, ",");
+		ConversionUtils.splitCSVtoMap(additionalScoreFieldsCSV.getParamValue(), additionalScoreFeldsMap, ",");
 		ConversionUtils.splitCSVtoMap(additionalFieldsCSV.getParamValue(), additionalFieldsMap, ",");
 		ConversionUtils.splitCSVtoMap(additionalFiledToScoreFieldMapCSV.getParamValue(), additionalFiledToScoreFieldMap, ",");
 

@@ -126,14 +126,14 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			if (handler!=null) {
 
 				//parse the record with the appropriate morphline based on the event code
-				Record processedRecord = eventMorphlinesItemsProcessor.process(rec,null);
+				Record processedRecord = eventMorphlinesItemsProcessor.process(rec,itemContext);
 
 				if (processedRecord!=null) {
 
 					//In case there is exist enrich morphline process the record with him
 					if (this.morphlineEnrichment != null)
 					{
-						record = this.morphlineEnrichment.process(processedRecord, null);
+						record = this.morphlineEnrichment.process(processedRecord, itemContext);
 						if (record == null) {
 							// record was filtered
 							return false;

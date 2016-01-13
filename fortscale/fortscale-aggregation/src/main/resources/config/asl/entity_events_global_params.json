@@ -1,0 +1,6 @@
+{
+  "EntityEventsGlobalParams": {
+    "secondsToWaitBeforeFiring": 600,
+    "fireEventsEverySeconds": 300
+  }
+}
