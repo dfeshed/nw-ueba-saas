@@ -259,10 +259,11 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-
-				//count that new event trying to processed from specific file
-				taskMonitoringHelper.handleNewEvent(file.getName());
-				processLine(line,itemContext);
+				if (StringUtils.isNotBlank(line)) {
+					//count that new event trying to processed from specific file
+					taskMonitoringHelper.handleNewEvent(file.getName());
+					processLine(line, itemContext);
+				}
 			}
 			
 			// flush hadoop
