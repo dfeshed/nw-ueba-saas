@@ -8,8 +8,6 @@ package fortscale.collection.jobs.gds;
  */
 public enum GDSConfigurationType {
 
-
-
     SCHEMA("Schema Definition"),
     COLLECTION("Collection"),
     USER_NORMALIZATION("User Normalization Task"),

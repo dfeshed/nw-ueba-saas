@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.StreamingConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
@@ -9,14 +9,14 @@ import java.io.FileWriter;
 import java.util.List;
 
 /**
- * Implementation of User normalization task configuration
+ * Implementation of User normalization task configuration writer
  *
  * Created by idanp on 12/20/2015.
  */
-public class UserNormalizationTaskConfiguration extends StreamingConfigurationService {
+public class UserNormalizationTaskConfigurationWriter extends StreamingConfigurationWriterService {
 
-    public UserNormalizationTaskConfiguration() {
-        logger = LoggerFactory.getLogger(UserNormalizationTaskConfiguration.class);
+    public UserNormalizationTaskConfigurationWriter() {
+        logger = LoggerFactory.getLogger(UserNormalizationTaskConfigurationWriter.class);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class UserNormalizationTaskConfiguration extends StreamingConfigurationSe
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
         } catch (Exception e) {
-            logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+            logger.error("There was an exception during UserNormalizationTaskConfigurationWriter init part execution - {} ", e.getMessage());
             System.out.println("There was an exception during execution please see more info at the log ");
             result = false;
 

@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.HDFSWriteTaskConfiguration;
+import fortscale.services.configuration.Impl.HDFSWriteTaskConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
 
     public GDSHDFSWriterConfigurator() {
-        configurationService = new HDFSWriteTaskConfiguration();
+        configurationWriterService = new HDFSWriteTaskConfigurationWriter();
     }
 
     @Override
