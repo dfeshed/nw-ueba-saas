@@ -38,18 +38,18 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		}
 	}
 
+	@Override public void callSynchronizer(long epochTime) {
+		kafkaSynchronize.synchronize(epochTime);
+	}
+
 	public void send(String topic, String messageStr, long epochTime) throws Exception{
 		kafkaWriters.get(topic).send(messageStr, epochTime);
 		messagesCounter++;
 
-		if (messagesCounter == maxSize) {
+		if ((messagesCounter % maxSize) == 0) {
 			logger.info("{} messages sent, waiting for last message time {}", messagesCounter, epochTime);
-			callSynchronize(kafkaSynchronize, epochTime);
+			callSynchronizer(epochTime);
 			messagesCounter = 0;
 		}
-	}
-
-	private void callSynchronize(IKafkaSynchronizer kafkaSynchronize, long latestEpochTimeSent) {
-		kafkaSynchronize.synchronize(latestEpochTimeSent);
 	}
 }

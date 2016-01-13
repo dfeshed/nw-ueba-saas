@@ -1,5 +1,6 @@
 package fortscale.utils.kafka;
 
+import fortscale.utils.ConversionUtils;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 public class MetricsReader {
 
@@ -89,6 +91,31 @@ public class MetricsReader {
             }
         }
 
+    }
+
+    public static long getCounterMetricsSum(List<String> metrics, String zookeeper, int port,  String headerToCheck,
+            String jobToCheck) {
+        long counterMetricsSum = 0;
+
+        CaptorMetricsDecider captor = new CaptorMetricsDecider(metrics);
+        long offset = 0;
+
+        MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
+        do {
+            offset = metricsResults.getOffset();
+            metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, headerToCheck, jobToCheck, captor);
+
+            if(metricsResults.isFound()) {
+                for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
+                    Long counter = ConversionUtils.convertToLong(capturedMetric);
+                    if (counter != null) {
+                        counterMetricsSum += counter;
+                    }
+                }
+            }
+        }while(metricsResults != null && metricsResults.getOffset() > offset);// Looking for the last metric message.
+
+        return counterMetricsSum;
     }
 
     private static MetricsResults testMetrics(SimpleConsumer consumer, long offset,

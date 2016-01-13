@@ -4,6 +4,7 @@ import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.IEntityEventSender;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.kafka.CaptorMetricsDecider;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.kafka.ReachSumMetricsDecider;

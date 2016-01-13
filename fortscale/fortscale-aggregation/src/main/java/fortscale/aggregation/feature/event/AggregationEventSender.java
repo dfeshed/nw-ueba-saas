@@ -52,4 +52,8 @@ public class AggregationEventSender implements IAggregationEventSender {
 			logger.error("Failed to send message to topic {}. Error: {}", topicToSend, ex.getMessage());
 		}
 	}
+
+	@Override public void callSynchronizer(long epochTime) {
+		multiTopicsKafkaSender.callSynchronizer(epochTime);
+	}
 }

@@ -7,4 +7,5 @@ import net.minidev.json.JSONObject;
  */
 public interface IAggregationEventSender {
     public void send(boolean isOfTypeF, JSONObject event);
+    public void callSynchronizer(long epochTime);
 }
