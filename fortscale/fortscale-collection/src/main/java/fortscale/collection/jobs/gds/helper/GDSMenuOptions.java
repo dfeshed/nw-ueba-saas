@@ -14,6 +14,13 @@ public class GDSMenuOptions {
     public static final String MAIN_MENU_RESTORE_DEFAULTS_OPTION = "6";
     public static final String MAIN_MENU_QUIT_OPTION = "7";
 
+	public static final String GDS_SCHEMA_TYPE_BASE = "1";
+	public static final String GDS_SCHEMA_TYPE_ACCESS_EVENT = "2";
+	public static final String GDS_SCHEMA_TYPE_AUTH_EVENT = "3";
+	public static final String GDS_SCHEMA_TYPE_CUSTOMIZED_AUTH_EVENT = "4";
+
+
+
     public static final String ENRICHMENT_MENU_USER_NORMALIZATION_OPTION = "1";
     public static final String ENRICHMENT_IP_RESOLVING_OPTION = "2";
     public static final String ENRICHMENT_COMPUTER_TAGGING_OPTION = "3";
