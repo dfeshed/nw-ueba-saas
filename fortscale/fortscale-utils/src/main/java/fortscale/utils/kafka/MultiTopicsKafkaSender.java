@@ -39,6 +39,9 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 	}
 
 	@Override public void callSynchronizer(long epochTime) {
+		// Update the synchronizer with number of events
+		// This implementation currently works only with ReachSumMetricsDecider
+		// TODO: refctor to work with different deciders  
 		kafkaSynchronize.synchronize(messagesCounter);
 
 	}
