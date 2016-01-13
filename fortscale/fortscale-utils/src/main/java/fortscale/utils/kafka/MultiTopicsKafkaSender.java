@@ -46,7 +46,7 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		kafkaWriters.get(topic).send(messageStr, epochTime);
 		messagesCounter++;
 
-		if ((messagesCounter % maxSize) == 0) {
+		if (messagesCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messagesCounter, epochTime);
 			callSynchronizer(epochTime);
 			messagesCounter = 0;
