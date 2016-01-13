@@ -23,8 +23,8 @@ import static junitparams.JUnitParamsRunner.$;
 @RunWith(JUnitParamsRunner.class)
 public class GwameTest {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/parseWAME.conf";
-	private String confEnrichmentFile = "resources/conf-files/enrichment/readWAME_enrich.conf";
+	private String confFile = "resources/conf-files/parseGWAME.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readGWAME_enrich.conf";
 
 
 
@@ -69,13 +69,33 @@ public class GwameTest {
 				$(
 						"Regular Event",
 						$(
-								"\"2015-12-07T10:27:20.000+0200\",4728,FORTSCALE,amirf,\"FORTSCALE\\avil\",\"Fs-DC-01.Fortscale.dom\",\"CN=Avi Legman.,OU=Fortscale-Users,DC=Fortscale,DC=dom\",\"Wifi-Users\",FORTSCALE,,",
-								"\"2015-10-02T14:52:00.000+0300\",4728,FORTSCALE,amirf,\"S-1-5-21-2944713389-4249601353-3095880226-0\",\"Fs-DC-01.Fortscale.dom\",\"cn=Amir Kerenvpn,OU=Fortscale-Users,DC=Fortscale,DC=dom\",\"VPN-Users\",FORTSCALE,,"
+								"\"2015-12-07T10:27:20.000+0200\",4728,FORTSCALE,amirf,\"FORTSCALE\\avil\",\"Fs-DC-01.Fortscale.dom\",\"CN=Avi Legman.|OU=Fortscale-Users|DC=Fortscale|DC=dom\",\"Wifi-Users\",FORTSCALE,,"
 
 						),
 						$(
-								"2015-12-22 15:04:24,1450796664,Idan.Admin.B,,,,,,,,,,,,,,SUCCESS,,,,,Password Reset,FORSTCALE.DOM,usr1,FORSTCALE.DOM,",
-								(String)null
+								"2015-12-07 08:27:20,1449476840,amirf,Fortscale.dom,avil,Fortscale.dom,Addition To A Security Global Group,SUCCESS,Wifi-Users,FORTSCALE"
+
+						)
+				),
+				$(
+						"target SID as sireal Event",
+						$(
+								"\"2015-10-02T14:52:00.000+0300\",4728,FORTSCALE,amirf,\"S-1-5-21-2944713389-4249601353-3095880226-0\",\"Fs-DC-01.Fortscale.dom\",\"cn=Amir Kerenvpn|OU=Fortscale-Users|DC=Fortscale|DC=dom\",\"VPN-Users\",FORTSCALE,,"
+
+						),
+						$(
+								"2015-10-02 11:52:00,1443786720,amirf,Fortscale.dom,S-1-5-21-2944713389-4249601353-3095880226-0,Fortscale.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,FORTSCALE"
+
+								)
+				),
+				$(
+						"Group info from the group account fields ",
+						$(
+								"\"2015-04-01T17:23:34.000+0300\",4756,FORTSCALE,victorb,\"FORTSCALE\\manager\",\"Fs-DC-01.Fortscale.dom\",\"CN=manager|CN=Users|DC=Fortscale|DC=dom\",,,\"Recipient Management\",FORTSCALE"
+
+						),
+						$(
+								"2015-04-01 14:23:34,1427898214,victorb,Fortscale.dom,manager,Fortscale.dom,Addition To A Security Universal Group,SUCCESS,Recipient Management,FORTSCALE"
 
 						)
 				)
