@@ -5,5 +5,5 @@ package fortscale.utils.kafka;
  * Created by tomerd on 31/12/2015.
  */
 public interface IKafkaSynchronizer {
-	boolean synchronize(long latestEpochTimeSent);
+	boolean synchronize(long syncParam);
 }

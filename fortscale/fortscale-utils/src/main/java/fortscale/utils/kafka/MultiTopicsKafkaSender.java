@@ -39,7 +39,8 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 	}
 
 	@Override public void callSynchronizer(long epochTime) {
-		kafkaSynchronize.synchronize(epochTime);
+		kafkaSynchronize.synchronize(messagesCounter);
+
 	}
 
 	public void send(String topic, String messageStr, long epochTime) throws Exception{

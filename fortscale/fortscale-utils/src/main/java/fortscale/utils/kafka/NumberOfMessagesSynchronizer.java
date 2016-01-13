@@ -42,10 +42,11 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 
 		long initializeMetricsSize = MetricsReader.getCounterMetricsSum(metrics, zookeeperConnection.split(":")[0],
 				Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor);
-		this.decider = new ReachSumMetricsDecider(metrics, initializeMetricsSize + batchSize);
+		this.decider = new ReachSumMetricsDecider(metrics, initializeMetricsSize);
 	}
 
-	@Override public boolean synchronize(long latestEpochTimeSent) {
+	@Override public boolean synchronize(long numberOfSentEvents) {
+		decider.updateParams(numberOfSentEvents);
 		boolean result = MetricsReader.waitForMetrics(zookeeperConnection.split(":")[0],
 				Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
 				decider, timeToWaitInMilliseconds, retries);
@@ -54,7 +55,6 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 			return false;
 		}
 		logger.info("last message in batch processed, moving to next batch");
-		decider.updateParams(batchSize);
 		return true;
 	}
 }
