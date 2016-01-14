@@ -107,7 +107,7 @@ public abstract class AbstractModelTest {
 		}
 	}
 
-	private static class ScenarioStats {
+	private static class ScenarioStats implements Comparable<ScenarioStats> {
 		private Map<String, FeatureStats> featureToFeatureStats;
 		private List<ScoredFeature> featureValueAndScores;
 		private int numOfProcessedEvents;
@@ -145,6 +145,11 @@ public abstract class AbstractModelTest {
 					.sorted((featureStats1, featureStats2) -> (int) Math.signum(featureStats1.firstEventTime - featureStats2.firstEventTime))
 					.forEach(printFeatureStats);
 			return sb.toString();
+		}
+
+		@Override
+		public int compareTo(ScenarioStats o) {
+			return numOfProcessedEvents - o.numOfProcessedEvents;
 		}
 	}
 
@@ -314,11 +319,11 @@ public abstract class AbstractModelTest {
 
 	private static class UsersStatistics {
 		public int numOfRegularUsers;
-		public Map<String, Integer> anomalousUserScenarioToNumOfEvents;
+		public Map<String, ScenarioStats> anomalousUserScenarioToScenarioStats;
 
 		public UsersStatistics() {
 			this.numOfRegularUsers = 0;
-			this.anomalousUserScenarioToNumOfEvents = new HashMap<>();
+			this.anomalousUserScenarioToScenarioStats = new HashMap<>();
 		}
 
 		public int getNumOfRegularUsers() {
@@ -326,7 +331,7 @@ public abstract class AbstractModelTest {
 		}
 
 		public int getNumOfAnomalousUsers() {
-			return anomalousUserScenarioToNumOfEvents.size();
+			return anomalousUserScenarioToScenarioStats.size();
 		}
 	}
 
@@ -408,7 +413,7 @@ public abstract class AbstractModelTest {
 				logNumOfEventsToUsersStatistics.put(logNumOfEvents, usersStatistics);
 			}
 			if (!scenarioStats.featureValueAndScores.isEmpty()) {
-				usersStatistics.anomalousUserScenarioToNumOfEvents.put(scenarioInfo.filePath, scenarioInfo.numOfEvents);
+				usersStatistics.anomalousUserScenarioToScenarioStats.put(scenarioInfo.filePath, scenarioStats);
 			} else {
 				usersStatistics.numOfRegularUsers++;
 			}
@@ -450,15 +455,15 @@ public abstract class AbstractModelTest {
 					100 * usersStatistics.getNumOfAnomalousUsers() / (usersStatistics.getNumOfRegularUsers() + usersStatistics.getNumOfAnomalousUsers()),
 					usersStatistics.getNumOfAnomalousUsers(),
 					usersStatistics.numOfRegularUsers + usersStatistics.getNumOfAnomalousUsers()));
-			for (Map.Entry<String, Integer> e : sortMapByValues(usersStatistics.anomalousUserScenarioToNumOfEvents)) {
-				println(String.format("\t%-6d: %s", e.getValue(), e.getKey()));
+			for (Map.Entry<String, ScenarioStats> e : sortMapByValues(usersStatistics.anomalousUserScenarioToScenarioStats)) {
+				println(String.format("\t%-6d: %s", e.getValue().numOfProcessedEvents, e.getKey()));
 			}
 		}
 		println(String.format("\ntotal %d / %d anomalous users", getTotalAnomalousUsers(logNumOfEventsToUsersStatistics), scenariosInfo.size()));
 	}
 
-	private static <T> List<Map.Entry<T, Integer>> sortMapByValues(Map<T, Integer> m) {
-		List<Map.Entry<T, Integer>> sortedList = new ArrayList<>(m.entrySet());
+	private static <L, R extends Comparable> List<Map.Entry<L, R>> sortMapByValues(Map<L, R> m) {
+		List<Map.Entry<L, R>> sortedList = new ArrayList<>(m.entrySet());
 		Collections.sort(sortedList, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
 		return sortedList;
 	}
