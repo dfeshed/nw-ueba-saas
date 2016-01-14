@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.StreamingConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
@@ -9,16 +9,16 @@ import java.io.FileWriter;
 import java.util.List;
 
 /**
- * Implementation of IP Resolving task configuration
+ * Implementation of IP Resolving task configuration writer
  *
  * Created by idanp on 12/21/2015.
  */
-public class IpResolvingTaskConfiguration extends StreamingConfigurationService {
+public class IpResolvingTaskConfigurationWriter extends StreamingConfigurationWriterService {
 
-    public IpResolvingTaskConfiguration ()
+    public IpResolvingTaskConfigurationWriter()
     {
 
-        logger = LoggerFactory.getLogger(IpResolvingTaskConfiguration.class);
+        logger = LoggerFactory.getLogger(IpResolvingTaskConfigurationWriter.class);
     }
 
 
@@ -32,7 +32,7 @@ public class IpResolvingTaskConfiguration extends StreamingConfigurationService 
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
         } catch (Exception e) {
-            logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+            logger.error("There was an exception during UserNormalizationTaskConfigurationWriter init part execution - {} ", e.getMessage());
             System.out.println("There was an exception during execution please see more info at the log ");
             result = false;
 

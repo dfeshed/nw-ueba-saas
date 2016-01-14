@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input.populators;
 
-import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
@@ -123,7 +122,6 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     }
 
     private void populateDataSourceTypeFields(Map<String, ConfigurationParam> paramsMap, String dataSourceName, AdditionalFieldsWrapper additionalFieldsWrapper, String dataSourceType) throws Exception {
-        String inputResult;
         String scoreFieldsCSV = null;
 
         switch(dataSourceType)
@@ -151,11 +149,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                 paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag", gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-
                 paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-             ;
                 paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,false, EMPTY_STR));
@@ -171,30 +167,24 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                 scoreFieldsCSV = SCORE_AUTH_SCHEMA_FIELDS_AS_CSV;
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
 
                 paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
                 break;
             }
@@ -208,29 +198,23 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                 scoreFieldsCSV = SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV;
 
                 System.out.println(String.format("Does %s source ip should be resolved (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceIpResolvingFlag",new ConfigurationParam("ResolvingFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source ip should be geo located (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s source machine name should be normalized (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("sourceMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be resolved (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetIpResolvingFlag",new ConfigurationParam("ResolvingFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target ip should be geo located (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetIpGeoLocationFlag",new ConfigurationParam("GeoLocationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
 
                 System.out.println(String.format("Does %s target machine name should be normalized (y/n)?",dataSourceName));
-                inputResult = gdsInputHandler.getInput();
                 paramsMap.put("targetMachineNormalizationFlag",new ConfigurationParam("MachineNormalizationFlag",gdsInputHandler.getYesNoInput(), EMPTY_STR));
                 break;
             }
@@ -250,33 +234,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         String dataSourceName = gdsInputHandler.getInput();
 
         printDataSourceTypeOptions(dataSourceName);
-		String chose = gdsInputHandler.getInput().trim();
-        String dataSourceType = "";
-
-		switch (chose)
-		{
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_BASE:
-			{
-				dataSourceType = "base";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_ACCESS_EVENT:
-			{
-				dataSourceType = "access_event";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_AUTH_EVENT:
-			{
-				dataSourceType = "auth_event";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_CUSTOMIZED_AUTH_EVENT:
-			{
-				dataSourceType = "customized_auth_event";
-				break;
-			}
-
-		}
+        String dataSourceType = gdsInputHandler.getInput();
 
         paramsMap.put(DATA_SOURCE_NAME_PARAM, new ConfigurationParam(DATA_SOURCE_NAME_PARAM, false, dataSourceName));
         paramsMap.put(DATA_SOURCE_TYPE_PARAM, new ConfigurationParam(DATA_SOURCE_TYPE_PARAM, false, dataSourceType.toLowerCase()));
@@ -321,9 +279,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                 additionalFieldsCSV = additionalFieldsCSV + additionalFieldName + SPACE + additionalFieldDataType + GDSSchemaDefinitionCLIPopulator.COMMA;
 
                 System.out.println(String.format("Is the field %s should be scored (y/n)? ", additionalFieldName));
-                boolean scoreFlag = gdsInputHandler.getYesNoInput();
-                if (scoreFlag) {
-
+                if (gdsInputHandler.getYesNoInput()) {
                     //get the additional score field name
                     System.out.println("Score field name:");
                     String additionalScoreFieldName = gdsInputHandler.getInput();
@@ -339,13 +295,12 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                     additionalScoreFieldsCSV = additionalScoreFieldsCSV + additionalScoreFieldName + SPACE + additionalScoreFieldDataType + COMMA;
                     additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV + additionalScoreFieldName + SPACE + additionalFieldName + GDSSchemaDefinitionCLIPopulator.COMMA;
                 }
-
             }
 
             //remove the last comma from the CSVs
-            additionalScoreFieldsCSV = additionalScoreFieldsCSV.substring(0, additionalScoreFieldsCSV.length()>0 ? additionalScoreFieldsCSV.length()  - 1 : 0);
-            additionalFieldsCSV = additionalFieldsCSV.substring(0, additionalFieldsCSV.length()>0 ? additionalFieldsCSV.length() - 1 : 0);
-            additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV.substring(0, additionalFiledToScoreFieldMapCSV.length()>0 ? additionalFiledToScoreFieldMapCSV.length() - 1: 0);
+            additionalScoreFieldsCSV = additionalScoreFieldsCSV.substring(0, additionalScoreFieldsCSV.length() - 1);
+            additionalFieldsCSV = additionalFieldsCSV.substring(0, additionalFieldsCSV.length() - 1);
+            additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV.substring(0, additionalFiledToScoreFieldMapCSV.length() - 1);
 
             return new AdditionalFieldsWrapper(additionalFieldsCSV, additionalScoreFieldsCSV, additionalFiledToScoreFieldMapCSV);
         }
@@ -355,12 +310,12 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     }
 
     private static void printDataSourceTypeOptions(String dataSourceName) {
-        System.out.println(String.format("Please chose the %s data source type : ", dataSourceName));
-        System.out.println("[* - meaning mandatory field ? -meaning optional field] ");
-        System.out.println("1.base                    - user* , time*  ");
-        System.out.println("2.access_event            - user* , time*, source? (resolving,geo location)?  ");
-        System.out.println("3.auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
-        System.out.println("4.customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
+        System.out.println(String.format("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ", dataSourceName));
+        System.out.println("* - meaning mandatory field ? -meaning optional field: ");
+        System.out.println("         base                    - user* , time*  ");
+        System.out.println("         access_event            - user* , time*, source? (resolving,geo location)?  ");
+        System.out.println("         auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
+        System.out.println("         customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
     }
 
     private static class AdditionalFieldsWrapper {

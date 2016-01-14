@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
+import fortscale.services.configuration.Impl.UserMongoUpdateConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
     private static final String OUTPUT_TOPIC_ENTRY_PARAM = "";
 
     public GDSUserMongoUpdateConfigurator() {
-        configurationService = new UserMongoUpdateConfiguration();
+        configurationWriterService = new UserMongoUpdateConfigurationWriter();
     }
 
     @Override

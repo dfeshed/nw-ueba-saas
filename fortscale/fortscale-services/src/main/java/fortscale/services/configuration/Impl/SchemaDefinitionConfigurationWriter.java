@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationService;
+import fortscale.services.configuration.ConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Schema definition configuration implementation
+ * Schema definition configuration writer implementation
  *
  * Created by idanp on 12/20/2015.
  */
-public class SchemaDefinitionConfiguration extends ConfigurationService {
+public class SchemaDefinitionConfigurationWriter extends ConfigurationWriterService {
 
     private static final String COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/fortscale-collection-overriding.properties";
     private static final String STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH = "/fortscale/streaming/config/fortscale-overriding-streaming.properties";
@@ -23,9 +23,9 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 	private File streamingOverridingFile;
 	private FileWriter streamingOverridingFileWriter;
 
-    public SchemaDefinitionConfiguration()
+    public SchemaDefinitionConfigurationWriter()
 	{
-		logger = LoggerFactory.getLogger(SchemaDefinitionConfiguration.class);
+		logger = LoggerFactory.getLogger(SchemaDefinitionConfigurationWriter.class);
 		this.fileToConfigurePath = USER_HOME_DIR + COLLECTION_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
 		this.streamingOverridingFilePath = USER_HOME_DIR + STREAMING_OVERRIDING_CONFIG_FILE_RELATIVE_PATH;
 	}
@@ -40,7 +40,7 @@ public class SchemaDefinitionConfiguration extends ConfigurationService {
 			this.streamingOverridingFileWriter = new FileWriter(this.streamingOverridingFile, true);
 			result = true;
 		} catch (Exception e) {
-			logger.error("There was an exception during SchemaDefinitionConfiguration init part execution - {} ", e.getMessage());
+			logger.error("There was an exception during SchemaDefinitionConfigurationWriter init part execution - {} ", e.getMessage());
 			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
 		}

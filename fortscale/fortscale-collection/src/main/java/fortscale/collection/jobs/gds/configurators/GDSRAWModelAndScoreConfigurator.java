@@ -3,17 +3,16 @@ package fortscale.collection.jobs.gds.configurators;
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.RawModelScoreConfiguration;
+import fortscale.services.configuration.Impl.RawModelScoreConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
 import fortscale.utils.ConversionUtils;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Created by idanp on 1/11/2016.
  */
-public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
+public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 	private static final String LAST_STATE_PARAM = "lastState";
 	private static final String TASK_NAME_PARAM = "taskName";
@@ -26,8 +25,8 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 	private static final String ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP = "additionalFiledToScoreFieldMapCSV";
 
 
-	public GDSRAWModelAndScoreConfigurator() {
-		configurationService = new RawModelScoreConfiguration();
+	public GDSRawModelAndScoreConfigurator() {
+		configurationWriterService = new RawModelScoreConfigurationWriter();
 	}
 
 	GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
@@ -46,21 +45,14 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		ConfigurationParam additionalFiledToScoreFieldMapCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP);
 
 
-
-		Map<String,String> scoresFieldMap = new LinkedHashMap<String,String>();
-		Map<String,String> additionalScoreFeldsMap = new LinkedHashMap<String,String>();
-		Map<String,String> additionalFieldsMap = new LinkedHashMap<String,String>();
-		Map<String,String> additionalFiledToScoreFieldMap = new LinkedHashMap<String,String>();
-
-
 		//Fields map (basic and additional)
-		ConversionUtils.splitCSVtoMap(scoreFeldsCSV.getParamValue(), scoresFieldMap, ",");
-		ConversionUtils.splitCSVtoMap(additionalScoreFieldsCSV.getParamValue(), additionalScoreFeldsMap, ",");
-		ConversionUtils.splitCSVtoMap(additionalFieldsCSV.getParamValue(), additionalFieldsMap, ",");
-		ConversionUtils.splitCSVtoMap(additionalFiledToScoreFieldMapCSV.getParamValue(), additionalFiledToScoreFieldMap, ",");
+		Map<String,String> scoresFieldMap = ConversionUtils.convertFieldsCSVToMap(scoreFeldsCSV.getParamValue());
+		Map<String,String> additionalScoreFieldsMap = ConversionUtils.convertFieldsCSVToMap(additionalScoreFieldsCSV.getParamValue());
+		Map<String,String> additionalFieldsMap = ConversionUtils.convertFieldsCSVToMap(additionalFieldsCSV.getParamValue());
+		Map<String,String> additionalFiledToScoreFieldMap = ConversionUtils.convertFieldsCSVToMap(additionalFiledToScoreFieldMapCSV.getParamValue());
 
-		Boolean sourceMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"sourceMachienFlag").getParamFlag();
-		Boolean destMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"destMachienFlag").getParamFlag();
+		Boolean sourceMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"sourceMachineFlag").getParamFlag();
+		Boolean destMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"destMachineFlag").getParamFlag();
 		Boolean countryToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"countryToScoreFlag").getParamFlag();
 		Boolean actionTypeToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"actionTypeToScoreFlag").getParamFlag();
 		Boolean dateTimeToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"dateTimeToScoreFlag").getParamFlag();
@@ -85,13 +77,8 @@ public class GDSRAWModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 		gdsrawDataModelAndScoreState.setScoresFieldMap(scoresFieldMap);
 		gdsrawDataModelAndScoreState.setAdditionalFieldsMap(additionalFieldsMap);
-		gdsrawDataModelAndScoreState.setAdditionalScoreFeldsMap(additionalScoreFeldsMap);
+		gdsrawDataModelAndScoreState.setAdditionalScoreFeldsMap(additionalScoreFieldsMap);
 		gdsrawDataModelAndScoreState.setAdditionalFiledToScoreFieldMap(additionalFiledToScoreFieldMap);
-
-
-
-
-
 	}
 
 	@Override

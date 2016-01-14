@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * Created by idanp on 12/21/2015.
  */
-public abstract class StreamingConfigurationService extends ConfigurationService {
+public abstract class StreamingConfigurationWriterService extends ConfigurationWriterService {
 
 	protected static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
 
