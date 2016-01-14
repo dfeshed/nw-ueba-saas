@@ -1,10 +1,7 @@
 package fortscale.ml.model.retriever;
 
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimestampUtils;
@@ -39,6 +36,21 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
+		return doRetrieve(contextId, endTime, null);
+	}
+
+	@Override
+	public Object retrieve(String contextId, Date endTime, Feature feature) {
+		return doRetrieve(contextId, endTime, feature.getValue().toString());
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		Assert.notEmpty(context);
+		return FeatureBucketUtils.buildContextId(context);
+	}
+
+	private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
@@ -52,6 +64,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
+				if (featureValue != null) histogram = doFilter(histogram, featureValue);
 
 				for (IDataRetrieverFunction function : functions) {
 					histogram = (GenericHistogram)function.execute(histogram, dataTime, endTime);
@@ -62,5 +75,12 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
+		Double value = original.get(featureValue);
+		GenericHistogram filtered = new GenericHistogram();
+		if (value != null) filtered.add(featureValue, value);
+		return filtered;
 	}
 }

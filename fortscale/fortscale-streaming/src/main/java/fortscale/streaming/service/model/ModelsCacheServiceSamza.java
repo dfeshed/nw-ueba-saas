@@ -2,51 +2,56 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.cache.ModelCacheInfo;
+import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.Assert;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-
-@Configurable(preConstruction=true)
+@Configurable(preConstruction = true)
 public class ModelsCacheServiceSamza implements ModelsCacheService {
-    private static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
+	@Autowired
+	private ModelConfService modelConfService;
 
-    private KeyValueStore<String, List<ModelCacheInfo>> modelCacheStore;
+	// A mapping from a model conf name to its model cache manager
+	private Map<String, ModelCacheManager> modelCacheManagers;
 
+	public ModelsCacheServiceSamza(ExtendedSamzaTaskContext context) {
+		modelCacheManagers = new HashMap<>();
 
-    public ModelsCacheServiceSamza(ExtendedSamzaTaskContext context) {
-        Assert.notNull(context);
-        Config config = context.getConfig();
-        String storeName = getConfigString(config, STORE_NAME_PROPERTY);
-        modelCacheStore = (KeyValueStore<String, List<ModelCacheInfo>>)context.getStore(storeName);
-        Assert.notNull(modelCacheStore);
-        //TODO
-    }
+		for (ModelConf modelConf : modelConfService.getModelConfs()) {
+			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
+					new DiscreteModelCacheManagerSamza(context, modelConf) :
+					new ModelCacheManagerSamza(context, modelConf);
+			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
+		}
+	}
 
-    @Override
-    public Model getModel(Feature feature, String modelName, String context, long eventEpochTime) {
-        return null; //TODO
-    }
+	@Override
+	public Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime) {
+		if (modelCacheManagers.containsKey(modelConfName)) {
+			return modelCacheManagers.get(modelConfName).getModel(feature, context, eventEpochtime);
+		} else {
+			return null;
+		}
+	}
 
-    @Override
-    public void save(String modelName, String context, List<ModelCacheInfo> modelCacheInfoList) {
-        //TODO
-    }
+	@Override
+	public void window() {
+		// TODO: Clean models cache info from each manager
+	}
 
-    @Override
-    public void window() {
-        //TODO
-    }
+	@Override
+	public void close() {}
 
-    @Override
-    public void close() {
-        //TODO
-    }
+	private static boolean isDiscreteModelConf(ModelConf modelConf) {
+		String factoryName = modelConf.getDataRetrieverConf().getFactoryName();
+		return factoryName.equals(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
+	}
 }

@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
+import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.*;
 import fortscale.utils.logging.Logger;
@@ -51,6 +52,19 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	@Override
+	public Object retrieve(String contextId, Date endTime, Feature feature) {
+		throw new UnsupportedOperationException(String.format(
+				"%s does not support retrieval of a single feature",
+				getClass().getSimpleName()));
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		// TODO: Get from EntityEventBuilder
+		return null;
 	}
 
 	private JokerFunction getJokerFunction() {

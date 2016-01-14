@@ -1,9 +1,11 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
+import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -11,6 +13,7 @@ import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
@@ -44,5 +47,18 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	@Override
+	public Object retrieve(String contextId, Date endTime, Feature feature) {
+		throw new UnsupportedOperationException(String.format(
+				"%s does not support retrieval of a single feature",
+				getClass().getSimpleName()));
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		Assert.notEmpty(context);
+		return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
 	}
 }
