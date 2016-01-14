@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.IpResolvingTaskConfiguration;
+import fortscale.services.configuration.Impl.IpResolvingTaskConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSIPResolvingConfigurator() {
-        configurationService = new IpResolvingTaskConfiguration();
+        configurationWriterService = new IpResolvingTaskConfigurationWriter();
     }
 
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {

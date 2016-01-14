@@ -7,7 +7,6 @@ import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState
 import fortscale.utils.ConversionUtils;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -36,19 +35,15 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
 		HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
 		GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
-		String stdinResult;
 
 		configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
-		String dataSourceName = currentConfigurationState.getDataSourceName();
-
-		String scoreFeldsCSV = currentConfigurationState.getSchemaDefinitionState().getScoreFields();
+		String scoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getScoreFields();
 		String additionalScoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalScoreFieldsCSV();
 		String additionalFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFieldsCSV();
 		String additionalFiledToScoreFieldMapCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFiledToScoreFieldMapCSV();
 
-
-		paramsMap.put(SCORE_FIELDS_CSV_PARAM, new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false,scoreFeldsCSV));
+		paramsMap.put(SCORE_FIELDS_CSV_PARAM, new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false,scoreFieldsCSV));
 		paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalScoreFieldsCSV));
 		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM, new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM, false, additionalFieldsCSV));
 		paramsMap.put(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,new ConfigurationParam(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,false,additionalFiledToScoreFieldMapCSV));
@@ -59,18 +54,16 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		paramsMap.put(DATA_SOURCE_KEY,new ConfigurationParam(DATA_SOURCE_KEY,false,"fortscale.events-prevalence-stream-managers.data-sources"));
 
 
-		Map<String,String> scoresFieldMap = new LinkedHashMap<>();
-		ConversionUtils.splitCSVtoMap(scoreFeldsCSV, scoresFieldMap, ",");
+		Map<String,String> scoresFieldMap = ConversionUtils.convertFieldsCSVToMap(scoreFieldsCSV);
 
 		//For each potential basic score field ask if we want to populate it
 		for (Map.Entry<String,String> entry : scoresFieldMap.entrySet())
 		{
 			String scoreField = entry.getKey();
 
-			System.out.println(String.format("Does %s field should be populated (y/n)?", scoreField));
+			System.out.println(String.format("Does %s field should be scored (y/n)?", scoreField));
 
-			stdinResult = gdsInputHandler.getInput();
-			if (stdinResult.equals("y") || stdinResult.equals("yes")) {
+			if (gdsInputHandler.getYesNoInput()) {
 				paramsMap.put(scoreField, new ConfigurationParam(scoreField, true, scoreField));
 			}
 		}
@@ -78,10 +71,10 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		ConfigurationParam result;
 
 		result = gdsInputHandler.getParamConfiguration(paramsMap,"source_machine_score");
-		Boolean sourceMachienFlag = result != null ? result.getParamFlag() : false;
+		Boolean sourceMachineFlag = result != null ? result.getParamFlag() : false;
 
 		result = gdsInputHandler.getParamConfiguration(paramsMap, "destination_machine_score");
-		Boolean destMachienFlag = result != null ? result.getParamFlag() : false;
+		Boolean destMachineFlag = result != null ? result.getParamFlag() : false;
 
 		result = gdsInputHandler.getParamConfiguration(paramsMap, "country_score");
 		Boolean countryToScoreFlag = result != null ? result.getParamFlag() : false;
@@ -92,18 +85,12 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		result = gdsInputHandler.getParamConfiguration(paramsMap, "date_time_score");
 		Boolean dateTimeToScoreFlag = result != null ? result.getParamFlag() : false;
 
-		paramsMap.put("sourceMachienFlag",new ConfigurationParam("sourceMachienFlag",sourceMachienFlag,""));
-		paramsMap.put("destMachienFlag",new ConfigurationParam("destMachienFlag",destMachienFlag,""));
+		paramsMap.put("sourceMachineFlag",new ConfigurationParam("sourceMachineFlag",sourceMachineFlag,""));
+		paramsMap.put("destMachineFlag",new ConfigurationParam("destMachineFlag",destMachineFlag,""));
 		paramsMap.put("countryToScoreFlag",new ConfigurationParam("countryToScoreFlag",countryToScoreFlag,""));
 		paramsMap.put("actionTypeToScoreFlag",new ConfigurationParam("actionTypeToScoreFlag",actionTypeToScoreFlag,""));
 		paramsMap.put("dateTimeToScoreFlag",new ConfigurationParam("dateTimeToScoreFlag",dateTimeToScoreFlag,""));
 
-		System.out.println(String.format("End configure the raw data model and score task for  %s", dataSourceName));
-
 		return configurationsMap;
 	}
-
-
-
-
 }
