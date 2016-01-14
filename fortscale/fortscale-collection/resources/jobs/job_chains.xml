@@ -22,6 +22,36 @@
 	</chain>
     <chain>
         <first>
+            <name>Fetch</name>
+            <group>WAME</group>
+        </first>
+        <second>
+            <name>ETL</name>
+            <group>WAME</group>
+        </second>
+    </chain>
+    <chain>
+        <first>
+            <name>Fetch</name>
+            <group>GWAME</group>
+        </first>
+        <second>
+            <name>ETL</name>
+            <group>GWAME</group>
+        </second>
+    </chain>
+    <chain>
+        <first>
+            <name>Fetch</name>
+            <group>NTLM</group>
+        </first>
+        <second>
+            <name>ETL</name>
+            <group>NTLM</group>
+        </second>
+    </chain>
+    <chain>
+        <first>
             <name>Fetch4624</name>
             <group>SecurityEvents</group>
         </first>
