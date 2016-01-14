@@ -22,7 +22,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Generic Data Source configuration creator job implementation
+ * This is the main entry point of the GDS configuration job.
+ * The configuration job receives GDS (Generic Data Source) requirements and generates the appropriate configurations
+ * in the various config files.
+ * The job currently supports only command line interface.
  *
  * Created by idanp on 12/1/2015.
  */

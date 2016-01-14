@@ -4,6 +4,10 @@ import fortscale.services.configuration.EntityType;
 
 /**
  * Generic data source composite configuration state
+ * A single 'state' represent a current snapshot of the process, whether a single configuration file has been already configured
+ * or not, and if it was configured - what are the values.
+ * A composite state is a container of all the single states.
+ * Using the composite state, the GDS populator generates the correlated configurationParams per job.
  *
  * @author gils
  * 30/12/2015
