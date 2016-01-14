@@ -42,7 +42,6 @@ public class MetricsReader {
         try {
             consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
             long offset = 0, lastOffset = -1, currentTry = 0;
-            int partition = 0;
 
             while (currentTry < checkRetries) {
                 MetricsResults metricsResults = testMetrics(consumer, offset, headerToCheck, jobToCheck, decider);
@@ -132,7 +131,8 @@ public class MetricsReader {
                 .build();
         FetchResponse messages = consumer.fetch(fetchRequest);
         if (messages.hasError()) {
-            String errorMsg = String.format("failed to read from metrics topic - %s", messages.errorCode(METRICS_TOPIC, partition));
+            String errorMsg = String.format("failed to read from metrics topic - %s", messages.errorCode(METRICS_TOPIC,
+                    partition));
             logger.error(errorMsg);
             return new MetricsResults(false, offset,errorMsg);
         }
