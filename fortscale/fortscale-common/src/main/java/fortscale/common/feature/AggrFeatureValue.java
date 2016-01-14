@@ -1,13 +1,10 @@
 package fortscale.common.feature;
 
-import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.aggregation.feature.FeatureValue;
 import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 

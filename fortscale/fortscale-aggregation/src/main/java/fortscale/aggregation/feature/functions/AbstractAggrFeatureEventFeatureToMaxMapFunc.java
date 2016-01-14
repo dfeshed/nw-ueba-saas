@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;

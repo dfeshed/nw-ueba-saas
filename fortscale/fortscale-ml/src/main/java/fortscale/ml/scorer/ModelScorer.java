@@ -19,7 +19,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ModelScorer extends AbstractScorer{
-
+/*
 	public static final boolean DEFAULT_USE_CERTAINTY_TO_CALCULATE_SCORE = false;
 	
 	protected String modelName;
@@ -113,5 +113,15 @@ public class ModelScorer extends AbstractScorer{
 			certainty = ((double)(numOfSamples - minNumOfSamplesToInfluence + 1)) / (enoughNumOfSamplesToInfluence - minNumOfSamplesToInfluence + 1);
 		}
 		return certainty;
-	}	
+	}
+	*/
+
+	public ModelScorer(String name) {
+		super(name);
+	}
+
+	@Override
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+		return null;
+	}
 }
