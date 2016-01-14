@@ -1,14 +1,11 @@
 package fortscale.utils.kafka;
 
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -25,7 +22,6 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 	private String jobToMonitor;
 	int timeToWaitInMilliseconds;
 	int retries;
-	int batchSize;
 
 	public NumberOfMessagesSynchronizer() {
 		// Default constructor
@@ -57,4 +53,5 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 		logger.info("last message in batch processed, moving to next batch");
 		return true;
 	}
+
 }
