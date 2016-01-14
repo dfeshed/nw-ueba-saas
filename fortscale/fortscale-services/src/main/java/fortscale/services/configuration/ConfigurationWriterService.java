@@ -11,13 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Abstract implementation for Generic configuration services
+ * Abstract implementation for Generic configuration writer services
  *
  * Created by idanp on 12/20/2015.
  */
-public abstract class ConfigurationService {
+public abstract class ConfigurationWriterService {
 
-	protected static Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
+	protected static Logger logger = LoggerFactory.getLogger(ConfigurationWriterService.class);
 
 	protected static final String USER_HOME_DIR = System.getProperty("user.home");
 

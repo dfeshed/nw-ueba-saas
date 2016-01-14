@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.StreamingConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
@@ -11,14 +11,15 @@ import java.io.FileWriter;
 import java.util.Map;
 
 /**
+ * Implementation of Raw model and Score configuration writer
  * Created by idanp on 12/29/2015.
  */
-public class RawModelScoreConfiguration extends StreamingConfigurationService {
+public class RawModelScoreConfigurationWriter extends StreamingConfigurationWriterService {
 
-	public RawModelScoreConfiguration ()
+	public RawModelScoreConfigurationWriter()
 	{
 
-		logger = LoggerFactory.getLogger(RawModelScoreConfiguration.class);
+		logger = LoggerFactory.getLogger(RawModelScoreConfigurationWriter.class);
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class RawModelScoreConfiguration extends StreamingConfigurationService {
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;
 		} catch (Exception e) {
-			logger.error("There was an exception during RawModelScoreConfiguration init part execution - {} ", e.getMessage());
+			logger.error("There was an exception during RawModelScoreConfigurationWriter init part execution - {} ", e.getMessage());
 			System.out.println(String.format("There was an exception during execution please see more info at the log "));
 			result = false;
 

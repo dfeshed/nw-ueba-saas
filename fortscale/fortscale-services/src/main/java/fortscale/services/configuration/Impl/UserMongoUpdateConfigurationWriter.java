@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.StreamingConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
@@ -8,16 +8,16 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
- * Implementation of User Mongo Update task configuration
+ * Implementation of User Mongo Update task configuration writer
  *
  * Created by idanp on 12/21/2015.
  */
-public class UserMongoUpdateConfiguration  extends StreamingConfigurationService {
+public class UserMongoUpdateConfigurationWriter extends StreamingConfigurationWriterService {
 
-	public UserMongoUpdateConfiguration ()
+	public UserMongoUpdateConfigurationWriter()
 	{
 
-		logger = LoggerFactory.getLogger(UserMongoUpdateConfiguration.class);
+		logger = LoggerFactory.getLogger(UserMongoUpdateConfigurationWriter.class);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class UserMongoUpdateConfiguration  extends StreamingConfigurationService
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;
 		} catch (Exception e) {
-			logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+			logger.error("There was an exception during UserNormalizationTaskConfigurationWriter init part execution - {} ", e.getMessage());
 			System.out.println("There was an exception during execution please see more info at the log ");
 			result = false;
 		}
