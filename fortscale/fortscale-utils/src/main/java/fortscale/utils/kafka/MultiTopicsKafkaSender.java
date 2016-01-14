@@ -2,7 +2,9 @@ package fortscale.utils.kafka;
 
 import fortscale.utils.logging.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -17,7 +19,8 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 	private String partitionKey;
 	private IKafkaSynchronizer kafkaSynchronize;
 
-	public MultiTopicsKafkaSender(IKafkaSynchronizer kafkaSynchronize, int maxSize, List<String> topics, String partitionKey) {
+	public MultiTopicsKafkaSender(IKafkaSynchronizer kafkaSynchronize, int maxSize, List<String> topics,
+			String partitionKey) {
 		this.messagesCounter = 0;
 		this.maxSize = maxSize;
 		this.partitionKey = partitionKey;
@@ -57,4 +60,5 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 			messagesCounter = 0;
 		}
 	}
+
 }

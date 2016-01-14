@@ -1,15 +1,13 @@
 package fortscale.collection.jobs;
 
-import fortscale.utils.kafka.EqualityMetricsDecider;
-import fortscale.utils.kafka.IKafkaSynchronizer;
-import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.kafka.MetricsReader;
+import fortscale.utils.kafka.IKafkaSynchronizer;
+import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -66,7 +64,6 @@ public abstract class ImpalaToKafka extends FortscaleJob implements IKafkaSynchr
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
         jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
-        EqualityMetricsDecider decider = new EqualityMetricsDecider();
         if (map.containsKey(JOB_MONITOR_PARAMETER)) {
             metricsKafkaSynchronizer = new MetricsKafkaSynchronizer(
                     jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER), jobToMonitor,

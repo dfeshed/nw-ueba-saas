@@ -1,7 +1,7 @@
 package fortscale.collection.jobs;
 
-import fortscale.utils.kafka.KafkaSender;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.kafka.KafkaSender;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -11,7 +11,9 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
 

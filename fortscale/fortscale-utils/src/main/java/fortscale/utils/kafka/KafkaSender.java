@@ -2,9 +2,6 @@ package fortscale.utils.kafka;
 
 import fortscale.utils.logging.Logger;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 /**
  * Created by tomerd on 31/12/2015.
  */
@@ -52,11 +49,12 @@ public class KafkaSender implements IKafkaSender{
 		}
 
 		if (messageCounter == maxSize) {
-			logger.info("{} messages sent, waiting for last message time {}", messageCounter, epochTime);
 			if (kafkaSynchronize != null) {
+				logger.info("{} messages sent, waiting for last message time {}", messageCounter, epochTime);
 				callSynchronizer(epochTime);
 			}
 			messageCounter = 0;
 		}
 	}
+
 }
