@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
@@ -44,5 +43,22 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	@Override
+	public Set<String> getEventFeatureNames() {
+		Set<String> set = new HashSet<>(1);
+		set.add(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE);
+		return set;
+	}
+
+	@Override
+	public List<String> getContextFieldNames() {
+		List<String> contextFieldNames = aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
+		List<String> res = new ArrayList<>(contextFieldNames.size());
+		for(String contextFieldName: contextFieldNames) {
+			res.add(AggrEvent.EVENT_FIELD_CONTEXT + "." + contextFieldName);
+		}
+		return res;
 	}
 }

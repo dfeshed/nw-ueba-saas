@@ -41,6 +41,10 @@ public class ScorerConfService implements ApplicationContextAware, InitializingB
         return dataSourceToDataSourceScorerConfs.get(dataSource);
     }
 
+    public Map<String, DataSourceScorerConfs> getAllDataSourceScorerConfs() {
+        return dataSourceToDataSourceScorerConfs;
+    }
+
 
     private void loadDataSourceScorerConfs() {
         String errorMsg;

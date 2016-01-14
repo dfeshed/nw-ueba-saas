@@ -10,6 +10,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
 	<bean id="scorerConfService" class="fortscale.ml.scorer.config.ScorerConfService" />
+	<bean id="scorersFactoryService" class="fortscale.ml.scorer.factory.ScorersFactoryService" />
 
 	<context:annotation-config/>
 	<context:spring-configured/>

@@ -19,4 +19,8 @@ public class ParetoScorerConf extends ScorerContainerConf{
         super(name, scorerConfList);
         this.highestScoreWeight = highestScoreWeight;
     }
+
+    public Double getHighestScoreWeight() {
+        return highestScoreWeight;
+    }
 }
