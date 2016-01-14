@@ -1,14 +1,12 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.DBCollection;
+import com.mongodb.WriteResult;
+import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.Index.Duplicates;
@@ -16,11 +14,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.mongodb.WriteResult;
-
-import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.utils.mongodb.FIndex;
-import fortscale.utils.time.TimestampUtils;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore{
@@ -72,6 +67,27 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		else {
 			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
 		}
+	}
+
+	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
+		String collectionName = getCollectionName(featureBucketConf);
+
+		List<FeatureBucket> featureBuckets = new ArrayList<>();
+
+		if (mongoTemplate.collectionExists(collectionName)) {
+			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
+
+			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
+
+			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
+
+			if(pageable != null){
+				query.with(pageable);
+			}
+			featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		}
+
+		return featureBuckets;
 	}
 
 	private Criteria createContextCriteria(String contextType, String contextName) {
@@ -136,7 +152,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.DESC).unique(Duplicates.DROP));
-			
+
 			// Context ID + start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
@@ -156,7 +172,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
 		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
