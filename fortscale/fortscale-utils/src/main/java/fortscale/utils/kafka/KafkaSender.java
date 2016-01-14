@@ -53,7 +53,9 @@ public class KafkaSender implements IKafkaSender{
 
 		if (messageCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messageCounter, epochTime);
-			callSynchronizer(epochTime);
+			if (kafkaSynchronize != null) {
+				callSynchronizer(epochTime);
+			}
 			messageCounter = 0;
 		}
 	}
