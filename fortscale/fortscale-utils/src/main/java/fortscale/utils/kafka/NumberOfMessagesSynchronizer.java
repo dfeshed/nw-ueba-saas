@@ -20,16 +20,12 @@ public class NumberOfMessagesSynchronizer implements IKafkaSynchronizer {
 	private ReachSumMetricsDecider decider;
 	private String jobClassToMonitor;
 	private String jobToMonitor;
-	int timeToWaitInMilliseconds;
-	int retries;
+	private int timeToWaitInMilliseconds;
+	private int retries;
 
-	public NumberOfMessagesSynchronizer() {
-		// Default constructor
-	}
-
-	public NumberOfMessagesSynchronizer(String jobClassToMonitor, String jobToMonitor,
-			int timeToWaitInMilliseconds, int retries, int batchSize) {
-		List<String> metrics = new ArrayList<String>();
+	public NumberOfMessagesSynchronizer(String jobClassToMonitor, String jobToMonitor, int timeToWaitInMilliseconds,
+			int retries) {
+		List<String> metrics = new ArrayList();
 		metrics.add(String.format("%s-received-message-count", jobToMonitor));
 		this.jobClassToMonitor = jobClassToMonitor;
 		this.jobToMonitor = jobToMonitor;
