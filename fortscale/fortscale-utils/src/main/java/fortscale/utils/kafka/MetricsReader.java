@@ -95,18 +95,18 @@ public class MetricsReader {
 
     public static long getCounterMetricsSum(List<String> metrics, String zookeeper, int port,  String headerToCheck,
             String jobToCheck) {
-        long counterMetricsSum;
+        long counterMetricsSum = 0;
 
         CaptorMetricsDecider captor = new CaptorMetricsDecider(metrics);
         long offset;
 
         MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
         do {
-            counterMetricsSum = 0;
             offset = metricsResults.getOffset();
             metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, headerToCheck, jobToCheck, captor);
 
             if(metricsResults.isFound()) {
+		counterMetricsSum = 0;
                 for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
                     Long counter = ConversionUtils.convertToLong(capturedMetric);
                     if (counter != null) {
@@ -136,21 +136,17 @@ public class MetricsReader {
             logger.error(errorMsg);
             return new MetricsResults(false, offset,errorMsg);
         }
-        for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
-            long currentOffset = msg.offset();
-            if (currentOffset < offset) {
-                logger.warn("found an old offset: " + currentOffset + " expecting: " + offset);
-                return new MetricsResults(false, offset,null);
-            }
+	long nextOffset = offset;
+        for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)){
+	    nextOffset = msg.nextOffset();
             String message = convertPayloadToString(msg);
             JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
             if (decider.decide(metrics)) {
-                return new MetricsResults(true, currentOffset, null);
+                return new MetricsResults(true, nextOffset, null);
             }
-            offset = msg.nextOffset();
         }
 
-        return new MetricsResults(false, offset,null);
+        return new MetricsResults(false, nextOffset,null);
     }
 
     /**
