@@ -172,11 +172,7 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
-    <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="usernameService" ref="usernameService"/>
-        <property name="userService" ref="userService"/>
-        <property name="samAccountNameService" ref="samAccountNameService"/>
-    </bean>
+
     <bean id="genericUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
@@ -195,10 +191,7 @@
         <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
-    <bean id="AMTUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
-        <property name="dropOnFail" value="${amt.normalizedUser.fail.filter:false}"/>
-        <property name="usernameNormalizer" ref="amtUsernameNormalizer"/>
-    </bean>
+
 
     <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>

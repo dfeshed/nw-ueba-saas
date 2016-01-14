@@ -108,7 +108,7 @@ public class AggregatedFeatureEventsMongoStore {
 		// Get retention strategy
 		AggrFeatureRetentionStrategy retentionStrategy =
 				aggregatedFeatureEventsConfService
-				.getAggrFeatureRetnetionStrategy(retentionStrategyName);
+				.getAggrFeatureRetentionStrategy(retentionStrategyName);
 
 		// Assert retention strategy
 		if (retentionStrategy == null) {

@@ -40,9 +40,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private static final int DAYS_BACK = 1;
 	private final String SORT_FIELD = "ts";
 	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
-	private final String AMT_CHECKING_ON_YID = "user_checking_up_on_yids";
-	private final String AMT_LOGIN_AS_MAIL = "amt_login_as_mail";
-	private final String AMT_RESET_PASSWORD = "amt_reset_pwd";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
 	private final String MIN_DATE = "minwhen";
@@ -196,15 +193,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getStartTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case AMT_RESET_PASSWORD:
-			case AMT_LOGIN_AS_MAIL: {
-				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
-						Long.parseLong(attributes.get(DATE_TIME_UNIX)) - (60 * 60 * 24 * DAYS_BACK) :
-						notification.getTs();
-			} case AMT_CHECKING_ON_YID: {
-				return attributes != null && attributes.containsKey(MIN_DATE) ?
-						Long.parseLong(attributes.get(MIN_DATE)) : notification.getTs();
-			} case VPN_OVERLAPPING: {
+			case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(START_DATE) ?
 				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
@@ -217,14 +206,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private long getEndTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
 		switch (notification.getCause()) {
-			case AMT_RESET_PASSWORD:
-			case AMT_LOGIN_AS_MAIL: {
-				return attributes != null && attributes.containsKey(DATE_TIME_UNIX) ?
-						Long.parseLong(attributes.get(DATE_TIME_UNIX)) : notification.getTs();
-			} case AMT_CHECKING_ON_YID: {
-				return attributes != null && attributes.containsKey(MAX_DATE) ?
-						Long.parseLong(attributes.get(MAX_DATE)) : notification.getTs();
-			} case VPN_OVERLAPPING: {
+			 case VPN_OVERLAPPING: {
 				return attributes != null && attributes.containsKey(END_DATE) ?
 					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
 			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {

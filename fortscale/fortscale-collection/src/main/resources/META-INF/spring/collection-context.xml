@@ -25,5 +25,8 @@
 
 	<context:spring-configured />
     <context:annotation-config />
-	<context:component-scan base-package="fortscale" />	
+	<context:component-scan base-package="fortscale">
+			<!--<context:exclude-filter  expression="fortscale.services" type="regex"/>-->
+		<!--	<context:exclude-filter type="regex" expression="fortscale\.services\..*" />-->
+	</context:component-scan>
 </beans>

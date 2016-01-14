@@ -19,7 +19,6 @@ public class UserTable implements IUserTable {
 	private String secUsernames;
 	private String sshUsernames;
 	private String vpnUsernames;
-	private String amtUsernames;
 	
 	
 	public UserTable(User user, User manager){
@@ -83,9 +82,7 @@ public class UserTable implements IUserTable {
 		this.vpnUsernames = vpnUsernames;
 	}
 
-	public void setAmtUsernames(String amtUsernames) {
-		this.amtUsernames = amtUsernames;
-	}
+
 
 	@Override
 	public String getSecUsernames() {
@@ -102,10 +99,7 @@ public class UserTable implements IUserTable {
 		return vpnUsernames;
 	}
 
-	@Override
-	public String getAmtUsernames() {
-		return amtUsernames;
-	}
+
 
 	private Double getScore(Classifier classifier){
 		Double ret = null;
@@ -135,10 +129,6 @@ public class UserTable implements IUserTable {
 		return getScore(Classifier.vpn);
 	}
 
-	@Override
-	public Double getAmtScore() {
-		return getScore(Classifier.amt);
-	}
 
 	@Override
 	public Double getTotalScore() {
@@ -377,9 +367,6 @@ public class UserTable implements IUserTable {
 		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login.name()));
 	}
 
-	@Override
-	public Long getAmtLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.amt.name()));
-	}
+
 
 }

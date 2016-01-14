@@ -299,8 +299,6 @@ public class DataQueryHelper {
      */
     public String getDateFieldName(String dataEntityId) {
         switch (dataEntityId) {
-        case "amt_session":
-            return "end_time_utc";
         case "vpn_session":
             return "end_time_utc";
         default:

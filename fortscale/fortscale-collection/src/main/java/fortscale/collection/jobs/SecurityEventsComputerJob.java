@@ -41,7 +41,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	@Override
 	protected Record processLine(String line) throws IOException {
 		// run the basic morphline to get the event code from the message
-		Record record = morphline.process(line); 
+		Record record = morphline.process(line, null);
 		
 		// run specific morphline for event code
 		if (record!=null) {
@@ -50,7 +50,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 			if (eventCode!=null) {
 				MorphlinesItemsProcessor processor = morphlineForEventCode.get(eventCode.toString());
 				if (processor!=null) {
-					record = processor.process(record);
+					record = processor.process(record, null);
 				}
 			}
 		}

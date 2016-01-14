@@ -221,7 +221,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	
 
 	protected Record morphlineProcessLine(String line){
-		return morphline.process(line);
+		return morphline.process(line, null);
 	}
 	
 	protected boolean writeToHdfs(Record record, long runtime) throws IOException{

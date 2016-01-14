@@ -39,7 +39,7 @@ public class UsernameNormalizer implements InitializingBean{
 		this.userService = userService;
 	}
 
-	//this is the normalizer for vpn and amt events
+	//this is the normalizer for vpn events
 	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
 		String ret;
 		logger.debug("Normalizing user - {}", username);

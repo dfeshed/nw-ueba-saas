@@ -46,9 +46,6 @@ public class StreamingTaskDataSourceConfigKey {
         return result;
     }
     @Override public String toString() {
-        return "StreamingTaskDataSourceConfigKey{" +
-                "dataSource='" + dataSource + '\'' +
-                ", lastState='" + lastState + '\'' +
-                '}';
+        return getDataSource() + "/" + getLastState();
     }
 }
