@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.*;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -56,14 +57,14 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         // Validate that messages appear in store stream.
         List<String> messages = readMessages(2L, outputTopic);
 
-        org.json.JSONObject jsonEvent1 = new org.json.JSONObject(messages.get(0));
+        JSONObject jsonEvent1 = new JSONObject(messages.get(0));
         //remove element "id" as it is generated on the fly
         jsonEvent1.remove("id");
-        org.json.JSONObject jsonExpectedEvent1 = new org.json.JSONObject(outEvent1);
-        org.json.JSONObject jsonEvent2 = new org.json.JSONObject(messages.get(1));
+        JSONObject jsonExpectedEvent1 = new JSONObject(outEvent1);
+        JSONObject jsonEvent2 = new JSONObject(messages.get(1));
         //remove element "id" as it is generated on the fly
         jsonEvent2.remove("id");
-        org.json.JSONObject jsonExpectedEvent2 = new org.json.JSONObject(outEvent2);
+        JSONObject jsonExpectedEvent2 = new JSONObject(outEvent2);
         JSONAssert.assertEquals(jsonEvent1, jsonExpectedEvent1, false);
         JSONAssert.assertEquals(jsonEvent2, jsonExpectedEvent2, false);
 

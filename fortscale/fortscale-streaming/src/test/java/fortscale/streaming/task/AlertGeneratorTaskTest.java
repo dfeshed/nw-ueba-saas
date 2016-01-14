@@ -48,7 +48,7 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
 
 
 
-    @Ignore
+//    @Ignore
     @Test
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
 

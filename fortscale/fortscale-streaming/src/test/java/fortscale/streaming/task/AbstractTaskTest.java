@@ -100,8 +100,7 @@ public class AbstractTaskTest {
         //load properties file
         loadProperties();
 
-        // create topics
-        createTopics();
+
     }
 
     /**
@@ -180,25 +179,6 @@ public class AbstractTaskTest {
         }
     }
 
-    /**
-     * Creates the list of topics that are defined in the samza configuration file
-     */
-    static protected void createTopics(){
-        List<KafkaServer> servers = new ArrayList<KafkaServer>();
-
-        String topics = jobConfig.get("task.inputs");
-        String[] topicsArray = topics.split(",");
-        for (int i=0; i < topicsArray.length; i++) {
-            String topic = topicsArray[i].substring("kafka.".length());
-            String[] arguments = new String[]{"--topic", topic, "--partitions", "1", "--replication-factor", "1"};
-            try {
-                TopicCommand.createTopic(zkClient, new TopicCommand.TopicCommandOptions(arguments));
-            } catch (kafka.common.TopicExistsException ex){
-                //skip an existing topic
-            }
-            servers.add(kafkaServer);
-        }
-    }
 
     /**
      * Starts the job that will run Samza task
