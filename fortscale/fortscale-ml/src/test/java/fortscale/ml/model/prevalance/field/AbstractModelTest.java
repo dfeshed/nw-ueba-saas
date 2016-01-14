@@ -97,43 +97,50 @@ public abstract class AbstractModelTest {
 		return res;
 	}
 
-	private static class ScoredFeature {
-		public String featureValue;
+	protected static class ScoredEvent {
+		public int eventIndex;
+		public TestEventsBatch event;
 		public Double score;
 
-		public ScoredFeature(String featureValue, Double score) {
-			this.featureValue = featureValue;
+		public ScoredEvent(int eventIndex, TestEventsBatch event, Double score) {
+			this.eventIndex = eventIndex;
+			this.event = event;
 			this.score = score;
+		}
+
+		@Override
+		public String toString() {
+			return "#" + eventIndex + " " + event + " -> " + score;
 		}
 	}
 
 	private static class ScenarioStats implements Comparable<ScenarioStats> {
 		private Map<String, FeatureStats> featureToFeatureStats;
-		private List<ScoredFeature> featureValueAndScores;
+		private List<ScoredEvent> scoredEvents;
 		private int numOfProcessedEvents;
 
 		public ScenarioStats() {
 			featureToFeatureStats = new HashMap<>();
-			featureValueAndScores = new ArrayList<>();
+			scoredEvents = new ArrayList<>();
 			numOfProcessedEvents = 0;
 		}
 
-		public void addEventInfo(long eventTime, String feature, Double score, boolean isScoreInteresting) {
+		public void addEventInfo(ScoredEvent scoredEvent, boolean isScoreInteresting) {
 			numOfProcessedEvents++;
-			FeatureStats featureStats = featureToFeatureStats.get(feature);
+			FeatureStats featureStats = featureToFeatureStats.get(scoredEvent.event.getFeature());
 			if (featureStats == null) {
 				featureStats = new FeatureStats();
-				featureToFeatureStats.put(feature, featureStats);
+				featureToFeatureStats.put(scoredEvent.event.getFeature(), featureStats);
 			}
-			featureStats.addEventInfo(eventTime, numOfProcessedEvents);
+			featureStats.addEventInfo(scoredEvent.event.time_bucket, numOfProcessedEvents);
 			if (isScoreInteresting) {
-				featureValueAndScores.add(new ScoredFeature(feature, score));
+				scoredEvents.add(scoredEvent);
 			}
 		}
 
 		@Override
 		public String toString() {
-			if (featureValueAndScores.isEmpty()) {
+			if (scoredEvents.isEmpty()) {
 				return "";
 			}
 
@@ -184,12 +191,12 @@ public abstract class AbstractModelTest {
 	 * how to print model-relevant data contained in the event).
 	 * A class extending AbstractModelTest should provide an implementation.
 	 */
-	protected interface ScenarioCallbacks {
+	protected abstract class ScenarioCallbacks {
 		/**
 		 * A callback called just before starting to run a scenario.
 		 * Any initialization of state data used through the scenario run can be done here.
 		 */
-		void onScenarioRunStart();
+		abstract void onScenarioRunStart();
 
 		/**
 		 * Give a score to the given event.
@@ -197,21 +204,22 @@ public abstract class AbstractModelTest {
 		 *                    the number of events in the batch - only one event of the batch is to be scored).
 		 * @return the event score.
 		 */
-		Double onScore(TestEventsBatch eventsBatch);
+		abstract Double onScore(TestEventsBatch eventsBatch);
 
 		/**
 		 * Print info about the event.
-		 * @param eventsBatch the event's data.
-		 * @param score the score given by onScore.
+		 * @param scoredEvent the event's data and score (given by onScore).
 		 */
-		void onPrintEvent(TestEventsBatch eventsBatch, Double score);
+		void onPrintEvent(ScoredEvent scoredEvent) {
+			println(scoredEvent);
+		}
 
 		/**
 		 * Called when finished processing the given event.
 		 * Any maintenance of state data used through the scenario run can be done here.
 		 * @param eventsBatch the event which has been processed.
 		 */
-		void onFinishProcessEvent(TestEventsBatch eventsBatch);
+		abstract void onFinishProcessEvent(TestEventsBatch eventsBatch);
 	}
 
 	/**
@@ -228,13 +236,15 @@ public abstract class AbstractModelTest {
 	private ScenarioStats runRealScenario(ScenarioCallbacks scenarioCallbacks, ScenarioInfo scenarioInfo, int minDate, int minInterestingScore, boolean printContextInfo) throws IOException {
 		scenarioCallbacks.onScenarioRunStart();
 		ScenarioStats scenarioStats = new ScenarioStats();
+		int eventIndex = 0;
 		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
 				Double score = scenarioCallbacks.onScore(eventsBatch);
 				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
-				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.getFeature(), score, isScoreInteresting);
+				ScoredEvent scoredEvent = new ScoredEvent(eventIndex++, eventsBatch, score);
+				scenarioStats.addEventInfo(scoredEvent, isScoreInteresting);
 				if (isScoreInteresting && printContextInfo) {
-					scenarioCallbacks.onPrintEvent(eventsBatch, score);
+					scenarioCallbacks.onPrintEvent(scoredEvent);
 				}
 				scenarioCallbacks.onFinishProcessEvent(eventsBatch);
 			}
@@ -281,11 +291,11 @@ public abstract class AbstractModelTest {
 	/**
 	 * Given the results of running a real data scenario, print a graph of the results.
 	 * @param googleSheetName the name of the google sheet which is capable of displaying the results of this function.
-	 * @param featureValueAndScores the result of running a real data scenario.
+	 * @param scoredEvents the result of running a real data scenario.
 	 */
-	private void printRealScenarioGraph(String googleSheetName, List<ScoredFeature> featureValueAndScores) {
+	private void printRealScenarioGraph(String googleSheetName, List<ScoredEvent> scoredEvents) {
 		printGoogleSheetsExplaination("real-scenario-" + googleSheetName);
-		List<String> featureValues = featureValueAndScores.stream().map(scoredFeature -> scoredFeature.featureValue).distinct().collect(Collectors.toList());
+		List<String> featureValues = scoredEvents.stream().map(scoredEvent -> scoredEvent.event.getFeature()).distinct().collect(Collectors.toList());
 		for (String featureValue : featureValues) {
 			print((StringUtils.isBlank(featureValue) ? "(empty string)" : featureValue) + "\t");
 		}
@@ -294,10 +304,10 @@ public abstract class AbstractModelTest {
 		for (int i = 0; i < featureValues.size(); i++) {
 			tabs += "\t";
 		}
-		for (ScoredFeature scoredFeature : featureValueAndScores) {
-			int featureValueIndex = featureValues.indexOf(scoredFeature.featureValue);
+		for (ScoredEvent scoredEvent : scoredEvents) {
+			int featureValueIndex = featureValues.indexOf(scoredEvent.event.getFeature());
 			print(tabs.substring(0, featureValueIndex));
-			print("" + scoredFeature.score);
+			print("" + scoredEvent.score);
 			print(tabs.substring(0, featureValues.size() - featureValueIndex));
 			println();
 		}
@@ -314,7 +324,7 @@ public abstract class AbstractModelTest {
 	protected void runAndPrintRealScenario(ScenarioCallbacks scenarioCallbacks, String fileName, int minInterestingScore) throws IOException {
 		ScenarioInfo scenarioInfo = new ScenarioInfo(SSH_REAL_DATA_PATH + "/" + fileName);
 		ScenarioStats scenarioStats = runRealScenario(scenarioCallbacks, scenarioInfo, (int) (scenarioInfo.firstEventTime + (scenarioInfo.lastEventTime - scenarioInfo.firstEventTime) * 0.9), minInterestingScore, true);
-		printRealScenarioGraph(scenarioInfo.filePath.substring(0, scenarioInfo.filePath.indexOf('/')), scenarioStats.featureValueAndScores);
+		printRealScenarioGraph(scenarioInfo.filePath.substring(0, scenarioInfo.filePath.indexOf('/')), scenarioStats.scoredEvents);
 	}
 
 	private static class UsersStatistics {
@@ -403,7 +413,7 @@ public abstract class AbstractModelTest {
 		Map<Integer, UsersStatistics> logNumOfEventsToUsersStatistics = new HashMap<>();
 		for (int i = 0; i < limitNumOfScenarios; i++) {
 			ScenarioInfo scenarioInfo = scenariosInfo.get(i);
-			println("\nrunning scenario " + i + " / " + limitNumOfScenarios + " with " + scenarioInfo.numOfEvents + " events: " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
+			println("\nrunning scenario " + (i + 1) + " / " + limitNumOfScenarios + " with " + scenarioInfo.numOfEvents + " events: " + scenarioInfo.filePath + " (min date " + getFormattedDate(minDate) + ")");
 			ScenarioStats scenarioStats = runRealScenario(scenarioCallbacks, scenarioInfo, minDate, minInterestingScore, true);
 
 			int logNumOfEvents = (int) (Math.log(scenarioInfo.numOfEvents) / Math.log(10));
@@ -412,7 +422,7 @@ public abstract class AbstractModelTest {
 				usersStatistics = new UsersStatistics();
 				logNumOfEventsToUsersStatistics.put(logNumOfEvents, usersStatistics);
 			}
-			if (!scenarioStats.featureValueAndScores.isEmpty()) {
+			if (!scenarioStats.scoredEvents.isEmpty()) {
 				usersStatistics.anomalousUserScenarioToScenarioStats.put(scenarioInfo.filePath, scenarioStats);
 			} else {
 				usersStatistics.numOfRegularUsers++;
@@ -450,13 +460,23 @@ public abstract class AbstractModelTest {
 			Integer logNumOfEvents = entry.getKey();
 			UsersStatistics usersStatistics = entry.getValue();
 			String logNumOfEventsRange = (int) Math.pow(10, logNumOfEvents) + " - " + (int) Math.pow(10, logNumOfEvents + 1);
-			println(String.format("%s: %3d%%   %-6d / %-6d anomalous users",
+			println(String.format("%s: %3.2f%%   %-6d / %-6d anomalous users",
 					StringUtils.rightPad(logNumOfEventsRange, 20),
-					100 * usersStatistics.getNumOfAnomalousUsers() / (usersStatistics.getNumOfRegularUsers() + usersStatistics.getNumOfAnomalousUsers()),
+					100.0 * usersStatistics.getNumOfAnomalousUsers() / (usersStatistics.getNumOfRegularUsers() + usersStatistics.getNumOfAnomalousUsers()),
 					usersStatistics.getNumOfAnomalousUsers(),
 					usersStatistics.numOfRegularUsers + usersStatistics.getNumOfAnomalousUsers()));
+			Optional<Integer> maxScenarioLength = usersStatistics.anomalousUserScenarioToScenarioStats.keySet().stream()
+					.max((s1, s2) -> s1.length() - s2.length())
+					.map(String::length);
 			for (Map.Entry<String, ScenarioStats> e : sortMapByValues(usersStatistics.anomalousUserScenarioToScenarioStats)) {
-				println(String.format("\t%-6d: %s", e.getValue().numOfProcessedEvents, e.getKey()));
+				ScenarioStats scenarioStats = e.getValue();
+				ScoredEvent maxScoredEvent = scenarioStats.scoredEvents.stream()
+						.max((scoredEvent1, scoredEvent2) -> (int) Math.signum(scoredEvent1.score - scoredEvent2.score))
+						.get();
+				println(String.format("\t%-6d: %-" + maxScenarioLength.get() + "s   %s",
+						scenarioStats.numOfProcessedEvents,
+						e.getKey(),
+						maxScoredEvent));
 			}
 		}
 		println(String.format("\ntotal %d / %d anomalous users", getTotalAnomalousUsers(logNumOfEventsToUsersStatistics), scenariosInfo.size()));

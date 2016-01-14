@@ -722,7 +722,7 @@ public class CategoryRarityModelTest extends AbstractModelTest {
 		}
 	}
 
-	private class CategoryRarityScenarioCallbacks implements ScenarioCallbacks {
+	private class CategoryRarityScenarioCallbacks extends ScenarioCallbacks {
 		private int maxRareCount;
 		private int maxNumOfRareFeatures;
 		private Map<String, Integer> featureValueToCountMap;
@@ -743,8 +743,8 @@ public class CategoryRarityModelTest extends AbstractModelTest {
 		}
 
 		@Override
-		public void onPrintEvent(TestEventsBatch eventsBatch, Double score) {
-			printEvent(eventsBatch.time_bucket, eventsBatch.getFeature(), score, featureValueToCountMap, featureValueToDaysMap);
+		public void onPrintEvent(ScoredEvent scoredEvent) {
+			printEvent(scoredEvent.event.time_bucket, scoredEvent.event.getFeature(), scoredEvent.score, featureValueToCountMap, featureValueToDaysMap);
 		}
 
 		@Override

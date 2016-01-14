@@ -194,7 +194,7 @@ public class TimeModelTest extends AbstractModelTest {
 	 *************************************************************************************
 	 *************************************************************************************/
 
-	private class TimeModelScenarioCallbacks implements ScenarioCallbacks {
+	private class TimeModelScenarioCallbacks extends ScenarioCallbacks {
 		private Map<Long, Double> timeToCounter;
 
 		@Override
@@ -205,11 +205,6 @@ public class TimeModelTest extends AbstractModelTest {
 		@Override
 		public Double onScore(TestEventsBatch eventsBatch) {
 			return calcScore(timeToCounter, eventsBatch.time_bucket);
-		}
-
-		@Override
-		public void onPrintEvent(TestEventsBatch eventsBatch, Double score) {
-			println(eventsBatch + " -> " + score);
 		}
 
 		@Override
@@ -232,6 +227,6 @@ public class TimeModelTest extends AbstractModelTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.055, 50, 920);
+		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.055, 90, 900);//920);
 	}
 }
