@@ -9,7 +9,7 @@
             <name>NewGDS</name>
             <group>Configuration</group>
             <description>Configuration tool for new generic data source configuration</description>
-            <job-class>fortscale.collection.jobs.NewGDSconfigurationJob</job-class>
+            <job-class>fortscale.collection.jobs.gds.GDSConfigurationCreatorJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>

@@ -1,9 +1,15 @@
 package fortscale.utils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Type conversion utility methods 
  */
 public final class ConversionUtils {
+
+	private static final String CSV_DELIMITER = ",";
+	private static final String WHITESPACE_DELIMITER_REGEX = "\\s+"; // i.e. one or more whitespace chars
 
 	public static Long convertToLong(Object value) {
 		try {
@@ -89,6 +95,23 @@ public final class ConversionUtils {
 		return defaultValue;
 		
 	}
-	
-		
+
+
+	/*
+	 * Converts the CSV-formatted fields to a map of key-value (field->field type).
+     */
+	public static Map<String, String> convertFieldsCSVToMap(String fieldsCSV) {
+		Map<String, String> fieldSchema = new LinkedHashMap<>(); // to preserve insertion order
+
+		if (fieldsCSV != null) {
+			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+			for (String fieldDef : fieldsArray) {
+				fieldDef = fieldDef.trim();
+				String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
+				fieldSchema.put(fieldDefSep[0], fieldDefSep[1]);
+			}
+		}
+
+		return fieldSchema;
+	}
 }

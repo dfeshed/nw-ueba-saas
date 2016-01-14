@@ -14,79 +14,127 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["two_minute_resolution_epochtime"]
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": [
+              "destination_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"],
-            "maximize": ["normalized_dst_machine_score"]
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "failure_code_histogram",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": [
+              "failure_code"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["failure_code"],
-            "maximize": ["failure_codescore"]
+            "groupBy": [
+              "failure_code"
+            ],
+            "maximize": [
+              "failure_codescore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code != '0x0')]"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -104,72 +152,116 @@
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": [
+              "destination_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"],
-            "maximize": ["normalized_dst_machine_score"]
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "failure_code_histogram",
           "featureNamesMap": {
-            "groupBy": ["failure_code"]
+            "groupBy": [
+              "failure_code"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["failure_code"],
-            "maximize": ["failure_codescore"]
+            "groupBy": [
+              "failure_code"
+            ],
+            "maximize": [
+              "failure_codescore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.failure_code != '0x0')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code != '0x0')]"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -187,78 +279,124 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["two_minute_resolution_epochtime"]
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": [
+              "destination_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "auth_method_histogram",
           "featureNamesMap": {
-            "groupBy": ["auth_method"]
+            "groupBy": [
+              "auth_method"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"],
-            "maximize": ["normalized_dst_machine_score"]
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Failed')]"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_auth_method",
           "featureNamesMap": {
-            "maximize": ["auth_method_score"]
+            "maximize": [
+              "auth_method_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
@@ -276,71 +414,113 @@
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": [
+              "destination_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "auth_method_histogram",
           "featureNamesMap": {
-            "groupBy": ["auth_method"]
+            "groupBy": [
+              "auth_method"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "destination_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"],
-            "maximize": ["normalized_dst_machine_score"]
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Failed')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Failed')]"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_auth_method",
           "featureNamesMap": {
-            "maximize": ["auth_method_score"]
+            "maximize": [
+              "auth_method_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
@@ -358,71 +538,113 @@
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["two_minute_resolution_epochtime"]
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": [
+              "country"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "hostname_histogram",
           "featureNamesMap": {
-            "groupBy": ["hostname"]
+            "groupBy": [
+              "hostname"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'FAIL')]"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "countryscore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
@@ -440,61 +662,94 @@
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": [
+              "source_machine"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": [
+              "country"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAIL')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'FAIL')]"
+          }
         },
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["normalized_src_machine_score"]
+            "groupBy": [
+              "source_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "countryscore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
-
     {
       "name": "normalized_username_vpn_session_daily",
       "expireAfterSeconds": 31536000,
@@ -509,37 +764,57 @@
         {
           "name": "sum_of_scores_rate_vpn_session",
           "featureNamesMap": {
-            "sum": ["databucketScore"]
+            "sum": [
+              "databucketScore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         },
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
-            "groupBy": ["two_minute_resolution_epochtime"]
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": [
+              "country"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "hostname_histogram",
           "featureNamesMap": {
-            "groupBy": ["hostname"]
+            "groupBy": [
+              "hostname"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "databucket_histogram",
           "featureNamesMap": {
-            "groupBy": ["databucket"]
+            "groupBy": [
+              "databucket"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -557,193 +832,16 @@
         {
           "name": "sum_of_scores_rate_vpn_session",
           "featureNamesMap": {
-            "sum": ["databucketScore"]
+            "sum": [
+              "databucketScore"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         }
       ]
     },
-
-    {
-      "name": "normalized_username_amt_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalized_username"
-      ],
-      "dataSources": [
-        "amt"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "source_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"],
-            "maximize": ["normalized_src_machine_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "highest_score_date_time",
-          "featureNamesMap": {
-            "maximize": ["date_time_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "action_code_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["action_code"],
-            "maximize": ["action_code_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "yid_histogram",
-          "featureNamesMap": {
-            "groupBy": ["yid"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "failed_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
-        },
-        {
-          "name": "sensitive_actions_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
-        },
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": ["hour"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "action_code_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_code"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-    {
-      "name": "normalized_username_amt_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalized_username"
-      ],
-      "dataSources": [
-        "amt"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "source_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"],
-            "maximize": ["normalized_src_machine_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "highest_score_date_time",
-          "featureNamesMap": {
-            "maximize": ["date_time_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "action_code_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["action_code"],
-            "maximize": ["action_code_score"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
-        },
-        {
-          "name": "yid_histogram",
-          "featureNamesMap": {
-            "groupBy": ["yid"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "failed_events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'FAILURE')]"}
-        },
-        {
-          "name": "sensitive_actions_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.action_code == 'LOGINASMAIL' || @.action_code == 'UNAUTHACCESS' || @.action_code == 'LOGINAS' || @.action_code == 'WSLOGINAS' || @.action_code == 'CHANGEPW' || @.action_code == 'CORP' || @.action_code == 'LOGINASROGERS' || @.action_code == 'LOGINASATT')]"}
-        },
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": ["hour"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "action_code_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_code"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-
-    {
-      "name": "yid_amt_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "yid"
-      ],
-      "dataSources": [
-        "amt"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "action_code_histogram",
-          "featureNamesMap": {
-            "groupBy": ["action_code"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        },
-        {
-          "name": "events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"}
-        }
-      ]
-    },
-
-
     {
       "name": "source_machine_kerberos_logins_daily",
       "expireAfterSeconds": 31536000,
@@ -758,9 +856,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -778,29 +880,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-    {
-      "name": "source_machine_amt_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "source_machine"
-      ],
-      "dataSources": [
-        "amt"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": ["normalized_username"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -818,9 +904,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -838,9 +928,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -858,9 +952,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -878,9 +976,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -898,9 +1000,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -918,9 +1024,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -938,13 +1048,16 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
-
     {
       "name": "normalized_username_crmsf_daily",
       "expireAfterSeconds": 31536000,
@@ -959,51 +1072,94 @@
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "success_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Success')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Success')]"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status != 'Success')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status != 'Success')]"
+          }
         },
         {
           "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": [
+              "country"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "status_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "country_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "status_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["status"],
-            "maximize": ["status_score"]
+            "groupBy": [
+              "status"
+            ],
+            "maximize": [
+              "status_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
@@ -1021,51 +1177,94 @@
         {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
-            "groupBy": ["hour"]
+            "groupBy": [
+              "hour"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "success_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status == 'Success')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Success')]"
+          }
         },
         {
           "name": "failed_events_counter",
           "featureNamesMap": {},
-          "aggrFeatureFuncJson": {"type": "aggr_feature_sum_func"},
-          "filter": {"jsonPath": "[?(@.status != 'Success')]"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status != 'Success')]"
+          }
         },
         {
           "name": "country_histogram",
           "featureNamesMap": {
-            "groupBy": ["country"]
+            "groupBy": [
+              "country"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "status_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "status"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         },
         {
           "name": "highest_score_date_time",
           "featureNamesMap": {
-            "maximize": ["date_time_score"]
+            "maximize": [
+              "date_time_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "country_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["country"],
-            "maximize": ["countryscore"]
+            "groupBy": [
+              "country"
+            ],
+            "maximize": [
+              "country_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         },
         {
           "name": "status_to_highest_score_map",
           "featureNamesMap": {
-            "groupBy": ["status"],
-            "maximize": ["status_score"]
+            "groupBy": [
+              "status"
+            ],
+            "maximize": [
+              "status_score"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_feature_to_max_map_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     },
@@ -1083,9 +1282,13 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -1103,11 +1306,181 @@
         {
           "name": "normalized_username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_username"]
+            "groupBy": [
+              "normalized_username"
+            ]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_wame_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_wame_hourly",
+      "expireAfterSeconds": 2592000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "wame"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+
+        },
+        {
+          "name": "highest_score_date_time",
+          "featureNamesMap": {
+            "maximize": ["date_time_score"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_ntlm_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ntlm"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.error_code != '0x0')]"
+          }
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.error_code == '0x0')]"
+          }
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+
+      ]
+    },
+    {
+      "name": "normalized_username_ntlm_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ntlm"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.error_code != '0x0')]"
+          }
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.error_code == '0x0')]"
+          }
+        },
+        {
+          "name": "source_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "source_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": ["source_machine"],
+            "maximize": ["normalized_src_machine_score"]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
         }
       ]
     }
+
   ]
 }
