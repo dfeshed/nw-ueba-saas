@@ -13,7 +13,7 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 
 	private int messagesCounter;
 	private int maxSize;
-	private Map<String, KafkaSender> kafkaWriters;
+	private Map<String, KafkaSender> kafkaSenders;
 	private String partitionKey;
 	private IKafkaSynchronizer kafkaSynchronize;
 
@@ -22,15 +22,16 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		this.maxSize = maxSize;
 		this.partitionKey = partitionKey;
 		this.kafkaSynchronize = kafkaSynchronize;
-		this.kafkaWriters = new HashMap<>();
+		this.kafkaSenders = new HashMap<>();
 		for (String topic : topics) {
-			kafkaWriters.put(topic, new KafkaSender(kafkaSynchronize, maxSize, topic, partitionKey));
+			// Send a null Synchronizer to ensure the synchronizing will happen only in the multi sender
+			kafkaSenders.put(topic, new KafkaSender(null, maxSize, topic, partitionKey));
 		}
 	}
 
 	public void shutDown() {
 		try {
-			for (KafkaSender kafkaSender : kafkaWriters.values()){
+			for (KafkaSender kafkaSender : kafkaSenders.values()){
 				kafkaSender.shutDown();
 			}
 		} catch (Exception ex) {
@@ -47,7 +48,7 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 	}
 
 	public void send(String topic, String messageStr, long epochTime) throws Exception{
-		kafkaWriters.get(topic).send(messageStr, epochTime);
+		kafkaSenders.get(topic).send(messageStr, epochTime);
 		messagesCounter++;
 
 		if (messagesCounter == maxSize) {
