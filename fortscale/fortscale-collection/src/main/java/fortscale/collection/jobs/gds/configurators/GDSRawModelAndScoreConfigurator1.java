@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by idanp on 1/11/2016.
  */
-public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
+public class GDSRawModelAndScoreConfigurator1 extends GDSBaseConfigurator  {
 
 	private static final String LAST_STATE_PARAM = "lastState";
 	private static final String TASK_NAME_PARAM = "taskName";
@@ -25,7 +25,7 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 	private static final String ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP = "additionalFiledToScoreFieldMapCSV";
 
 
-	public GDSRawModelAndScoreConfigurator() {
+	public GDSRawModelAndScoreConfigurator1() {
 		configurationWriterService = new RawModelScoreConfigurationWriter();
 	}
 
