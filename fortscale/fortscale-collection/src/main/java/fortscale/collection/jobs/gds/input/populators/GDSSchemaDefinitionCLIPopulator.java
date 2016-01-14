@@ -58,9 +58,8 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
-    // TODO check if property available
-    @Value("${fortscale.data.source}")
-    private String currentDataSources;
+    @Value("${fortscale.data.source:xxxx}")
+    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf"; // TODO only for windows workaround
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
@@ -234,39 +233,39 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         System.out.println("Please enter the new data source name:");
         String dataSourceName = gdsInputHandler.getInput();
 
-        printDataSourceTypeOptions(dataSourceName);
-		String chose = gdsInputHandler.getInput().trim();
-        String dataSourceType = "";
-
-		switch (chose)
-		{
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_BASE:
-			{
-				dataSourceType = "base";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_ACCESS_EVENT:
-			{
-				dataSourceType = "access_event";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_AUTH_EVENT:
-			{
-				dataSourceType = "auth_event";
-				break;
-			}
-			case GDSMenuOptions.GDS_SCHEMA_TYPE_CUSTOMIZED_AUTH_EVENT:
-			{
-				dataSourceType = "customized_auth_event";
-				break;
-			}
-
-		}
+        printEntityTypeOptions(dataSourceName);
+        String dataSourceType = handleEntityTypeSelection();
 
         paramsMap.put(DATA_SOURCE_NAME_PARAM, new ConfigurationParam(DATA_SOURCE_NAME_PARAM, false, dataSourceName));
         paramsMap.put(DATA_SOURCE_TYPE_PARAM, new ConfigurationParam(DATA_SOURCE_TYPE_PARAM, false, dataSourceType.toLowerCase()));
 
         paramsMap.put(DATA_SOURCE_LISTS, new ConfigurationParam(DATA_SOURCE_LISTS, false, currentDataSources));
+    }
+
+    private String handleEntityTypeSelection() throws Exception {
+        String selection = gdsInputHandler.getInput().trim();
+
+        while (true) {
+            switch (selection) {
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_BASE: {
+                    return "base";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_ACCESS_EVENT: {
+                    return "access_event";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_AUTH_EVENT: {
+                    return "auth_event";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_CUSTOMIZED_AUTH_EVENT: {
+                    return "customized_auth_event";
+                }
+                default: {
+                    System.out.println("Illegal input. Please enter [1-4]");
+                    selection = gdsInputHandler.getInput().trim();
+                    break;
+                }
+            }
+        }
     }
 
     private AdditionalFieldsWrapper populateAdditionalFields(String dataSourceName) throws Exception {
@@ -336,7 +335,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         }
     }
 
-    private static void printDataSourceTypeOptions(String dataSourceName) {
+    private static void printEntityTypeOptions(String dataSourceName) {
         System.out.println(String.format("Please chose the %s data source type : ", dataSourceName));
         System.out.println("[* - meaning mandatory field ? -meaning optional field] ");
         System.out.println("1.base                    - user* , time*  ");
