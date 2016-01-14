@@ -91,6 +91,7 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 				logger.error(errorMsg);
 				throw new RuntimeException(errorMsg);
 			} else {
+				logger.info("last message in batch processed, moving to next batch");
 				counterMetricsSum += batchSize;
 				batchCounter = 0;
 			}
