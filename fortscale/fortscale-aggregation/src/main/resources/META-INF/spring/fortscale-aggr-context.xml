@@ -23,4 +23,5 @@
 
 
     <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
+
 </beans>

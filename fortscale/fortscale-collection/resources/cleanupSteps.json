@@ -47,7 +47,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###fortscale-amt-event-score-from-hdfs###metrics"
+        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###metrics"
       }
     ]
   },
