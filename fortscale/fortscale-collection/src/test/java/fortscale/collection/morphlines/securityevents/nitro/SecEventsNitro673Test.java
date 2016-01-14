@@ -27,7 +27,7 @@ public class SecEventsNitro673Test {
 
 	@BeforeClass
 	public static void setUpClass() {
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
 	}
 
 	@AfterClass
