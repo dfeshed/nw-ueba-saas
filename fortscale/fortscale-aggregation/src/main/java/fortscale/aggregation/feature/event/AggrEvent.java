@@ -31,8 +31,8 @@ public class AggrEvent implements Serializable {
     public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
     public static final String EVENT_FIELD_SCORE = "score";
 
-    private static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
-    private static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
+    public static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
+    public static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
 
     // Event Fields
     @SuppressWarnings("unused")

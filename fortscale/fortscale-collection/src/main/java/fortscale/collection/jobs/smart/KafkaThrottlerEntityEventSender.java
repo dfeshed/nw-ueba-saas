@@ -4,6 +4,7 @@ import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.IEntityEventSender;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.kafka.CaptorMetricsDecider;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.kafka.ReachSumMetricsDecider;
@@ -60,12 +61,13 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		this.port = Integer.parseInt(brokerListSplit[1]);
 		this.kafkaEventsWriter = new KafkaEventsWriter(outputTopicName);
 
-		entityEventConfService.getEntityEventDefinitions().stream()
-				.map(this::getCounterName)
-				.forEach(metricsOfEntityEvents::add);
+		for (EntityEventConf entityEventConf : entityEventConfService.getEntityEventDefinitions()) {
+			metricsOfEntityEvents.add(getCounterName(entityEventConf));
+		}
 
 		this.batchCounter = 0;
-		this.counterMetricsSum = getCounterMetricsSum();
+		this.counterMetricsSum = MetricsReader.getCounterMetricsSum(metricsOfEntityEvents, zookeeper, port,
+				counterCreationClass, counterCreationJob);
 	}
 
 	@Override
@@ -89,6 +91,7 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 				logger.error(errorMsg);
 				throw new RuntimeException(errorMsg);
 			} else {
+				logger.info("last message in batch processed, moving to next batch");
 				counterMetricsSum += batchSize;
 				batchCounter = 0;
 			}
@@ -99,25 +102,4 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 		return String.format("%s.%s%s", eventType, entityEventConf.getName(), counterNameSuffix);
 	}
 
-	private long getCounterMetricsSum() {
-		long offset;
-		long counterMetricsSum = 0;
-		CaptorMetricsDecider captor = new CaptorMetricsDecider(metricsOfEntityEvents);
-		MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false, 0, null);
-
-		do {
-			offset = metricsResults.getOffset();
-			metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, counterCreationClass, counterCreationJob, captor);
-			if (metricsResults.isFound()) {
-				for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
-					Long counter = ConversionUtils.convertToLong(capturedMetric);
-					if (counter != null) {
-						counterMetricsSum += counter;
-					}
-				}
-			}
-		} while (metricsResults.getOffset() > offset); // Looking for the last metric message
-
-		return counterMetricsSum;
-	}
 }
