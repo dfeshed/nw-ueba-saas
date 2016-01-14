@@ -241,7 +241,7 @@ public class AbstractTaskTest {
             if (fetchResponse.hasError()) {
                 // Something went wrong!
                 short code = fetchResponse.errorCode(topic, 0);
-                System.out.println("could not fetch data from the Broker. Reason: " + code);
+                logger.warn("could not fetch data from the Broker. Reason: " + code);
                 try {
                     Thread.sleep(2000);
                     num_retries ++;
@@ -258,7 +258,7 @@ public class AbstractTaskTest {
             for (MessageAndOffset messageAndOffset : fetchResponse.messageSet(topic, 0)) {
                 long currentOffset = messageAndOffset.offset();
                 if (currentOffset < readOffset) {
-                    System.out.println("Found an old offset: " + currentOffset + " Expecting: " + readOffset);
+                    logger.warn("Found an old offset: " + currentOffset + " Expecting: " + readOffset);
                     continue;
                 }
                 readOffset = messageAndOffset.nextOffset();
