@@ -1,9 +1,8 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.mongodb.WriteResult;
-import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.utils.mongodb.FIndex;
-import fortscale.utils.time.TimestampUtils;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -14,8 +13,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import com.mongodb.WriteResult;
+
+import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.time.TimestampUtils;
 
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore{
@@ -46,6 +48,16 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 
 		return Collections.emptyList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
+		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+
+		Criteria endTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(endTime));
+
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+		return mongoTemplate.getCollection(getCollectionName(featureBucketConf)).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
 	}
 
 	@Override
@@ -81,7 +93,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
 
-			if(pageable != null){
+			if(pageable != null) {
 				query.with(pageable);
 			}
 			featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
@@ -109,54 +121,12 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		String collectionName = getCollectionName(featureBucketConf);
-		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
-		createCollectionIfNotExist(collectionName, expireAfterSeconds);
-		try {
-			mongoTemplate.save(featureBucket, collectionName);
-		} catch (Exception e) {
-			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
-		}
-	}
-	public void insertFeatureBuckets(FeatureBucketConf featureBucketConf, Collection<FeatureBucket> featureBuckets) throws Exception{
-		String collectionName = getCollectionName(featureBucketConf);
-		// TTL on CreatedAt
-		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
-		createCollectionIfNotExist(collectionName, expireAfterSeconds);
-
-		Collection<FeatureBucket> featureBucketsWithNotNullId = new HashSet<>();
-		Collection<FeatureBucket> featureBucketsWithNullId = new HashSet<>();
-
-		for(FeatureBucket featureBucket: featureBuckets) {
-			if(featureBucket.getId()==null) {
-				featureBucketsWithNullId.add(featureBucket);
-			} else {
-				featureBucketsWithNotNullId.add(featureBucket);
-			}
-		}
-		try {
-			mongoTemplate.insert(featureBucketsWithNullId, collectionName);
-			for(FeatureBucket featureBucket: featureBucketsWithNotNullId) {
-				mongoTemplate.save(featureBucket, collectionName);
-			}
-		} catch (Exception e) {
-			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
-		}
-	}
-
-
-
-	private void createCollectionIfNotExist(String collectionName, int expireAfterSeconds) {
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 
 			// Bucket ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.DESC).unique(Duplicates.DROP));
-
-			// Context ID + start time
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
-					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
 			// Strategy ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
@@ -166,21 +136,23 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
+			// end time + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC));
+
+			// TTL on CreatedAt
+			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
+
 			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
 					.expire(expireAfterSeconds, TimeUnit.SECONDS)
 					.named(FeatureBucket.CREATED_AT_FIELD_NAME)
 					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
-		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-
-		Criteria endTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(endTime));
-
-		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
-		return mongoTemplate.getCollection(getCollectionName(featureBucketConf)).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+		try {
+			mongoTemplate.save(featureBucket, collectionName);
+		} catch (Exception e) {
+			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
+		}
 	}
 
 	private String getCollectionName(FeatureBucketConf featureBucketConf) {

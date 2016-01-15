@@ -183,7 +183,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		}
 	}
 
-	public AggrFeatureRetentionStrategy getAggrFeatureRetentionStrategy(String strategyName) {
+	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
 		return retentionStrategiesConfService.getAggrFeatureRetentionStrategy(strategyName);
 	}
 }
