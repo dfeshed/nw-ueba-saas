@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import javax.mail.MessagingException;
+
 /**
  * Created by Amir Keren on 15/01/2016.
  */
@@ -13,7 +15,8 @@ public class MailSenderImpl implements MailSenderService {
     private JavaMailSender mailSender;
 
     @Override
-    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body) {
+    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body)
+            throws MessagingException {
         SimpleMailMessage email = new SimpleMailMessage();
         if (to != null && to.length > 0) {
             email.setTo(to);
