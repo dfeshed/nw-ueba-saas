@@ -1,4 +1,4 @@
-package fortscale.services.email;
+package fortscale.utils.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +9,7 @@ import javax.mail.MessagingException;
 /**
  * Created by Amir Keren on 15/01/2016.
  */
-public class MailSenderImpl implements MailSenderService {
+public class EmailSender implements EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
