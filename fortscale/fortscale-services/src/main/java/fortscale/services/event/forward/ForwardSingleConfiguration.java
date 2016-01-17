@@ -1,6 +1,6 @@
 package fortscale.services.event.forward;
 
-import fortscale.services.dataqueries.querydto.DataQueryDTOBase;
+import fortscale.common.dataqueries.querydto.DataQueryDTOBase;
 
 /**
  *

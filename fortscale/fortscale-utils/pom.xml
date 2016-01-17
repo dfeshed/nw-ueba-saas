@@ -272,6 +272,7 @@
 			</exclusions>
 		</dependency>
 
+
 		<!-- kafka dependencies -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 
 public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy {
 	private long durationInSeconds;

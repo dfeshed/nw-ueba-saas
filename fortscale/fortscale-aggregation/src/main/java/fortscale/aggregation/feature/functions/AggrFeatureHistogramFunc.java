@@ -3,18 +3,18 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
-import fortscale.aggregation.feature.FeatureStringValue;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.FeatureStringValue;
+import fortscale.common.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 
 
 

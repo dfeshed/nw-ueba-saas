@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder;
 
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.prevalance.field.TimeModel;
 import org.springframework.util.Assert;

@@ -2,6 +2,8 @@ package fortscale.streaming.scorer;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONObject;
 
 import org.apache.samza.config.Config;
