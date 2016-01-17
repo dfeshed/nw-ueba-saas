@@ -28,9 +28,7 @@ public class EmailUtils {
     @Value("${smtp.port}")
     private String port;
     @Value("${smtp.auth}")
-    private EmailAuth auth;
-
-    private enum EmailAuth { tls, ssl, none }
+    private String auth;
 
 	/**
      *
@@ -41,13 +39,13 @@ public class EmailUtils {
      * @param bcc
      * @param subject
      * @param body
-     * @param attachFiles
+     * @param attachedFilesPaths
      * @param isHTML
      * @throws MessagingException
      * @throws IOException
 	 */
-    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, String[] attachFiles,
-            boolean isHTML) throws MessagingException, IOException {
+    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, String[]
+            attachedFilesPaths, boolean isHTML) throws MessagingException, IOException {
         logger.info("Preparing to send email");
         Session session = Session.getInstance(createProperties(),
             new javax.mail.Authenticator() {
@@ -67,19 +65,33 @@ public class EmailUtils {
         }
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
-        if (attachFiles != null && attachFiles.length > 0) {
-            for (String filePath : attachFiles) {
-                MimeBodyPart attachPart = new MimeBodyPart();
-                attachPart.attachFile(filePath);
-                multipart.addBodyPart(attachPart);
-            }
-        }
+        addAttachments(attachedFilesPaths, multipart);
         message.setContent(multipart);
         Transport.send(message);
         logger.info("Email sent");
     }
 
 	/**
+     *
+     * This method adds attachments if such an argument is passed to the function
+     *
+     * @param attachedFilesPaths
+     * @param multipart
+     * @throws IOException
+     * @throws MessagingException
+     */
+    private void addAttachments(String[] attachedFilesPaths, Multipart multipart)
+            throws IOException, MessagingException {
+        if (attachedFilesPaths != null && attachedFilesPaths.length > 0) {
+            for (String filePath : attachedFilesPaths) {
+                MimeBodyPart attachPart = new MimeBodyPart();
+                attachPart.attachFile(filePath);
+                multipart.addBodyPart(attachPart);
+            }
+        }
+    }
+
+    /**
      *
      * This method adds recipients to the message
      *
@@ -120,14 +132,14 @@ public class EmailUtils {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         switch (auth) {
-            case tls: {
+            case "tls": {
                 props.put("mail.smtp.starttls.enable", "true");
                 break;
-            } case ssl: {
+            } case "ssl": {
                 props.put("mail.smtp.socketFactory.port", port);
                 props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
                 break;
-            } case none: {
+            } default: {
                 break;
             }
         }

@@ -90,4 +90,6 @@ public interface AlertsService {
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
 										   String entityTags, String entityId);
 
+	List<Alert> getAlertSummary(List<String> severities, long endDate);
+
 }

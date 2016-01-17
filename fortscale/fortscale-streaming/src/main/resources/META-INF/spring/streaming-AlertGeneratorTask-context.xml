@@ -21,6 +21,10 @@
     <context:annotation-config />
     <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming,fortscale.services" />
 
+    <bean id="alertEmailService" class="fortscale.services.impl.AlertEmailServiceImpl"/>
+
+    <bean id="alertPrettifier" class="fortscale.services.impl.AlertPrettifierImpl" scope="singleton"/>
+
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
     <bean id="evidencesService" class="fortscale.services.impl.EvidencesServiceImpl"/>
