@@ -237,6 +237,12 @@ public class TimeModelTest extends AbstractModelTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.076, 50, 920);
+		boolean RUN_FAST = true;
+		if (RUN_FAST) {
+			testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.07, 50, 800);
+		}
+		else {
+			testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.076, 50, 920);
+		}
 	}
 }

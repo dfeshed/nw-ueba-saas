@@ -776,6 +776,12 @@ public class CategoryRarityModelTest extends AbstractModelTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		testRealScenariosHowManyAnomalousUsers(new CategoryRarityScenarioCallbacks(), 0.138, 50);
+		boolean RUN_FAST = true;
+		if (RUN_FAST) {
+			testRealScenariosHowManyAnomalousUsers(new CategoryRarityScenarioCallbacks(), 0.136, 50, 900);
+		}
+		else {
+			testRealScenariosHowManyAnomalousUsers(new CategoryRarityScenarioCallbacks(), 0.138, 50);
+		}
 	}
 }
