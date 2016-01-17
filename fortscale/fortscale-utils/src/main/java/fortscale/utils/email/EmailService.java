@@ -7,6 +7,7 @@ import javax.mail.MessagingException;
  */
 public interface EmailService {
 
-    void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body) throws MessagingException;
+    void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, boolean isHTML)
+            throws MessagingException;
 
 }

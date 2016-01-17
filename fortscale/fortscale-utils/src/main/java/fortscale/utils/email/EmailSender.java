@@ -3,8 +3,11 @@ package fortscale.utils.email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Created by Amir Keren on 15/01/2016.
@@ -15,21 +18,22 @@ public class EmailSender implements EmailService {
     private JavaMailSender mailSender;
 
     @Override
-    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body)
+    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, boolean isHTML)
             throws MessagingException {
-        SimpleMailMessage email = new SimpleMailMessage();
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
         if (to != null && to.length > 0) {
-            email.setTo(to);
+            helper.setTo(to);
         }
         if (cc != null && cc.length > 0) {
-            email.setCc(cc);
+            helper.setCc(cc);
         }
         if (bcc != null && bcc.length > 0) {
-            email.setBcc(bcc);
+            helper.setBcc(bcc);
         }
-        email.setSubject(subject);
-        email.setText(body);
-        mailSender.send(email);
+        helper.setSubject(subject);
+        helper.setText(body, isHTML);
+        mailSender.send(message);
     }
 
 }
