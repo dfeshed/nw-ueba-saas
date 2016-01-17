@@ -1,5 +1,7 @@
 package fortscale.services.configuration.gds.state;
 
+import fortscale.services.configuration.gds.state.field.FieldMetadataContainer;
+
 /**
  * Schema definition state
  *
@@ -24,6 +26,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 	private String additionalScoreFieldsCSV;
 	private String additionalFieldsCSV;
 	private String additionalFiledToScoreFieldMapCSV;
+    private FieldMetadataContainer fieldMetadataContainer;
 
     public boolean hasSourceIp() {
         return hasSourceIp;
@@ -161,7 +164,11 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 		this.additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV;
 	}
 
-	@Override
+    public FieldMetadataContainer getFieldMetadataContainer() {
+        return fieldMetadataContainer;
+    }
+
+    @Override
     public void reset() {
         hasSourceIp = false;
         hasTargetIp = false;
@@ -179,5 +186,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 		additionalFieldsCSV = null;
 		additionalScoreFieldsCSV = null;
 		additionalFiledToScoreFieldMapCSV = null;
+
+        fieldMetadataContainer.reset();
     }
 }

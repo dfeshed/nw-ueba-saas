@@ -52,7 +52,7 @@ public class SchemaDefinitionConfigurationWriter extends ConfigurationWriterServ
 	public  boolean applyConfiguration() throws Exception{
 
         try {
-            String line = "";
+            String line;
 
             String dataSourceName = gdsConfigurationState.getDataSourceName();
 

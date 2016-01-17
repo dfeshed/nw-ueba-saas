@@ -338,10 +338,10 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static void printEntityTypeOptions(String dataSourceName) {
         System.out.println(String.format("Please chose the %s data source type : ", dataSourceName));
         System.out.println("[* - meaning mandatory field ? -meaning optional field] ");
-        System.out.println("1.base                    - user* , time*  ");
-        System.out.println("2.access_event            - user* , time*, source? (resolving,geo location)?  ");
-        System.out.println("3.auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
-        System.out.println("4.customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
+        System.out.println("1. base                    - user* , time*  ");
+        System.out.println("2. access_event            - user* , time*, source? (resolving,geo location)?  ");
+        System.out.println("3. auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
+        System.out.println("4. customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
     }
 
     private static class AdditionalFieldsWrapper {
