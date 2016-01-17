@@ -60,7 +60,7 @@ public abstract class AbstractModelTest {
 
 		@Override
 		public String toString() {
-			return num_of_events + "," + normalized_src_machine + "," + normalized_dst_machine + "," + time_bucket;
+			return num_of_events + "," + normalized_src_machine + "," + normalized_dst_machine + "," + time_bucket + " (" + getFormattedDate(time_bucket) + ")";
 		}
 
 		public String getFeature() {

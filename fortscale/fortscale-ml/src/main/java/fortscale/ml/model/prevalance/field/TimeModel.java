@@ -16,22 +16,28 @@ public class TimeModel implements Model {
 
 	private int timeResolution;
 	private int bucketSize;
-	private List<Double> smoothedCounterBuckets;
-	private OccurrencesHistogram occurrencesHistogram;
+	private List<Double> smoothedBuckets;
+	private CategoryRarityModel categoryRarityModel;
 
-	public TimeModel(int timeResolution, int bucketSize, Map<?, Double> timeToCounter) {
+	public TimeModel(int timeResolution, int bucketSize, int minEvents, int maxRareTimestampCount, int maxNumOfRareTimestamps, Map<?, Double> timeToCounter) {
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
 
 		List<Double> bucketHits = calcBucketHits(timeToCounter);
-		smoothedCounterBuckets = calcSmoothedBucketHits(bucketHits);
+		smoothedBuckets = calcSmoothedBuckets(bucketHits);
 
-		List<Double> smoothedCountersThatWereHit = IntStream.range(0, bucketHits.size())
+		Map<Integer, Double> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
 				.filter(bucketInd -> bucketHits.get(bucketInd) > 0)
-				.mapToDouble(smoothedCounterBuckets::get)
 				.boxed()
-				.collect(Collectors.toList());
-		occurrencesHistogram = new OccurrencesHistogram(smoothedCountersThatWereHit);
+				.collect(Collectors.groupingBy(
+						this::getRoundedCounter,
+						Collectors.reducing(
+								0D,
+								smoothedCounter -> 1D,
+								(smoothedCounter1, smoothedCounter2) -> smoothedCounter1 + smoothedCounter2
+						)));
+
+		categoryRarityModel = new CategoryRarityModel(minEvents, maxRareTimestampCount, maxNumOfRareTimestamps, roundedSmoothedCountersThatWereHitToNumOfBuckets);
 	}
 
 	private int calcNumOfBuckets() {
@@ -55,7 +61,7 @@ public class TimeModel implements Model {
 		return bucketHits;
 	}
 
-	private List<Double> calcSmoothedBucketHits(List<Double> bucketHits) {
+	private List<Double> calcSmoothedBuckets(List<Double> bucketHits) {
 		List<Double> smoothedBucketHits = createInitializedBuckets();
 		for (int bucketInd = 0; bucketInd < bucketHits.size(); bucketInd++) {
 			if (bucketHits.get(bucketInd) > 0) {
@@ -81,8 +87,11 @@ public class TimeModel implements Model {
 
 	@Override
 	public Double calculateScore(Object value) {
-		int bucketIndex = getBucketIndex((Long) value);
-		Double smoothedCounter = smoothedCounterBuckets.get(bucketIndex);
-		return occurrencesHistogram.score(smoothedCounter);
+		int bucketInd = getBucketIndex((Long) value);
+		return categoryRarityModel.calculateScore(getRoundedCounter(bucketInd));
+	}
+
+	private int getRoundedCounter(int bucketInd) {
+		return smoothedBuckets.get(bucketInd).intValue();
 	}
 }

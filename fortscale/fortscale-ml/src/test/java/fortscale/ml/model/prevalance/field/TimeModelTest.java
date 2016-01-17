@@ -13,6 +13,9 @@ import java.util.*;
 public class TimeModelTest extends AbstractModelTest {
 	public static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
 	public static final int DAILY_BUCKET_SIZE = 60 * 10;
+	private static final int MIN_EVENTS = 1;
+	private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
+	private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 6;
 
 	private double calcScore(List<Long> times, long timeToScore) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
@@ -23,7 +26,14 @@ public class TimeModelTest extends AbstractModelTest {
 	}
 
 	private double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
-		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, timeToCounter).calculateScore(timeToScore);
+		return new TimeModel(
+				DAILY_TIME_RESOLUTION,
+				DAILY_BUCKET_SIZE,
+				MIN_EVENTS,
+				MAX_RARE_TIMESTAMP_COUNT,
+				MAX_NUM_OF_RARE_TIMESTAMPS,
+				timeToCounter
+		).calculateScore(timeToScore);
 	}
 
 	private void assertScore(List<Long> times, long timeToScore, double expected) {
