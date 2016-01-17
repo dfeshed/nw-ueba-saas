@@ -59,6 +59,14 @@ public class CategoryRarityModelTest extends AbstractModelTest {
 	 *************************************************************************************
 	 *************************************************************************************/
 
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailWhenScoring0() {
+		int maxRareCount = 5;
+		int maxNumOfRareFeatures = 15;
+
+		calcScore(0, maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 1), 0);
+	}
+
 	@Test
 	public void shouldScoreNullWhenGivenNotEnoughOfData() {
 		int count = 10;

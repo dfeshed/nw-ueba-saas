@@ -88,7 +88,7 @@ public class TimeModel implements Model {
 	@Override
 	public Double calculateScore(Object value) {
 		int bucketInd = getBucketIndex((Long) value);
-		return categoryRarityModel.calculateScore(getRoundedCounter(bucketInd));
+		return categoryRarityModel.calculateScore(getRoundedCounter(bucketInd) + 1);
 	}
 
 	private int getRoundedCounter(int bucketInd) {

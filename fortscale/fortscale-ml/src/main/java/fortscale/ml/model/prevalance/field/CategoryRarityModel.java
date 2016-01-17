@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.ml.model.Model;
+import org.springframework.util.Assert;
 
 import javax.persistence.Transient;
 import java.util.Map;
@@ -91,6 +92,8 @@ public class CategoryRarityModel implements Model {
 			return null;
 		}
 		int featureCount = (int) value;
+		Assert.isTrue(featureCount > 0, featureCount < 0 ?
+				"featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
 		if (featureCount > getMaxRareCount()) {
 			return 0D;
 		}

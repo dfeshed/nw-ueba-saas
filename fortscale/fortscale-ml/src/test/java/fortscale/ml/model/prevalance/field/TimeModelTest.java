@@ -15,9 +15,9 @@ public class TimeModelTest extends AbstractModelTest {
 	public static final int DAILY_BUCKET_SIZE = 60 * 10;
 	private static final int MIN_EVENTS = 1;
 	private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
-	private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 6;
+	private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 5;
 
-	private double calcScore(List<Long> times, long timeToScore) {
+	private Double calcScore(List<Long> times, long timeToScore) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
 		for (long time : times) {
 			timeToCounter.put(time, timeToCounter.getOrDefault(time, 0D) + 1);
@@ -25,7 +25,7 @@ public class TimeModelTest extends AbstractModelTest {
 		return calcScore(timeToCounter, timeToScore);
 	}
 
-	private double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
+	private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
 		return new TimeModel(
 				DAILY_TIME_RESOLUTION,
 				DAILY_BUCKET_SIZE,
@@ -55,16 +55,25 @@ public class TimeModelTest extends AbstractModelTest {
 		}
 		assertScore(times, epochSeconds, 0);
 	}
-	
+
 	@Test
-	public void elementaryCheckWithOneOutlier() {
+	public void elementaryCheckWithOneSignificantOutlier() {
 		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			times.add(1000L);
 		}
+		long epochSeconds = 7200;
+		assertScore(times, epochSeconds, 100);
+	}
+
+	@Test
+	public void elementaryCheckWithOneNotSignificantOutlier() {
+		List<Long> times = new ArrayList<>();
+		for (int i = 0; i < 50; i++) {
+			times.add(1000L);
+		}
 		long epochSeconds = 6600;
-		times.add(epochSeconds);
-		assertScore(times, epochSeconds, 44);
+		assertScore(times, epochSeconds, 31);
 	}
 
 	@Test
@@ -88,10 +97,10 @@ public class TimeModelTest extends AbstractModelTest {
 			times.add((long)(rnd.nextDouble( ) * 6000));
 		}
 		long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-		double scores[] = new double[]{99, 93, 74, 43};
+		double scores[] = new double[]{100, 94, 80, 59};
 		for (int i = 0; i < scores.length; i++) {
-			times.add(isolatedTimes[i]);
 			assertScore(times, isolatedTimes[i], scores[i]);
+			times.add(isolatedTimes[i]);
 		}
 		assertScore(times, 500, 0);
 	}
@@ -110,12 +119,12 @@ public class TimeModelTest extends AbstractModelTest {
 			}
 		}
 
-		long[] timesToScore = new long[]{14000, 11000, 10000, 9000};
-		double[] scores = new double[]{99, 93, 65, 13};
+		long[] timesToScore = new long[]{14000, 10500, 10000, 9000};
+		double[] scores = new double[]{100, 99, 31, 4};
 		for (int i = 0; i < timesToScore.length; i++) {
 			List<Long> times = new ArrayList<>(timesClustered);
-			times.add(timesToScore[i]);
 			assertScore(times, timesToScore[i], scores[i]);
+			times.add(timesToScore[i]);
 		}
 	}
 
@@ -128,16 +137,17 @@ public class TimeModelTest extends AbstractModelTest {
 			times.add(epochSeconds);
 		}
 
-		double scores[] = new double[]{99, 92, 74, 44};
+		double scores[] = new double[]{100, 94, 80, 59};
+		double finalScore = 32;
 		long dispersedTimes[] = new long[scores.length];
 		for (int i = 0; i < scores.length; i++) {
 			dispersedTimes[i] = 3000 + (i + 1) * 6000;
-			times.add(dispersedTimes[i]);
 			assertScore(times, dispersedTimes[i], scores[i]);
+			times.add(dispersedTimes[i]);
 		}
 
 		for (int i = 0; i < scores.length; i++) {
-			assertScore(times, dispersedTimes[i], scores[scores.length - 1]);
+			assertScore(times, dispersedTimes[i], finalScore);
 		}
 	}
 
@@ -146,15 +156,16 @@ public class TimeModelTest extends AbstractModelTest {
 	public void testNewWorkingTimeScore() {
 		int scenarioSteps[] = new int[]{450, 900, 900};
 		int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-		int scenarioScoreThresholds[] = new int[]{0, 0, 16};
+		int scenarioScoreThresholds[] = new int[]{0, 3, 16};
 		for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
 			List<Long> times = new ArrayList<>();
 			int step = 200;
 			for (int i = 0; i < 5; i++) {
 				long epochSeconds = 0; //12AM UTC
-				for (int j = 0; j < 18; j++) {
-					times.add(epochSeconds);
+				times.add(epochSeconds);
+				for (int j = 0; j < 17; j++) {
 					assertScore(times, epochSeconds, 0);
+					times.add(epochSeconds);
 					epochSeconds += step;
 				}
 			}
@@ -166,8 +177,8 @@ public class TimeModelTest extends AbstractModelTest {
 			double score;
 			double prevScore = 100;
 			for (int j = 0; j < numberOfSteps; j++) {
-				times.add(epochSeconds);
 				score = calcScore(times, epochSeconds);
+				times.add(epochSeconds);
 				Assert.assertTrue(prevScore >= score);
 				prevCycleScores[j] = score;
 				prevScore = score;
@@ -177,16 +188,16 @@ public class TimeModelTest extends AbstractModelTest {
 			for (int i = 0; i < 4; i++) {
 				epochSeconds = 43200; //12PM UTC
 				for (int j = 0; j < numberOfSteps; j++) {
-					times.add(epochSeconds);
 					score = calcScore(times, epochSeconds);
+					times.add(epochSeconds);
 					Assert.assertTrue(prevCycleScores[j] >= score);
 					prevCycleScores[j] = score;
 					epochSeconds += step;
 				}
 				for (int j = numberOfSteps - 2; j < numberOfSteps; j++) {
-					times.add(epochSeconds);
 					score = calcScore(times, epochSeconds);
-					Assert.assertTrue(score <= scenarioScoreThresholds[scenario]);
+					times.add(epochSeconds);
+					Assert.assertTrue(score + " <= " + scenarioScoreThresholds[scenario] + " (scenario #" + scenario + ")?", score <= scenarioScoreThresholds[scenario]);
 					prevCycleScores[j] = score;
 					epochSeconds += step;
 				}
@@ -237,6 +248,6 @@ public class TimeModelTest extends AbstractModelTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.055, 90, 900);//920);
+		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.058, 50, 920);
 	}
 }
