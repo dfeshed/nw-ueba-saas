@@ -17,7 +17,7 @@ public class TimeModelBuilderTest {
 		Integer bucketSize = 10;
 		int minEvents = 1;
 		int maxRareTimestampCount = 10;
-		int maxNumOfRareTimestamps = 6;
+		int maxNumOfRareTimestamps = 5;
 		TimeModelBuilder builder = new TimeModelBuilder(getConfig(timeResolution, bucketSize, minEvents, maxRareTimestampCount, maxNumOfRareTimestamps));
 		Model model = builder.build(new GenericHistogram());
 		Assert.assertEquals(timeResolution, Whitebox.getInternalState(model, "timeResolution"));

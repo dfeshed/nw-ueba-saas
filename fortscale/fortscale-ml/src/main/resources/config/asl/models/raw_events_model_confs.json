@@ -15,8 +15,11 @@
       },
       "builder": {
         "type": "time_model_builder",
+        "minEvents": 10,
+        "maxRareTimestampCount": 10,
+        "maxNumOfRareTimestamps": 5,
         "timeResolution": 86400,
-        "bucketSize": 600
+        "bucketSize": 600,
       }
     },
     {
@@ -119,6 +122,9 @@
       },
       "builder": {
         "type": "time_model_builder",
+        "minEvents": 10,
+        "maxRareTimestampCount": 10,
+        "maxNumOfRareTimestamps": 5,
         "timeResolution": 86400,
         "bucketSize": 600
       }
@@ -223,6 +229,9 @@
       },
       "builder": {
         "type": "time_model_builder",
+        "minEvents": 10,
+        "maxRareTimestampCount": 10,
+        "maxNumOfRareTimestamps": 5,
         "timeResolution": 86400,
         "bucketSize": 600
       }
@@ -302,6 +311,9 @@
       },
       "builder": {
         "type": "time_model_builder",
+        "minEvents": 10,
+        "maxRareTimestampCount": 10,
+        "maxNumOfRareTimestamps": 5,
         "timeResolution": 86400,
         "bucketSize": 600
       }
