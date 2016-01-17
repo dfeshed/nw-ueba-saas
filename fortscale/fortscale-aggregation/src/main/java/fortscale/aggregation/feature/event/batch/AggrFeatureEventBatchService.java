@@ -75,18 +75,14 @@ public class AggrFeatureEventBatchService {
         if(sender != null) {
             int i = 0;
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
-            Long lastEventEndTime = bucketEndTime;
-
             do{
                 PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.END_TIME_FIELD);
                 aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeBetween(bucketStartTime, bucketEndTime, pageRequest);
                 for (AggrFeatureEventToSend aggrFeatureEventToSend : aggrFeatureEventToSendList){
                     sendEvent(sender, aggrFeatureEventToSend);
-                    lastEventEndTime = aggrFeatureEventToSend.getEndTime();
                 }
                 i++;
             } while(aggrFeatureEventToSendList.size() == DEFAULT_PAGE_SIZE);
-            sender.callSynchronizer(lastEventEndTime);
         }
     }
 

@@ -79,6 +79,8 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 			endTimeGt = endTimeLte;
 		}
 
+		eventSender.callSynchronizer(0L);
+
 		logger.info("Finish running build aggregated events job");
 	}
 

@@ -47,6 +47,7 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		// This implementation currently works only with ReachSumMetricsDecider
 		// TODO: refctor to work with different deciders  
 		kafkaSynchronize.synchronize(messagesCounter);
+		messagesCounter = 0;
 
 	}
 
@@ -57,7 +58,6 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		if (messagesCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messagesCounter, epochTime);
 			callSynchronizer(epochTime);
-			messagesCounter = 0;
 		}
 	}
 
