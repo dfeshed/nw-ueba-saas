@@ -72,15 +72,14 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		String[] impalaTablesList = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTables").split(",");
 		for (String impalaTable : impalaTablesList) {
 			EventTableHandlers handler = new EventTableHandlers();
-			
-			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
-
+			super.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
 			String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields" + impalaTable);
 			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			handler.recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
 			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
+
 
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
@@ -150,7 +149,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 						if (output!=null) {
 							// append to hadoop
-							Long timestamp = RecordExtensions.getLongValue(record, handler.timestampField);
+							Long timestamp = RecordExtensions.getLongValue(record, super.timestampField);
 							handler.appender.writeLine(output, timestamp.longValue());
 
 							// ensure user exists in mongodb
@@ -295,7 +294,6 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String hadoopPath;
 		public String hadoopFilename;
 		public String impalaTableName;
-		public String timestampField;
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public RecordToStringItemsProcessor recordKeyExtractor;
