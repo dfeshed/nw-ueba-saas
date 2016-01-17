@@ -149,4 +149,9 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
 						dateRangeFilter, entityName, ids);
 	}
+
+	@Override
+	public List<Alert> getAlertSummary(List<String> severities, long endDate) {
+		return alertsRepository.getAlertSummary(severities, endDate);
+	}
 }
