@@ -1,6 +1,6 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.StreamingConfigurationService;
+import fortscale.services.configuration.StreamingConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 import org.slf4j.LoggerFactory;
 
@@ -9,15 +9,15 @@ import java.io.FileWriter;
 import java.util.List;
 
 /**
- * Implementation of Geo-location task configuration
+ * Implementation of Geo-location task configuration writer
  *
  * Created by idanp on 12/21/2015.
  */
-public class GeoLocationConfiguration extends StreamingConfigurationService {
+public class GeoLocationConfigurationWriter extends StreamingConfigurationWriterService {
 
-    public GeoLocationConfiguration ()
+    public GeoLocationConfigurationWriter()
     {
-        logger = LoggerFactory.getLogger(GeoLocationConfiguration.class);
+        logger = LoggerFactory.getLogger(GeoLocationConfigurationWriter.class);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class GeoLocationConfiguration extends StreamingConfigurationService {
             this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
             result = true;
         } catch (Exception e) {
-            logger.error("There was an exception during UserNormalizationTaskConfiguration init part execution - {} ", e.getMessage());
+            logger.error("There was an exception during UserNormalizationTaskConfigurationWriter init part execution - {} ", e.getMessage());
             System.out.println("There was an exception during execution please see more info at the log ");
             result = false;
 
