@@ -20,6 +20,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(BuildAggregatedEventsJob.class);
 
+	private static final int SECONDS_IN_DAY = 86400;
 	private static final String ENTITY_EVENTS_START_TIME_FIELD = "startTime";
 	private static final int DEFAULT_BATCH_SIZE = 1000;
 	private static final int DEFAULT_HOURS_TO_RUN = 24;
@@ -69,13 +70,23 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		// Create event sender
 		AggregationEventSender eventSender = new AggregationEventSender(batchSize, jobClassToMonitor, jobToMonitor,
 				MILLISECONDS_TO_WAIT, checkRetries);
+		long endTimeGt = batchStartTime;
+		while(endTimeGt<batchEndTime){
+			long endTimeLte = Math.min(endTimeGt+SECONDS_IN_DAY, batchEndTime);
 
-		// Run the aggregation event builder service
-		aggrFeatureEventBatchService.buildAndSave(eventSender, batchStartTime, batchEndTime);
+			runStep(eventSender, endTimeGt, endTimeLte);
 
-		// Delete events after sending
-		aggrFeatureEventBatchService.deleteEvents(batchStartTime, batchEndTime);
+			endTimeGt = endTimeLte;
+		}
 
 		logger.info("Finish running build aggregated events job");
+	}
+
+	private void runStep(AggregationEventSender eventSender, long endTimeGt, long endTimeLte){
+		// Run the aggregation event builder service
+		aggrFeatureEventBatchService.buildAndSave(eventSender, endTimeGt, endTimeLte);
+
+		// Delete events after sending
+		aggrFeatureEventBatchService.deleteEvents(endTimeGt, endTimeLte);
 	}
 }
