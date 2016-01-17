@@ -64,16 +64,21 @@ public class TimeModel implements Model {
 	private List<Double> calcSmoothedBuckets(List<Double> bucketHits) {
 		List<Double> smoothedBucketHits = createInitializedBuckets();
 		for (int bucketInd = 0; bucketInd < bucketHits.size(); bucketInd++) {
-			if (bucketHits.get(bucketInd) > 0) {
-				cyclicallyAddToBucket(smoothedBucketHits, bucketInd, bucketHits.get(bucketInd));
-				for (int distance = 1; distance <= SMOOTHING_DISTANCE; distance++) {
-					double addVal = bucketHits.get(bucketInd) * (1 - (distance - 1) / ((double) SMOOTHING_DISTANCE));
-					cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
-					cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
-				}
+			double hits = bucketHits.get(bucketInd);
+			if (hits > 0) {
+				addSmoothedHits(smoothedBucketHits, bucketInd, hits, SMOOTHING_DISTANCE);
 			}
 		}
 		return smoothedBucketHits;
+	}
+
+	private void addSmoothedHits(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
+		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
+		for (int distance = 1; distance <= smoothingDistance; distance++) {
+			double addVal = hits * Sigmoid.calcLogisticFunc(smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
+			cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
+			cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
+		}
 	}
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {

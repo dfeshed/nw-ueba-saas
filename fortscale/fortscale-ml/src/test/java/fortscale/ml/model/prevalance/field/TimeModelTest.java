@@ -1,6 +1,7 @@
 package fortscale.ml.model.prevalance.field;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -57,23 +58,13 @@ public class TimeModelTest extends AbstractModelTest {
 	}
 
 	@Test
-	public void elementaryCheckWithOneSignificantOutlier() {
+	public void elementaryCheckWithOneOutlier() {
 		List<Long> times = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			times.add(1000L);
 		}
-		long epochSeconds = 7200;
-		assertScore(times, epochSeconds, 100);
-	}
-
-	@Test
-	public void elementaryCheckWithOneNotSignificantOutlier() {
-		List<Long> times = new ArrayList<>();
-		for (int i = 0; i < 50; i++) {
-			times.add(1000L);
-		}
-		long epochSeconds = 6600;
-		assertScore(times, epochSeconds, 31);
+		long epochSeconds = 5000;
+		assertScore(times, epochSeconds, 60);
 	}
 
 	@Test
@@ -119,12 +110,10 @@ public class TimeModelTest extends AbstractModelTest {
 			}
 		}
 
-		long[] timesToScore = new long[]{14000, 10500, 10000, 9000};
-		double[] scores = new double[]{100, 99, 31, 4};
+		long[] timesToScore = new long[]{14000, 10500, 10000, 9000, 8500};
+		double[] scores = new double[]{100, 100, 99, 89, 60};
 		for (int i = 0; i < timesToScore.length; i++) {
-			List<Long> times = new ArrayList<>(timesClustered);
-			assertScore(times, timesToScore[i], scores[i]);
-			times.add(timesToScore[i]);
+			assertScore(timesClustered, timesToScore[i], scores[i]);
 		}
 	}
 
@@ -141,7 +130,7 @@ public class TimeModelTest extends AbstractModelTest {
 		double finalScore = 32;
 		long dispersedTimes[] = new long[scores.length];
 		for (int i = 0; i < scores.length; i++) {
-			dispersedTimes[i] = 3000 + (i + 1) * 6000;
+			dispersedTimes[i] = 3000 + (i + 1) * 9000;
 			assertScore(times, dispersedTimes[i], scores[i]);
 			times.add(dispersedTimes[i]);
 		}
@@ -156,7 +145,7 @@ public class TimeModelTest extends AbstractModelTest {
 	public void testNewWorkingTimeScore() {
 		int scenarioSteps[] = new int[]{450, 900, 900};
 		int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-		int scenarioScoreThresholds[] = new int[]{0, 3, 16};
+		int scenarioScoreThresholds[] = new int[]{0, 7, 16};
 		for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
 			List<Long> times = new ArrayList<>();
 			int step = 200;
@@ -248,6 +237,6 @@ public class TimeModelTest extends AbstractModelTest {
 
 	@Test
 	public void testRealScenariosHowManyAnomalousUsers() throws IOException {
-		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.058, 50, 920);
+		testRealScenariosHowManyAnomalousUsers(new TimeModelScenarioCallbacks(), 0.076, 50, 920);
 	}
 }
