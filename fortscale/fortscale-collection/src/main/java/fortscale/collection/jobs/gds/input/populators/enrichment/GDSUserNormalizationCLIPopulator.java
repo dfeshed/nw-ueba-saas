@@ -84,11 +84,12 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             //Domain field  - for the enrich part
             System.out.println("please enter the field name that will contain the user Domain value:");
             sourceUserParamsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, gdsInputHandler.getInput()));
+			sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, EMPTY_STR));
         } else {
             sourceUserParamsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, "fake"));
 
             //In case of fake domain - enter the actual domain value the PS want
-            sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, EMPTY_STR));
+            sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, dataSourceName + "Connect"));
         }
 
         //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
