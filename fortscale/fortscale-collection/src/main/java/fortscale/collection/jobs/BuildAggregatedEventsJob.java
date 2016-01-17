@@ -20,7 +20,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(BuildAggregatedEventsJob.class);
 
-	private static final int SECONDS_IN_DAY = 86400;
+	private static final int SECONDS_IN_HOUR = 3600;
 	private static final String ENTITY_EVENTS_START_TIME_FIELD = "startTime";
 	private static final int DEFAULT_BATCH_SIZE = 1000;
 	private static final int DEFAULT_HOURS_TO_RUN = 24;
@@ -72,7 +72,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 				MILLISECONDS_TO_WAIT, checkRetries);
 		long endTimeGt = batchStartTime;
 		while(endTimeGt<batchEndTime){
-			long endTimeLte = Math.min(endTimeGt+SECONDS_IN_DAY, batchEndTime);
+			long endTimeLte = Math.min(endTimeGt+ SECONDS_IN_HOUR, batchEndTime);
 
 			runStep(eventSender, endTimeGt, endTimeLte);
 
