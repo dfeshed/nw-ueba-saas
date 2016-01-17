@@ -105,13 +105,13 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 
-	@Override protected boolean processLine(String line, ItemContext itemContext) throws IOException {
+	@Override protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record rec = morphline.process(line,itemContext);
 		Record record = null;
-		if (rec==null)
-			return false;
-		
+		if (rec==null) {
+			return null;
+		}
 		// treat the event according to the event type
 		Object eventCodeObj = rec.getFirstValue("eventCode");
 		if (eventCodeObj!=null) {
@@ -136,7 +136,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 						record = this.morphlineEnrichment.process(processedRecord, itemContext);
 						if (record == null) {
 							// record was filtered
-							return false;
+							return null;
 						}
 
 					}
@@ -157,18 +157,19 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							//updateOrCreateUserWithClassifierUsername(record);
 
 							// output event to streaming platform
-							if (handler.streamWriter!=null && sendToKafka == true)
+							if (handler.streamWriter!=null && sendToKafka == true) {
 								handler.streamWriter.send(handler.recordKeyExtractor.process(record),
 										handler.recordToMessageString.toJSON(record));
+							}
 
-							return true;
+							return record;
 						}
 					}
 
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	@Override
