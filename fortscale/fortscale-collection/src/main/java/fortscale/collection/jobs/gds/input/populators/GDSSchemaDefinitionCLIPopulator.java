@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.input.populators;
 
+import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
@@ -57,13 +58,12 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
-    // TODO check if property available
-    @Value("${fortscale.data.source}")
-    private String currentDataSources;
+    @Value("${fortscale.data.source:xxxx}")
+    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf"; // TODO only for windows workaround
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
-    private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";
+    private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
     private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE";
     private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
     private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
@@ -233,13 +233,39 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         System.out.println("Please enter the new data source name:");
         String dataSourceName = gdsInputHandler.getInput();
 
-        printDataSourceTypeOptions(dataSourceName);
-        String dataSourceType = gdsInputHandler.getInput();
+        printEntityTypeOptions(dataSourceName);
+        String dataSourceType = handleEntityTypeSelection();
 
         paramsMap.put(DATA_SOURCE_NAME_PARAM, new ConfigurationParam(DATA_SOURCE_NAME_PARAM, false, dataSourceName));
         paramsMap.put(DATA_SOURCE_TYPE_PARAM, new ConfigurationParam(DATA_SOURCE_TYPE_PARAM, false, dataSourceType.toLowerCase()));
 
         paramsMap.put(DATA_SOURCE_LISTS, new ConfigurationParam(DATA_SOURCE_LISTS, false, currentDataSources));
+    }
+
+    private String handleEntityTypeSelection() throws Exception {
+        String selection = gdsInputHandler.getInput().trim();
+
+        while (true) {
+            switch (selection) {
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_BASE: {
+                    return "base";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_ACCESS_EVENT: {
+                    return "access_event";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_AUTH_EVENT: {
+                    return "auth_event";
+                }
+                case GDSMenuOptions.GDS_SCHEMA_TYPE_CUSTOMIZED_AUTH_EVENT: {
+                    return "customized_auth_event";
+                }
+                default: {
+                    System.out.println("Illegal input. Please enter [1-4]");
+                    selection = gdsInputHandler.getInput().trim();
+                    break;
+                }
+            }
+        }
     }
 
     private AdditionalFieldsWrapper populateAdditionalFields(String dataSourceName) throws Exception {
@@ -298,9 +324,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
 
             //remove the last comma from the CSVs
-            additionalScoreFieldsCSV = additionalScoreFieldsCSV.substring(0, additionalScoreFieldsCSV.length() - 1);
-            additionalFieldsCSV = additionalFieldsCSV.substring(0, additionalFieldsCSV.length() - 1);
-            additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV.substring(0, additionalFiledToScoreFieldMapCSV.length() - 1);
+            additionalScoreFieldsCSV = additionalScoreFieldsCSV.substring(0, additionalScoreFieldsCSV.length()>0 ? additionalScoreFieldsCSV.length()  - 1 : 0);
+            additionalFieldsCSV = additionalFieldsCSV.substring(0, additionalFieldsCSV.length()>0 ? additionalFieldsCSV.length() - 1 : 0);
+            additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV.substring(0, additionalFiledToScoreFieldMapCSV.length()>0 ? additionalFiledToScoreFieldMapCSV.length() - 1: 0);
 
             return new AdditionalFieldsWrapper(additionalFieldsCSV, additionalScoreFieldsCSV, additionalFiledToScoreFieldMapCSV);
         }
@@ -309,13 +335,13 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         }
     }
 
-    private static void printDataSourceTypeOptions(String dataSourceName) {
-        System.out.println(String.format("What is the %s data source type (base/access_event/auth_event/customized_auth_event): ", dataSourceName));
-        System.out.println("* - meaning mandatory field ? -meaning optional field: ");
-        System.out.println("         base                    - user* , time*  ");
-        System.out.println("         access_event            - user* , time*, source? (resolving,geo location)?  ");
-        System.out.println("         auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
-        System.out.println("         customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
+    private static void printEntityTypeOptions(String dataSourceName) {
+        System.out.println(String.format("Please chose the %s data source type : ", dataSourceName));
+        System.out.println("[* - meaning mandatory field ? -meaning optional field] ");
+        System.out.println("1. base                    - user* , time*  ");
+        System.out.println("2. access_event            - user* , time*, source? (resolving,geo location)?  ");
+        System.out.println("3. auth_event              - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?  ");
+        System.out.println("4. customized_auth_event   - user* , time*, source? (resolving,geo location)? , target? (resolving,geo location)?, action? , data usage? ");
     }
 
     private static class AdditionalFieldsWrapper {
