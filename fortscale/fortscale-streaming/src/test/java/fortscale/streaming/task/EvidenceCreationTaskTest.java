@@ -1,5 +1,11 @@
 package fortscale.streaming.task;
 
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.TaskContext;
+import org.apache.samza.task.TaskCoordinator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.*;
@@ -13,6 +19,22 @@ import java.util.List;
  * Created by rans on 24/12/15.
  */
 public class EvidenceCreationTaskTest extends AbstractTaskTest{
+
+    //copy this class to every test class extending the class you want to test
+    public static class EvidenceCreationTaskSubclass extends EvidenceCreationTask implements TestTask{
+        @Override
+        protected void wrappedInit(Config config, TaskContext context) throws Exception {
+            super.wrappedInit(config, context);
+            initTest(config, context);
+        }
+        @Override
+        protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
+                                      TaskCoordinator coordinator) throws Exception {
+            super.wrappedProcess(envelope, collector, coordinator);
+            processTest();
+        }
+    }
+
     protected static final String STREAMING_CONFIG_FILE = "evidence-creation-task.properties";
     protected final static String SPRING_CONTEXT_FIILE = "classpath*:META-INF/spring/samza-task-test-context.xml";
 
@@ -21,14 +43,15 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
     private String event2 = "{\"categoryString\":\"Kerberos Service Ticket Operations\",\"LR\":false,\"eventscore\":0.0,\"normalized_src_machine_score\":0.0,\"normalized_dst_machine_score\":0.0,\"dst_class\":\"Server\",\"nat_src_machine\":\"CLEAN4_PC\",\"machine_name\":\"CLEAN4_PC\",\"date_time_score\":70.0,\"isUserAdministrator\":false,\"src_class\":\"Desktop\",\"date_time\":\"2015-12-26 16:18:22\",\"normalized_username\":\"demouser3@somebigcompany.com\",\"account_name\":\"demouser3@somebigcompany.com\",\"service_id\":\"FORTSCALE\\\\FS-DC-01$\",\"normalized_src_machine\":\"CLEAN4_PC\",\"client_address\":\"7.0.0.4\",\"date_time_unix\":\"1451146702\",\"isUserExecutive\":false,\"recordNumber\":\"924637017\",\"failure_code\":\"0x0\",\"is_nat\":\"false\",\"last_state\":\"HDFSWriterStreamTask\",\"account_domain\":\"FORTSCALE\",\"logfile\":\"Security\",\"service_name\":\"demouser1_SRV\",\"normalized_dst_machine\":\"DEMOUSER1_SRV\",\"isUserServiceAccount\":false,\"data_source\":\"kerberos_logins\",\"eventCode\":\"4769\",\"timeGeneratedRaw\":\"2015-12-26T16:18:22.000+03:00\",\"failure_codescore\":0.0,\"ticket_options\":\"0x40810010\",\"sourceName\":\"Microsoft Windows security auditing.\",\"is_sensitive_machine\":false}";
 
     //expected messages for output topic
-    private String outEvent1 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451144083000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 15:34:43\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451144083000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":60,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451144083000}";
-    private String outEvent2 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTask\",\"endDate\":1451146702000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 16:18:22\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451146702000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":70,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451146702000}";
+    private String outEvent1 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTaskSubclass\",\"endDate\":1451144083000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 15:34:43\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451144083000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":60,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451144083000}";
+    private String outEvent2 = "{\"severity\":\"Low\",\"entityTypeFieldName\":\"normalized_username\",\"last_state\":\"EvidenceCreationTaskSubclass\",\"endDate\":1451146702000,\"entityType\":\"User\",\"anomalyType\":null,\"anomalyValue\":\"2015-12-26 16:18:22\",\"numOfEvents\":1,\"supportingInformation\":null,\"top3events\":null,\"retentionDate\":1451146702000,\"dataEntitiesIds\":[\"kerberos_logins\"],\"score\":70,\"timeframe\":null,\"anomalyTypeFieldName\":\"event_time\",\"entityName\":\"demouser3@somebigcompany.com\",\"evidenceType\":\"AnomalySingleEvent\",\"top3eventsJsonStr\":null,\"name\":null,\"startDate\":1451146702000}";
 
     @BeforeClass
     public static void beforeClass() throws IOException{
         propertiesPath = STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
         springContextFile = SPRING_CONTEXT_FIILE;
-        addInfo = null;
+        //add the subclass as the name of the class to load in Samza container
+        addInfo.put("task.class", "fortscale.streaming.task.EvidenceCreationTaskTest$EvidenceCreationTaskSubclass");
         setupBefore();
     }
     @Before
@@ -43,7 +66,7 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         super.cleanupAfter();
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
 
@@ -58,15 +81,11 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         List<String> messages = readMessages(2L, outputTopic);
 
         JSONObject jsonEvent1 = new JSONObject(messages.get(0));
-        //remove element "id" as it is generated on the fly
-        jsonEvent1.remove("id");
         JSONObject jsonExpectedEvent1 = new JSONObject(outEvent1);
         JSONObject jsonEvent2 = new JSONObject(messages.get(1));
-        //remove element "id" as it is generated on the fly
-        jsonEvent2.remove("id");
         JSONObject jsonExpectedEvent2 = new JSONObject(outEvent2);
-        JSONAssert.assertEquals(jsonEvent1, jsonExpectedEvent1, false);
-        JSONAssert.assertEquals(jsonEvent2, jsonExpectedEvent2, false);
+        JSONAssert.assertEquals(jsonExpectedEvent1, jsonEvent1, false);
+        JSONAssert.assertEquals(jsonExpectedEvent2, jsonEvent2, false);
 
         //stop the job
         stopJob();

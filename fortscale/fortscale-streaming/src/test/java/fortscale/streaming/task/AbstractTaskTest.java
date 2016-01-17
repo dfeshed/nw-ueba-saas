@@ -1,7 +1,6 @@
 package fortscale.streaming.task;
 
 import fortscale.utils.logging.Logger;
-import kafka.admin.TopicCommand;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
@@ -16,6 +15,7 @@ import kafka.utils.*;
 import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.samza.config.MapConfig;
+import org.apache.samza.container.TaskName;
 import org.apache.samza.job.ApplicationStatus;
 import org.apache.samza.job.StreamJob;
 import org.apache.samza.job.StreamJobFactory;
@@ -29,13 +29,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Created by rans on 29/12/15.
  */
-public class AbstractTaskTest {
+public class AbstractTaskTest implements TestTask {
+
+    //TestTask instance
+    protected static TestTask testTask;
 
     //private variables
     private static Logger logger = Logger.getLogger(AbstractTaskTest.class);
@@ -58,9 +62,9 @@ public class AbstractTaskTest {
     final static protected String clientName = "Client_test_0";
     protected static String propertiesPath;
     protected static String springContextFile;
-    protected static Map<String, String> addInfo;
+    protected static Map<String, String> addInfo = new HashMap<String, String>();
 
-    protected KeyValueStore keyValueStore;
+    protected static volatile KeyValueStore keyValueStore;
     /**
      * Perform initialization of Samza, Kafka, etc.
      * @throws IOException
@@ -193,17 +197,15 @@ public class AbstractTaskTest {
         job.submit();
         assertEquals(ApplicationStatus.Running, job.waitForStatus(ApplicationStatus.Running, 60000));
 
-        //test that the Samza task completed its initialization
-        //Note: as the method "isInitialized" is static, you cannot run more than one task in a JVM!
-        Class c = Class.forName(jobConfig.get("task.class"));
-        Method m = c.getMethod("isInitialized");
-        Object o;
-        do {
-            Thread.sleep(3000);
-            o = m.invoke(null, null);
-        }
-        while (!(Boolean)o);
+        TestTask.awaitTaskRegistered();
+        Map<TaskName, TestTask> tasks = TestTask.getTasks();
+        assertEquals("Should only have a single partition in this task", 1, tasks.size());
 
+        //get the running task
+        TestTask task = tasks.values().iterator().next();
+        //wait for task to complete initialization
+        task.initFinished.await(60, TimeUnit.SECONDS);
+        assertEquals(0, task.initFinished.getCount());
     }
 
     /**
