@@ -1,0 +1,13 @@
+//- Declaration
+mixin severityIcon(severity, width)
+    - var imageSrc
+    - var imageWidth = width || "100%"
+    if severity == "Critical"
+        - imageSrc="../../assets/images/severity_icon_critical.png"
+    else if severity == "High"
+        - imageSrc="../../assets/images/severity_icon_high.png"
+    else if severity == "Medium"
+        - imageSrc="../../assets/images/severity_icon_medium.png"
+    else if severity == "Low"
+        - imageSrc="../../assets/images/severity_icon_low.png"
+    img(src!=imageSrc width!=imageWidth alt!=severity)
