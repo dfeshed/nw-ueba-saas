@@ -229,9 +229,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		String key = getBucketKey(featureBucket);
 		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(oldFeatureBucket == null){
+		if(oldFeatureBucket == null && featureBucket.getId() == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
-		} else if(featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
+		} else if(featureBucket.getId() != null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
 			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
 		} else{
 			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);

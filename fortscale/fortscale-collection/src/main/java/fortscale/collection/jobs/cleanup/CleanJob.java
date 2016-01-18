@@ -76,6 +76,8 @@ public class CleanJob extends FortscaleJob {
 	private String collectionServiceName;
 	@Value("${step.param}")
 	private String stepParam;
+	@Value("${brutal.delete}")
+	private String boolBrutalDelete;
 
 	private Date startTime;
 	private Date endTime;
@@ -84,6 +86,8 @@ public class CleanJob extends FortscaleJob {
 	private Technology technology;
 	private CleanupStep cleanupStep;
 	private String cleanupStepId;
+	//delete files physically
+	private boolean isBrutalDelete;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -112,6 +116,8 @@ public class CleanJob extends FortscaleJob {
 			return;
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
+		isBrutalDelete = jobDataMapExtension.getJobDataMapBooleanValue(map, boolBrutalDelete, true);
+		kafkaUtils.setIsBrutalDelete(isBrutalDelete);
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (map.containsKey(dataSourcesParam)) {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
