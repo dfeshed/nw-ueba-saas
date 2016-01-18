@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
-	private static final int DEFAULT_PAGE_SIZE = 50000;
+	private static final int DEFAULT_PAGE_SIZE = 200000;
 
 
 	@Value("${streaming.event.field.type}")
@@ -71,21 +71,18 @@ public class EntityEventBuilder {
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
-		int i = 0;
 		List<EntityEventData> listOfEntityEventData = Collections.emptyList();
-		do {
-			PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
-			listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmitted(entityEventConf.getName(), pageRequest);
-			for (EntityEventData entityEventData : listOfEntityEventData) {
-				if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
-					listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
-					break;
-				}
-				sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
-				entityEventDataStore.storeEntityEventData(entityEventData);
+		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
+		PageRequest pageRequest = new PageRequest(0, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
+		listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmitted(entityEventConf.getName(), pageRequest);
+		for (EntityEventData entityEventData : listOfEntityEventData) {
+			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
+				listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
+				break;
 			}
-			i++;
-		}while(listOfEntityEventData.size() == DEFAULT_PAGE_SIZE);
+			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
+			entityEventDataStore.storeEntityEventData(entityEventData);
+		}
 	}
 
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds, IEntityEventSender sender, boolean updateStore) {
