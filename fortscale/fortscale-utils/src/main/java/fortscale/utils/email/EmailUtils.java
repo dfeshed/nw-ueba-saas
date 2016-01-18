@@ -1,6 +1,7 @@
 package fortscale.utils.email;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.mail.*;
@@ -29,6 +30,16 @@ public class EmailUtils {
     private String port;
     @Value("${smtp.auth}")
     private String auth;
+
+	/**
+     *
+     * This method checks if email is configured in the system
+     *
+     * @return
+     */
+    public boolean isEmailConfigured() {
+        return StringUtils.isBlank(host);
+    }
 
 	/**
      *
