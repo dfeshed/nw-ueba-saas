@@ -12,6 +12,7 @@ import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
 import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Schema configurator implementation (HDFS paths and impala tables)
@@ -86,10 +87,12 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
         schemaDefinitionState.setAdditionalFiledToScoreFieldMapCSV(additionalFiledToScoreFieldMapCSV);
 
-        configureFields(dataFields, scoreFieldsCSV + "," + additionalScoreFieldsCSV, scoreFieldToFieldNameCSV + "," + additionalFiledToScoreFieldMapCSV);
+        String populatedScoreFieldsCSV = paramsMap.get("populatedScoreFieldsCSV").getParamValue();
+
+        configureFields(dataFields, scoreFieldsCSV + "," + additionalScoreFieldsCSV, populatedScoreFieldsCSV + additionalScoreFieldsCSV, scoreFieldToFieldNameCSV + "," + additionalFiledToScoreFieldMapCSV);
     }
 
-    private void configureFields(String fieldsCSV, String scoreFieldsCSV, String scoreFieldsToFieldCSV) {
+    private void configureFields(String fieldsCSV, String scoreFieldsCSV, String populatedScoreFieldsCSV, String scoreFieldsToFieldCSV) {
         if (fieldsCSV == null || "".equals(fieldsCSV)) {
             return;
         }
@@ -110,10 +113,13 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         Map<String, String> scoreFieldNameToTypeMap = ConversionUtils.convertCSVToMap(scoreFieldsCSV);
         Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(scoreFieldsToFieldCSV);
 
+        Set<String> populatedScoreFieldsSet = ConversionUtils.convertCSVToSet(populatedScoreFieldsCSV);
+
         for (Map.Entry<String, String> scoreFieldToType : scoreFieldNameToTypeMap.entrySet()) {
             String scoreFieldName = scoreFieldToType.getKey();
 
-            ScoreFieldMetadata scoreFieldMetadata = new ScoreFieldMetadata(scoreFieldName, true);
+            boolean isInUse = populatedScoreFieldsSet.contains(scoreFieldName);
+            ScoreFieldMetadata scoreFieldMetadata = new ScoreFieldMetadata(scoreFieldName, isInUse);
 
             fieldMetadataDictionary.addScoreField(scoreFieldMetadata);
 

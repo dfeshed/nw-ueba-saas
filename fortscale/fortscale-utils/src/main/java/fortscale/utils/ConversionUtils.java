@@ -1,9 +1,6 @@
 package fortscale.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Type conversion utility methods
@@ -118,6 +115,12 @@ public final class ConversionUtils {
 		}
 
 		return mappedCSV;
+	}
+
+	public static Set<String> convertCSVToSet(String fieldsCSV) {
+		String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+
+		return new HashSet<>(Arrays.asList(fieldsArray));
 	}
 
 	/*

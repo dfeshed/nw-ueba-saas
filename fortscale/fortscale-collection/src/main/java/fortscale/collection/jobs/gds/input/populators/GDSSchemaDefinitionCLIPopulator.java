@@ -7,6 +7,7 @@ import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfiguratio
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.field.FieldType;
+import fortscale.utils.ConversionUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
@@ -51,6 +52,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SOURCE_IP_FLAG_PARAM = "sourceIpFlag";
     private static final String TARGET_IP_FLAG_PARAM = "targetIpFlag";
     private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
+    private static final String POPULATED_SCORE_FIELDS_CSV_PARAM = "populatedScoreFieldsCSV";
     private static final String SCORE_FIELD_TO_FIELD_NAME_PARAM = "scoreFieldToFieldNameCSV";
     private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
@@ -226,12 +228,38 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
         }
 
+        handleIsScoreFieldInUseIndication(paramsMap, scoreFieldsCSV);
+
         paramsMap.put(SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
         paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
 		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM , new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalFieldsCSV()));
 		paramsMap.put(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP , new ConfigurationParam(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,false,additionalFieldsWrapper.getAdditionalFiledToScoreFieldMapCSV()));
 
 
+    }
+
+    private void handleIsScoreFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String scoreFieldsCSV) throws Exception {
+        if (scoreFieldsCSV == null || EMPTY_STR.equals(scoreFieldsCSV)) {
+            return;
+        }
+
+        Map<String,String> potentialScoresFieldMap = ConversionUtils.convertCSVToMap(scoreFieldsCSV);
+
+        StringBuilder populatedScoreFieldsCSV = new StringBuilder();
+
+        //For each potential basic score field ask if we want to populate it
+        for (Map.Entry<String,String> entry : potentialScoresFieldMap.entrySet())
+        {
+            String scoreField = entry.getKey();
+
+            System.out.println(String.format("Is %s field should be populated (y/n)?", scoreField));
+
+            if (gdsInputHandler.getYesNoInput()) {
+                populatedScoreFieldsCSV.append(scoreField).append(",");
+            }
+        }
+
+        paramsMap.put(POPULATED_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(POPULATED_SCORE_FIELDS_CSV_PARAM,false, populatedScoreFieldsCSV.toString()));
     }
 
     private void populateBaseDataSourceDefinitions(Map<String, ConfigurationParam> paramsMap) throws Exception {
