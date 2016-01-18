@@ -42,14 +42,16 @@ public class GDSCLIInputHandler implements GDSInputHandler {
         return bufferedReader.readLine();
     }
 
-    public String getInput(String paramName) throws IOException {
-        return getInput();
-    }
-
     @Override
-    public Map<String, String> getInput(Set<String> paramNames) {
-        // TODO implement
-        return null;
+    public String getInput(Set<String> allowedValues) throws IOException {
+        String input = bufferedReader.readLine();
+
+        while (!allowedValues.contains(input.toLowerCase()) && !allowedValues.contains(input.toUpperCase())) {
+            System.out.println("Illegal input. Please enter one of the following values: " + allowedValues);
+            input = bufferedReader.readLine();
+        }
+
+        return input;
     }
 
     @Override

@@ -10,6 +10,7 @@ public final class ConversionUtils {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String WHITESPACE_DELIMITER_REGEX = "\\s+"; // i.e. one or more whitespace chars
+	private static final String EMPTY_STR = "";
 
 	public static Long convertToLong(Object value) {
 		try {
@@ -106,9 +107,11 @@ public final class ConversionUtils {
 		if (fieldsCSV != null) {
 			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
 			for (String fieldDef : fieldsArray) {
-				fieldDef = fieldDef.trim();
-				String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
-				fieldSchema.put(fieldDefSep[0], fieldDefSep[1]);
+				if (!EMPTY_STR.equals(fieldDef)) {
+					fieldDef = fieldDef.trim();
+					String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
+					fieldSchema.put(fieldDefSep[0], fieldDefSep[1]);
+				}
 			}
 		}
 

@@ -6,10 +6,11 @@ import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
+import fortscale.services.configuration.gds.state.field.FieldType;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Schema definition command-line interface populator
@@ -86,9 +87,10 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
         populateDataSourceTypeFields(paramsMap, dataSourceName, additionalFieldsWrapper, dataSourceType);
 
-        //delimiter
+        String[] allowedDelimitersArr = {"|", ","};
+        Set<String> allowedDelimiters = new HashSet<>(Arrays.asList(allowedDelimitersArr));
         System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
-        String delimiter = gdsInputHandler.getInput();
+        String delimiter = gdsInputHandler.getInput(allowedDelimiters);
         paramsMap.put(DATA_DELIMITER_PARAM, new ConfigurationParam(DATA_DELIMITER_PARAM,false,delimiter));
 
         //table name
@@ -290,9 +292,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                     break;
                 }
 
-                //get the additional field data type
-                System.out.println("Field data type name:");
-                String additionalFieldDataType = gdsInputHandler.getInput();
+                Set<String> allowedValues = Arrays.asList(FieldType.values()).stream().map(Enum::name).collect(Collectors.toSet());
+                System.out.println("Field data type name: " + allowedValues);
+                String additionalFieldDataType = gdsInputHandler.getInput(allowedValues);
 
                 //in case the user want to stop the insertion
                 if (additionalFieldDataType.toLowerCase().equals(ADDITIONAL_FIELDS_USER_END_MARK)) {

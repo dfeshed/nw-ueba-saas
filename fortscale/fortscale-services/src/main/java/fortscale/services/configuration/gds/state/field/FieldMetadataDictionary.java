@@ -11,7 +11,7 @@ import java.util.Set;
  * @author gils
  * 17/01/2016
  */
-public class FieldMetadataContainer implements Resettable{
+public class FieldMetadataDictionary implements Resettable{
     private Map<String, FieldMetadata> fieldMetadataMap = new HashMap<>();
     private Map<String, ScoreFieldMetadata> scoreFieldMetadataMap = new HashMap<>();
 

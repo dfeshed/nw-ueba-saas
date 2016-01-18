@@ -15,4 +15,9 @@ public class FieldMetadata extends BaseFieldMetadata{
     public FieldMetadata(String fieldName, FieldType fieldType, boolean isInUse) {
         super(fieldName, fieldType, isInUse);
     }
+
+    @Override
+    public String toString() {
+        return "FieldMetadata: " + super.toString();
+    }
 }
