@@ -1,9 +1,7 @@
 package fortscale.aggregation.feature.event.batch;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
