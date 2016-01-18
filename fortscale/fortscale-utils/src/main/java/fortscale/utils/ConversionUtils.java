@@ -112,10 +112,13 @@ public final class ConversionUtils {
 				if (!EMPTY_STR.equals(fieldDef)) {
 					fieldDef = fieldDef.trim();
 					String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
-					fieldSchema.put(fieldDefSep[0], fieldDefSep[1]);
+					mappedCSV.put(fieldDefSep[0], fieldDefSep[1]);
 				}
 			}
 		}
+
+		return mappedCSV;
+	}
 
 	/*
  * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
@@ -125,9 +128,9 @@ public final class ConversionUtils {
 
 		if (fieldsCSV != null) {
 			String[] fieldsArray = fieldsCSV.split(delimiter);
-			for (String field : fieldsArray)
+			for (String field : fieldsArray) {
 				ListedCSV.add(field);
-
+			}
 		}
 
 		return ListedCSV;
