@@ -28,6 +28,10 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         return applicationConfigurationList;
     }
 
+    @Override public ApplicationConfiguration getApplicationConfigurationByKey(String key) {
+        return applicationConfigurationRepository.findOneByKey(key);
+    }
+
     /**
      * Updates or creates config items.
      *
