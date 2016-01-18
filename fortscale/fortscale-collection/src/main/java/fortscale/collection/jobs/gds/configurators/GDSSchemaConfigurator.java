@@ -90,7 +90,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
             FieldMetadata fieldMetadata = new FieldMetadata(baseFieldName, FieldType.valueOf(baseFieldType.toUpperCase()), false);
 
-            fieldMetadataDictionary.addField(fieldMetadata);
+            fieldMetadataDictionary.addRegularField(fieldMetadata);
         }
 
         String baseScoreFieldsCSV = paramsMap.get("baseScoreFieldsCSV").getParamValue();
@@ -135,9 +135,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
             FieldMetadata fieldMetadata = new FieldMetadata(additionalFieldName, FieldType.valueOf(additionalFieldType.toUpperCase()), true);
 
-            fieldMetadataDictionary.addField(fieldMetadata);
-            //additional fields should have another process in entities properties step
-            fieldMetadataDictionary.addAdditionalField(fieldMetadata);
+            fieldMetadataDictionary.addRegularField(fieldMetadata);
         }
 
         Map<String, String> additionalScoreFieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalScoreFieldsCSV);
