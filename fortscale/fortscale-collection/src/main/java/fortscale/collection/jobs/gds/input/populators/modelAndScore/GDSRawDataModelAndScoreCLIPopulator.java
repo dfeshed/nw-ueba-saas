@@ -15,7 +15,6 @@ import java.util.Map;
  */
 public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopulator {
 
-
 	private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
 	private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
@@ -32,10 +31,8 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 	@Override
 	public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
 
-
 		Map<String, Map<String, ConfigurationParam>> configurationsMap = new HashMap<>();
 		HashMap<String, ConfigurationParam> paramsMap = new HashMap<>();
-		GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
 		configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
@@ -53,44 +50,6 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		paramsMap.put(TASK_NAME_PARAM,new ConfigurationParam(TASK_NAME_PARAM,false,"MultipleEventsPrevalenceModelStreamTask"));
 		paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-event-score"));
 		paramsMap.put(DATA_SOURCE_KEY,new ConfigurationParam(DATA_SOURCE_KEY,false,"fortscale.events-prevalence-stream-managers.data-sources"));
-
-
-		Map<String,String> scoresFieldMap = gdsInputHandler.splitCSVtoMap(scoreFieldsCSV);
-
-		//For each potential basic score field ask if we want to populate it
-		for (Map.Entry<String,String> entry : scoresFieldMap.entrySet())
-		{
-			String scoreField = entry.getKey();
-
-			System.out.println(String.format("Does %s field should be scored (y/n)?", scoreField));
-
-			if (gdsInputHandler.getYesNoInput()) {
-				paramsMap.put(scoreField, new ConfigurationParam(scoreField, true, scoreField));
-			}
-		}
-
-		ConfigurationParam result;
-
-		result = gdsInputHandler.getParamConfiguration(paramsMap,"source_machine_score");
-		Boolean sourceMachineFlag = result != null ? result.getParamFlag() : false;
-
-		result = gdsInputHandler.getParamConfiguration(paramsMap, "destination_machine_score");
-		Boolean destMachineFlag = result != null ? result.getParamFlag() : false;
-
-		result = gdsInputHandler.getParamConfiguration(paramsMap, "country_score");
-		Boolean countryToScoreFlag = result != null ? result.getParamFlag() : false;
-
-		result = gdsInputHandler.getParamConfiguration(paramsMap, "action_type_score");
-		Boolean actionTypeToScoreFlag = result != null ? result.getParamFlag() : false;
-
-		result = gdsInputHandler.getParamConfiguration(paramsMap, "date_time_score");
-		Boolean dateTimeToScoreFlag = result != null ? result.getParamFlag() : false;
-
-		paramsMap.put("sourceMachineFlag",new ConfigurationParam("sourceMachineFlag",sourceMachineFlag,""));
-		paramsMap.put("destMachineFlag",new ConfigurationParam("destMachineFlag",destMachineFlag,""));
-		paramsMap.put("countryToScoreFlag",new ConfigurationParam("countryToScoreFlag",countryToScoreFlag,""));
-		paramsMap.put("actionTypeToScoreFlag",new ConfigurationParam("actionTypeToScoreFlag",actionTypeToScoreFlag,""));
-		paramsMap.put("dateTimeToScoreFlag",new ConfigurationParam("dateTimeToScoreFlag",dateTimeToScoreFlag,""));
 
 		return configurationsMap;
 	}

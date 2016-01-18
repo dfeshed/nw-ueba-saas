@@ -26,6 +26,7 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 	private String additionalScoreFieldsCSV;
 	private String additionalFieldsCSV;
 	private String additionalFiledToScoreFieldMapCSV;
+    private String additionalPopulatedScoreFieldsCSV;
     private FieldMetadataDictionary fieldMetadataDictionary;
 
     public GDSSchemaDefinitionState() {
@@ -167,6 +168,14 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
 	public void setAdditionalFiledToScoreFieldMapCSV(String additionalFiledToScoreFieldMapCSV) {
 		this.additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV;
 	}
+
+    public String getAdditionalPopulatedScoreFieldsCSV() {
+        return additionalPopulatedScoreFieldsCSV;
+    }
+
+    public void setAdditionalPopulatedScoreFieldsCSV(String additionalPopulatedScoreFieldsCSV) {
+        this.additionalPopulatedScoreFieldsCSV = additionalPopulatedScoreFieldsCSV;
+    }
 
     public FieldMetadataDictionary getFieldMetadataDictionary() {
         return fieldMetadataDictionary;

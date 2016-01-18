@@ -53,6 +53,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String TARGET_IP_FLAG_PARAM = "targetIpFlag";
     private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
     private static final String POPULATED_SCORE_FIELDS_CSV_PARAM = "populatedScoreFieldsCSV";
+    private static final String POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalPopulatedScoreFieldsCSV";
     private static final String SCORE_FIELD_TO_FIELD_NAME_PARAM = "scoreFieldToFieldNameCSV";
     private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
@@ -233,14 +234,14 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         paramsMap.put(SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
         paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
 		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM , new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalFieldsCSV()));
+        paramsMap.put(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM , new ConfigurationParam(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalPopulatedScoreFields()));
 		paramsMap.put(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP , new ConfigurationParam(ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP,false,additionalFieldsWrapper.getAdditionalFiledToScoreFieldMapCSV()));
-
 
     }
 
     private void handleIsScoreFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String scoreFieldsCSV) throws Exception {
         if (scoreFieldsCSV == null || EMPTY_STR.equals(scoreFieldsCSV)) {
-            return;
+            paramsMap.put(POPULATED_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(POPULATED_SCORE_FIELDS_CSV_PARAM,false, EMPTY_STR));
         }
 
         Map<String,String> potentialScoresFieldMap = ConversionUtils.convertCSVToMap(scoreFieldsCSV);
@@ -311,6 +312,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             String additionalFieldsCSV = COMMA;
             String additionalScoreFieldsCSV = COMMA;
             String additionalFiledToScoreFieldMapCSV = EMPTY_STR;
+            String additionalScoreFieldNames = "";
 
             System.out.println(String.format("Please enter %s data source additional fields. When you are done please type \"Done\"", dataSourceName));
 
@@ -354,6 +356,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                     //add the additional field to the csv list of the additional fields
                     additionalScoreFieldsCSV = additionalScoreFieldsCSV + additionalScoreFieldName + SPACE + additionalScoreFieldDataType + COMMA;
                     additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV + additionalScoreFieldName + SPACE + additionalFieldName + GDSSchemaDefinitionCLIPopulator.COMMA;
+                    additionalScoreFieldNames += additionalScoreFieldNames + additionalScoreFieldName + COMMA;
                 }
             }
 
@@ -361,11 +364,12 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             additionalScoreFieldsCSV = additionalScoreFieldsCSV.substring(0, additionalScoreFieldsCSV.length()>0 ? additionalScoreFieldsCSV.length()  - 1 : 0);
             additionalFieldsCSV = additionalFieldsCSV.substring(0, additionalFieldsCSV.length()>0 ? additionalFieldsCSV.length() - 1 : 0);
             additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV.substring(0, additionalFiledToScoreFieldMapCSV.length()>0 ? additionalFiledToScoreFieldMapCSV.length() - 1: 0);
+            additionalScoreFieldNames = additionalScoreFieldNames.substring(0, additionalScoreFieldNames.length()>0 ? additionalScoreFieldNames.length() - 1: 0);
 
-            return new AdditionalFieldsWrapper(additionalFieldsCSV, additionalScoreFieldsCSV, additionalFiledToScoreFieldMapCSV);
+            return new AdditionalFieldsWrapper(additionalFieldsCSV, additionalScoreFieldsCSV, additionalFiledToScoreFieldMapCSV, additionalScoreFieldNames);
         }
         else {
-            return new AdditionalFieldsWrapper(EMPTY_STR, EMPTY_STR, EMPTY_STR);
+            return new AdditionalFieldsWrapper(EMPTY_STR, EMPTY_STR, EMPTY_STR, EMPTY_STR);
         }
     }
 
@@ -382,11 +386,13 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         private String additionalFieldsCSV;
         private String additionalScoreFieldsCSV;
         private String additionalFiledToScoreFieldMapCSV;
+        private String additionalPopulatedScoreFields;
 
-        public AdditionalFieldsWrapper(String additionalFieldsCSV, String additionalScoreFieldsCSV, String additionalFiledToScoreFieldMapCSV) {
+        public AdditionalFieldsWrapper(String additionalFieldsCSV, String additionalScoreFieldsCSV, String additionalFiledToScoreFieldMapCSV, String additionalPopulatedScoreFields) {
             this.additionalScoreFieldsCSV = additionalScoreFieldsCSV;
             this.additionalFieldsCSV = additionalFieldsCSV;
             this.additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV;
+            this.additionalPopulatedScoreFields = additionalPopulatedScoreFields;
         }
 
         public String getAdditionalScoreFieldsCSV() {
@@ -399,6 +405,10 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
         public String getAdditionalFiledToScoreFieldMapCSV() {
             return additionalFiledToScoreFieldMapCSV;
+        }
+
+        public String getAdditionalPopulatedScoreFields() {
+            return additionalPopulatedScoreFields;
         }
     }
 }

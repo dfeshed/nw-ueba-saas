@@ -4,6 +4,8 @@ import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.RawModelScoreConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
+import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
+import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
 
 import java.util.Map;
 
@@ -39,18 +41,28 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		ConfigurationParam additionalFieldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELDS_CSV_PARAM);
 		ConfigurationParam additionalFiledToScoreFieldMapCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP);
 
-
 		//Fields map (basic and additional)
 		Map<String,String> scoresFieldMap = gdsInputHandler.splitCSVtoMap(scoreFeldsCSV.getParamValue());
 		Map<String,String> additionalScoreFieldsMap = gdsInputHandler.splitCSVtoMap(additionalScoreFieldsCSV.getParamValue());
 		Map<String,String> additionalFieldsMap = gdsInputHandler.splitCSVtoMap(additionalFieldsCSV.getParamValue());
 		Map<String,String> additionalFiledToScoreFieldMap = gdsInputHandler.splitCSVtoMap(additionalFiledToScoreFieldMapCSV.getParamValue());
 
-		Boolean sourceMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"sourceMachineFlag").getParamFlag();
-		Boolean destMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"destMachineFlag").getParamFlag();
-		Boolean countryToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"countryToScoreFlag").getParamFlag();
-		Boolean actionTypeToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"actionTypeToScoreFlag").getParamFlag();
-		Boolean dateTimeToScoreFlag = gdsInputHandler.getParamConfiguration(paramsMap,"dateTimeToScoreFlag").getParamFlag();
+		FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
+
+		ScoreFieldMetadata sourceMachineScoreField = fieldMetadataDictionary.getScoreFieldMetadataByName("source_machine_score");
+		boolean sourceMachineScoreInUse = sourceMachineScoreField != null && sourceMachineScoreField.isInUse();
+
+		ScoreFieldMetadata destMachineScoreField = fieldMetadataDictionary.getScoreFieldMetadataByName("destination_machine_score");
+		boolean destMachineScoreInUse = destMachineScoreField != null && destMachineScoreField.isInUse();
+
+		ScoreFieldMetadata countryScore = fieldMetadataDictionary.getScoreFieldMetadataByName("country_score");
+		boolean countryScoreInUse = countryScore != null && countryScore.isInUse();
+
+		ScoreFieldMetadata actionTypeScore = fieldMetadataDictionary.getScoreFieldMetadataByName("action_type_score");
+		boolean actionTypeScoreInUse = actionTypeScore != null && actionTypeScore.isInUse();
+
+		ScoreFieldMetadata dateTimeScore = fieldMetadataDictionary.getScoreFieldMetadataByName("date_time_score");
+		boolean dateTimeScoreInUse = dateTimeScore != null && dateTimeScore.isInUse();
 
 
 		GDSRAWDataModelAndScoreState gdsrawDataModelAndScoreState = currGDSConfigurationState.getRawDataModelAndScoreState();
@@ -62,11 +74,11 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		gdsrawDataModelAndScoreState.setOutputTopic(outputTopic.getParamValue());
 		gdsrawDataModelAndScoreState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
-		gdsrawDataModelAndScoreState.setSourceMachienFlag(sourceMachienFlag);
-		gdsrawDataModelAndScoreState.setDestMachienFlag(destMachienFlag);
-		gdsrawDataModelAndScoreState.setCountryToScoreFlag(countryToScoreFlag);
-		gdsrawDataModelAndScoreState.setActionTypeToScoreFlag(actionTypeToScoreFlag);
-		gdsrawDataModelAndScoreState.setDateTimeToScoreFlag(dateTimeToScoreFlag);
+		gdsrawDataModelAndScoreState.setSourceMachienFlag(sourceMachineScoreInUse);
+		gdsrawDataModelAndScoreState.setDestMachienFlag(destMachineScoreInUse);
+		gdsrawDataModelAndScoreState.setCountryToScoreFlag(countryScoreInUse);
+		gdsrawDataModelAndScoreState.setActionTypeToScoreFlag(actionTypeScoreInUse);
+		gdsrawDataModelAndScoreState.setDateTimeToScoreFlag(dateTimeScoreInUse);
 
 		gdsrawDataModelAndScoreState.setDataSourcesConfigurationKey(DATA_SOURCE_KEY);
 
