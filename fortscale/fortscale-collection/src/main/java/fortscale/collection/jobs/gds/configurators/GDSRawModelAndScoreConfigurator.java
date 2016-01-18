@@ -5,7 +5,9 @@ import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.RawModelScoreConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
 import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
+import fortscale.services.configuration.gds.state.field.FieldMetadataExtractor;
 import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
+import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
 
@@ -16,17 +18,10 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 	private static final String DATA_SOURCE_KEY ="rawPrevalanceConfigurationDataSourceKey";
-	private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
-	private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
-	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
-	private static final String ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP = "additionalFiledToScoreFieldMapCSV";
-
 
 	public GDSRawModelAndScoreConfigurator() {
 		configurationWriterService = new RawModelScoreConfigurationWriter();
 	}
-
-
 
 	@Override
 	public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
@@ -36,18 +31,18 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
 		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
 
-		ConfigurationParam scoreFeldsCSV  = gdsInputHandler.getParamConfiguration(paramsMap, SCORE_FIELDS_CSV_PARAM);
-		ConfigurationParam additionalScoreFieldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_SCORE_FIELDS_CSV_PARAM);
-		ConfigurationParam additionalFieldsCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELDS_CSV_PARAM);
-		ConfigurationParam additionalFiledToScoreFieldMapCSV = gdsInputHandler.getParamConfiguration(paramsMap, ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP);
+		FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
+
+		String baseScoreFieldsCSV = FieldMetadataExtractor.extractBaseScoreFieldsCSV(fieldMetadataDictionary);
+		String additionalScoreFieldsCSV = FieldMetadataExtractor.extractAdditionalScoreFieldsCSV(fieldMetadataDictionary);
+		String additionalFieldsCSV = FieldMetadataExtractor.extractAdditionalFieldsCSV(fieldMetadataDictionary);
+		String additionalScoreFieldToFieldNameCSV = FieldMetadataExtractor.extractAdditionalScoreFieldToFieldNameCSV(fieldMetadataDictionary);
 
 		//Fields map (basic and additional)
-		Map<String,String> scoresFieldMap = gdsInputHandler.splitCSVtoMap(scoreFeldsCSV.getParamValue());
-		Map<String,String> additionalScoreFieldsMap = gdsInputHandler.splitCSVtoMap(additionalScoreFieldsCSV.getParamValue());
-		Map<String,String> additionalFieldsMap = gdsInputHandler.splitCSVtoMap(additionalFieldsCSV.getParamValue());
-		Map<String,String> additionalFiledToScoreFieldMap = gdsInputHandler.splitCSVtoMap(additionalFiledToScoreFieldMapCSV.getParamValue());
-
-		FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
+		Map<String,String> baseScoreFieldMap = ConversionUtils.splitCSVtoMap(baseScoreFieldsCSV);
+		Map<String,String> additionalScoreFieldsMap = ConversionUtils.splitCSVtoMap(additionalScoreFieldsCSV);
+		Map<String,String> additionalFieldsMap = ConversionUtils.splitCSVtoMap(additionalFieldsCSV);
+		Map<String,String> additionalFieldToScoreFieldMap = ConversionUtils.splitCSVtoMap(additionalScoreFieldToFieldNameCSV);
 
 		ScoreFieldMetadata sourceMachineScoreField = fieldMetadataDictionary.getScoreFieldMetadataByName("source_machine_score");
 		boolean sourceMachineScoreInUse = sourceMachineScoreField != null && sourceMachineScoreField.isInUse();
@@ -82,15 +77,13 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 		gdsrawDataModelAndScoreState.setDataSourcesConfigurationKey(DATA_SOURCE_KEY);
 
-		gdsrawDataModelAndScoreState.setScoresFieldMap(scoresFieldMap);
+		gdsrawDataModelAndScoreState.setScoresFieldMap(baseScoreFieldMap);
 		gdsrawDataModelAndScoreState.setAdditionalFieldsMap(additionalFieldsMap);
 		gdsrawDataModelAndScoreState.setAdditionalScoreFeldsMap(additionalScoreFieldsMap);
-		gdsrawDataModelAndScoreState.setAdditionalFiledToScoreFieldMap(additionalFiledToScoreFieldMap);
+		gdsrawDataModelAndScoreState.setAdditionalFiledToScoreFieldMap(additionalFieldToScoreFieldMap);
 
 		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
 	}
-
-
 
 	@Override
 	public void reset() throws Exception {

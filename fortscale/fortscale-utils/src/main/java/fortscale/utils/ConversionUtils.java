@@ -1,6 +1,7 @@
 package fortscale.utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Type conversion utility methods
@@ -100,11 +101,11 @@ public final class ConversionUtils {
 	/*
 	 * Converts the CSV-formatted field to a map of key-value ("1,2" --->{1:2}).
      */
-	public static Map<String, String> convertCSVToMap(String fieldsCSV) {
+	public static Map<String, String> convertCSVToMap(String csvString) {
 		Map<String, String> mappedCSV = new LinkedHashMap<>(); // to preserve insertion order
 
-		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+		if (csvString != null && !EMPTY_STR.equals(csvString)) {
+			String[] fieldsArray = csvString.split(CSV_DELIMITER);
 			for (String fieldDef : fieldsArray) {
 				if (!EMPTY_STR.equals(fieldDef)) {
 					fieldDef = fieldDef.trim();
@@ -117,10 +118,19 @@ public final class ConversionUtils {
 		return mappedCSV;
 	}
 
-	public static Set<String> convertCSVToSet(String fieldsCSV) {
-		String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+	public static Set<String> convertCSVToSet(String csvString, boolean order) {
+		String[] fieldsArray = csvString.split(CSV_DELIMITER);
 
-		return new HashSet<>(Arrays.asList(fieldsArray));
+		if (!order) {
+			return Arrays.asList(fieldsArray).stream().collect(Collectors.toSet());
+		}
+		else {
+			return Arrays.asList(fieldsArray).stream().collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+	}
+
+	public static Set<String> convertCSVToSet(String csvString) {
+		return convertCSVToSet(csvString, false);
 	}
 
 	/*
@@ -131,13 +141,23 @@ public final class ConversionUtils {
 
 		if (fieldsCSV != null) {
 			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
-			for (String field : fieldsArray) {
-				ListedCSV.add(field);
-			}
+			Collections.addAll(ListedCSV, fieldsArray);
 		}
 
 		return ListedCSV;
 	}
 
+	public static Map<String,String> splitCSVtoMap (String CSVfield)
+	{
+		Map<String,String> result = new LinkedHashMap<>();
+		List<String> csvAsList = ConversionUtils.convertCSVToList(CSVfield);
+		for (String keyValuePair : csvAsList)
+		{
+			Map<String,String> res;
+			res  = ConversionUtils.convertCSVToMap(keyValuePair);
+			result.putAll(res);
+		}
 
+		return result;
+	}
 }

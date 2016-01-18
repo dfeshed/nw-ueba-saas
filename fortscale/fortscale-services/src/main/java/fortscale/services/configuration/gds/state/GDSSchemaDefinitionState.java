@@ -11,22 +11,17 @@ import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
 public class GDSSchemaDefinitionState implements GDSConfigurationState{
     private boolean hasSourceIp;
     private boolean hasTargetIp;
-    private String dataFields;
-    private String enrichFields;
+    private String dataTableFields;
+    private String enrichTableFields;
     private String enrichDelimiter;
     private String enrichTableName;
-    private String scoreFields;
+    private String scoreTableFields;
     private String scoreDelimiter;
     private String scoreTableName;
     private boolean topSchema;
     private String normalizedUserNameField;
     private String dataDelimiter;
     private String dataTableName;
-	private String scoreFieldsCSV;
-	private String additionalScoreFieldsCSV;
-	private String additionalFieldsCSV;
-	private String additionalFiledToScoreFieldMapCSV;
-    private String additionalPopulatedScoreFieldsCSV;
     private FieldMetadataDictionary fieldMetadataDictionary;
 
     public GDSSchemaDefinitionState() {
@@ -49,20 +44,20 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.hasTargetIp = targetIp;
     }
 
-    public String getDataFields() {
-        return dataFields;
+    public String getDataTableFields() {
+        return dataTableFields;
     }
 
-    public void setDataFields(String dataFields) {
-        this.dataFields = dataFields;
+    public void setDataTableFields(String dataTableFields) {
+        this.dataTableFields = dataTableFields;
     }
 
-    public String getEnrichFields() {
-        return enrichFields;
+    public String getEnrichTableFields() {
+        return enrichTableFields;
     }
 
-    public void setEnrichFields(String enrichFields) {
-        this.enrichFields = enrichFields;
+    public void setEnrichTableFields(String enrichTableFields) {
+        this.enrichTableFields = enrichTableFields;
     }
 
     public String getEnrichDelimiter() {
@@ -81,12 +76,12 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.enrichTableName = enrichTableName;
     }
 
-    public String getScoreFields() {
-        return scoreFields;
+    public String getScoreTableFields() {
+        return scoreTableFields;
     }
 
-    public void setScoreFields(String scoreFields) {
-        this.scoreFields = scoreFields;
+    public void setScoreTableFields(String scoreTableFields) {
+        this.scoreTableFields = scoreTableFields;
     }
 
     public String getScoreDelimiter() {
@@ -137,46 +132,6 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
         this.dataTableName = dataTableName;
     }
 
-	public String getScoreFieldsCSV() {
-		return scoreFieldsCSV;
-	}
-
-	public void setScoreFieldsCSV(String scoreFieldsCSV) {
-		this.scoreFieldsCSV = scoreFieldsCSV;
-	}
-
-	public String getAdditionalScoreFieldsCSV() {
-		return additionalScoreFieldsCSV;
-	}
-
-	public void setAdditionalScoreFieldsCSV(String additionalScoreFieldsCSV) {
-		this.additionalScoreFieldsCSV = additionalScoreFieldsCSV;
-	}
-
-	public String getAdditionalFieldsCSV() {
-		return additionalFieldsCSV;
-	}
-
-	public void setAdditionalFieldsCSV(String additionalFieldsCSV) {
-		this.additionalFieldsCSV = additionalFieldsCSV;
-	}
-
-	public String getAdditionalFiledToScoreFieldMapCSV() {
-		return additionalFiledToScoreFieldMapCSV;
-	}
-
-	public void setAdditionalFiledToScoreFieldMapCSV(String additionalFiledToScoreFieldMapCSV) {
-		this.additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV;
-	}
-
-    public String getAdditionalPopulatedScoreFieldsCSV() {
-        return additionalPopulatedScoreFieldsCSV;
-    }
-
-    public void setAdditionalPopulatedScoreFieldsCSV(String additionalPopulatedScoreFieldsCSV) {
-        this.additionalPopulatedScoreFieldsCSV = additionalPopulatedScoreFieldsCSV;
-    }
-
     public FieldMetadataDictionary getFieldMetadataDictionary() {
         return fieldMetadataDictionary;
     }
@@ -185,20 +140,17 @@ public class GDSSchemaDefinitionState implements GDSConfigurationState{
     public void reset() {
         hasSourceIp = false;
         hasTargetIp = false;
-        dataFields = null;
-        enrichFields = null;
+        dataTableFields = null;
+        enrichTableFields = null;
         enrichDelimiter = null;
         enrichTableName = null;
-        scoreFields = null;
+        scoreTableFields = null;
         scoreDelimiter = null;
         scoreTableName = null;
         topSchema = false;
         normalizedUserNameField = null;
         dataDelimiter = null;
         dataTableName = null;
-		additionalFieldsCSV = null;
-		additionalScoreFieldsCSV = null;
-		additionalFiledToScoreFieldMapCSV = null;
 
         fieldMetadataDictionary.reset();
     }

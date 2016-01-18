@@ -25,10 +25,6 @@ public class FieldMetadataDictionary implements Resettable{
         scoreFieldMetadataMap.put(smd.getFieldName(), smd);
     }
 
-    public void pairFieldToScore(FieldMetadata fieldMD, ScoreFieldMetadata scoreFieldMD) {
-        pairFieldToScore(fieldMD.getFieldName(), scoreFieldMD.getFieldName());
-    }
-
     public void pairFieldToScore(String fieldName, String scoreFieldName) {
         FieldMetadata fieldMetadata = fieldMetadataMap.get(fieldName);
         ScoreFieldMetadata scoreFieldMetadata = scoreFieldMetadataMap.get(scoreFieldName);

@@ -6,8 +6,8 @@ package fortscale.services.configuration.gds.state.field;
  */
 public class ScoreFieldMetadata extends BaseFieldMetadata{
 
-    public ScoreFieldMetadata(String fieldName, boolean isInUse) {
-        super(fieldName, FieldType.DOUBLE, isInUse);
+    public ScoreFieldMetadata(String fieldName, boolean isInUse, boolean isAdditionalField) {
+        super(fieldName, FieldType.DOUBLE, isInUse, isAdditionalField);
     }
 
     @Override
