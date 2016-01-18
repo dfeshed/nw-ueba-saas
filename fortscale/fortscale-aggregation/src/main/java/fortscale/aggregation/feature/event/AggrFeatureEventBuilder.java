@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.event;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;

@@ -86,6 +86,15 @@ public class FeatureBucketConf implements Serializable {
 		return aggrFeatureConfs;
 	}
 
+	public AggregatedFeatureConf getAggregatedFeatureConf(String name) {
+		for(AggregatedFeatureConf aggregatedFeatureConf: aggrFeatureConfs) {
+			if(aggregatedFeatureConf.getName().equals(name)) {
+				return aggregatedFeatureConf;
+			}
+		}
+		return null;
+	}
+
 	public Set<String> getAllFeatureNames() {
 		return allFeatureNames;
 	}

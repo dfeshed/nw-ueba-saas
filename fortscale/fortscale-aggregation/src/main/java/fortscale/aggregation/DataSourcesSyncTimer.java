@@ -1,6 +1,6 @@
 package fortscale.aggregation;
 
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;

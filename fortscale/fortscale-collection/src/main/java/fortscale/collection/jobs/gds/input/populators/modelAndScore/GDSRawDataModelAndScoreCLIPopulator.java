@@ -4,7 +4,6 @@ import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
-import fortscale.utils.ConversionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,9 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 	private static final String DATA_SOURCE_KEY ="rawPrevalanceConfigurationDataSourceKey";
 	private static final String TASK_NAME_PARAM = "taskName";
 	private static final String LAST_STATE_PARAM = "lastState";
-	private static final String OUTPUT_TOPIC_PARAM = "outPutTopic";
+	private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+
+	protected GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
 
 	@Override
@@ -38,7 +39,7 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 
 		configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
-		String scoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getScoreFields();
+		String scoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getScoreFieldsCSV();
 		String additionalScoreFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalScoreFieldsCSV();
 		String additionalFieldsCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFieldsCSV();
 		String additionalFiledToScoreFieldMapCSV = currentConfigurationState.getSchemaDefinitionState().getAdditionalFiledToScoreFieldMapCSV();
@@ -54,7 +55,7 @@ public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopu
 		paramsMap.put(DATA_SOURCE_KEY,new ConfigurationParam(DATA_SOURCE_KEY,false,"fortscale.events-prevalence-stream-managers.data-sources"));
 
 
-		Map<String,String> scoresFieldMap = ConversionUtils.convertFieldsCSVToMap(scoreFieldsCSV);
+		Map<String,String> scoresFieldMap = gdsInputHandler.splitCSVtoMap(scoreFieldsCSV);
 
 		//For each potential basic score field ask if we want to populate it
 		for (Map.Entry<String,String> entry : scoresFieldMap.entrySet())

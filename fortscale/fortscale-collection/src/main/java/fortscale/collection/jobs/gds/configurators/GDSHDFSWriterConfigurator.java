@@ -14,9 +14,7 @@ import java.util.Map;
  * 04/01/2016
  */
 public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
-    private static final String LAST_STATE_PARAM = "lastState";
-    private static final String TASK_NAME_PARAM = "taskName";
-    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+
     private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topics";
 
     public GDSHDFSWriterConfigurator() {
@@ -27,7 +25,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
 
-        ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
+        String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
 
@@ -43,7 +41,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
 
         hdfsWriterState.setTaskName(taskName.getParamValue());
-        hdfsWriterState.setLastState(lastState.getParamValue());
+        hdfsWriterState.setLastState(lastState);
         hdfsWriterState.setOutputTopic(outputTopic.getParamValue());
         hdfsWriterState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
@@ -54,6 +52,8 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setTableName(tableName.getParamValue());
         hdfsWriterState.setPartitionStrategy(partitionStrategy.getParamValue());
         hdfsWriterState.setDiscriminatorsFields(discriminatorsFields.getParamValue());
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
+
     }
 
     @Override

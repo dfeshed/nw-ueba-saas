@@ -1,6 +1,8 @@
 package fortscale.utils;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -98,20 +100,35 @@ public final class ConversionUtils {
 
 
 	/*
-	 * Converts the CSV-formatted fields to a map of key-value (field->field type).
+	 * Converts the CSV-formatted field to a map of key-value ("1,2" --->{1:2}).
      */
-	public static Map<String, String> convertFieldsCSVToMap(String fieldsCSV) {
-		Map<String, String> fieldSchema = new LinkedHashMap<>(); // to preserve insertion order
+	public static Map<String, String> convertCSVToMap(String fieldsCSV, String delimiter) {
+		Map<String, String> mappedCSV = new LinkedHashMap<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
-			for (String fieldDef : fieldsArray) {
-				fieldDef = fieldDef.trim();
-				String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
-				fieldSchema.put(fieldDefSep[0], fieldDefSep[1]);
-			}
+			String[] fieldsArray = fieldsCSV.split(delimiter);
+			if(fieldsArray.length>1)
+				mappedCSV.put(fieldsArray[0], fieldsArray[1]);
 		}
 
-		return fieldSchema;
+		return mappedCSV;
 	}
+
+	/*
+ * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
+ */
+	public static List<String> convertCSVToList(String fieldsCSV, String delimiter) {
+		List<String> ListedCSV = new ArrayList<>(); // to preserve insertion order
+
+		if (fieldsCSV != null) {
+			String[] fieldsArray = fieldsCSV.split(delimiter);
+			for (String field : fieldsArray)
+				ListedCSV.add(field);
+
+		}
+
+		return ListedCSV;
+	}
+
+
 }

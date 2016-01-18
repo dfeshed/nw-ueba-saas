@@ -1,7 +1,9 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
+
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;

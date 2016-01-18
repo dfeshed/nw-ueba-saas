@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import fortscale.utils.ConversionUtils;
 
 @Configurable(preConstruction = true)

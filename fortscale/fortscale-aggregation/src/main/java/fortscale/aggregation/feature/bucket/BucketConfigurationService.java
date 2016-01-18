@@ -1,132 +1,122 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.*;
-
-import fortscale.aggregation.configuration.AslConfigurationService;
-import org.springframework.beans.factory.annotation.Value;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.configuration.AslConfigurationService;
 
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Loads BucketConfs from JSON file.
- * Provides API to get list of related BucketConfs for a given event based on the
- * context fields within the BucketConfs.
+ * Provides API to get list of related BucketConfs for a given
+ * event based on the context fields within the BucketConfs.
  */
 public class BucketConfigurationService extends AslConfigurationService {
-    private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
+	private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
+	public static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
 
-    public final static String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
+	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
+	private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
 
-    private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
-    private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
+	@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
+	private String bucketConfJsonFilePath;
+	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path}")
+	private String bucketConfJsonOverridingFilesPath;
+	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path}")
+	private String bucketConfJsonAdditionalFilesPath;
 
-    @Value("${impala.table.fields.data.source}")
-    private String dataSourceFieldName;
+	@Override
+	protected String getBaseConfJsonFilePath() {
+		return bucketConfJsonFilePath;
+	}
 
-    @Value("${fortscale.aggregation.bucket.conf.json.file.name}")
-    private String bucketConfJsonFilePath;
-    @Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path}")
-    private String bucketConfJsonOverridingFilesPath;
-    @Value("${fortscale.aggregation.bucket.conf.json.additional.files.path}")
-    private String bucketConfJsonAdditionalFilesPath;
+	@Override
+	protected String getBaseOverridingConfJsonFolderPath() {
+		return bucketConfJsonOverridingFilesPath;
+	}
 
-    @Override
-    protected String getBaseConfJsonFilePath() {
-        return bucketConfJsonFilePath;
-    }
+	@Override
+	protected String getAdditionalConfJsonFolderPath() {
+		return bucketConfJsonAdditionalFilesPath;
+	}
 
-    @Override
-    protected String getBaseOverridingConfJsonFolderPath() {
-        return bucketConfJsonOverridingFilesPath;
-    }
+	@Override
+	protected String getConfNodeName() {
+		return JSON_CONF_BUCKET_CONFS_NODE_NAME;
+	}
 
-    @Override
-    protected String getAdditionalConfJsonFolderPath() {
-        return bucketConfJsonAdditionalFilesPath;
-    }
+	@Override
+	protected void loadConfJson(JSONObject jsonObj) {
+		String bucketConfJson = jsonObj.toJSONString();
+		FeatureBucketConf bucketConf;
 
-    @Override
-    protected String getConfNodeName() {
-        return JSON_CONF_BUCKET_CONFS_NODE_NAME;
-    }
+		try {
+			bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);
+		} catch (Exception e) {
+			String errorMsg = String.format("Failed to deserialize json %s", bucketConfJson);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
+		}
 
-    @Override
-    protected void loadConfJson(JSONObject jsonObj){
-        String bucketConfJson = jsonObj.toJSONString();
-        FeatureBucketConf bucketConf = null;
-        try {
-            bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);
-        } catch (Exception e) {
-            String errorMsg = String.format("Failed to deserialize json %s", bucketConfJson);
-            logger.error(errorMsg, e);
-            throw new IllegalArgumentException(errorMsg, e);
-        }
+		try {
+			addNewBucketConf(bucketConf);
+		} catch (Exception e) {
+			String errorMsg = String.format("Failed to add new bucket conf. json: %s", bucketConfJson);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
+		}
+	}
 
-        try{
-            addNewBucketConf(bucketConf);
-        } catch (Exception e) {
-            String errorMsg = String.format("Failed to add new bucket conf. json: %s", bucketConfJson);
-            logger.error(errorMsg, e);
-            throw new IllegalArgumentException(errorMsg, e);
-        }
-    }
+	public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
+		if (event == null) return null;
+		Object dataSourceObj = event.get(dataSourceFieldName);
+		if (dataSourceObj == null) return null;
+		String dataSource = dataSourceObj.toString();
+		if (dataSource.isEmpty()) return null;
+		return dataSourceToListOfBucketConfs.get(dataSource);
+	}
 
-    public Collection<FeatureBucketConf> getFeatureBucketConfs(){
-        return bucketConfs.values();
-    }
+	public FeatureBucketConf getBucketConf(String bucketConfName) {
+		return bucketConfs.get(bucketConfName);
+	}
 
-    public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
+	public boolean isBucketConfExist(String bucketConfName) {
+		return bucketConfs.containsKey(bucketConfName);
+	}
 
-        if(event==null) return null;
+	public void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
+		FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
 
-        Object dataSourceObj = event.get(dataSourceFieldName);
+		if (existingBucketConf != null) {
+			throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
+		}
 
-        if(dataSourceObj==null) return null;
+		bucketConfs.put(bucketConf.getName(), bucketConf);
+		List<String> dataSources = bucketConf.getDataSources();
 
-        String dataSource = dataSourceObj.toString();
+		for (String s : dataSources) {
+			List<FeatureBucketConf> listOfBucketConfs = dataSourceToListOfBucketConfs.get(s);
 
-        if(dataSource.isEmpty()) return null;
+			if (listOfBucketConfs == null) {
+				listOfBucketConfs = new ArrayList<>();
+				dataSourceToListOfBucketConfs.put(s, listOfBucketConfs);
+			}
 
-        return dataSourceToListOfBucketConfs.get(dataSource);
+			listOfBucketConfs.add(bucketConf);
+		}
+	}
 
-    }
-
-    public FeatureBucketConf getBucketConf(String bucketConfName) {
-        return bucketConfs.get(bucketConfName);
-    }
-
-    public boolean isBucketConfExist(String bucketConfName){
-    	return bucketConfs.containsKey(bucketConfName);
-    }
-
-    public void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException{
-    	FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
-    	if(existingBucketConf != null){
-    		throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
-    	}
-    	bucketConfs.put(bucketConf.getName(), bucketConf);
-
-        List<String> dataSources = bucketConf.getDataSources();
-        for (String s : dataSources) {
-            List<FeatureBucketConf> listOfBucketConfs = dataSourceToListOfBucketConfs.get(s);
-            if (listOfBucketConfs == null) {
-                listOfBucketConfs = new ArrayList<>();
-                dataSourceToListOfBucketConfs.put(s, listOfBucketConfs);
-            }
-            listOfBucketConfs.add(bucketConf);
-        }
-    }
-
-    public void addNewAggregatedFeatureConfToBucketConf(String bucketConfName, AggregatedFeatureConf aggregatedFeatureConf){
-    	FeatureBucketConf featureBucketConf = getBucketConf(bucketConfName);
-    	featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
-    }
-
-
-
-
+	public void addNewAggregatedFeatureConfToBucketConf(String bucketConfName, AggregatedFeatureConf aggregatedFeatureConf) {
+		FeatureBucketConf featureBucketConf = getBucketConf(bucketConfName);
+		featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
+	}
 }

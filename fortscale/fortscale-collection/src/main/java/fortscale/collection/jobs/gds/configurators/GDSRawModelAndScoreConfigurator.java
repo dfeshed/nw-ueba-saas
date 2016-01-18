@@ -1,11 +1,9 @@
 package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
-import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.RawModelScoreConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
-import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
 
@@ -14,9 +12,6 @@ import java.util.Map;
  */
 public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
-	private static final String LAST_STATE_PARAM = "lastState";
-	private static final String TASK_NAME_PARAM = "taskName";
-	private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
 	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 	private static final String DATA_SOURCE_KEY ="rawPrevalanceConfigurationDataSourceKey";
 	private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
@@ -29,13 +24,13 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		configurationWriterService = new RawModelScoreConfigurationWriter();
 	}
 
-	GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
+
 
 	@Override
 	public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
 		Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
 
-		ConfigurationParam lastState = gdsInputHandler.getParamConfiguration(paramsMap, LAST_STATE_PARAM);
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
 		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
 		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
 
@@ -46,10 +41,10 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 
 		//Fields map (basic and additional)
-		Map<String,String> scoresFieldMap = ConversionUtils.convertFieldsCSVToMap(scoreFeldsCSV.getParamValue());
-		Map<String,String> additionalScoreFieldsMap = ConversionUtils.convertFieldsCSVToMap(additionalScoreFieldsCSV.getParamValue());
-		Map<String,String> additionalFieldsMap = ConversionUtils.convertFieldsCSVToMap(additionalFieldsCSV.getParamValue());
-		Map<String,String> additionalFiledToScoreFieldMap = ConversionUtils.convertFieldsCSVToMap(additionalFiledToScoreFieldMapCSV.getParamValue());
+		Map<String,String> scoresFieldMap = gdsInputHandler.splitCSVtoMap(scoreFeldsCSV.getParamValue());
+		Map<String,String> additionalScoreFieldsMap = gdsInputHandler.splitCSVtoMap(additionalScoreFieldsCSV.getParamValue());
+		Map<String,String> additionalFieldsMap = gdsInputHandler.splitCSVtoMap(additionalFieldsCSV.getParamValue());
+		Map<String,String> additionalFiledToScoreFieldMap = gdsInputHandler.splitCSVtoMap(additionalFiledToScoreFieldMapCSV.getParamValue());
 
 		Boolean sourceMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"sourceMachineFlag").getParamFlag();
 		Boolean destMachienFlag = gdsInputHandler.getParamConfiguration(paramsMap,"destMachineFlag").getParamFlag();
@@ -62,7 +57,7 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 
 		//populate the state
-		gdsrawDataModelAndScoreState.setLastState(lastState.getParamValue());
+		gdsrawDataModelAndScoreState.setLastState(lastState);
 		gdsrawDataModelAndScoreState.setTaskName(taskName.getParamValue());
 		gdsrawDataModelAndScoreState.setOutputTopic(outputTopic.getParamValue());
 		gdsrawDataModelAndScoreState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
@@ -79,7 +74,11 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		gdsrawDataModelAndScoreState.setAdditionalFieldsMap(additionalFieldsMap);
 		gdsrawDataModelAndScoreState.setAdditionalScoreFeldsMap(additionalScoreFieldsMap);
 		gdsrawDataModelAndScoreState.setAdditionalFiledToScoreFieldMap(additionalFiledToScoreFieldMap);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
 	}
+
+
 
 	@Override
 	public void reset() throws Exception {
