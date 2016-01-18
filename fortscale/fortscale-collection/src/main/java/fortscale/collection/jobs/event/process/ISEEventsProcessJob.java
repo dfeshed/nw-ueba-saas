@@ -36,6 +36,7 @@ public class ISEEventsProcessJob extends EventProcessJob {
 
         // get parameters values from the job data map
         filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
+		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 
         // build record to items processor
         morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "specificMorphlineFile");
