@@ -75,14 +75,14 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 		String scoreFieldsCSV = paramsMap.get("scoreFieldsCSV").getParamValue();
 		schemaDefinitionState.setScoreFieldsCSV(scoreFieldsCSV);
 
-		String additionalFeldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFeldsCSV);
+		String additionalFieldsCSV = paramsMap.get("additionalFieldsCSV").getParamValue();
+		schemaDefinitionState.setAdditionalFieldsCSV(additionalFieldsCSV);
 
 		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
 		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
 
 		String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFiledToScoreFieldMapCSV);
+		schemaDefinitionState.setAdditionalFiledToScoreFieldMapCSV(additionalFiledToScoreFieldMapCSV);
 
         configureAdditionalFields(additionalFieldsCSV, additionalFiledToScoreFieldMapCSV);
 
@@ -91,8 +91,8 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
     private void configureAdditionalFields(String additionalFieldsCSV, String additionalFiledToScoreFieldMapCSV) {
         FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
-        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertFieldsCSVToMap(additionalFieldsCSV);
-        Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertFieldsCSVToMap(additionalFiledToScoreFieldMapCSV);
+        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
+        Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(additionalFiledToScoreFieldMapCSV);
 
         for (Map.Entry<String, String> fieldNameToType : fieldNameToTypeMap.entrySet()) {
             String fieldName = fieldNameToType.getKey();

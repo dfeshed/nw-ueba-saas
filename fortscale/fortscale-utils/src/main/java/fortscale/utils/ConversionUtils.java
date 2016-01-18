@@ -103,7 +103,7 @@ public final class ConversionUtils {
 	/*
 	 * Converts the CSV-formatted field to a map of key-value ("1,2" --->{1:2}).
      */
-	public static Map<String, String> convertCSVToMap(String fieldsCSV, String delimiter) {
+	public static Map<String, String> convertCSVToMap(String fieldsCSV) {
 		Map<String, String> mappedCSV = new LinkedHashMap<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {
@@ -123,11 +123,11 @@ public final class ConversionUtils {
 	/*
  * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
  */
-	public static List<String> convertCSVToList(String fieldsCSV, String delimiter) {
+	public static List<String> convertCSVToList(String fieldsCSV) {
 		List<String> ListedCSV = new ArrayList<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(delimiter);
+			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
 			for (String field : fieldsArray) {
 				ListedCSV.add(field);
 			}

@@ -71,11 +71,11 @@ public class GDSCLIInputHandler implements GDSInputHandler {
 	public Map<String,String> splitCSVtoMap (String CSVfield)
 	{
 		Map<String,String> result = new LinkedHashMap<>();
-		List<String> csvAsList = ConversionUtils.convertCSVToList(CSVfield, ",");
+		List<String> csvAsList = ConversionUtils.convertCSVToList(CSVfield);
 		for (String keyValuePair : csvAsList)
 		{
 			Map<String,String> res;
-			res  = ConversionUtils.convertCSVToMap(keyValuePair," ");
+			res  = ConversionUtils.convertCSVToMap(keyValuePair);
 			result.putAll(res);
 		}
 
