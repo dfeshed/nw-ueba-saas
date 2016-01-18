@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public class FieldMetadataDictionary implements Resettable{
     private Map<String, FieldMetadata> fieldMetadataMap = new HashMap<>();
+    //additional fields should have extra configuration in entities properties step
+    private Map<String, FieldMetadata> additionalFieldMetaDataMap = new HashMap<>();
+
     private Map<String, ScoreFieldMetadata> scoreFieldMetadataMap = new HashMap<>();
 
     private Map<FieldMetadata, ScoreFieldMetadata> fieldToScoredFieldMap = new HashMap<>();
@@ -62,6 +65,19 @@ public class FieldMetadataDictionary implements Resettable{
 
     public Map<FieldMetadata, ScoreFieldMetadata> getAllFieldToScorePairs() {
         return new HashMap<>(fieldToScoredFieldMap);
+    }
+
+    public void addAdditionalField(FieldMetadata field){
+        additionalFieldMetaDataMap.put(field.getFieldName(),field);
+    }
+
+    public  Map<String, FieldMetadata> getAdditionalFieldMetaDataMap(){
+        return additionalFieldMetaDataMap;
+    }
+
+    // given a normal field, return the corresponding score field (if any)
+    public ScoreFieldMetadata getScoreFieldMetaData(FieldMetadata fieldMetadata){
+        return fieldToScoredFieldMap.get(fieldMetadata);
     }
 
     @Override

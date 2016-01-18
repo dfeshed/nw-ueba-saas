@@ -11,7 +11,7 @@ import java.util.Set;
  * writes the entities.properties from the stats to entities-overriding.properties, in web app and streaming
  * Created by galiar on 17/01/2016.
  */
-public class EntititiesPropertiesConfigurationWriter extends ConfigurationWriterService {
+public class EntitiesPropertiesConfigurationWriter extends ConfigurationWriterService {
 
 
 	private static final String ENTITIES_OVERRIDING_RELATIVE_PATH = "/fortscale/fortscale-core/fortscale/fortscale-webapp/src/main/resources/META-INF/entities-overriding.properties";
@@ -23,11 +23,9 @@ public class EntititiesPropertiesConfigurationWriter extends ConfigurationWriter
 	protected FileWriter streamingOverridingFileWriter;
 
 
-
-
-	public EntititiesPropertiesConfigurationWriter()
+	public EntitiesPropertiesConfigurationWriter()
 	{
-		logger = LoggerFactory.getLogger(EntititiesPropertiesConfigurationWriter.class);
+		logger = LoggerFactory.getLogger(EntitiesPropertiesConfigurationWriter.class);
 		this.fileToConfigurePath = USER_HOME_DIR + ENTITIES_OVERRIDING_RELATIVE_PATH;
 		this.streamingOverridingFilePath = USER_HOME_DIR + ENTITIES_OVERRIDING_STREAMING_RELATIVE_PATH;
 	}
@@ -46,6 +44,10 @@ public class EntititiesPropertiesConfigurationWriter extends ConfigurationWriter
 		line = String.format("leaf_entities=%s,%s",dataSourceList, dataSourceName);
 		writeLineToFile(line, fileWriterToConfigure, true);
 		writeLineToFile(line, streamingOverridingFileWriter, true);
+
+		//if case of hidden fields:
+		//attributes
+		//enableByDefault
 
 		return true;
 	}

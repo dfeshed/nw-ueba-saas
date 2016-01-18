@@ -91,16 +91,18 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
     private void configureAdditionalFields(String additionalFieldsCSV, String additionalFiledToScoreFieldMapCSV) {
         FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
-        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
+        Map<String, String> additionalfieldsNameToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
         Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(additionalFiledToScoreFieldMapCSV);
 
-        for (Map.Entry<String, String> fieldNameToType : fieldNameToTypeMap.entrySet()) {
+        for (Map.Entry<String, String> fieldNameToType : additionalfieldsNameToTypeMap.entrySet()) {
             String fieldName = fieldNameToType.getKey();
             String type = fieldNameToType.getValue();
 
             FieldMetadata fieldMetadata = new FieldMetadata(fieldName, FieldType.valueOf(type.toUpperCase()));
 
             fieldMetadataDictionary.addField(fieldMetadata);
+            //additional fields should have another process in entities properties step
+            fieldMetadataDictionary.addAdditionalField(fieldMetadata);
         }
 
         for (Map.Entry<String, String> scoreFieldNameToField : scoreFieldNameToFieldMap.entrySet()) {

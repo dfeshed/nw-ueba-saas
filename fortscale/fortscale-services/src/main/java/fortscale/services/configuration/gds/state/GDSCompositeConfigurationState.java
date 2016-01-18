@@ -1,6 +1,7 @@
 package fortscale.services.configuration.gds.state;
 
 import fortscale.services.configuration.EntityType;
+import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
 
 /**
  * Generic data source composite configuration state
@@ -97,6 +98,10 @@ public class GDSCompositeConfigurationState implements Resettable{
 	public void setRawDataModelAndScoreState(GDSRAWDataModelAndScoreState rawDataModelAndScoreState) {
 		this.rawDataModelAndScoreState = rawDataModelAndScoreState;
 	}
+
+    public FieldMetadataDictionary getFieldMetadataDictionary(){
+        return schemaDefinitionState.getFieldMetadataDictionary();
+    }
 
 
 
