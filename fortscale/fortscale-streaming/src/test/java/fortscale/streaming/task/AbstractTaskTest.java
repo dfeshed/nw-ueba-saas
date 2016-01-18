@@ -63,7 +63,7 @@ public class AbstractTaskTest implements TestTask {
     protected static String propertiesPath;
     protected static String springContextFile;
     protected static Map<String, String> addInfo = new HashMap<String, String>();
-
+    protected static final String TASK_CLASS = "task.class";
     protected static volatile KeyValueStore keyValueStore;
     /**
      * Perform initialization of Samza, Kafka, etc.
@@ -202,10 +202,10 @@ public class AbstractTaskTest implements TestTask {
         assertEquals("Should only have a single partition in this task", 1, tasks.size());
 
         //get the running task
-        TestTask task = tasks.values().iterator().next();
+        testTask = tasks.values().iterator().next();
         //wait for task to complete initialization
-        task.initFinished.await(60, TimeUnit.SECONDS);
-        assertEquals(0, task.initFinished.getCount());
+        testTask.initFinished.await(60, TimeUnit.SECONDS);
+        assertEquals(0, testTask.initFinished.getCount());
     }
 
     /**
@@ -219,9 +219,11 @@ public class AbstractTaskTest implements TestTask {
     /**
      * Send a message to the input topic, and validate that it gets to the test task.
      */
-    protected void send(String msg) {
+    protected void send(String msg) throws InterruptedException {
         KeyedMessage<String, String> message = new KeyedMessage<String, String>(inputTopic, "1", msg);
         producer.send(message);
+        testTask.awaitMessage();
+        assertEquals(msg, testTask.received.get(received.size() - 1));
     }
 
     /**

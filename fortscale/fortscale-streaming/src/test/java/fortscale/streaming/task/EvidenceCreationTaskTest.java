@@ -20,21 +20,29 @@ import java.util.List;
  */
 public class EvidenceCreationTaskTest extends AbstractTaskTest{
 
-    //copy this class to every test class extending the class you want to test
+    //Inner class that extends the class of the task to be tested
     public static class EvidenceCreationTaskSubclass extends EvidenceCreationTask implements TestTask{
         @Override
         protected void wrappedInit(Config config, TaskContext context) throws Exception {
+            //1. call the init function of the tested task
             super.wrappedInit(config, context);
+            //2. Optional: retrieve the keyValueStore to be tested later
+            //keyValueStore = (KeyValueStore<String, String>)context.getStore(KEY_VALUE_STORE_TABLE_NAME);
+            //3. init the test to register the task
             initTest(config, context);
         }
         @Override
         protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
                                       TaskCoordinator coordinator) throws Exception {
+            //1. call the process function of the tested task
             super.wrappedProcess(envelope, collector, coordinator);
-            processTest();
+            //2. run teh test process function
+            processTest(envelope, collector, coordinator);
         }
     }
-
+    //define constants
+    //class name should be of pattern: <THIS_CLASS_NAME>$<INNER_CLASS_NAME>
+    private static final String TASK_CLASS_NAME = "fortscale.streaming.task.EvidenceCreationTaskTest$EvidenceCreationTaskSubclass";
     protected static final String STREAMING_CONFIG_FILE = "evidence-creation-task.properties";
     protected final static String SPRING_CONTEXT_FIILE = "classpath*:META-INF/spring/samza-task-test-context.xml";
 
@@ -51,7 +59,7 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         propertiesPath = STREAMING_CONFIG_PATH + STREAMING_CONFIG_FILE;
         springContextFile = SPRING_CONTEXT_FIILE;
         //add the subclass as the name of the class to load in Samza container
-        addInfo.put("task.class", "fortscale.streaming.task.EvidenceCreationTaskTest$EvidenceCreationTaskSubclass");
+        addInfo.put("task.class", TASK_CLASS_NAME);
         setupBefore();
     }
     @Before
@@ -66,7 +74,6 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
         super.cleanupAfter();
     }
 
-//    @Ignore
     @Test
     public void testSamza() throws InterruptedException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JSONException {
 
