@@ -98,6 +98,8 @@ public class GDSCompositeConfigurationState implements Resettable{
 		this.rawDataModelAndScoreState = rawDataModelAndScoreState;
 	}
 
+
+
 	public void reset() {
         baseDefinitionState.reset();
         schemaDefinitionState.reset();
