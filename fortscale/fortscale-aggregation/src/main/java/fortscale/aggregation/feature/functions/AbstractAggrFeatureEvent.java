@@ -3,7 +3,8 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 public abstract class AbstractAggrFeatureEvent implements IAggrFeatureEventFunction {

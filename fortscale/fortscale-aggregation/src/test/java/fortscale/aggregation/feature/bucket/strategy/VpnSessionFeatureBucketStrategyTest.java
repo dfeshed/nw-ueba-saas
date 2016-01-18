@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.common.event.EventMessage;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import fortscale.aggregation.JsonObjectWrapperEvent;
 import net.minidev.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,10 +38,10 @@ public class VpnSessionFeatureBucketStrategyTest {
 		FeatureBucketStrategyData strategyData1 = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 		FeatureBucketStrategyData strategyData2 = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime + MAX_SESSION_DURATION + 1, (epochtime + MAX_SESSION_DURATION + 1) + MAX_SESSION_DURATION);
 
-		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event));
+		FeatureBucketStrategyData actual = strategy.update(new EventMessage(event));
 		assertEqualData(strategyData1, actual);
 
-		actual = strategy.update(new JsonObjectWrapperEvent(eventAfterMaxSessionDuration));
+		actual = strategy.update(new EventMessage(eventAfterMaxSessionDuration));
 		assertEqualData(strategyData2, actual);
 	}
 
@@ -58,11 +58,11 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
 		String strategyContextId = String.format("%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, sourceIp);
 
-		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(openEvent));
+		FeatureBucketStrategyData actual = strategy.update(new EventMessage(openEvent));
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 		assertEqualData(expected, actual);
 
-		actual = strategy.update(new JsonObjectWrapperEvent(closeEvent));
+		actual = strategy.update(new EventMessage(closeEvent));
 		long expectedStartTime = epochtime;
 		long expectedEndTime = epochtime + 2;
 		expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, expectedStartTime, expectedEndTime);
@@ -80,12 +80,12 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject event = createDataSourceEvent(username, sourceIp, epochtime, status);
 		String strategyContextId = String.format("%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username);
 
-		FeatureBucketStrategyData actual = strategy.update(new JsonObjectWrapperEvent(event)); // Creating the session
+		FeatureBucketStrategyData actual = strategy.update(new EventMessage(event)); // Creating the session
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 		assertEqualData(expected, actual);
 
 		event = createDataSourceEvent(username, sourceIp, epochtime + (MAX_SESSION_DURATION / 2), status);
-		actual = strategy.update(new JsonObjectWrapperEvent(event)); // 2nd call for the same session. should return null
+		actual = strategy.update(new EventMessage(event)); // 2nd call for the same session. should return null
 		Assert.assertNull(actual);
 	}
 
@@ -103,16 +103,16 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
 		JSONObject openEvent2 = createDataSourceEvent(username, sourceIp, epochtime + 2, openStatus);
 
-		FeatureBucketStrategyData openStrategyData = strategy.update(new JsonObjectWrapperEvent(openEvent1)); // Creating the session
+		FeatureBucketStrategyData openStrategyData = strategy.update(new EventMessage(openEvent1)); // Creating the session
 		Assert.assertEquals(epochtime, openStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 14400, openStrategyData.getEndTime());
 
-		FeatureBucketStrategyData closedStrategyData = strategy.update(new JsonObjectWrapperEvent(closeEvent)); // Closing the session
+		FeatureBucketStrategyData closedStrategyData = strategy.update(new EventMessage(closeEvent)); // Closing the session
 		Assert.assertEquals(openStrategyData, closedStrategyData);
 		Assert.assertEquals(epochtime, closedStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 2, closedStrategyData.getEndTime());
 
-		FeatureBucketStrategyData newOpenedStrategyData = strategy.update(new JsonObjectWrapperEvent(openEvent2)); // Openning another session
+		FeatureBucketStrategyData newOpenedStrategyData = strategy.update(new EventMessage(openEvent2)); // Openning another session
 		Assert.assertEquals(epochtime + 2, newOpenedStrategyData.getStartTime());
 		Assert.assertEquals(epochtime + 14400 + 2, newOpenedStrategyData.getEndTime());
 	}
@@ -140,28 +140,28 @@ public class VpnSessionFeatureBucketStrategyTest {
 		contextMap2.put(VpnSessionFeatureBucketStrategy.SOURCE_IP_CONTEXT_FIELD_NAME, username);
 		FeatureBucketStrategyData activeStrategyData2 = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION, contextMap2);
 
-		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(close_event1), 123);
+		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(close_event1), 123);
 		Assert.assertEquals(0, actual == null ? 0 : actual.size());
 
-		strategy.update(new JsonObjectWrapperEvent(success_event1));
-		actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(success_event1), epochtime + 1);
+		strategy.update(new EventMessage(success_event1));
+		actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(success_event1), epochtime + 1);
 		Assert.assertEquals(1, actual.size());
 		assertEqualData(activeStrategyData1, actual.get(0));
 
-		strategy.update(new JsonObjectWrapperEvent(success_event2));
-		actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(success_event2), epochtime + 1);
+		strategy.update(new EventMessage(success_event2));
+		actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(success_event2), epochtime + 1);
 		Assert.assertEquals(2, actual.size());
 		assertEqualData(activeStrategyData1, actual.get(0));
 		assertEqualData(activeStrategyData2, actual.get(1));
 
-		strategy.update(new JsonObjectWrapperEvent(close_event2));
+		strategy.update(new EventMessage(close_event2));
 
-		actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(close_event1), epochtime + (MAX_SESSION_DURATION / 2) + 1);
+		actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(close_event1), epochtime + (MAX_SESSION_DURATION / 2) + 1);
 		Assert.assertEquals(1, actual.size());
 		assertEqualData(activeStrategyData1, actual.get(0));
 
-		strategy.update(new JsonObjectWrapperEvent(close_event1));
-		actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(close_event1), epochtime + (MAX_SESSION_DURATION / 2) + 1);
+		strategy.update(new EventMessage(close_event1));
+		actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(close_event1), epochtime + (MAX_SESSION_DURATION / 2) + 1);
 		Assert.assertEquals(0, actual.size());
 	}
 
@@ -176,8 +176,8 @@ public class VpnSessionFeatureBucketStrategyTest {
 		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
-		strategy.update(new JsonObjectWrapperEvent(success_event1));
-		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, new JsonObjectWrapperEvent(success_event1), epochtime + 1);
+		strategy.update(new EventMessage(success_event1));
+		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, new EventMessage(success_event1), epochtime + 1);
 		String strategyId = actual.get(0).getStrategyId();
 		String actualContextId = strategy.getStrategyContextIdFromStrategyId(strategyId);
 		Assert.assertEquals(strategyContextId1, actualContextId);

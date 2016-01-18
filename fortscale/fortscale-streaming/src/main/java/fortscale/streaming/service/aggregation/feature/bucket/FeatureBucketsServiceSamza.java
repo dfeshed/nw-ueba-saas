@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.aggregation.feature.extraction.FeatureExtractService;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 

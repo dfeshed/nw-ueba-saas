@@ -3,9 +3,10 @@ package fortscale.aggregation.feature.functions;
 import java.util.List;
 import java.util.Map;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 
 public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeatureEvent {
 	

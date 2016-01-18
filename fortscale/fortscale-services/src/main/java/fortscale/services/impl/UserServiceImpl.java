@@ -15,7 +15,7 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.classifier.ClassifierHelper;
-import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;

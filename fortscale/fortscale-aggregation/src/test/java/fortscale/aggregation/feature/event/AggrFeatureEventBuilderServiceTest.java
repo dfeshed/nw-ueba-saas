@@ -1,20 +1,15 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.DataSourcesSyncTimer;
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
-import fortscale.aggregation.feature.functions.AggrFeatureValue;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.feature.AggrFeatureValue;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;

@@ -9,4 +9,9 @@ public class ScoreFieldMetadata extends BaseFieldMetadata{
     public ScoreFieldMetadata(String fieldName, boolean isInUse) {
         super(fieldName, FieldType.DOUBLE, isInUse);
     }
+
+    @Override
+    public String toString() {
+        return "ScoreFieldMetadata: " + super.toString();
+    }
 }

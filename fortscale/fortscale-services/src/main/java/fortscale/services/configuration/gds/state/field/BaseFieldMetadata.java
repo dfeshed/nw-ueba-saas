@@ -54,4 +54,12 @@ public abstract class BaseFieldMetadata {
     public int hashCode() {
         return fieldName.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return  "fieldName='" + fieldName + '\'' +
+                ", fieldType=" + fieldType +
+                ", isInUse=" + isInUse +
+                '}';
+    }
 }
