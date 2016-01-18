@@ -75,6 +75,8 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String scoreFieldsCSV = paramsMap.get("scoreFieldsCSV").getParamValue();
         schemaDefinitionState.setScoreFieldsCSV(scoreFieldsCSV);
 
+        String scoreFieldToFieldNameCSV = paramsMap.get("scoreFieldToFieldNameCSV").getParamValue();
+
         String additionalFieldsCSV = paramsMap.get("additionalFieldsCSV").getParamValue();
         schemaDefinitionState.setAdditionalFieldsCSV(additionalFieldsCSV);
 
@@ -84,15 +86,17 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
         schemaDefinitionState.setAdditionalFiledToScoreFieldMapCSV(additionalFiledToScoreFieldMapCSV);
 
-        configureAdditionalFields(additionalFieldsCSV, additionalFiledToScoreFieldMapCSV);
-
+        configureFields(dataFields, scoreFieldsCSV + "," + additionalScoreFieldsCSV, scoreFieldToFieldNameCSV + "," + additionalFiledToScoreFieldMapCSV);
     }
 
-    private void configureAdditionalFields(String additionalFieldsCSV, String additionalFiledToScoreFieldMapCSV) {
+    private void configureFields(String fieldsCSV, String scoreFieldsCSV, String scoreFieldsToFieldCSV) {
+        if (fieldsCSV == null || "".equals(fieldsCSV)) {
+            return;
+        }
+
         FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
-        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
-        Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(additionalFiledToScoreFieldMapCSV);
+        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertCSVToMap(fieldsCSV);
 
         for (Map.Entry<String, String> fieldNameToType : fieldNameToTypeMap.entrySet()) {
             String fieldName = fieldNameToType.getKey();
@@ -103,14 +107,20 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
             fieldMetadataDictionary.addField(fieldMetadata);
         }
 
-        for (Map.Entry<String, String> scoreFieldNameToField : scoreFieldNameToFieldMap.entrySet()) {
-            String scoreFieldName = scoreFieldNameToField.getKey();
-            String fieldName = scoreFieldNameToField.getValue();
+        Map<String, String> scoreFieldNameToTypeMap = ConversionUtils.convertCSVToMap(scoreFieldsCSV);
+        Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(scoreFieldsToFieldCSV);
+
+        for (Map.Entry<String, String> scoreFieldToType : scoreFieldNameToTypeMap.entrySet()) {
+            String scoreFieldName = scoreFieldToType.getKey();
 
             ScoreFieldMetadata scoreFieldMetadata = new ScoreFieldMetadata(scoreFieldName, true);
 
             fieldMetadataDictionary.addScoreField(scoreFieldMetadata);
-            fieldMetadataDictionary.pairFieldToScore(fieldName, scoreFieldName);
+
+            if (scoreFieldNameToFieldMap.containsKey(scoreFieldName)) {
+                String fieldName = scoreFieldNameToFieldMap.get(scoreFieldName);
+                fieldMetadataDictionary.pairFieldToScore(fieldName, scoreFieldName);
+            }
         }
     }
 

@@ -51,6 +51,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SOURCE_IP_FLAG_PARAM = "sourceIpFlag";
     private static final String TARGET_IP_FLAG_PARAM = "targetIpFlag";
     private static final String SCORE_FIELDS_CSV_PARAM = "scoreFieldsCSV";
+    private static final String SCORE_FIELD_TO_FIELD_NAME_PARAM = "scoreFieldToFieldNameCSV";
     private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
 	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
 	private static final String ADDITIONAL_FIELD_TO_ADDITIONAL_SCORE_FIELD_MAP = "additionalFiledToScoreFieldMapCSV";
@@ -70,6 +71,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE";
     private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN";
     private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
+    private static final String SCORE_FIELD_TO_FIELD_NAME_CSV = "date_time_score date_time, source_machine_score normalized_src_machine, country_score country, destination_machine_score normalized_dst_machine";
 
     @Override
     public Map<String, Map<String, ConfigurationParam>> populateConfigurationData(GDSCompositeConfigurationState currentConfigurationState) throws Exception {
@@ -92,6 +94,8 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         System.out.println(String.format("Please enter the %s data schema delimiter  (i.e | or , )",dataSourceName));
         String delimiter = gdsInputHandler.getInput(allowedDelimiters);
         paramsMap.put(DATA_DELIMITER_PARAM, new ConfigurationParam(DATA_DELIMITER_PARAM,false,delimiter));
+
+        paramsMap.put(SCORE_FIELD_TO_FIELD_NAME_PARAM, new ConfigurationParam(SCORE_FIELD_TO_FIELD_NAME_PARAM,false,SCORE_FIELD_TO_FIELD_NAME_CSV));
 
         //table name
         String tableName = dataSourceName+"data";
