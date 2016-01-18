@@ -314,11 +314,10 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             String additionalFiledToScoreFieldMapCSV = EMPTY_STR;
             String additionalScoreFieldNames = "";
 
-            System.out.println(String.format("Please enter %s data source additional fields. When you are done please type \"Done\"", dataSourceName));
+            boolean nextAdditionalField = true;
 
-            while (true) {
-                //get the additional field name
-                System.out.println("Field name:");
+            while (nextAdditionalField) {
+                System.out.println("Please enter additional field name:");
                 String additionalFieldName = gdsInputHandler.getInput();
 
                 //in case the user want to stop the insertion
@@ -358,6 +357,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
                     additionalFiledToScoreFieldMapCSV = additionalFiledToScoreFieldMapCSV + additionalScoreFieldName + SPACE + additionalFieldName + GDSSchemaDefinitionCLIPopulator.COMMA;
                     additionalScoreFieldNames += additionalScoreFieldNames + additionalScoreFieldName + COMMA;
                 }
+
+                System.out.println("Do you want to add another additional field?");
+                nextAdditionalField = gdsInputHandler.getYesNoInput();
             }
 
             //remove the last comma from the CSVs
