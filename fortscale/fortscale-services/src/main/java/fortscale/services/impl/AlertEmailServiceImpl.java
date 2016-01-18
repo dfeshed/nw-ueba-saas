@@ -2,9 +2,12 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.email.*;
 import fortscale.services.AlertEmailService;
+import fortscale.services.AlertPrettifierService;
 import fortscale.services.AlertsService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.email.EmailUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
@@ -30,6 +33,12 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	private static final String NEW_ALERT_SUBJECT = "New Fortscale Alert";
 	private static final String ALERT_SUMMARY_SUBJECT = "Fortscale Alerts Summary";
 
+	private static final String CONFIGURATION_KEY = "system.emailConfiguration.settings";
+	private static final String JADE_RESOURCES_FOLDER = "resources/dynamic.html";
+	private static final String NEW_ALERT_JADE_INDEX = JADE_RESOURCES_FOLDER + "/templates/new-alert-email/index.jade";
+	private static final String ALERT_SUMMARY_JADE_INDEX = JADE_RESOURCES_FOLDER +
+			"/templates/alert-summary-email/index.jade";
+
 	@Autowired
 	private AlertsService alertsService;
 	@Autowired
@@ -37,63 +46,91 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	@Autowired
 	private JadeUtils jadeUtils;
 	@Autowired
-	private AlertPrettifierImpl alertPrettifier;
+	private AlertPrettifierService alertPrettifierService;
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	private EmailConfiguration emailConfiguration;
 	private ObjectMapper objectMapper = new ObjectMapper();
 	//TODO - add attachments
 	private String[] attachedFiles = null;
 
+	/**
+	 *
+	 * This method sends an email notification of an incoming new alert
+	 *
+	 * @param alert
+	 */
 	@Override
 	public void sendNewAlert(Alert alert) {
+		if (!emailUtils.isEmailConfigured()) {
+			return;
+		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration != null) {
-			String alertSeverity = alert.getSeverity().name();
-			//if one of the groups contains the alert severity
-			if (emailConfiguration.shouldSendNewAlert(alertSeverity)) {
-				Map<String, Object> model = new HashMap();
-				alertPrettifier.prettify(alert);
-				model.put("alert", alert);
-				String html;
+		if (emailConfiguration == null) {
+			return;
+		}
+		String alertSeverity = alert.getSeverity().name();
+		//if none of the groups contain the alert severity
+		if (!emailConfiguration.shouldSendNewAlert(alertSeverity)) {
+			return;
+		}
+		Map<String, Object> model = new HashMap();
+		alertPrettifierService.prettify(alert);
+		model.put("alert", alert);
+		String html;
+		try {
+			html = jadeUtils.renderHTML(NEW_ALERT_JADE_INDEX, model);
+		} catch (IOException ex) {
+			logger.error("failed to render html - {}", ex);
+			return;
+		}
+		//for each group check if they should be notified of the alert
+		for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
+			NewAlert newAlert = emailGroup.getNewAlert();
+			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					html = jadeUtils.renderHTML("", model);
-				} catch (IOException ex) {
-					logger.error("failed to render html - {}", ex);
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT, html,
+							attachedFiles, true);
+				} catch (MessagingException | IOException ex) {
+					logger.error("failed to send email - {}", ex);
 					return;
-				}
-				//for each group check if they should be notified of the alert
-				for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
-					NewAlert newAlert = emailGroup.getNewAlert();
-					if (newAlert.getSeverities().contains(alertSeverity)) {
-						try {
-							emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT, html,
-									attachedFiles, true);
-						} catch (MessagingException | IOException ex) {
-							logger.error("failed to send email - {}", ex);
-							return;
-						}
-					}
 				}
 			}
 		}
 	}
 
+	/**
+	 *
+	 * This method sends an email summary of the top alerts for a given frequency
+	 *
+	 * @param frequency
+	 */
 	@Override
-	public void sendAlertSummary() {
+	public void sendAlertSummary(EmailFrequency frequency) {
+		if (!emailUtils.isEmailConfigured()) {
+			return;
+		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration != null) {
-			for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
-				AlertSummary alertSummary = emailGroup.getSummary();
-				Map<String, Object> model = new HashMap();
-				//TODO - what to do with the frequencies?
-				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), 0);
-				for (Alert alert: alerts) {
-					alertPrettifier.prettify(alert);
+		if (emailConfiguration == null) {
+			return;
+		}
+		for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
+			AlertSummary alertSummary = emailGroup.getSummary();
+			if (alertSummary.getFrequencies().contains(frequency)) {
+				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(),
+						getDateTimeByFrequency(frequency));
+				if (alerts.isEmpty()) {
+					continue;
 				}
+				for (Alert alert: alerts) {
+					alertPrettifierService.prettify(alert);
+				}
+				Map<String, Object> model = new HashMap();
 				model.put("alerts", alerts);
 				String html;
 				try {
-					html = jadeUtils.renderHTML("", model);
+					html = jadeUtils.renderHTML(ALERT_SUMMARY_JADE_INDEX, model);
 				} catch (IOException ex) {
 					logger.error("failed to render html - {}", ex);
 					return;
@@ -134,8 +171,14 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @throws Exception
 	 */
 	private EmailConfiguration loadEmailConfiguration() {
-		//TODO - fetch configuration from mongo
-		String config = "{json}";
+		List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationService.
+				getApplicationConfiguration();
+		String config = null;
+		for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
+			if (applicationConfiguration.getKey().equals(CONFIGURATION_KEY)) {
+				config = applicationConfiguration.getValue();
+			}
+		}
 		EmailConfiguration emailConfiguration = null;
 		if (config == null) {
 			logger.warn("no email configuration found");

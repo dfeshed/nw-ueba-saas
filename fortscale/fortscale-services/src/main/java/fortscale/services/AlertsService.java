@@ -2,14 +2,12 @@ package fortscale.services;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.AlertsRepositoryImpl;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Set;
 
 /**
  * Service that handles Alerts and stores them in MongoDB
