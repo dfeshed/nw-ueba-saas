@@ -5,6 +5,11 @@ import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.SchemaDefinitionConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
+import fortscale.services.configuration.gds.state.field.FieldMetadata;
+import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
+import fortscale.services.configuration.gds.state.field.FieldType;
+import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
+import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
 
@@ -67,20 +72,46 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String dataTableName = paramsMap.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
 
-		String scoreFieldsCSV = paramsMap.get("scoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setScoreFieldsCSV(scoreFieldsCSV);
+        String scoreFieldsCSV = paramsMap.get("scoreFieldsCSV").getParamValue();
+        schemaDefinitionState.setScoreFieldsCSV(scoreFieldsCSV);
 
-		String additionalFeldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFeldsCSV);
+        String additionalFieldsCSV = paramsMap.get("additionalFieldsCSV").getParamValue();
+        schemaDefinitionState.setAdditionalFieldsCSV(additionalFieldsCSV);
 
-		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
+        String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+        schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
 
-		String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFiledToScoreFieldMapCSV);
+        String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
+        schemaDefinitionState.setAdditionalFiledToScoreFieldMapCSV(additionalFiledToScoreFieldMapCSV);
 
+        configureAdditionalFields(additionalFieldsCSV, additionalFiledToScoreFieldMapCSV);
 
+    }
 
+    private void configureAdditionalFields(String additionalFieldsCSV, String additionalFiledToScoreFieldMapCSV) {
+        FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
+
+        Map<String, String> fieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
+        Map<String, String> scoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(additionalFiledToScoreFieldMapCSV);
+
+        for (Map.Entry<String, String> fieldNameToType : fieldNameToTypeMap.entrySet()) {
+            String fieldName = fieldNameToType.getKey();
+            String type = fieldNameToType.getValue();
+
+            FieldMetadata fieldMetadata = new FieldMetadata(fieldName, FieldType.valueOf(type.toUpperCase()));
+
+            fieldMetadataDictionary.addField(fieldMetadata);
+        }
+
+        for (Map.Entry<String, String> scoreFieldNameToField : scoreFieldNameToFieldMap.entrySet()) {
+            String scoreFieldName = scoreFieldNameToField.getKey();
+            String fieldName = scoreFieldNameToField.getValue();
+
+            ScoreFieldMetadata scoreFieldMetadata = new ScoreFieldMetadata(scoreFieldName, true);
+
+            fieldMetadataDictionary.addScoreField(scoreFieldMetadata);
+            fieldMetadataDictionary.pairFieldToScore(fieldName, scoreFieldName);
+        }
     }
 
     private void configureBaseDefinitions(Map<String, ConfigurationParam> configurationParams) {
@@ -91,7 +122,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         currGDSConfigurationState.setDataSourceName(dataSourceName.getParamValue());
         currGDSConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
         currGDSConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
-		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue("etl");
+        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue("etl");
     }
 
     private void configureStreamingTopologyDefinitions(Map<String, ConfigurationParam> configurationParams) {

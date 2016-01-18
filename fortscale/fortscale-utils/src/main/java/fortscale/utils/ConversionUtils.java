@@ -12,6 +12,7 @@ public final class ConversionUtils {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String WHITESPACE_DELIMITER_REGEX = "\\s+"; // i.e. one or more whitespace chars
+	private static final String EMPTY_STR = "";
 
 	public static Long convertToLong(Object value) {
 		try {
@@ -102,13 +103,18 @@ public final class ConversionUtils {
 	/*
 	 * Converts the CSV-formatted field to a map of key-value ("1,2" --->{1:2}).
      */
-	public static Map<String, String> convertCSVToMap(String fieldsCSV, String delimiter) {
+	public static Map<String, String> convertCSVToMap(String fieldsCSV) {
 		Map<String, String> mappedCSV = new LinkedHashMap<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(delimiter);
-			if(fieldsArray.length>1)
-				mappedCSV.put(fieldsArray[0], fieldsArray[1]);
+			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+			for (String fieldDef : fieldsArray) {
+				if (!EMPTY_STR.equals(fieldDef)) {
+					fieldDef = fieldDef.trim();
+					String[] fieldDefSep = fieldDef.split(WHITESPACE_DELIMITER_REGEX);
+					mappedCSV.put(fieldDefSep[0], fieldDefSep[1]);
+				}
+			}
 		}
 
 		return mappedCSV;
@@ -117,14 +123,14 @@ public final class ConversionUtils {
 	/*
  * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
  */
-	public static List<String> convertCSVToList(String fieldsCSV, String delimiter) {
+	public static List<String> convertCSVToList(String fieldsCSV) {
 		List<String> ListedCSV = new ArrayList<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(delimiter);
-			for (String field : fieldsArray)
+			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
+			for (String field : fieldsArray) {
 				ListedCSV.add(field);
-
+			}
 		}
 
 		return ListedCSV;
