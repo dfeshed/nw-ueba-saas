@@ -199,6 +199,8 @@
         <property name="usernameNormalizer" ref="genericUsernameNormalizer"/>
     </bean>
 
+    <bean id="alertPrettifierService" class="fortscale.services.impl.AlertPrettifierServiceImpl" scope="singleton" />
+
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 
     <bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
