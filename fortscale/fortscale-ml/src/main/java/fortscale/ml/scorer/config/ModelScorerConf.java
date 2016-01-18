@@ -21,7 +21,7 @@ public class ModelScorerConf extends AbstractScorerConf{
     public ModelScorerConf(@JsonProperty("name") String name,
                             @JsonProperty("number-of-samples-to-influence-enought") int enoughNumOfSamplesToInfluence,
                             @JsonProperty("use-certainty-to-calculate-score") boolean isUseCertaintyToCalculateScore,
-                           @JsonProperty("min-number-of-samples-to-influence") int minNumOfSamplesToInfluence,
+                            @JsonProperty("min-number-of-samples-to-influence") int minNumOfSamplesToInfluence,
                             @JsonProperty("model") ModelInfo modelInfo) {
         super(name);
         this.enoughNumOfSamplesToInfluence = enoughNumOfSamplesToInfluence;

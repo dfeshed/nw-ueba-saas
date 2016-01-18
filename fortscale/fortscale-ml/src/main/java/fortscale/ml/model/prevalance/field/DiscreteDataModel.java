@@ -7,6 +7,7 @@ import fortscale.ml.model.Model;
 import java.util.Collection;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@Deprecated
 public class DiscreteDataModel implements Model {
 	private OccurrencesHistogram occurrencesHistogram;
 
@@ -14,8 +15,13 @@ public class DiscreteDataModel implements Model {
 		occurrencesHistogram = new OccurrencesHistogram(featureCounts);
 	}
 
-	@Override
+
 	public Double calculateScore(Object value) {
 		return occurrencesHistogram.score((Double)value);
+	}
+
+	@Override
+	public long getNumOfSamples() {
+		return -1; //TODO
 	}
 }

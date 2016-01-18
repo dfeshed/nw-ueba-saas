@@ -22,13 +22,6 @@ public class DiscreteModelBuilder implements IModelBuilder {
 				.values());
 	}
 
-	@Override
-	public double calculateScore(Object value, Model model) {
-		return model.calculateScore(
-				castValue(value)
-				.getValue());
-	}
-
 	private GenericHistogram castModelBuilderData(Object modelBuilderData) {
 		Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
 		Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);

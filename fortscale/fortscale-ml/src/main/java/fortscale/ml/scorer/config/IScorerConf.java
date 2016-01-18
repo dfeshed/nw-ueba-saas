@@ -14,7 +14,7 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = LowValuesScoreReducerConf.class, name = LowValuesScoreReducerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ReductingScorerConf.class, name = ReductingScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ContinuousModelScorerConf.class, name = ContinuousModelScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = DiscreetValuesModelScorerConf.class, name = DiscreetValuesModelScorerConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = CategoryRarityModelScorerConf.class, name = CategoryRarityModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = RegexScorerConf.class, name = RegexScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ConstantRegexScorerConf.class, name = ConstantRegexScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = MaxScorerContainerConf.class, name = MaxScorerContainerConf.SCORER_TYPE),

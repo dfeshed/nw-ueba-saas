@@ -62,7 +62,7 @@ public class ScorersService {
         EventMessage eventMessage = new EventMessage(event);
 
         for(Scorer scorer: dataSourceScorers) {
-            FeatureScore featureScore = scorer.calculateScore(eventMessage);
+            FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);
             featureScores.add(featureScore);
         }
 

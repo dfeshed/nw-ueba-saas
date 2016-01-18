@@ -25,18 +25,28 @@
 
               "main-scorer": {
                 "name": "hostname-main-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minumum-number-of-discreet-values-to-influence": 0,
+                "enough-number-of-discreet-values-to-influence": 0,
+                "number-of-samples-to-influence-enought": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769user"
+                  "name": "source_machine.normalized_username.kerberos_logins"
                 }
               },
               "reducting-scorer": {
                 "name": "hostname-reducting-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minumum-number-of-discreet-values-to-influence": 0,
+                "enough-number-of-discreet-values-to-influence": 0,
+                "number-of-samples-to-influence-enought": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769SrcComputer"
+                  "name": "normalized_username.source_machine.kerberos_logins"
                 }
               },
               "reducting-weight": 0.5
@@ -47,18 +57,28 @@
 
               "main-scorer": {
                 "name": "dest-main-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minumum-number-of-discreet-values-to-influence": 0,
+                "enough-number-of-discreet-values-to-influence": 0,
+                "number-of-samples-to-influence-enought": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769user"
+                  "name": "destination_machine.normalized_username.kerberos_logins"
                 }
               },
               "reducting-scorer": {
                 "name": "dest-reducting-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minumum-number-of-discreet-values-to-influence": 0,
+                "enough-number-of-discreet-values-to-influence": 0,
+                "number-of-samples-to-influence-enought": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769DstComputer"
+                  "name": "normalized_username.destination_machine.kerberos_logins"
                 }
               },
               "reducting-weight": 0.5

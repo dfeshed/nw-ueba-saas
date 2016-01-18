@@ -1,7 +1,6 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
-import org.apache.samza.config.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,12 +17,12 @@ public class ParetoScorer extends ScorerContainer {
     }
 
     @Override
-    public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+    public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
         List<FeatureScore> featureScores = new ArrayList<>();
         List<Double> sortedScores = new ArrayList<>();
 
         for (Scorer scorer : scorers) {
-            FeatureScore featureScore = scorer.calculateScore(eventMessage);
+            FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);
             if (featureScore != null) {
                 featureScores.add(featureScore);
                 sortedScores.add(featureScore.getScore());

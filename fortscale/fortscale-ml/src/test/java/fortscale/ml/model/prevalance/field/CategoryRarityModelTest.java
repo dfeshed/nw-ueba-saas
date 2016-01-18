@@ -3,6 +3,10 @@ package fortscale.ml.model.prevalance.field;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import fortscale.common.feature.Feature;
+import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
+import fortscale.ml.scorer.CategoryRarityModelScorer;
+import fortscale.ml.scorer.FeatureScore;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,19 +27,48 @@ import java.util.function.Consumer;
 
 @RunWith(JUnit4.class)
 public class CategoryRarityModelTest {
-	private Double calcScore(int minEvents, int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
+	private Double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore,
+							 int minNumOfSamplesToInfluence) {
+		return calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore,
+				minNumOfSamplesToInfluence, 1, true, 1, 1);
+	}
+
+	private Double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
+		return calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore,
+				1, 1, false, 1, 1);
+	}
+
+	private Double calcScore(int maxRareCount,
+							 int maxNumOfRareFeatures,
+							 Map<String, Integer> featureValueToCountMap,
+							 int featureCountToScore,
+							 int minNumOfSamplesToInfluence,
+							 int enoughNumOfSamplesToInfluence,
+							 boolean isUseCertaintyToCalculateScore,
+							 int minNumOfDiscreetValuesToInfluence,
+							 int enoughNumOfDiscreetValuesToInfluence) {
+
 		Map<Integer, Double> occurrencesToNumOfFeatures = new HashMap<>();
 		for (int count : featureValueToCountMap.values()) {
 			double lastCount = occurrencesToNumOfFeatures.getOrDefault(count, 0D);
 			occurrencesToNumOfFeatures.put(count, lastCount + 1);
 		}
-		CategoryRarityModel model = new CategoryRarityModel(minEvents, maxRareCount, maxNumOfRareFeatures, occurrencesToNumOfFeatures);
-		return model.calculateScore(featureCountToScore);
+		CategoryRarityModelWithFeatureOccurrencesData model = new CategoryRarityModelWithFeatureOccurrencesData(occurrencesToNumOfFeatures);
+
+		String featureName = "testFeature";
+		String featureValue = "testValue";
+		Feature feature = new Feature(featureName, featureValue);
+
+		CategoryRarityModelScorer categoryRarityModelScorer = new CategoryRarityModelScorer("testScorer", featureName,
+				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
+				minNumOfDiscreetValuesToInfluence, enoughNumOfDiscreetValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
+
+		model.setFeatureCount(feature, featureCountToScore);
+
+		FeatureScore featureScore = categoryRarityModelScorer.calculateScoreWithCertainty(model, feature);
+		return featureScore.getScore();
 	}
 
-	private Double calcScore(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCountToScore) {
-		return calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore);
-	}
 
 	private void assertScoreRange(int maxRareCount, int maxNumOfRareFeatures, Map<String, Integer> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
 		double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCount);
@@ -74,8 +107,13 @@ public class CategoryRarityModelTest {
 		Map<String, Integer> featureValueToCountWithConstantCounts = createFeatureValueToCountWithConstantCounts(1, count);
 		int featureCountToScore = 1;
 
-		Assert.assertNull(calcScore(count + 1, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
-		Assert.assertNotNull(calcScore(count, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
+		Double delta = 0.00001;
+
+		//Assert.assertNull(calcScore(count + 1, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
+		Assert.assertEquals(0d, calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore, count + 1), delta);
+
+		//Assert.assertNotNull(calcScore(count, maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore));
+		Assert.assertEquals(100d, calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountWithConstantCounts, featureCountToScore, count), delta);
 	}
 
 	@Test
@@ -109,7 +147,7 @@ public class CategoryRarityModelTest {
 
 	@Test
 	public void shouldScore0WhenThereAreMoreThanMaxNumOfRareFeaturesRareFeatures() {
-		int maxRareCount = 100;
+		int maxRareCount = 50;
 		int count = 1;
 		for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
 			for (int numOfFeatures = 0; numOfFeatures <= maxNumOfRareFeatures; numOfFeatures++) {
@@ -900,7 +938,7 @@ public class CategoryRarityModelTest {
 		for (final TestEventsBatch eventsBatch : scenarioInfo.eventsBatches) {
 			for (int i = 0; i < eventsBatch.num_of_events; i++) {
 				int eventFeatureCount = featureValueToCountMap.getOrDefault(eventsBatch.getFeature(), 0);
-				Double score = calcScore(1, maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
+				Double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
 				boolean isScoreInteresting = eventsBatch.time_bucket >= minDate && score != null && score > minInterestingScore;
 				scenarioStats.addEventInfo(eventsBatch.time_bucket, eventsBatch.getFeature(), score, isScoreInteresting);
 				if (isScoreInteresting && printContextInfo) {

@@ -60,10 +60,15 @@ public class TimeModel implements Model {
 		return (int) ((epochSeconds % timeResolution) / bucketSize);
 	}
 
-	@Override
+	@Deprecated
 	public Double calculateScore(Object value) {
 		int bucketIndex = getBucketIndex((Long) value);
 		Double smoothedCounter = smoothedCounterBuckets.get(bucketIndex);
 		return occurrencesHistogram.score(smoothedCounter);
+	}
+
+	@Override
+	public long getNumOfSamples() {
+		return -1; // TODO
 	}
 }
