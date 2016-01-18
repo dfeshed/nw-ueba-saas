@@ -64,15 +64,15 @@ public class SchemaDefinitionConfigurationWriter extends ConfigurationWriterServ
 
 			boolean hasTargetIp = schemaDefinitionState.hasTargetIp();
 
-			String dataFields = schemaDefinitionState.getDataFields();
+			String dataFields = schemaDefinitionState.getDataTableFields();
 
-			String enrichFields = schemaDefinitionState.getEnrichFields();
+			String enrichFields = schemaDefinitionState.getEnrichTableFields();
 
 			String enrichDelimiter = schemaDefinitionState.getEnrichDelimiter();
 
 			String enrichTableName = schemaDefinitionState.getEnrichTableName();
 
-			String scoreFields = schemaDefinitionState.getScoreFields();
+			String scoreFields = schemaDefinitionState.getScoreTableFields();
 
 			String scoreDelimiter = schemaDefinitionState.getScoreDelimiter();
 

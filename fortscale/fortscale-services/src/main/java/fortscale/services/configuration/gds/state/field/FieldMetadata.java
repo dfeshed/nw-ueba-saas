@@ -8,12 +8,12 @@ package fortscale.services.configuration.gds.state.field;
  */
 public class FieldMetadata extends BaseFieldMetadata{
 
-    public FieldMetadata(String fieldName, FieldType fieldType) {
-        super(fieldName, fieldType, true);
+    public FieldMetadata(String fieldName, FieldType fieldType, boolean isAdditionalField) {
+        super(fieldName, fieldType, true, isAdditionalField);
     }
 
-    public FieldMetadata(String fieldName, FieldType fieldType, boolean isInUse) {
-        super(fieldName, fieldType, isInUse);
+    public FieldMetadata(String fieldName, FieldType fieldType, boolean isInUse, boolean isAdditionalField) {
+        super(fieldName, fieldType, isInUse, isAdditionalField);
     }
 
     @Override
