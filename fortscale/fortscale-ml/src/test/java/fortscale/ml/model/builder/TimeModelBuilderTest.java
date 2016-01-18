@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder;
 
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import org.junit.Assert;
 import org.junit.Test;

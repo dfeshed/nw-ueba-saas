@@ -2,6 +2,7 @@ package fortscale.streaming.scorer;
 
 import static org.mockito.Mockito.when;
 
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.ConfigException;
 import org.junit.Assert;
 import org.junit.Test;

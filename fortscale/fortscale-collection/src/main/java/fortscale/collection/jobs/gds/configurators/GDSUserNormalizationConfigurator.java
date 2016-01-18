@@ -29,6 +29,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
         List<GDSEnrichmentDefinitionState.UserNormalizationState> userNormalizationStates = currGDSConfigurationState.getEnrichmentDefinitionState().getUserNormalizationStates();
 
+
         String sourceUsernameConfigKey = GDS_CONFIG_ENTRY + SOURCE_USERNAME_CONFIG_ENTRY;
 
         if (configurationParams.containsKey(sourceUsernameConfigKey)) {
@@ -47,6 +48,11 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
     private void addConfiguration(List<GDSEnrichmentDefinitionState.UserNormalizationState> userNormalizationStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
 
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
+
+		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
+		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
+
         ConfigurationParam userNameField = paramsMap.get("userNameField");
         ConfigurationParam domainField = paramsMap.get("domainFieldName");
         ConfigurationParam domainValue = paramsMap.get("domainValue");
@@ -63,9 +69,14 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
         userNormalizationState.setNormalizedUserNameField(normalizedUserNameField.getParamValue());
         userNormalizationState.setNormalizeServiceName(normalizeServiceName.getParamValue());
         userNormalizationState.setUpdateOnly(updateOnlyFlag.getParamValue());
-		userNormalizationState.setOutputTopic(OUTPUT_TOPIC_ENTRY_PARAM);
+		userNormalizationState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		userNormalizationState.setLastState(lastState);
+		userNormalizationState.setTaskName(taskName.getParamValue());
+		userNormalizationState.setOutputTopic(outputTopic.getParamValue());
 
         userNormalizationStates.add(userNormalizationState);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
     }
 
     @Override

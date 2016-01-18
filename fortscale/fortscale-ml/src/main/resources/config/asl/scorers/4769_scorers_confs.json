@@ -1,0 +1,93 @@
+{
+  "data-source-scorers":  [
+    {
+      "data-source": "4769",
+      "scorers": [
+        {
+          "name": "4769-event-scorer",
+          "type": "pareto-scorer",
+
+          "highest-score-weight": 0.65,
+          "scorers": [
+            {
+              "name": "date-time-scorer",
+              "type": "model-scorer",
+
+              "model": {
+                "name": "4769user"
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "name": "hostname-scorer",
+              "type": "reducting-scorer",
+
+              "main-scorer": {
+                "name": "hostname-main-scorer",
+                "type": "model-scorer",
+
+                "model": {
+                  "name": "4769user"
+                }
+              },
+              "reducting-scorer": {
+                "name": "hostname-reducting-scorer",
+                "type": "model-scorer",
+
+                "model": {
+                  "name": "4769SrcComputer"
+                }
+              },
+              "reducting-weight": 0.5
+            },
+            {
+              "name": "dest-scorer",
+              "type": "reducting-scorer",
+
+              "main-scorer": {
+                "name": "dest-main-scorer",
+                "type": "model-scorer",
+
+                "model": {
+                  "name": "4769user"
+                }
+              },
+              "reducting-scorer": {
+                "name": "dest-reducting-scorer",
+                "type": "model-scorer",
+
+                "model": {
+                  "name": "4769DstComputer"
+                }
+              },
+              "reducting-weight": 0.5
+            },
+            {
+              "name": "failure-code-scorer",
+              "type": "priority-scorer",
+
+              "scorers": [
+                {
+                  "name": "failure-code-regex-scorer",
+
+                  "type": "constant-regex-scorer",
+                  "regex": "0x12|0x22|0x6",
+                  "regex-field-name": "failure_code",
+                  "constant-score": 100
+                },
+                {
+                  "name": "failure-code-model-scorer",
+                  "type": "model-scorer",
+                  "model": {
+                    "name": "4769user"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

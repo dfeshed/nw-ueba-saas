@@ -72,8 +72,11 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String dataTableName = paramsMap.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
 
-		String additionalFieldsCSV = paramsMap.get("additionalFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFieldsCSV);
+		String scoreFieldsCSV = paramsMap.get("scoreFieldsCSV").getParamValue();
+		schemaDefinitionState.setScoreFieldsCSV(scoreFieldsCSV);
+
+		String additionalFeldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFeldsCSV);
 
 		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
 		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
@@ -119,6 +122,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         currGDSConfigurationState.setDataSourceName(dataSourceName.getParamValue());
         currGDSConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
         currGDSConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue("etl");
     }
 
     private void configureStreamingTopologyDefinitions(Map<String, ConfigurationParam> configurationParams) {

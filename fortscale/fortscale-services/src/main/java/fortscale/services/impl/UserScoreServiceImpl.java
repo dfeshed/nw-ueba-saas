@@ -9,7 +9,7 @@ import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserScoreService;
 import fortscale.services.classifier.Classifier;
 import fortscale.services.classifier.ClassifierHelper;
-import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.common.exceptions.UnknownResourceException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;

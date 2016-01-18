@@ -27,7 +27,7 @@ public class RawModelScoreConfigurationWriter extends StreamingConfigurationWrit
 		super.init();
 		Boolean result = false;
 		try {
-			this.fileToConfigurePath = this.fileToConfigurePath+"raw-events-prevalence-stats-task.properties";
+			this.fileToConfigurePath = FORTSCALE_STREAMING_DIR_PATH+"raw-events-prevalence-stats-task.properties";
 			this.fileToConfigure = new File(this.fileToConfigurePath);
 			this.fileWriterToConfigure = new FileWriter(this.fileToConfigure, true);
 			result = true;
