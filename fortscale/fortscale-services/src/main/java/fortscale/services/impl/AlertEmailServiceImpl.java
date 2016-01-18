@@ -171,23 +171,18 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @throws Exception
 	 */
 	private EmailConfiguration loadEmailConfiguration() {
-		List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationService.
-				getApplicationConfiguration();
-		String config = null;
-		for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
-			if (applicationConfiguration.getKey().equals(CONFIGURATION_KEY)) {
-				config = applicationConfiguration.getValue();
-			}
-		}
 		EmailConfiguration emailConfiguration = null;
-		if (config == null) {
-			logger.warn("no email configuration found");
-		} else {
+		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
+				getApplicationConfigurationByKey(CONFIGURATION_KEY);
+		if (applicationConfiguration != null) {
+			String config = applicationConfiguration.getValue();
 			try {
 				emailConfiguration = objectMapper.readValue(config, EmailConfiguration.class);
 			} catch (Exception ex) {
 				logger.error("failed to load email configuration - {}", ex);
 			}
+		} else {
+			logger.warn("no email configuration found");
 		}
 		return emailConfiguration;
 	}
