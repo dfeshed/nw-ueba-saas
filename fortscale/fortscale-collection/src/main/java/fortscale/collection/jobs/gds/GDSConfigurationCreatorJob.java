@@ -230,7 +230,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	private void handleModelAndScoringConfiguration() throws Exception {
 		System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
 		String stepInput = gdsInputHandler.getInput();
-		while (true) {
+
+
 			String stepInputNormalized = stepInput.trim();
 			switch (stepInputNormalized) {
 				case GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION:
@@ -274,7 +275,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 					throw new GDSConfigurationException("Operation not supported");
 				}
 			}
-		}
+
 
 	}
 

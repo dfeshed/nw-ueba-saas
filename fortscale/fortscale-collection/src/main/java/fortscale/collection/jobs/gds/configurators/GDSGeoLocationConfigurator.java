@@ -36,6 +36,10 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
     private void addConfiguration(List<GDSEnrichmentDefinitionState.GeoLocationState> geoLocationStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
 
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
+		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
+		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
+
         ConfigurationParam ipField = paramsMap.get("ipField");
         ConfigurationParam countryField = paramsMap.get("countryField");
         ConfigurationParam longitudeField = paramsMap.get("longitudeField");
@@ -65,8 +69,13 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoDataBuckets(doDataBuckets.getParamFlag());
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
 		geoLocationState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		geoLocationState.setTaskName(taskName.getParamValue());
+		geoLocationState.setLastState(lastState);
+		geoLocationState.setOutputTopic(outputTopic.getParamValue());
 
         geoLocationStates.add(geoLocationState);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
     }
 
     @Override
