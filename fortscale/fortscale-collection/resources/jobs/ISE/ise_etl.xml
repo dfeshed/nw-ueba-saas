@@ -23,6 +23,10 @@
 					<key>specificMorphlineFile</key>
 					<value>${ise.morphline}</value>
 				</entry>
+                <entry>
+                    <key>timestampField</key>
+                    <value>timestampepoch</value>
+                </entry>
 			</job-data-map>
 		</job>
 		
