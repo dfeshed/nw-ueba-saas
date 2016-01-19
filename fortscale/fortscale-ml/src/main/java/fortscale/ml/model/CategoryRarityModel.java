@@ -17,14 +17,14 @@ public class CategoryRarityModel implements Model{
 	private long numDistinctRareFeatures;
 
 
-	public CategoryRarityModel(Map<Integer, Double> occurrencesToNumOfFeatures) {
+	public CategoryRarityModel(Map<Long, Double> occurrencesToNumOfFeatures) {
 		buckets = new double[NUM_OF_BUCKETS];
 		numOfSamples = 0;
-		for (Map.Entry<Integer, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
-			int occurrences = entry.getKey();
+		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
+			long occurrences = entry.getKey();
 			double numOfFeatures = entry.getValue();
 			if (occurrences <= buckets.length) {
-				buckets[occurrences - 1] = numOfFeatures;
+				buckets[(int) (occurrences - 1)] = numOfFeatures;
 			}
 			numOfSamples += numOfFeatures * occurrences;
 			numDistinctRareFeatures += numOfFeatures;
