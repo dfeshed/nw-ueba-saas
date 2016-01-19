@@ -8,7 +8,7 @@ import java.util.List;
 public class AlertSummary {
 
 	private List<String> severities;
-	private List<EmailFrequency> frequencies;
+	private List<Frequency> frequencies;
 
 	public List<String> getSeverities() {
 		return severities;
@@ -18,11 +18,11 @@ public class AlertSummary {
 		this.severities = severities;
 	}
 
-	public List<EmailFrequency> getFrequencies() {
+	public List<Frequency> getFrequencies() {
 		return frequencies;
 	}
 
-	public void setFrequencies(List<EmailFrequency> frequencies) {
+	public void setFrequencies(List<Frequency> frequencies) {
 		this.frequencies = frequencies;
 	}
 

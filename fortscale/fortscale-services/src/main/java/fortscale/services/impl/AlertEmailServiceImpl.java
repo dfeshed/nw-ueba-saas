@@ -66,7 +66,8 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @param alert
 	 */
 	@Override
-	public void sendNewAlert(Alert alert) {
+	public void sendNewAlertEmail(Alert alert) {
+		//sanity
 		if (!emailUtils.isEmailConfigured()) {
 			return;
 		}
@@ -125,7 +126,8 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @param frequency
 	 */
 	@Override
-	public void sendAlertSummary(EmailFrequency frequency) {
+	public void sendAlertSummaryEmail(Frequency frequency) {
+		//sanity
 		if (!emailUtils.isEmailConfigured()) {
 			return;
 		}
@@ -186,7 +188,7 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @param frequency
 	 * @return
 	 */
-	private long getDateTimeByFrequency(EmailFrequency frequency) {
+	private long getDateTimeByFrequency(Frequency frequency) {
 		DateTime date = new DateTime();
 		switch (frequency) {
 			case Daily: date = date.minusDays(1); break;
