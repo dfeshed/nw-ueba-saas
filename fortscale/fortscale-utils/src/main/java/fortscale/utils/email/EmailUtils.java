@@ -20,15 +20,15 @@ public class EmailUtils {
 
     private static Logger logger = Logger.getLogger(EmailUtils.class);
 
-    @Value("${smtp.username}")
+    @Value("${smtp.username:}")
     private String username;
-    @Value("${smtp.password}")
+    @Value("${smtp.password:}")
     private String password;
-    @Value("${smtp.host}")
+    @Value("${smtp.host:}")
     private String host;
-    @Value("${smtp.port}")
+    @Value("${smtp.port:}")
     private String port;
-    @Value("${smtp.auth}")
+    @Value("${smtp.auth:}")
     private String auth;
 
 	/**

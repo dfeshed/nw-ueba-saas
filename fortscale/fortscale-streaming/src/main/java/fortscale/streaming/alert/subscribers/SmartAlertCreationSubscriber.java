@@ -78,7 +78,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Alert email service (for sending new alert emails)
 	 */
-	@Autowired private AlertEmailService alertEmailService;
+	@Autowired private ForwardingService forwardingService;
 
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
@@ -165,7 +165,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
 
-		alertEmailService.sendNewAlert(alert);
+		forwardingService.forwardNewAlert(alert);
 
 	}
 
