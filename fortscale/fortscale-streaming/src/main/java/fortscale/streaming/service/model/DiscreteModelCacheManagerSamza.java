@@ -2,10 +2,10 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
-import fortscale.ml.model.prevalance.field.DiscreteDataModel;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,14 +22,14 @@ public class DiscreteModelCacheManagerSamza extends ModelCacheManagerSamza {
 
 	@Override
 	protected void updateModelDao(ModelDAO modelDao, Feature feature) {
-		DiscreteDataModel discreteDataModel = castModel(modelDao.getModel());
+		CategoryRarityModelWithFeatureOccurrencesData discreteModel = castModel(modelDao.getModel());
 
-		if (discreteDataModel.getFeatureCounter(feature) == null) {
+		if (discreteModel.getFeatureCount(feature) == null) {
 			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
 			Double featureCounter = getFeatureCounter(data);
 
 			if (featureCounter != null) {
-				discreteDataModel.setFeatureCounter(feature, featureCounter);
+				discreteModel.setFeatureCount(feature, featureCounter);
 				ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(modelDao.getContextId());
 				modelsCacheInfo.setModelDao(modelDao);
 				setModelsCacheInfo(modelDao.getContextId(), modelsCacheInfo);
@@ -37,13 +37,13 @@ public class DiscreteModelCacheManagerSamza extends ModelCacheManagerSamza {
 		}
 	}
 
-	private DiscreteDataModel castModel(Model model) {
-		if (model instanceof DiscreteDataModel) {
-			return (DiscreteDataModel)model;
+	private CategoryRarityModelWithFeatureOccurrencesData castModel(Model model) {
+		if (model instanceof CategoryRarityModelWithFeatureOccurrencesData) {
+			return (CategoryRarityModelWithFeatureOccurrencesData)model;
 		} else {
 			throw new IllegalArgumentException(String.format(
 					"Model must be of type %s",
-					DiscreteDataModel.class.getSimpleName()));
+					CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName()));
 		}
 	}
 
