@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public class EntityEventValueRetriever extends AbstractDataRetriever {
@@ -61,8 +62,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		// TODO: Get from EntityEventBuilder
-		return null;
+		return EntityEventBuilder.getContextId(context);
 	}
 
 	private JokerFunction getJokerFunction() {
@@ -107,11 +107,8 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		List<String> contextFieldNames = entityEventConf.getContextFields();
-		List<String> res = new ArrayList<>(contextFieldNames.size());
-		for(String contextFieldName: contextFieldNames) {
-			res.add(EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME + "." + contextFieldName);
-		}
-		return res;
+		return entityEventConf.getContextFields().stream()
+				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, contextField))
+				.collect(Collectors.toList());
 	}
 }
