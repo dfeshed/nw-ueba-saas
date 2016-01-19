@@ -106,7 +106,9 @@ public class HDFSWriteTaskConfigurationWriter extends StreamingConfigurationWrit
 
             line = String.format("stores.hdfs-write-%senrich.factory=org.apache.samza.storage.kv.RocksDbKeyValueStorageEngineFactory", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
-            line = String.format("stores.hdfs-write-%senrich.changelog=kafka.hdfs-write-crmsfEnrich-changelog", dataSourceName);
+            line = String.format("stores.hdfs-write-%senrich.changelog=kafka.hdfs-write-%senrich-changelog", dataSourceName,dataSourceName);
+            writeLineToFile(line, fileWriterToConfigure, true);
+            line = String.format("stores.hdfs-write-%senrich.changelog.replication.factor=1", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
             line = String.format("stores.hdfs-write-%senrich.key.serde=string", dataSourceName);
             writeLineToFile(line, fileWriterToConfigure, true);
