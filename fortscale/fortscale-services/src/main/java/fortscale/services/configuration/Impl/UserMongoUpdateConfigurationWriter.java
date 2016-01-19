@@ -79,7 +79,7 @@ public class UserMongoUpdateConfigurationWriter extends StreamingConfigurationWr
 
 
             //TODO - NOT SURE THIS FILED IS NEEDED , NET TO VALIDATE AND IF NOT TO REMOVE IT
-            line = String.format("%s.%s_%s.UserMongoUpdateStreamTask.updateOnly=false", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
+            line = String.format("%s.%s_%s.updateOnly=false", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
             writeLineToFile(line, fileWriterToConfigure, true);
 
             writeLineToFile("\n", fileWriterToConfigure, true);

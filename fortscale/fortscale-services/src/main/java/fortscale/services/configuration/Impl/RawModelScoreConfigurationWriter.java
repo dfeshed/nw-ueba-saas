@@ -517,7 +517,7 @@ public class RawModelScoreConfigurationWriter extends StreamingConfigurationWrit
 			writeLineToFile("#--------------------------------------------------------------------------------------------------------------------------", fileWriterToConfigure, true);
 
 
-			line = format("stores.%s-prevalence-stats.factory=org.apache.samza.storage.kv.KeyValueStorageEngineFactory",dataSourceName);
+			line = format("stores.%s-prevalence-stats.factory=org.apache.samza.storage.kv.RocksDbKeyValueStorageEngineFactory",dataSourceName);
 			writeLineToFile(line, fileWriterToConfigure, true);
 			line = format("stores.%s-prevalence-stats.changelog=kafka.ssh-prevalence-stats-changelog",dataSourceName);
 			writeLineToFile(line, fileWriterToConfigure, true);
