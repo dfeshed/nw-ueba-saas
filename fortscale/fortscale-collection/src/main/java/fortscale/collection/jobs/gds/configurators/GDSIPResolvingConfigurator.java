@@ -63,7 +63,12 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 		ipResolvingState.setOutputTopic(outputTopic.getParamValue());
 
         ipResolvingStates.add(ipResolvingState);
-		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
+
+        String lastStaeClac = taskName.getParamValue();
+        if (lastStaeClac.indexOf("_") != -1 )
+            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
     }
 
     @Override

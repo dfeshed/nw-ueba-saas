@@ -50,7 +50,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
 		if (successValue != null )
         	userMongoUpdateState.setSuccessValue(successValue.getParamValue());
 
-		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
+		//currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
     }
 
     @Override

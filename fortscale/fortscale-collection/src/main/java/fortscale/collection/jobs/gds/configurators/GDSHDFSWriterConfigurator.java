@@ -52,7 +52,12 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setTableName(tableName.getParamValue());
         hdfsWriterState.setPartitionStrategy(partitionStrategy.getParamValue());
         hdfsWriterState.setDiscriminatorsFields(discriminatorsFields.getParamValue());
-		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
+
+        String lastStaeClac = taskName.getParamValue();
+        if (lastStaeClac.indexOf("_") != -1 )
+            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
+
+        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
 
     }
 
