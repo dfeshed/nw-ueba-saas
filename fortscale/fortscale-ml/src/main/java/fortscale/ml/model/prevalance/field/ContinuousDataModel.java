@@ -35,7 +35,7 @@ public class ContinuousDataModel implements Model {
 		this.sd = sd;
 	}
 
-	@Override
+	@Deprecated
 	public Double calculateScore(Object value) {
 		if (sd == 0)
 			return 0D;
@@ -63,5 +63,10 @@ public class ContinuousDataModel implements Model {
 	@Override
 	public String toString() {
 		return String.format("<ContinuousDataModel: N=%s, mean=%s, sd=%s>", N, mean, sd);
+	}
+
+	@Override
+	public long getNumOfSamples() {
+		return N;
 	}
 }

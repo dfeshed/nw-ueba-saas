@@ -27,7 +27,7 @@
               },
               "reducting-scorer": {
                 "name": "country-reducting-scorer",
-                "type": "discreet-model-scorer",
+                "type": "category-rarity-model-scorer",
 
                 "model": {
                   "name": "vpnsessioncity"

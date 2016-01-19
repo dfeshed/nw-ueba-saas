@@ -5,16 +5,14 @@ import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class EntityEventValueRetriever extends AbstractDataRetriever {
@@ -98,5 +96,22 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		}
 
 		return aggrEventsMap;
+	}
+
+	@Override
+	public Set<String> getEventFeatureNames() {
+		Set<String> set = new HashSet<>(1);
+		set.add(EntityEvent.ENTITY_EVENT_VALUE_FILED_NAME);
+		return set;
+	}
+
+	@Override
+	public List<String> getContextFieldNames() {
+		List<String> contextFieldNames = entityEventConf.getContextFields();
+		List<String> res = new ArrayList<>(contextFieldNames.size());
+		for(String contextFieldName: contextFieldNames) {
+			res.add(EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME + "." + contextFieldName);
+		}
+		return res;
 	}
 }

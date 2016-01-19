@@ -74,6 +74,15 @@ public class VpnCheckpointTest {
 					"2015-11-30 17:40:17,1448905217,sankesh_kv,71.231.181.17,10.68.248.8,SUCCESS,,,,,,,,,,,,,,"
 				)
 			),
+			$(
+					"Checkpoint no username",
+					$ (
+							"11/30/2015:17:40:17 GMT VBLRB6XICONNECT01 0-PPE-1 : SSLVPN TCPCONNSTAT 2583604 0 : Context sankesh_kv@71.231.181.17 - SessionId: 7558- User  - Client_ip 71.231.181.17 - Nat_ip 10.68.248.8 - Vserver 125.16.230.70:443 - Source 71.231.181.17:50659 - Destination 10.67.252.6:443 - Start_time \"11/30/2015:17:40:17 GMT\" - End_time \"11/30/2015:17:40:17 GMT\" - Duration 00:00:00  - Total_bytes_send 0 - Total_bytes_recv 1658 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - Access Allowed - Group(s) \"N/A\""
+					),
+					$ (
+							(String)null
+					)
+			),
 			$ (
 				"Checkpoint Close Session with No Open Session (no local ip)",
 				$ (

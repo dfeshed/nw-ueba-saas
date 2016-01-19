@@ -45,12 +45,6 @@ public class UsernameService implements InitializingBean, CachingService{
 	private EventScoreDAO vpnDAO;
 
 	@Autowired
-	private EventScoreDAO amtDAO;
-
-	@Autowired
-	private EventScoreDAO amtsessionDAO;
-
-	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
 
 	@Autowired
@@ -96,10 +90,6 @@ public class UsernameService implements InitializingBean, CachingService{
 					return sshDAO.getTableName();
 				case vpn:
 					return vpnDAO.getTableName();
-				case amt:
-					return amtDAO.getTableName();
-				case amtsession:
-					return amtsessionDAO.getTableName();
 				default:
 					break;
 			}

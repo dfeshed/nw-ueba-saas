@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.event.process;
 
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
@@ -48,16 +49,16 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	}
 	
 	@Override
-	protected boolean processLine(String line) throws IOException {
+	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
+		Record record = morphline.process(line,itemContext);
 		
 		// skip records that failed on parsing
 		if (record==null) 
 			return false;
 		
 		// pass parsed records to the shared morphline
-		record = sharedMorphline.process(record);
+		record = sharedMorphline.process(record,null);
 		if (record==null)
 			return false;
 		

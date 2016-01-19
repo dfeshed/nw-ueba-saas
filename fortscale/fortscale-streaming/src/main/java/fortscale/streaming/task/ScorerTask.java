@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.FeatureScoreJsonEventHandler;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.scorer.factory.ScorersFactoryService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -57,10 +59,14 @@ public class ScorerTask extends AbstractStreamTask {
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
 
+    @Autowired
+    private ScorersFactoryService scorersFactoryService;
+
 
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
         modelsCacheService = new ModelsCacheServiceSamza(new ExtendedSamzaTaskContext(context, config));
+        scorersFactoryService.setModelCacheService(modelsCacheService);
         scorersService = new ScorersService(modelsCacheService);
 
         // get task configuration parameters
@@ -99,9 +105,16 @@ public class ScorerTask extends AbstractStreamTask {
             throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
         }
 
-        FeatureScore featureScore = scorersService.calculateFeatureScore(message, timestamp, configKey.getDataSource());
-        if(featureScore!=null) {
-            message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScore);
+
+        try {
+            List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, configKey.getDataSource());
+            if(featureScores!=null) {
+                message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+            }
+            handleUnfilteredEvent(message, configKey);
+        } catch (FilteredEventException  | KafkaPublisherException e){
+            taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
+            throw e;
         }
 
         if (StringUtils.isNotEmpty(outputTopic) || StringUtils.isNotEmpty(bdpOutputTopic)){
@@ -140,13 +153,11 @@ public class ScorerTask extends AbstractStreamTask {
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         modelsCacheService.window();
-        scorersService.window();
     }
 
 
     @Override
     protected void wrappedClose() throws Exception {
         modelsCacheService.close();
-        scorersService.close();
     }
 }

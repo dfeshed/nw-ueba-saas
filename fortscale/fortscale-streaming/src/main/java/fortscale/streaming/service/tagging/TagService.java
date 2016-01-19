@@ -13,7 +13,7 @@ import com.google.common.base.Throwables;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.UserService;
-import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.exceptions.KeyValueDBException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
 
@@ -47,7 +47,7 @@ public class TagService {
        }
     }
 
-    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine ) throws LevelDbException
+    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine ) throws KeyValueDBException
     {
         //add or update the account at the store key value
         //check if need to create instance of AccountAccessMachine for that account
@@ -74,7 +74,7 @@ public class TagService {
         } catch(Exception exception){
         	logger.error("error storing value. username: {}, timestamp: {} exception: {}", userName, timeStamp, exception);
             logger.error("error storing value.", exception);
-            throw new LevelDbException(String.format("error while trying to store user %s.", userName), exception);
+            throw new KeyValueDBException(String.format("error while trying to store user %s.", userName), exception);
         }
     }
 
@@ -110,7 +110,7 @@ public class TagService {
 	            		store.put(entry.getKey(), entry.getValue());
 	            	} catch(Exception e) {
 	                    logger.error(String.format("error storing value in user {}.", entry.getKey()), e);
-	                    throw new LevelDbException(String.format("error while trying to store user %s.", entry.getKey()), e);
+	                    throw new KeyValueDBException(String.format("error while trying to store user %s.", entry.getKey()), e);
 	            	}
 	            }
 	        }

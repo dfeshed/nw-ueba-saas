@@ -6,7 +6,7 @@ import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
@@ -64,13 +64,13 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
 		computerService = new ComputerServiceImpl();
-		computerService.setCache(new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
+		computerService.setCache(new KeyValueDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
 		task.topicToServiceMap.put("computerUpdatesTopic", computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> sensitiveMachineServiceStore = new KeyValueStoreMock<>();
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
-		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
+		sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 		task.configs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
 

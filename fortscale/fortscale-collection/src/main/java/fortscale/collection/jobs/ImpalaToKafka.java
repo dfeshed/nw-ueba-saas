@@ -51,18 +51,22 @@ public abstract class ImpalaToKafka extends FortscaleJob {
     protected JdbcOperations impalaJdbcTemplate;
 
     //parameters:
-    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap();
+    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
     protected int checkRetries;
     protected String whereCriteria;
     protected String jobToMonitor;
     protected String jobClassToMonitor;
 
     protected boolean listenToMetrics(long latestEpochTimeSent) throws JobExecutionException {
-        boolean result = MetricsReader.waitForMetrics(zookeeperConnection.split(":")[0],
-                Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
-                MILLISECONDS_TO_WAIT, checkRetries);
-        if (result == false) {
+        Map<String, Object> keyToExpectedValueMap = new HashMap<>();
+        keyToExpectedValueMap.put(String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent);
+        EqualityMetricsDecider decider = new EqualityMetricsDecider(keyToExpectedValueMap);
+
+        boolean result = MetricsReader.waitForMetrics(
+                zookeeperConnection.split(":")[0], Integer.parseInt(zookeeperConnection.split(":")[1]),
+                jobClassToMonitor, jobToMonitor, decider, MILLISECONDS_TO_WAIT, checkRetries);
+
+        if (!result) {
             logger.error("last message not processed - timed out!");
             throw new JobExecutionException();
         }

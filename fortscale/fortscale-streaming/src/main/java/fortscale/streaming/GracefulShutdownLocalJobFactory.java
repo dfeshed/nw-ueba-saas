@@ -7,7 +7,7 @@ import org.apache.samza.Partition;
 import org.apache.samza.config.Config;
 import org.apache.samza.container.SamzaContainer;
 import org.apache.samza.job.StreamJob;
-import org.apache.samza.job.local.LocalJobFactory;
+import org.apache.samza.job.local.ThreadJobFactory;
 import org.apache.samza.job.local.ThreadJob;
 import org.apache.samza.system.SystemAdmin;
 import org.apache.samza.system.SystemFactory;
@@ -30,7 +30,7 @@ import com.google.common.collect.Sets;
  * To set the JVM topicPartitions in linux ssh terminal run the following command:
  * export JAVA_OPTS="-DtopicPartitions=...."
  */
-public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
+public class GracefulShutdownLocalJobFactory extends ThreadJobFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(GracefulShutdownLocalJobFactory.class);
 	
@@ -51,8 +51,21 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 			}
 		});
 	}
-	
+
 	@Override
+	public StreamJob getJob(Config config) {
+		StreamJob job = super.getJob(config);
+		if (job instanceof ThreadJob) {
+			ThreadJob threadJob = (ThreadJob)job;
+			jobs.add(threadJob);
+		} else {
+			throw new RuntimeException("job " + config.get("job.name") + " is not a ThreadJob");
+		}
+
+		return job;
+	}
+	
+	/*@Override
 	public StreamJob getJob(Config config) {
 		// get the shutdown timeout if exists in configuration
 		shutdownTimeout = config.getInt("job.shutdown.timeout.ms", 10000);
@@ -73,12 +86,12 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 		return job;
 	}
 
-	/**
+	*//**
 	 * Get a set of input partitions definitions to be handled by the local task.
 	 * If an environment variable is set with a restrictions as to which partitions to process for
 	 * each topic only those partitions will be handled. Topics that does not appear in the environment
 	 * variable are not affected by this and all partitions for them will be processed.
-	 */
+	 *//*
 	private Set<SystemStreamPartition> getPartitions(Config config) {
 		// get the environment variable for input topic restrictions
 		Map<String, List<Integer>> partitionsToInclude = getPartitionsToRestrict();
@@ -147,6 +160,6 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 			partitionsToInclude.get(topicName).add(partition);
 		}
 		return partitionsToInclude;
-	}
+	}*/
 
 }

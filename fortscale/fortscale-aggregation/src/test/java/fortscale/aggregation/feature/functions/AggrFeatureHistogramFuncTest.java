@@ -8,6 +8,7 @@ import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,10 +62,11 @@ public class AggrFeatureHistogramFuncTest {
 
         histogram.add("2", 30.0);
 
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
-        featureMap.put("feature2", new Feature("feature2", new FeatureNumericValue(2L)));
-        featureMap.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2)));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 2),
+                new ImmutablePair<String, Object>("feature2", 2L),
+                new ImmutablePair<String, Object>("not relevant", 2)
+        );
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -102,12 +104,14 @@ public class AggrFeatureHistogramFuncTest {
 
         histogram.add(2.0, 30.0);
 
-        Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", new FeatureStringValue("A")));
+        Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", new FeatureStringValue("A"))
+        );
 
-        Map<String, Feature> featureMap2 = new HashMap<>();
-        featureMap2.put("feature1", new Feature("feature1", new FeatureNumericValue(2L)));
-        featureMap2.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2.0)));
+        Map<String, Feature> featureMap2 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", new FeatureNumericValue(2L)),
+                new ImmutablePair<String, Object>("not relevant", new FeatureNumericValue(2.0))
+        );
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -138,20 +142,21 @@ public class AggrFeatureHistogramFuncTest {
     @Test
     public void testUpdateWithNullAggrFeatureValue() {
         String s1 = "one", s2 = "two", s3 = "three";
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", new FeatureStringValue(s1)));
-        featureMap.put("feature2", new Feature("feature2", new FeatureStringValue(s1)));
-        featureMap.put("feature3", new Feature("feature3", new FeatureStringValue(s1)));
-        featureMap.put("feature4", new Feature("feature4", new FeatureStringValue(s1))); // 4
-        featureMap.put("feature5", new Feature("feature5", new FeatureStringValue(s2)));
-        featureMap.put("feature6", new Feature("feature6", new FeatureStringValue(s2)));
-        featureMap.put("feature7", new Feature("feature7", new FeatureStringValue(s2)));
-        featureMap.put("feature8", new Feature("feature8", new FeatureStringValue(s2)));
-        featureMap.put("feature9", new Feature("feature9", new FeatureStringValue(s2))); // 5
-        featureMap.put("feature10", new Feature("feature10", new FeatureStringValue(s3)));
-        featureMap.put("feature11", new Feature("feature11", new FeatureStringValue(s3)));
-        featureMap.put("feature12", new Feature("feature12", new FeatureStringValue(s3))); // 3
-        featureMap.put("not relevant", new Feature("not relevant", new FeatureNumericValue(2)));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", new FeatureStringValue(s1)),
+                new ImmutablePair<String, Object>("feature2", new FeatureStringValue(s1)),
+                new ImmutablePair<String, Object>("feature3", new FeatureStringValue(s1)),
+                new ImmutablePair<String, Object>("feature4", new FeatureStringValue(s1)),
+                new ImmutablePair<String, Object>("feature5", new FeatureStringValue(s2)),
+                new ImmutablePair<String, Object>("feature6", new FeatureStringValue(s2)),
+                new ImmutablePair<String, Object>("feature7", new FeatureStringValue(s2)),
+                new ImmutablePair<String, Object>("feature8", new FeatureStringValue(s2)),
+                new ImmutablePair<String, Object>("feature9", new FeatureStringValue(s2)),
+                new ImmutablePair<String, Object>("feature10", new FeatureStringValue(s3)),
+                new ImmutablePair<String, Object>("feature11", new FeatureStringValue(s3)),
+                new ImmutablePair<String, Object>("feature12", new FeatureStringValue(s3)),
+                new ImmutablePair<String, Object>("not relevant", new FeatureNumericValue(2))
+        );
 
         FeatureValue nullValue = null;
         Feature aggrFeature = new Feature("MyAggrFeature", nullValue);
@@ -195,8 +200,9 @@ public class AggrFeatureHistogramFuncTest {
 
         histogram.add(2.0, 30.0);
 
-        Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
+        Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", new FeatureNumericValue(2))
+        );
 
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
@@ -226,8 +232,9 @@ public class AggrFeatureHistogramFuncTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateWithWrongAggrFeatureValueType() {
-        Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", new FeatureNumericValue(2)));
+        Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 2)
+        );
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         String str = "I'm a string, not histogram";
         Feature aggrFeature = new Feature("MyAggrFeature", str);
@@ -237,8 +244,9 @@ public class AggrFeatureHistogramFuncTest {
 
     @Test
     public void testUpdateWithNullAggrFeature() {
-        Map<String, Feature> featureMap1 = new HashMap<>();
-        featureMap1.put("feature1", new Feature("feature1", 2));
+        Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 2)
+        );
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
@@ -297,22 +305,25 @@ public class AggrFeatureHistogramFuncTest {
         hist1.add(7, 10.0);
         hist1.add(7L, 20.0);
         hist1.add("7", 30.0);
-        Map<String, Feature> map1 = new HashMap<>();
-        map1.put("feature1", new Feature("feature1", hist1));
+        Map<String, Feature> map1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist1)
+        );
 
         GenericHistogram hist2 = new GenericHistogram();
         hist2.add(11, 1.0);
         hist2.add(13, 1.0);
         hist2.add(17, 1.0);
-        Map<String, Feature> map2 = new HashMap<>();
-        map2.put("feature1", new Feature("feature1", hist2));
+        Map<String, Feature> map2 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist2)
+        );
 
         GenericHistogram hist3 = new GenericHistogram();
         hist3.add(7, 40.0);
         hist3.add(11, 9.0);
         hist3.add("7", 70.0);
-        Map<String, Feature> map3 = new HashMap<>();
-        map3.put("feature1", new Feature("feature1", hist3));
+        Map<String, Feature> map3 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist3)
+        );
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map1);
@@ -357,18 +368,20 @@ public class AggrFeatureHistogramFuncTest {
         notListedHist.add("3", 300.0);
         notListedHist.add(5.0, 500.0);
 
-        Map<String, Feature> map1 = new HashMap<>();
-        map1.put("feature1", new Feature("feature1", hist1));
-        map1.put("feature2", new Feature("feature2", notListedHist));
+        Map<String, Feature> map1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist1),
+                new ImmutablePair<String, Object>("feature2", notListedHist)
+        );
 
         GenericHistogram hist2 = new GenericHistogram();
         hist2.add(2L, 1.0);
         hist2.add("test", 2.0);
         hist2.add("check", 3.0);
 
-        Map<String, Feature> map2 = new HashMap<>();
-        map2.put("feature1", new Feature("feature1", hist2));
-        map2.put("feature2", new Feature("feature2", -1));
+        Map<String, Feature> map2 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist2),
+                new ImmutablePair<String, Object>("feature2", -1)
+        );
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map1);
@@ -405,12 +418,13 @@ public class AggrFeatureHistogramFuncTest {
         hist.add("a", 1.0);
         hist.add("b", 1.0);
         hist.add("c", 1.0);
-        Map<String, Feature> map1 = new HashMap<>();
-        map1.put("feature1", new Feature("feature1", hist));
+        Map<String, Feature> map1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist)
+        );
 
-        Map<String, Feature> map2 = new HashMap<>();
-        FeatureValue nullValue = null;
-        map2.put("feature1", new Feature("feature1", nullValue));
+        Map<String, Feature> map2 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<>("feature1", null)
+        );
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map1);
@@ -428,11 +442,13 @@ public class AggrFeatureHistogramFuncTest {
         hist.add("x", 1.0);
         hist.add("y", 2.0);
         hist.add("z", 3.0);
-        Map<String, Feature> map1 = new HashMap<>();
-        map1.put("feature1", new Feature("feature1", hist));
+        Map<String, Feature> map1 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist)
+        );
 
-        Map<String, Feature> map2 = new HashMap<>();
-        map2.put("feature1", new Feature("feature1", "wrong value"));
+        Map<String, Feature> map2 = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", "wrong value|")
+        );
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map1);
@@ -448,8 +464,9 @@ public class AggrFeatureHistogramFuncTest {
         hist.add(1.0, 1.0);
         hist.add(2.0, 2.0);
         hist.add(3.0, 3.0);
-        Map<String, Feature> map = new HashMap<>();
-        map.put("feature1", new Feature("feature1", hist));
+        Map<String, Feature> map = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", hist)
+        );
 
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(map);
@@ -472,9 +489,10 @@ public class AggrFeatureHistogramFuncTest {
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
-        Map<String, Feature> features = new HashMap<>();
+        Map<String, Feature> features = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", "")
+        );
 
-        features.put("feature1", new Feature("feature1", ""));
         Object value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
 
         // Validating that the histogram value was not changed
@@ -482,9 +500,10 @@ public class AggrFeatureHistogramFuncTest {
         Assert.assertEquals((Double)1.0, aggrValue.get("N/A"));
 
 
-        FeatureValue nullValue = null;
-        features.put("feature1", new Feature("feature1", nullValue));
-        value = func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
+        features = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<>("feature1", null)
+        );
+        func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
         Assert.assertEquals((Double) 2.0,  aggrValue.get("N/A"));
 
     }
