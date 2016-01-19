@@ -1,15 +1,14 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.Model;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.ml.model.Model;
 import fortscale.utils.logging.Logger;
 
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
     private static final Logger logger = Logger.getLogger(CategoryRarityModelBuilder.class);
-    public static final String MODEL_BUILDER_TYPE = "category_rarity";
 
 
     @Override
@@ -33,6 +32,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     }
 
 
+    @SuppressWarnings("unchecked")
     protected Map<String, Integer> castModelBuilderData(Object modelBuilderData) {
         if (modelBuilderData == null) {
             throw new IllegalArgumentException();
