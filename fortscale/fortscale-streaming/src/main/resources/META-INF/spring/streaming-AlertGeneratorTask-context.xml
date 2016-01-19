@@ -23,7 +23,7 @@
 
     <bean id="alertEmailService" class="fortscale.services.impl.AlertEmailServiceImpl"/>
 
-    <bean id="alertPrettifier" class="fortscale.services.impl.AlertPrettifierServiceImpl" scope="singleton"/>
+    <bean id="alertPrettifier" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton"/>
 
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
