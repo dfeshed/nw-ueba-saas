@@ -69,11 +69,11 @@ public class GwameTest {
 				$(
 						"Regular Event",
 						$(
-								"\"2015-12-07T10:27:20.000+0200\",4728,FORTSCALE,amirf,\"FORTSCALE\\avil\",\"Fs-DC-01.Fortscale.dom\",\"CN=Avi Legman.|OU=Fortscale-Users|DC=Fortscale|DC=dom\",\"Wifi-Users\",FORTSCALE,,"
+								"2013-06-16T13:58:03.000+0300,4728,somebigcompany,Administrator,somebigcompany\\demo_user22,Fs-DC-01.somebigcompany.dom,CN=Omri Kantor|OU=somebigcompany-Users|DC=somebigcompany|DC=dom,VPN-Users,somebigcompany,,,,,,"
 
 						),
 						$(
-								"2015-12-07 08:27:20,1449476840,amirf,Fortscale.dom,avil,Fortscale.dom,Addition To A Security Global Group,SUCCESS,Wifi-Users,FORTSCALE"
+								"2013-06-16 10:58:03,1371380283,Administrator,somebigcompany.dom,demo_user22,somebigcompany.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,somebigcompany"
 
 						)
 				),
