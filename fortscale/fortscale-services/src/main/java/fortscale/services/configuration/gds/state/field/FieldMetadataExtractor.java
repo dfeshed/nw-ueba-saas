@@ -24,7 +24,7 @@ public class FieldMetadataExtractor {
     }
 
     public static String extractAdditionalFieldsCSV(FieldMetadataDictionary fieldMetadataDictionary) {
-        return fieldMetadataDictionary.getRegularFields().stream().filter(BaseFieldMetadata::isAdditionalField)
+        return fieldMetadataDictionary.getAllFields().stream().filter(BaseFieldMetadata::isAdditionalField)
                 .map(a -> a.getFieldName() + SPACE_DELIMITER + a.getFieldType()).collect(Collectors.joining(COMMA_DELIMITER));
     }
 
