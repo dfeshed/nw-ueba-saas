@@ -52,7 +52,15 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
-		//Get timestamp field possible names if exists.
+		initTimeStampField(map);
+
+	}
+
+	//Get timestamp field name.
+	//May be more the one, so keep it in list.
+	//Use empty list if possible
+	protected void initTimeStampField(JobDataMap map) {
+
 		try {
 			timestampField= jobDataMapExtension.getJobDataMapListOfStringsValue(map, "timestampField", ",");
 		} catch (JobExecutionException e){
@@ -181,5 +189,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 
 		return morphline.process(line, itemContext);
+	}
+
+	@Override
+	protected boolean useOldMonitoring() {
+		return false;
 	}
 }

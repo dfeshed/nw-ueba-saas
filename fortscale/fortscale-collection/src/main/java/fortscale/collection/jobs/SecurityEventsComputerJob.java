@@ -31,7 +31,9 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
-		
+
+		initTimeStampField(map);
+
 		for (String specificMorphlineKey : jobDataMapExtension.getJobDataMapKeysStartingWith(map, "eventMorphlineFile")) {
 			// extract the event code and get the morphline processor
 			String eventCode = specificMorphlineKey.substring(18);
