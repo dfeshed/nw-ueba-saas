@@ -2,13 +2,19 @@ package fortscale.collection.jobs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.collection.io.BufferedLineReader;
@@ -25,9 +31,17 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected String errorPath;
 	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
-	
+
+	/**
+	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
+	 * and drop events and save all those details to mongo
+	 */
+	@Autowired
+	protected TaskMonitoringHelper<String> taskMonitoringHelper;
+
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
+	protected List<String> timestampField; //Might be more the one security field
 		
 	
 	@Override
@@ -36,6 +50,12 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+		//Get timestamp field possible names if exists.
+		try {
+			timestampField= jobDataMapExtension.getJobDataMapListOfStringsValue(map, "timestampField", ",");
+		} catch (JobExecutionException e){
+			timestampField = new ArrayList<>();
+		}
 	}
 
 	@Override
@@ -55,6 +75,12 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		finishStep();
 		
 		runProcessFilesStep(files);
+	}
+
+	@Override
+	public void startNewStep(String stepName) {
+		logger.info("Running {} ", stepName);
+		taskMonitoringHelper.startStep(stepName);
 	}
 
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
@@ -79,7 +105,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 					moveFileToFolder(file, errorPath);
 
 					logger.error("error processing file " + file.getName(), e);
-					monitor.error(getMonitorId(), getStepName(), e.toString());
+				//	monitor.error(getMonitorId(), getStepName(), e.toString());
 				}
 			}
 		} finally{
@@ -90,24 +116,41 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	}
 	
 	protected boolean processFile(File file) throws IOException, JobExecutionException {
-		
+
+		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 		
 		try {
-			int lineCounter = 0;
+
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				Record record = processLine(line);
+				taskMonitoringHelper.handleNewEvent(file.getName());
+				Record record = processLine(line,itemContext);
+				//If record parsed, Log the event as unfiltered events
 				if (record != null){
-					++lineCounter;
+					//If success - write the event to monitoring. filed event monitoing handled by monitoring
+					Long  timestamp = null;
+					//There might be different timestamps fields for different events
+					//Look for the first timestampField exists
+					for (String timestampFieldName : timestampField) {
+							//Use default value to aviod exception if the timestamp field is not exists
+							timestamp = RecordExtensions.getLongValue(record, timestampFieldName, -1L);
+							if (timestamp >=0){
+								break;
+							}
+					}
+
+					if (timestamp != null) {
+						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(), timestamp);
+					}
 				}
 			}			
 			
-			monitor.addDataReceived(getMonitorId(), new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
+			//monitor.addDataReceived(getMonitorId(), new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
-			monitor.error(getMonitorId(), getStepName(), e.toString());
+			//monitor.error(getMonitorId(), getStepName(), e.toString());
 			return false;
 		} finally {
 			reader.close();
@@ -116,18 +159,19 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
-			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
+			//monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
 				logger.warn("error processing file " + file.getName(), reader.getException());
-				monitor.warn(getMonitorId(), getStepName(), reader.getException().toString());
+//				monitor.warn(getMonitorId(), getStepName(), reader.getException().toString());
 			}
 			return true;
 		}
 	}
 		
-	protected Record processLine(String line) throws IOException {
-		return morphline.process(line, null);
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
+
+		return morphline.process(line, itemContext);
 	}
 }

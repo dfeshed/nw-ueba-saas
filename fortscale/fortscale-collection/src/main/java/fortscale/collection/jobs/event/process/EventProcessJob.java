@@ -64,7 +64,6 @@ public class EventProcessJob implements Job {
 	protected RecordToStringItemsProcessor recordToHadoopString;
 	protected RecordToStringItemsProcessor recordKeyExtractor;
 	protected RecordToStringItemsProcessor recordToMessageString;
-	protected String monitorId;
 	protected String hadoopPath;
 	protected String hadoopFilename;
 	protected String impalaTableName;

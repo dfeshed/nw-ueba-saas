@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
+import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -39,9 +40,9 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	}
 	
 	@Override
-	protected Record processLine(String line) throws IOException {
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// run the basic morphline to get the event code from the message
-		Record record = morphline.process(line, null);
+		Record record = super.processLine(line, itemContext);
 		
 		// run specific morphline for event code
 		if (record!=null) {
