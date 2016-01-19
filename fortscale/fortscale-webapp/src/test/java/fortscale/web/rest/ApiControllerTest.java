@@ -1,10 +1,10 @@
 package fortscale.web.rest;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataentity.DataEntity;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.web.DataQueryController;
 import org.junit.Before;
 import org.junit.Test;

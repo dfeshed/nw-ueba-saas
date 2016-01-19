@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 import java.util.List;

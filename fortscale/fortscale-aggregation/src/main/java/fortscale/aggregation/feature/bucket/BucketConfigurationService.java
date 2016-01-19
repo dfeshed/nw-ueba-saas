@@ -2,7 +2,8 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
-import fortscale.aggregation.feature.extraction.Event;
+
+import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;

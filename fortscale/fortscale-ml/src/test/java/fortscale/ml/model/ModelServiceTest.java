@@ -1,11 +1,11 @@
 package fortscale.ml.model;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;

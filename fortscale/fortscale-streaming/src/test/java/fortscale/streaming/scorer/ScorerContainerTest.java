@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import fortscale.common.event.EventMessage;
 import org.junit.Assert;
 
 import com.google.common.collect.Lists;

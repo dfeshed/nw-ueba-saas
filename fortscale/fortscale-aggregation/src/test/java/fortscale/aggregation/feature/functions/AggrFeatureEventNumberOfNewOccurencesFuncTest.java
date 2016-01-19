@@ -1,9 +1,10 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -11,8 +12,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
-
-import static org.mockito.Matchers.anyString;
 
 /**
  * Created by orend on 26/07/2015.

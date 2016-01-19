@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureValue;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;

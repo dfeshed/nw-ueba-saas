@@ -3,7 +3,7 @@ package fortscale.aggregation.feature.bucket.strategy;
 import java.util.List;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 
 public interface FeatureBucketStrategy {
 	public FeatureBucketStrategyData update(Event event);
