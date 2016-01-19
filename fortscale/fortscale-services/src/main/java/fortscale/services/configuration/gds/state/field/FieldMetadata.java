@@ -11,8 +11,6 @@ public class FieldMetadata {
     private boolean isAdditionalField;
     private boolean isScoreField;
 
-
-
     public FieldMetadata(String fieldName, FieldType fieldType,  boolean isScoreField, boolean isAdditionalField, boolean isInUse
           ) {
         this.fieldName = fieldName;
@@ -59,10 +57,12 @@ public class FieldMetadata {
 
     @Override
     public String toString() {
-        return "fieldName='" + fieldName + '\'' +
+        return "FieldMetadata{" +
+                "fieldName='" + fieldName + '\'' +
                 ", fieldType=" + fieldType +
-                ", isInUse=" + isInUse +
+                ", isScoreField=" + isScoreField +
                 ", isAdditionalField=" + isAdditionalField +
+                ", isInUse=" + isInUse +
                 '}';
     }
 }

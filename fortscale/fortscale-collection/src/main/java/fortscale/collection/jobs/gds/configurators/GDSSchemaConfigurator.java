@@ -77,12 +77,12 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
     }
 
     private void configureBaseFields(Map<String, ConfigurationParam> paramsMap) {
-        String baseFieldsCSV = paramsMap.get("baseFieldsCSV").getParamValue();
+        String inheritedBaseFieldsCSV = paramsMap.get("inheritedBaseFieldsCSV").getParamValue();
         String populatedFieldsCSV = paramsMap.get("populatedBaseFieldsCSV").getParamValue();
 
         FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
-        Map<String, String> baseFieldToTypeMap = ConversionUtils.convertCSVToMap(baseFieldsCSV);
+        Map<String, String> baseFieldToTypeMap = ConversionUtils.convertCSVToMap(inheritedBaseFieldsCSV);
 
         for (Map.Entry<String, String> baseFieldToTypeEntry : baseFieldToTypeMap.entrySet()) {
             String baseFieldName = baseFieldToTypeEntry.getKey();
@@ -96,7 +96,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
             fieldMetadataDictionary.addField(fieldMetadata);
         }
 
-        String baseScoreFieldsCSV = paramsMap.get("baseScoreFieldsCSV").getParamValue();
+        String baseScoreFieldsCSV = paramsMap.get("inheritedBaseScoreFieldsCSV").getParamValue();
         String baseScoreFieldToFieldNameCSV = paramsMap.get("baseScoreFieldToFieldNameCSV").getParamValue();
         String populatedBaseScoreFieldsCSV = paramsMap.get("populatedBaseScoreFieldsCSV").getParamValue();
 
