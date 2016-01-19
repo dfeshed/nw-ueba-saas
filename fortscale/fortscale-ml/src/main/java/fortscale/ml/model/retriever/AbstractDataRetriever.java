@@ -6,11 +6,7 @@ import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractDataRetriever {
 	protected static final Logger logger = Logger.getLogger(AbstractDataRetriever.class);
@@ -45,4 +41,6 @@ public abstract class AbstractDataRetriever {
 	public abstract Object retrieve(String contextId, Date endTime);
 	public abstract Object retrieve(String contextId, Date endTime, Feature feature);
 	public abstract String getContextId(Map<String, String> context);
+	public abstract Set<String> getEventFeatureNames();
+	public abstract List<String> getContextFieldNames();
 }

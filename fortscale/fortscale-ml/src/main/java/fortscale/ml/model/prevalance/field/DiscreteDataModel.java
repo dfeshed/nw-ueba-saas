@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class DiscreteDataModel implements Model {
 	private OccurrencesHistogram occurrencesHistogram;
@@ -22,6 +23,11 @@ public class DiscreteDataModel implements Model {
 	}
 
 	@Override
+	public long getNumOfSamples() {
+		// TODO: Implement
+		return -1;
+	}
+
 	public Double calculateScore(Object value) {
 		return occurrencesHistogram.score((Double)value);
 	}

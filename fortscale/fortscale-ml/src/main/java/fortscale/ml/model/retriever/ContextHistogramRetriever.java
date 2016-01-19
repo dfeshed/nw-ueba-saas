@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Configurable(preConstruction = true)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
@@ -48,6 +49,16 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	public String getContextId(Map<String, String> context) {
 		Assert.notEmpty(context);
 		return FeatureBucketUtils.buildContextId(context);
+	}
+
+	@Override
+	public Set<String> getEventFeatureNames() {
+		return featureBucketConf.getAggregatedFeatureConf(featureName).getAllFeatureNames();
+	}
+
+	@Override
+	public List<String> getContextFieldNames() {
+		return featureBucketConf.getContextFieldNames();
 	}
 
 	private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {
