@@ -38,7 +38,7 @@ public class EmailUtils {
      * @return
      */
     public boolean isEmailConfigured() {
-        return StringUtils.isBlank(host);
+        return !StringUtils.isBlank(host);
     }
 
 	/**
