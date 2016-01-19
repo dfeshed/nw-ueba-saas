@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CategoryRarityModerScorerAlgorithmTest {
+public class CategoryRarityModelScorerAlgorithmTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNegativeAsMaxRareCount() {
@@ -17,11 +17,14 @@ public class CategoryRarityModerScorerAlgorithmTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {  new CategoryRarityModelScorerAlgorithm(1, -1); }
+    public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
+        new CategoryRarityModelScorerAlgorithm(1, -1);
+    }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenTooLargeMaxRareCountValue() {  new CategoryRarityModelScorerAlgorithm(100, 1); }
-    
+    public void shouldFailGivenTooLargeMaxRareCountValue() {
+        new CategoryRarityModelScorerAlgorithm(CategoryRarityModel.NUM_OF_BUCKETS, 1);
+    }
 
     @Test
     public void shouldScoreAccordingToMaxRareCount() {
