@@ -19,7 +19,7 @@
 					<value>10000</value>
 				</entry>
 				<entry>
-					<key>checkRetries</key>
+					<key>retries</key>
 					<value>10</value>
 				</entry>
 			</job-data-map>
