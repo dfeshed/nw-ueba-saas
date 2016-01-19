@@ -42,12 +42,14 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
 	protected List<String> timestampField; //Might be more the one security field
-		
-	
+	protected String jobName;
+	protected String sourceName;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		
+		jobName = jobExecutionContext.getJobDetail().getKey().getName();
+		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		//Get timestamp field possible names if exists.
@@ -72,9 +74,14 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected void runSteps() throws Exception {
 		startNewStep("listFiles");
 		File[] files = listFiles(inputPath, filesFilter);
-		finishStep();
+		finishStep("listFiles");
 		
 		runProcessFilesStep(files);
+	}
+
+
+	public void finishStep(String stepName){
+		taskMonitoringHelper.finishStep(stepName);
 	}
 
 	@Override
@@ -105,14 +112,14 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 					moveFileToFolder(file, errorPath);
 
 					logger.error("error processing file " + file.getName(), e);
-				//	monitor.error(getMonitorId(), getStepName(), e.toString());
+					taskMonitoringHelper.error(getStepName(), e.toString());
 				}
 			}
 		} finally{
 			morphline.close();
 		}
 		
-		finishStep();
+		finishStep("Process files");
 	}
 	
 	protected boolean processFile(File file) throws IOException, JobExecutionException {
@@ -147,24 +154,25 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 			}			
 			
-			//monitor.addDataReceived(getMonitorId(), new JobDataReceived(file.getName(), new Integer(lineCounter), "Events"));
+
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
 			//monitor.error(getMonitorId(), getStepName(), e.toString());
 			return false;
 		} finally {
+			taskMonitoringHelper.saveJobStatusReport(jobName,false,sourceName);
 			reader.close();
 		}
 
 		
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
-			//monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
+			taskMonitoringHelper.error(getStepName(), reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
 				logger.warn("error processing file " + file.getName(), reader.getException());
-//				monitor.warn(getMonitorId(), getStepName(), reader.getException().toString());
+				taskMonitoringHelper.error(getStepName(), reader.getException().toString());
 			}
 			return true;
 		}

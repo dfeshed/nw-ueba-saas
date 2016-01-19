@@ -26,7 +26,9 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		
+
+		jobName = jobExecutionContext.getJobDetail().getKey().getName();
+		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		
@@ -81,7 +83,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 					moveFileToFolder(file, errorPath);
 
 					logger.error("error processing file " + file.getName(), e);
-					monitor.error(getMonitorId(), getStepName(), e.toString());
+					taskMonitoringHelper.error(getStepName(), e.toString());
 				}
 			}
 		} finally{
