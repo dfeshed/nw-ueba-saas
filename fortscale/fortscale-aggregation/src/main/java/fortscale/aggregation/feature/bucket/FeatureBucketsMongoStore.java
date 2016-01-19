@@ -136,7 +136,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
-			// end time + start time
+			// End time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC));
 
@@ -152,6 +152,62 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.save(featureBucket, collectionName);
 		} catch (Exception e) {
 			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
+		}
+	}
+
+	public void insertFeatureBuckets(FeatureBucketConf featureBucketConf, Collection<FeatureBucket> featureBuckets) throws Exception{
+		String collectionName = getCollectionName(featureBucketConf);
+		// TTL on CreatedAt
+		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
+		createCollectionIfNotExist(collectionName, expireAfterSeconds);
+
+		Collection<FeatureBucket> featureBucketsWithNotNullId = new HashSet<>();
+		Collection<FeatureBucket> featureBucketsWithNullId = new HashSet<>();
+
+		for(FeatureBucket featureBucket: featureBuckets) {
+			if(featureBucket.getId()==null) {
+				featureBucketsWithNullId.add(featureBucket);
+			} else {
+				featureBucketsWithNotNullId.add(featureBucket);
+			}
+		}
+		try {
+			mongoTemplate.insert(featureBucketsWithNullId, collectionName);
+			for(FeatureBucket featureBucket: featureBucketsWithNotNullId) {
+				mongoTemplate.save(featureBucket, collectionName);
+			}
+		} catch (Exception e) {
+			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
+		}
+	}
+
+
+
+	private void createCollectionIfNotExist(String collectionName, int expireAfterSeconds) {
+		if (!mongoDbUtilService.collectionExists(collectionName)) {
+			mongoDbUtilService.createCollection(collectionName);
+
+			// Bucket ID
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.DESC).unique(Duplicates.DROP));
+
+			// Context ID + start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
+					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+
+			// Strategy ID
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.STRATEGY_ID_FIELD, Direction.DESC));
+
+			// Start time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+
+			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
+					.expire(expireAfterSeconds, TimeUnit.SECONDS)
+					.named(FeatureBucket.CREATED_AT_FIELD_NAME)
+					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC));
 		}
 	}
 
