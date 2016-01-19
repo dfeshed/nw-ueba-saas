@@ -59,6 +59,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private static final String BASE_FIELDS_CSV_PARAM = "baseFieldsCSV";
     private static final String BASE_SCORE_FIELDS_CSV_PARAM = "baseScoreFieldsCSV";
     private static final String BASE_SCORE_FIELD_TO_FIELD_NAME_PARAM = "baseScoreFieldToFieldNameCSV";
+    private static final String POPULATED_BASE_FIELDS_CSV_PARAM = "populatedBaseFieldsCSV";
     private static final String POPULATED_BASE_SCORE_FIELDS_CSV_PARAM = "populatedBaseScoreFieldsCSV";
 
     private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
@@ -235,40 +236,45 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
         }
 
-        handleIsScoreFieldInUseIndication(paramsMap, scoreFieldsCSV);
-
         paramsMap.put(BASE_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
         paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
-		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM , new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalFieldsCSV()));
+		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM, new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM, false, additionalFieldsWrapper.getAdditionalFieldsCSV()));
         paramsMap.put(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM , new ConfigurationParam(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalPopulatedScoreFields()));
 		paramsMap.put(ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_CSV_PARAM, new ConfigurationParam(ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldToFieldNameCSV()));
 
+        handleBaseFieldInUseIndication(paramsMap, BASE_FIELDS_CSV_PARAM, POPULATED_BASE_FIELDS_CSV_PARAM);
+        handleBaseFieldInUseIndication(paramsMap, BASE_SCORE_FIELDS_CSV_PARAM, POPULATED_BASE_SCORE_FIELDS_CSV_PARAM);
     }
 
-    private void handleIsScoreFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String scoreFieldsCSV) throws Exception {
-        if (scoreFieldsCSV == null || EMPTY_STR.equals(scoreFieldsCSV)) {
-            paramsMap.put(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM,false, EMPTY_STR));
-        }
+    private void handleBaseFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String fieldsCSVParamKey, String populatedFieldsCSVParamKey) throws Exception {
 
-        Map<String,String> potentialScoresFieldMap = ConversionUtils.convertCSVToMap(scoreFieldsCSV);
+        //ask the user if she wants to disable some fields
+        String potentialPopulatedBaseFieldsCSV = paramsMap.get(fieldsCSVParamKey).getParamValue();
+        System.out.println(String.format("Would you like to disable some of the inherited fields? the fields are: %s", potentialPopulatedBaseFieldsCSV));
 
-        StringBuilder populatedScoreFieldsCSV = new StringBuilder();
+        if(gdsInputHandler.getYesNoInput()){
 
-        //For each potential basic score field ask if we want to populate it
-        for (Map.Entry<String,String> entry : potentialScoresFieldMap.entrySet())
-        {
-            String scoreField = entry.getKey();
+            Map<String,String> potentialFieldMap = ConversionUtils.convertCSVToMap(potentialPopulatedBaseFieldsCSV);
 
-            System.out.println(String.format("Is %s field should be populated (y/n)?", scoreField));
+            StringBuilder populatedFieldsCSV = new StringBuilder();
 
-            if (gdsInputHandler.getYesNoInput()) {
-                populatedScoreFieldsCSV.append(scoreField).append(COMMA);
+            //For each potential basic field ask if we want to populate it
+            for (Map.Entry<String,String> entry : potentialFieldMap.entrySet())
+            {
+                String baseField = entry.getKey();
+
+                System.out.println(String.format("Is %s field should be populated (y/n)?", baseField));
+
+                if (gdsInputHandler.getYesNoInput()) {
+                    populatedFieldsCSV.append(baseField).append(COMMA);
+                }
             }
+
+            paramsMap.put(populatedFieldsCSVParamKey,new ConfigurationParam(populatedFieldsCSVParamKey,false, trimCSVString(populatedFieldsCSV.toString())));
         }
-
-        String populatedBaseScoreFieldsCSV = trimCSVString(populatedScoreFieldsCSV.toString());
-
-        paramsMap.put(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM,false, populatedBaseScoreFieldsCSV));
+        else {
+            paramsMap.put(populatedFieldsCSVParamKey,new ConfigurationParam(populatedFieldsCSVParamKey,false, trimCSVString(potentialPopulatedBaseFieldsCSV)));
+        }
     }
 
     private void populateBaseDataSourceDefinitions(Map<String, ConfigurationParam> paramsMap) throws Exception {

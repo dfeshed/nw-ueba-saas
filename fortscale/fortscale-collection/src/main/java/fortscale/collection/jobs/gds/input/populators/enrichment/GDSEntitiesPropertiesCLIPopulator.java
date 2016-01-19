@@ -6,6 +6,7 @@ import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 import fortscale.services.configuration.gds.state.field.FieldMetadata;
 import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
+import fortscale.services.configuration.gds.state.field.FieldMetadataExtractor;
 
 import java.util.*;
 
@@ -70,7 +71,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		}
 
 		//configure additional fields
-		Map<String,FieldMetadata> additionalFields = fields.getAdditionalFieldMetaDataMap();
+		Map<String,FieldMetadata> additionalFields = FieldMetadataExtractor.extractAdditionalFields(fields);
 		for(FieldMetadata additionalField: additionalFields.values()){
 			configurationsMap.put( FIELD_PREFIX+additionalField.getFieldName(), configureNewField(additionalField));
 		}

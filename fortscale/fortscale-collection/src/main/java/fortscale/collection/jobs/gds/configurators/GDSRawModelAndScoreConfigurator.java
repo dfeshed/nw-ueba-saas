@@ -4,9 +4,9 @@ import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.RawModelScoreConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSRAWDataModelAndScoreState;
+import fortscale.services.configuration.gds.state.field.FieldMetadata;
 import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
 import fortscale.services.configuration.gds.state.field.FieldMetadataExtractor;
-import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
 import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
@@ -44,19 +44,19 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 		Map<String,String> additionalFieldsMap = ConversionUtils.splitCSVtoMap(additionalFieldsCSV);
 		Map<String,String> additionalFieldToScoreFieldMap = ConversionUtils.splitCSVtoMap(additionalScoreFieldToFieldNameCSV);
 
-		ScoreFieldMetadata sourceMachineScoreField = fieldMetadataDictionary.getScoreFieldMetadataByName("source_machine_score");
+		FieldMetadata sourceMachineScoreField = fieldMetadataDictionary.getFieldMetadataByName("source_machine_score");
 		boolean sourceMachineScoreInUse = sourceMachineScoreField != null && sourceMachineScoreField.isInUse();
 
-		ScoreFieldMetadata destMachineScoreField = fieldMetadataDictionary.getScoreFieldMetadataByName("destination_machine_score");
+		FieldMetadata destMachineScoreField = fieldMetadataDictionary.getFieldMetadataByName("destination_machine_score");
 		boolean destMachineScoreInUse = destMachineScoreField != null && destMachineScoreField.isInUse();
 
-		ScoreFieldMetadata countryScore = fieldMetadataDictionary.getScoreFieldMetadataByName("country_score");
+		FieldMetadata countryScore = fieldMetadataDictionary.getFieldMetadataByName("country_score");
 		boolean countryScoreInUse = countryScore != null && countryScore.isInUse();
 
-		ScoreFieldMetadata actionTypeScore = fieldMetadataDictionary.getScoreFieldMetadataByName("action_type_score");
+		FieldMetadata actionTypeScore = fieldMetadataDictionary.getFieldMetadataByName("action_type_score");
 		boolean actionTypeScoreInUse = actionTypeScore != null && actionTypeScore.isInUse();
 
-		ScoreFieldMetadata dateTimeScore = fieldMetadataDictionary.getScoreFieldMetadataByName("date_time_score");
+		FieldMetadata dateTimeScore = fieldMetadataDictionary.getFieldMetadataByName("date_time_score");
 		boolean dateTimeScoreInUse = dateTimeScore != null && dateTimeScore.isInUse();
 
 
