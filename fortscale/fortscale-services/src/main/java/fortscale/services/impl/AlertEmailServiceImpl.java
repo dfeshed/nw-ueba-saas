@@ -7,6 +7,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.email.*;
 import fortscale.services.*;
 import fortscale.utils.email.EmailUtils;
+import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
@@ -35,6 +36,8 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	private static final String NEW_ALERT_JADE_INDEX = JADE_RESOURCES_FOLDER + "/templates/new-alert-email/index.jade";
 	private static final String ALERT_SUMMARY_JADE_INDEX = JADE_RESOURCES_FOLDER +
 			"/templates/alert-summary-email/index.jade";
+	private static final String USER_THUMBNAIL = IMAGES_FOLDER + "/user_thumbnail.png";
+	private static final String USER_DEFAULT_THUMBNAIL = IMAGES_FOLDER + "/user_default_thumbnail.png";
 	private static final String ICON_CRITICAL = IMAGES_FOLDER + "/severity_icon_critical.png";
 	private static final String ICON_HIGH = IMAGES_FOLDER + "/severity_icon_high.png";
 	private static final String ICON_MEDIUM = IMAGES_FOLDER + "/severity_icon_medium.png";
@@ -49,6 +52,8 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	private EmailUtils emailUtils;
 	@Autowired
 	private JadeUtils jadeUtils;
+	@Autowired
+	private ImageUtils imageUtils;
 	@Autowired
 	private AlertPrettifierService alertPrettifierService;
 	@Autowired
@@ -97,12 +102,27 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 			logger.error("failed to render html - {}", ex);
 			return;
 		}
-		String[] attachedFiles = new String[] { "", LOGO_IMAGE, SHADOW_IMAGE, SHADOW_CROPPED_IMAGE };
+		Set<String> attachedFiles = new HashSet();
+		attachedFiles.add(LOGO_IMAGE);
+		attachedFiles.add(SHADOW_IMAGE);
+		attachedFiles.add(SHADOW_CROPPED_IMAGE);
 		switch (alert.getSeverity()) {
-			case Critical: attachedFiles[0] = ICON_CRITICAL; break;
-			case High: attachedFiles[0] = ICON_HIGH; break;
-			case Medium: attachedFiles[0] = ICON_MEDIUM; break;
-			case Low: attachedFiles[0] = ICON_LOW; break;
+			case Critical: attachedFiles.add(ICON_CRITICAL); break;
+			case High: attachedFiles.add(ICON_HIGH); break;
+			case Medium: attachedFiles.add(ICON_MEDIUM); break;
+			case Low: attachedFiles.add(ICON_LOW); break;
+		}
+		String thumbnail = userService.getUserThumbnail(user);
+		if (thumbnail != null) {
+			try {
+				imageUtils.convertBase64ToPNG(thumbnail, USER_THUMBNAIL);
+				attachedFiles.add(USER_THUMBNAIL);
+			} catch (Exception ex) {
+				logger.warn("Failed to convert user thumbnail");
+				attachedFiles.add(USER_DEFAULT_THUMBNAIL);
+			}
+		} else {
+			attachedFiles.add(USER_DEFAULT_THUMBNAIL);
 		}
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
@@ -110,7 +130,7 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
 					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT, html,
-							attachedFiles, true);
+							attachedFiles.toArray(new String[attachedFiles.size()]), true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
