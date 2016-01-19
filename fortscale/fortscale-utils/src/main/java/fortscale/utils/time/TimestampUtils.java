@@ -227,13 +227,4 @@ public final class TimestampUtils {
 	public static long convertToSeconds(Date date) {
 		return convertToMilliseconds(date) / MILLIS_IN_SECOND;
 	}
-
-	/**
-	 * @param seconds the number of seconds since
-	 *                January 1, 1970, 00:00:00 UTC.
-	 * @return a Date representation of seconds.
-	 */
-	public static Date convertToDate(long seconds) {
-		return new Date(seconds * MILLIS_IN_SECOND);
-	}
 }

@@ -7,7 +7,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.store.ModelDAO;
-import fortscale.streaming.ExtendedSamzaTaskContext;
+import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class DiscreteModelCacheManagerSamza extends ModelCacheManagerSamza {
-	public DiscreteModelCacheManagerSamza(ExtendedSamzaTaskContext context, ModelConf modelConf) {
-		super(context, modelConf);
+	public DiscreteModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
+		super(store, modelConf);
 	}
 
 	@Override

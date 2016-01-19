@@ -8,8 +8,6 @@ import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.streaming.ConfigUtils;
-import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +24,6 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class ModelCacheManagerSamza implements ModelCacheManager {
-	private static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 	private static final String STORE_KEY_SEPARATOR = ".";
 
 	@Value("${fortscale.model.wait.sec.between.loads}")
@@ -44,21 +41,16 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	private ModelStore modelStore;
 
 	private KeyValueStore<String, ModelsCacheInfo> store;
-	protected AbstractDataRetriever retriever;
 	private ModelConf modelConf;
+	protected AbstractDataRetriever retriever;
 
-	@SuppressWarnings("unchecked")
-	public ModelCacheManagerSamza(ExtendedSamzaTaskContext context, ModelConf modelConf) {
-		Assert.notNull(context);
-		Assert.notNull(modelConf);
-
-		String storeName = ConfigUtils.getConfigString(context.getConfig(), STORE_NAME_PROPERTY);
-		store = (KeyValueStore<String, ModelsCacheInfo>)context.getStore(storeName);
+	public ModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
 		Assert.notNull(store);
-
+		Assert.notNull(modelConf);
+		this.store = store;
+		this.modelConf = modelConf;
 		retriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 		Assert.notNull(retriever);
-		this.modelConf = modelConf;
 	}
 
 	@Override
