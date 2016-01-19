@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -30,13 +31,14 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
         //TODO
     }
 
+
     @Override
-    public Model getModel(Feature feature, String modelName, String context, long eventEpochTime) {
+    public Model getModel(Feature feature, Map<String, Feature> contextFieldNamesToValuesMap, String context, long eventEpochTime) {
         return null; //TODO
     }
 
     @Override
-    public void save(String modelName, String context, List<ModelCacheInfo> modelCacheInfoList) {
+    public void save(String modelName, Map<String, Feature> contextFieldNamesToValuesMap, List<ModelCacheInfo> modelCacheInfoList) {
         //TODO
     }
 
