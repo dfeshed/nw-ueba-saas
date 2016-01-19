@@ -67,7 +67,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Value("${fortscale.data.source}")
-    private String currentDataSources; // TODO only for windows workaround
+    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf"; // TODO only for windows workaround
 
     //TODO - Generate this auto from the entities  properties
     private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN, isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN";

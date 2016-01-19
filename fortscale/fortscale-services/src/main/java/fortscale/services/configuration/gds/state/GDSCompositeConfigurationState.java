@@ -22,6 +22,9 @@ public class GDSCompositeConfigurationState implements Resettable{
     private GDSStreamingTopologyDefinitionState streamingTopologyDefinitionState = new GDSStreamingTopologyDefinitionState();
 	private GDSRAWDataModelAndScoreState rawDataModelAndScoreState = new GDSRAWDataModelAndScoreState();
 
+
+    private GDSEntitiesPropertiesState entitiesPropertiesState = new GDSEntitiesPropertiesState();
+
     public String getDataSourceName() {
         return baseDefinitionState.getDataSourceName();
     }
@@ -101,6 +104,14 @@ public class GDSCompositeConfigurationState implements Resettable{
 
     public FieldMetadataDictionary getFieldMetadataDictionary(){
         return schemaDefinitionState.getFieldMetadataDictionary();
+    }
+
+    public GDSEntitiesPropertiesState getEntitiesPropertiesState() {
+        return entitiesPropertiesState;
+    }
+
+    public void setEntitiesPropertiesState(GDSEntitiesPropertiesState entitiesPropertiesState) {
+        this.entitiesPropertiesState = entitiesPropertiesState;
     }
 
 

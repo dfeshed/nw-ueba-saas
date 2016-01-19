@@ -40,7 +40,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 	private static final String EXTENDS = "extends";
 
 	//field constants
-	private static final String FIELD_PREFIX = "Field_";
+
 	private static final String FIELD_ID = "id";
 	private static final String FIELD_NAME = "name";
 	private static final String TYPE = "type";
@@ -61,7 +61,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 
 		//configure the table general settings
 		HashMap<String, ConfigurationParam> tableConfigsMap = configureTable();
-		configurationsMap.put("tableConfigs",tableConfigsMap);
+		configurationsMap.put(currentConfigurationState.getEntitiesPropertiesState().TABLE_CONFIG_KEY,tableConfigsMap);
 
 		//declare the fields
 		FieldMetadataDictionary fields = currentConfigurationState.getFieldMetadataDictionary();
@@ -73,7 +73,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		//configure additional fields
 		Map<String,FieldMetadata> additionalFields = FieldMetadataExtractor.extractAdditionalFields(fields);
 		for(FieldMetadata additionalField: additionalFields.values()){
-			configurationsMap.put( FIELD_PREFIX+additionalField.getFieldName(), configureNewField(additionalField));
+			configurationsMap.put( currentConfigurationState.getEntitiesPropertiesState().FIELD_PREFIX +additionalField.getFieldName(), configureNewField(additionalField));
 		}
 
 		return configurationsMap;
@@ -89,8 +89,8 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		Map<String, ConfigurationParam> declaredFields = new HashMap<>();
 		Map<String, ConfigurationParam> hiddenFields = new HashMap<>();
 
-		allfields.put("declaredFields", declaredFields);
-		allfields.put("hiddenFields",hiddenFields);
+		allfields.put(currentConfigurationState.getEntitiesPropertiesState().DECLARED_FIELDS_KEY, declaredFields);
+		allfields.put(currentConfigurationState.getEntitiesPropertiesState().HIDDEN_FIELDS,hiddenFields);
 
 		for (FieldMetadata field: fields.getAllFields()){
 			//declare it in entities.properties - all derived fields must be declared in the entity.
@@ -198,9 +198,9 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		entityFieldMap.put(RANK,new ConfigurationParam(RANK,false,"10"));
 
 		//score - find with the field to score map
-		String correlatedScoreField = currentConfigurationState.getFieldMetadataDictionary().getScoreFieldMetaData(field).getFieldName();
+		FieldMetadata correlatedScoreField = currentConfigurationState.getFieldMetadataDictionary().getScoreFieldMetaData(field);
 		if ( correlatedScoreField!= null){
-			entityFieldMap.put(CORRELATED_SCORE_FIELD,new ConfigurationParam(CORRELATED_SCORE_FIELD,false,correlatedScoreField));
+			entityFieldMap.put(CORRELATED_SCORE_FIELD,new ConfigurationParam(CORRELATED_SCORE_FIELD,false,correlatedScoreField.getFieldName()));
 		}
 
 		//lov - always true
