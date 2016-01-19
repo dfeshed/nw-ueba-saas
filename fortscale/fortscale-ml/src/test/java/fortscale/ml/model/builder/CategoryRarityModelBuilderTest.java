@@ -25,9 +25,9 @@ public class CategoryRarityModelBuilderTest {
 
 	@Test
 	public void testBuildWithOneFeature() {
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
+		Map<String, Long> featureValueToCountMap = new HashMap<>();
 		String featureValue = "featureValue";
-		int featureCount = 1;
+		long featureCount = 1;
 		featureValueToCountMap.put(featureValue, featureCount);
 
 		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder().build(featureValueToCountMap);
@@ -40,10 +40,10 @@ public class CategoryRarityModelBuilderTest {
 
 	@Test
 	public void testBuildWithMultipleFeatures() {
-		Map<String, Integer> featureValueToCountMap = new HashMap<>();
+		Map<String, Long> featureValueToCountMap = new HashMap<>();
 		String featureValue1 = "featureValue1";
 		String featureValue2 = "featureValue2";
-		int featureCount = 1;
+		long featureCount = 1;
 		featureValueToCountMap.put(featureValue1, featureCount);
 		featureValueToCountMap.put(featureValue2, featureCount);
 

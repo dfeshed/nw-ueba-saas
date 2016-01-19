@@ -9,12 +9,12 @@ import org.junit.runners.JUnit4;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @RunWith(JUnit4.class)
 public class CategoryRarityModelTest {
-	private Map<Integer, Double> createOccurrencesToNumOfFeatures(int... occurrences) {
-		return IntStream.of(occurrences)
+	private Map<Long, Double> createOccurrencesToNumOfFeatures(long... occurrences) {
+		return LongStream.of(occurrences)
 				.boxed()
 				.collect(Collectors.groupingBy(
 						o -> o,

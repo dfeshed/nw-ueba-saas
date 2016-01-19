@@ -9,7 +9,7 @@ import java.util.Map;
 public class CategoryRarityModelWithFeatureOccurrencesData extends CategoryRarityModel implements ModelWithFeatureOccurencesData {
     private Map<Feature, Double> featureOccurrences = new HashMap<>();
 
-    public CategoryRarityModelWithFeatureOccurrencesData(Map<Integer, Double> occurrencesToNumOfFeatures) {
+    public CategoryRarityModelWithFeatureOccurrencesData(Map<Long, Double> occurrencesToNumOfFeatures) {
         super(occurrencesToNumOfFeatures);
     }
 

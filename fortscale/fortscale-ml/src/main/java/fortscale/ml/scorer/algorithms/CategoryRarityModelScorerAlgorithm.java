@@ -39,7 +39,7 @@ public class CategoryRarityModelScorerAlgorithm {
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
     }
 
-    public double calculateScore(int featureCount, CategoryRarityModel model) {
+    public double calculateScore(long featureCount, CategoryRarityModel model) {
         if(model==null) {
             return 0D;
         }
@@ -54,7 +54,7 @@ public class CategoryRarityModelScorerAlgorithm {
             numRareEvents += (i + 1) * buckets[i];
             numDistinctRareFeatures += buckets[i];
         }
-        for (int i = featureCount; i < featureCount + maxRareCount; i++) {
+        for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2, maxRareCount );
             numRareEvents += (i + 1) * buckets[i] * commonnessDiscount;
             numDistinctRareFeatures += buckets[i] * commonnessDiscount;
