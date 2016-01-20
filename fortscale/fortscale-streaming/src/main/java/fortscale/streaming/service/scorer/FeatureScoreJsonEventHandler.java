@@ -1,5 +1,6 @@
-package fortscale.ml.scorer;
+package fortscale.streaming.service.scorer;
 
+import fortscale.ml.scorer.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Component;
 
