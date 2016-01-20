@@ -109,7 +109,7 @@ public class ScorerTask extends AbstractStreamTask {
         try {
             List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, configKey.getDataSource());
             if(featureScores!=null) {
-                message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+                featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
             }
             handleUnfilteredEvent(message, configKey);
         } catch (FilteredEventException  | KafkaPublisherException e){

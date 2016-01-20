@@ -7,8 +7,7 @@ import groovy.json.JsonException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     private static final Logger logger = Logger.getLogger(FeatureScoreJsonEventConfService.class);
@@ -19,7 +18,7 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     @Value("${fortscale.streaming.scores.to.event.mapping.conf.json.overriding.file.path}")
     private String scoresToEventMappingConfConfJsonOverridingFilesPath;
 
-    private Map<String, String> scoresToEventMap = new HashMap<>();
+    private Map<String, Map<String, List<String>>> rootScorersMap = new HashMap<>();
 
     @Override
     protected String getBaseConfJsonFilePath() {
@@ -50,11 +49,19 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
         }
 
         for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {
-            scoresToEventMap.put(entry.getKey(), (String)entry.getValue());
+            List<String> scorePath = Arrays.asList(((String)entry.getValue()).split("."));
+            String rootScorer = scorePath.get(0);
+            Map<String, List<String>> eventFieldNameToScorerPath = rootScorersMap.get(rootScorer);
+            if(eventFieldNameToScorerPath == null){
+                eventFieldNameToScorerPath = new HashMap<>();
+                rootScorersMap.put(rootScorer, eventFieldNameToScorerPath);
+            }
+            eventFieldNameToScorerPath.put(entry.getKey(), scorePath);
         }
     }
 
-    public Map<String, String> getScoresToEventMapping() {
-        return scoresToEventMap;
+    public Map<String, List<String>> getEventFieldNameToScorerPathMap(String rootScorer) {
+        Map<String, List<String>> ret = rootScorersMap.get(rootScorer);
+        return ret != null ? ret : Collections.emptyMap();
     }
 }
