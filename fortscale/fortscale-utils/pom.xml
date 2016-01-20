@@ -33,6 +33,11 @@
 			<name>libs-snapshot</name>
 			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
+		<repository>
+			<id>mirror.fortscale.dom</id>
+			<name>mirror.fortscale.dom-releases</name>
+			<url>http://mirror.fortscale.dom/artifactory/cisco-pxGrid</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
