@@ -17,6 +17,8 @@ import static java.lang.String.format;
  */
 public class RawModelScoreConfigurationWriter extends StreamingConfigurationWriterService {
 
+	protected String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events";
+	
 	public RawModelScoreConfigurationWriter()
 	{
 
