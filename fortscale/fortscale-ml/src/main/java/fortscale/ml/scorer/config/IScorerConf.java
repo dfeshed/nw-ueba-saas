@@ -12,7 +12,7 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = FieldValueScoreReducerConf.class, name = FieldValueScoreReducerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = LinearScoreReducerConf.class, name = LinearScoreReducerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = LowValuesScoreReducerConf.class, name = LowValuesScoreReducerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = ReductingScorerConf.class, name = ReductingScorerConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = ReductionScorerConf.class, name = ReductionScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ContinuousModelScorerConf.class, name = ContinuousModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = CategoryRarityModelScorerConf.class, name = CategoryRarityModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = RegexScorerConf.class, name = RegexScorerConf.SCORER_TYPE),

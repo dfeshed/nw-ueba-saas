@@ -1,43 +1,54 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.ml.scorer.CategoryRarityModelScorer;
+import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
 public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public static final String SCORER_TYPE = "category-rarity-model-scorer";
 
-    @JsonProperty("minumum-number-of-discreet-values-to-influence")
-    private int minNumOfDiscreetValuesToInfluence;
-    @JsonProperty("enough-number-of-discreet-values-to-influence")
-    private int enoughNumOfDiscreetValuesToInfluence;
+    @JsonProperty("minimum-number-of-distinct-values-to-influence")
+    private int minNumOfDistinctValuesToInfluence;
+    @JsonProperty("enough-number-of-distinct-values-to-influence")
+    private int enoughNumOfDistinctValuesToInfluence;
     @JsonProperty("max-rare-count")
-    private int maxRareCount;
+    private Integer maxRareCount = null;
     @JsonProperty("max-num-of-rare-features")
-    private int maxNumOfRareFeatures;
+    private Integer maxNumOfRareFeatures = null;
 
+    @JsonCreator
     public CategoryRarityModelScorerConf(@JsonProperty("name") String name,
-                                         @JsonProperty("number-of-samples-to-influence-enought") int enoughNumOfSamplesToInfluence,
-                                         @JsonProperty("use-certainty-to-calculate-score") boolean isUseCertaintyToCalculateScore,
-                                         @JsonProperty("min-number-of-samples-to-influence") int minNumOfSamplesToInfluence,
                                          @JsonProperty("model") ModelInfo modelInfo,
-                                         @JsonProperty("minumum-number-of-discreet-values-to-influence") int minNumOfDiscreetValuesToInfluence,
-                                         @JsonProperty("enough-number-of-discreet-values-to-influence") int enoughNumOfDiscreetValuesToInfluence,
-                                         @JsonProperty("max-rare-count")int maxRareCount,
-                                         @JsonProperty("max-num-of-rare-features") int maxNumOfRareFeatures) {
-        super(name, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, minNumOfSamplesToInfluence, modelInfo);
-        this.minNumOfDiscreetValuesToInfluence = minNumOfDiscreetValuesToInfluence;
-        this.enoughNumOfDiscreetValuesToInfluence = enoughNumOfDiscreetValuesToInfluence;
+                                         @JsonProperty("max-rare-count")Integer maxRareCount,
+                                         @JsonProperty("max-num-of-rare-features") Integer maxNumOfRareFeatures) {
+        super(name, modelInfo);
+        CategoryRarityModelScorerAlgorithm.assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+        CategoryRarityModelScorerAlgorithm.assertMaxRareCountValue(maxRareCount);
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
     }
 
-    public int getMinNumOfDiscreetValuesToInfluence() {
-        return minNumOfDiscreetValuesToInfluence;
+    public CategoryRarityModelScorerConf setMinNumOfDistinctValuesToInfluence(Integer minNumOfDistinctValuesToInfluence) {
+        CategoryRarityModelScorer.assertMinNumOfDistinctValuesToInfluenceValue(minNumOfDistinctValuesToInfluence);
+        this.minNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
+        return this;
     }
 
-    public int getEnoughNumOfDiscreetValuesToInfluence() {
-        return enoughNumOfDiscreetValuesToInfluence;
+    public CategoryRarityModelScorerConf setEnoughNumOfDistinctValuesToInfluence(Integer enoughNumOfDistinctValuesToInfluence) {
+        CategoryRarityModelScorer.assertEnoughNumOfDistinctValuesToInfluenceValue(enoughNumOfDistinctValuesToInfluence);
+        this.enoughNumOfDistinctValuesToInfluence = enoughNumOfDistinctValuesToInfluence;
+        return this;
+    }
+
+    public int getMinNumOfDistinctValuesToInfluence() {
+        return minNumOfDistinctValuesToInfluence;
+    }
+
+    public int getEnoughNumOfDistinctValuesToInfluence() {
+        return enoughNumOfDistinctValuesToInfluence;
     }
 
     public int getMaxRareCount() {

@@ -1,24 +1,34 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
+import org.eclipse.jdt.internal.core.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReductingScorer extends AbstractScorer {
+public class ReductionScorer extends AbstractScorer {
 	
 	public static final double REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
 	
 	private Scorer mainScorer;
 	private Scorer reductingScorer;
 	private double reductingWeight;
-	private double reductingZeroScoreWeight;
+	private double reductingZeroScoreWeight = REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT;
 
-	public ReductingScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight, double reductingZeroScoreWeight) {
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight, double reductingZeroScoreWeight) {
+		this(scorerName, mainScorer, reductingScorer, reductingWeight);
+		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductingZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
+		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
+	}
+
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight) {
 		super(scorerName);
+		Assert.isNotNull(mainScorer, "main scorer must not be null");
+		Assert.isNotNull(reductingScorer, "reducting scorer must not be null");
+		Assert.isTrue(reductingWeight>0 && reductingWeight < 1.0,String.format("reductingWeight (%f) must be > 0 and < 1.0", reductingWeight));
 		this.mainScorer = mainScorer;
 		this.reductingScorer = reductingScorer;
 		this.reductingWeight = reductingWeight;
-		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
 	@Override

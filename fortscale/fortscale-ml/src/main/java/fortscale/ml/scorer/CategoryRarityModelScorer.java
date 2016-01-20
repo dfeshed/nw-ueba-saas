@@ -6,16 +6,36 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
 
 public class CategoryRarityModelScorer extends AbstractModelScorer {
 
-    private int minNumOfDiscreetValuesToInfluence;
-    private int enoughNumOfDiscreetValuesToInfluence;
+    private int minNumOfDistinctValuesToInfluence;
+    private int enoughNumOfDistinctValuesToInfluence;
 
     private CategoryRarityModelScorerAlgorithm algorithm;
+
+    public static void assertMinNumOfDistinctValuesToInfluenceValue(int minNumOfDistinctValuesToInfluence) {
+        Assert.isTrue(minNumOfDistinctValuesToInfluence >= 0, String.format("minNumOfDistinctValuesToInfluence must be >= 0: %d", minNumOfDistinctValuesToInfluence));
+    }
+    public static void assertEnoughNumOfDistinctValuesToInfluenceValue(int enoughNumOfDistinctValuesToInfluence) {
+        Assert.isTrue(enoughNumOfDistinctValuesToInfluence >= 0, String.format("enoughNumOfDistinctValuesToInfluence must be >= 0: %d", enoughNumOfDistinctValuesToInfluence));
+    }
+
+    public CategoryRarityModelScorer setMinNumOfDistinctValuesToInfluence(int minNumOfDistinctValuesToInfluence) {
+        assertMinNumOfDistinctValuesToInfluenceValue(minNumOfDistinctValuesToInfluence);
+        this.minNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
+        return this;
+    }
+
+    public CategoryRarityModelScorer setEnoughNumOfDistinctValuesToInfluence(int enoughNumOfDistinctValuesToInfluence) {
+        assertEnoughNumOfDistinctValuesToInfluenceValue(enoughNumOfDistinctValuesToInfluence);
+        this.enoughNumOfDistinctValuesToInfluence = enoughNumOfDistinctValuesToInfluence;
+        return this;
+    }
 
     public CategoryRarityModelScorer(String scorerName, String modelName,
                                      List<String> contextFieldNames,
@@ -24,14 +44,14 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int enoughNumOfSamplesToInfluence,
                                      boolean isUseCertaintyToCalculateScore,
                                      ModelsCacheService modelsCacheService,
-                                     int minNumOfDiscreetValuesToInfluence,
-                                     int enoughNumOfDiscreetValuesToInfluence,
+                                     int minNumOfDistinctValuesToInfluence,
+                                     int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
                                      int maxNumOfRareFeatures) {
 
         super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, modelsCacheService);
-        this.enoughNumOfDiscreetValuesToInfluence = enoughNumOfDiscreetValuesToInfluence;
-        this.minNumOfDiscreetValuesToInfluence = minNumOfDiscreetValuesToInfluence;
+        setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
+        setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
 
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
     }
@@ -43,8 +63,8 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
      * @param minNumOfSamplesToInfluence
      * @param enoughNumOfSamplesToInfluence
      * @param isUseCertaintyToCalculateScore
-     * @param minNumOfDiscreetValuesToInfluence
-     * @param enoughNumOfDiscreetValuesToInfluence
+     * @param minNumOfDistinctValuesToInfluence
+     * @param enoughNumOfDistinctValuesToInfluence
      * @param maxRareCount
      * @param maxNumOfRareFeatures
      */
@@ -53,14 +73,14 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int minNumOfSamplesToInfluence,
                                      int enoughNumOfSamplesToInfluence,
                                      boolean isUseCertaintyToCalculateScore,
-                                     int minNumOfDiscreetValuesToInfluence,
-                                     int enoughNumOfDiscreetValuesToInfluence,
+                                     int minNumOfDistinctValuesToInfluence,
+                                     int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
                                      int maxNumOfRareFeatures) {
 
         super(scorerName, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
-        this.enoughNumOfDiscreetValuesToInfluence = enoughNumOfDiscreetValuesToInfluence;
-        this.minNumOfDiscreetValuesToInfluence = minNumOfDiscreetValuesToInfluence;
+        setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
+        setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
 
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
     }
@@ -68,7 +88,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     @Override
     protected double calculateCertainty(Model model) {
         double certainty = super.calculateCertainty(model);
-        if(enoughNumOfDiscreetValuesToInfluence < 2){
+        if(enoughNumOfDistinctValuesToInfluence < 2){
             return certainty;
         }
 
@@ -79,15 +99,15 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
         CategoryRarityModel categoryRarityModel = (CategoryRarityModel) model;
         long numOfDistinctRareFeatures = categoryRarityModel.getNumOfDistinctRareFeatures();
-        double discreetCertainty = 0;
-        if(numOfDistinctRareFeatures >= enoughNumOfDiscreetValuesToInfluence){
-            discreetCertainty = 1;
-        } else if(numOfDistinctRareFeatures >= minNumOfDiscreetValuesToInfluence){
-            discreetCertainty = ((double)(numOfDistinctRareFeatures - minNumOfDiscreetValuesToInfluence + 1)) / (enoughNumOfDiscreetValuesToInfluence - minNumOfDiscreetValuesToInfluence + 1);
+        double distinctCertainty = 0;
+        if(numOfDistinctRareFeatures >= enoughNumOfDistinctValuesToInfluence){
+            distinctCertainty = 1;
+        } else if(numOfDistinctRareFeatures >= minNumOfDistinctValuesToInfluence){
+            distinctCertainty = ((double)(numOfDistinctRareFeatures - minNumOfDistinctValuesToInfluence + 1)) / (enoughNumOfDistinctValuesToInfluence - minNumOfDistinctValuesToInfluence + 1);
         }
 
 
-        return certainty*discreetCertainty;
+        return certainty*distinctCertainty;
     }
 
     @Override

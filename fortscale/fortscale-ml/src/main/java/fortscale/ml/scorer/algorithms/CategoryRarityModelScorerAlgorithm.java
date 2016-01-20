@@ -23,12 +23,9 @@ public class CategoryRarityModelScorerAlgorithm {
     private int maxNumOfRareFeatures;
 
 
-    public CategoryRarityModelScorerAlgorithm(int maxRareCount, int maxNumOfRareFeatures) throws IllegalArgumentException{
-        Assert.isTrue(maxNumOfRareFeatures >= 0, String.format("maxNumOfRareFeatures must be >= 0: %d", maxNumOfRareFeatures));
-
-        Assert.isTrue(maxRareCount >= 0, String.format("maxRareCount must be >= 0: %d", maxRareCount));
-        Assert.isTrue(maxRareCount  <= CategoryRarityModel.NUM_OF_BUCKETS / 2, String.format("maxRareCount must be no larger then %d: %d", CategoryRarityModel.NUM_OF_BUCKETS / 2, maxRareCount));
-
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures) throws IllegalArgumentException{
+        assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+        assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
             logger.warn(String.format("maxRareCount is suspeciously big: %d", maxRareCount));
         }
@@ -37,6 +34,17 @@ public class CategoryRarityModelScorerAlgorithm {
         }
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+    }
+
+    public static void assertMaxRareCountValue(Integer maxRareCount) {
+        Assert.notNull(maxRareCount, "maxRareCount must not be null");
+        Assert.isTrue(maxRareCount >= 0, String.format("maxRareCount must be >= 0: %d", maxRareCount));
+        Assert.isTrue(maxRareCount  <= CategoryRarityModel.NUM_OF_BUCKETS / 2, String.format("maxRareCount must be no larger then %d: %d", CategoryRarityModel.NUM_OF_BUCKETS / 2, maxRareCount));
+    }
+
+    public static void assertMaxNumOfRareFeaturesValue(Integer maxNumOfRareFeatures) {
+        Assert.notNull(maxNumOfRareFeatures, "maxNumOfRareFeatures must not be null");
+        Assert.isTrue(maxNumOfRareFeatures >= 0, String.format("maxNumOfRareFeatures must be >= 0: %d", maxNumOfRareFeatures));
     }
 
     public double calculateScore(int featureCount, CategoryRarityModel model) {

@@ -11,8 +11,7 @@ import java.util.Map;
  */
 public interface ModelsCacheService {
 
-    Model getModel(Feature feature, Map<String, Feature> contextFieldNamesToValuesMap, String context, long eventEpochTime);
-    void save(String modelName, Map<String, Feature> contextFieldNamesToValuesMap, List<ModelCacheInfo> modelCacheInfoList);
+    Model getModel(Feature feature, Map<String, Feature> contextFieldNamesToValuesMap, String modelName, long eventEpochTime);
     void window();
     void close();
 }

@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
-public class ScorerConfServiceTest {
+public class ScorerConfServiceProductionConfFilesTest {
     @Autowired
     ScorerConfService scorerConfService;
 

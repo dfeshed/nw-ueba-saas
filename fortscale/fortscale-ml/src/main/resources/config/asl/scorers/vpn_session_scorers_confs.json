@@ -11,9 +11,9 @@
           "scorers": [
             {
               "name": "country-scorer",
-              "type": "reducting-scorer",
-              "reducting-weight": 0.5,
-              "reducting-zero-score-weight": 0.95,
+              "type": "reduction-scorer",
+              "reduction-weight": 0.5,
+              "reduction-zero-score-weight": 0.95,
 
               "main-scorer": {
                 "name": "country-main-scorer",
@@ -25,15 +25,16 @@
                 "number-of-samples-to-influence-enough": 30,
                 "use-certainty-to-calculate-score": true
               },
-              "reducting-scorer": {
-                "name": "country-reducting-scorer",
+              "reduction-scorer": {
+                "name": "country-reduction-scorer",
                 "type": "category-rarity-model-scorer",
-
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
                 "model": {
                   "name": "vpnsessioncity"
                 },
                 "number-of-samples-to-influence-enough": 10,
-                "minumum-number-of-discreet-values-to-influence": 5
+                "minimum-number-of-distinct-values-to-influence": 5
               }
             },
             {
