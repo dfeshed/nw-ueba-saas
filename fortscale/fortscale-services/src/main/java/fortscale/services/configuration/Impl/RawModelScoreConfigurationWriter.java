@@ -18,7 +18,7 @@ import static java.lang.String.format;
 public class RawModelScoreConfigurationWriter extends StreamingConfigurationWriterService {
 
 	protected String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events";
-	
+
 	public RawModelScoreConfigurationWriter()
 	{
 
@@ -163,6 +163,13 @@ public class RawModelScoreConfigurationWriter extends StreamingConfigurationWrit
 
 			//models order
 			String modelNames=dataSourceName+"user";
+
+			//the user  as a context
+			line = format("%s.%s_%s.model.%s.context.fieldname=${impala.table.fields.normalized.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName,taskName,modelNames);
+			writeLineToFile(line, fileWriterToConfigure, true);
+
+
+
 			String scorersName = "";
 			if (sourceMachienFlag) {
 				modelNames = modelNames + "," + dataSourceName + "SrcComputer";
