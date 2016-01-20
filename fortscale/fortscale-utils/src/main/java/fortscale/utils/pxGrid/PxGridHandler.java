@@ -90,6 +90,20 @@ public class PxGridHandler {
 	}
 
 	/**
+	 * Close the connection to the grid
+	 * @return
+	 */
+	public pxGridConnectionStatus close() {
+		if (recon != null && con.isConnected()) {
+			// disconnect from pxGrid
+			recon.stop();
+		}
+
+		status = pxGridConnectionStatus.DISCONNECTED;
+		return getStatus();
+	}
+
+	/**
 	 * Get the connection status
 	 * @return
 	 */
