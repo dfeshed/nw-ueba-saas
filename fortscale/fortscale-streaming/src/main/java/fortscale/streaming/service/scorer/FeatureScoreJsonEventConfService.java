@@ -2,9 +2,11 @@ package fortscale.streaming.service.scorer;
 
 
 import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.utils.logging.Logger;
 import groovy.json.JsonException;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
@@ -17,6 +19,9 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     private String scoresToEventMappingConfJsonFilePath;
     @Value("${fortscale.streaming.scores.to.event.mapping.conf.json.overriding.file.path}")
     private String scoresToEventMappingConfConfJsonOverridingFilesPath;
+
+    @Autowired
+    private FortscaleValueResolver fortscaleValueResolver;
 
     private Map<String, Map<String, List<String>>> rootScorersMap = new HashMap<>();
 
@@ -56,7 +61,8 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
                 eventFieldNameToScorerPath = new HashMap<>();
                 rootScorersMap.put(rootScorer, eventFieldNameToScorerPath);
             }
-            eventFieldNameToScorerPath.put(entry.getKey(), scorePath);
+            String fieldName = fortscaleValueResolver.resolveStringValue(entry.getKey());
+            eventFieldNameToScorerPath.put(fieldName, scorePath);
         }
     }
 
