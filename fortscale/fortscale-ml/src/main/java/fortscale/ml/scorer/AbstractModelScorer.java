@@ -141,8 +141,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		}
 
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		
-		Model model = modelsCacheService.getModel(feature, contextFieldNamesToValuesMap, modelName, eventEpochTimeInSec);
+		Model model = modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec);
 
 		return calculateScoreWithCertainty(model, feature);
 		

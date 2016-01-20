@@ -2,16 +2,10 @@ package fortscale.ml.model.cache;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
-
-import java.util.List;
 import java.util.Map;
 
-/**
- * Created by amira on 28/12/2015.
- */
 public interface ModelsCacheService {
-
-    Model getModel(Feature feature, Map<String, Feature> contextFieldNamesToValuesMap, String modelName, long eventEpochTime);
-    void window();
-    void close();
+	Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime);
+	void window();
+	void close();
 }
