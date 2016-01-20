@@ -9,6 +9,7 @@ import com.cisco.pxgrid.model.net.User;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
@@ -42,6 +43,15 @@ public class PxGridFetchJob extends FortscaleJob {
 	private static final String COMMA_DELIMITER = ",";
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
+
+	final static String HOSTS_KEY = "";
+	final static String USERNAME_KEY = "";
+	final static String GROUP_KEY = "";
+	final static String KEYSTOREPATH_KEY = "";
+	final static String KEYSTORE_PASSPHARSE_KEY = "";
+	final static String TRUSTSTORE_PATH_KEY = "";
+	final static String TRUSTSTORE_PASSPHARSE_KEY = "";
+	final static String CONNECTION_RETRY_MILLISECOND_KEY = "";
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
@@ -157,19 +167,8 @@ public class PxGridFetchJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
+		loadPxGridParams();
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-		String hosts = jobDataMapExtension.getJobDataMapStringValue(map, "hosts");
-		String userName = jobDataMapExtension.getJobDataMapStringValue(map, "userName");
-		String group = jobDataMapExtension.getJobDataMapStringValue(map, "group");
-		String keystorePath = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePath");
-		String keystorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePassphrase");
-		String truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
-		String truststorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePassphrase");
-		int connectionRetryMillisecond = jobDataMapExtension.getJobDataMapIntValue(map, "connectionRetryMillisecond");
-
-		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
-				truststorePassphrase, connectionRetryMillisecond);
-
 
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
@@ -184,12 +183,37 @@ public class PxGridFetchJob extends FortscaleJob {
 			getRunTimeFrameFromMongo(map);
 		}
 	}
+
+	private void loadPxGridParams() {
+		String hosts = readFromConfigurationService(HOSTS_KEY);
+		String userName = readFromConfigurationService(USERNAME_KEY);
+		String group = readFromConfigurationService(GROUP_KEY);
+		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
+		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
+		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
+		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
+		int connectionRetryMillisecond = Integer.parseInt(readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY));
+
+		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath, truststorePassphrase, connectionRetryMillisecond);
+	}
+
+	private String readFromConfigurationService(String key) {
+		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
+				getApplicationConfigurationByKey(key);
+		if (applicationConfiguration != null) {
+			return applicationConfiguration.getValue();
+		}
+
+		return null;
+	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="pxGrid methods">
 
 	/**
 	 * Write session to the output file
+	 *
 	 * @param session
 	 * @throws IOException
 	 */
