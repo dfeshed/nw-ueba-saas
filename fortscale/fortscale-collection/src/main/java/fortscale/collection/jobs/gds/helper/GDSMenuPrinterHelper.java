@@ -2,6 +2,7 @@ package fortscale.collection.jobs.gds.helper;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.collection.jobs.gds.configurators.GDSConfigurationResult;
+import fortscale.utils.ConversionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,8 @@ import java.util.Set;
  * 30/12/2015
  */
 public class GDSMenuPrinterHelper {
+
+    private static final String END_LINE = "\n";
 
     public static Map<String, GDSConfigurationType> createMainMenuOptionToConfigurationType() {
         Map<String, GDSConfigurationType> mainMenuOptionToConfigurationType = new HashMap<>();
@@ -124,6 +127,35 @@ public class GDSMenuPrinterHelper {
         System.out.println("");
         GDSMenuPrinterHelper.printEnrichmentMenu();
         System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
+    }
+
+    public static String formatCSVInMultiLines(String csvText, int numOfValuesInLine) {
+        StringBuilder result = new StringBuilder();
+        Set<String> csvValues = ConversionUtils.convertCSVToSet(csvText, true);
+
+        int numberOfCSVValues = csvValues.size();
+
+        String[] csvValuesArr = csvValues.toArray(new String[numberOfCSVValues]);
+
+        int printedValuesCounter = 0;
+        while (printedValuesCounter < numberOfCSVValues) {
+            StringBuilder line = new StringBuilder();
+            int startIndex = printedValuesCounter;
+            int endIndex = printedValuesCounter + numOfValuesInLine;
+            for (int i = startIndex; i <  endIndex && printedValuesCounter < numberOfCSVValues; ++i){
+                line.append(csvValuesArr[i].trim()).append(", ");
+                printedValuesCounter++;
+            }
+
+            // remove the comma+space combination at the end of each line
+            line.delete(line.length() - 2, line.length());
+
+            result.append(line).append(END_LINE);
+        }
+
+        result.deleteCharAt(result.length() - 1);
+
+        return result.toString();
     }
 
     public static void printConfigurationResult(GDSConfigurationResult<String> configurationResult, String configuratorName) {

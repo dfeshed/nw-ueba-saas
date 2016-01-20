@@ -140,7 +140,7 @@ public final class ConversionUtils {
 	/*
  * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
  */
-	public static List<String> convertCSVToList(String fieldsCSV) {
+	private static List<String> convertCSVToList(String fieldsCSV) {
 		List<String> ListedCSV = new ArrayList<>(); // to preserve insertion order
 
 		if (fieldsCSV != null) {

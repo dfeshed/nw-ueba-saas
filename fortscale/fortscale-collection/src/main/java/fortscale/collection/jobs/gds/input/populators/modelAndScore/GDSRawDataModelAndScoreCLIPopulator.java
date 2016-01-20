@@ -15,10 +15,6 @@ import java.util.Map;
  */
 public class GDSRawDataModelAndScoreCLIPopulator implements GDSConfigurationPopulator {
 
-	private static final String BASE_SCORE_FIELDS_CSV_PARAM = "baseScoreFieldsCSV";
-	private static final String ADDITIONAL_SCORE_FIELDS_CSV_PARAM = "additionalScoreFieldsCSV";
-	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
-	private static final String ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_PARAM = "additionalScoreFieldToFieldNameCSV";
 	private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
 	private static final String DATA_SOURCE_KEY ="rawPrevalanceConfigurationDataSourceKey";
 	private static final String TASK_NAME_PARAM = "taskName";

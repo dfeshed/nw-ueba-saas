@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds.input.populators;
 
 import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
+import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.collection.jobs.gds.input.populators.enrichment.GDSConfigurationPopulator;
@@ -56,13 +57,14 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 	private static final String ADDITIONAL_FIELDS_CSV_PARAM = "additionalFieldsCSV";
 	private static final String ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_CSV_PARAM = "additionalScoreFieldToFieldNameCSV";
 
-    private static final String BASE_FIELDS_CSV_PARAM = "baseFieldsCSV";
-    private static final String BASE_SCORE_FIELDS_CSV_PARAM = "baseScoreFieldsCSV";
+    private static final String INHERITED_BASE_FIELDS_CSV_PARAM = "inheritedBaseFieldsCSV";
+    private static final String INHERITED_BASE_SCORE_FIELDS_CSV_PARAM = "inheritedBaseScoreFieldsCSV";
     private static final String BASE_SCORE_FIELD_TO_FIELD_NAME_PARAM = "baseScoreFieldToFieldNameCSV";
     private static final String POPULATED_BASE_FIELDS_CSV_PARAM = "populatedBaseFieldsCSV";
     private static final String POPULATED_BASE_SCORE_FIELDS_CSV_PARAM = "populatedBaseScoreFieldsCSV";
 
     private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+    private static final int NUM_OF_CSV_VALUES_IN_LINE = 5;
 
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
@@ -140,7 +142,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
         {
             case BASE_DATA_SOURCE_TYPE:
             {
-                paramsMap.put(BASE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_FIELDS_CSV_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV));
+                paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV));
                 paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
@@ -152,7 +154,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
 
             case ACCESS_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put(BASE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_FIELDS_CSV_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV));
+                paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV));
                 paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV() + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
@@ -173,7 +175,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
             case AUTH_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put(BASE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_FIELDS_CSV_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV));
+                paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV));
                 paramsMap.put(DATA_TABLE_FIELDS_PARAM, new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
@@ -205,7 +207,7 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
             case CUSTOMIZED_AUTH_EVENT_DATA_SOURCE_TYPE:
             {
-                paramsMap.put(BASE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_FIELDS_CSV_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV));
+                paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV));
                 paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
                 paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
@@ -236,25 +238,39 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             }
         }
 
-        paramsMap.put(BASE_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(BASE_SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
+        paramsMap.put(INHERITED_BASE_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_SCORE_FIELDS_CSV_PARAM,false, scoreFieldsCSV));
         paramsMap.put(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,new ConfigurationParam(ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
 		paramsMap.put(ADDITIONAL_FIELDS_CSV_PARAM, new ConfigurationParam(ADDITIONAL_FIELDS_CSV_PARAM, false, additionalFieldsWrapper.getAdditionalFieldsCSV()));
         paramsMap.put(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM , new ConfigurationParam(POPULATED_ADDITIONAL_SCORE_FIELDS_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalPopulatedScoreFields()));
 		paramsMap.put(ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_CSV_PARAM, new ConfigurationParam(ADDITIONAL_SCORE_FIELD_TO_FIELD_NAME_CSV_PARAM,false,additionalFieldsWrapper.getAdditionalScoreFieldToFieldNameCSV()));
 
-        handleBaseFieldInUseIndication(paramsMap, BASE_FIELDS_CSV_PARAM, POPULATED_BASE_FIELDS_CSV_PARAM);
-        handleBaseFieldInUseIndication(paramsMap, BASE_SCORE_FIELDS_CSV_PARAM, POPULATED_BASE_SCORE_FIELDS_CSV_PARAM);
+        String inheritedBaseFieldsCSV = paramsMap.get(INHERITED_BASE_FIELDS_CSV_PARAM).getParamValue();
+        if (inheritedBaseFieldsCSV != null && !inheritedBaseFieldsCSV.isEmpty()) {
+            System.out.println("Would you like to disable some of the inherited fields? The fields are:");
+            String csvInMultiLineFormat = GDSMenuPrinterHelper.formatCSVInMultiLines(inheritedBaseFieldsCSV, NUM_OF_CSV_VALUES_IN_LINE);
+            System.out.println("[" + csvInMultiLineFormat + "]");
+            handleBaseFieldInUseIndication(paramsMap, inheritedBaseFieldsCSV, POPULATED_BASE_FIELDS_CSV_PARAM);
+        }
+        else {
+            paramsMap.put(POPULATED_BASE_FIELDS_CSV_PARAM, new ConfigurationParam(POPULATED_BASE_FIELDS_CSV_PARAM,false, ""));
+        }
+
+        String inheritedBaseScoreFieldsCSV = paramsMap.get(INHERITED_BASE_SCORE_FIELDS_CSV_PARAM).getParamValue();
+        if (inheritedBaseScoreFieldsCSV != null && !inheritedBaseScoreFieldsCSV.isEmpty()) {
+            System.out.println("Would you like to disable some of the inherited score fields? The fields are:");
+            String csvInMultiLineFormat = GDSMenuPrinterHelper.formatCSVInMultiLines(inheritedBaseScoreFieldsCSV, NUM_OF_CSV_VALUES_IN_LINE);
+            System.out.println("[" + csvInMultiLineFormat + "]");
+            handleBaseFieldInUseIndication(paramsMap, inheritedBaseScoreFieldsCSV, POPULATED_BASE_SCORE_FIELDS_CSV_PARAM);
+        }
+        else {
+            paramsMap.put(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM, new ConfigurationParam(POPULATED_BASE_SCORE_FIELDS_CSV_PARAM,false, ""));
+        }
     }
 
-    private void handleBaseFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String fieldsCSVParamKey, String populatedFieldsCSVParamKey) throws Exception {
-
-        //ask the user if she wants to disable some fields
-        String potentialPopulatedBaseFieldsCSV = paramsMap.get(fieldsCSVParamKey).getParamValue();
-        System.out.println(String.format("Would you like to disable some of the inherited fields? the fields are: %s", potentialPopulatedBaseFieldsCSV));
-
+    private void handleBaseFieldInUseIndication(Map<String, ConfigurationParam> paramsMap, String inheritedFieldsToTypesCSV, String populatedFieldsCSVParamKey) throws Exception {
         if(gdsInputHandler.getYesNoInput()){
 
-            Map<String,String> potentialFieldMap = ConversionUtils.convertCSVToMap(potentialPopulatedBaseFieldsCSV);
+            Map<String,String> potentialFieldMap = ConversionUtils.convertCSVToMap(inheritedFieldsToTypesCSV);
 
             StringBuilder populatedFieldsCSV = new StringBuilder();
 
@@ -263,9 +279,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             {
                 String baseField = entry.getKey();
 
-                System.out.println(String.format("Is %s field should be populated (y/n)?", baseField));
+                System.out.println(String.format("Is %s field should be disabled (y/n)?", baseField));
 
-                if (gdsInputHandler.getYesNoInput()) {
+                if (!gdsInputHandler.getYesNoInput()) {
                     populatedFieldsCSV.append(baseField).append(COMMA);
                 }
             }
@@ -273,7 +289,11 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             paramsMap.put(populatedFieldsCSVParamKey,new ConfigurationParam(populatedFieldsCSVParamKey,false, trimCSVString(populatedFieldsCSV.toString())));
         }
         else {
-            paramsMap.put(populatedFieldsCSVParamKey,new ConfigurationParam(populatedFieldsCSVParamKey,false, trimCSVString(potentialPopulatedBaseFieldsCSV)));
+            // we want to extract only the field names without their types
+            Map<String, String> inheritedFieldToTypeMap = ConversionUtils.convertCSVToMap(inheritedFieldsToTypesCSV);
+            String inheritedFieldsCSV = inheritedFieldToTypeMap.keySet().stream().collect(Collectors.joining(COMMA));
+
+            paramsMap.put(populatedFieldsCSVParamKey,new ConfigurationParam(populatedFieldsCSVParamKey,false, trimCSVString(inheritedFieldsCSV)));
         }
     }
 
