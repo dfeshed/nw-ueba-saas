@@ -21,8 +21,6 @@ public class GDSCompositeConfigurationState implements Resettable{
     private GDSEnrichmentDefinitionState enrichmentDefinitionState = new GDSEnrichmentDefinitionState();
     private GDSStreamingTopologyDefinitionState streamingTopologyDefinitionState = new GDSStreamingTopologyDefinitionState();
 	private GDSRAWDataModelAndScoreState rawDataModelAndScoreState = new GDSRAWDataModelAndScoreState();
-
-
     private GDSEntitiesPropertiesState entitiesPropertiesState = new GDSEntitiesPropertiesState();
 
     public String getDataSourceName() {
