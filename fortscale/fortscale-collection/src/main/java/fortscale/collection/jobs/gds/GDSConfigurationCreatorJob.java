@@ -264,10 +264,6 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		handleConfiguration(mainMenuOptionToConfigurationType, GDSMenuOptions.MAIN_MENU_ENTITIES_PROPERTIES_OPTION);
 	}
 
-	private void handleAggregationsConfiguration() throws Exception {
-		// TBD
-	}
-
 	private void handleEnrichmentConfiguration() throws Exception {
 		System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
 		String stepInput = gdsInputHandler.getInput();

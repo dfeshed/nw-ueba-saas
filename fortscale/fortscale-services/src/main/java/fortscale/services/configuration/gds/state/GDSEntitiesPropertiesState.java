@@ -1,8 +1,11 @@
 package fortscale.services.configuration.gds.state;
 
-import fortscale.services.configuration.ConfigurationParam;
+import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesAdditionalField;
+import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesDeclaredField;
+import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesTable;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * holds the state given by the user in the populator.
@@ -11,21 +14,36 @@ import java.util.Map;
  */
 public class GDSEntitiesPropertiesState extends GDSStreamingTaskState {
 
-	public static final String TABLE_CONFIG_KEY = "tableConfigs";
-	public static final String DECLARED_FIELDS_KEY = "declaredFields";
-	public static final String HIDDEN_FIELDS = "hiddenFields";
-	public static final String FIELD_PREFIX = "Field_";
 
-	// configuration params contains tableConfigs, declared fields, hidden fields and (maybe) additional blocks of additional fields
-	Map<String, Map<String, ConfigurationParam>> configurationParams;
+	private GDSEntitiesPropertiesTable tableConfigs;
 
-	public Map<String, Map<String, ConfigurationParam>> getConfigurationParams() {
-		return configurationParams;
+	private List<GDSEntitiesPropertiesDeclaredField> declaredFields = new ArrayList<>();
+
+	private List<GDSEntitiesPropertiesAdditionalField> additionalFields = new ArrayList<>();
+
+
+	public List<GDSEntitiesPropertiesDeclaredField> getDeclaredFields() {
+		return declaredFields;
 	}
 
-	public void setConfigurationParams(Map<String, Map<String, ConfigurationParam>> configurationParams) {
-		this.configurationParams = configurationParams;
+	public List<GDSEntitiesPropertiesAdditionalField> getAdditionalFields() {
+		return additionalFields;
 	}
 
+	public void addDeclaredField(GDSEntitiesPropertiesDeclaredField fieldDeclaration){
+		declaredFields.add(fieldDeclaration);
+	}
+
+	public void addAdditionalField(GDSEntitiesPropertiesAdditionalField additionalField){
+		additionalFields.add(additionalField);
+	}
+	public GDSEntitiesPropertiesTable getTableConfigs() {
+		return tableConfigs;
+	}
+
+	public void setTableConfigs(GDSEntitiesPropertiesTable tableConfigs) {
+		this.tableConfigs = tableConfigs;
+	}
 
 }
+

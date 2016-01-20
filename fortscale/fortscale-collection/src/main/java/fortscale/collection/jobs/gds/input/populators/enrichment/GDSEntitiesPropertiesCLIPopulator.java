@@ -23,6 +23,12 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 	private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 	private GDSCompositeConfigurationState currentConfigurationState;
 
+	private static final String TABLE_CONFIG_KEY = "tableConfigs";
+	private static final String DECLARED_FIELDS_KEY = "declaredFields";
+	private static final String HIDDEN_FIELDS = "hiddenFields";
+	private static final String FIELD_PREFIX = "Field_";
+
+
 	//table constants
 	private static final String ENTITY_ID = "id";
 	private static final String ENTITY_NAME = "name";
@@ -35,8 +41,6 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 	private static final String PERFORMANCE_TABLE = "performance_table";
 	private static final String PARTITION = "partition";
 	private static final String PARTITION_BASE_FIELD = "partitionBaseField";
-
-
 	private static final String EXTENDS = "extends";
 
 	//field constants
@@ -61,7 +65,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 
 		//configure the table general settings
 		HashMap<String, ConfigurationParam> tableConfigsMap = configureTable();
-		configurationsMap.put(currentConfigurationState.getEntitiesPropertiesState().TABLE_CONFIG_KEY,tableConfigsMap);
+		configurationsMap.put(TABLE_CONFIG_KEY,tableConfigsMap);
 
 		//declare the fields
 		FieldMetadataDictionary fields = currentConfigurationState.getFieldMetadataDictionary();
@@ -73,7 +77,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		//configure additional fields
 		Map<String,FieldMetadata> additionalFields = FieldMetadataExtractor.extractAdditionalFields(fields);
 		for(FieldMetadata additionalField: additionalFields.values()){
-			configurationsMap.put( currentConfigurationState.getEntitiesPropertiesState().FIELD_PREFIX +additionalField.getFieldName(), configureNewField(additionalField));
+			configurationsMap.put(FIELD_PREFIX +additionalField.getFieldName(), configureNewField(additionalField));
 		}
 
 		return configurationsMap;
@@ -89,8 +93,8 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		Map<String, ConfigurationParam> declaredFields = new HashMap<>();
 		Map<String, ConfigurationParam> hiddenFields = new HashMap<>();
 
-		allfields.put(currentConfigurationState.getEntitiesPropertiesState().DECLARED_FIELDS_KEY, declaredFields);
-		allfields.put(currentConfigurationState.getEntitiesPropertiesState().HIDDEN_FIELDS,hiddenFields);
+		allfields.put(DECLARED_FIELDS_KEY, declaredFields);
+		allfields.put(HIDDEN_FIELDS,hiddenFields);
 
 		for (FieldMetadata field: fields.getAllFields()){
 			//declare it in entities.properties - all derived fields must be declared in the entity.
@@ -176,7 +180,7 @@ public class GDSEntitiesPropertiesCLIPopulator implements GDSConfigurationPopula
 		entityFieldMap.put(FIELD_NAME,new ConfigurationParam(FIELD_NAME,false,name));
 
 		//type
-		String[] allowedTypesArr = {"STRING","SELECT","NUMBER"," BOOLEAN","TIMESTAMP","DATE_TIME","DURATION"};
+		String[] allowedTypesArr = {"STRING","SELECT","NUMBER"," BOOLEAN","TIMESTAMP","DATE_TIME","DURATION"}; //TODO convert to switch case
 		Set<String> allowedTypes =  new HashSet<>(Arrays.asList(allowedTypesArr));
 		System.out.println(String.format("Please enter the type of field: %s. options are: STRING, SELECT, NUMBER, BOOLEAN, TIMESTAMP, DATE_TIME, DURATION ",field.getFieldName()));
 		String type = gdsInputHandler.getInput(allowedTypes);
