@@ -1,7 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.ml.scorer.FeatureScore;
-import fortscale.ml.scorer.FeatureScoreJsonEventHandler;
+import fortscale.streaming.service.scorer.FeatureScoreJsonEventHandler;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.factory.ScorersFactoryService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
@@ -109,7 +109,7 @@ public class ScorerTask extends AbstractStreamTask {
         try {
             List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, configKey.getDataSource());
             if(featureScores!=null) {
-                message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+                featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
             }
             handleUnfilteredEvent(message, configKey);
         } catch (FilteredEventException  | KafkaPublisherException e){
