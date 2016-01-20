@@ -21,7 +21,7 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 
 	private ApplicationContext applicationContext;
 
-	protected abstract String getBaseConfJsonFilePath();
+	protected abstract String getBaseConfJsonFilesPath();
 
 	protected abstract String getBaseOverridingConfJsonFolderPath();
 
@@ -53,21 +53,19 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 
 		//if base overriding configuration does not exist
 		if (confJsonResources == null || confJsonResources.length == 0) {
-			Resource confJsonResource;
 			try {
-				confJsonResource = applicationContext.getResource(getBaseConfJsonFilePath());
+				confJsonResources = applicationContext.getResources(getBaseConfJsonFilesPath());
 			} catch (Exception e) {
-				String errorMsg = String.format("Failed to open json file %s", getBaseConfJsonFilePath());
+				String errorMsg = String.format("Failed to open json file %s", getBaseConfJsonFilesPath());
 				logger.error(errorMsg, e);
 				throw new IllegalArgumentException(errorMsg, e);
 			}
 
-			if (confJsonResource == null) {
-				String errorMsg = String.format("json file %s doesn't exist.", getBaseConfJsonFilePath());
+			if (confJsonResources == null || confJsonResources.length == 0) {
+				String errorMsg = String.format("json file %s doesn't exist.", getBaseConfJsonFilesPath());
 				logger.error(errorMsg);
 				throw new IllegalArgumentException(errorMsg);
 			}
-			confJsonResources = new Resource[]{confJsonResource};
 		}
 
 		loadConfResources(confJsonResources);

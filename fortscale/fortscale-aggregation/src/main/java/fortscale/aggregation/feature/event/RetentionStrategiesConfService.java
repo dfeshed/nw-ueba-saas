@@ -23,7 +23,7 @@ public class RetentionStrategiesConfService extends AslConfigurationService {
 	private Map<String, AggrFeatureRetentionStrategy> aggrFeatureRetentionStrategies = new HashMap<>();
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return retentionStrategyConfJsonFilePath;
 	}
 
