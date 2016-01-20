@@ -35,6 +35,12 @@ public class TimeUtils {
         return utcTimeFormat.format(date);
     }
 
+    public static String getUtcFormat(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(date);
+    }
+
     public static Long calculateStartingTime(Long endTimeInMillis, int timePeriodInDays) {
         Calendar calEvidenceTime = Calendar.getInstance();
         calEvidenceTime.setTimeInMillis(endTimeInMillis);
