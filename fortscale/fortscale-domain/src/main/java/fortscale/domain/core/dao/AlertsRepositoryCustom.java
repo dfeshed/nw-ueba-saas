@@ -87,4 +87,6 @@ public interface AlertsRepositoryCustom {
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
 										   Set<String> entitiesIds);
 
+	List<Alert> getAlertSummary(List<String> severities, long endDate);
+
 }
