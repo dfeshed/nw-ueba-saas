@@ -32,7 +32,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private String bucketConfJsonAdditionalFilesPath;
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return bucketConfJsonFilePath;
 	}
 

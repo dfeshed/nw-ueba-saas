@@ -21,7 +21,7 @@ public class EntityEventGlobalParamsConfService extends AslConfigurationService 
 	private Map<String, Object> globalParams = new HashMap<>();
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return entityEventGlobalParamsConfJsonFilePath;
 	}
 

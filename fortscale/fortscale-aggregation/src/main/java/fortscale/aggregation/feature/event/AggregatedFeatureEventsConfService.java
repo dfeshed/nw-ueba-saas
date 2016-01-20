@@ -40,7 +40,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return aggregatedFeatureEventConfJsonFilePath;
 	}
 

@@ -26,7 +26,7 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     private Map<String, Map<String, List<String>>> rootScorersMap = new HashMap<>();
 
     @Override
-    protected String getBaseConfJsonFilePath() {
+    protected String getBaseConfJsonFilesPath() {
         return scoresToEventMappingConfJsonFilePath;
     }
 
