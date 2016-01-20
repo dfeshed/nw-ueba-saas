@@ -19,6 +19,7 @@ public class GDSMenuPrinterHelper {
         Map<String, GDSConfigurationType> mainMenuOptionToConfigurationType = new HashMap<>();
 
         mainMenuOptionToConfigurationType.put(GDSMenuOptions.MAIN_MENU_SCHEMA_DEFINITION_OPTION, GDSConfigurationType.SCHEMA);
+        mainMenuOptionToConfigurationType.put(GDSMenuOptions.MAIN_MENU_ENTITIES_PROPERTIES_OPTION, GDSConfigurationType.ENTITIES_PROPERTIES);
 
         return mainMenuOptionToConfigurationType;
     }
@@ -57,6 +58,7 @@ public class GDSMenuPrinterHelper {
         System.out.println(GDSMenuOptions.MAIN_MENU_SCHEMA_DEFINITION_OPTION + ".\tSchema definition (HDFS/Impala)\n" +
                 GDSMenuOptions.MAIN_MENU_ENRICHMENT_DEFINITION_OPTION + ".\tEnrichment definition\n" +
                 GDSMenuOptions.MAIN_MENU_MODEL_AND_SCORING_DEFINITION_OPTION + ".\tModel&Scoring definition\n" +
+                GDSMenuOptions.MAIN_MENU_ENTITIES_PROPERTIES_OPTION + ".\tEntities properties definition\n" +
                 GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION + ".\tApply all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESET_ALL_CHANGES_OPTION + ".\tReset all changes\n" +
                 GDSMenuOptions.MAIN_MENU_RESTORE_DEFAULTS_OPTION + ".\tRestore Defaults\n" +

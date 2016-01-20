@@ -8,7 +8,6 @@ import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
 import fortscale.services.configuration.gds.state.field.FieldMetadata;
 import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
 import fortscale.services.configuration.gds.state.field.FieldType;
-import fortscale.services.configuration.gds.state.field.ScoreFieldMetadata;
 import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
@@ -79,6 +78,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
     private void configureBaseFields(Map<String, ConfigurationParam> paramsMap) {
         String baseFieldsCSV = paramsMap.get("baseFieldsCSV").getParamValue();
+        String populatedFieldsCSV = paramsMap.get("populatedBaseFieldsCSV").getParamValue();
 
         FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
@@ -88,7 +88,10 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
             String baseFieldName = baseFieldToTypeEntry.getKey();
             String baseFieldType = baseFieldToTypeEntry.getValue();
 
-            FieldMetadata fieldMetadata = new FieldMetadata(baseFieldName, FieldType.valueOf(baseFieldType.toUpperCase()), false);
+            Set<String> populatedBaseFieldsSet = ConversionUtils.convertCSVToSet(populatedFieldsCSV);
+            boolean isInUse = populatedBaseFieldsSet.contains(baseFieldName);
+
+            FieldMetadata fieldMetadata = new FieldMetadata(baseFieldName, FieldType.valueOf(baseFieldType.toUpperCase()), false, false, isInUse);
 
             fieldMetadataDictionary.addField(fieldMetadata);
         }
@@ -105,11 +108,12 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
         for (Map.Entry<String, String> baseScoreFieldToTypeEntry : baseScoreFieldToTypeMap.entrySet()) {
             String baseScoreFieldName = baseScoreFieldToTypeEntry.getKey();
+            String baseScoreFieldType = baseScoreFieldToTypeEntry.getValue();
 
             boolean isInUse = populatedBaseScoreFieldsSet.contains(baseScoreFieldName);
-            ScoreFieldMetadata baseScoreFieldMetadata = new ScoreFieldMetadata(baseScoreFieldName, isInUse, false);
+            FieldMetadata fieldMetadata = new FieldMetadata(baseScoreFieldName, FieldType.valueOf(baseScoreFieldType.toUpperCase()), true, false, isInUse);
 
-            fieldMetadataDictionary.addScoreField(baseScoreFieldMetadata);
+            fieldMetadataDictionary.addField(fieldMetadata);
 
             if (baseScoreFieldToFieldNameMap.containsKey(baseScoreFieldName)) {
                 String baseFieldName = baseScoreFieldToFieldNameMap.get(baseScoreFieldName);
@@ -133,7 +137,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
             String additionalFieldName = additionalFieldToTypeEntry.getKey();
             String additionalFieldType = additionalFieldToTypeEntry.getValue();
 
-            FieldMetadata fieldMetadata = new FieldMetadata(additionalFieldName, FieldType.valueOf(additionalFieldType.toUpperCase()), true);
+            FieldMetadata fieldMetadata = new FieldMetadata(additionalFieldName, FieldType.valueOf(additionalFieldType.toUpperCase()),false,true, true);
 
             fieldMetadataDictionary.addField(fieldMetadata);
         }
@@ -143,10 +147,11 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
 
         for (Map.Entry<String, String> scoreFieldToType : additionalScoreFieldNameToTypeMap.entrySet()) {
             String scoreFieldName = scoreFieldToType.getKey();
+            String scoreFieldType = scoreFieldToType.getValue();
 
-            ScoreFieldMetadata scoreFieldMetadata = new ScoreFieldMetadata(scoreFieldName, true, true);
+            FieldMetadata fieldMetadata = new FieldMetadata(scoreFieldName, FieldType.valueOf(scoreFieldType.toUpperCase()),true,true, true);
 
-            fieldMetadataDictionary.addScoreField(scoreFieldMetadata);
+            fieldMetadataDictionary.addField(fieldMetadata);
 
             if (additionalScoreFieldNameToFieldMap.containsKey(scoreFieldName)) {
                 String fieldName = additionalScoreFieldNameToFieldMap.get(scoreFieldName);

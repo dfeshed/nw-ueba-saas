@@ -13,21 +13,16 @@ import java.util.Set;
  */
 public class FieldMetadataDictionary implements Resettable{
     private Map<String, FieldMetadata> fieldMetadataMap = new HashMap<>();
-    private Map<String, ScoreFieldMetadata> scoreFieldMetadataMap = new HashMap<>();
 
-    private Map<FieldMetadata, ScoreFieldMetadata> fieldToScoredFieldMap = new HashMap<>();
+    private Map<FieldMetadata, FieldMetadata> fieldToScoredFieldMap = new HashMap<>();
 
     public void addField(FieldMetadata fmd) {
         fieldMetadataMap.put(fmd.getFieldName(), fmd);
     }
 
-    public void addScoreField(ScoreFieldMetadata smd) {
-        scoreFieldMetadataMap.put(smd.getFieldName(), smd);
-    }
-
     public void pairFieldToScore(String fieldName, String scoreFieldName) {
         FieldMetadata fieldMetadata = fieldMetadataMap.get(fieldName);
-        ScoreFieldMetadata scoreFieldMetadata = scoreFieldMetadataMap.get(scoreFieldName);
+        FieldMetadata scoreFieldMetadata = fieldMetadataMap.get(scoreFieldName);
 
         if (fieldMetadata == null) {
             throw new IllegalStateException("Could not find field metadata with name " + fieldName);
@@ -40,30 +35,27 @@ public class FieldMetadataDictionary implements Resettable{
         fieldToScoredFieldMap.put(fieldMetadata, scoreFieldMetadata);
     }
 
-    public FieldMetadata getFieldMetadataByName(String fieldName) {
-        return fieldMetadataMap.get(fieldName);
-    }
-
-    public ScoreFieldMetadata getScoreFieldMetadataByName(String fieldName) {
-        return scoreFieldMetadataMap.get(fieldName);
-    }
-
     public Set<FieldMetadata> getAllFields() {
         return new HashSet<>(fieldMetadataMap.values());
     }
 
-    public Set<ScoreFieldMetadata> getAllScoreFields() {
-        return new HashSet<>(scoreFieldMetadataMap.values());
-    }
-
-    public Map<FieldMetadata, ScoreFieldMetadata> getAllFieldToScorePairs() {
+    public Map<FieldMetadata, FieldMetadata> getAllFieldToScorePairs() {
         return new HashMap<>(fieldToScoredFieldMap);
     }
+
+    // given a normal field, return the corresponding score field (if any)
+    public FieldMetadata getScoreFieldMetaData(FieldMetadata fieldMetadata){
+        return fieldToScoredFieldMap.get(fieldMetadata);
+    }
+
+    public FieldMetadata getFieldMetadataByName(String name){
+        return fieldMetadataMap.get(name);
+    }
+
 
     @Override
     public void reset() {
         fieldMetadataMap.clear();
-        scoreFieldMetadataMap.clear();
         fieldToScoredFieldMap.clear();
     }
 }

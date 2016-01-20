@@ -29,6 +29,7 @@ public class GDSConfigurationPopulatorFactory {
 
 		configurationTypeToPopulatorMap.put(GDSConfigurationType.RAW_MODEL_AND_SCORE, GDSRawDataModelAndScoreCLIPopulator.class);
 		configurationTypeToPopulatorMap.put(GDSConfigurationType.AGGREGATED_FEATURE_MODEL_AND_SCORE, GDSAggregatedEventsCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.ENTITIES_PROPERTIES,GDSEntitiesPropertiesCLIPopulator.class);
 		//configurationTypeToPopulatorMap.put(GDSConfigurationType.ENTITY_EVENTS_MODEL_AND_SCORE, GDSHDFSWriteCLIPopulator.class);
     }
 

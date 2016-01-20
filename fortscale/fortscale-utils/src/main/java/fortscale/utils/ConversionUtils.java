@@ -118,10 +118,14 @@ public final class ConversionUtils {
 		return mappedCSV;
 	}
 
-	public static Set<String> convertCSVToSet(String csvString, boolean order) {
+	public static Set<String> convertCSVToSet(String csvString, boolean keepOrder) {
+		if (csvString == null || csvString.isEmpty()) {
+			return new HashSet<>();
+		}
+
 		String[] fieldsArray = csvString.split(CSV_DELIMITER);
 
-		if (!order) {
+		if (!keepOrder) {
 			return Arrays.asList(fieldsArray).stream().collect(Collectors.toSet());
 		}
 		else {
