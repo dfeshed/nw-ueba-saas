@@ -5,8 +5,13 @@ import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.EntityType;
 import fortscale.services.configuration.Impl.SchemaDefinitionConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSSchemaDefinitionState;
+import fortscale.services.configuration.gds.state.field.FieldMetadata;
+import fortscale.services.configuration.gds.state.field.FieldMetadataDictionary;
+import fortscale.services.configuration.gds.state.field.FieldType;
+import fortscale.utils.ConversionUtils;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Schema configurator implementation (HDFS paths and impala tables)
@@ -34,11 +39,11 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         boolean targetIpFlag = paramsMap.get("targetIpFlag").getParamFlag();
         schemaDefinitionState.setHasTargetIp(targetIpFlag);
 
-        String dataFields = paramsMap.get("dataFields").getParamValue();
-        schemaDefinitionState.setDataFields(dataFields);
+        String dataTableFields = paramsMap.get("dataTableFields").getParamValue();
+        schemaDefinitionState.setDataTableFields(dataTableFields);
 
-        String enrichFields = paramsMap.get("enrichFields").getParamValue();
-        schemaDefinitionState.setEnrichFields(enrichFields);
+        String enrichTableFields = paramsMap.get("enrichTableFields").getParamValue();
+        schemaDefinitionState.setEnrichTableFields(enrichTableFields);
 
         String enrichDelimiter = paramsMap.get("enrichDelimiter").getParamValue();
         schemaDefinitionState.setEnrichDelimiter(enrichDelimiter);
@@ -46,8 +51,8 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String enrichTableName = paramsMap.get("enrichTableName").getParamValue();
         schemaDefinitionState.setEnrichTableName(enrichTableName);
 
-        String scoreFields = paramsMap.get("scoreFields").getParamValue();
-        schemaDefinitionState.setScoreFields(scoreFields);
+        String scoreTableFields = paramsMap.get("scoreTableFields").getParamValue();
+        schemaDefinitionState.setScoreTableFields(scoreTableFields);
 
         String scoreDelimiter = paramsMap.get("scoreDelimiter").getParamValue();
         schemaDefinitionState.setScoreDelimiter(scoreDelimiter);
@@ -67,16 +72,92 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         String dataTableName = paramsMap.get("dataTableName").getParamValue();
         schemaDefinitionState.setDataTableName(dataTableName);
 
-		String additionalFeldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFeldsCSV);
+        configureBaseFields(paramsMap);
+        configureAdditionalFields(paramsMap);
+    }
 
-		String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalScoreFieldsCSV);
+    private void configureBaseFields(Map<String, ConfigurationParam> paramsMap) {
+        String inheritedBaseFieldsCSV = paramsMap.get("inheritedBaseFieldsCSV").getParamValue();
+        String populatedFieldsCSV = paramsMap.get("populatedBaseFieldsCSV").getParamValue();
 
-		String additionalFiledToScoreFieldMapCSV = paramsMap.get("additionalFiledToScoreFieldMapCSV").getParamValue();
-		schemaDefinitionState.setAdditionalScoreFieldsCSV(additionalFiledToScoreFieldMapCSV);
+        FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
 
+        Map<String, String> baseFieldToTypeMap = ConversionUtils.convertCSVToMap(inheritedBaseFieldsCSV);
 
+        for (Map.Entry<String, String> baseFieldToTypeEntry : baseFieldToTypeMap.entrySet()) {
+            String baseFieldName = baseFieldToTypeEntry.getKey();
+            String baseFieldType = baseFieldToTypeEntry.getValue();
+
+            Set<String> populatedBaseFieldsSet = ConversionUtils.convertCSVToSet(populatedFieldsCSV);
+            boolean isInUse = populatedBaseFieldsSet.contains(baseFieldName);
+
+            FieldMetadata fieldMetadata = new FieldMetadata(baseFieldName, FieldType.valueOf(baseFieldType.toUpperCase()), false, false, isInUse);
+
+            fieldMetadataDictionary.addField(fieldMetadata);
+        }
+
+        String baseScoreFieldsCSV = paramsMap.get("inheritedBaseScoreFieldsCSV").getParamValue();
+        String baseScoreFieldToFieldNameCSV = paramsMap.get("baseScoreFieldToFieldNameCSV").getParamValue();
+        String populatedBaseScoreFieldsCSV = paramsMap.get("populatedBaseScoreFieldsCSV").getParamValue();
+
+        Map<String, String> baseScoreFieldToTypeMap = ConversionUtils.convertCSVToMap(baseScoreFieldsCSV);
+
+        Map<String, String> baseScoreFieldToFieldNameMap = ConversionUtils.convertCSVToMap(baseScoreFieldToFieldNameCSV);
+
+        Set<String> populatedBaseScoreFieldsSet = ConversionUtils.convertCSVToSet(populatedBaseScoreFieldsCSV);
+
+        for (Map.Entry<String, String> baseScoreFieldToTypeEntry : baseScoreFieldToTypeMap.entrySet()) {
+            String baseScoreFieldName = baseScoreFieldToTypeEntry.getKey();
+            String baseScoreFieldType = baseScoreFieldToTypeEntry.getValue();
+
+            boolean isInUse = populatedBaseScoreFieldsSet.contains(baseScoreFieldName);
+            FieldMetadata fieldMetadata = new FieldMetadata(baseScoreFieldName, FieldType.valueOf(baseScoreFieldType.toUpperCase()), true, false, isInUse);
+
+            fieldMetadataDictionary.addField(fieldMetadata);
+
+            if (baseScoreFieldToFieldNameMap.containsKey(baseScoreFieldName)) {
+                String baseFieldName = baseScoreFieldToFieldNameMap.get(baseScoreFieldName);
+                fieldMetadataDictionary.pairFieldToScore(baseFieldName, baseScoreFieldName);
+            }
+        }
+    }
+
+    private void configureAdditionalFields(Map<String, ConfigurationParam> paramsMap) {
+        String additionalFieldsCSV = paramsMap.get("additionalFieldsCSV").getParamValue();
+
+        String additionalScoreFieldsCSV = paramsMap.get("additionalScoreFieldsCSV").getParamValue();
+
+        String additionalScoreFieldToFieldNameCSV = paramsMap.get("additionalScoreFieldToFieldNameCSV").getParamValue();
+
+        FieldMetadataDictionary fieldMetadataDictionary = currGDSConfigurationState.getSchemaDefinitionState().getFieldMetadataDictionary();
+
+        Map<String, String> additionalFieldToTypeMap = ConversionUtils.convertCSVToMap(additionalFieldsCSV);
+
+        for (Map.Entry<String, String> additionalFieldToTypeEntry : additionalFieldToTypeMap.entrySet()) {
+            String additionalFieldName = additionalFieldToTypeEntry.getKey();
+            String additionalFieldType = additionalFieldToTypeEntry.getValue();
+
+            FieldMetadata fieldMetadata = new FieldMetadata(additionalFieldName, FieldType.valueOf(additionalFieldType.toUpperCase()),false,true, true);
+
+            fieldMetadataDictionary.addField(fieldMetadata);
+        }
+
+        Map<String, String> additionalScoreFieldNameToTypeMap = ConversionUtils.convertCSVToMap(additionalScoreFieldsCSV);
+        Map<String, String> additionalScoreFieldNameToFieldMap = ConversionUtils.convertCSVToMap(additionalScoreFieldToFieldNameCSV);
+
+        for (Map.Entry<String, String> scoreFieldToType : additionalScoreFieldNameToTypeMap.entrySet()) {
+            String scoreFieldName = scoreFieldToType.getKey();
+            String scoreFieldType = scoreFieldToType.getValue();
+
+            FieldMetadata fieldMetadata = new FieldMetadata(scoreFieldName, FieldType.valueOf(scoreFieldType.toUpperCase()),true,true, true);
+
+            fieldMetadataDictionary.addField(fieldMetadata);
+
+            if (additionalScoreFieldNameToFieldMap.containsKey(scoreFieldName)) {
+                String fieldName = additionalScoreFieldNameToFieldMap.get(scoreFieldName);
+                fieldMetadataDictionary.pairFieldToScore(fieldName, scoreFieldName);
+            }
+        }
 
     }
 
@@ -88,6 +169,7 @@ public class GDSSchemaConfigurator extends GDSBaseConfigurator {
         currGDSConfigurationState.setDataSourceName(dataSourceName.getParamValue());
         currGDSConfigurationState.setEntityType(EntityType.valueOf(dataSourceType.getParamValue().toUpperCase()));
         currGDSConfigurationState.setExistingDataSources(dataSourceLists.getParamValue());
+        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue("etl");
     }
 
     private void configureStreamingTopologyDefinitions(Map<String, ConfigurationParam> configurationParams) {

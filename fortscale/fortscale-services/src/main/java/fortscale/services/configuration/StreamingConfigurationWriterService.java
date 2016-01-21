@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public abstract class StreamingConfigurationWriterService extends ConfigurationWriterService {
 
-	protected static final String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
+	protected static  String FORTSCALE_CONFIGURATION_PREFIX  = "fortscale.events.entry";
 
 	private static final String FORTSCALE_STREAMING_CONFIG_RELATIVE_PATH = "/fortscale/streaming/config/";
 

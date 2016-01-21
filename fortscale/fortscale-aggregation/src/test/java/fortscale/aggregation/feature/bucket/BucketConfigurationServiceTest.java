@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 
+import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import fortscale.aggregation.JsonObjectWrapperEvent;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class BucketConfigurationServiceTest  {
         JSONObject event = new JSONObject();
 
         event.put(dataSourceFieldName, "ssh");
-        List<FeatureBucketConf> bcl = bch.getRelatedBucketConfs(new JsonObjectWrapperEvent(event));
+        List<FeatureBucketConf> bcl = bch.getRelatedBucketConfs(new EventMessage(event));
         Assert.assertEquals(2, bcl.size());
         FeatureBucketConf fbc = bcl.get(0);
         Assert.assertEquals("bc1", fbc.getName());
@@ -41,7 +40,7 @@ public class BucketConfigurationServiceTest  {
         Assert.assertEquals("bc3", fbc.getName());
 
         event.put(dataSourceFieldName, "vpn");
-        bcl = bch.getRelatedBucketConfs(new JsonObjectWrapperEvent(event));
+        bcl = bch.getRelatedBucketConfs(new EventMessage(event));
         Assert.assertEquals(2, bcl.size());
         fbc = bcl.get(0);
         Assert.assertEquals("bc2", fbc.getName());
@@ -49,7 +48,7 @@ public class BucketConfigurationServiceTest  {
         Assert.assertEquals("bc3", fbc.getName());
 
         event.put(dataSourceFieldName, "notexists");
-        bcl = bch.getRelatedBucketConfs(new JsonObjectWrapperEvent(event));
+        bcl = bch.getRelatedBucketConfs(new EventMessage(event));
         Assert.assertNull(bcl);
     }
 }

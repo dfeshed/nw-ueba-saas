@@ -20,7 +20,7 @@ public class ModelStore {
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
 
-	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date endTime) {
+	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date startTime, Date endTime) {
 		String collectionName = getCollectionName(modelConf);
 		ensureCollectionExists(collectionName);
 
@@ -30,9 +30,10 @@ public class ModelStore {
 		ModelDAO modelDao = mongoTemplate.findOne(query, ModelDAO.class, collectionName);
 
 		if (modelDao == null) {
-			modelDao = new ModelDAO(sessionId, contextId, model, endTime);
+			modelDao = new ModelDAO(sessionId, contextId, model, startTime, endTime);
 		} else {
 			modelDao.setModel(model);
+			modelDao.setStartTime(startTime);
 			modelDao.setEndTime(endTime);
 		}
 

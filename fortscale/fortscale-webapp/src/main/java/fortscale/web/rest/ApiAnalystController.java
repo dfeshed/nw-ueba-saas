@@ -1,9 +1,20 @@
 package fortscale.web.rest;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
+import fortscale.common.exceptions.InvalidValueException;
+import fortscale.domain.analyst.Analyst;
+import fortscale.domain.analyst.AnalystAuth;
+import fortscale.domain.analyst.AnalystSavedSearch;
+import fortscale.services.analyst.AnalystService;
+import fortscale.services.analyst.ConfigurationService;
+import fortscale.services.security.MongoUserDetailsService;
+import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
+import fortscale.web.beans.AnalystBean;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.fields.NewPassword;
+import fortscale.web.fields.Password;
+import fortscale.web.fields.Username;
 import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,21 +25,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fortscale.domain.analyst.Analyst;
-import fortscale.domain.analyst.AnalystAuth;
-import fortscale.domain.analyst.AnalystSavedSearch;
-import fortscale.services.analyst.AnalystService;
-import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.security.MongoUserDetailsService;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.BaseController;
-import fortscale.web.beans.AnalystBean;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.DataListWrapperBean;
-import fortscale.web.fields.NewPassword;
-import fortscale.web.fields.Password;
-import fortscale.web.fields.Username;
+import javax.validation.Valid;
+import java.util.List;
 
 
 

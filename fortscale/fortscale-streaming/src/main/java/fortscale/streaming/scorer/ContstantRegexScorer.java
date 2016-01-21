@@ -1,5 +1,6 @@
 package fortscale.streaming.scorer;
 
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.Config;
 
 public class ContstantRegexScorer extends RegexScorer{

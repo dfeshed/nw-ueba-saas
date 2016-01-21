@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,7 +11,6 @@ import java.util.Set;
 public interface GDSInputHandler {
     boolean getYesNoInput() throws Exception;
     String getInput() throws Exception;
-    String getInput(String paramName) throws Exception;
-    Map<String, String> getInput(Set<String> paramNames);
+    String getInput(Set<String> allowedValues) throws Exception;
     void close();
 }

@@ -30,8 +30,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.exceptions.UserAlreadyExistException;
+import fortscale.common.exceptions.InvalidValueException;
+import fortscale.common.exceptions.UserAlreadyExistException;
 
 /**
  * Default {@code RestErrorResolver} implementation that converts discovered Exceptions to

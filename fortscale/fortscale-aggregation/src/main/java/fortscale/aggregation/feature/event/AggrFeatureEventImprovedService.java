@@ -16,7 +16,7 @@ import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadataRepository;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueue;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueueRepository;
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;

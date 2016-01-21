@@ -35,6 +35,10 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     private void addConfiguration(List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
 
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
+		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
+		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
+
         ConfigurationParam restrictToAD = paramsMap.get("restrictToAD");
         ConfigurationParam shortNameUsage = paramsMap.get("shortNameUsage");
         ConfigurationParam removeLastDotUsage = paramsMap.get("removeLastDotUsage");
@@ -54,8 +58,17 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ipResolvingState.setRemoveLastDotUsage(removeLastDotUsage.getParamFlag());
 		ipResolvingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 		ipResolvingState.setHostField(hostField.getParamValue());
+		ipResolvingState.setTaskName(taskName.getParamValue());
+		ipResolvingState.setLastState(lastState);
+		ipResolvingState.setOutputTopic(outputTopic.getParamValue());
 
         ipResolvingStates.add(ipResolvingState);
+
+        String lastStaeClac = taskName.getParamValue();
+        if (lastStaeClac.indexOf("_") != -1 )
+            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
     }
 
     @Override
