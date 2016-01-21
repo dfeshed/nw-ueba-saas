@@ -315,13 +315,13 @@ public class RawModelScoreConfigurationWriter extends StreamingConfigurationWrit
 			if(dateTimeToScoreFlag) {
 				line = format("%s.%s_%s.score.dateTimeScorer.output.field.name=date_time_score", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
 				writeLineToFile(line, fileWriterToConfigure, true);
-				line = format("%s.%s_%s.score.dateTimeScorer.score.dateTimeScorer.scorer=model-scorer", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
+				line = format("%s.%s_%s.score.dateTimeScorer.scorer=model-scorer", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
 				writeLineToFile(line, fileWriterToConfigure, true);
-				line = format("%s.%s_%s.score.dateTimeScorer.score.dateTimeScorer.model.name=%suser", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
+				line = format("%s.%s_%s.score.dateTimeScorer.model.name=%suser", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
 				writeLineToFile(line, fileWriterToConfigure, true);
-				line = format("%s.%s_%s.score.dateTimeScorer.score.dateTimeScorer.%suser.context.fieldname=${impala.table.fields.normalized.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
+				line = format("%s.%s_%s.score.dateTimeScorer.%suser.context.fieldname=${impala.table.fields.normalized.username}", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
 				writeLineToFile(line, fileWriterToConfigure, true);
-				line = format("%s.%s_%s.score.dateTimeScorer.score.dateTimeScorer.%suser.fieldname=date_time_unix", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
+				line = format("%s.%s_%s.score.dateTimeScorer.%suser.fieldname=date_time_unix", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName,dataSourceName);
 				writeLineToFile(line, fileWriterToConfigure, true);
 				line = format("%s.%s_%s.score.dateTimeScorer.num.of.samples.to.influence.enough=100", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName);
 				writeLineToFile(line, fileWriterToConfigure, true);
