@@ -26,10 +26,6 @@ import java.util.Map;
 public class ModelCacheManagerSamza implements ModelCacheManager {
 	private static final String STORE_KEY_SEPARATOR = ".";
 
-	@Value("${fortscale.model.wait.sec.between.loads}")
-	private long waitSecBetweenLoads;
-	@Value("${fortscale.model.max.sec.diff.before.outdated}")
-	private long maxSecDiffBeforeOutdated;
 	@Value("${fortscale.model.max.sec.diff.before.expired}")
 	private long maxSecDiffBeforeExpired;
 	@Value("${fortscale.model.wait.sec.between.last.usage.epochtime.updates}")
@@ -40,8 +36,8 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	@Autowired
 	private ModelStore modelStore;
 
-	private KeyValueStore<String, ModelsCacheInfo> store;
-	private ModelConf modelConf;
+	protected KeyValueStore<String, ModelsCacheInfo> store;
+	protected ModelConf modelConf;
 	protected AbstractDataRetriever retriever;
 
 	public ModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
@@ -55,6 +51,11 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	@Override
 	public Model getModel(Feature feature, Map<String, Feature> context, long eventEpochtime) {
+		ModelDAO returned = getModelDao(feature, context, eventEpochtime);
+		return returned != null ? returned.getModel() : null;
+	}
+
+	protected ModelDAO getModelDao(Feature feature, Map<String, Feature> context, long eventEpochtime) {
 		String contextId = getContextId(context);
 		ModelDAO modelDao = getModelDaoWithLatestEndTimeLt(contextId, eventEpochtime);
 
@@ -62,8 +63,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 			return null;
 		} else {
 			setLastUsageEpochtime(contextId);
-			updateModelDao(modelDao, feature);
-			return modelDao.getModel();
+			return modelDao;
 		}
 	}
 
@@ -74,10 +74,6 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected void setModelsCacheInfo(String contextId, ModelsCacheInfo modelsCacheInfo) {
 		store.put(getStoreKey(modelConf, contextId), modelsCacheInfo);
-	}
-
-	protected void updateModelDao(ModelDAO modelDao, Feature feature) {
-		// No update needed
 	}
 
 	private String getContextId(Map<String, Feature> fieldToFeature) {
@@ -91,38 +87,21 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		return retriever.getContextId(fieldToFeatureValue);
 	}
 
-	private ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
+	protected ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
-		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
-
-		if ((modelDao == null || isModelEndTimeOutdated(modelDao.getEndTime(), eventEpochtime))
-				&& canLoadModelsCacheInfo(modelsCacheInfo)) {
-			modelsCacheInfo = loadModelsCacheInfo(contextId);
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
-		}
-
-		return modelDao;
+		return modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
 	}
 
 	public static String getStoreKey(ModelConf modelConf, String contextId) {
 		return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
 	}
 
-	private ModelsCacheInfo loadModelsCacheInfo(String contextId) {
+	protected ModelsCacheInfo loadModelsCacheInfo(String contextId) {
 		List<ModelDAO> modelDaos = modelStore.getModelDaos(modelConf, contextId);
 		ModelsCacheInfo modelsCacheInfo = new ModelsCacheInfo();
 		modelDaos.forEach(modelsCacheInfo::setModelDao);
 		setModelsCacheInfo(contextId, modelsCacheInfo);
 		return modelsCacheInfo;
-	}
-
-	private boolean canLoadModelsCacheInfo(ModelsCacheInfo modelsCacheInfo) {
-		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		return currentEpochtime - modelsCacheInfo.getLastLoadEpochtime() >= waitSecBetweenLoads;
-	}
-
-	private boolean isModelEndTimeOutdated(Date modelEndTime, long eventEpochtime) {
-		return eventEpochtime - TimestampUtils.convertToSeconds(modelEndTime) > maxSecDiffBeforeOutdated;
 	}
 
 	private boolean isModelEndTimeExpired(Date modelEndTime, long eventEpochtime) {
