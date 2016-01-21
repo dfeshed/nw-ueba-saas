@@ -47,7 +47,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
 			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
 					new DiscreteModelCacheManagerSamza(store, modelConf) :
-					new ModelCacheManagerSamza(store, modelConf);
+					new LazyModelCacheManagerSamza(store, modelConf);
 			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
 		}
 	}

@@ -15,13 +15,19 @@ import java.util.List;
 import java.util.Map;
 
 @Configurable(preConstruction = true)
-public class DiscreteModelCacheManagerSamza extends ModelCacheManagerSamza {
+public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	public DiscreteModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
 		super(store, modelConf);
 	}
 
 	@Override
-	protected void updateModelDao(ModelDAO modelDao, Feature feature) {
+	protected ModelDAO getModelDao(Feature feature, Map<String, Feature> context, long eventEpochtime) {
+		ModelDAO modelDao = super.getModelDao(feature, context, eventEpochtime);
+		if (modelDao != null) updateModelDao(modelDao, feature);
+		return modelDao;
+	}
+
+	private void updateModelDao(ModelDAO modelDao, Feature feature) {
 		CategoryRarityModelWithFeatureOccurrencesData discreteModel = castModel(modelDao.getModel());
 
 		if (discreteModel.getFeatureCount(feature) == null) {

@@ -46,6 +46,10 @@ public class ModelsCacheInfo {
 		}
 	}
 
+	public int getNumOfModelDaos() {
+		return modelDaos.size();
+	}
+
 	public long getLastLoadEpochtime() {
 		return lastLoadEpochtime;
 	}
