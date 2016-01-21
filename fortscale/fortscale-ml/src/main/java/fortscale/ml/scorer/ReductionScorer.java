@@ -2,18 +2,20 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
 import org.eclipse.jdt.internal.core.Assert;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Configurable(preConstruction = true)
 public class ReductionScorer extends AbstractScorer {
 	
-	public static final double REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
+	public static final double REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
 	
 	private Scorer mainScorer;
 	private Scorer reductingScorer;
 	private double reductingWeight;
-	private double reductingZeroScoreWeight = REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT;
+	private double reductingZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight, double reductingZeroScoreWeight) {
 		this(scorerName, mainScorer, reductingScorer, reductingWeight);
@@ -21,14 +23,14 @@ public class ReductionScorer extends AbstractScorer {
 		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
-	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight) {
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, double reductionWeight) {
 		super(scorerName);
-		Assert.isNotNull(mainScorer, "main scorer must not be null");
-		Assert.isNotNull(reductingScorer, "reducting scorer must not be null");
-		Assert.isTrue(reductingWeight>0 && reductingWeight < 1.0,String.format("reductingWeight (%f) must be > 0 and < 1.0", reductingWeight));
+		Assert.isNotNull(mainScorer, "Main scorer must not be null");
+		Assert.isNotNull(reductionScorer, "Reduction scorer must not be null");
+		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
-		this.reductingScorer = reductingScorer;
-		this.reductingWeight = reductingWeight;
+		this.reductingScorer = reductionScorer;
+		this.reductingWeight = reductionWeight;
 	}
 
 	@Override

@@ -23,4 +23,9 @@ public class ParetoScorerConf extends ScorerContainerConf{
     public Double getHighestScoreWeight() {
         return highestScoreWeight;
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

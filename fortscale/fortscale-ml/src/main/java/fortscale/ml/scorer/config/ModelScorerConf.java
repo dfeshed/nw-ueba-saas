@@ -9,8 +9,8 @@ import org.springframework.util.Assert;
 
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public class ModelScorerConf extends AbstractScorerConf{
-    public static final String SCORER_TYPE = "model-scorer";
+public abstract class ModelScorerConf extends AbstractScorerConf{
+
     public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE = false;
@@ -65,8 +65,4 @@ public class ModelScorerConf extends AbstractScorerConf{
         return minNumOfSamplesToInfluence;
     }
 
-    @Override
-    public String getFactoryName() {
-        return SCORER_TYPE;
-    }
 }

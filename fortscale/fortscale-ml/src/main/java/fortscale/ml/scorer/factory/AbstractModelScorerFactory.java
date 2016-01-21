@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import javax.validation.constraints.NotNull;
 
-public abstract class AbstractModelScorerFactory implements ModelScorerFactory {
+public abstract class AbstractModelScorerFactory<T> extends AbstractServiceAutowiringScorerFactory implements ModelScorerFactory {
 
     protected ModelsCacheService modelsCacheService;
 

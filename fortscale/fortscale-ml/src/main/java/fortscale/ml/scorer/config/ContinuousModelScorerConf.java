@@ -13,4 +13,8 @@ public class ContinuousModelScorerConf extends ModelScorerConf{
         super(name, modelInfo);
     }
 
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

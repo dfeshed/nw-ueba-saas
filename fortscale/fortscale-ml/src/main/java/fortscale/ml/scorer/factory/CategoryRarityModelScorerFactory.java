@@ -6,12 +6,20 @@ import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
 import fortscale.utils.factory.FactoryConfig;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
 
-public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory {
+@Component
+public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory<CategoryRarityModelScorer> {
+
+    @Override
+    public String getFactoryName() {
+        return CategoryRarityModelScorerConf.SCORER_TYPE;
+    }
+
     @Override
     public Object getProduct(FactoryConfig factoryConfig) {
         Assert.notNull(modelsCacheService);

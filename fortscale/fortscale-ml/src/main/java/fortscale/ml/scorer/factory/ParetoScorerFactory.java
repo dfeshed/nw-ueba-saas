@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Component
-public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<ParetoScorer> {
+public class ParetoScorerFactory extends AbstractServiceAutowiringScorerFactory<ParetoScorer> {
 
     @Override
     public String getFactoryName() {
@@ -26,7 +26,7 @@ public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<Pareto
         List<IScorerConf> scorerConfList = paretoScorerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());
         for(IScorerConf scorerConf: scorerConfList) {
-            Scorer scorer = factoryService.getProduct(scorerConf);
+            Scorer scorer = scorersFactoryService.getProduct(scorerConf);
             scorers.add(scorer);
         }
         return new ParetoScorer(paretoScorerConf.getName(), scorers, paretoScorerConf.getHighestScoreWeight());

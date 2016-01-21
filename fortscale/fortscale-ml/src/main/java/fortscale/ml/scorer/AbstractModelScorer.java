@@ -10,6 +10,7 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.ModelScorerConf;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+@Configurable(preConstruction = true)
 public abstract class AbstractModelScorer extends AbstractScorer{
 
 	protected String modelName;

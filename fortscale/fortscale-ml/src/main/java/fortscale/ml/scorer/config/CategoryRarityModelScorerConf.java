@@ -58,4 +58,9 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public int getMaxNumOfRareFeatures() {
         return maxNumOfRareFeatures;
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

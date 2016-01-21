@@ -6,8 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class ScorerContainerConf extends AbstractScorerConf {
-    public static final String SCORER_TYPE = "scorer-container";
+public abstract class ScorerContainerConf extends AbstractScorerConf {
 
     @JsonProperty("scorers")
     List<IScorerConf> scorerConfList;
@@ -22,8 +21,4 @@ public class ScorerContainerConf extends AbstractScorerConf {
         return scorerConfList;
     }
 
-    @Override
-    public String getFactoryName() {
-        return SCORER_TYPE;
-    }
 }

@@ -3,6 +3,7 @@ package fortscale.ml.scorer.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.ml.scorer.ReductionScorer;
 import org.eclipse.jdt.internal.core.Assert;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
@@ -16,8 +17,7 @@ public class ReductionScorerConf extends AbstractScorerConf{
     @JsonProperty("reduction-weight")
     private double reductionWeight;
     @JsonProperty("reduction-zero-score-weight")
-    private double reductionZeroScoreWeight;
-
+    private double reductionZeroScoreWeight = ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
 
     @JsonCreator
     public ReductionScorerConf(@JsonProperty("name") String name,

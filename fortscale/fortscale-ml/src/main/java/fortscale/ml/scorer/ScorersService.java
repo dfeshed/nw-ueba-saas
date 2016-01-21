@@ -6,6 +6,7 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
+import fortscale.ml.scorer.factory.ScorersFactoryService;
 import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ScorersService {
     private ScorerConfService scorerConfService;
 
     @Autowired
-    private FactoryService<Scorer> scorerFactoryService;
+    private ScorersFactoryService scorerFactoryService;
 
     private Map<String, List<Scorer>> dataSourceToScorerListMap = new HashMap<>();
 
