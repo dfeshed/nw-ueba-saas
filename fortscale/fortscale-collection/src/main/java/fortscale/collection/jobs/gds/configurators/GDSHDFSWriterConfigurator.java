@@ -38,7 +38,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         ConfigurationParam partitionStrategy = paramsMap.get("partitionStrategy");
         ConfigurationParam discriminatorsFields = paramsMap.get("discriminatorsFields");
 
-        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
+        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState();
 
         hdfsWriterState.setTaskName(taskName.getParamValue());
         hdfsWriterState.setLastState(lastState);
@@ -63,7 +63,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void reset() throws Exception {
-        currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState().reset();
+        currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState().reset();
     }
 
     @Override

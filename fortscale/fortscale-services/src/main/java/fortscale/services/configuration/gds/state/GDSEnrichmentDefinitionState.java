@@ -16,7 +16,9 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
     private ComputerTaggingState computerTaggingState = new ComputerTaggingState();
     private List<GeoLocationState> geoLocationStates = new ArrayList<>();
     private UserMongoUpdateState userMongoUpdateState = new UserMongoUpdateState();
-    private HDFSWriterState hdfsWriterState = new HDFSWriterState();
+    private HDFSWriterState hdfsWriterEnrichedState = new HDFSWriterState();
+
+    private HDFSWriterState hdfsWriterScoreState = new HDFSWriterState();
 
     public List<UserNormalizationState> getUserNormalizationStates() {
         return userNormalizationStates;
@@ -34,8 +36,11 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return userMongoUpdateState;
     }
 
-    public HDFSWriterState getHdfsWriterState() {
-        return hdfsWriterState;
+    public HDFSWriterState getHdfsWriterEnrichedState() {
+        return hdfsWriterEnrichedState;
+    }
+    public HDFSWriterState getHdfsWriterScoreState() {
+        return hdfsWriterScoreState;
     }
 
     public ComputerTaggingState getComputerTaggingState() {
@@ -521,6 +526,6 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         computerTaggingState.reset();
         geoLocationStates.clear();
         userMongoUpdateState.reset();
-        hdfsWriterState.reset();
+        hdfsWriterEnrichedState.reset();
     }
 }
