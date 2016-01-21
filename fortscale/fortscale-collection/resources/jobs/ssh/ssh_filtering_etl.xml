@@ -22,7 +22,7 @@
 				<entry>
 					<key>morphlineFile</key>
 					<value>${sshEventsFiltering.morphline}</value>
-				</entry>				
+				</entry>
 			</job-data-map>
 		</job>		
 	</schedule>
