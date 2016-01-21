@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * Don't forget to change "PRINT_GRAPHS = true".
  */
 @RunWith(JUnit4.class)
-public abstract class AbstractScorerAlgorithmTest {
+public abstract class AbstractScorerTest {
 	private static final boolean PRINT_GRAPHS = false;
 
 	private static boolean printingOffOverride = false;

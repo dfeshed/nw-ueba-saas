@@ -14,13 +14,12 @@ public class CategoryRarityModelScorerAlgorithm {
     private static final double MIN_POSSIBLE_SCORE = 1;
     private static final double MAX_POSSIBLE_SCORE = 100;
     private static final double RARITY_SUM_EXPONENT = 1.8;
-    private static final int LOGISTIC_FUNCTION_DOMAIN = 3;
 
     private int maxRareCount;
     private int maxNumOfRareFeatures;
 
 
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures) throws IllegalArgumentException{
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures) {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {

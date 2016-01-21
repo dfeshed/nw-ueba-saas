@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerAlgorithmTest {
+public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private Double calcScore(int maxRareCount,
                              int maxNumOfRareFeatures,

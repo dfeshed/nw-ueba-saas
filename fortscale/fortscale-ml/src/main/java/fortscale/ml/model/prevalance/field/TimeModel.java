@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
-import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import fortscale.utils.ConversionUtils;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +20,15 @@ public class TimeModel implements Model {
 	private int bucketSize;
 	private List<Double> smoothedBuckets;
 	private CategoryRarityModel categoryRarityModel;
+	private long numOfSamples;
 
 	public TimeModel(int timeResolution, int bucketSize, Map<?, Double> timeToCounter) {
+		Assert.isTrue(timeResolution % bucketSize == 0);
+
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
+
+		numOfSamples = (long) timeToCounter.values().stream().mapToDouble(Double::doubleValue).sum();
 
 		List<Double> bucketHits = calcBucketHits(timeToCounter);
 		smoothedBuckets = calcSmoothedBuckets(bucketHits);
@@ -42,12 +47,9 @@ public class TimeModel implements Model {
 		categoryRarityModel = new CategoryRarityModel(roundedSmoothedCountersThatWereHitToNumOfBuckets);
 	}
 
-	private int calcNumOfBuckets() {
-		return (int) Math.ceil(timeResolution / bucketSize);
-	}
-
 	private List<Double> createInitializedBuckets() {
-		return IntStream.range(0, calcNumOfBuckets())
+		int numOfBuckets = timeResolution / bucketSize;
+		return IntStream.range(0, numOfBuckets)
 				.map(a -> 0)
 				.asDoubleStream()
 				.boxed()
@@ -75,6 +77,7 @@ public class TimeModel implements Model {
 	}
 
 	private void addSmoothedHits(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
+		smoothingDistance = Math.min(smoothingDistance, (smoothedBucketHits.size() - 1) / 2);
 		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
 		for (int distance = 1; distance <= smoothingDistance; distance++) {
 			double addVal = hits * Sigmoid.calcLogisticFunc(smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
@@ -92,19 +95,20 @@ public class TimeModel implements Model {
 		return (int) ((epochSeconds % timeResolution) / bucketSize);
 	}
 
-	@Deprecated
-	public Double calculateScore(Object value) {
-		int bucketInd = getBucketIndex((Long) value);
-		CategoryRarityModelScorerAlgorithm scorerAlgorith = new CategoryRarityModelScorerAlgorithm(10, 5);
-		return scorerAlgorith.calculateScore(getRoundedCounter(bucketInd) + 1, categoryRarityModel);
-	}
-
 	private long getRoundedCounter(int bucketInd) {
 		return smoothedBuckets.get(bucketInd).longValue();
 	}
 
+	public long getSmoothedTimeCounter(long time) {
+		return getRoundedCounter(getBucketIndex(time));
+	}
+
 	@Override
 	public long getNumOfSamples() {
-		return -1; // TODO
+		return numOfSamples;
+	}
+
+	public CategoryRarityModel getCategoryRarityModel() {
+		return categoryRarityModel;
 	}
 }

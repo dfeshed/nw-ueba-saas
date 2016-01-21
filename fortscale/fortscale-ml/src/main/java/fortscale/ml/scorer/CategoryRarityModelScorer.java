@@ -50,10 +50,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int maxNumOfRareFeatures) {
 
         super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, modelsCacheService);
-        setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
-        setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
-
-        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
+        init(minNumOfDistinctValuesToInfluence, enoughNumOfDistinctValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
     }
 
     /**
@@ -79,9 +76,12 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int maxNumOfRareFeatures) {
 
         super(scorerName, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
-        setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
-        setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
+        init(minNumOfDistinctValuesToInfluence, enoughNumOfDistinctValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
+    }
 
+    private void init(int minNumOfDistinctValuesToInfluence, int enoughNumOfDistinctValuesToInfluence, int maxRareCount, int maxNumOfRareFeatures) {
+        setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
+        setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
     }
 
@@ -112,12 +112,9 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
     @Override
     public double calculateScore(Model model, Feature feature) {
-        if(model==null || !(model instanceof CategoryRarityModelWithFeatureOccurrencesData)) {
-            return 0;
-        }
-
-        if(feature==null || feature.getValue()==null) {
-            return 0;
+        if(!(model instanceof CategoryRarityModelWithFeatureOccurrencesData)) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() +
+                    ".calculateScore expects to get a model of type " + CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName());
         }
 
         Double count = ((CategoryRarityModelWithFeatureOccurrencesData) model).getFeatureCount(feature);
