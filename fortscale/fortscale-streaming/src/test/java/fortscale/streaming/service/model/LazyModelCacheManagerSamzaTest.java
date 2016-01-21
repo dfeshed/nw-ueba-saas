@@ -30,7 +30,7 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class ModelCacheManagerSamzaTest {
+public class LazyModelCacheManagerSamzaTest {
 	private static final String DEFAULT_MODEL_CONF_NAME = "testModelConf";
 	private static final String DEFAULT_SESSION_ID = "testSession";
 	private static final String NORMALIZED_USERNAME_CONTEXT = "normalized_username";
@@ -68,7 +68,7 @@ public class ModelCacheManagerSamzaTest {
 		when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
 		when(modelConf.getName()).thenReturn(DEFAULT_MODEL_CONF_NAME);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-		modelCacheManager = new ModelCacheManagerSamza(cache, modelConf);
+		modelCacheManager = new LazyModelCacheManagerSamza(cache, modelConf);
 	}
 
 	@Test
