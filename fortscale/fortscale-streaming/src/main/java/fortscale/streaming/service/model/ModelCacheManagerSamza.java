@@ -68,41 +68,35 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	protected ModelsCacheInfo getModelsCacheInfo(String contextId) {
-		ModelsCacheInfo modelsCacheInfo = store.get(getStoreKey(contextId));
+		ModelsCacheInfo modelsCacheInfo = store.get(getStoreKey(modelConf, contextId));
 		return modelsCacheInfo == null ? loadModelsCacheInfo(contextId) : modelsCacheInfo;
 	}
 
 	protected void setModelsCacheInfo(String contextId, ModelsCacheInfo modelsCacheInfo) {
-		store.put(getStoreKey(contextId), modelsCacheInfo);
+		store.put(getStoreKey(modelConf, contextId), modelsCacheInfo);
 	}
 
 	protected void updateModelDao(ModelDAO modelDao, Feature feature) {
 		// No update needed
 	}
 
-	private String getContextId(Map<String, Feature> stringToFeature) {
-		Assert.notEmpty(stringToFeature);
-		Map<String, String> stringToString = new HashMap<>();
+	private String getContextId(Map<String, Feature> fieldToFeature) {
+		Assert.notEmpty(fieldToFeature);
+		Map<String, String> fieldToFeatureValue = new HashMap<>();
 
-		for (Map.Entry<String, Feature> entry : stringToFeature.entrySet()) {
-			stringToString.put(entry.getKey(), entry.getValue().getValue().toString());
+		for (Map.Entry<String, Feature> entry : fieldToFeature.entrySet()) {
+			fieldToFeatureValue.put(entry.getKey(), entry.getValue().getValue().toString());
 		}
 
-		return retriever.getContextId(stringToString);
+		return retriever.getContextId(fieldToFeatureValue);
 	}
 
 	private ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
 		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
 
-		if (modelDao == null && canLoadModelsCacheInfo(modelsCacheInfo)) {
-			modelsCacheInfo = loadModelsCacheInfo(contextId);
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
-		}
-
-		if (modelDao != null &&
-				isModelEndTimeOutdated(modelDao.getEndTime(), eventEpochtime) &&
-				canLoadModelsCacheInfo(modelsCacheInfo)) {
+		if ((modelDao == null || isModelEndTimeOutdated(modelDao.getEndTime(), eventEpochtime))
+				&& canLoadModelsCacheInfo(modelsCacheInfo)) {
 			modelsCacheInfo = loadModelsCacheInfo(contextId);
 			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
 		}
@@ -110,7 +104,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		return modelDao;
 	}
 
-	private String getStoreKey(String contextId) {
+	public static String getStoreKey(ModelConf modelConf, String contextId) {
 		return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
 	}
 
@@ -141,7 +135,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 		if (currentEpochtime - modelsCacheInfo.getLastUsageEpochtime() >= waitSecBetweenLastUsageEpochtimeUpdates) {
 			modelsCacheInfo.setLastUsageEpochtime(currentEpochtime);
-			store.put(getStoreKey(contextId), modelsCacheInfo);
+			store.put(getStoreKey(modelConf, contextId), modelsCacheInfo);
 		}
 	}
 }
