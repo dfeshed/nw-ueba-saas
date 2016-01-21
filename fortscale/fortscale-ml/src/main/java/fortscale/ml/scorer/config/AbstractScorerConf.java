@@ -7,8 +7,7 @@ import org.springframework.util.Assert;
 
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AbstractScorerConf implements IScorerConf {
-    public static final String SCORER_TYPE = "abstract-scorer";
+public abstract class AbstractScorerConf implements IScorerConf {
 
     @JsonProperty("name")
     private String name;
@@ -19,9 +18,7 @@ public class AbstractScorerConf implements IScorerConf {
     }
 
     @Override
-    public String getFactoryName() {
-        return SCORER_TYPE;
-    }
+    abstract public String getFactoryName();
 
     @Override
     public String getName() {

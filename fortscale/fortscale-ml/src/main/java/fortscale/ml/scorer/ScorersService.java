@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class ScorersService {
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
 
-    private Map<String, List<Scorer>> dataSourceToScorerListMap;
+    private Map<String, List<Scorer>> dataSourceToScorerListMap = new HashMap<>();
 
     public ScorersService(ModelsCacheService modelsCacheService) {
         Assert.notNull(modelsCacheService);

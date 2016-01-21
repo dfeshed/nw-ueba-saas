@@ -21,4 +21,9 @@ public class ScorerContainerConf extends AbstractScorerConf {
     public List<IScorerConf> getScorerConfList() {
         return scorerConfList;
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

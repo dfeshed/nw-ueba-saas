@@ -64,4 +64,9 @@ public class ModelScorerConf extends AbstractScorerConf{
     public int getMinNumOfSamplesToInfluence() {
         return minNumOfSamplesToInfluence;
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

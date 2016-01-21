@@ -56,4 +56,8 @@ public class ReductionScorerConf extends AbstractScorerConf{
         return reductionZeroScoreWeight;
     }
 
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

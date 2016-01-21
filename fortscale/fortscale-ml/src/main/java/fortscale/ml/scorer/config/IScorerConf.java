@@ -6,7 +6,6 @@ import fortscale.utils.factory.FactoryConfig;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AbstractScorerConf.class, name = AbstractScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ParetoScorerConf.class, name = ParetoScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ModelScorerConf.class, name = ModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = FieldValueScoreReducerConf.class, name = FieldValueScoreReducerConf.SCORER_TYPE),
