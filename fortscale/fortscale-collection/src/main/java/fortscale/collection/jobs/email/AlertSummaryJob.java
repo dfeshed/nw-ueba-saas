@@ -1,20 +1,15 @@
 package fortscale.collection.jobs.email;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.*;
+import fortscale.domain.core.Alert;
 import fortscale.domain.email.Frequency;
-import fortscale.services.AlertEmailService;
+import fortscale.services.AlertsService;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -31,24 +26,24 @@ public class AlertSummaryJob extends FortscaleJob {
 	@Autowired
 	private ForwardingService forwardingService;
 
+	//TODO - remove this, it's for testing purposes only!!!!!
+	@Autowired
+	private AlertsService alertsService;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
 
 	@Override
 	protected void runSteps() throws Exception {
 		logger.info("Running email alert summary job");
-		DateTime date = new DateTime().withZone(DateTimeZone.UTC);
-		//daily
-		forwardingService.forwardAlertSummary(Frequency.Daily);
+		DateTime date = new DateTime();
 
 		//TODO - remove this, it's for testing purposes only!!!!!
-		List<Evidence> evidences = new ArrayList();
-		evidences.add(new Evidence());
-		Alert alert = new Alert("test", new Date().getTime(), new Date().getTime(), EntityType.User,
-				"alrusr53@vpnconnect", evidences, evidences.size(), 80, Severity.High, AlertStatus.Open,
-				AlertFeedback.None, "", "569b8979e4b085427ea025a7");
+		Alert alert = alertsService.getAlertById("26461e2a-9133-444e-a3ff-5443cba3c440");
 		forwardingService.forwardNewAlert(alert);
 
+		//daily
+		forwardingService.forwardAlertSummary(Frequency.Daily);
 		//if monday - weekly
 		if (date.getDayOfWeek() == 1) {
 			forwardingService.forwardAlertSummary(Frequency.Weekly);

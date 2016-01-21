@@ -13,16 +13,14 @@ import java.io.IOException;
  */
 public class ImageUtils {
 
-	public void convertBase64ToPNG(String base64Str, String destFilePath) throws IOException {
-		BufferedImage image;
-		byte[] imageByte;
+	public void convertBase64ToImg(String base64Str, String destFilePath, String fileType) throws IOException {
 		BASE64Decoder decoder = new BASE64Decoder();
-		imageByte = decoder.decodeBuffer(base64Str);
+		byte[] imageByte = decoder.decodeBuffer(base64Str);
 		ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
-		image = ImageIO.read(bis);
+		BufferedImage image = ImageIO.read(bis);
 		bis.close();
-		File outputfile = new File(destFilePath);
-		ImageIO.write(image, "png", outputfile);
+		File outputFile = new File(destFilePath);
+		ImageIO.write(image, fileType, outputFile);
 	}
 
 }
