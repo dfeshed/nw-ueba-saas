@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.email.AlertSummary;
 import fortscale.domain.email.EmailGroup;
@@ -41,7 +42,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	//TODO - generalize this
 	private static final String JADE_RESOURCES_FOLDER = "/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-services/src/main/resources/dynamic-html";
-	//private static final String JADE_RESOURCES_FOLDER = "resources/dynamic-html";
 	private static final String IMAGES_FOLDER = JADE_RESOURCES_FOLDER + "/assets/images";
 	private static final String NEW_ALERT_JADE_INDEX = JADE_RESOURCES_FOLDER + "/templates/new-alert-email/index.jade";
 	private static final String ALERT_SUMMARY_JADE_INDEX = JADE_RESOURCES_FOLDER +
@@ -112,7 +112,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration == null) {
+		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+			logger.warn("no email configuration found");
+			return;
+		}
+		if (!isEmailConfigurationValid(true)) {
+			logger.warn("email configuration is invalid");
 			return;
 		}
 		String alertSeverity = alert.getSeverity().name();
@@ -121,7 +126,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		User user = userService.findByUsername(alert.getEntityName());
-		//sanity
 		if (user == null) {
 			logger.error("couldn't find username - {}", alert.getEntityName());
 			return;
@@ -166,6 +170,48 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 
 	/**
 	 *
+	 * This method validates the email configuration
+	 *
+	 * @param isNewAlert
+	 * @return
+	 */
+	private boolean isEmailConfigurationValid(boolean isNewAlert) {
+		for (EmailGroup emailGroup: emailConfiguration) {
+			if (emailGroup == null) {
+				return false;
+			}
+			List<String> severities;
+			if (isNewAlert) {
+				NewAlert newAlert = emailGroup.getNewAlert();
+				if (newAlert == null) {
+					return false;
+				}
+				severities = newAlert.getSeverities();
+			} else {
+				AlertSummary alertSummary = emailGroup.getSummary();
+				if (alertSummary == null) {
+					return false;
+				}
+				List<Frequency> frequencies = alertSummary.getFrequencies();
+				if (frequencies == null || frequencies.isEmpty()) {
+					return false;
+				}
+				severities = alertSummary.getSeverities();
+			}
+			if (severities == null || severities.isEmpty()) {
+				return false;
+			}
+			for (String severity: severities) {
+				if (Severity.valueOf(severity) == null) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 *
 	 * This is a helper method that determines if we should send a new alert or not
 	 *
 	 * @param alertSeverity
@@ -194,7 +240,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration == null) {
+		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+			logger.warn("no email configuration found");
+			return;
+		}
+		if (!isEmailConfigurationValid(false)) {
+			logger.warn("email configuration is invalid");
 			return;
 		}
 		for (EmailGroup emailGroup : emailConfiguration) {
@@ -205,13 +256,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				if (alerts.isEmpty()) {
 					continue;
 				}
-				for (Alert alert: alerts) {
-					alertPrettifierService.prettify(alert);
-				}
+				alerts.forEach(alertPrettifierService::prettify);
 				Map<String, Object> model = new HashMap();
 				model.put("baseUrl", baseUrl);
 				model.put("dateRange", getDateRangeByTimeFrequency(frequency));
-				//TODO - should we replace this with a string?
 				model.put("alertsSeverity", getAlertsSeverityHistogram(alerts));
 				model.put("alerts", alerts);
 				String html;
@@ -263,6 +311,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		DateTime now = new DateTime();
 		DateTime date = getDateTimeByFrequency(frequency);
 		switch (frequency) {
+			//TODO - should this be the format??
 			case Daily: return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 			case Weekly: return date.getDayOfMonth() + "-" + now.getDayOfMonth() + "/" + now.getMonthOfYear() + "/" +
 					now.getYear();
@@ -307,8 +356,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			} catch (Exception ex) {
 				logger.error("failed to load email configuration - {}", ex);
 			}
-		} else {
-			logger.warn("no email configuration found");
 		}
 		return emailConfiguration;
 	}
