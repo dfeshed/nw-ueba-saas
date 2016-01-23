@@ -21,10 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -38,16 +41,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	//TODO - check exact phrasing
 	private static final String NEW_ALERT_SUBJECT = "New Fortscale Alert";
 	private static final String ALERT_SUMMARY_SUBJECT = "Fortscale Alerts Summary";
-
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
-	//TODO - generalize this
-	private static final String JADE_RESOURCES_FOLDER = "/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-services/src/main/resources/dynamic-html";
-	private static final String IMAGES_FOLDER = JADE_RESOURCES_FOLDER + "/assets/images";
-	private static final String NEW_ALERT_JADE_INDEX = JADE_RESOURCES_FOLDER + "/templates/new-alert-email/index.jade";
-	private static final String ALERT_SUMMARY_JADE_INDEX = JADE_RESOURCES_FOLDER +
-			"/templates/alert-summary-email/index.jade";
-	private static final String USER_THUMBNAIL = IMAGES_FOLDER + "/user_thumbnail.png";
-	private static final String USER_DEFAULT_THUMBNAIL = IMAGES_FOLDER + "/user_default_thumbnail.png";
 	private static final String USER_CID = "user";
 
 	@Autowired
@@ -69,6 +63,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private List<EmailGroup> emailConfiguration;
 	private ObjectMapper objectMapper;
 	private Map<String, String> cidToFilePath;
+	private String newAlertJadeIndex;
+	private String alertSummaryJadeIndex;
+	private String userThumbnail;
+	private String userDefaultThumbnail;
 
 	/**
 	 *
@@ -76,20 +74,20 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 *
 	 * @return
 	 */
-	private Map<String,String> populateCIDToFilePathMap() {
+	private Map<String,String> populateCIDToFilePathMap(String imageFolder) {
 		Map<String, String> resultMap = new HashMap();
 		final String ICON_CRITICAL_CID = "critical";
-		final String ICON_CRITICAL = IMAGES_FOLDER + "/severity_icon_critical.png";
+		final String ICON_CRITICAL = imageFolder + "/severity_icon_critical.png";
 		final String ICON_HIGH_CID = "high";
-		final String ICON_HIGH = IMAGES_FOLDER + "/severity_icon_high.png";
+		final String ICON_HIGH = imageFolder + "/severity_icon_high.png";
 		final String ICON_MEDIUM_CID = "medium";
-		final String ICON_MEDIUM = IMAGES_FOLDER + "/severity_icon_medium.png";
+		final String ICON_MEDIUM = imageFolder + "/severity_icon_medium.png";
 		final String ICON_LOW_CID = "low";
-		final String ICON_LOW = IMAGES_FOLDER + "/severity_icon_low.png";
+		final String ICON_LOW = imageFolder + "/severity_icon_low.png";
 		final String LOGO_CID = "logo";
-		final String LOGO_IMAGE = IMAGES_FOLDER + "/logo.png";
+		final String LOGO_IMAGE = imageFolder + "/logo.png";
 		final String SHADOW_CID = "shadow";
-		final String SHADOW_IMAGE = IMAGES_FOLDER + "/alert_details_shadow_cropped.png";
+		final String SHADOW_IMAGE = imageFolder + "/alert_details_shadow_cropped.png";
 		resultMap.put(ICON_CRITICAL_CID, ICON_CRITICAL);
 		resultMap.put(ICON_HIGH_CID, ICON_HIGH);
 		resultMap.put(ICON_MEDIUM_CID, ICON_MEDIUM);
@@ -136,29 +134,29 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		model.put("user", user);
 		String html;
 		try {
-			html = jadeUtils.renderHTML(NEW_ALERT_JADE_INDEX, model);
+			html = jadeUtils.renderHTML(newAlertJadeIndex, model);
 		} catch (Exception ex) {
 			logger.error("failed to render html - {}", ex);
 			return;
 		}
 		String thumbnail = userService.getUserThumbnail(user);
+		HashMap<String, String> attachmentsMap = new HashMap(cidToFilePath);
 		if (thumbnail != null) {
 			try {
-				imageUtils.convertBase64ToImg(thumbnail, USER_THUMBNAIL, "png");
-				cidToFilePath.put(USER_CID, USER_THUMBNAIL);
+				imageUtils.convertBase64ToImg(thumbnail, userThumbnail, "png");
+				attachmentsMap.put(USER_CID, userThumbnail);
 			} catch (Exception ex) {
 				logger.warn("Failed to convert user thumbnail");
 			}
 		} else {
-			cidToFilePath.put(USER_CID, USER_DEFAULT_THUMBNAIL);
+			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT, html, cidToFilePath,
-							true);
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT,html,attachmentsMap,true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -263,7 +261,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				model.put("alerts", alerts);
 				String html;
 				try {
-					html = jadeUtils.renderHTML(ALERT_SUMMARY_JADE_INDEX, model);
+					html = jadeUtils.renderHTML(alertSummaryJadeIndex, model);
 				} catch (Exception ex) {
 					logger.error("failed to render html - {}", ex);
 					return;
@@ -308,12 +306,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		DateTime now = new DateTime();
 		DateTime date = getDateTimeByFrequency(frequency);
 		switch (frequency) {
-			//TODO - should this be the format??
-			case Daily: return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
-			case Weekly: return date.getDayOfMonth() + "-" + now.getDayOfMonth() + "/" + now.getMonthOfYear() + "/" +
+			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
+			case Weekly: return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
 					now.getYear();
-			//TODO - should this be the format??
-			case Monthly: return date.getDayOfMonth() + "/" + date.getYear();
+			case Monthly: return date.toString("MMMM") + " " + date.getYear();
 			default: return "";
 		}
 	}
@@ -365,7 +361,15 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	@Override public void afterPropertiesSet() throws Exception {
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		cidToFilePath = populateCIDToFilePathMap();
+		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+		File file = new File(location.getPath());
+		String resourcesFolder = file.getParentFile().getParent() + "/resources/dynamic-html";
+		String imageFolder = resourcesFolder + "/assets/images";
+		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
+		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
+		userThumbnail = imageFolder + "/user_thumbnail.png";
+		userDefaultThumbnail = imageFolder + "/user_default_thumbnail.png";
+		cidToFilePath = populateCIDToFilePathMap(imageFolder);
 	}
 
 }
