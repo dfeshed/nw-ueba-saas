@@ -38,9 +38,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 
 	private static Logger logger = Logger.getLogger(AlertEmailServiceImpl.class);
 
-	//TODO - check exact phrasing
-	private static final String NEW_ALERT_SUBJECT = "New Fortscale Alert";
-	private static final String ALERT_SUMMARY_SUBJECT = "Fortscale Alerts Summary";
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
@@ -69,6 +66,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private String userThumbnail;
 	private String userDefaultThumbnail;
 	private String shadowImage;
+	private DateTime now;
 
 	/**
 	 *
@@ -151,12 +149,14 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
 		attachmentsMap.put(SHADOW_CID, shadowImage);
+		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
+		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT,html,attachmentsMap,true);
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -232,7 +232,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		//sanity
 		if (!emailUtils.isEmailConfigured()) {
 			return;
 		}
@@ -255,8 +254,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				}
 				alerts.forEach(alertPrettifierService::prettify);
 				Map<String, Object> model = new HashMap();
+				String dateRange = getDateRangeByTimeFrequency(frequency);
+				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
+						dateRange);
 				model.put("baseUrl", baseUrl);
-				model.put("dateRange", getDateRangeByTimeFrequency(frequency));
+				model.put("dateRange", dateRange);
 				model.put("alertsSeverity", getAlertsSeverityHistogram(alerts));
 				model.put("alerts", alerts);
 				String html;
@@ -267,7 +269,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 					return;
 				}
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, ALERT_SUMMARY_SUBJECT, html, cidToFilePath,
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
 							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
@@ -303,7 +305,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @return
 	 */
 	private String getDateRangeByTimeFrequency(Frequency frequency) {
-		DateTime now = new DateTime();
 		DateTime date = getDateTimeByFrequency(frequency);
 		switch (frequency) {
 			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
@@ -322,11 +323,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @return
 	 */
 	private DateTime getDateTimeByFrequency(Frequency frequency) {
-		DateTime date = new DateTime();
+		DateTime date;
 		switch (frequency) {
-			case Daily: date = date.minusDays(1); break;
-			case Weekly: date = date.minusWeeks(1); break;
-			case Monthly: date = date.minusMonths(1); break;
+			case Daily: date = now.minusDays(1); break;
+			case Weekly: date = now.minusWeeks(1); break;
+			case Monthly: date = now.minusMonths(1); break;
+			default: date = now;
 		}
 		return date;
 	}
@@ -359,6 +361,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @throws Exception
 	 */
 	@Override public void afterPropertiesSet() throws Exception {
+		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
 		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
