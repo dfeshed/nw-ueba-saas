@@ -43,6 +43,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String ALERT_SUMMARY_SUBJECT = "Fortscale Alerts Summary";
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
+	private static final String SHADOW_CID = "shadow";
 
 	@Autowired
 	private AlertsService alertsService;
@@ -67,6 +68,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private String alertSummaryJadeIndex;
 	private String userThumbnail;
 	private String userDefaultThumbnail;
+	private String shadowImage;
 
 	/**
 	 *
@@ -86,14 +88,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		final String ICON_LOW = imageFolder + "/severity_icon_low.png";
 		final String LOGO_CID = "logo";
 		final String LOGO_IMAGE = imageFolder + "/logo.png";
-		final String SHADOW_CID = "shadow";
-		final String SHADOW_IMAGE = imageFolder + "/alert_details_shadow_cropped.png";
 		resultMap.put(ICON_CRITICAL_CID, ICON_CRITICAL);
 		resultMap.put(ICON_HIGH_CID, ICON_HIGH);
 		resultMap.put(ICON_MEDIUM_CID, ICON_MEDIUM);
 		resultMap.put(ICON_LOW_CID, ICON_LOW);
 		resultMap.put(LOGO_CID, LOGO_IMAGE);
-		resultMap.put(SHADOW_CID, SHADOW_IMAGE);
 		return resultMap;
 	}
 
@@ -151,6 +150,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		} else {
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
+		attachmentsMap.put(SHADOW_CID, shadowImage);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
@@ -369,6 +369,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
 		userThumbnail = imageFolder + "/user_thumbnail.png";
 		userDefaultThumbnail = imageFolder + "/user_default_thumbnail.png";
+		shadowImage = imageFolder + "/alert_details_shadow_cropped.png";
 		cidToFilePath = populateCIDToFilePathMap(imageFolder);
 	}
 
