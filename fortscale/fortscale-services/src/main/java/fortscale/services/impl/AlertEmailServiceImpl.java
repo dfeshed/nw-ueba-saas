@@ -49,7 +49,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String USER_THUMBNAIL = IMAGES_FOLDER + "/user_thumbnail.png";
 	private static final String USER_DEFAULT_THUMBNAIL = IMAGES_FOLDER + "/user_default_thumbnail.png";
 	private static final String USER_CID = "user";
-	private static final String IMAGE_TYPE = "png";
 
 	@Autowired
 	private AlertsService alertsService;
@@ -145,7 +144,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		String thumbnail = userService.getUserThumbnail(user);
 		if (thumbnail != null) {
 			try {
-				imageUtils.convertBase64ToImg(thumbnail, USER_THUMBNAIL, IMAGE_TYPE);
+				imageUtils.convertBase64ToImg(thumbnail, USER_THUMBNAIL, "png");
 				cidToFilePath.put(USER_CID, USER_THUMBNAIL);
 			} catch (Exception ex) {
 				logger.warn("Failed to convert user thumbnail");
@@ -289,13 +288,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	private Map<String, Integer> getAlertsSeverityHistogram(List<Alert> alerts) {
 		Map<String, Integer> severityHistogram = new HashMap();
+		for (Severity severity: Severity.values()) {
+			severityHistogram.put(severity.name(), 0);
+		}
 		for (Alert alert: alerts) {
-			String severity = alert.getSeverity().name();
-			if (severityHistogram.containsKey(severity)) {
-				severityHistogram.put(severity, severityHistogram.get(severity) + 1);
-			} else {
-				severityHistogram.put(severity, 1);
-			}
+			severityHistogram.put(alert.getSeverity().name(), severityHistogram.get(alert.getSeverity().name()) + 1);
 		}
 		return severityHistogram;
 	}
@@ -366,7 +363,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @throws Exception
 	 */
 	@Override public void afterPropertiesSet() throws Exception {
-		baseUrl = InetAddress.getLocalHost().getHostName();
+		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
 		cidToFilePath = populateCIDToFilePathMap();
 	}
