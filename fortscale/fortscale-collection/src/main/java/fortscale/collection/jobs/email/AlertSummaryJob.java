@@ -1,9 +1,7 @@
 package fortscale.collection.jobs.email;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.Alert;
 import fortscale.domain.email.Frequency;
-import fortscale.services.AlertsService;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
@@ -26,10 +24,6 @@ public class AlertSummaryJob extends FortscaleJob {
 	@Autowired
 	private ForwardingService forwardingService;
 
-	//TODO - remove this, it's for testing purposes only!!!!!
-	@Autowired
-	private AlertsService alertsService;
-
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
 
@@ -37,11 +31,6 @@ public class AlertSummaryJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		logger.info("Running email alert summary job");
 		DateTime date = new DateTime();
-
-		//TODO - remove this, it's for testing purposes only!!!!!
-		Alert alert = alertsService.getAlertById("26461e2a-9133-444e-a3ff-5443cba3c440");
-		forwardingService.forwardNewAlert(alert);
-
 		//daily
 		forwardingService.forwardAlertSummary(Frequency.Daily);
 		//if monday - weekly
