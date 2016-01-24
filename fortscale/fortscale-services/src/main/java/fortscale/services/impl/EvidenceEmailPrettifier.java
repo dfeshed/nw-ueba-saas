@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EmailEvidenceDecorator;
 import fortscale.domain.core.Evidence;
 import fortscale.services.EvidencePrettifierService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by avivs on 21/01/16.
@@ -23,6 +25,9 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
 
+    @Autowired
+    private ApplicationConfigurationServiceImpl applicationConfigurationService;
+
     /**
      * Return a decorated indicator name
      *
@@ -30,7 +35,33 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
      * @return Decorated indicator (evidence) name
      */
     private String decorateName(Evidence evidence) {
-        return "";
+
+        // Get locale
+        Locale locale = new Locale(Locale.ENGLISH.getLanguage());
+        ApplicationConfiguration localeConfig = applicationConfigurationService
+                .getApplicationConfigurationByKey("system.locale.settings");
+        // If no locale is set, default on US, otherwise set the locale
+        if (localeConfig != null) {
+            locale = new Locale(localeConfig.getValue());
+        }
+
+        // Create key name
+        String evidenceName = evidence.getAnomalyTypeFieldName();
+        String msgKey = "messages." + locale.toString().toLowerCase() + ".evidence." + evidenceName;
+
+        // Get evidence name
+        ApplicationConfiguration evidenceNameMessage = applicationConfigurationService
+                .getApplicationConfigurationByKey(msgKey);
+        if (evidenceNameMessage != null) {
+            evidenceName = evidenceNameMessage.getValue();
+        }
+
+        // Add Time Frame if exists
+        if (evidence.getTimeframe() != null) {
+            evidenceName += " (" + evidence.getTimeframe() + ")";
+        }
+
+        return evidenceName;
     }
 
     /**

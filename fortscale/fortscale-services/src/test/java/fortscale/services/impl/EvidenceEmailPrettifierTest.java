@@ -30,6 +30,9 @@ public class EvidenceEmailPrettifierTest {
     @Mock
     private DataEntitiesConfig dataEntitiesConfig;
 
+    @Mock
+    private ApplicationConfigurationServiceImpl applicationConfigurationService;
+
     @InjectMocks
     private EvidenceEmailPrettifier evidenceEmailPrettifier;
 
@@ -77,6 +80,12 @@ public class EvidenceEmailPrettifierTest {
         timeframe = EvidenceTimeframe.Daily;
 
         MockitoAnnotations.initMocks(this);
+
+        try {
+            when(dataEntitiesConfig.getLogicalEntity(anyString())).thenReturn(new DataEntity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -103,4 +112,29 @@ public class EvidenceEmailPrettifierTest {
         EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(evidence);
         assertEquals("Kerberose", emailEvidence.getDataSource());
     }
+
+    @Test
+    public void testPrettyNameForAnomalySingleEvent() throws Exception {
+        ApplicationConfiguration evidenceNameMessage = new ApplicationConfiguration();
+        evidenceNameMessage.setValue("Activity Time Anomaly");
+        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.event_time"))
+                .thenReturn(evidenceNameMessage);
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("Activity Time Anomaly (Daily)", emailEvidence.getName());
+    }
+
+    @Test
+    public void testPrettyNameForAnomalyAggregatedEvent() throws Exception {
+        ApplicationConfiguration evidenceNameMessage = new ApplicationConfiguration();
+        evidenceNameMessage.setValue("High Number of Authentications");
+        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.number_of_kerberos_logins_hourly"))
+                .thenReturn(evidenceNameMessage);
+
+        anomalyTypeFieldName = "number_of_kerberos_logins_hourly";
+        timeframe = EvidenceTimeframe.Hourly;
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("High Number of Authentications (Hourly)", emailEvidence.getName());
+    }
+
+
 }
