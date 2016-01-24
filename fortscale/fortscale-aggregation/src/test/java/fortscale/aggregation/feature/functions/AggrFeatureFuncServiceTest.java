@@ -1,11 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.JsonObjectWrapperEvent;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.common.event.EventMessage;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.ContinuousValueAvgStdN;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.filter.JsonFilter;
 import net.minidev.json.JSONObject;
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Matchers.anyString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/aggr-feature-service-context-test.xml" })
@@ -236,7 +234,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new JsonObjectWrapperEvent(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -341,7 +339,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new JsonObjectWrapperEvent(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 

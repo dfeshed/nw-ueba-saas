@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.FeatureBucketQueryService;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;

@@ -7,6 +7,8 @@ import java.util.Map;
 
 /**
  * Interface for generic data source configuration populators
+ * A (job-specific) populator generates the (job-specific) configuration.
+ * it returns a configurationMap, which later saved to the state by the configurator
  *
  * @author gils
  * 03/01/2016

@@ -23,7 +23,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.DataSourcesSyncTimerListener;
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
@@ -32,7 +32,7 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.utils.ConversionUtils;
 import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONArray;

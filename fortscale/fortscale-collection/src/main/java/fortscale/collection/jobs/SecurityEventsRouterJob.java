@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionException;
@@ -76,9 +77,9 @@ public class SecurityEventsRouterJob extends GenericSecurityEventsJob{
 	}
 	
 	@Override
-	protected Record processLine(String line) throws IOException {
+	protected Record processLine(String line, ItemContext itemContex) throws IOException {
 		// process each line
-		Record record = super.processLine(line);
+		Record record = super.processLine(line,itemContex);
 		if(record == null){
 			return null;
 		}

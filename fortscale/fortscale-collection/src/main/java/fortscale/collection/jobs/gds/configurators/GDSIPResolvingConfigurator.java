@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.IpResolvingTaskConfiguration;
+import fortscale.services.configuration.Impl.IpResolvingTaskConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.List;
@@ -18,9 +18,10 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
     private static final String TARGET_IP_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSIPResolvingConfigurator() {
-        configurationService = new IpResolvingTaskConfiguration();
+        configurationWriterService = new IpResolvingTaskConfigurationWriter();
     }
 
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
@@ -34,6 +35,10 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
     private void addConfiguration(List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
 
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
+		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
+		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
+
         ConfigurationParam restrictToAD = paramsMap.get("restrictToAD");
         ConfigurationParam shortNameUsage = paramsMap.get("shortNameUsage");
         ConfigurationParam removeLastDotUsage = paramsMap.get("removeLastDotUsage");
@@ -41,6 +46,7 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ConfigurationParam overrideIpWithHostNameUsage = paramsMap.get("overrideIpWithHostNameUsage");
         ConfigurationParam updateOnlyFlag = paramsMap.get("ipField");
         ConfigurationParam hostField = paramsMap.get("hostField");
+
 
         GDSEnrichmentDefinitionState.IPResolvingState ipResolvingState = new GDSEnrichmentDefinitionState.IPResolvingState();
 
@@ -50,8 +56,19 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         ipResolvingState.setOverrideIpWithHostNameUsage(overrideIpWithHostNameUsage.getParamFlag());
         ipResolvingState.setHostField(updateOnlyFlag.getParamValue());
         ipResolvingState.setRemoveLastDotUsage(removeLastDotUsage.getParamFlag());
+		ipResolvingState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		ipResolvingState.setHostField(hostField.getParamValue());
+		ipResolvingState.setTaskName(taskName.getParamValue());
+		ipResolvingState.setLastState(lastState);
+		ipResolvingState.setOutputTopic(outputTopic.getParamValue());
 
         ipResolvingStates.add(ipResolvingState);
+
+        String lastStaeClac = taskName.getParamValue();
+        if (lastStaeClac.indexOf("_") != -1 )
+            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
+
+		currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
     }
 
     @Override

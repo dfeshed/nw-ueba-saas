@@ -1,6 +1,7 @@
 package fortscale.streaming.scorer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;

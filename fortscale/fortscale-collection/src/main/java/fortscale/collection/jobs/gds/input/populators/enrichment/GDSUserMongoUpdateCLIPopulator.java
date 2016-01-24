@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
@@ -43,7 +42,7 @@ public class GDSUserMongoUpdateCLIPopulator implements GDSConfigurationPopulator
 
         //Status field value
         System.out.println("Do you want to update last activity for any raw that came and not only successed events (y/n)? ");
-        boolean isAnyRow = GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput());
+        boolean isAnyRow = gdsInputHandler.getYesNoInput();
         paramsMap.put(ANY_ROW_PARAM, new ConfigurationParam(ANY_ROW_PARAM, isAnyRow, ""));
 
         if (!isAnyRow) {

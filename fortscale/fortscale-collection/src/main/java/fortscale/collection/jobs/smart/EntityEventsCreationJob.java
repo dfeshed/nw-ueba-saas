@@ -17,7 +17,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private static final String END_TIME_IN_SECONDS_ARG = "endTimeInSeconds";
 	private static final String TIME_INTERVAL_IN_SECONDS_ARG = "timeIntervalInSeconds";
 	private static final String BATCH_SIZE_ARG = "batchSize";
-	private static final String CHECK_RETRIES_ARG = "checkRetries";
+	private static final String CHECK_RETRIES_ARG = "retries";
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;

@@ -3,12 +3,12 @@ package fortscale.web.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryDTOImpl;
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.common.dataentity.DataEntity;
+import fortscale.common.dataentity.DataEntityField;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.exceptions.InvalidValueException;
+import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
@@ -209,7 +209,7 @@ public class ApiController extends DataQueryController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTOImpl.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new InvalidValueException("Couldn't parse dataQuery.");

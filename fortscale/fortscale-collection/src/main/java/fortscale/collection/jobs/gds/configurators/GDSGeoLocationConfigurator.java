@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.GeoLocationConfiguration;
+import fortscale.services.configuration.Impl.GeoLocationConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.List;
@@ -18,9 +18,10 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
 
     private static final String SOURCE_IP_CONFIG_ENTRY = "source.";
     private static final String TARGET_IP_CONFIG_ENTRY = "target.";
+	private static final String OUTPUT_TOPIC_ENTRY_PARAM = "output.topic";
 
     public GDSGeoLocationConfigurator() {
-        configurationService = new GeoLocationConfiguration();
+        configurationWriterService = new GeoLocationConfigurationWriter();
     }
 
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
@@ -29,10 +30,15 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
 
         addConfiguration(geoLocationStates, configurationParams, GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY);
         addConfiguration(geoLocationStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY);
+
     }
 
     private void addConfiguration(List<GDSEnrichmentDefinitionState.GeoLocationState> geoLocationStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
+
+		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
+		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
+		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
 
         ConfigurationParam ipField = paramsMap.get("ipField");
         ConfigurationParam countryField = paramsMap.get("countryField");
@@ -46,6 +52,7 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         ConfigurationParam doSessionUpdateFlag = paramsMap.get("doSessionUpdateFlag");
         ConfigurationParam doDataBuckets = paramsMap.get("doDataBuckets");
         ConfigurationParam doGeoLocation = paramsMap.get("doGeoLocation");
+
 
         GDSEnrichmentDefinitionState.GeoLocationState geoLocationState = new GDSEnrichmentDefinitionState.GeoLocationState();
 
@@ -61,8 +68,18 @@ public class GDSGeoLocationConfigurator extends GDSBaseConfigurator {
         geoLocationState.setDoSessionUpdateFlag(doSessionUpdateFlag.getParamFlag());
         geoLocationState.setDoDataBuckets(doDataBuckets.getParamFlag());
         geoLocationState.setDoGeoLocation(doGeoLocation.getParamFlag());
+		geoLocationState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
+		geoLocationState.setTaskName(taskName.getParamValue());
+		geoLocationState.setLastState(lastState);
+		geoLocationState.setOutputTopic(outputTopic.getParamValue());
 
         geoLocationStates.add(geoLocationState);
+
+        String lastStaeClac = taskName.getParamValue();
+        if (lastStaeClac.indexOf("_") != -1 )
+            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
+
+        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
     }
 
     @Override

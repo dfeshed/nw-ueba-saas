@@ -3,6 +3,7 @@ package fortscale.streaming.scorer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
+import fortscale.common.event.EventMessage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 
