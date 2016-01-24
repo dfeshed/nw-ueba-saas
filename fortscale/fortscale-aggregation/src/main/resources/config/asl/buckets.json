@@ -1480,7 +1480,67 @@
           }
         }
       ]
-    }
+    },
+    {
+          "name": "normalized_username_gwame_daily",
+          "expireAfterSeconds": 31536000,
+          "contextFieldNames": [
+              "normalized_username"
+          ],
+          "dataSources": [
+              "gwame"
+          ],
+          "strategyName": "fixed_duration_daily",
+          "aggrFeatureConfs": [
+              {
+                  "name": "events_counter",
+                  "featureNamesMap": {},
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  }
+
+              },
+              {
+                  "name": "highest_score_date_time",
+                  "featureNamesMap": {
+                      "maximize": ["date_time_score"]
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_feature_to_max_map_func"
+                  }
+              }
+          ]
+      },
+    {
+          "name": "normalized_username_gwame_hourly",
+          "expireAfterSeconds": 2592000,
+          "contextFieldNames": [
+              "normalized_username"
+          ],
+          "dataSources": [
+              "gwame"
+          ],
+          "strategyName": "fixed_duration_hourly",
+          "aggrFeatureConfs": [
+              {
+                  "name": "events_counter",
+                  "featureNamesMap": {},
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  }
+
+              },
+              {
+                  "name": "highest_score_date_time",
+                  "featureNamesMap": {
+                      "maximize": ["date_time_score"]
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_feature_to_max_map_func"
+                  }
+              }
+          ]
+      }
 
   ]
 }
