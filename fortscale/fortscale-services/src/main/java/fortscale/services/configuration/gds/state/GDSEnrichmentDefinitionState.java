@@ -20,6 +20,9 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
     private HDFSWriterState hdfsWriterScoreState = new HDFSWriterState();
 
+
+    private HDFSWriterState hdfsWriterTopScoreState = new HDFSWriterState();
+
     public List<UserNormalizationState> getUserNormalizationStates() {
         return userNormalizationStates;
     }
@@ -39,9 +42,23 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
     public HDFSWriterState getHdfsWriterEnrichedState() {
         return hdfsWriterEnrichedState;
     }
+
     public HDFSWriterState getHdfsWriterScoreState() {
         return hdfsWriterScoreState;
     }
+
+    public HDFSWriterState getHdfsWriterTopScoreState() {
+        return hdfsWriterTopScoreState;
+    }
+
+    public void setHdfsWriterTopScoreState(HDFSWriterState hdfsWriterTopScoreState) {
+        this.hdfsWriterTopScoreState = hdfsWriterTopScoreState;
+    }
+
+    public void setHdfsWriterScoreState(HDFSWriterState hdfsWriterScoreState) {
+        this.hdfsWriterScoreState = hdfsWriterScoreState;
+    }
+
 
     public ComputerTaggingState getComputerTaggingState() {
         return computerTaggingState;
@@ -448,6 +465,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         private String tableName;
         private String partitionStrategy;
         private String discriminatorsFields;
+        private String levelDBSuffix;
 
         public String getFieldList() {
             return fieldList;
@@ -504,6 +522,15 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         public void setDiscriminatorsFields(String discriminatorsFields) {
             this.discriminatorsFields = discriminatorsFields;
         }
+
+        public String getLevelDBSuffix() {
+            return levelDBSuffix;
+        }
+
+        public void setLevelDBSuffix(String levelDBSuffix) {
+            this.levelDBSuffix = levelDBSuffix;
+        }
+
 
         @Override
         public void reset() {

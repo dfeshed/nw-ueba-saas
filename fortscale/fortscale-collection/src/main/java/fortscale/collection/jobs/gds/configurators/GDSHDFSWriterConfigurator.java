@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
+import fortscale.collection.jobs.gds.input.populators.enrichment.GDSHDFSWriterTableNamesEnum;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.HDFSWriteTaskConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
@@ -23,12 +24,20 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
 
     @Override
     public void configure(Map<String, Map<String, ConfigurationParam>> configurationParams) throws Exception {
-        Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
+
+        confiureHDFSWriterState(configurationParams.get(GDSHDFSWriterTableNamesEnum.ENRICH.name()),currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState());
+        confiureHDFSWriterState(configurationParams.get(GDSHDFSWriterTableNamesEnum.SCORE.name()),currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterScoreState());
+        if(currGDSConfigurationState.getSchemaDefinitionState().hasTopSchema()){
+            confiureHDFSWriterState(configurationParams.get(GDSHDFSWriterTableNamesEnum.TOP_SCORE.name()),currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterTopScoreState());
+        }
+
+    }
+
+    private void confiureHDFSWriterState(Map<String, ConfigurationParam> paramsMap,GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState ){
 
         String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
-
 
         ConfigurationParam fieldList = paramsMap.get("fieldList");
         ConfigurationParam delimiter = paramsMap.get("delimiter");
@@ -37,8 +46,7 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         ConfigurationParam tableName = paramsMap.get("tableName");
         ConfigurationParam partitionStrategy = paramsMap.get("partitionStrategy");
         ConfigurationParam discriminatorsFields = paramsMap.get("discriminatorsFields");
-
-        GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState();
+        ConfigurationParam levelDBSuffix = paramsMap.get("levelDBSuffixParam");
 
         hdfsWriterState.setTaskName(taskName.getParamValue());
         hdfsWriterState.setLastState(lastState);
@@ -52,14 +60,11 @@ public class GDSHDFSWriterConfigurator extends GDSBaseConfigurator {
         hdfsWriterState.setTableName(tableName.getParamValue());
         hdfsWriterState.setPartitionStrategy(partitionStrategy.getParamValue());
         hdfsWriterState.setDiscriminatorsFields(discriminatorsFields.getParamValue());
+        hdfsWriterState.setLevelDBSuffix(levelDBSuffix.getParamValue());
 
-        String lastStaeClac = taskName.getParamValue();
-        if (lastStaeClac.indexOf("_") != -1 )
-            lastStaeClac = lastStaeClac.substring(0,lastStaeClac.indexOf("_")-1);
-
-        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(lastStaeClac);
-
+        currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(""); //TODO fix
     }
+
 
     @Override
     public void reset() throws Exception {
