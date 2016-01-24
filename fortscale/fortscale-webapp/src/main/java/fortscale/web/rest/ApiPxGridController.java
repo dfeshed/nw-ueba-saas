@@ -43,12 +43,12 @@ public class ApiPxGridController extends DataQueryController{
 		pxGridConnectionStatus status = pxGridHandler.connectToGrid();
 		switch (status){
 		case CONNECTED:
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<String>(pxGridHandler.getHost(), HttpStatus.NO_CONTENT);
 		case DISCONNECTED:
 		case CONNECTION_ERROR:
 		case INVALID_KEYS:
 		case MISSING_CONFIGURATION:
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
 		}
 		return null;
 	}
