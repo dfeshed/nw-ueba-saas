@@ -1,6 +1,8 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
 import junitparams.JUnitParamsRunner;
 import org.junit.After;
 import org.junit.Before;
@@ -15,17 +17,18 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import static org.mockito.Mockito.*;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Created by avivs on 21/01/16.
  */
-@RunWith(JUnitParamsRunner.class)
+
 public class EvidenceEmailPrettifierTest {
 
     @Mock
-    private
+    private DataEntitiesConfig dataEntitiesConfig;
 
     @InjectMocks
     private EvidenceEmailPrettifier evidenceEmailPrettifier;
@@ -47,7 +50,7 @@ public class EvidenceEmailPrettifierTest {
     @SuppressWarnings("resource")
     @BeforeClass
     public static void setUpClass() {
-        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/fortscale-services-email-prettifier.xml");
+//        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/fortscale-services-email-prettifier.xml");
     }
 
     private Evidence createNewEvidence () {
@@ -88,7 +91,16 @@ public class EvidenceEmailPrettifierTest {
 
     @Test
     public void testPrettifyDataSource() throws Exception {
-        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        // Mock entity
+        Evidence evidence = createNewEvidence();
+        // Mock dataEntity
+        DataEntity dataEntity = new DataEntity();
+        dataEntity.setName("Kerberose");
+        // Mock dataEntitiesConfig
+        when(dataEntitiesConfig.getLogicalEntity(evidence.getDataEntitiesIds().get(0))).thenReturn(dataEntity);
+
+        // Test evidence
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(evidence);
         assertEquals("Kerberose", emailEvidence.getDataSource());
     }
 }
