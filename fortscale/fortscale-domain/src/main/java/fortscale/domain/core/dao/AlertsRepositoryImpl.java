@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -121,6 +122,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
+	@Override
+	public List<Alert> getAlertSummary(List<String> severities, long endDate) {
+		Query query = new Query();
+		query.addCriteria(where(Alert.endDateField).lte(endDate))
+				.addCriteria(where(Alert.severityField).in(severities))
+				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
+				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+		return mongoTemplate.find(query, Alert.class);
+	}
 
 	/**
 	 * Build a query to be used by mongo API
