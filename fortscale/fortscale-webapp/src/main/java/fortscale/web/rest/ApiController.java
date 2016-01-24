@@ -209,7 +209,7 @@ public class ApiController extends DataQueryController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTOImpl.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new InvalidValueException("Couldn't parse dataQuery.");

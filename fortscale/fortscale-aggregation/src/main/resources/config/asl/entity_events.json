@@ -289,7 +289,7 @@
           "normalized_username_crmsf_hourly.highest_score_over_date_time_events_crmsf_hourly": 0.0015,
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_country_crmsf_hourly": 0.0015,
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_status_crmsf_hourly": 0.002,
-          "normalized_username_wame_daily.highest_score_wame_hourly": 0.002,
+          "normalized_username_wame_hourly.highest_score_wame_hourly": 0.002,
           "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly":0.02
 
         }
