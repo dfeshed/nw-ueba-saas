@@ -115,6 +115,10 @@ public class PxGridHandler {
 		return this.con;
 	}
 
+	public String getHost(){
+		// TODO: After implementing fail - over, return the active host
+		return  hosts;
+	}
 	/**
 	 * Validate the keys
 	 * @return

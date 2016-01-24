@@ -44,14 +44,14 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
 
-	final static String HOSTS_KEY = "pxgrix.hosts";
-	final static String USERNAME_KEY = "pxgrid.username";
-	final static String GROUP_KEY = "pxgrid.group";
-	final static String KEYSTOREPATH_KEY = "pxgrid.keystorepath";
-	final static String KEYSTORE_PASSPHARSE_KEY = "pxgrid.keystorepasspharse";
-	final static String TRUSTSTORE_PATH_KEY = "pxgrid.truststore";
-	final static String TRUSTSTORE_PASSPHARSE_KEY = "pxgrid.truststorepasspharse";
-	final static String CONNECTION_RETRY_MILLISECOND_KEY = "pxgrid.connectionretrymillisecond";
+	public final static String HOSTS_KEY = "system.pxgrix.hosts";
+	public final static String USERNAME_KEY = "system.pxgrid.username";
+	public final static String GROUP_KEY = "system.pxgrid.group";
+	public final static String KEYSTOREPATH_KEY = "system.pxgrid.keystorepath";
+	public final static String KEYSTORE_PASSPHARSE_KEY = "system.pxgrid.keystorepasspharse";
+	public final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
+	public final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
+	public final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
