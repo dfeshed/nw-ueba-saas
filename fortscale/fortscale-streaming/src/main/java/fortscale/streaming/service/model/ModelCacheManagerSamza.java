@@ -57,7 +57,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelDAO getModelDao(Feature feature, Map<String, Feature> context, long eventEpochtime) {
 		String contextId = getContextId(context);
-		ModelDAO modelDao = getModelDaoWithLatestEndTimeLt(contextId, eventEpochtime);
+		ModelDAO modelDao = getModelDaoWithLatestEndTimeLte(contextId, eventEpochtime);
 
 		if (modelDao == null || isModelEndTimeExpired(modelDao.getEndTime(), eventEpochtime)) {
 			return null;
@@ -87,12 +87,12 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		return retriever.getContextId(fieldToFeatureValue);
 	}
 
-	protected ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
+	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
-		return modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
+		return modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
 	}
 
-	public static String getStoreKey(ModelConf modelConf, String contextId) {
+	protected static String getStoreKey(ModelConf modelConf, String contextId) {
 		return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
 	}
 

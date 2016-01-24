@@ -250,7 +250,7 @@ public class LazyModelCacheManagerSamzaTest {
 
 			if (expectedModelDaoInCache != null) {
 				long currentEpochtime = convertToSeconds(new Date());
-				ModelDAO modelDaoWithLatestEndTime = next.getValue().getModelDaoWithLatestEndTimeLt(currentEpochtime);
+				ModelDAO modelDaoWithLatestEndTime = next.getValue().getModelDaoWithLatestEndTimeLte(currentEpochtime);
 				Assert.assertEquals(expectedModelDaoInCache, modelDaoWithLatestEndTime);
 			}
 		}
