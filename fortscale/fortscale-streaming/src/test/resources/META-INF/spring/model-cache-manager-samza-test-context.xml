@@ -9,6 +9,7 @@
 
     <mockito:mock id="dataRetrieverFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <mockito:mock id="modelStore" class="fortscale.ml.model.store.ModelStore"/>
+    <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService"/>
 
     <context:spring-configured/>
     <context:annotation-config/>
