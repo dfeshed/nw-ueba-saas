@@ -20,13 +20,13 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 	}
 
 	@Override
-	protected ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
+	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = store.get(getStoreKey(modelConf, contextId));
 		ModelDAO modelDao = null;
 		boolean isLoadModel = false;
 
 		if (modelsCacheInfo != null) {
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
+			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
 			if ((modelDao == null || isModelEndTimeOutdated(modelDao.getEndTime(), eventEpochtime)) && canLoadModelsCacheInfo(modelsCacheInfo)) {
 				isLoadModel = true;
 			}
@@ -36,7 +36,7 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 
 		if (isLoadModel) {
 			modelsCacheInfo = loadModelsCacheInfo(contextId);
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLt(eventEpochtime);
+			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
 		}
 
 		return modelDao;
