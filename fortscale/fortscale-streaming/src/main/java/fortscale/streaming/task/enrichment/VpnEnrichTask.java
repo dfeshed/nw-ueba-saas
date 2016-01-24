@@ -154,7 +154,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 			return;
 		}
 		VpnEnrichService vpnEnrichService = dataSourceConfigs.get(configKey);

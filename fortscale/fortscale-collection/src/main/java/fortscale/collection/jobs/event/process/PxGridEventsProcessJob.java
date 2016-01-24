@@ -42,22 +42,22 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 	}
 
 	@Override
-	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record record = morphline.process(line, itemContext);
 
 		// skip records that failed on parsing
-		if (record==null)
-			return false;
-
+		if (record==null) {
+			return null;
+		}
 		try {
 			PxGridIPEvent pxGridIPEvent = new PxGridIPEvent();
 			recordToBeanItemConverter.convert(record, pxGridIPEvent);
 			pxGridResolver.addPxGridEvent(pxGridIPEvent);
-			return true;
+			return record;
 		} catch (Exception e) {
 			logger.warn(String.format("error writing record %s to mongo", record.toString()));
-			return false;
+			return null;
 		}
 	}
 

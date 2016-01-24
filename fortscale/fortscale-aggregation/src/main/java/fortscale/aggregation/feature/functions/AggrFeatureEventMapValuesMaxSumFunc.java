@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.common.feature.AggrFeatureValue;
 
 import java.util.ArrayList;
 import java.util.List;

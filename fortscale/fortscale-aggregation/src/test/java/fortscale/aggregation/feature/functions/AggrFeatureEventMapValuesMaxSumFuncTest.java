@@ -1,6 +1,8 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
+
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;

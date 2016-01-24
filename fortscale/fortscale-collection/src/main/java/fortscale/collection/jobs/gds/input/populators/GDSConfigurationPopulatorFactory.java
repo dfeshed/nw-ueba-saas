@@ -3,6 +3,8 @@ package fortscale.collection.jobs.gds.input.populators;
 import fortscale.collection.jobs.gds.GDSConfigurationException;
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.collection.jobs.gds.input.populators.enrichment.*;
+import fortscale.collection.jobs.gds.input.populators.modelAndScore.GDSAggregatedEventsCLIPopulator;
+import fortscale.collection.jobs.gds.input.populators.modelAndScore.GDSRawDataModelAndScoreCLIPopulator;
 
 import java.util.EnumMap;
 
@@ -24,6 +26,11 @@ public class GDSConfigurationPopulatorFactory {
         configurationTypeToPopulatorMap.put(GDSConfigurationType.GEO_LOCATION, GDSGeoLocationCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.USER_MONGO_UPDATE, GDSUserMongoUpdateCLIPopulator.class);
         configurationTypeToPopulatorMap.put(GDSConfigurationType.HDFS_WRITER, GDSHDFSWriteCLIPopulator.class);
+
+		configurationTypeToPopulatorMap.put(GDSConfigurationType.RAW_MODEL_AND_SCORE, GDSRawDataModelAndScoreCLIPopulator.class);
+		configurationTypeToPopulatorMap.put(GDSConfigurationType.AGGREGATED_FEATURE_MODEL_AND_SCORE, GDSAggregatedEventsCLIPopulator.class);
+        configurationTypeToPopulatorMap.put(GDSConfigurationType.ENTITIES_PROPERTIES,GDSEntitiesPropertiesCLIPopulator.class);
+		//configurationTypeToPopulatorMap.put(GDSConfigurationType.ENTITY_EVENTS_MODEL_AND_SCORE, GDSHDFSWriteCLIPopulator.class);
     }
 
     private EnumMap<GDSConfigurationType, GDSConfigurationPopulator> populatorsMap = new EnumMap<>(GDSConfigurationType.class);

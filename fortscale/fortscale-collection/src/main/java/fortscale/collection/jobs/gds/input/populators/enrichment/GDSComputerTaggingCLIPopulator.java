@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
@@ -55,7 +54,7 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
 
             // configure new configuration for the new dta source for source_ip
             System.out.println(String.format("Does %s source machine need to be added to the computer document in case he is missing (y/n) ?", dataSourceName));
-            paramsMap.put(CREATE_NEW_COMPUTER_FLAG_PARAM,new ConfigurationParam(CREATE_NEW_COMPUTER_FLAG_PARAM, GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput()),""));
+            paramsMap.put(CREATE_NEW_COMPUTER_FLAG_PARAM,new ConfigurationParam(CREATE_NEW_COMPUTER_FLAG_PARAM, gdsInputHandler.getYesNoInput(),""));
             paramsMap.put(SRC_MACHINE_CLASSIFIER_PARAM, new ConfigurationParam(SRC_MACHINE_CLASSIFIER_PARAM,false, String.format("${impala.data.%s.table.field.src_class}",dataSourceName)));
             paramsMap.put(SRC_HOST_PARAM, new ConfigurationParam(SRC_HOST_PARAM, false,  String.format("${impala.data.%s.table.field.source_name}",dataSourceName)));
             paramsMap.put(SRC_CLUSTERING_FIELD_PARAM, new ConfigurationParam(SRC_CLUSTERING_FIELD_PARAM,false, String.format("${impala.data.%s.table.field.normalized_src_machine}",dataSourceName)));

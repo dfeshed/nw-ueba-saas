@@ -6,7 +6,6 @@ import fortscale.collection.jobs.gds.configurators.GDSConfigurator;
 import fortscale.collection.jobs.gds.configurators.GDSConfiguratorFactory;
 import fortscale.collection.jobs.gds.helper.GDSMenuOptions;
 import fortscale.collection.jobs.gds.helper.GDSMenuPrinterHelper;
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.helper.GDSUserMessages;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
@@ -23,7 +22,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Generic Data Source configuration creator job implementation
+ * This is the main entry point of the GDS configuration job.
+ * The configuration job receives GDS (Generic Data Source) requirements and generates the appropriate configurations
+ * in the various config files.
+ * The job currently supports only command line interface.
  *
  * Created by idanp on 12/1/2015.
  */
@@ -42,6 +44,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	private Map<String, GDSConfigurationType> mainMenuOptionToConfigurationType = GDSMenuPrinterHelper.createMainMenuOptionToConfigurationType();
 
 	private Map<String, GDSConfigurationType> enrichmentMenuOptionToConfigurationType = GDSMenuPrinterHelper.createEnrichmentMenuOptionToConfigurationType();
+
+	private Map<String, GDSConfigurationType> modelAndScoreMenuOptionToConfigurationType = GDSMenuPrinterHelper.createModelAndScoreMenuOptionToConfigurationType();
 
 	private Queue<GDSConfigurator> dirtyConfiguratorsQueue = new LinkedList<>();
 
@@ -94,7 +98,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							GDSConfigurationResult<String> configurationResult = configurator.apply();
 
 							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
@@ -106,7 +110,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 
 						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
 
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+						if (gdsInputHandler.getYesNoInput()) {
 							configurator.reset();
 						}
 						else {
@@ -132,15 +136,15 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
 					}
 					break;
-				case GDSMenuOptions.MAIN_MENU_AGGREGATIONS_DEFINITION_OPTION:
-					if (canEnterAggregationsStep(currConfigurationState)) {
-						GDSMenuPrinterHelper.printAggregationsMenu();
-						handleAggregationsConfiguration();
-					}
-					else {
-						inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
-					}
-					break;
+			case GDSMenuOptions.MAIN_MENU_ENTITIES_PROPERTIES_OPTION:
+				if(canEnterEntitiesPropertiesStep(currConfigurationState)){
+					handleEntitiesPropertiesConfiguration();
+				}
+				else {
+					inputErrorMessage = GDSUserMessages.SCHEMA_IS_MANDATORY_MESSAGE;
+				}
+				break;
+
 				case GDSMenuOptions.MAIN_MENU_APPLY_ALL_CHANGES_OPTION:
 					if (!dirtyConfiguratorsQueue.isEmpty()) {
 						System.out.println(GDSUserMessages.APPLY_IN_PROGRESS_MESSAGE);
@@ -202,7 +206,7 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
-	private boolean canEnterAggregationsStep(GDSCompositeConfigurationState currConfigurationState) {
+	private boolean canEnterEntitiesPropertiesStep(GDSCompositeConfigurationState currConfigurationState) {
 		return currConfigurationState.isDataSourceAlreadyDefined();
 	}
 
@@ -240,11 +244,24 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 	}
 
 	private void handleModelAndScoringConfiguration() throws Exception {
-		// TBD
+		System.out.println(GDSUserMessages.USER_INPUT_REQUEST_MESSAGE);
+		String stepInput = gdsInputHandler.getInput();
+
+		String stepInputNormalized = stepInput.trim();
+		switch (stepInputNormalized) {
+			case GDSMenuOptions.MODEL_AND_SCORE_RAW_EVENT_OPTION:
+			case GDSMenuOptions.MODEL_AND_SCORE_AGGREGATED_FEATURE_OPTION:
+			case GDSMenuOptions.MODEL_AND_SCORE_ENTITY_EVENT_OPTION:
+			handleConfiguration(modelAndScoreMenuOptionToConfigurationType,stepInputNormalized);
+				break;
+			default: {
+				throw new GDSConfigurationException("Operation not supported");
+			}
+		}
 	}
 
-	private void handleAggregationsConfiguration() throws Exception {
-		// TBD
+	private void handleEntitiesPropertiesConfiguration() throws Exception {
+		handleConfiguration(mainMenuOptionToConfigurationType, GDSMenuOptions.MAIN_MENU_ENTITIES_PROPERTIES_OPTION);
 	}
 
 	private void handleEnrichmentConfiguration() throws Exception {
@@ -262,43 +279,8 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				case GDSMenuOptions.ENRICHMENT_GEO_LOCATION_OPTION:
 				case GDSMenuOptions.ENRICHMENT_MENU_USER_MONGO_UPDATE_OPTION:
 				case GDSMenuOptions.ENRICHMENT_HDFS_WRITER_OPTION:
-					GDSConfigurationType gdsConfiguratorType = enrichmentMenuOptionToConfigurationType.get(stepInputNormalized);
 
-					GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
-					GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
-
-					Map<String, Map<String, ConfigurationParam>> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
-
-					if (configurationParams.isEmpty()) {
-						System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
-					}
-					else {
-
-						GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
-						configurator.setConfigurationState(currConfigurationState);
-						configurator.configure(configurationParams);
-
-						System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
-
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							GDSConfigurationResult<String> configurationResult = configurator.apply();
-
-							modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
-
-							GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
-
-							break;
-						}
-
-						System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
-
-						if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
-							configurator.reset();
-						}
-						else {
-							dirtyConfiguratorsQueue.add(configurator);
-						}
-					}
+					handleConfiguration(enrichmentMenuOptionToConfigurationType,stepInputNormalized);
 
 					break;
 				case GDSMenuOptions.ENRICHMENT_APPLY_ALL_CHANGES_OPTION:
@@ -323,6 +305,51 @@ public class GDSConfigurationCreatorJob extends FortscaleJob {
 				GDSMenuPrinterHelper.printEnrichmentMenuAfterFailure(inputErrorMessage);
 			}
 			stepInput = gdsInputHandler.getInput();
+		}
+	}
+
+	/**
+	 * handle configuration: gets the relevant populator, populate, save the output to the state and asks the user if she wants to apply or reset.
+	 * @param stepInputNormalized used to determine the populator/configurator from the configTypeMap
+	 * @param configTypeMap maps between user input and configuration
+	 * @throws Exception
+	 */
+	private void handleConfiguration(Map<String, GDSConfigurationType> configTypeMap ,String stepInputNormalized) throws Exception {
+		GDSConfigurationType gdsConfiguratorType = configTypeMap.get(stepInputNormalized);
+
+		GDSConfigurationPopulatorFactory gdsConfigurationPopulatorFactory = new GDSConfigurationPopulatorFactory();
+		GDSConfigurationPopulator configurationPopulator = gdsConfigurationPopulatorFactory.getConfigurationPopulator(gdsConfiguratorType);
+
+		Map<String, Map<String, ConfigurationParam>> configurationParams = configurationPopulator.populateConfigurationData(currConfigurationState);
+
+		if (configurationParams.isEmpty()) {
+			System.out.println(GDSUserMessages.NO_CONFIGURATION_CHANGES_DETECTED_MESSAGE);
+		}
+		else {
+
+			GDSConfigurator configurator = gdsConfiguratorFactory.getConfigurator(gdsConfiguratorType);
+			configurator.setConfigurationState(currConfigurationState);
+			configurator.configure(configurationParams);
+
+			System.out.println(GDSUserMessages.APPLY_CONFIRMATION_MESSAGE);
+
+			if (gdsInputHandler.getYesNoInput()) {
+				GDSConfigurationResult<String> configurationResult = configurator.apply();
+
+				modifiedConfigurationFiles.addAll(configurationResult.getAffectedConfigDescriptors());
+
+				GDSMenuPrinterHelper.printConfigurationResult(configurationResult, configurator.getType().getLabel());
+
+			}
+
+			System.out.println(GDSUserMessages.RESET_CONFIRMATION_MESSAGE);
+
+			if (gdsInputHandler.getYesNoInput()) {
+				configurator.reset();
+			}
+			else {
+				dirtyConfiguratorsQueue.add(configurator);
+			}
 		}
 	}
 

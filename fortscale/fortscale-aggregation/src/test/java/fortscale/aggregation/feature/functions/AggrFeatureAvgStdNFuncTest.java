@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
