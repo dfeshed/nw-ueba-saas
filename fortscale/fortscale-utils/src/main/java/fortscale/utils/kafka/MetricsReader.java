@@ -1,5 +1,6 @@
 package fortscale.utils.kafka;
 
+import fortscale.utils.ConversionUtils;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
@@ -8,9 +9,12 @@ import kafka.message.MessageAndOffset;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
+import java.util.List;
 
 public class MetricsReader {
+
     private static Logger logger = LoggerFactory.getLogger(MetricsReader.class);
 
     private static final String HEADER = "header";
@@ -34,14 +38,16 @@ public class MetricsReader {
             IMetricsDecider decider, int waitTimeBetweenMetricsChecks, int checkRetries) {
 
         SimpleConsumer consumer = null;
+
         try {
             consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
             long offset = 0, lastOffset = -1, currentTry = 0;
+
             while (currentTry < checkRetries) {
                 MetricsResults metricsResults = testMetrics(consumer, offset, headerToCheck, jobToCheck, decider);
-                if (metricsResults.isFound()) {
+                if(metricsResults.isFound()){
                     return true;
-                } else if (metricsResults.getError() != null) {
+                } else if(metricsResults.getError() != null){
                     return false;
                 }
 
@@ -58,68 +64,89 @@ public class MetricsReader {
                 } else {
                     currentTry = 0;
                 }
-
                 lastOffset = offset;
             }
         } finally {
-            if (consumer != null) {
+            if(consumer != null) {
                 consumer.close();
             }
         }
-
         logger.error("failed to get metrics data in {} retries", checkRetries);
         consumer.close();
         return false;
     }
 
-    public static MetricsResults fetchMetric(
-            long offset, String zookeeper, int port,
-            String headerToCheck, String jobToCheck, IMetricsDecider decider) {
-
+    public static MetricsResults fetchMetric(long offset,
+                                      String zookeeper, int port, String headerToCheck, String jobToCheck,
+                                      IMetricsDecider decider) {
         SimpleConsumer consumer = null;
+
         try {
             consumer = new SimpleConsumer(zookeeper, port, TIMEOUT, BUFFER_SIZE, "clientName");
             return testMetrics(consumer, offset, headerToCheck, jobToCheck, decider);
         } finally {
-            if (consumer != null) {
+            if(consumer != null) {
                 consumer.close();
             }
         }
+
     }
 
-    private static MetricsResults testMetrics(
-            SimpleConsumer consumer, long offset,
-            String headerToCheck, String jobToCheck, IMetricsDecider decider) {
+    public static long getCounterMetricsSum(List<String> metrics, String zookeeper, int port,  String headerToCheck,
+            String jobToCheck) {
+        long counterMetricsSum = 0;
+
+        CaptorMetricsDecider captor = new CaptorMetricsDecider(metrics);
+        long offset;
+
+        MetricsReader.MetricsResults metricsResults = new MetricsReader.MetricsResults(false,0,null);
+        do {
+            offset = metricsResults.getOffset();
+            metricsResults = MetricsReader.fetchMetric(offset, zookeeper, port, headerToCheck, jobToCheck, captor);
+
+            if(metricsResults.isFound()) {
+		counterMetricsSum = 0;
+                for (Object capturedMetric : captor.getCapturedMetricsMap().values()) {
+                    Long counter = ConversionUtils.convertToLong(capturedMetric);
+                    if (counter != null) {
+                        counterMetricsSum += counter;
+                    }
+                }
+            }
+        }while(metricsResults.getOffset() > offset);// Looking for the last metric message.
+
+        return counterMetricsSum;
+    }
+
+    private static MetricsResults testMetrics(SimpleConsumer consumer, long offset,
+            String headerToCheck, String jobToCheck,
+            IMetricsDecider decider) {
+
 
         int partition = 0;
+
         FetchRequest fetchRequest = new FetchRequestBuilder()
                 .clientId("clientId")
                 .addFetch(METRICS_TOPIC, partition, offset, BUFFER_SIZE)
                 .build();
         FetchResponse messages = consumer.fetch(fetchRequest);
         if (messages.hasError()) {
-            String errorMsg = String.format("failed to read from metrics topic - %s", messages.errorCode(METRICS_TOPIC, partition));
+            String errorMsg = String.format("failed to read from metrics topic - %s", messages.errorCode(METRICS_TOPIC,
+                    partition));
             logger.error(errorMsg);
-            return new MetricsResults(false, offset, errorMsg);
+            return new MetricsResults(false, offset,errorMsg);
         }
-
-        for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)) {
-            long currentOffset = msg.offset();
-            if (currentOffset < offset) {
-                logger.warn("found an old offset: " + currentOffset + " expecting: " + offset);
-                return new MetricsResults(false, offset, null);
-            }
-
+	long nextOffset = offset;
+        for (MessageAndOffset msg : messages.messageSet(METRICS_TOPIC, partition)){
+	    nextOffset = msg.nextOffset();
             String message = convertPayloadToString(msg);
             JSONObject metrics = getMetrics(message, jobToCheck, headerToCheck);
             if (decider.decide(metrics)) {
-                return new MetricsResults(true, currentOffset, null);
+                return new MetricsResults(true, nextOffset, null);
             }
-
-            offset = msg.nextOffset();
         }
 
-        return new MetricsResults(false, offset, null);
+        return new MetricsResults(false, nextOffset,null);
     }
 
     /**
@@ -149,11 +176,10 @@ public class MetricsReader {
         } catch (Exception e) {
             metrics = null;
         }
-
         return metrics;
     }
 
-    public static class MetricsResults {
+    public static class MetricsResults{
         boolean found;
         long offset;
         String error = null;

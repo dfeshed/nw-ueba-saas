@@ -22,7 +22,8 @@
 				<entry>
 					<key>morphlineFile</key>
 					<value>${vpn.filtering.morphline}</value>
-				</entry>				
+				</entry>
+
 			</job-data-map>
 		</job>		
 	</schedule>

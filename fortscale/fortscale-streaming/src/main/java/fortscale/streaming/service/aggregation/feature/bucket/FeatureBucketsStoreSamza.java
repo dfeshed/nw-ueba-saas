@@ -1,14 +1,5 @@
 package fortscale.streaming.service.aggregation.feature.bucket;
 
-import java.util.*;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
-
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -18,6 +9,14 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.logging.Logger;
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -58,7 +57,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	// TODO: remove this option after finishing testing the performance w/out bulk insert
 	private boolean useBulkInsertForSyncToMongoDB = true;
-	
+
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
 		Assert.notNull(context);

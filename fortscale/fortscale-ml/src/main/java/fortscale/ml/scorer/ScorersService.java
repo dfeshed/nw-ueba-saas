@@ -9,6 +9,7 @@ import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.factory.ScorersFactoryService;
 import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -18,10 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true)
-public class ScorersService {
 
-    private final ModelsCacheService modelsCacheService;
+public class ScorersService{
+
+    @Autowired
+    private ModelsCacheService modelsCacheService;
 
     @Autowired
     private FeatureExtractService featureExtractService;
@@ -34,15 +36,7 @@ public class ScorersService {
 
     private Map<String, List<Scorer>> dataSourceToScorerListMap = new HashMap<>();
 
-    public ScorersService(ModelsCacheService modelsCacheService) {
-        Assert.notNull(modelsCacheService);
-        this.modelsCacheService = modelsCacheService;
-        Map<String, DataSourceScorerConfs> dataSourceToDataSourceScorerConfsMap = scorerConfService.getAllDataSourceScorerConfs();
-        for(DataSourceScorerConfs dataSourceScorerConfs: dataSourceToDataSourceScorerConfsMap.values()) {
-            List<Scorer> dataSourceScorers = loadDataSourceScorers(dataSourceScorerConfs);
-            dataSourceToScorerListMap.put(dataSourceScorerConfs.getDataSource(), dataSourceScorers);
-        }
-    }
+    private boolean isScorersLoaded = false;
 
     private List<Scorer> loadDataSourceScorers(DataSourceScorerConfs dataSourceScorerConfs) {
         Assert.notNull(dataSourceScorerConfs);
@@ -59,6 +53,7 @@ public class ScorersService {
     public List<FeatureScore> calculateScores(JSONObject event, long eventEpochTimeInSec, String dataSource) throws Exception{
         Assert.notNull(dataSource);
         Assert.notNull(event);
+        loadScorers();
         List<Scorer> dataSourceScorers = dataSourceToScorerListMap.get(dataSource);
         List<FeatureScore> featureScores = new ArrayList<>();
         EventMessage eventMessage = new EventMessage(event);
@@ -71,4 +66,13 @@ public class ScorersService {
         return featureScores;
     }
 
+    public void loadScorers() throws Exception {
+        if(!isScorersLoaded) {
+            Map<String, DataSourceScorerConfs> dataSourceToDataSourceScorerConfsMap = scorerConfService.getAllDataSourceScorerConfs();
+            for (DataSourceScorerConfs dataSourceScorerConfs : dataSourceToDataSourceScorerConfsMap.values()) {
+                List<Scorer> dataSourceScorers = loadDataSourceScorers(dataSourceScorerConfs);
+                dataSourceToScorerListMap.put(dataSourceScorerConfs.getDataSource(), dataSourceScorers);
+            }
+        }
+    }
 }

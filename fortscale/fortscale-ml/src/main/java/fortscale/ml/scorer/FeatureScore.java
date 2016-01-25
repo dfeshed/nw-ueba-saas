@@ -27,6 +27,15 @@ public class FeatureScore {
     public List<FeatureScore> getFeatureScores() {
         return featureScores;
     }
+    public FeatureScore getFeatureScore(String featureScorerName){
+        for(FeatureScore featureScore: featureScores){
+            if(featureScore.getName().equals(featureScorerName)){
+                return featureScore;
+            }
+        }
+
+        return null;
+    }
 
     public double getCertainty() {
         return 1.0d;

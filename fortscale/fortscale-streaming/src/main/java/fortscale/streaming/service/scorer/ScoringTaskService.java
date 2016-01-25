@@ -2,14 +2,11 @@ package fortscale.streaming.service.scorer;
 
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
-import fortscale.ml.scorer.FeatureScoreJsonEventHandler;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.ml.scorer.factory.ScorersFactoryService;
-import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
-import fortscale.streaming.service.model.ModelsCacheServiceSamza;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -31,11 +28,17 @@ import java.util.List;
 public class ScoringTaskService {
     private static final Logger logger = Logger.getLogger(ScoringTaskService.class);
 
-    private ModelsCacheService modelsCacheService;
-    private ScorersService scorersService;
+    private static final String OUTPUT_TOPIC_PROPERTY_KEY = "fortscale.output.topic";
+
+
     private String outputTopic;
     private String bdpOutputTopic;
     private boolean forwardEvent;
+
+    @Autowired
+    private ModelsCacheService modelsCacheService;
+    @Autowired
+    private ScorersService scorersService;
 
     @Autowired
     private FeatureScoreJsonEventHandler featureScoreJsonEventHandler;
@@ -53,10 +56,7 @@ public class ScoringTaskService {
     private ScorersFactoryService scorersFactoryService;
 
     public ScoringTaskService(Config config, TaskContext context) throws Exception  {
-        modelsCacheService = new ModelsCacheServiceSamza(new ExtendedSamzaTaskContext(context, config));
-        scorersFactoryService.setModelCacheService(modelsCacheService);
-        scorersService = new ScorersService(modelsCacheService);
-        outputTopic = config.get("fortscale.output.topic", "");
+        outputTopic = config.get(OUTPUT_TOPIC_PROPERTY_KEY, "");
         forwardEvent = true;
         if (isBDPRunning && config.containsKey("fortscale.bdp.output.topic")) {
             bdpOutputTopic = config.get("fortscale.bdp.output.topic", "");
@@ -64,6 +64,9 @@ public class ScoringTaskService {
                 forwardEvent = false;
             }
         }
+
+        // The following initialization could also be done lazily
+        scorersService.loadScorers();
     }
 
     public JSONObject calculateScoresAndUpdateMessage(JSONObject message, long timestamp, String dataSource) throws Exception {
@@ -71,7 +74,7 @@ public class ScoringTaskService {
         List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, dataSource);
 
         if (featureScores != null) {
-            message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+            featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
         }
 
         return message;

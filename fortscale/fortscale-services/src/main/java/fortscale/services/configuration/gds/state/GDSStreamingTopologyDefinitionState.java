@@ -14,6 +14,8 @@ public class GDSStreamingTopologyDefinitionState implements GDSConfigurationStat
     private boolean sourceIpGeoLocationRequired;
     private boolean targetIpGeoLocationRequired;
 
+	private String lastStateValue;
+
     public boolean isSourceUsernameResolvingRequired() {
         return sourceUsernameResolvingRequired;
     }
@@ -78,7 +80,15 @@ public class GDSStreamingTopologyDefinitionState implements GDSConfigurationStat
         this.targetIpGeoLocationRequired = targetIpGeoLocationRequired;
     }
 
-    @Override
+	public String getLastStateValue() {
+		return lastStateValue;
+	}
+
+	public void setLastStateValue(String lastStateValue) {
+		this.lastStateValue = lastStateValue;
+	}
+
+	@Override
     public void reset() {
         sourceIpResolvingRequired = false;
         targetIpResolvingRequired = false;
@@ -86,5 +96,6 @@ public class GDSStreamingTopologyDefinitionState implements GDSConfigurationStat
         targetMachineNormalizationRequired = false;
         sourceIpGeoLocationRequired = false;
         targetIpGeoLocationRequired = false;
+		lastStateValue= "etl";
     }
 }

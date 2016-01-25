@@ -8,10 +8,7 @@ import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Loads BucketConfs from JSON file.
@@ -35,7 +32,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private String bucketConfJsonAdditionalFilesPath;
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return bucketConfJsonFilePath;
 	}
 
@@ -74,6 +71,10 @@ public class BucketConfigurationService extends AslConfigurationService {
 			logger.error(errorMsg, e);
 			throw new IllegalArgumentException(errorMsg, e);
 		}
+	}
+
+	public Collection<FeatureBucketConf> getFeatureBucketConfs(){
+		return bucketConfs.values();
 	}
 
 	public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {

@@ -9,6 +9,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.streaming.common.SamzaContainerService;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -58,6 +59,7 @@ public class LazyModelCacheManagerSamzaTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
+		SamzaContainerService samzaContainerService = context.getBean(SamzaContainerService.class);
 		FactoryService<AbstractDataRetriever> dataRetrieverFactoryService = context.getBean(FactoryService.class);
 		mongo = context.getBean(ModelStore.class);
 		reset(dataRetrieverFactoryService, mongo);
@@ -65,10 +67,12 @@ public class LazyModelCacheManagerSamzaTest {
 		modelConf = mock(ModelConf.class);
 		retriever = mock(AbstractDataRetriever.class);
 		AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
+		String storeName = "the_store_name";
+		when(samzaContainerService.getStore(storeName)).thenReturn(cache);
 		when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
 		when(modelConf.getName()).thenReturn(DEFAULT_MODEL_CONF_NAME);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-		modelCacheManager = new LazyModelCacheManagerSamza(cache, modelConf);
+		modelCacheManager = new LazyModelCacheManagerSamza(storeName, modelConf);
 	}
 
 	@Test

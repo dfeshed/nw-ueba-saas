@@ -16,8 +16,8 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
-	public DiscreteModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
-		super(store, modelConf);
+	public DiscreteModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
+		super(levelDbStoreName, modelConf);
 	}
 
 	@Override
