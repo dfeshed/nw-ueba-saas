@@ -2,10 +2,7 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.email.AlertSummary;
 import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;
@@ -51,7 +48,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	@Autowired
 	private ImageUtils imageUtils;
 	@Autowired
-	private AlertPrettifierService alertPrettifierService;
+	private AlertPrettifierService<EmailAlertDecorator> alertPrettifierService;
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired
@@ -125,9 +122,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		Map<String, Object> model = new HashMap();
-		alertPrettifierService.prettify(alert);
+		EmailAlertDecorator emailAlert = alertPrettifierService.prettify(alert);
 		model.put("baseUrl", baseUrl);
-		model.put("alert", alert);
+		model.put("alert", emailAlert);
 		model.put("user", user);
 		String html;
 		try {

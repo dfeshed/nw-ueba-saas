@@ -24,7 +24,7 @@ import java.util.TimeZone;
  */
 
 @Service("evidenceEmailPrettifier")
-public class EvidenceEmailPrettifier implements EvidencePrettifierService {
+public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailEvidenceDecorator> {
 
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
