@@ -248,7 +248,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 					continue;
 				}
 
-				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, false)));
+				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
 
 				Map<String, Object> model = new HashMap();
 				String dateRange = getDateRangeByTimeFrequency(frequency);
