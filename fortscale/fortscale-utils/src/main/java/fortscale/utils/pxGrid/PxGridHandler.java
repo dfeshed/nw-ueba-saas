@@ -57,16 +57,15 @@ public class PxGridHandler {
 			int connectionRetryMillisecond) {
 
 		try {
-		Assert.isTrue(StringUtils.isNotBlank(hosts));
-		Assert.isTrue(StringUtils.isNotBlank(userName));
-		Assert.isTrue(StringUtils.isNotBlank(group));
-		Assert.isTrue(StringUtils.isNotBlank(keystorePath));
-		Assert.isTrue(StringUtils.isNotBlank(keystorePassphrase));
-		Assert.isTrue(StringUtils.isNotBlank(truststorePath));
-		Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
-		Assert.isTrue(connectionRetryMillisecond > 0);
-		}
-		catch (Exception e){
+			Assert.isTrue(StringUtils.isNotBlank(hosts));
+			Assert.isTrue(StringUtils.isNotBlank(userName));
+			Assert.isTrue(StringUtils.isNotBlank(group));
+			Assert.isTrue(StringUtils.isNotBlank(base64KeystorePath));
+			Assert.isTrue(StringUtils.isNotBlank(keystorePassphrase));
+			Assert.isTrue(StringUtils.isNotBlank(base64Truststore));
+			Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
+			Assert.isTrue(connectionRetryMillisecond > 0);
+		} catch (Exception e) {
 			status = pxGridConnectionStatus.MISSING_CONFIGURATION;
 			return;
 		}
@@ -94,8 +93,7 @@ public class PxGridHandler {
 	public pxGridConnectionStatus connectToGrid() {
 		logger.debug("establishing a connection with the pxGrid controller");
 
-		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS ||
-				status == pxGridConnectionStatus.MISSING_CONFIGURATION){
+		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS || status == pxGridConnectionStatus.MISSING_CONFIGURATION) {
 			return getStatus();
 		}
 
@@ -126,8 +124,7 @@ public class PxGridHandler {
 		try {
 			Files.delete(Paths.get(KEYSTORE_FILENAME));
 			Files.delete(Paths.get(TRUSTSTORE_FILENAME));
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			// do nothing
 		}
 
