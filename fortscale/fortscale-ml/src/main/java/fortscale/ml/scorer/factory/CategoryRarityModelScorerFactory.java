@@ -22,7 +22,6 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
 
     @Override
     public Object getProduct(FactoryConfig factoryConfig) {
-        Assert.notNull(modelsCacheService);
         CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf) factoryConfig;
         String modelName = scorerConf.getModelInfo().getModelName();
         ModelConf modelConf = modelConfService.getModelConf(modelName);
@@ -42,7 +41,7 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
-                modelsCacheService, scorerConf.getMinNumOfDistinctValuesToInfluence(),
+                scorerConf.getMinNumOfDistinctValuesToInfluence(),
                 scorerConf.getEnoughNumOfDistinctValuesToInfluence(),
                 scorerConf.getMaxRareCount(),
                 scorerConf.getMaxNumOfRareFeatures()

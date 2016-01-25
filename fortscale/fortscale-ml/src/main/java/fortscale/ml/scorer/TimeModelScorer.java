@@ -18,11 +18,10 @@ public class TimeModelScorer extends AbstractModelScorer {
                            int minNumOfSamplesToInfluence,
                            int enoughNumOfSamplesToInfluence,
                            boolean isUseCertaintyToCalculateScore,
-                           ModelsCacheService modelsCacheService,
                            int maxRareTimestampCount,
                            int maxNumOfRareTimestamps) {
 
-        super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, modelsCacheService);
+        super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
         init(maxRareTimestampCount, maxNumOfRareTimestamps);
     }
 
