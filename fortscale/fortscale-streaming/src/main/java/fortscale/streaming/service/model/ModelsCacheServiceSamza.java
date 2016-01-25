@@ -9,17 +9,13 @@ import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ConfigUtils;
-import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,11 +38,17 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 	private Map<String, ModelCacheManager> modelCacheManagers;
 
 
+	private Map<String, ModelCacheManager> getModelCacheManagers(){
+		if(modelCacheManagers == null) {
+			loadCacheManagers();
+		}
+		return modelCacheManagers;
+	}
 
 	@Override
 	public Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime) {
-		if (modelCacheManagers.containsKey(modelConfName)) {
-			return modelCacheManagers.get(modelConfName).getModel(feature, context, eventEpochtime);
+		if (getModelCacheManagers().containsKey(modelConfName)) {
+			return getModelCacheManagers().get(modelConfName).getModel(feature, context, eventEpochtime);
 		} else {
 			return null;
 		}
@@ -89,16 +91,14 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 		return factoryName.equals(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
 	}
 
-	public void loadCachManagers() throws Exception {
-		if(modelCacheManagers == null) {
-			modelCacheManagers = new HashMap<>();
+	public void loadCacheManagers(){
+		modelCacheManagers = new HashMap<>();
 
-			for (ModelConf modelConf : modelConfService.getModelConfs()) {
-				ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
-						new DiscreteModelCacheManagerSamza(getStoreName(), modelConf) :
-						new LazyModelCacheManagerSamza(getStoreName(), modelConf);
-				modelCacheManagers.put(modelConf.getName(), modelCacheManager);
-			}
+		for (ModelConf modelConf : modelConfService.getModelConfs()) {
+			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
+					new DiscreteModelCacheManagerSamza(getStoreName(), modelConf) :
+					new LazyModelCacheManagerSamza(getStoreName(), modelConf);
+			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
 		}
 	}
 }

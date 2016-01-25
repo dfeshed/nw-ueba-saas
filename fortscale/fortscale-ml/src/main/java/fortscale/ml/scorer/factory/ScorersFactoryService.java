@@ -5,13 +5,11 @@ import fortscale.utils.factory.Factory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
-public class ScorersFactoryService implements ModelScorerFactory {
+public class ScorersFactoryService implements Factory {
 
 
 
