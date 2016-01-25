@@ -38,6 +38,11 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 
 	@Override
 	public EmailAlertDecorator prettify(Alert alert) {
+		return prettify(alert, false);
+	}
+
+	@Override
+	public EmailAlertDecorator prettify(Alert alert, boolean noEvidencePrettify) {
 
 		// Create EmailAlert from alert
 		EmailAlertDecorator emailAlert = new EmailAlertDecorator(alert);
@@ -50,21 +55,23 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 		emailAlert.setEndDateLong(decorateDate(alert.getEndDate(), LONG_DATE_FORMAT));
 		emailAlert.setEndDateShort(decorateDate(alert.getEndDate(), SHORT_DATE_FORMAT));
 
-		// Iterate through evidences and prettify each evidence
-		emailAlert.getEvidences().forEach(evidence ->
-				emailAlert.getEmailEvidences().add(evidenceEmailPrettifier.prettify(evidence)));
+		if (!noEvidencePrettify) {
+			// Iterate through evidences and prettify each evidence
+			emailAlert.getEvidences().forEach(evidence ->
+					emailAlert.getEmailEvidences().add(evidenceEmailPrettifier.prettify(evidence)));
 
-		// Sort evidences by date start DESC
-		Collections.sort(emailAlert.getEmailEvidences(), (o1, o2) -> {
-            long result = o2.getStartDate() - o1.getStartDate();
-            int iResult = 0;
-            if (result > 0) {
-                iResult = 1;
-            } else if (result < 0) {
-                iResult = -1;
-            }
-            return iResult;
-        });
+			// Sort evidences by date start DESC
+			Collections.sort(emailAlert.getEmailEvidences(), (o1, o2) -> {
+				long result = o2.getStartDate() - o1.getStartDate();
+				int iResult = 0;
+				if (result > 0) {
+					iResult = 1;
+				} else if (result < 0) {
+					iResult = -1;
+				}
+				return iResult;
+			});
+		}
 
 		return emailAlert;
 	}
