@@ -2,14 +2,11 @@ package fortscale.streaming.service.scorer;
 
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
-import fortscale.ml.scorer.FeatureScoreJsonEventHandler;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.ml.scorer.factory.ScorersFactoryService;
-import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
-import fortscale.streaming.service.model.ModelsCacheServiceSamza;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -77,7 +74,7 @@ public class ScoringTaskService {
         List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, dataSource);
 
         if (featureScores != null) {
-            message = featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+            featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
         }
 
         return message;
