@@ -53,7 +53,7 @@ public class RawModelScoreConfigurationWriter extends StreamingConfigurationWrit
 			String line;
 			String modelTypeClass;
 
-			GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = gdsConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState();
+			GDSEnrichmentDefinitionState.HDFSWriterState hdfsWriterState = gdsConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState();
 			GDSEnrichmentDefinitionState.ComputerTaggingState computerTaggingState = gdsConfigurationState.getEnrichmentDefinitionState().getComputerTaggingState();
 			GDSRAWDataModelAndScoreState rawDataModelAndScoreState = gdsConfigurationState.getRawDataModelAndScoreState();
 

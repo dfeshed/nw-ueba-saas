@@ -91,7 +91,7 @@ public class GDSRawModelAndScoreConfigurator extends GDSBaseConfigurator  {
 
 	@Override
 	public void reset() throws Exception {
-		currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterState().reset();
+		currGDSConfigurationState.getEnrichmentDefinitionState().getHdfsWriterEnrichedState().reset();
 	}
 
 	@Override
