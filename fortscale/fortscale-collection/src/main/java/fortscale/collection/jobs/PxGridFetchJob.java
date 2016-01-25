@@ -14,6 +14,7 @@ import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.pxGrid.PxGridHandler;
+import fortscale.utils.pxGrid.pxGridConnectionStatus;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
@@ -102,7 +103,11 @@ public class PxGridFetchJob extends FortscaleJob {
 		try {
 			// establishing a connection with the pxGrid controller
 			logger.debug("establishing a connection with the pxGrid controller");
-			pxGridHandler.connectToGrid();
+			pxGridConnectionStatus status = pxGridHandler.connectToGrid();
+			if (status != pxGridConnectionStatus.CONNECTED) {
+				logger.warn("Could not connect to pxGrid. Error: {}", status.message());
+				return;
+			}
 
 			// ensure output path exists
 			logger.debug("creating output file at {}", outputPath);
