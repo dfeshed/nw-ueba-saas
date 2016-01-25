@@ -33,25 +33,17 @@
 
 	<bean id="storeUtils" class="fortscale.utils.store.StoreUtils" />
 
+	<bean id="emailUtils" class="fortscale.utils.email.EmailUtils" />
+
+	<bean id="imageUtils" class="fortscale.utils.image.ImageUtils" />
+
+	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
+
 	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
 		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
 		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
 		<constructor-arg name="cmAdminUser" value="${cm_user}" />
 		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
-	</bean>
-
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="${smtp.host}" />
-		<property name="port" value="${smtp.port}" />
-		<property name="username" value="${smtp.username}" />
-		<property name="password" value="${smtp.password}" />
-		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.transport.protocol">smtp</prop>
-				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
-			</props>
-		</property>
 	</bean>
 
 </beans>
