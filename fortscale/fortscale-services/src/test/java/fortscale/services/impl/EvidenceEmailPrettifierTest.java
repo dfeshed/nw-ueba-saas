@@ -68,8 +68,8 @@ public class EvidenceEmailPrettifierTest {
         entityTypeFieldName = "normalized_username";
         entityName = "some@user.name";
         evidenceType = EvidenceType.AnomalySingleEvent;
-        startDate = 1451642400;
-        endDate = 1451642400;
+        startDate = 1451642400000L;
+        endDate = 1451642400000L;
         anomalyTypeFieldName = "event_time";
         anomalyValue = "2016-01-01 10:00:00.0";
         dataEntitiesIds = new ArrayList<>();

@@ -132,7 +132,7 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
         Date date;
 
         try {
-            date = new Date(evidence.getStartDate() * 1000);
+            date = new Date(evidence.getStartDate());
         } catch (RuntimeException e) {
             return "Unknown date";
         }

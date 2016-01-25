@@ -1,18 +1,53 @@
 package fortscale.domain.core;
 
-import fortscale.domain.core.Alert;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by avivs on 20/01/16.
  */
 public class EmailAlertDecorator extends Alert {
 
-    private static final String SHORT_DATE_FORMAT = "EEE, MM/dd/yy";
-    private static final String LONG_DATE_FORMAT = "MM/dd/yy HH:mm:ss";
+
+    public String getStartDateShort() {
+        return startDateShort;
+    }
+
+    public void setStartDateShort(String startDateShort) {
+        this.startDateShort = startDateShort;
+    }
+
+    public String getStartDateLong() {
+        return startDateLong;
+    }
+
+    public void setStartDateLong(String startDateLong) {
+        this.startDateLong = startDateLong;
+    }
+
+    public String getEndDateShort() {
+        return endDateShort;
+    }
+
+    public void setEndDateShort(String endDateShort) {
+        this.endDateShort = endDateShort;
+    }
+
+    public String getEndDateLong() {
+        return endDateLong;
+    }
+
+    public void setEndDateLong(String endDateLong) {
+        this.endDateLong = endDateLong;
+    }
+
+    public List<EmailEvidenceDecorator> getEmailEvidences() {
+        return emailEvidences;
+    }
+
+    public void setEmailEvidences(List<EmailEvidenceDecorator> emailEvidences) {
+        this.emailEvidences = emailEvidences;
+    }
 
     private String startDateShort;
     private String startDateLong;
@@ -20,50 +55,17 @@ public class EmailAlertDecorator extends Alert {
     private String endDateShort;
     private String endDateLong;
 
+    private List<EmailEvidenceDecorator> emailEvidences;
+
     public EmailAlertDecorator() {}
 
     public EmailAlertDecorator(Alert alert) {
         super(alert);
 
-        // Decorate dates
-        this.startDateShort = formatDate(alert.getStartDate(), SHORT_DATE_FORMAT);
-        this.startDateLong = formatDate(alert.getStartDate(), LONG_DATE_FORMAT);
-        this.endDateShort = formatDate(alert.getStartDate(), SHORT_DATE_FORMAT);
-        this.endDateLong = formatDate(alert.getStartDate(), LONG_DATE_FORMAT);
+        emailEvidences = new ArrayList<>();
     }
 
 
-    /**
-     * Returns a formatted date/time string
-     *
-     * @param date An epoch time date
-     * @param dateFormat String representing the desired time format
-     * @return Time/Date formatted string
-     */
-    private String formatDate (long date, String dateFormat) {
-        Date oDate = new Date(date);
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        sdf.setTimeZone(tz);
-        return sdf.format(oDate);
-    }
-
-
-    public String getStartDateShort() {
-        return startDateShort;
-    }
-
-    public String getStartDateLong() {
-        return startDateLong;
-    }
-
-    public String getEndDateShort() {
-        return endDateShort;
-    }
-
-    public String getEndDateLong() {
-        return endDateLong;
-    }
 
 
 }
