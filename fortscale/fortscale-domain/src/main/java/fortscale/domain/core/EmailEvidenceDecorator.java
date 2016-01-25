@@ -25,6 +25,10 @@ public class EmailEvidenceDecorator extends Evidence{
         return prettifiedAnomalyValue;
     }
 
+    public String getPrettyStartDate() {
+        return prettyStartDate;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -37,9 +41,14 @@ public class EmailEvidenceDecorator extends Evidence{
         this.prettifiedAnomalyValue = prettifiedAnomalyValue;
     }
 
+    public void setPrettyStartDate(String prettyStartDate) {
+        this.prettyStartDate = prettyStartDate;
+    }
+
     private String name = "";
     private String dataSource = "";
     private String prettifiedAnomalyValue = "";
+    private String prettyStartDate = "";
 
 
     public EmailEvidenceDecorator() {}
