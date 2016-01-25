@@ -13,15 +13,14 @@ td
             td.indicator-details(width="61%" style="#{lastItemStyle}; padding-bottom: 20px; padding-left: 3%; padding-right: 1%;")
                 table(width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family: 'Verdana', Verdana, sans-serif; color:  #575757; font-size: 16px; font-weight: 400; line-height: 25px; text-align: left; vertical-align: top;")
                     tr.indicator-name
-                        //- change to pretty name
-                        td #{indicator.anomalyTypeFieldName}
+                        td #{indicator.name}
                     tr.indicator-anomaly-value
-                        td(style="color:  #2766a9; font-weight: 700; line-height: 25px;") #{indicator.anomalyValue}
+                        td(style="color:  #2766a9; font-weight: 700; line-height: 25px;") #{indicator.prettifiedAnomalyValue}
                     tr.indicator-data-entity-name
-                        td #{indicator.dataEntitiesIds[0]}
+                        td #{indicator.dataSource}
             td.indicator-time(width="28%" style="#{lastItemStyle}; padding-bottom: 20px; vertical-align: top;")
                 table(width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family: 'Verdana', Verdana, sans-serif; color:  #b1b1b1; font-size: 12px; font-weight: 400; line-height: 18px; text-align: left; vertical-align: top;")
                     tr.upper-spacer(style="height: 10px;")
                         td
                     tr.indicator-time
-                        td #{indicator.startDate}
+                        td #{indicator.prettyStartDate}
