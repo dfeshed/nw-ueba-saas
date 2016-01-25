@@ -137,4 +137,25 @@ public class EvidenceEmailPrettifierTest {
     }
 
 
+    @Test
+    public void testAnomalyValueForDataBucket() throws Exception {
+        anomalyTypeFieldName = "data_bucket";
+        anomalyValue = "1024";
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("1.0 KB/s", emailEvidence.getPrettifiedAnomalyValue());
+    }
+
+    @Test
+    public void testAnomalyValueForEventTime() throws Exception {
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("2016/01/01 10:00", emailEvidence.getPrettifiedAnomalyValue());
+    }
+
+    @Test
+    public void testAnomalyValueForAggregatedEvent() throws Exception {
+        evidenceType = EvidenceType.AnomalyAggregatedEvent;
+        anomalyValue = "4.0";
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("4", emailEvidence.getPrettifiedAnomalyValue());
+    }
 }

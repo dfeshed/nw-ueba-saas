@@ -11,9 +11,13 @@ import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by avivs on 21/01/16.
@@ -106,7 +110,12 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
                     case "event_time":
                         long date;
                         try {
-                            date = Long.parseLong(anomalyValue);
+                            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+                            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            Date d = df.parse(anomalyValue);
+                            date = d.getTime();
+                        } catch (ParseException e) {
+                            break;
                         } catch (NumberFormatException e) {
                             break;
                         }
