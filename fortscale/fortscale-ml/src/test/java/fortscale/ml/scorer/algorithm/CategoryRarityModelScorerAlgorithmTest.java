@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.algorithm;
 
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
@@ -21,7 +22,9 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                              int maxNumOfRareFeatures,
                              Map<String, Long> featureValueToCountMap,
                              long featureCountToScore) {
-        CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder().build(featureValueToCountMap);
+        GenericHistogram histogram = new GenericHistogram();
+        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(histogram);
         CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
