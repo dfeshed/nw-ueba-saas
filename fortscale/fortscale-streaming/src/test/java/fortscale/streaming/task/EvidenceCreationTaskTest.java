@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Created by rans on 24/12/15.
  */
+@Ignore
 public class EvidenceCreationTaskTest extends AbstractTaskTest{
 
     //Inner class that extends the class of the task to be tested

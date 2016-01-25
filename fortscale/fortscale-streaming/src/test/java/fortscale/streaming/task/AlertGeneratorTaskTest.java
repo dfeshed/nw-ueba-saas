@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by rans on 24/12/15.
  */
+@Ignore
 public class AlertGeneratorTaskTest extends AbstractTaskTest{
 
 
