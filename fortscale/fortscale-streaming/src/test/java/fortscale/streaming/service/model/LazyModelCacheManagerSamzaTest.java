@@ -215,6 +215,37 @@ public class LazyModelCacheManagerSamzaTest {
 		verifyForDefault(false, pair.getRight().getModel(), actualModel, pair.getRight());
 	}
 
+	@Test
+	public void model_cache_manager_should_not_overload_mongo() {
+		Date eventTime = new Date();
+		Date mongoEndTime = minusDay(eventTime);
+		Date mongoStartTime = minusDay(mongoEndTime);
+		Date cacheEndTime = outdated(eventTime);
+		Date cacheStartTime = minusDay(cacheEndTime);
+		Pair<ModelDAO, ModelDAO> pair = populateForDefault(mongoStartTime, mongoEndTime, cacheStartTime, cacheEndTime, null);
+		Model actualModel = getModelForDefault(eventTime);
+		verifyForDefault(false, pair.getRight().getModel(), actualModel, pair.getRight());
+
+		// Last load time set to 50 seconds ago - should return cache model
+		tryToLoadFromMongoScenarioForDefault(convertToSeconds(eventTime) - 50, eventTime, pair.getRight(), false);
+		// Last load time set to 100 seconds ago - should return cache model
+		tryToLoadFromMongoScenarioForDefault(convertToSeconds(eventTime) - 100, eventTime, pair.getRight(), false);
+		// Last load time set to 150 seconds ago - should load and return mongo model
+		tryToLoadFromMongoScenarioForDefault(convertToSeconds(eventTime) - 150, eventTime, pair.getLeft(), true);
+	}
+
+	private void tryToLoadFromMongoScenarioForDefault(long lastLoadEpochtime, Date eventTime, ModelDAO expectedModelDao, boolean mongoInteraction) {
+		ModelsCacheInfo modelsCacheInfo = cache.get(ModelCacheManagerSamza.getStoreKey(modelConf, DEFAULT_CONTEXT_ID));
+		modelsCacheInfo.setLastLoadEpochtime(lastLoadEpochtime);
+		Model actualModel = getModelForDefault(eventTime);
+		Assert.assertEquals(expectedModelDao.getModel(), actualModel);
+		if (mongoInteraction) verify(mongo, times(1)).getModelDaos(eq(modelConf), eq(DEFAULT_CONTEXT_ID));
+		verifyNoMoreInteractions(mongo);
+		modelsCacheInfo = cache.get(ModelCacheManagerSamza.getStoreKey(modelConf, DEFAULT_CONTEXT_ID));
+		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
+		Assert.assertEquals(expectedModelDao, modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(eventTime)));
+	}
+
 	private Pair<ModelDAO, ModelDAO> populateForDefault(Date mongoStartTime, Date mongoEndTime, Date cacheStartTime, Date cacheEndTime, Date lastLoadTime) {
 		ModelDAO mongoModelDao = null;
 		ModelDAO cacheModelDao = null;
