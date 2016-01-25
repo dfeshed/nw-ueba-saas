@@ -1,14 +1,16 @@
 package fortscale.ml.model.builder;
 
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
-import fortscale.utils.logging.Logger;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
-    private static final Logger logger = Logger.getLogger(CategoryRarityModelBuilder.class);
+    private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
+            "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
 
 
     @Override
@@ -32,16 +34,11 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     }
 
 
-    @SuppressWarnings("unchecked")
     protected Map<String, Long> castModelBuilderData(Object modelBuilderData) {
-        if (modelBuilderData == null) {
-            throw new IllegalArgumentException();
-        }
-        if (!(modelBuilderData instanceof Map)) {
-            String errorMsg = "got illegal modelBuilderData type - probably bad ASL";
-            logger.error(errorMsg);
-            throw new IllegalArgumentException(errorMsg);
-        }
-        return (Map<String, Long>)modelBuilderData;
+        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+        Map<String, Long> map = new HashMap<>();
+        ((GenericHistogram)modelBuilderData).getHistogramMap().entrySet()
+                .forEach(entry -> map.put(entry.getKey(), entry.getValue().longValue()));
+        return map;
     }
 }
