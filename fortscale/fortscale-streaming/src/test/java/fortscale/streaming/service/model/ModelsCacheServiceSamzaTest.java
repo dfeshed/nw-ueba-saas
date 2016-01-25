@@ -13,7 +13,7 @@ import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.common.SamzaContainerService;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.utils.factory.FactoryService;
 import org.apache.samza.config.Config;
@@ -44,7 +44,6 @@ public class ModelsCacheServiceSamzaTest {
 	private ModelStore mongo;
 	private ModelConfService modelConfService;
 	private KeyValueStoreMock<String, ModelsCacheInfo> cache;
-	private ExtendedSamzaTaskContext extendedSamzaTaskContext;
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -57,14 +56,14 @@ public class ModelsCacheServiceSamzaTest {
 		dataRetrieverFactoryService = context.getBean(FactoryService.class);
 		mongo = context.getBean(ModelStore.class);
 		modelConfService = context.getBean(ModelConfService.class);
-		reset(dataRetrieverFactoryService, mongo, modelConfService);
+		SamzaContainerService samzaContainerService = context.getBean(SamzaContainerService.class);
+		reset(dataRetrieverFactoryService, mongo, modelConfService, samzaContainerService);
 
-		cache = new KeyValueStoreMock<>();
-		extendedSamzaTaskContext = mock(ExtendedSamzaTaskContext.class);
 		Config config = mock(Config.class);
-		when(extendedSamzaTaskContext.getConfig()).thenReturn(config);
-		when(extendedSamzaTaskContext.getStore(eq(STORE_NAME))).thenReturn(cache);
+		cache = new KeyValueStoreMock<>();
 		when(config.get(eq(STORE_NAME_PROPERTY))).thenReturn(STORE_NAME);
+		when(samzaContainerService.getConfig()).thenReturn(config);
+		when(samzaContainerService.getStore(eq(STORE_NAME))).thenReturn(cache);
 	}
 
 	@Test
@@ -78,7 +77,7 @@ public class ModelsCacheServiceSamzaTest {
 		List<MocksContainer> containers = createMocks(
 				new String[]{modelConfName1, modelConfName2, modelConfName3},
 				new String[]{factoryName1, factoryName2, factoryName3});
-		ModelsCacheService modelsCacheService = new ModelsCacheServiceSamza(extendedSamzaTaskContext);
+		ModelsCacheService modelsCacheService = context.getBean(ModelsCacheServiceSamza.class);
 
 		// 1st case - regular, outdated in mongo
 		Date endTime1 = new Date();
@@ -149,7 +148,7 @@ public class ModelsCacheServiceSamzaTest {
 		cache.put("key5", modelsCacheInfo5);
 
 		// Time difference to clean cache is set in properties file to 7 days
-		new ModelsCacheServiceSamza(extendedSamzaTaskContext).window();
+		context.getBean(ModelsCacheServiceSamza.class).window();
 
 		Assert.assertEquals(2, cache.size());
 		Assert.assertEquals(modelsCacheInfo4, cache.get("key4"));

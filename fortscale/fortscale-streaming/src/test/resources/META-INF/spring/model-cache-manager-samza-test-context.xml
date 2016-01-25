@@ -11,6 +11,7 @@
     <mockito:mock id="dataRetrieverFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <mockito:mock id="modelStore" class="fortscale.ml.model.store.ModelStore"/>
     <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService"/>
+    <bean id="modelsCacheService" class="fortscale.streaming.service.model.ModelsCacheServiceSamza"/>
 
     <context:spring-configured/>
     <context:annotation-config/>
