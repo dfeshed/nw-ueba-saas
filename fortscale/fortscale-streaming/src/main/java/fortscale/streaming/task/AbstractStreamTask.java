@@ -162,6 +162,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void close() throws Exception {
 		try {
 			logger.info("initiating task close");
+			samzaContainerService.setConfig(config);
+			samzaContainerService.setContext(context);
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true,JOB_DATA_SOURCE);
 			wrappedClose();
 		} finally {
