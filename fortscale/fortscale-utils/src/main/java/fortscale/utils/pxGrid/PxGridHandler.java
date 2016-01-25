@@ -56,6 +56,7 @@ public class PxGridHandler {
 			String keystorePassphrase, String base64Truststore, String truststorePassphrase,
 			int connectionRetryMillisecond) {
 
+		try {
 		Assert.isTrue(StringUtils.isNotBlank(hosts));
 		Assert.isTrue(StringUtils.isNotBlank(userName));
 		Assert.isTrue(StringUtils.isNotBlank(group));
@@ -64,6 +65,11 @@ public class PxGridHandler {
 		Assert.isTrue(StringUtils.isNotBlank(truststorePath));
 		Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
 		Assert.isTrue(connectionRetryMillisecond > 0);
+		}
+		catch (Exception e){
+			status = pxGridConnectionStatus.MISSING_CONFIGURATION;
+			return;
+		}
 
 		try {
 			this.hosts = hosts;
@@ -88,7 +94,8 @@ public class PxGridHandler {
 	public pxGridConnectionStatus connectToGrid() {
 		logger.debug("establishing a connection with the pxGrid controller");
 
-		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS){
+		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS ||
+				status == pxGridConnectionStatus.MISSING_CONFIGURATION){
 			return getStatus();
 		}
 
