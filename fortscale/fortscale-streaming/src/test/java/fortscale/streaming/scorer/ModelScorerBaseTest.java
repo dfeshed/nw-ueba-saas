@@ -3,6 +3,7 @@ package fortscale.streaming.scorer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import fortscale.common.event.EventMessage;
 import org.junit.Assert;
 import org.junit.Before;
 

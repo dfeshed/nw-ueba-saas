@@ -2,17 +2,19 @@ package fortscale.aggregation.feature.functions;
 
 import java.util.*;
 
-import fortscale.aggregation.feature.FeatureNumericValue;
+
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.util.GenericHistogram;
+
 
 /**
  * Created by orend on 26/07/2015.
@@ -43,7 +45,7 @@ public class AggrFeatureSumFuncTest {
 	public void testUpdateAggrFeatureWrongFeatureValueType() {
 		AggregatedFeatureConf conf = createAggregatedFeatureConf("featureName");
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
-		function.updateAggrFeature(conf, new HashMap<String, Feature >(), new Feature("featureName", "NOT_INTEGER_VALUE"));
+		function.updateAggrFeature(conf, new HashMap<String, Feature>(), new Feature("featureName", "NOT_INTEGER_VALUE"));
 	}
 
 	@Test

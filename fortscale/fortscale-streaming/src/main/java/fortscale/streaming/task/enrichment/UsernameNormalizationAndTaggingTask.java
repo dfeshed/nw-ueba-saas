@@ -163,7 +163,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
-				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
 			}
 
@@ -203,7 +203,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 					}
 					// drop record
-					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.FAIL_TO_NORMALIZED_USERNAME);
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);

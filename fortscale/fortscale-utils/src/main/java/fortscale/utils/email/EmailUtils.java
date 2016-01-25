@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -50,13 +51,13 @@ public class EmailUtils {
      * @param bcc
      * @param subject
      * @param body
-     * @param attachedFilesPaths
+     * @param cidToFilePath
      * @param isHTML
      * @throws MessagingException
      * @throws IOException
 	 */
-    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, String[]
-            attachedFilesPaths, boolean isHTML) throws MessagingException, IOException {
+    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
+            cidToFilePath, boolean isHTML) throws MessagingException, IOException {
         logger.info("Preparing to send email");
         Session session = Session.getInstance(createProperties(),
             new javax.mail.Authenticator() {
@@ -76,7 +77,7 @@ public class EmailUtils {
         }
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
-        addAttachments(attachedFilesPaths, multipart);
+        addAttachments(cidToFilePath, multipart);
         message.setContent(multipart);
         Transport.send(message);
         logger.info("Email sent");
@@ -86,17 +87,20 @@ public class EmailUtils {
      *
      * This method adds attachments if such an argument is passed to the function
      *
-     * @param attachedFilesPaths
+     * @param cidToFilePath
      * @param multipart
      * @throws IOException
      * @throws MessagingException
      */
-    private void addAttachments(String[] attachedFilesPaths, Multipart multipart)
+    private void addAttachments(Map<String, String> cidToFilePath, Multipart multipart)
             throws IOException, MessagingException {
-        if (attachedFilesPaths != null && attachedFilesPaths.length > 0) {
-            for (String filePath : attachedFilesPaths) {
+        if (cidToFilePath != null && cidToFilePath.size() > 0) {
+            for (Map.Entry<String, String> entry: cidToFilePath.entrySet()) {
+                String cid = entry.getKey();
+                String filePath = entry.getValue();
                 MimeBodyPart attachPart = new MimeBodyPart();
                 attachPart.attachFile(filePath);
+                attachPart.setHeader("Content-ID", "<" + cid + ">");
                 multipart.addBodyPart(attachPart);
             }
         }

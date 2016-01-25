@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.gds.input.populators.enrichment;
 
-import fortscale.collection.jobs.gds.helper.GDSUserInputHelper;
 import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
 import fortscale.collection.jobs.gds.input.GDSInputHandler;
 import fortscale.services.configuration.ConfigurationParam;
@@ -49,7 +48,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
         sourceUserParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "UsernameNormalizationAndTaggingTask"));
 
         System.out.println(String.format("Does %s have target username to normalized (y/n) ?", dataSourceName));
-        boolean targetUserNormalizationRequired = GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput());
+        boolean targetUserNormalizationRequired = gdsInputHandler.getYesNoInput();
 
         boolean isSourceIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpResolvingRequired();
         boolean isTargetIpResolvingRequired = currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpResolvingRequired();
@@ -81,15 +80,16 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
         //Domain field  - for the enrich part
         System.out.println(String.format("Does %s have a field that contain the user domain  (y/n)?", dataSourceName));
 
-        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+        if (gdsInputHandler.getYesNoInput()) {
             //Domain field  - for the enrich part
             System.out.println("please enter the field name that will contain the user Domain value:");
             sourceUserParamsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, gdsInputHandler.getInput()));
+			sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, EMPTY_STR));
         } else {
             sourceUserParamsMap.put(DOMAIN_FIELD_NAME_PARAM, new ConfigurationParam(DOMAIN_FIELD_NAME_PARAM, false, "fake"));
 
             //In case of fake domain - enter the actual domain value the PS want
-            sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, EMPTY_STR));
+            sourceUserParamsMap.put(DOMAIN_VALUE_PARAM, new ConfigurationParam("domainValue", false, dataSourceName + "Connect"));
         }
 
         //TODO - When we develope a new normalize service need to think what to do here cause now we have only ~2 kinds
@@ -98,7 +98,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
 
         ConfigurationParam serviceNameParam;
         ConfigurationParam updateOnlyParam;
-        if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+        if (gdsInputHandler.getYesNoInput()) {
             //Service  name
             serviceNameParam = new ConfigurationParam(NORMALIZE_SERVICE_NAME_PARAM, false, "SecurityUsernameNormalizationService");
             sourceUserParamsMap.put(NORMALIZE_SERVICE_NAME_PARAM, serviceNameParam);
@@ -143,7 +143,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             //Domain field  - for the enrich part
             System.out.println(String.format("Does %s have a field that contain the target user domain  (y/n)?", dataSourceName));
 
-            if (GDSUserInputHelper.isConfirmed(gdsInputHandler.getInput())) {
+            if (gdsInputHandler.getYesNoInput()) {
                 //Domain field  - for the enrich part
                 System.out.println("Please enter the field name that will contain the target user Domain value:");
                 targetUserParamsMap.put("domainFieldName", new ConfigurationParam("domainFieldName", false, gdsInputHandler.getInput()));

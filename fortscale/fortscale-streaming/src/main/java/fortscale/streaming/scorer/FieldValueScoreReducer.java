@@ -1,6 +1,7 @@
 package fortscale.streaming.scorer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

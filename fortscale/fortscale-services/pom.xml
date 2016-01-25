@@ -146,9 +146,14 @@
             <artifactId>jackson-datatype-joda</artifactId>
             <version>${jackson.datatype.version}</version>
         </dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 
-    </dependencies>
+	</dependencies>
 
 
 
