@@ -21,11 +21,11 @@ public class ModelsCacheInfo {
 		setLastUsageEpochtime(currentEpochtime);
 	}
 
-	public ModelDAO getModelDaoWithLatestEndTimeLt(long eventEpochtime) {
+	public ModelDAO getModelDaoWithLatestEndTimeLte(long eventEpochtime) {
 		Collections.sort(modelDaos, new DescModelDaoEndTimeComp());
 
 		for (ModelDAO modelDao : modelDaos) {
-			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) < eventEpochtime) {
+			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) <= eventEpochtime) {
 				return modelDao;
 			}
 		}
