@@ -52,7 +52,7 @@ public class CategoryRarityModelScorerConfTest {
 
     }
 
-    private void assertConf(CategoryRarityModelScorerConf conf, CategoryRarityModelScorerConfParams params) {
+    static void assertConf(CategoryRarityModelScorerConf conf, CategoryRarityModelScorerConfParams params) {
         assertConf(conf,
                 params.getName(),
                 params.getMaxRareCount(),
@@ -65,7 +65,7 @@ public class CategoryRarityModelScorerConfTest {
                 params.getModelName());
     }
 
-    private void assertConf(CategoryRarityModelScorerConf conf,
+    static void assertConf(CategoryRarityModelScorerConf conf,
                             String name, Integer maxRareCount, Integer maxNumOfRareFeatures,
                             Integer minumumNumberOfDistinctValuesToInfluence,
                             Integer enoughtNumberOfDistinctValuesToInfluence,
@@ -107,209 +107,131 @@ public class CategoryRarityModelScorerConfTest {
         Assert.assertEquals(modelName, conf.getModelInfo().getModelName());
     }
 
+    private void doDeserialization(CategoryRarityModelScorerConfParams params, boolean doAssert) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
+        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        if(doAssert) {assertConf(conf, params);}
+    }
+
     @Test
     public void jsonDeserialization_Test() throws IOException{
         CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Null_name_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setName(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setName(null);
+        doDeserialization(params, false);
    }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Empty_name_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setName("");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setName("");
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Blank_name_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setName(" ");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setName(" ");
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Null_maxRareCounte_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMaxRareCount(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMaxRareCount(null);
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_negative_maxRareCounte_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMaxRareCount(-1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMaxRareCount(-1);
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Null_maxNumOfRareFeatures_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMaxNumOfRareFeatures(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMaxNumOfRareFeatures(null);
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_negative_maxNumOfRareFeatures_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMaxNumOfRareFeatures(-1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMaxNumOfRareFeatures(-1);
+        doDeserialization(params, false);
     }
 
     @Test
     public void jsonDeserializatio_Null_minumumNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMinumumNumberOfDistinctValuesToInfluence(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(null);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserializatio_negative_minumumNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMinumumNumberOfDistinctValuesToInfluence(-1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(-1);
+        doDeserialization(params, false);
     }
 
     @Test
     public void jsonDeserializatio_Null_enoughtNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setEnoughtNumberOfDistinctValuesToInfluence(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setEnoughtNumberOfDistinctValuesToInfluence(null);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserializatio_negative_enoughtNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setEnoughtNumberOfDistinctValuesToInfluence(-1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setEnoughtNumberOfDistinctValuesToInfluence(-1);
+        doDeserialization(params, false);
     }
 
     @Test
     public void jsonDeserialization_Null_numberOfSamplesToInfluenceEnough_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setNumberOfSamplesToInfluenceEnough(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setNumberOfSamplesToInfluenceEnough(null);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_zero_numberOfSamplesToInfluenceEnough_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setNumberOfSamplesToInfluenceEnough(0);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setNumberOfSamplesToInfluenceEnough(0);
+        doDeserialization(params, false);
     }
 
     @Test
     public void jsonDeserialization_Null_minNumOfSamplesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMinumumNumberOfDistinctValuesToInfluence(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(null);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_zero_minNumOfSamplesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setMinNumOfSamplesToInfluence(0);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinNumOfSamplesToInfluence(0);
+        doDeserialization(params, false);
     }
 
     @Test
     public void jsonDeserialization_Null_useCertaintyToCalculateScore_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setUseCertaintyToCalculateScore(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
-        assertConf(conf, params);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setUseCertaintyToCalculateScore(null);
+        doDeserialization(params, true);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_Null_modelName_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setModelName(null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setModelName(null);
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_empty_modelName_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setModelName("");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setModelName("");
+        doDeserialization(params, false);
     }
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_blank_modelName_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams();
-        params.setModelName(" ");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String scorerConfJson = buildCategoryRarityModelScorerConfJsonString(params);
-        System.out.println("json = "+scorerConfJson);
-        CategoryRarityModelScorerConf conf = objectMapper.readValue(scorerConfJson, CategoryRarityModelScorerConf.class);
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setModelName(" ");
+        doDeserialization(params, false);
     }
 
     /**

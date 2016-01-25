@@ -1,8 +1,13 @@
 package fortscale.ml.scorer.config;
 
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.scorer.ReductionScorer;
 import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.IOException;
 
 public class ReductingScorerConfTest {
 
@@ -13,8 +18,8 @@ public class ReductingScorerConfTest {
      */
     static class ReductionScorerConfParams {
         String name = "ReductionScorer1";
-        CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorer = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("main scorer");
-        CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorer = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("reduction scorer");
+        CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorerConfParams = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("main scorer");
+        CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorerConfParams = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("reduction scorer");
         Double reductionWeight = 0.5;
         Double reductionZeroScoreWeight = 0.8;
 
@@ -27,21 +32,21 @@ public class ReductingScorerConfTest {
             return this;
         }
 
-        public CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams getMainScorer() {
-            return mainScorer;
+        public CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams getMainScorerConfParams() {
+            return mainScorerConfParams;
         }
 
-        public ReductionScorerConfParams setMainScorer(CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorer) {
-            this.mainScorer = mainScorer;
+        public ReductionScorerConfParams setMainScorerConfParams(CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorerConfParams) {
+            this.mainScorerConfParams = mainScorerConfParams;
             return this;
         }
 
-        public CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams getReductionScorer() {
-            return reductionScorer;
+        public CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams getReductionScorerConfParams() {
+            return reductionScorerConfParams;
         }
 
-        public ReductionScorerConfParams setReductionScorer(CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorer) {
-            this.reductionScorer = reductionScorer;
+        public ReductionScorerConfParams setReductionScorerConfParams(CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorerConfParams) {
+            this.reductionScorerConfParams = reductionScorerConfParams;
             return this;
         }
 
@@ -64,18 +69,14 @@ public class ReductingScorerConfTest {
         }
     }
 
-    String buildScorerConfJsonString(String name,
-                                     CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorer,
-                                     CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorer,
-                                     Double reductionWeight,
-                                     Double reductionZeroScoreWeight) {
+    String buildScorerConfJsonString(ReductionScorerConfParams params) {
 
-        String jName = name==null? null : String.format("\"name\":\"%s\"", name);
+        String jName = params.getName()==null? null : String.format("\"name\":\"%s\"", params.getName());
         String jType = "\"type\":\""+ReductionScorerConf.SCORER_TYPE+"\"";
-        String jMainScorer = mainScorer==null ? null : String.format(" \"main-scorer\":%s", CategoryRarityModelScorerConfTest.buildCategoryRarityModelScorerConfJsonString(mainScorer));
-        String jRedtionScorer = reductionScorer==null ? null : String.format(" \"reduction-scorer\":%s", CategoryRarityModelScorerConfTest.buildCategoryRarityModelScorerConfJsonString(reductionScorer));
-        String jReductionWeight = reductionWeight == null ? null : String.format("\"reduction-weight\":%f", reductionWeight);
-        String jReductionZeroScoreWeight = reductionZeroScoreWeight==null ? null : String.format("\"reduction-zero-score-weight\":%f", reductionZeroScoreWeight);
+        String jMainScorer = params.getMainScorerConfParams()==null ? null : String.format(" \"main-scorer\":%s", CategoryRarityModelScorerConfTest.buildCategoryRarityModelScorerConfJsonString(params.getMainScorerConfParams()));
+        String jRedtionScorer = params.getReductionScorerConfParams()==null ? null : String.format(" \"reduction-scorer\":%s", CategoryRarityModelScorerConfTest.buildCategoryRarityModelScorerConfJsonString(params.getReductionScorerConfParams()));
+        String jReductionWeight = params.getReductionWeight() == null ? null : String.format("\"reduction-weight\":%f", params.getReductionWeight());
+        String jReductionZeroScoreWeight = params.getReductionZeroScoreWeight()==null ? null : String.format("\"reduction-zero-score-weight\":%f", params.getReductionZeroScoreWeight());
 
         // Building the json string and making sure that there is no redundant comma.
         String s = jMainScorer==null ? null : jMainScorer;
@@ -94,15 +95,82 @@ public class ReductingScorerConfTest {
 
         double diff = 0.000000001;
         Assert.assertEquals(params.getName(), conf.getName());
+        Assert.assertEquals(params.getReductionWeight(), conf.getReductionWeight(), diff);
+        CategoryRarityModelScorerConfTest.assertConf((CategoryRarityModelScorerConf) conf.getMainScorerConf(), params.getMainScorerConfParams());
+        CategoryRarityModelScorerConfTest.assertConf((CategoryRarityModelScorerConf) conf.getReductionScorerConf(), params.getReductionScorerConfParams());
 
         if (params.getReductionZeroScoreWeight() == null) {
             Assert.assertEquals(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT, conf.getReductionZeroScoreWeight(), diff);
         } else {
             Assert.assertEquals(params.getReductionZeroScoreWeight(), conf.getReductionZeroScoreWeight(), diff);
-
-            Assert.assertEquals(params.getReductionWeight(), conf.getReductionWeight(), diff);
-
-
         }
     }
+
+    private void doDeserialization(ReductionScorerConfParams params, boolean doAssert) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String scorerConfJson = buildScorerConfJsonString(params);
+        ReductionScorerConf conf = objectMapper.readValue(scorerConfJson, ReductionScorerConf.class);
+        if(doAssert) {assertConf(conf, params);}
+    }
+
+    /**=================================================================================================================
+     *                                                  TESTS
+     **=================================================================================================================*/
+
+    @Test
+    public void jsonDeserialization_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams();
+        doDeserialization(params, true);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_null_name_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setName(null);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_empty_name_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setName("");
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_blank_name_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setName("   ");
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_null_mainScorerConf_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setMainScorerConfParams(null);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_null_reductionScorerConf_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionScorerConfParams(null);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_null_reductionWeight_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionWeight(null);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_negative_reductionWeight_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionWeight(-1.0);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_equal_to_1_reductionWeight_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionWeight(1.0);
+        doDeserialization(params, false);
+    }
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_less_then_1_reductionWeight_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionWeight(0.99999999);
+        doDeserialization(params, false);
+    }
+    @Test
+    public void jsonDeserialization_null_zeroWeight_Test() throws IOException {
+        ReductionScorerConfParams params = new ReductionScorerConfParams().setReductionZeroScoreWeight(null);
+        doDeserialization(params, true);
+    }
+
 }
