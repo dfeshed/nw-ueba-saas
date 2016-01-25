@@ -42,52 +42,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return computerTaggingState;
     }
 
-    public static abstract class GDSStreamingTaskState implements GDSConfigurationState{
-        String taskName;
-        String lastState;
-        String outputTopic;
-        String outputTopicEntry;
 
-        public String getTaskName() {
-            return taskName;
-        }
-
-        public void setTaskName(String taskName) {
-            this.taskName = taskName;
-        }
-
-        public String getLastState() {
-            return lastState;
-        }
-
-        public void setLastState(String lastState) {
-            this.lastState = lastState;
-        }
-
-        public String getOutputTopic() {
-            return outputTopic;
-        }
-
-        public void setOutputTopic(String outputTopic) {
-            this.outputTopic = outputTopic;
-        }
-
-        public String getOutputTopicEntry() {
-            return outputTopicEntry;
-        }
-
-        public void setOutputTopicEntry(String outputTopicEntry) {
-            this.outputTopicEntry = outputTopicEntry;
-        }
-
-        @Override
-        public void reset() {
-            taskName = null;
-            lastState = null;
-            outputTopic = null;
-            outputTopicEntry = null;
-        }
-    }
 
     public static class UserNormalizationState extends GDSStreamingTaskState {
         private String userNameField;

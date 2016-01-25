@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import junit.framework.Assert;
 import org.junit.Test;
 

@@ -42,6 +42,7 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 
 		// get parameters values from the job data map
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
+		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		
 		// build record to items processor
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "specificMorphlineFile");
@@ -49,27 +50,28 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	}
 	
 	@Override
-	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record record = morphline.process(line,itemContext);
 		
 		// skip records that failed on parsing
-		if (record==null) 
-			return false;
+		if (record==null) {
+			return null;
+		}
 		
 		// pass parsed records to the shared morphline
 		record = sharedMorphline.process(record,null);
 		if (record==null)
-			return false;
+			return null;
 		
 		try {
 			DhcpEvent dhcpEvent = new DhcpEvent();
 			recordToBeanItemConverter.convert(record, dhcpEvent);
 			dhcpResolver.addDhcpEvent(dhcpEvent);
-			return true;
+			return record;
 		} catch (Exception e) {
 			logger.warn(String.format("error writing record %s to mongo", record.toString()));
-			return false;
+			return null;
 		}			
 	}
 	

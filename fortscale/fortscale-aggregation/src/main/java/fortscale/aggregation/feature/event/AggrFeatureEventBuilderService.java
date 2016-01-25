@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.functions.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.AggrFeatureValue;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;

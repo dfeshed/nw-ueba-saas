@@ -1,20 +1,13 @@
 package fortscale.collection.jobs.email;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.*;
 import fortscale.domain.email.Frequency;
-import fortscale.services.AlertEmailService;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -37,18 +30,9 @@ public class AlertSummaryJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.info("Running email alert summary job");
-		DateTime date = new DateTime().withZone(DateTimeZone.UTC);
+		DateTime date = new DateTime();
 		//daily
 		forwardingService.forwardAlertSummary(Frequency.Daily);
-
-		//TODO - remove this, it's for testing purposes only!!!!!
-		List<Evidence> evidences = new ArrayList();
-		evidences.add(new Evidence());
-		Alert alert = new Alert("test", new Date().getTime(), new Date().getTime(), EntityType.User,
-				"alrusr53@vpnconnect", evidences, evidences.size(), 80, Severity.High, AlertStatus.Open,
-				AlertFeedback.None, "", "569b8979e4b085427ea025a7");
-		forwardingService.forwardNewAlert(alert);
-
 		//if monday - weekly
 		if (date.getDayOfWeek() == 1) {
 			forwardingService.forwardAlertSummary(Frequency.Weekly);

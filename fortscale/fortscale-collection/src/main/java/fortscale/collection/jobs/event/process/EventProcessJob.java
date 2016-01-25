@@ -64,7 +64,6 @@ public class EventProcessJob implements Job {
 	protected RecordToStringItemsProcessor recordToHadoopString;
 	protected RecordToStringItemsProcessor recordKeyExtractor;
 	protected RecordToStringItemsProcessor recordToMessageString;
-	protected String monitorId;
 	protected String hadoopPath;
 	protected String hadoopFilename;
 	protected String impalaTableName;
@@ -259,10 +258,18 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				if (StringUtils.isNotBlank(line)) {
+					//count that new event trying to processed from specific file
+					taskMonitoringHelper.handleNewEvent(file.getName());
+					Record record = processLine(line, itemContext);
+					if (record != null){
+						//If success - write the event to monitoring. filed event monitoing handled by monitoring
+						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
+						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+					}
 
-				//count that new event trying to processed from specific file
-				taskMonitoringHelper.handleNewEvent(file.getName());
-				processLine(line,itemContext);
+
+				}
 			}
 			
 			// flush hadoop
@@ -278,7 +285,7 @@ public class EventProcessJob implements Job {
 		
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
-			taskMonitoringHelper.error( "Process Files", reader.getException().toString());
+			taskMonitoringHelper.error("Process Files", reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
@@ -291,19 +298,19 @@ public class EventProcessJob implements Job {
 
 
 
-	protected boolean processLine(String line, ItemContext itemContext) throws IOException {
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 
 		//I assume that this.itemContext updated once for each file.
 		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
-			return false;
+			return null;
 		}
 		if (morphlineEnrichment != null) {
 			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
-				return false;
+				return null;
 			}
 		} else {
 			record = rec;
@@ -325,11 +332,10 @@ public class EventProcessJob implements Job {
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToMessageString.toJSON(record));
 
-			//If success - write the event to monitoring. filed event monitoing handled by monitoring
-			taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
-			return true;
+
+			return record;
 		} else {
-			return false;
+			return null;
 		}
 	}
 	

@@ -5,12 +5,14 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
+import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.entity.event.EntityEventDataReaderService;
+import fortscale.entity.event.EntityEventGlobalParamsConfService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,6 +49,11 @@ public class ModelBuildingDependencies {
 	}
 
 	@Bean
+	public RetentionStrategiesConfService retentionStrategiesConfService() {
+		return new RetentionStrategiesConfService();
+	}
+
+	@Bean
 	public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
 		return new AggregatedFeatureEventsReaderService();
 	}
@@ -59,6 +66,11 @@ public class ModelBuildingDependencies {
 	@Bean
 	public EntityEventConfService entityEventConfService() {
 		return new EntityEventConfService();
+	}
+
+	@Bean
+	public EntityEventGlobalParamsConfService entityEventGlobalParamsConfService() {
+		return new EntityEventGlobalParamsConfService();
 	}
 
 	@Bean

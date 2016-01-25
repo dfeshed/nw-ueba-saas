@@ -72,15 +72,14 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		String[] impalaTablesList = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTables").split(",");
 		for (String impalaTable : impalaTablesList) {
 			EventTableHandlers handler = new EventTableHandlers();
-			
-			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
-
+			super.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
 			String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields" + impalaTable);
 			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			handler.recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
 			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
+
 
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
@@ -105,13 +104,13 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 
-	@Override protected boolean processLine(String line, ItemContext itemContext) throws IOException {
+	@Override protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record rec = morphline.process(line,itemContext);
 		Record record = null;
-		if (rec==null)
-			return false;
-		
+		if (rec==null) {
+			return null;
+		}
 		// treat the event according to the event type
 		Object eventCodeObj = rec.getFirstValue("eventCode");
 		if (eventCodeObj!=null) {
@@ -126,17 +125,17 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			if (handler!=null) {
 
 				//parse the record with the appropriate morphline based on the event code
-				Record processedRecord = eventMorphlinesItemsProcessor.process(rec,null);
+				Record processedRecord = eventMorphlinesItemsProcessor.process(rec,itemContext);
 
 				if (processedRecord!=null) {
 
 					//In case there is exist enrich morphline process the record with him
 					if (this.morphlineEnrichment != null)
 					{
-						record = this.morphlineEnrichment.process(processedRecord, null);
+						record = this.morphlineEnrichment.process(processedRecord, itemContext);
 						if (record == null) {
 							// record was filtered
-							return false;
+							return null;
 						}
 
 					}
@@ -150,25 +149,26 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 						if (output!=null) {
 							// append to hadoop
-							Long timestamp = RecordExtensions.getLongValue(record, handler.timestampField);
+							Long timestamp = RecordExtensions.getLongValue(record, super.timestampField);
 							handler.appender.writeLine(output, timestamp.longValue());
 
 							// ensure user exists in mongodb
 							//updateOrCreateUserWithClassifierUsername(record);
 
 							// output event to streaming platform
-							if (handler.streamWriter!=null && sendToKafka == true)
+							if (handler.streamWriter!=null && sendToKafka == true) {
 								handler.streamWriter.send(handler.recordKeyExtractor.process(record),
 										handler.recordToMessageString.toJSON(record));
+							}
 
-							return true;
+							return record;
 						}
 					}
 
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	@Override
@@ -294,7 +294,6 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String hadoopPath;
 		public String hadoopFilename;
 		public String impalaTableName;
-		public String timestampField;
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public RecordToStringItemsProcessor recordKeyExtractor;

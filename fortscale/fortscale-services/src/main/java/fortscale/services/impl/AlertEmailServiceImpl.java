@@ -1,50 +1,46 @@
 package fortscale.services.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
-import fortscale.domain.email.*;
+import fortscale.domain.email.AlertSummary;
+import fortscale.domain.email.EmailGroup;
+import fortscale.domain.email.Frequency;
+import fortscale.domain.email.NewAlert;
 import fortscale.services.*;
 import fortscale.utils.email.EmailUtils;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 17/01/16.
  */
 @Service("alertEmailService")
-public class AlertEmailServiceImpl implements AlertEmailService {
+public class AlertEmailServiceImpl implements AlertEmailService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(AlertEmailServiceImpl.class);
 
-	//TODO - check exact phrasing
-	private static final String NEW_ALERT_SUBJECT = "New Fortscale Alert";
-	private static final String ALERT_SUMMARY_SUBJECT = "Fortscale Alerts Summary";
-
-	private static final String CONFIGURATION_KEY = "system.emailConfiguration.settings";
-	private static final String JADE_RESOURCES_FOLDER = "resources/dynamic.html";
-	private static final String IMAGES_FOLDER = JADE_RESOURCES_FOLDER + "/assets.images";
-	private static final String NEW_ALERT_JADE_INDEX = JADE_RESOURCES_FOLDER + "/templates/new-alert-email/index.jade";
-	private static final String ALERT_SUMMARY_JADE_INDEX = JADE_RESOURCES_FOLDER +
-			"/templates/alert-summary-email/index.jade";
-	private static final String USER_THUMBNAIL = IMAGES_FOLDER + "/user_thumbnail.png";
-	private static final String USER_DEFAULT_THUMBNAIL = IMAGES_FOLDER + "/user_default_thumbnail.png";
-	private static final String ICON_CRITICAL = IMAGES_FOLDER + "/severity_icon_critical.png";
-	private static final String ICON_HIGH = IMAGES_FOLDER + "/severity_icon_high.png";
-	private static final String ICON_MEDIUM = IMAGES_FOLDER + "/severity_icon_medium.png";
-	private static final String ICON_LOW = IMAGES_FOLDER + "/severity_icon_low.png";
-	private static final String LOGO_IMAGE = IMAGES_FOLDER + "/logo.png";
-	private static final String SHADOW_IMAGE = IMAGES_FOLDER + "/alert_details_shadow.png";
-	private static final String SHADOW_CROPPED_IMAGE = IMAGES_FOLDER + "/alert_details_shadow_cropped.png";
+	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
+	private static final String USER_CID = "user";
+	private static final String SHADOW_CID = "shadow";
 
 	@Autowired
 	private AlertsService alertsService;
@@ -61,8 +57,42 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	@Autowired
 	private UserService userService;
 
-	private EmailConfiguration emailConfiguration;
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private String baseUrl;
+	private List<EmailGroup> emailConfiguration;
+	private ObjectMapper objectMapper;
+	private Map<String, String> cidToFilePath;
+	private String newAlertJadeIndex;
+	private String alertSummaryJadeIndex;
+	private String userThumbnail;
+	private String userDefaultThumbnail;
+	private String shadowImage;
+	private DateTime now;
+
+	/**
+	 *
+	 * This method populates the mail attachments map
+	 *
+	 * @return
+	 */
+	private Map<String,String> populateCIDToFilePathMap(String imageFolder) {
+		Map<String, String> resultMap = new HashMap();
+		final String ICON_CRITICAL_CID = "critical";
+		final String ICON_CRITICAL = imageFolder + "/severity_icon_critical.png";
+		final String ICON_HIGH_CID = "high";
+		final String ICON_HIGH = imageFolder + "/severity_icon_high.png";
+		final String ICON_MEDIUM_CID = "medium";
+		final String ICON_MEDIUM = imageFolder + "/severity_icon_medium.png";
+		final String ICON_LOW_CID = "low";
+		final String ICON_LOW = imageFolder + "/severity_icon_low.png";
+		final String LOGO_CID = "logo";
+		final String LOGO_IMAGE = imageFolder + "/logo.png";
+		resultMap.put(ICON_CRITICAL_CID, ICON_CRITICAL);
+		resultMap.put(ICON_HIGH_CID, ICON_HIGH);
+		resultMap.put(ICON_MEDIUM_CID, ICON_MEDIUM);
+		resultMap.put(ICON_LOW_CID, ICON_LOW);
+		resultMap.put(LOGO_CID, LOGO_IMAGE);
+		return resultMap;
+	}
 
 	/**
 	 *
@@ -72,71 +102,126 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
-		//sanity
 		if (!emailUtils.isEmailConfigured()) {
 			return;
 		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration == null) {
+		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+			logger.warn("no email configuration found");
+			return;
+		}
+		if (!isEmailConfigurationValid(true)) {
+			logger.warn("email configuration is invalid");
 			return;
 		}
 		String alertSeverity = alert.getSeverity().name();
 		//if none of the groups contain the alert severity
-		if (!emailConfiguration.shouldSendNewAlert(alertSeverity)) {
+		if (!shouldSendNewAlert(alertSeverity)) {
 			return;
 		}
 		User user = userService.findByUsername(alert.getEntityName());
-		//sanity
 		if (user == null) {
 			logger.error("couldn't find username - {}", alert.getEntityName());
 			return;
 		}
 		Map<String, Object> model = new HashMap();
 		alertPrettifierService.prettify(alert);
+		model.put("baseUrl", baseUrl);
 		model.put("alert", alert);
 		model.put("user", user);
 		String html;
 		try {
-			html = jadeUtils.renderHTML(NEW_ALERT_JADE_INDEX, model);
-		} catch (IOException ex) {
+			html = jadeUtils.renderHTML(newAlertJadeIndex, model);
+		} catch (Exception ex) {
 			logger.error("failed to render html - {}", ex);
 			return;
 		}
-		Set<String> attachedFiles = new HashSet();
-		attachedFiles.add(LOGO_IMAGE);
-		attachedFiles.add(SHADOW_IMAGE);
-		attachedFiles.add(SHADOW_CROPPED_IMAGE);
-		switch (alert.getSeverity()) {
-			case Critical: attachedFiles.add(ICON_CRITICAL); break;
-			case High: attachedFiles.add(ICON_HIGH); break;
-			case Medium: attachedFiles.add(ICON_MEDIUM); break;
-			case Low: attachedFiles.add(ICON_LOW); break;
-		}
 		String thumbnail = userService.getUserThumbnail(user);
+		HashMap<String, String> attachmentsMap = new HashMap(cidToFilePath);
 		if (thumbnail != null) {
 			try {
-				imageUtils.convertBase64ToPNG(thumbnail, USER_THUMBNAIL);
-				attachedFiles.add(USER_THUMBNAIL);
+				imageUtils.convertBase64ToImg(thumbnail, userThumbnail, "png");
+				attachmentsMap.put(USER_CID, userThumbnail);
 			} catch (Exception ex) {
 				logger.warn("Failed to convert user thumbnail");
-				attachedFiles.add(USER_DEFAULT_THUMBNAIL);
 			}
 		} else {
-			attachedFiles.add(USER_DEFAULT_THUMBNAIL);
+			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
+		attachmentsMap.put(SHADOW_CID, shadowImage);
+		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
+		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
 		//for each group check if they should be notified of the alert
-		for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
+		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, NEW_ALERT_SUBJECT, html,
-							attachedFiles.toArray(new String[attachedFiles.size()]), true);
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
 				}
 			}
 		}
+	}
+
+	/**
+	 *
+	 * This method validates the email configuration
+	 *
+	 * @param isNewAlert
+	 * @return
+	 */
+	private boolean isEmailConfigurationValid(boolean isNewAlert) {
+		for (EmailGroup emailGroup: emailConfiguration) {
+			if (emailGroup == null) {
+				return false;
+			}
+			List<String> severities;
+			if (isNewAlert) {
+				NewAlert newAlert = emailGroup.getNewAlert();
+				if (newAlert == null) {
+					return false;
+				}
+				severities = newAlert.getSeverities();
+			} else {
+				AlertSummary alertSummary = emailGroup.getSummary();
+				if (alertSummary == null) {
+					return false;
+				}
+				List<Frequency> frequencies = alertSummary.getFrequencies();
+				if (frequencies == null || frequencies.isEmpty()) {
+					return false;
+				}
+				severities = alertSummary.getSeverities();
+			}
+			if (severities == null || severities.isEmpty()) {
+				return false;
+			}
+			for (String severity: severities) {
+				if (Severity.valueOf(severity) == null) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 *
+	 * This is a helper method that determines if we should send a new alert or not
+	 *
+	 * @param alertSeverity
+	 * @return
+	 */
+	private boolean shouldSendNewAlert(String alertSeverity) {
+		for (EmailGroup emailGroup: emailConfiguration) {
+			NewAlert newAlert = emailGroup.getNewAlert();
+			if (newAlert.getSeverities().contains(alertSeverity)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -147,52 +232,45 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		//sanity
 		if (!emailUtils.isEmailConfigured()) {
 			return;
 		}
 		emailConfiguration = loadEmailConfiguration();
-		if (emailConfiguration == null) {
+		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+			logger.warn("no email configuration found");
 			return;
 		}
-		Set<String> constantImages = new HashSet();
-		constantImages.add(LOGO_IMAGE);
-		constantImages.add(SHADOW_IMAGE);
-		constantImages.add(SHADOW_CROPPED_IMAGE);
-		for (EmailGroup emailGroup : emailConfiguration.getEmailGroups()) {
+		if (!isEmailConfigurationValid(false)) {
+			logger.warn("email configuration is invalid");
+			return;
+		}
+		for (EmailGroup emailGroup : emailConfiguration) {
 			AlertSummary alertSummary = emailGroup.getSummary();
 			if (alertSummary.getFrequencies().contains(frequency)) {
-				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(),
-						getDateTimeByFrequency(frequency));
+				DateTime startTime = getDateTimeByFrequency(frequency);
+				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
 				if (alerts.isEmpty()) {
 					continue;
 				}
-				Set<String> severityIcons = new HashSet();
-				for (Alert alert: alerts) {
-					alertPrettifierService.prettify(alert);
-					switch (alert.getSeverity()) {
-						case Critical: severityIcons.add(ICON_CRITICAL); break;
-						case High: severityIcons.add(ICON_HIGH); break;
-						case Medium: severityIcons.add(ICON_MEDIUM); break;
-						case Low: severityIcons.add(ICON_LOW); break;
-					}
-				}
-				severityIcons.addAll(constantImages);
-				String[] attachedFiles = severityIcons.toArray(new String[severityIcons.size()]);
+				alerts.forEach(alertPrettifierService::prettify);
 				Map<String, Object> model = new HashMap();
+				String dateRange = getDateRangeByTimeFrequency(frequency);
+				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
+						dateRange);
+				model.put("baseUrl", baseUrl);
+				model.put("dateRange", dateRange);
+				model.put("alertsSeverity", getAlertsSeverityHistogram(alerts));
 				model.put("alerts", alerts);
-				//TODO - how to add the list of users?
-				model.put("users", null);
 				String html;
 				try {
-					html = jadeUtils.renderHTML(ALERT_SUMMARY_JADE_INDEX, model);
-				} catch (IOException ex) {
+					html = jadeUtils.renderHTML(alertSummaryJadeIndex, model);
+				} catch (Exception ex) {
 					logger.error("failed to render html - {}", ex);
 					return;
 				}
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, ALERT_SUMMARY_SUBJECT, html,
-							attachedFiles, true);
+					emailUtils.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
+							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -203,19 +281,56 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 
 	/**
 	 *
+	 * This method creates the alerts severity histogram for the html template
+	 *
+	 * @param alerts
+	 * @return
+	 */
+	private Map<String, Integer> getAlertsSeverityHistogram(List<Alert> alerts) {
+		Map<String, Integer> severityHistogram = new HashMap();
+		for (Severity severity: Severity.values()) {
+			severityHistogram.put(severity.name(), 0);
+		}
+		for (Alert alert: alerts) {
+			severityHistogram.put(alert.getSeverity().name(), severityHistogram.get(alert.getSeverity().name()) + 1);
+		}
+		return severityHistogram;
+	}
+
+	/**
+	 *
+	 * This method generates the string date range for the html template
+	 *
+	 * @param frequency
+	 * @return
+	 */
+	private String getDateRangeByTimeFrequency(Frequency frequency) {
+		DateTime date = getDateTimeByFrequency(frequency);
+		switch (frequency) {
+			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
+			case Weekly: return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
+					now.getYear();
+			case Monthly: return date.toString("MMMM") + " " + date.getYear();
+			default: return "";
+		}
+	}
+
+	/**
+	 *
 	 * This method converts frequency to a time in milliseconds
 	 *
 	 * @param frequency
 	 * @return
 	 */
-	private long getDateTimeByFrequency(Frequency frequency) {
-		DateTime date = new DateTime();
+	private DateTime getDateTimeByFrequency(Frequency frequency) {
+		DateTime date;
 		switch (frequency) {
-			case Daily: date = date.minusDays(1); break;
-			case Weekly: date = date.minusWeeks(1); break;
-			case Monthly: date = date.minusMonths(1); break;
+			case Daily: date = now.minusDays(1); break;
+			case Weekly: date = now.minusWeeks(1); break;
+			case Monthly: date = now.minusMonths(1); break;
+			default: date = now;
 		}
-		return date.getMillis();
+		return date;
 	}
 
 	/**
@@ -225,21 +340,40 @@ public class AlertEmailServiceImpl implements AlertEmailService {
 	 * @return
 	 * @throws Exception
 	 */
-	private EmailConfiguration loadEmailConfiguration() {
-		EmailConfiguration emailConfiguration = null;
+	private List<EmailGroup> loadEmailConfiguration() {
+		List<EmailGroup> emailConfiguration = null;
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 				getApplicationConfigurationByKey(CONFIGURATION_KEY);
 		if (applicationConfiguration != null) {
 			String config = applicationConfiguration.getValue();
 			try {
-				emailConfiguration = objectMapper.readValue(config, EmailConfiguration.class);
+				emailConfiguration = objectMapper.readValue(config, new TypeReference<List<EmailGroup>>(){});
 			} catch (Exception ex) {
 				logger.error("failed to load email configuration - {}", ex);
 			}
-		} else {
-			logger.warn("no email configuration found");
 		}
 		return emailConfiguration;
+	}
+
+	/**
+	 * This method acts as a constructor
+	 *
+	 * @throws Exception
+	 */
+	@Override public void afterPropertiesSet() throws Exception {
+		now = new DateTime();
+		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
+		objectMapper = new ObjectMapper();
+		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+		File file = new File(location.getPath());
+		String resourcesFolder = file.getParentFile().getParent() + "/resources/dynamic-html";
+		String imageFolder = resourcesFolder + "/assets/images";
+		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
+		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
+		userThumbnail = imageFolder + "/user_thumbnail.png";
+		userDefaultThumbnail = imageFolder + "/user_default_thumbnail.png";
+		shadowImage = imageFolder + "/alert_details_shadow_cropped.png";
+		cidToFilePath = populateCIDToFilePathMap(imageFolder);
 	}
 
 }
