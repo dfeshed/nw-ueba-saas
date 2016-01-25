@@ -250,7 +250,9 @@
 		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
+	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
+	<bean id="alertPrettifier" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton"/>
 
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 

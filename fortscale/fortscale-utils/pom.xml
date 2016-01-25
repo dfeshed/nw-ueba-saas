@@ -71,6 +71,10 @@
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<java-lang-config.version>1.8</java-lang-config.version>
 		<cloudera-manager-api.version>5.4.7</cloudera-manager-api.version>
+		<jade4j.version>1.1.4</jade4j.version>
+		<activation.version>1.1.1</activation.version>
+		<mailapi.version>1.5.5</mailapi.version>
+		<javaxmail.version>1.5.3</javaxmail.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -152,6 +156,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -326,6 +334,16 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>de.neuland-bfi</groupId>
+			<artifactId>jade4j</artifactId>
+			<version>${jade4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>${javaxmail.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

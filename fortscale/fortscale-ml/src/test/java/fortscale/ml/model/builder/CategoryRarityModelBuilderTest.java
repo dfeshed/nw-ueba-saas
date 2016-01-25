@@ -1,12 +1,9 @@
 package fortscale.ml.model.builder;
 
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.Model;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +27,7 @@ public class CategoryRarityModelBuilderTest {
 		long featureCount = 1;
 		featureValueToCountMap.put(featureValue, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder().build(featureValueToCountMap);
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
@@ -47,11 +44,17 @@ public class CategoryRarityModelBuilderTest {
 		featureValueToCountMap.put(featureValue1, featureCount);
 		featureValueToCountMap.put(featureValue2, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder().build(featureValueToCountMap);
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(2, buckets[0], 0.001);
+	}
+
+	private static GenericHistogram castModelBuilderData(Map<String, Long> map) {
+		GenericHistogram histogram = new GenericHistogram();
+		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
+		return histogram;
 	}
 }

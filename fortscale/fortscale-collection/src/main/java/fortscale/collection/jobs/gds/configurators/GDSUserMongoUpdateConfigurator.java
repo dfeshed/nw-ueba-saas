@@ -2,7 +2,7 @@ package fortscale.collection.jobs.gds.configurators;
 
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
-import fortscale.services.configuration.Impl.UserMongoUpdateConfiguration;
+import fortscale.services.configuration.Impl.UserMongoUpdateConfigurationWriter;
 import fortscale.services.configuration.gds.state.GDSEnrichmentDefinitionState;
 
 import java.util.Map;
@@ -15,13 +15,11 @@ import java.util.Map;
  */
 public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
 
-    private static final String LAST_STATE_PARAM = "lastState";
-    private static final String TASK_NAME_PARAM = "taskName";
-    private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
+
     private static final String OUTPUT_TOPIC_ENTRY_PARAM = "";
 
     public GDSUserMongoUpdateConfigurator() {
-        configurationService = new UserMongoUpdateConfiguration();
+        configurationWriterService = new UserMongoUpdateConfigurationWriter();
     }
 
     @Override
@@ -29,7 +27,7 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
 
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(GDS_CONFIG_ENTRY);
 
-        ConfigurationParam lastState = paramsMap.get(LAST_STATE_PARAM);
+        String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
         ConfigurationParam taskName = paramsMap.get(TASK_NAME_PARAM);
         ConfigurationParam outputTopic = paramsMap.get(OUTPUT_TOPIC_PARAM);
 
@@ -41,13 +39,18 @@ public class GDSUserMongoUpdateConfigurator extends GDSBaseConfigurator {
         GDSEnrichmentDefinitionState.UserMongoUpdateState userMongoUpdateState = currGDSConfigurationState.getEnrichmentDefinitionState().getUserMongoUpdateState();
 
         userMongoUpdateState.setTaskName(taskName.getParamValue());
-        userMongoUpdateState.setLastState(lastState.getParamValue());
+        userMongoUpdateState.setLastState(lastState);
         userMongoUpdateState.setOutputTopic(outputTopic.getParamValue());
         userMongoUpdateState.setOutputTopicEntry(OUTPUT_TOPIC_ENTRY_PARAM);
 
         userMongoUpdateState.setAnyRow(anyRow.getParamFlag());
-        userMongoUpdateState.setStatusFieldName(statusFieldName.getParamValue());
-        userMongoUpdateState.setSuccessValue(successValue.getParamValue());
+
+		if (statusFieldName != null )
+			userMongoUpdateState.setStatusFieldName(statusFieldName.getParamValue());
+		if (successValue != null )
+        	userMongoUpdateState.setSuccessValue(successValue.getParamValue());
+
+		//currGDSConfigurationState.getStreamingTopologyDefinitionState().setLastStateValue(taskName.getParamValue());
     }
 
     @Override

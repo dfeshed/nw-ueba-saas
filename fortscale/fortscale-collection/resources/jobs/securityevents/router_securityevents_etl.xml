@@ -23,6 +23,11 @@
 					<key>morphlineFile</key>
 					<value>${readSecEvtRouter_splunk.morphline}</value>
 				</entry>
+				<entry>
+					<key>timestampField</key>
+					<value>${impala.rawdata.security.events.login.table.field.date_time_unix},${impala.data.security.events.4769.table.field.date_time_unix}</value>
+				</entry>
+
 			</job-data-map>
 		</job>		
 	</schedule>

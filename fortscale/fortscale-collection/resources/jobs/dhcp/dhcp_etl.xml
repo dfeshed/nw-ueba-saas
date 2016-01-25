@@ -27,6 +27,10 @@
 					<key>sharedMorphlineFile</key>
 					<value>${dhcp.processDHCP.morphline}</value>
 				</entry>
+                <entry>
+                    <key>timestampField</key>
+                    <value>timestampepoch</value>
+                </entry>
 			</job-data-map>
 		</job>
 		

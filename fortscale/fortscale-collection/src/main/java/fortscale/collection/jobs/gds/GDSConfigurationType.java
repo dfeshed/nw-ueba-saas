@@ -8,8 +8,6 @@ package fortscale.collection.jobs.gds;
  */
 public enum GDSConfigurationType {
 
-
-
     SCHEMA("Schema Definition"),
     COLLECTION("Collection"),
     USER_NORMALIZATION("User Normalization Task"),
@@ -20,7 +18,8 @@ public enum GDSConfigurationType {
     HDFS_WRITER("HDFS Writer Task"),
 	RAW_MODEL_AND_SCORE("Raw Data Model And Score Task"),
 	AGGREGATED_FEATURE_MODEL_AND_SCORE("Aggregation Feature Model And Score Task"),
-	ENTITY_EVENTS_MODEL_AND_SCORE("Entity Event (SMART)  Model And Score Task");;
+	ENTITY_EVENTS_MODEL_AND_SCORE("Entity Event (SMART)  Model And Score Task"),
+    ENTITIES_PROPERTIES("Entities properties configs");
 
     private String label;
 

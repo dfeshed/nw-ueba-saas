@@ -63,7 +63,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "scored___aggr@@@prefix###entity_event_@@@prefix"
+        "dataSources": "AggrFeatureEventToSend###scored___aggr@@@prefix###entity_event_@@@prefix"
       },
       {
         "technology": "STORE",

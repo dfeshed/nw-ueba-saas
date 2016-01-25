@@ -13,8 +13,7 @@ import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -38,10 +37,10 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	// List of aggregated feature event configurations
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
-
+	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return aggregatedFeatureEventConfJsonFilePath;
 	}
 
@@ -61,7 +60,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	}
 
 	@Override
-	protected void loadConfJson(JSONObject jsonObj) {
+	protected void loadConfJson(JSONObject jsonObj){
 		String confAsString = jsonObj.toJSONString();
 		try {
 			AggregatedFeatureEventConf conf = (new ObjectMapper()).readValue(confAsString, AggregatedFeatureEventConf.class);
@@ -72,6 +71,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			throw new RuntimeException(errorMsg, e);
 		}
 	}
+
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -97,17 +97,23 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		return returned;
 	}
 
-	public String getAnomalyType(String aggregatedFeatureName) {
+	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList(String bucketConfName){
+		List<AggregatedFeatureEventConf> ret = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+
+		return ret != null ? ret : Collections.<AggregatedFeatureEventConf>emptyList();
+	}
+
+	public String getAnomalyType(String aggregatedFeatureName){
 		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
 			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
-				return aggregatedFeatureEventConf.getAnomalyType();
+				return  aggregatedFeatureEventConf.getAnomalyType();
 			}
 		}
 
 		return null;
 	}
 
-	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String aggregatedFeatureName) {
+	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String aggregatedFeatureName){
 		String strategy = "";
 		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
 			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
@@ -119,7 +125,10 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	}
 
 
-	private void createOutputBuckets() {
+
+
+
+	private void createOutputBuckets(){
 		for (AggregatedFeatureEventConf conf : aggregatedFeatureEventConfList) {
 			try {
 				createOutputBucket(conf);
@@ -131,35 +140,31 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		}
 	}
 
-	private void createOutputBucket(AggregatedFeatureEventConf conf) throws JsonProcessingException, ParseException, BucketAlreadyExistException {
+	private void createOutputBucket(AggregatedFeatureEventConf conf) throws JsonProcessingException, ParseException, BucketAlreadyExistException{
 		String outputBucketStrategy = conf.getOutputBucketStrategy();
-		if (outputBucketStrategy == null) {
+		if(outputBucketStrategy == null){
 			return;
 		}
 
 		String outputBucketConfName = aggregatedFeatureEventsConfUtilService.buildOutputBucketConfName(conf);
 		AggregatedFeatureConf aggregatedFeatureConf = aggregatedFeatureEventsConfUtilService.createOutputAggregatedFeatureConf(conf);
-		if (bucketConfigurationService.isBucketConfExist(outputBucketConfName)) {
+		if(bucketConfigurationService.isBucketConfExist(outputBucketConfName)){
 			bucketConfigurationService.addNewAggregatedFeatureConfToBucketConf(outputBucketConfName, aggregatedFeatureConf);
-		} else {
+		} else{
 			List<String> dataSources = new ArrayList<>();
 			dataSources.add(aggregatedFeatureEventsConfUtilService.buildOutputBucketDataSource(conf));
-
 			List<String> contextFieldNames = new ArrayList<>();
-			conf.getBucketConf().getContextFieldNames().forEach(
-					contextName -> contextFieldNames.add(
-					aggregatedFeatureEventsConfUtilService
-					.buildAggregatedFeatureContextFieldName(contextName)));
-
+			for(String contextName: conf.getBucketConf().getContextFieldNames()){
+				contextFieldNames.add(aggregatedFeatureEventsConfUtilService.buildAggregatedFeatureContextFieldName(contextName));
+			}
+			String strategyName = outputBucketStrategy;
 			List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
 			aggrFeatureConfs.add(aggregatedFeatureConf);
-			FeatureBucketConf featureBucketConf = new FeatureBucketConf(
-					outputBucketConfName, dataSources, contextFieldNames,
-					outputBucketStrategy, aggrFeatureConfs);
-
+			FeatureBucketConf featureBucketConf = new FeatureBucketConf(outputBucketConfName, dataSources, contextFieldNames, strategyName, aggrFeatureConfs);
 			bucketConfigurationService.addNewBucketConf(featureBucketConf);
 		}
 	}
+
 
 
 	private void fillBucketConfs() {
@@ -167,11 +172,18 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			String bucketConfName = conf.getBucketConfName();
 			FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(bucketConfName);
 			conf.setBucketConf(featureBucketConf);
+
+			List<AggregatedFeatureEventConf> bucketAggFeatureEventConfList = bucketConfName2FeatureEventConfMap.get(bucketConfName);
+			if(bucketAggFeatureEventConfList == null){
+				bucketAggFeatureEventConfList = new ArrayList<>();
+				bucketConfName2FeatureEventConfMap.put(bucketConfName, bucketAggFeatureEventConfList);
+			}
+
+			bucketAggFeatureEventConfList.add(conf);
 		}
 	}
 
-
-	public AggrFeatureRetentionStrategy getAggrFeatureRetentionStrategy(String strategyName) {
+	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
 		return retentionStrategiesConfService.getAggrFeatureRetentionStrategy(strategyName);
 	}
 }

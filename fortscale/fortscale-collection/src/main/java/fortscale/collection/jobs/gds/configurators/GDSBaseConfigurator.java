@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.gds.configurators;
 
-import fortscale.services.configuration.ConfigurationService;
+import fortscale.collection.jobs.gds.input.GDSCLIInputHandler;
+import fortscale.services.configuration.ConfigurationWriterService;
 import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState;
 
 /**
@@ -10,10 +11,15 @@ import fortscale.services.configuration.gds.state.GDSCompositeConfigurationState
 abstract class GDSBaseConfigurator implements GDSConfigurator{
 
     protected static final String GDS_CONFIG_ENTRY = "gds.config.entry.";
+	protected static final String LAST_STATE_PARAM = "lastState";
+	protected static final String TASK_NAME_PARAM = "taskName";
+	protected static final String OUTPUT_TOPIC_PARAM = "outputTopic";
 
-    protected ConfigurationService configurationService;
+    protected ConfigurationWriterService configurationWriterService;
 
     protected GDSCompositeConfigurationState currGDSConfigurationState;
+
+	protected GDSCLIInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Override
     public void setConfigurationState(GDSCompositeConfigurationState currConfigurationState) {
@@ -21,17 +27,17 @@ abstract class GDSBaseConfigurator implements GDSConfigurator{
     }
 
     public GDSConfigurationResult<String> apply() throws Exception {
-        configurationService.setGDSConfigurationState(currGDSConfigurationState);
+        configurationWriterService.setGDSConfigurationState(currGDSConfigurationState);
 
-        if (configurationService.init()) {
-            configurationService.applyConfiguration();
+        if (configurationWriterService.init()) {
+            configurationWriterService.applyConfiguration();
         }
 
-        configurationService.done();
+        configurationWriterService.done();
 
         GDSFileBaseConfigurationResult gdsConfigurationResult = new GDSFileBaseConfigurationResult();
         gdsConfigurationResult.setSuccess(true);
-        gdsConfigurationResult.setAffectedConfigDescriptors(configurationService.getAffectedConfigList());
+        gdsConfigurationResult.setAffectedConfigDescriptors(configurationWriterService.getAffectedConfigList());
 
         return gdsConfigurationResult;
     }

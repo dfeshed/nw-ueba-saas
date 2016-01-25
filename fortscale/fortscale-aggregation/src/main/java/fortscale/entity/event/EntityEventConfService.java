@@ -29,7 +29,7 @@ public class EntityEventConfService extends AslConfigurationService {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	protected String getBaseConfJsonFilePath() {
+	protected String getBaseConfJsonFilesPath() {
 		return entityEventDefinitionsConfJsonFilePath;
 	}
 
