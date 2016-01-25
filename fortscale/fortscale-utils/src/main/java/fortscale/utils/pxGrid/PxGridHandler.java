@@ -4,11 +4,15 @@ import com.cisco.pxgrid.GridConnection;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hbase.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import sun.misc.BASE64Decoder;
 
-import java.io.FileInputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 
 /**
@@ -16,6 +20,9 @@ import java.security.KeyStore;
  */
 public class PxGridHandler {
 	private static Logger logger = LoggerFactory.getLogger(PxGridHandler.class);
+
+	static final String KEYSTORE_FILENAME = "keystore.jks";
+	static final String TRUSTSTORE_FILENAME = "truststore.jks";
 
 	//<editor-fold desc="pxGrid connection variables">
 	private String hosts;
@@ -35,17 +42,19 @@ public class PxGridHandler {
 
 	/**
 	 * Create new instance of pxGrid handler
+	 *
 	 * @param hosts
 	 * @param userName
 	 * @param group
-	 * @param keystorePath
+	 * @param base64KeystorePath
 	 * @param keystorePassphrase
-	 * @param truststorePath
+	 * @param base64Truststore
 	 * @param truststorePassphrase
 	 * @param connectionRetryMillisecond
 	 */
-	public PxGridHandler(String hosts, String userName, String group, String keystorePath, String keystorePassphrase,
-			String truststorePath, String truststorePassphrase, int connectionRetryMillisecond) {
+	public PxGridHandler(String hosts, String userName, String group, String base64KeystorePath,
+			String keystorePassphrase, String base64Truststore, String truststorePassphrase,
+			int connectionRetryMillisecond) {
 
 		Assert.isTrue(StringUtils.isNotBlank(hosts));
 		Assert.isTrue(StringUtils.isNotBlank(userName));
@@ -56,24 +65,32 @@ public class PxGridHandler {
 		Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
 		Assert.isTrue(connectionRetryMillisecond > 0);
 
-		this.hosts = hosts;
-		this.userName = userName;
-		this.group = group;
-		this.keystorePath = keystorePath;
-		this.keystorePassphrase = keystorePassphrase;
-		this.truststorePath = truststorePath;
-		this.truststorePassphrase = truststorePassphrase;
-		this.connectionRetryMillisecond = connectionRetryMillisecond;
-
-		status = pxGridConnectionStatus.DISCONNECTED;
+		try {
+			this.hosts = hosts;
+			this.userName = userName;
+			this.group = group;
+			this.keystorePath = saveKey(base64KeystorePath, KEYSTORE_FILENAME);
+			this.keystorePassphrase = keystorePassphrase;
+			this.truststorePath = saveKey(base64Truststore, TRUSTSTORE_FILENAME);
+			this.truststorePassphrase = truststorePassphrase;
+			this.connectionRetryMillisecond = connectionRetryMillisecond;
+			status = pxGridConnectionStatus.DISCONNECTED;
+		} catch (IOException e) {
+			status = pxGridConnectionStatus.INVALID_KEYS_SETTINGS;
+		}
 	}
 
 	/**
 	 * Connect to pxGrid
+	 *
 	 * @return The connection status
 	 */
 	public pxGridConnectionStatus connectToGrid() {
 		logger.debug("establishing a connection with the pxGrid controller");
+
+		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS){
+			return getStatus();
+		}
 
 		if (!validateKeys()) {
 			status = pxGridConnectionStatus.INVALID_KEYS;
@@ -91,12 +108,20 @@ public class PxGridHandler {
 
 	/**
 	 * Close the connection to the grid
+	 *
 	 * @return
 	 */
 	public pxGridConnectionStatus close() {
 		if (recon != null && con.isConnected()) {
 			// disconnect from pxGrid
 			recon.stop();
+		}
+		try {
+			Files.delete(Paths.get(KEYSTORE_FILENAME));
+			Files.delete(Paths.get(TRUSTSTORE_FILENAME));
+		}
+		catch (Exception e){
+			// do nothing
 		}
 
 		status = pxGridConnectionStatus.DISCONNECTED;
@@ -105,6 +130,7 @@ public class PxGridHandler {
 
 	/**
 	 * Get the connection status
+	 *
 	 * @return
 	 */
 	public pxGridConnectionStatus getStatus() {
@@ -115,12 +141,14 @@ public class PxGridHandler {
 		return this.con;
 	}
 
-	public String getHost(){
+	public String getHost() {
 		// TODO: After implementing fail - over, return the active host
-		return  hosts;
+		return hosts;
 	}
+
 	/**
 	 * Validate the keys
+	 *
 	 * @return
 	 */
 	private boolean validateKeys() {
@@ -130,6 +158,7 @@ public class PxGridHandler {
 
 	/**
 	 * Validate single key
+	 *
 	 * @param filename
 	 * @param password
 	 * @return
@@ -147,6 +176,7 @@ public class PxGridHandler {
 
 	/**
 	 * Connect to pxGrid
+	 *
 	 * @return
 	 */
 	private boolean initPxGridConnection() {
@@ -192,5 +222,17 @@ public class PxGridHandler {
 		config.setTruststorePassphrase(truststorePassphrase);
 
 		return config;
+	}
+
+	private String saveKey(String base64Key, String fileName) throws IOException {
+		byte[] keyBytes;
+
+		BASE64Decoder decoder = new BASE64Decoder();
+		keyBytes = decoder.decodeBuffer(base64Key);
+		try (OutputStream stream = new FileOutputStream(fileName)) {
+			stream.write(keyBytes);
+		}
+
+		return fileName;
 	}
 }
