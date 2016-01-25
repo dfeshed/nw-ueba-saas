@@ -128,6 +128,18 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
         return anomalyValue;
     }
 
+    private String decorateStartDate (Evidence evidence) {
+        Date date;
+
+        try {
+            date = new Date(evidence.getStartDate() * 1000);
+        } catch (RuntimeException e) {
+            return "Unknown date";
+        }
+
+        return TimeUtils.getUtcFormat(date, "yyyy/MM/dd HH:mm");
+    }
+
 
     @Override
     public EmailEvidenceDecorator prettify(Evidence evidence) {
@@ -141,6 +153,9 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService {
 
         // Set the anomaly value
         decoratedEvidence.setPrettifiedAnomalyValue(decorateAnomalyValue(evidence));
+
+        // Set pretty start date
+        decoratedEvidence.setPrettyStartDate(decorateStartDate(evidence));
 
         return decoratedEvidence;
     }

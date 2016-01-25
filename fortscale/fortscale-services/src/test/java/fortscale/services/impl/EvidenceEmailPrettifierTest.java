@@ -158,4 +158,10 @@ public class EvidenceEmailPrettifierTest {
         EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
         assertEquals("4", emailEvidence.getPrettifiedAnomalyValue());
     }
+
+    @Test
+    public void testStartDatePrettified() throws Exception {
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+        assertEquals("2016/01/01 10:00", emailEvidence.getPrettyStartDate());
+    }
 }
