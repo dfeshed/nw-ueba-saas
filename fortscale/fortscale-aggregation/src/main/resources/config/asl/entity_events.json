@@ -47,7 +47,7 @@
           "normalized_username_crmsf_daily.sum_of_highest_scores_over_status_crmsf_daily",
           "normalized_username_wame_daily.highest_score_wame_daily",
           "normalized_username_ntlm_daily.sum_of_highest_scores_over_src_machines_ntlm_daily",
-            "normalized_username_gwame_daily.highest_score_gwame_daily"
+          "normalized_username_gwame_daily.highest_score_gwame_daily"
         ]
       },
       "entityEventFunction": {
@@ -262,7 +262,7 @@
             "normalized_username_ntlm_hourly.distinct_number_of_src_machines_ntlm_hourly"
           ],
           "gwame_events": [
-              "normalized_username_gwame_daily.number_of_events_gwame_hourly"
+              "normalized_username_gwame_hourly.number_of_events_gwame_hourly"
           ]
         },
         "alphas": {
