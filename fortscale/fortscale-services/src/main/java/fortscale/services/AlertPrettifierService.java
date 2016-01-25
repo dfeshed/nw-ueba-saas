@@ -9,4 +9,9 @@ public interface AlertPrettifierService<T> {
 
 	T prettify(Alert alert);
 
+	T prettify(Alert alert, boolean noEvidencePrettify);
+
+
+
+
 }
