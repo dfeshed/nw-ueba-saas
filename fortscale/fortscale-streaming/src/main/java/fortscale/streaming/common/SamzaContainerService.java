@@ -6,6 +6,9 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Resource of a samza task are per instance but Samza Container may hold more than one instance.
  * This means that on the same process few task instances run and there a singelton service should know which resources it should
@@ -30,6 +33,20 @@ public class SamzaContainerService {
 
     private MessageCollector collector;
     private TaskCoordinator coordinator;
+
+    List<SamzaContainerInitializedListener> samzaContainerInitializedListeners = new ArrayList<>();
+
+    public void registerSamzaContainerInitializedListener(SamzaContainerInitializedListener samzaContainerInitializedListener){
+        samzaContainerInitializedListeners.add(samzaContainerInitializedListener);
+    }
+
+    public void init(Config config, TaskContext context){
+        this.config = config;
+        this.context = context;
+        for(SamzaContainerInitializedListener samzaContainerInitializedListener: samzaContainerInitializedListeners){
+            samzaContainerInitializedListener.afterSamzaContainerInitialized();
+        }
+    }
 
     public Config getConfig() {
         return config;
