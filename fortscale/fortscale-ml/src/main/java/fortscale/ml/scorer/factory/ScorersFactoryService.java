@@ -15,7 +15,6 @@ public class ScorersFactoryService implements ModelScorerFactory {
 
 
 
-    private List<ModelScorerFactory> modelScorerFactoryList = new ArrayList<>();
     private Map<String, Factory<Scorer>> factoryMap = new HashMap<>();
 
 
