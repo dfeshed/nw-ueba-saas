@@ -43,39 +43,12 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int minNumOfSamplesToInfluence,
                                      int enoughNumOfSamplesToInfluence,
                                      boolean isUseCertaintyToCalculateScore,
-                                     ModelsCacheService modelsCacheService,
                                      int minNumOfDistinctValuesToInfluence,
                                      int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
                                      int maxNumOfRareFeatures) {
 
-        super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, modelsCacheService);
-        init(minNumOfDistinctValuesToInfluence, enoughNumOfDistinctValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
-    }
-
-    /**
-     * This constructor is provided in order to be able to use the scorer without the modelCacheService.
-     * @param scorerName
-     * @param featureName
-     * @param minNumOfSamplesToInfluence
-     * @param enoughNumOfSamplesToInfluence
-     * @param isUseCertaintyToCalculateScore
-     * @param minNumOfDistinctValuesToInfluence
-     * @param enoughNumOfDistinctValuesToInfluence
-     * @param maxRareCount
-     * @param maxNumOfRareFeatures
-     */
-    public CategoryRarityModelScorer(String scorerName,
-                                     String featureName,
-                                     int minNumOfSamplesToInfluence,
-                                     int enoughNumOfSamplesToInfluence,
-                                     boolean isUseCertaintyToCalculateScore,
-                                     int minNumOfDistinctValuesToInfluence,
-                                     int enoughNumOfDistinctValuesToInfluence,
-                                     int maxRareCount,
-                                     int maxNumOfRareFeatures) {
-
-        super(scorerName, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+        super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
         init(minNumOfDistinctValuesToInfluence, enoughNumOfDistinctValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
     }
 

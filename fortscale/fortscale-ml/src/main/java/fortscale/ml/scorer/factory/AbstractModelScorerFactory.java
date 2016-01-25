@@ -10,19 +10,9 @@ import javax.validation.constraints.NotNull;
 
 public abstract class AbstractModelScorerFactory<T> extends AbstractServiceAutowiringScorerFactory implements ModelScorerFactory {
 
-    protected ModelsCacheService modelsCacheService;
-
     @Autowired
     FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
     @Autowired
     protected ModelConfService modelConfService;
-
-
-    @Override
-    public void setModelCacheService(@NotNull ModelsCacheService modelsCacheService) {
-        Assert.notNull(modelsCacheService);
-        this.modelsCacheService = modelsCacheService;
-    }
-
 }

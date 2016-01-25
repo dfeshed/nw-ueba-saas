@@ -10,10 +10,12 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,33 +26,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true)
+
 public class ModelsCacheServiceSamza implements ModelsCacheService {
-	private static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
+	public static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 
 	@Autowired
 	private ModelConfService modelConfService;
 
+	@Autowired
+	private SamzaContainerService samzaContainerService;
+
 	@Value("${fortscale.model.max.sec.diff.before.cleaning.cache}")
 	private long maxSecDiffBeforeCleaningCache;
 
-	private KeyValueStore<String, ModelsCacheInfo> store;
 	private Map<String, ModelCacheManager> modelCacheManagers;
 
-	@SuppressWarnings("unchecked")
-	public ModelsCacheServiceSamza(ExtendedSamzaTaskContext context) {
-		String storeName = ConfigUtils.getConfigString(context.getConfig(), STORE_NAME_PROPERTY);
-		store = (KeyValueStore<String, ModelsCacheInfo>)context.getStore(storeName);
-		Assert.notNull(store);
-		modelCacheManagers = new HashMap<>();
 
-		for (ModelConf modelConf : modelConfService.getModelConfs()) {
-			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
-					new DiscreteModelCacheManagerSamza(store, modelConf) :
-					new LazyModelCacheManagerSamza(store, modelConf);
-			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
-		}
-	}
 
 	@Override
 	public Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime) {
@@ -63,6 +54,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 
 	@Override
 	public void window() {
+		KeyValueStore<String, ModelsCacheInfo> store = getStore();
 		KeyValueIterator<String, ModelsCacheInfo> iterator = store.all();
 		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		List<String> keysToClean = new ArrayList<>();
@@ -79,11 +71,34 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 		keysToClean.forEach(store::delete);
 	}
 
+	private KeyValueStore<String, ModelsCacheInfo> getStore(){
+		String storeName = getStoreName();
+		KeyValueStore<String, ModelsCacheInfo> store = (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(storeName);
+		return store;
+	}
+
+	private String getStoreName(){
+		return ConfigUtils.getConfigString(samzaContainerService.getConfig(), STORE_NAME_PROPERTY);
+	}
+
 	@Override
 	public void close() {}
 
 	private static boolean isDiscreteModelConf(ModelConf modelConf) {
 		String factoryName = modelConf.getDataRetrieverConf().getFactoryName();
 		return factoryName.equals(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
+	}
+
+	public void loadCachManagers() throws Exception {
+		if(modelCacheManagers == null) {
+			modelCacheManagers = new HashMap<>();
+
+			for (ModelConf modelConf : modelConfService.getModelConfs()) {
+				ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
+						new DiscreteModelCacheManagerSamza(getStoreName(), modelConf) :
+						new LazyModelCacheManagerSamza(getStoreName(), modelConf);
+				modelCacheManagers.put(modelConf.getName(), modelCacheManager);
+			}
+		}
 	}
 }

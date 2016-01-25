@@ -15,13 +15,13 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 	@Value("${fortscale.model.max.sec.diff.before.outdated}")
 	private long maxSecDiffBeforeOutdated;
 
-	public LazyModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
-		super(store, modelConf);
+	public LazyModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
+		super(levelDbStoreName, modelConf);
 	}
 
 	@Override
 	protected ModelDAO getModelDaoWithLatestEndTimeLt(String contextId, long eventEpochtime) {
-		ModelsCacheInfo modelsCacheInfo = store.get(getStoreKey(modelConf, contextId));
+		ModelsCacheInfo modelsCacheInfo = getStore().get(getStoreKey(modelConf, contextId));
 		ModelDAO modelDao = null;
 		boolean isLoadModel = false;
 

@@ -43,6 +43,10 @@ public class SamzaContainerService {
         return context;
     }
 
+    public Object getStore(String storeName){
+        return context.getStore(storeName);
+    }
+
     public void setContext(TaskContext context) {
         this.context = context;
     }

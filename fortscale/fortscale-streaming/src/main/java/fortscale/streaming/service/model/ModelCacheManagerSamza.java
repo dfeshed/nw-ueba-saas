@@ -8,6 +8,8 @@ import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.streaming.ConfigUtils;
+import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,17 +38,28 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	@Autowired
 	private ModelStore modelStore;
 
-	protected KeyValueStore<String, ModelsCacheInfo> store;
+	@Autowired
+	private SamzaContainerService samzaContainerService;
+
+
+
 	protected ModelConf modelConf;
 	protected AbstractDataRetriever retriever;
+	String levelDbStoreName;
 
-	public ModelCacheManagerSamza(KeyValueStore<String, ModelsCacheInfo> store, ModelConf modelConf) {
-		Assert.notNull(store);
+	public ModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		Assert.notNull(modelConf);
-		this.store = store;
+		this.levelDbStoreName = levelDbStoreName;
 		this.modelConf = modelConf;
 		retriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 		Assert.notNull(retriever);
+	}
+
+	protected KeyValueStore<String, ModelsCacheInfo> getStore() {
+		KeyValueStore<String, ModelsCacheInfo> store = (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(levelDbStoreName);
+		Assert.notNull(store);
+
+		return store;
 	}
 
 	@Override
@@ -68,12 +81,12 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	protected ModelsCacheInfo getModelsCacheInfo(String contextId) {
-		ModelsCacheInfo modelsCacheInfo = store.get(getStoreKey(modelConf, contextId));
+		ModelsCacheInfo modelsCacheInfo = getStore().get(getStoreKey(modelConf, contextId));
 		return modelsCacheInfo == null ? loadModelsCacheInfo(contextId) : modelsCacheInfo;
 	}
 
 	protected void setModelsCacheInfo(String contextId, ModelsCacheInfo modelsCacheInfo) {
-		store.put(getStoreKey(modelConf, contextId), modelsCacheInfo);
+		getStore().put(getStoreKey(modelConf, contextId), modelsCacheInfo);
 	}
 
 	private String getContextId(Map<String, Feature> fieldToFeature) {
@@ -114,7 +127,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 		if (currentEpochtime - modelsCacheInfo.getLastUsageEpochtime() >= waitSecBetweenLastUsageEpochtimeUpdates) {
 			modelsCacheInfo.setLastUsageEpochtime(currentEpochtime);
-			store.put(getStoreKey(modelConf, contextId), modelsCacheInfo);
+			getStore().put(getStoreKey(modelConf, contextId), modelsCacheInfo);
 		}
 	}
 }
