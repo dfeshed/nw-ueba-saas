@@ -11,9 +11,9 @@ public class ReductionScorerConf extends AbstractScorerConf{
     public static final String SCORER_TYPE = "reduction-scorer";
 
     @JsonProperty("main-scorer")
-    private IScorerConf mainScorer;
+    private IScorerConf mainScorerConf;
     @JsonProperty("reduction-scorer")
-    private IScorerConf reductionScorer;
+    private IScorerConf reductionScorerConf;
     @JsonProperty("reduction-weight")
     private double reductionWeight;
     @JsonProperty("reduction-zero-score-weight")
@@ -29,8 +29,8 @@ public class ReductionScorerConf extends AbstractScorerConf{
         Assert.isNotNull(reductingScorerConf, "reductingScorerConf must not be null");
         Assert.isTrue(reductionWeight >0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 
-        this.mainScorer = mainScorerConf;
-        this.reductionScorer = reductingScorerConf;
+        this.mainScorerConf = mainScorerConf;
+        this.reductionScorerConf = reductingScorerConf;
         this.reductionWeight = reductionWeight;
     }
 
@@ -40,12 +40,12 @@ public class ReductionScorerConf extends AbstractScorerConf{
         return this;
     }
 
-    public IScorerConf getMainScorer() {
-        return mainScorer;
+    public IScorerConf getMainScorerConf() {
+        return mainScorerConf;
     }
 
-    public IScorerConf getReductionScorer() {
-        return reductionScorer;
+    public IScorerConf getReductionScorerConf() {
+        return reductionScorerConf;
     }
 
     public double getReductionWeight() {

@@ -2,7 +2,6 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.ml.scorer.ReductionScorer;
 import fortscale.ml.scorer.config.ReductionScorerConf;
-import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +16,8 @@ public class ReductionScorerFactory extends AbstractServiceAutowiringScorerFacto
     public ReductionScorer getProduct(FactoryConfig factoryConfig) {
         ReductionScorerConf reductionScorerConf = (ReductionScorerConf) factoryConfig;
         return new ReductionScorer(reductionScorerConf.getName(),
-                scorersFactoryService.getProduct(reductionScorerConf.getMainScorer()),
-                scorersFactoryService.getProduct(reductionScorerConf.getReductionScorer()),
+                scorersFactoryService.getProduct(reductionScorerConf.getMainScorerConf()),
+                scorersFactoryService.getProduct(reductionScorerConf.getReductionScorerConf()),
                 reductionScorerConf.getReductionWeight(),
                 reductionScorerConf.getReductionZeroScoreWeight()
         );
