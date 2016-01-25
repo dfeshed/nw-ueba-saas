@@ -9,11 +9,13 @@ import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ConfigUtils;
+import fortscale.streaming.common.SamzaContainerInitializedListener;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ModelsCacheServiceSamza implements ModelsCacheService {
+public class ModelsCacheServiceSamza implements ModelsCacheService, InitializingBean, SamzaContainerInitializedListener {
 	public static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 
 	@Autowired
@@ -100,5 +102,15 @@ public class ModelsCacheServiceSamza implements ModelsCacheService {
 					new LazyModelCacheManagerSamza(getStoreName(), modelConf);
 			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
 		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		samzaContainerService.registerSamzaContainerInitializedListener(this);
+	}
+
+	@Override
+	public void afterSamzaContainerInitialized() {
+		loadCacheManagers();
 	}
 }

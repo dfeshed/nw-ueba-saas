@@ -35,10 +35,9 @@ public class StreamingScoringContextTestInt {
         String storeName = "the_store_name";
         Config config = mock(Config.class);
         when(config.get(ModelsCacheServiceSamza.STORE_NAME_PROPERTY)).thenReturn(storeName);
-        samzaContainerService.setConfig(config);
         TaskContext context = mock(TaskContext.class);
         when(context.getStore(storeName)).thenReturn(cache);
-        samzaContainerService.setContext(context);
+        samzaContainerService.init(config,context);
         ScoringTaskService scoringTaskService = new ScoringTaskService(config, context);
     }
 }

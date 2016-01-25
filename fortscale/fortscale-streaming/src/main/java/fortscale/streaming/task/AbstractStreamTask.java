@@ -87,13 +87,12 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			SpringService.init(contextPath);
 		}
 
-		samzaContainerService = SpringService.getInstance().resolve(SamzaContainerService.class);
-		samzaContainerService.setConfig(config);
-		samzaContainerService.setContext(context);
-
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		initTaskMonitoringHelper(config);
+
+		samzaContainerService = SpringService.getInstance().resolve(SamzaContainerService.class);
+		samzaContainerService.init(config, context);
 
 		// call specific task init method
 		wrappedInit(config, context);
@@ -173,20 +172,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 
-
-	protected String getDataSource(JSONObject message){
-		String datasource = null;
-		try {
-			datasource = message.getAsString(DATA_SOURCE_FIELD_NAME);
-		} catch (Exception e){
-
-		}
-		if (StringUtils.isBlank(datasource)){
-			datasource = null;
-		}
-		return datasource;
-
-	}
 
 	private String resolveOutputMessageState() throws Exception {
 		return this.getClass().getSimpleName();
