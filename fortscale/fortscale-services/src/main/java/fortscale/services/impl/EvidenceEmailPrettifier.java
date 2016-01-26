@@ -1,10 +1,10 @@
 package fortscale.services.impl;
 
+import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EmailEvidenceDecorator;
 import fortscale.domain.core.Evidence;
 import fortscale.services.EvidencePrettifierService;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.utils.prettifiers.BytesPrettifier;
 import fortscale.utils.prettifiers.NumbersPrettifier;
 import fortscale.utils.time.TimeUtils;
