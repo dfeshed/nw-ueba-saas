@@ -21,8 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -254,9 +253,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				if (alerts.isEmpty()) {
 					continue;
 				}
-
 				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
-
 				Map<String, Object> model = new HashMap();
 				String dateRange = getDateRangeByTimeFrequency(frequency);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
