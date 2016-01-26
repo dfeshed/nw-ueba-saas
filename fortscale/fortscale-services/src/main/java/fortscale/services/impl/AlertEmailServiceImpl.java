@@ -2,10 +2,7 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.email.AlertSummary;
 import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;
@@ -24,6 +21,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
+import java.util.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	@Autowired
 	private ImageUtils imageUtils;
 	@Autowired
-	private AlertPrettifierService alertPrettifierService;
+	private AlertPrettifierService<EmailAlertDecorator> alertPrettifierService;
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired
@@ -127,9 +126,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		Map<String, Object> model = new HashMap();
-		alertPrettifierService.prettify(alert);
+		EmailAlertDecorator emailAlert = alertPrettifierService.prettify(alert);
 		model.put("baseUrl", baseUrl);
-		model.put("alert", alert);
+		model.put("alert", emailAlert);
 		model.put("user", user);
 		String html;
 		try {
@@ -251,10 +250,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			if (alertSummary.getFrequencies().contains(frequency)) {
 				DateTime startTime = getDateTimeByFrequency(frequency);
 				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
+				List<EmailAlertDecorator> emailAlerts = new ArrayList<>();
 				if (alerts.isEmpty()) {
 					continue;
 				}
-				alerts.forEach(alertPrettifierService::prettify);
+
+				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
+
 				Map<String, Object> model = new HashMap();
 				String dateRange = getDateRangeByTimeFrequency(frequency);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
@@ -262,7 +264,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				model.put("baseUrl", baseUrl);
 				model.put("dateRange", dateRange);
 				model.put("alertsSeverity", getAlertsSeverityHistogram(alerts));
-				model.put("alerts", alerts);
+				model.put("alerts", emailAlerts);
 				String html;
 				try {
 					html = jadeUtils.renderHTML(alertSummaryJadeIndex, model);
