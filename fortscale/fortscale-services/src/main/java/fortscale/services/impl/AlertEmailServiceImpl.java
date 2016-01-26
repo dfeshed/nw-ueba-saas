@@ -8,7 +8,6 @@ import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;
 import fortscale.domain.email.NewAlert;
 import fortscale.services.*;
-import fortscale.utils.email.EmailUtils;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
@@ -45,7 +44,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	@Autowired
 	private AlertsService alertsService;
 	@Autowired
-	private EmailUtils emailUtils;
+	private EmailServiceImpl emailServiceImpl;
 	@Autowired
 	private JadeUtils jadeUtils;
 	@Autowired
@@ -102,10 +101,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
-		if (!emailUtils.isEmailConfigured()) {
+		if (!emailServiceImpl.isEmailConfigured()) {
 			return;
 		}
-		emailConfiguration = loadEmailConfiguration();
+		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
 			logger.warn("no email configuration found");
 			return;
@@ -156,7 +155,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -232,12 +231,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		if (!emailUtils.isEmailConfigured()) {
+		if (!emailServiceImpl.isEmailConfigured()) {
+			logger.warn("no email configuration found");
 			return;
 		}
-		emailConfiguration = loadEmailConfiguration();
+		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
-			logger.warn("no email configuration found");
+			logger.warn("no alert email configuration found");
 			return;
 		}
 		if (!isEmailConfigurationValid(false)) {
@@ -270,7 +270,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 					return;
 				}
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
 							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
@@ -341,7 +341,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @return
 	 * @throws Exception
 	 */
-	private List<EmailGroup> loadEmailConfiguration() {
+	private List<EmailGroup> loadAlertEmailConfiguration() {
 		List<EmailGroup> emailConfiguration = null;
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 				getApplicationConfigurationByKey(CONFIGURATION_KEY);
