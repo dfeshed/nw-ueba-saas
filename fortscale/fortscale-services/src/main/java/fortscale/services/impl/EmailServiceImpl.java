@@ -1,11 +1,9 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.email.EmailConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +26,21 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
 
     private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
-    private static final String CONFIGURATION_KEY = "system.email.settings";
+    private static final String CONFIGURATION_NAMESPACE = "system.email";
+    private static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
+    private static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
+    private static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+    private static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
+    private static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
-    private EmailConfiguration emailConfiguration;
+    private String host;
+    private String username;
+    private String password;
+    private String auth;
+    private String port;
 
 	/**
      *
@@ -43,7 +50,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     @Override
     public boolean isEmailConfigured() {
-        return emailConfiguration != null;
+        return !StringUtils.isBlank(host);
     }
 
 	/**
@@ -67,7 +74,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
         Session session = Session.getInstance(createProperties(),
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(emailConfiguration.getUser(), emailConfiguration.getPassword());
+                    return new PasswordAuthentication(username, password);
                 }
             });
         Message message = new MimeMessage(session);
@@ -151,26 +158,26 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private Properties createProperties() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
-        switch (emailConfiguration.getAuth()) {
+        switch (auth) {
             case "tls": {
                 props.put("mail.smtp.starttls.enable", "true");
                 break;
             } case "ssl": {
-                props.put("mail.smtp.socketFactory.port", emailConfiguration.getPort());
+                props.put("mail.smtp.socketFactory.port", port);
                 props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
                 break;
             } default: {
                 break;
             }
         }
-        props.put("mail.smtp.host", emailConfiguration.getHost());
-        props.put("mail.smtp.port", emailConfiguration.getPort());
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", port);
         return props;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        emailConfiguration = loadEmailConfiguration();
+        loadEmailConfiguration();
     }
 
     /**
@@ -179,19 +186,16 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      *
      * @throws IOException
      */
-    private EmailConfiguration loadEmailConfiguration() {
-        EmailConfiguration emailConfiguration = null;
-        ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-                getApplicationConfigurationByKey(CONFIGURATION_KEY);
-        if (applicationConfiguration != null) {
-            String config = applicationConfiguration.getValue();
-            try {
-                emailConfiguration = new ObjectMapper().readValue(config, EmailConfiguration.class);
-            } catch (Exception ex) {
-                logger.error("failed to load email configuration from database - {}", ex);
-            }
+    private void loadEmailConfiguration() {
+        Map<String, String> applicationConfiguration = applicationConfigurationService.
+                getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
+        if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
+            username = applicationConfiguration.get(USERNAME_KEY);
+            password = applicationConfiguration.get(PASSWORD_KEY);
+            host = applicationConfiguration.get(HOST_KEY);
+            port = applicationConfiguration.get(PORT_KEY);
+            auth = applicationConfiguration.get(AUTH_KEY);
         }
-        return emailConfiguration;
     }
 
 }
