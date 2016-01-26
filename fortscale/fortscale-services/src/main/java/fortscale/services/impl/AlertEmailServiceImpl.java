@@ -15,14 +15,16 @@ import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 17/01/16.
@@ -35,6 +37,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
+	private static final String USER_HOME_DIR = System.getProperty("user.home");
+
+	@Value("${jade.resources.folder}")
+	private String resourcesFolder;
 
 	@Autowired
 	private AlertsService alertsService;
@@ -247,9 +253,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				if (alerts.isEmpty()) {
 					continue;
 				}
-
 				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
-
 				Map<String, Object> model = new HashMap();
 				String dateRange = getDateRangeByTimeFrequency(frequency);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
@@ -357,13 +361,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 *
 	 * @throws Exception
 	 */
-	@Override public void afterPropertiesSet() throws Exception {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		File file = new File(location.getPath());
-		String resourcesFolder = file.getParentFile().getParent() + "/resources/dynamic-html";
+		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
