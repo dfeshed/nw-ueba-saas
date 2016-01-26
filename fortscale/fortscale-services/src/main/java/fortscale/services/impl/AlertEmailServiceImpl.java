@@ -39,6 +39,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
+	private static final String USER_HOME_DIR = System.getProperty("user.home");
 
 	@Value("${jade.resources.folder}")
 	private String resourcesFolder;
@@ -361,10 +362,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 *
 	 * @throws Exception
 	 */
-	@Override public void afterPropertiesSet() throws Exception {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
+		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
