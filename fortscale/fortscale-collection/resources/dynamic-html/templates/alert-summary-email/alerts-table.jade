@@ -17,5 +17,5 @@ td
             td.entity-name(style="word-break: break-all; word-wrap: break-word; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;vertical-align: top;")
                +alertUserHref(baseUrl ,alert)
                   | #{alert.entityName}
-            td.start-time(style="padding-left: 5px; padding-top: 10px; padding-bottom: 10px;vertical-align: top;")!=alert.startDate
+            td.start-time(style="padding-left: 5px; padding-top: 10px; padding-bottom: 10px;vertical-align: top;")!=alert.startDateLong
             td.indicators-num(style="padding-left: 5px; padding-right: #{cssWidthPadding}; padding-top: 10px; padding-bottom: 10px;vertical-align: top; text-align: center;")!=alert.evidenceSize
