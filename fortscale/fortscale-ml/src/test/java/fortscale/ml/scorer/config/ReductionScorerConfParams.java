@@ -5,7 +5,7 @@ package fortscale.ml.scorer.config;
  * The default parameters here are intentionally different from the defaults in the conf itself.
  * Use the setters to override the specific parameter you want to test.
  */
-class ReductionScorerConfParams {
+public class ReductionScorerConfParams {
     String name = "ReductionScorer1";
     CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams mainScorerConfParams = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("main scorer");
     CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams reductionScorerConfParams = new CategoryRarityModelScorerConfTest.CategoryRarityModelScorerConfParams().setName("reduction scorer");

@@ -13,15 +13,15 @@ public class ReductionScorer extends AbstractScorer {
 	public static final double REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
 	
 	private Scorer mainScorer;
-	private Scorer reductingScorer;
-	private double reductingWeight;
-	private double reductingZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
+	private Scorer reductionScorer;
+	private double reductionWeight;
+	private double reductionZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductingWeight, Double reductingZeroScoreWeight) {
 		this(scorerName, mainScorer, reductionScorer, reductingWeight);
         Assert.isNotNull(reductingZeroScoreWeight);
-		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductingZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
-		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
+		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductionZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
+		this.reductionZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductionWeight) {
@@ -31,8 +31,8 @@ public class ReductionScorer extends AbstractScorer {
         Assert.isNotNull(reductionWeight);
 		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
-		this.reductingScorer = reductionScorer;
-		this.reductingWeight = reductionWeight;
+		this.reductionScorer = reductionScorer;
+		this.reductionWeight = reductionWeight;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ReductionScorer extends AbstractScorer {
 				// get the score from the main scorer, but replace the output field name
 				featureScore = new FeatureScore(getName(), mainScore.getScore());
 			} else{
-				FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+				FeatureScore reducingScore = reductionScorer.calculateScore(eventMessage, eventEpochTimeInSec);
 				if(reducingScore == null){
 					// get the score from the main scorer, but replace the output field name
 					featureScore = new FeatureScore(getName(), mainScore.getScore());
@@ -57,9 +57,9 @@ public class ReductionScorer extends AbstractScorer {
 						// The weight of the reducting score depends on the certainty of the score.
 						double reductingWeightMulitiplyCertainty;
 						if(reducingScore.getScore() == 0){
-							reductingWeightMulitiplyCertainty = reductingZeroScoreWeight * reducingScore.getCertainty();
+							reductingWeightMulitiplyCertainty = reductionZeroScoreWeight * reducingScore.getCertainty();
 						} else{
-							reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty();
+							reductingWeightMulitiplyCertainty = reductionWeight * reducingScore.getCertainty();
 						}
 						score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
 					}
@@ -75,15 +75,15 @@ public class ReductionScorer extends AbstractScorer {
 		return mainScorer;
 	}
 
-	public Scorer getReductingScorer() {
-		return reductingScorer;
+	public Scorer getReductionScorer() {
+		return reductionScorer;
 	}
 
-	public double getReductingWeight() {
-		return reductingWeight;
+	public double getReductionWeight() {
+		return reductionWeight;
 	}
 
-	public double getReductingZeroScoreWeight() {
-		return reductingZeroScoreWeight;
+	public double getReductionZeroScoreWeight() {
+		return reductionZeroScoreWeight;
 	}
 }

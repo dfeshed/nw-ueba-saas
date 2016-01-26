@@ -39,59 +39,6 @@ public class ReductionScorerTest {
         }
     }
 
-    static class ReductionScorerParams {
-        String name = "reduction-scorer";
-        Double mainScorerScore = 100.0;
-        Double reductionScorerScore = 50.0;
-        Double reductionWeight = 0.5;
-        Double reductionZeroScoreWeight = 0.8;
-
-        public String getName() {
-            return name;
-        }
-
-        public ReductionScorerParams setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Double getMainScorerScore() {
-            return mainScorerScore;
-        }
-
-        public ReductionScorerParams setMainScorerScore(Double mainScorerScore) {
-            this.mainScorerScore = mainScorerScore;
-            return this;
-        }
-
-        public Double getReductionScorerScore() {
-            return reductionScorerScore;
-        }
-
-        public ReductionScorerParams setReductionScorerScore(Double reductionScorerScore) {
-            this.reductionScorerScore = reductionScorerScore;
-            return this;
-        }
-
-        public Double getReductionWeight() {
-            return reductionWeight;
-        }
-
-        public ReductionScorerParams setReductionWeight(Double reductionWeight) {
-            this.reductionWeight = reductionWeight;
-            return this;
-        }
-
-        public Double getReductionZeroScoreWeight() {
-            return reductionZeroScoreWeight;
-        }
-
-        public ReductionScorerParams setReductionZeroScoreWeight(Double reductionZeroScoreWeight) {
-            this.reductionZeroScoreWeight = reductionZeroScoreWeight;
-            return this;
-        }
-    }
-
     private ReductionScorer createReductionScorer(ReductionScorerParams params) {
         return createReductionScorer(params, true);
     }
@@ -111,24 +58,24 @@ public class ReductionScorerTest {
         }
     }
 
-    private void assertScorerParams(ReductionScorerParams params, ReductionScorer scorer) {
+    public static void assertScorerParams(ReductionScorerParams params, ReductionScorer scorer) {
         assertScorerParams(params, scorer, false);
     }
 
-    private void assertScorerParams(ReductionScorerParams params, ReductionScorer scorer, boolean testDefaultValueZeroScoreWeight) {
+    public static void assertScorerParams(ReductionScorerParams params, ReductionScorer scorer, boolean testDefaultValueZeroScoreWeight) {
         Double diff = 0.0;
         Assert.assertEquals(params.getName(), scorer.getName());
-        Assert.assertEquals(params.getReductionWeight(), scorer.getReductingWeight(), diff);
+        Assert.assertEquals(params.getReductionWeight(), scorer.getReductionWeight(), diff);
 
         if(testDefaultValueZeroScoreWeight || params.getReductionZeroScoreWeight()==null) {
-            Assert.assertEquals(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT, scorer.getReductingZeroScoreWeight(), diff);
+            Assert.assertEquals(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT, scorer.getReductionZeroScoreWeight(), diff);
         } else {
-            Assert.assertEquals(params.getReductionZeroScoreWeight(), scorer.getReductingZeroScoreWeight(), diff);
+            Assert.assertEquals(params.getReductionZeroScoreWeight(), scorer.getReductionZeroScoreWeight(), diff);
         }
         Assert.assertEquals(params.getMainScorerScore(), ((SimpleScorer)scorer.getMainScorer()).getScore(), diff);
-        Assert.assertEquals(params.getReductionScorerScore(), ((SimpleScorer)scorer.getReductingScorer()).getScore(), diff);
+        Assert.assertEquals(params.getReductionScorerScore(), ((SimpleScorer)scorer.getReductionScorer()).getScore(), diff);
         Assert.assertEquals(MAIN_SCORER_NAME, ((SimpleScorer)scorer.getMainScorer()).getName());
-        Assert.assertEquals(REDUCTION_SCORER_NAME, ((SimpleScorer)scorer.getReductingScorer()).getName());
+        Assert.assertEquals(REDUCTION_SCORER_NAME, ((SimpleScorer)scorer.getReductionScorer()).getName());
     }
 
 
