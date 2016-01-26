@@ -1,18 +1,15 @@
 package fortscale.services.impl;
 
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataentity.DataEntity;
 import fortscale.domain.core.*;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.DataEntity;
-import junitparams.JUnitParamsRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -49,12 +46,6 @@ public class EvidenceEmailPrettifierTest {
     private Severity severity;
     private Integer totalAmountOfEvents;
     private EvidenceTimeframe timeframe;
-
-    @SuppressWarnings("resource")
-    @BeforeClass
-    public static void setUpClass() {
-//        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/fortscale-services-email-prettifier.xml");
-    }
 
     private Evidence createNewEvidence () {
         return new Evidence(entityType, entityTypeFieldName, entityName, evidenceType, startDate, endDate,
