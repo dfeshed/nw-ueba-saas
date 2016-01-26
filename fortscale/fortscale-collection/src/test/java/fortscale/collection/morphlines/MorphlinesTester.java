@@ -66,6 +66,7 @@ public class MorphlinesTester {
 				String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
 				parsedOutput += seperator + parsedField;
 				seperator = ",";
+				System.out.println(field + " = "+parsedField);
 			}
 			assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
 		}
