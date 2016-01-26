@@ -54,7 +54,7 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
         }
 
         for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {
-            List<String> scorePath = Arrays.asList(((String)entry.getValue()).split("."));
+            List<String> scorePath = Arrays.asList(((String)entry.getValue()).split("\\."));
             String rootScorer = scorePath.get(0);
             Map<String, List<String>> eventFieldNameToScorerPath = rootScorersMap.get(rootScorer);
             if(eventFieldNameToScorerPath == null){
