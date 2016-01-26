@@ -18,16 +18,14 @@ import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -41,6 +39,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
+
+	@Value("${jade.resources.folder}")
+	private String resourcesFolder;
 
 	@Autowired
 	private AlertsService alertsService;
@@ -364,9 +365,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		File file = new File(location.getPath());
-		String resourcesFolder = file.getParentFile().getParent() + "/resources/dynamic-html";
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
