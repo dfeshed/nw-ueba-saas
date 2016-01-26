@@ -17,16 +17,18 @@ public class ReductionScorer extends AbstractScorer {
 	private double reductingWeight;
 	private double reductingZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
 
-	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight, double reductingZeroScoreWeight) {
-		this(scorerName, mainScorer, reductingScorer, reductingWeight);
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductingWeight, Double reductingZeroScoreWeight) {
+		this(scorerName, mainScorer, reductionScorer, reductingWeight);
+        Assert.isNotNull(reductingZeroScoreWeight);
 		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductingZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
 		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
-	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, double reductionWeight) {
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductionWeight) {
 		super(scorerName);
 		Assert.isNotNull(mainScorer, "Main scorer must not be null");
 		Assert.isNotNull(reductionScorer, "Reduction scorer must not be null");
+        Assert.isNotNull(reductionWeight);
 		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
 		this.reductingScorer = reductionScorer;
@@ -69,4 +71,19 @@ public class ReductionScorer extends AbstractScorer {
 		return featureScore;
 	}
 
+	public Scorer getMainScorer() {
+		return mainScorer;
+	}
+
+	public Scorer getReductingScorer() {
+		return reductingScorer;
+	}
+
+	public double getReductingWeight() {
+		return reductingWeight;
+	}
+
+	public double getReductingZeroScoreWeight() {
+		return reductingZeroScoreWeight;
+	}
 }
