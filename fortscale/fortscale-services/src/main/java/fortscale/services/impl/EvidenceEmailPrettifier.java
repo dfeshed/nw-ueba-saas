@@ -8,6 +8,8 @@ import fortscale.services.EvidencePrettifierService;
 import fortscale.utils.prettifiers.BytesPrettifier;
 import fortscale.utils.prettifiers.NumbersPrettifier;
 import fortscale.utils.time.TimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,12 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
     @Autowired
     private ApplicationConfigurationServiceImpl applicationConfigurationService;
+
+    private static Logger logger = LoggerFactory.getLogger(EvidenceEmailPrettifier.class);
+
+    private static final String DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME = "data_bucket";
+    private static final String EVENT_TIME_ANOMALY_TYPE_FIELD_NAME = "event_time";
+
 
     /**
      * Return a decorated indicator name
@@ -83,7 +91,7 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
         try {
             dataSource = dataEntitiesConfig.getLogicalEntity(entityId).getName();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("dataEntitiesConfig.getLogicalEntity: Could not get logical entity for entityId " + entityId);
         }
         return dataSource;
     }
@@ -104,10 +112,10 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
                 break;
             case AnomalySingleEvent:
                 switch (evidence.getAnomalyTypeFieldName()) {
-                    case "data_bucket":
+                    case DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME:
                         anomalyValue = BytesPrettifier.ratePrettify(anomalyValue);
                         break;
-                    case "event_time":
+                    case EVENT_TIME_ANOMALY_TYPE_FIELD_NAME:
                         long date;
                         try {
                             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
