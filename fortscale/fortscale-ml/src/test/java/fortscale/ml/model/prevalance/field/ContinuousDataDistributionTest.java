@@ -2,8 +2,7 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +52,7 @@ public class ContinuousDataDistributionTest {
 	@Test
 	public void uniform_distribution_with_one_up_outliers_test() {
 		ContinuousDataDistribution distribution = create(10, 1.0);
-		final int separator = ContinuousDataModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+		final int separator = ContinuousValuesModelScorerAlgorithm.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
 
 		double startVal = 1000000;
 		for (int i = 0; i < 1000; i++) {
