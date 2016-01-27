@@ -34,7 +34,7 @@ public class ModelBuilderManagerTest {
     @BeforeClass
     public static void setUpClass() {
         testContextManager = new ClassPathXmlApplicationContext(
-                "classpath*:META-INF/spring/model_builder_manager_test_context.xml");
+                "classpath*:META-INF/spring/model-builder-manager-test-context.xml");
     }
 
     @Before
@@ -67,19 +67,20 @@ public class ModelBuilderManagerTest {
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
         Date previousEndTime = new Date(1420070400000L);
+        Date currentStartTime = new Date(1420156800000L);
         Date currentEndTime = new Date(1420156800000L);
         String[] ids = {"user1", "user2"};
         Model[] models = {mock(Model.class), mock(Model.class)};
         boolean[] successes = {true, true};
 
-        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime, ids, models, successes);
         manager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
         verify(builder, times(ids.length)).build(any());
         for (int i = 0; i < ids.length; i++) {
             verify(retriever).retrieve(eq(ids[i]), eq(currentEndTime));
-            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentEndTime));
+            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentStartTime),eq(currentEndTime));
         }
 
         verifyNoMoreInteractions(selector, retriever, builder, store);
@@ -87,16 +88,17 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreGlobalModel() {
+        Date currentStartTime = new Date(1420156800000L);
         Date currentEndTime = new Date(1420156800000L);
         Model[] models = {mock(Model.class)};
         boolean[] successes = {true};
 
-        ModelBuilderManager manager = createProcessScenario(null, currentEndTime, null, models, successes);
+        ModelBuilderManager manager = createProcessScenario(null, currentStartTime, currentEndTime, null, models, successes);
         manager.process(null, DEFAULT_SESSION_ID, null, currentEndTime);
 
         verify(retriever).retrieve(isNull(String.class), eq(currentEndTime));
         verify(builder).build(any());
-        verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentEndTime));
+        verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentStartTime), eq(currentEndTime));
 
         verifyNoMoreInteractions(selector, retriever, builder, store);
     }
@@ -107,13 +109,14 @@ public class ModelBuilderManagerTest {
         when(modelConf.getName()).thenReturn(modelConfName);
 
         Date previousEndTime = new Date(1420070400000L);
+        Date currentStartTime = new Date(1420156800000L);
         Date currentEndTime = new Date(1420156800000L);
         String[] ids = {"user1", "user2"};
         Model[] models = {mock(Model.class), mock(Model.class)};
         boolean[] successes = {true, false};
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
-        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentEndTime, ids, models, successes);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime,  currentStartTime, currentEndTime, ids, models, successes);
         manager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         for (int i = 0; i < ids.length; i++) {
@@ -125,18 +128,18 @@ public class ModelBuilderManagerTest {
         verifyNoMoreInteractions(listener);
     }
 
-    private void mockBuild(String id, Date endTime, Model model, boolean success) {
+    private void mockBuild(String id, Date startTime, Date endTime, Model model, boolean success) {
         Object data = mock(Object.class);
         when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(data);
         when(builder.build(eq(data))).thenReturn(model);
 
         if (!success) {
-            doThrow(Exception.class).when(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(endTime));
+            doThrow(Exception.class).when(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(id), eq(model), eq(startTime), eq(endTime));
         }
     }
 
     private ModelBuilderManager createProcessScenario(
-            Date previousEndTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
+            Date previousEndTime, Date currentStartTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
 
         if (ids != null) {
             IContextSelectorConf selectorConf = mock(IContextSelectorConf.class);
@@ -145,10 +148,10 @@ public class ModelBuilderManagerTest {
             when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
 
             for (int i = 0; i < ids.length; i++) {
-                mockBuild(ids[i], currentEndTime, models[i], successes[i]);
+                mockBuild(ids[i], currentStartTime, currentEndTime, models[i], successes[i]);
             }
         } else {
-            mockBuild(null, currentEndTime, models[0], successes[0]);
+            mockBuild(null, currentStartTime, currentEndTime, models[0], successes[0]);
         }
 
         return new ModelBuilderManager(modelConf);

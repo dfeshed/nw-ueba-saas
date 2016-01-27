@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
-import fortscale.services.exceptions.InvalidValueException;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;

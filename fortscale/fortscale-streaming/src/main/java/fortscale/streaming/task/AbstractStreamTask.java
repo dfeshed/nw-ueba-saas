@@ -1,10 +1,11 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.*;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
@@ -24,32 +25,33 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
 	private static final String LAST_STATE_FIELD_NAME = "last_state";
-	protected static final String NO_STATE_CONFIGURATION_MESSAGE = "Cannot find configuration for state";
-	protected static final String CANNOT_EXTRACT_STATE_MESSAGE = "Message not contains DataSource and / or LastState";
+	public static final String JOB_DATA_SOURCE = "Streaming";
+
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
-						new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
-
-
-	public static final String CANNOT_PARSE_MESSAGE_LABEL = "Cannot parse message";
+			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
 
 	protected static final String KAFKA_MESSAGE_QUEUE = "kafka";
 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
 
-	protected  FortscaleStringValueResolver res;
+	protected FortscaleValueResolver res;
 
 
 
-	protected TaskMonitoringHelper taskMonitoringHelper;
+	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
 
-	protected String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+	protected String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
+	}
+
+	protected Boolean resolveBooleanValue(Config config, String string, FortscaleValueResolver resolver) {
+		return resolver.resolveBooleanValue(getConfigString(config, string));
 	}
 
 	public AbstractStreamTask(){
@@ -61,7 +63,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	public static void fillExceptionHandler(ExceptionHandler exceptionHandler){
-		exceptionHandler.configNumOfContinuesExceptionsToFilter(LevelDbException.class, 1);
+		exceptionHandler.configNumOfContinuesExceptionsToFilter(KeyValueDBException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(KafkaPublisherException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(HdfsException.class, 1);
 		exceptionHandler.configNumOfContinuesExceptionsToFilter(TaskCoordinatorException.class, 1);
@@ -71,9 +73,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
 
+
+
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
 		}
+
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		initTaskMonitoringHelper(config);
 
@@ -123,7 +129,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true, JOB_DATA_SOURCE);
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
@@ -136,7 +142,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void close() throws Exception {
 		try {
 			logger.info("initiating task close");
-			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true);
+			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true,JOB_DATA_SOURCE);
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
@@ -179,8 +185,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
-		String eventTimeAsString = event.getAsString("date_time");
-		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime, eventTimeAsString);
+		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
@@ -219,7 +224,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			String messageText = (String) envelope.getMessage();
 			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
-			taskMonitoringHelper.countNewFilteredEvents(null,CANNOT_PARSE_MESSAGE_LABEL);
+			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
 			throw e;
 		}
 	}

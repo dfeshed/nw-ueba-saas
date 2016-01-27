@@ -1,9 +1,9 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.cache.CacheHandler;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
@@ -50,7 +50,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
-		res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		if (topicToServiceMap == null) {
 
@@ -74,7 +74,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				String tagFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings),res);
 				String taggingBaesdFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings),res);
 
-				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
+				CacheHandler<String,String> topicCache = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
 
 				FieldTaggingService fieldTaggingService = new FieldTaggingService(filePath,topicCache,tagFieldName,taggingBaesdFieldName,outputTopic,partitionField);
 				topicToServiceMap.put(configKey,fieldTaggingService);

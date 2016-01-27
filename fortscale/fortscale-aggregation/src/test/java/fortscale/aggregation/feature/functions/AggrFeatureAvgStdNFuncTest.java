@@ -1,10 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.ContinuousValueAvgStdN;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Matchers.anyString;
 
 /**
  * Created by amira on 18/06/2015.
@@ -54,13 +53,15 @@ public class AggrFeatureAvgStdNFuncTest {
         avgStdN.add(2.0); Double a8 = Math.pow(( 2.0- 5.0), 2);
         avgStdN.add(3.0); Double a9 = Math.pow(( 3.0- 5.0), 2);
 
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 3.5)); Double a10 = Math.pow(( 3.5- 5.0), 2);
-        featureMap.put("feature2", new Feature("feature2", 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
-        featureMap.put("feature3", new Feature("feature3", 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
-
-        //featureMap.put("feature3", new Feature("feature3", "wrong value type"));
-        featureMap.put("not relevant", new Feature("not relevant", 30.0));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 3.5),
+                new ImmutablePair<String, Object>("feature2", 10.0),
+                new ImmutablePair<String, Object>("feature3", 30.0),
+                new ImmutablePair<String, Object>("not relevant", 30.0)
+        );
+        Double a10 = Math.pow(( 3.5- 5.0), 2);
+        Double a11 = Math.pow(( 10.0- 5.0), 2);
+        Double a12 = Math.pow(( 30.0- 5.0), 2);
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -94,9 +95,13 @@ public class AggrFeatureAvgStdNFuncTest {
         avgStdN.add(3.0); Double a9 = Math.pow(( 3.0- 5.0), 2);
         avgStdN.add(3.5); Double a10 = Math.pow(( 3.5- 5.0), 2);
 
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature2", new Feature("feature2", 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
-        featureMap.put("feature3", new Feature("feature3", 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", "wrong value type"),
+                new ImmutablePair<String, Object>("feature2", 10.0),
+                new ImmutablePair<String, Object>("feature3", 30.0)
+        );
+        Double a11 = Math.pow(( 10.0- 5.0), 2);
+        Double a12 = Math.pow(( 30.0- 5.0), 2);
 
         featureMap.put("feature1", new Feature("feature1", "wrong value type"));
 
@@ -119,8 +124,9 @@ public class AggrFeatureAvgStdNFuncTest {
 
     @Test
     public void testUpdateAggrFeatureWithNullAggrFeature() {
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 0.5));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 0.5)
+        );
 
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         IAggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
@@ -146,10 +152,11 @@ public class AggrFeatureAvgStdNFuncTest {
         avgStdN.add(10.0); Double a11 = Math.pow(( 10.0- 5.0), 2);
         avgStdN.add(30.0); Double a12 = Math.pow(( 30.0- 5.0), 2);
 
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 0.5));
-        featureMap.put("feature2", new Feature("feature2", 2.0));
-        featureMap.put("feature3", new Feature("feature3", 3.0));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 3.5),
+                new ImmutablePair<String, Object>("feature2", 2.0),
+                new ImmutablePair<String, Object>("feature3", 3.0)
+        );
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
 
@@ -171,8 +178,9 @@ public class AggrFeatureAvgStdNFuncTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateAggrFeatureWithWrongAggrFeatureValueType() {
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 0.5));
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 0.5)
+        );
 
         Feature aggrFeature = new Feature("MyAggrFeature", "wrong value type");
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
@@ -183,19 +191,32 @@ public class AggrFeatureAvgStdNFuncTest {
 
     @Test
     public void testUpdateAggrFeatureWithNullAggrFeatureValue() {
-        Map<String, Feature> featureMap = new HashMap<>();
-        featureMap.put("feature1", new Feature("feature1", 0.5)); Double a1 = Math.pow(( 0.5 - 5.0), 2);
-        featureMap.put("feature2", new Feature("feature2", 2.0)); Double a2 = Math.pow(( 2.0 - 5.0), 2);
-        featureMap.put("feature3", new Feature("feature3", 3.0)); Double a3 = Math.pow(( 3.0 - 5.0), 2);
-        featureMap.put("feature4", new Feature("feature4", 1.0)); Double a4 = Math.pow(( 1.0 - 5.0), 2);
-        featureMap.put("feature5", new Feature("feature5", 3.5)); Double a5 = Math.pow((3.5 - 5.0), 2);
-        featureMap.put("feature6", new Feature("feature6", 0.5)); Double a6 = Math.pow(( 0.5- 5.0), 2);
-        featureMap.put("feature7", new Feature("feature7", 1.0)); Double a7 = Math.pow(( 1.0- 5.0), 2);
-        featureMap.put("feature8", new Feature("feature8", 2.0)); Double a8 = Math.pow(( 2.0- 5.0), 2);
-        featureMap.put("feature9", new Feature("feature9", 3.0)); Double a9 = Math.pow(( 3.0- 5.0), 2);
-        featureMap.put("feature10", new Feature("feature10", 3.5)); Double a10 = Math.pow(( 3.5- 5.0), 2);
-        featureMap.put("feature11", new Feature("feature11", 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
-        featureMap.put("feature12", new Feature("feature12", 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 0.5),
+                new ImmutablePair<String, Object>("feature2", 2.0),
+                new ImmutablePair<String, Object>("feature3", 3.0),
+                new ImmutablePair<String, Object>("feature4", 1.0),
+                new ImmutablePair<String, Object>("feature5", 3.5),
+                new ImmutablePair<String, Object>("feature6", 0.5),
+                new ImmutablePair<String, Object>("feature7", 1.0),
+                new ImmutablePair<String, Object>("feature8", 2.0),
+                new ImmutablePair<String, Object>("feature9", 3.0),
+                new ImmutablePair<String, Object>("feature10", 3.5),
+                new ImmutablePair<String, Object>("feature11", 10.0),
+                new ImmutablePair<String, Object>("feature12", 30.0)
+        );
+        Double a1 = Math.pow(( 0.5 - 5.0), 2);
+        Double a2 = Math.pow(( 2.0 - 5.0), 2);
+        Double a3 = Math.pow(( 3.0 - 5.0), 2);
+        Double a4 = Math.pow(( 1.0 - 5.0), 2);
+        Double a5 = Math.pow((3.5 - 5.0), 2);
+        Double a6 = Math.pow(( 0.5- 5.0), 2);
+        Double a7 = Math.pow(( 1.0- 5.0), 2);
+        Double a8 = Math.pow(( 2.0- 5.0), 2);
+        Double a9 = Math.pow(( 3.0- 5.0), 2);
+        Double a10 = Math.pow(( 3.5- 5.0), 2);
+        Double a11 = Math.pow(( 10.0- 5.0), 2);
+        Double a12 = Math.pow(( 30.0- 5.0), 2);
 
         Feature aggrFeature = new Feature("MyAggrFeature");
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
@@ -254,22 +275,25 @@ public class AggrFeatureAvgStdNFuncTest {
         continuous1.add(1.0);
         continuous1.add(2.0);
         continuous1.add(3.0);
-        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous1));
+        Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous1)
+        );
 
         ContinuousValueAvgStdN continuous2 = new ContinuousValueAvgStdN();
         continuous2.add(1.0);
         continuous2.add(5.0);
         continuous2.add(10.0);
-        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-        bucket2FeatureMap.put("feature1", new Feature("feature1", continuous2));
+        Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous2)
+        );
 
         ContinuousValueAvgStdN continuous3 = new ContinuousValueAvgStdN();
         continuous3.add(11.0);
         continuous3.add(13.0);
         continuous3.add(17.0);
-        Map<String, Feature> bucket3FeatureMap = new HashMap<>();
-        bucket3FeatureMap.put("feature1", new Feature("feature1", continuous3));
+        Map<String, Feature> bucket3FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous3)
+        );
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucket1FeatureMap);
@@ -303,18 +327,20 @@ public class AggrFeatureAvgStdNFuncTest {
         notListedContinuous.add(200.0);
         notListedContinuous.add(300.0);
 
-        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous1));
-        bucket1FeatureMap.put("feature2", new Feature("feature2", notListedContinuous));
+        Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous1),
+                new ImmutablePair<String, Object>("feature2", notListedContinuous)
+        );
 
         ContinuousValueAvgStdN continuous2 = new ContinuousValueAvgStdN();
         continuous2.add(1.0);
         continuous2.add(5.0);
         continuous2.add(10.0);
 
-        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-        bucket2FeatureMap.put("feature1", new Feature("feature1", continuous2));
-        bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
+        Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous2),
+                new ImmutablePair<String, Object>("feature2", 42)
+        );
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucket1FeatureMap);
@@ -341,11 +367,13 @@ public class AggrFeatureAvgStdNFuncTest {
         continuous.add(1.1);
         continuous.add(4.4);
         continuous.add(9.9);
-        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+        Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous)
+        );
 
-        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-        bucket2FeatureMap.put("feature1", new Feature("feature1"));
+        Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<>("feature1", null)
+        );
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucket1FeatureMap);
@@ -363,11 +391,13 @@ public class AggrFeatureAvgStdNFuncTest {
         continuous.add(11.0);
         continuous.add(13.0);
         continuous.add(17.0);
-        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
-        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+        Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous)
+        );
 
-        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
-        bucket2FeatureMap.put("feature1", new Feature("feature1", 42));
+        Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", 42)
+        );
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucket1FeatureMap);
@@ -383,8 +413,9 @@ public class AggrFeatureAvgStdNFuncTest {
         continuous.add(1.0);
         continuous.add(2.0);
         continuous.add(3.0);
-        Map<String, Feature> bucketFeatureMap = new HashMap<>();
-        bucketFeatureMap.put("feature1", new Feature("feature1", continuous));
+        Map<String, Feature> bucketFeatureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<String, Object>("feature1", continuous)
+        );
 
         List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
         listOfFeatureMaps.add(bucketFeatureMap);

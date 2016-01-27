@@ -20,7 +20,7 @@ public class VpnSessionFeatureBucketStrategyFactorySamza extends AbstractVpnSess
 
 	@Override
 	public void init(ExtendedSamzaTaskContext context) {
-		featureBucketStrategyStore = new FeatureBucketStrategyLevelDbStore(context);
+		featureBucketStrategyStore = new FeatureBucketStrategyKeyValueDbStore(context);
 		for (VpnSessionFeatureBucketStrategy featureBucketStrategy : featureBucketStrategies) {
 			featureBucketStrategy.setFeatureBucketStrategyStore(featureBucketStrategyStore);
 		}

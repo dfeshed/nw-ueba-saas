@@ -8,11 +8,10 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
-import fortscale.services.dataentity.QueryFieldFunction;
-import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -77,6 +76,12 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         else {
             return new SupportingInformationGenericData<>(histogramMap);
         }
+    }
+
+    public SupportingInformationGenericData<Double> createSupportingInformationData(String contextValue, long endTime, Integer timePeriodInDays) {
+
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, endTime, timePeriodInDays);
+        return new SupportingInformationGenericData<>(histogramMap);
     }
 
     /*

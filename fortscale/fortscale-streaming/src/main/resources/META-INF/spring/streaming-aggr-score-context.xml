@@ -18,16 +18,14 @@
 
 	<bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
 	<bean id="aggregatedEventPersistencyHandler" class="fortscale.streaming.service.event.AggregatedEventPersistencyHandler"/>
+	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
+	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
+	<bean id="aggregatedFeatureEventsMongoStore" class="fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore"/>
 
-    <context:annotation-config />	
-
-    <context:spring-configured />
-    <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.aggregation.feature.event" />
-
-
-
-
+	<context:annotation-config/>
+	<context:spring-configured/>
+	<context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.aggregation.feature.event"/>
 </beans>

@@ -3,6 +3,8 @@ package fortscale.utils.time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Time utility functions
@@ -11,8 +13,14 @@ import java.util.Calendar;
  * Date: 05/08/2015
  */
 public class TimeUtils {
+    private static final DateFormat defaultTimeFormat;
+    private static final DateFormat utcTimeFormat;
 
-    private static final String DEFAULT_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
+    static {
+        defaultTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        utcTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
+        utcTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     private static final int HOUR_LOWER_BOUND = 0;
     private static final int HOUR_UPPER_BOUND = 23;
@@ -20,9 +28,17 @@ public class TimeUtils {
     public static String getFormattedTime(Long timeInMillis) {
         Calendar calInstance = Calendar.getInstance();
         calInstance.setTimeInMillis(timeInMillis);
+        return defaultTimeFormat.format(calInstance.getTime());
+    }
 
-        DateFormat formatter = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
-        return formatter.format(calInstance.getTime());
+    public static String getUtcFormat(Date date) {
+        return utcTimeFormat.format(date);
+    }
+
+    public static String getUtcFormat(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(date);
     }
 
     public static Long calculateStartingTime(Long endTimeInMillis, int timePeriodInDays) {

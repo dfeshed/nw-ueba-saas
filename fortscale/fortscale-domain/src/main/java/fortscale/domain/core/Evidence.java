@@ -26,7 +26,7 @@ import java.util.UUID;
 		// index for getting all evidences for specific user
 	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
 		// index for making sure our evidence is unique
-	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1}", unique = true)
+	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Evidence extends AbstractDocument{
@@ -141,6 +141,26 @@ public class Evidence extends AbstractDocument{
 	private EntitySupportingInformation supportingInformation;
 
 	// C-tor
+
+	public Evidence (Evidence evidence) {
+		this.entityType = evidence.getEntityType();
+		this.entityTypeFieldName = evidence.getEntityTypeFieldName();
+		this.entityName = evidence.getEntityName();
+		this.evidenceType = evidence.getEvidenceType();
+		this.numOfEvents = evidence.getNumOfEvents();
+		this.startDate = evidence.getStartDate();
+		this.endDate = evidence.getEndDate();
+		this.anomalyTypeFieldName = evidence.getAnomalyTypeFieldName();
+		this.anomalyValue = evidence.getAnomalyValue();
+		this.dataEntitiesIds = evidence.getDataEntitiesIds();
+		this.score = evidence.getScore();
+		this.severity = evidence.getSeverity();
+		this.timeframe = evidence.getTimeframe();
+		// set retention to start date
+		this.retentionDate = new Date(startDate);
+		// We must create ID for the evidence so the alert can have reference to it
+		this.setId(UUID.randomUUID().toString());
+	}
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
 			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents, EvidenceTimeframe timeframe) {

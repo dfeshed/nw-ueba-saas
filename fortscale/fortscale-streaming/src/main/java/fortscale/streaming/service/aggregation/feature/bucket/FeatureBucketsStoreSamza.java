@@ -1,14 +1,5 @@
 package fortscale.streaming.service.aggregation.feature.bucket;
 
-import java.util.*;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
-
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -18,8 +9,15 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.logging.Logger;
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 
-import static fortscale.streaming.ConfigUtils.getConfigDouble;
+import java.util.*;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 @Configurable(preConstruction=true)
@@ -41,14 +39,14 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.event.seconds}")
-	private long levelDbRetentionInEventSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.system.seconds}")
-	private long levelDbRetentionInSystemSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.window.in.system.seconds}")
-	private long levelDbRetentionWindowUpdateInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.event.seconds}")
+	private long keyValueDbRetentionInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.system.seconds}")
+	private long keyValueDbRetentionInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.window.in.system.seconds}")
+	private long keyValueDbRetentionWindowUpdateInSystemSeconds;
 	
-	private long lastLevelDbCleanupSystemEpochTime = 0;
+	private long lastKeyValueDbCleanupSystemEpochTime = 0;
 	
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
 	private long storeSyncThresholdInEventSeconds;
@@ -59,7 +57,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	// TODO: remove this option after finishing testing the performance w/out bulk insert
 	private boolean useBulkInsertForSyncToMongoDB = true;
-	
+
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
 		Assert.notNull(context);
@@ -80,16 +78,16 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		} else {
 			syncAll();
 		}
-		levelDbCleanup();
+		keyValueDbCleanup();
 	}
 	
-	private void levelDbCleanup(){
-		if(lastLevelDbCleanupSystemEpochTime == 0 || lastLevelDbCleanupSystemEpochTime + levelDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
-			lastLevelDbCleanupSystemEpochTime = System.currentTimeMillis();
+	private void keyValueDbCleanup(){
+		if(lastKeyValueDbCleanupSystemEpochTime == 0 || lastKeyValueDbCleanupSystemEpochTime + keyValueDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
+			lastKeyValueDbCleanupSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			//remove from level db those buckets that contains old enough (configured) events and that was synced with mongo before enough (configured) time.
-			long endTime = lastEventEpochTime - levelDbRetentionInEventSeconds;
-			long syncTime = lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds;
+			long endTime = lastEventEpochTime - keyValueDbRetentionInEventSeconds;
+			long syncTime = lastKeyValueDbCleanupSystemEpochTime - keyValueDbRetentionInSystemSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(endTime, syncTime);
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
 				featureBucketStore.delete(getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));
@@ -230,9 +228,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		String key = getBucketKey(featureBucket);
 		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(oldFeatureBucket == null){
+		if(oldFeatureBucket == null && featureBucket.getId() == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
-		} else if(featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
+		} else if(featureBucket.getId() != null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
 			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
 		} else{
 			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);

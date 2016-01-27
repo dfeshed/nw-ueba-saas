@@ -22,7 +22,7 @@ import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.analyst.dao.AnalystAuthRepository;
 import fortscale.domain.analyst.dao.AnalystRepository;
 import fortscale.domain.core.EmailAddress;
-import fortscale.services.exceptions.UserAlreadyExistException;
+import fortscale.common.exceptions.UserAlreadyExistException;
 import fortscale.utils.logging.Logger;
 
 

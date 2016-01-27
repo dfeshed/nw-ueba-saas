@@ -276,13 +276,17 @@
 			<artifactId>fortscale-services</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-aggregation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- required by splunk api -->
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>

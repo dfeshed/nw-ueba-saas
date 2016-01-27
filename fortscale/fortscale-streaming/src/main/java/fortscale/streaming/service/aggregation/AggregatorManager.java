@@ -3,6 +3,8 @@ package fortscale.streaming.service.aggregation;
 
 import java.util.List;
 
+import fortscale.aggregation.feature.event.AggrFeatureEventDummyService;
+import fortscale.aggregation.feature.event.IAggrFeatureEventService;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -21,12 +23,12 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventImprovedService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.extraction.AggrEvent;
-import fortscale.aggregation.feature.extraction.DataEntitiesConfigWithBlackList;
-import fortscale.aggregation.feature.extraction.Event;
-import fortscale.aggregation.feature.extraction.RawEvent;
+import fortscale.common.feature.extraction.AggrEvent;
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
+import fortscale.common.event.Event;
+import fortscale.common.event.RawEvent;
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStoreSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
@@ -43,11 +45,11 @@ public class AggregatorManager {
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;
 	private FeatureBucketsService featureBucketsService;
-	private AggrFeatureEventImprovedService featureEventService;
+	private IAggrFeatureEventService featureEventService;
 
 
 	@Autowired
-	private FortscaleStringValueResolver fortscaleStringValueResolver;
+	private FortscaleValueResolver fortscaleValueResolver;
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 
@@ -58,34 +60,39 @@ public class AggregatorManager {
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
 	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
-	
+
 	@Autowired
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
-	
+
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
-	
+
 	@Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
     @Value("${streaming.event.field.type.aggr_event}")
     private String aggrEventType;
-    
+
     @Value("${streaming.aggr_event.field.aggregated_feature_name}")
     private String aggrFeatureNameFieldName;
     @Value("${streaming.aggr_event.field.aggregated_feature_value}")
     private String aggrFeatureValueFieldName;
     @Value("${streaming.aggr_event.field.bucket_conf_name}")
     private String bucketConfFieldName;
-    
+
     private AggregationMetricsService aggregationMetricsService;
 
 
-	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
-		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
+	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
+		timestampFieldName = fortscaleValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
 		featureBucketsStore = new FeatureBucketsStoreSamza(context);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
-		featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
+		if (skipSendingAggregationEvents) {
+			featureEventService = new AggrFeatureEventDummyService();
+		}
+		else {
+			featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
+		}
 		aggregationMetricsService = new AggregationMetricsService(context);
 	}
 
@@ -100,7 +107,7 @@ public class AggregatorManager {
 
 		processEvent(event);
 	}
-	
+
 	public void processEvent(JSONObject jsonObject) throws Exception {
 		Event event = createEvent(jsonObject);
 		dataSourcesSyncTimer.process(event);
@@ -117,7 +124,7 @@ public class AggregatorManager {
 			}
 		}
 	}
-	
+
 	private Event createEvent(JSONObject eventMessage){
 		String eventType = (String) eventMessage.get(eventTypeFieldName);
 		if(aggrEventType.equals(eventType)){
@@ -131,6 +138,7 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
+		aggrEventTopologyService.setAggregatorManager(this);
 		
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());

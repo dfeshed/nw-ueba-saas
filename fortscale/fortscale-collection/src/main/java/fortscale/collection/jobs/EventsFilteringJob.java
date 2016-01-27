@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -34,9 +35,9 @@ public class EventsFilteringJob extends GenericSecurityEventsJob{
 		return ret;
 	}
 	@Override
-	protected Record processLine(String line) throws IOException {
+	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
-		Record record = super.processLine(line);
+		Record record = super.processLine(line,itemContext);
 		if(record == null){
 			return null;
 		}

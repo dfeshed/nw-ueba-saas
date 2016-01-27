@@ -9,15 +9,16 @@
 
 
 
-
+    <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
     <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+
 
 
     <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
@@ -172,11 +173,7 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
-    <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="usernameService" ref="usernameService"/>
-        <property name="userService" ref="userService"/>
-        <property name="samAccountNameService" ref="samAccountNameService"/>
-    </bean>
+
     <bean id="genericUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
@@ -195,15 +192,14 @@
         <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
-    <bean id="AMTUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
-        <property name="dropOnFail" value="${amt.normalizedUser.fail.filter:false}"/>
-        <property name="usernameNormalizer" ref="amtUsernameNormalizer"/>
-    </bean>
+
 
     <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="genericUsernameNormalizer"/>
     </bean>
+
+    <bean id="alertPrettifierService" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton" />
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 

@@ -1,12 +1,15 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -42,7 +45,10 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 	
 		private List<String> keys;
 		private EventsJoinerCache cache;
-		
+
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
+
 		public EventsJoinerStore(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
@@ -59,6 +65,8 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 			
 			// mark command as successful, do not pass the record
 			// to chained child command to halt execution
+			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+					CollectionMessages.EVENT_JOINER_STORE);
 			return true;
 		}
 		

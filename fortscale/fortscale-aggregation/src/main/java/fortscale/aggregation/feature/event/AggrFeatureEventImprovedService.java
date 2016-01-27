@@ -16,7 +16,7 @@ import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadata;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadataRepository;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueue;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueueRepository;
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
@@ -34,7 +34,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     private long fetchDataCycleInSeconds;
     @Value("${fortscale.aggregation.sync.timer.waiting.time.before.notification}")
 	private long waitingTimeBeforeNotification;
-    @Value("${fortscale.aggregation.sender.use.end.time.sort:false}")
+    @Value("${fortscale.aggregation.sender.use.end.time.sort:true}")
 	private boolean useEndTimeSort;
     
     @Autowired
@@ -89,8 +89,8 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	        	featureBucketAggrMetadataList.add(featureBucketAggrMetadata);
         	}
         }
-        
-        featureBucketAggrMetadataRepository.save(featureBucketAggrMetadataList);
+
+		featureBucketAggrMetadataRepository.save(featureBucketAggrMetadataList);
     }
 
 
@@ -102,7 +102,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
         
         for(FeatureBucket featureBucket : updatedFeatureBucketsWithNewEndTime) {
         	if(bucketConfName2FeatureEventConfMap.get(featureBucket.getFeatureBucketConfName()) != null){
-        		featureBucketAggrMetadataRepository.updateFeatureBucketsEndTime(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId(), featureBucket.getEndTime());
+				featureBucketAggrMetadataRepository.updateFeatureBucketsEndTime(featureBucket.getFeatureBucketConfName(), featureBucket.getBucketId(), featureBucket.getEndTime());
         	}
         }
     }
@@ -115,8 +115,8 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     		FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(aggrMetadata.getFeatureBucketConfName(), aggrMetadata.getBucketId(), curTime, aggrMetadata.getEndTime());
     		featureBucketAggrSendingQueueRepository.save(featureBucketAggrSendingQueue);
     	}
-    	featureBucketAggrMetadataRepository.deleteByEndTimeLessThan(endTime);
-    	
+		featureBucketAggrMetadataRepository.deleteByEndTimeLessThan(endTime);
+
     	//creating and sending feature aggregated events
     	List<FeatureBucketAggrSendingQueue> featureBucketAggrSendingQueueList = null;
     	long fireTime = curTime-waitingTimeBeforeNotification;
@@ -128,7 +128,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueList){
     		FeatureBucket bucket = null;
     		List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
-    		
+
     		List<AggregatedFeatureEventConf> featureEventConfList = bucketConfName2FeatureEventConfMap.get(featureBucketAggrSendingQueue.getFeatureBucketConfName());
     		if(featureEventConfList != null){
 	    		for(AggregatedFeatureEventConf conf: featureEventConfList){
@@ -143,19 +143,21 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	    			}
 	    			// Calculating the new feature
 	                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
-	
+
 	                // Building the event
 	                JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
-	
+
 	                // Sending the event
 	                sendEvent(event);
 	    		}
     		}
     	}
     	featureBucketAggrSendingQueueRepository.deleteByFireTimeLessThan(fireTime);
-    	
+
     }
-    
+
+
+
     private void sendEvent(JSONObject event) {
         aggrEventTopologyService.sendEvent(event);
     }

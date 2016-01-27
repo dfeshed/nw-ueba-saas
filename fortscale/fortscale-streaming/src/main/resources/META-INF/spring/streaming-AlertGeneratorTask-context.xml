@@ -21,6 +21,10 @@
     <context:annotation-config />
     <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming,fortscale.services" />
 
+    <bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl"/>
+
+    <bean id="alertPrettifier" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton"/>
+
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
 
     <bean id="evidencesService" class="fortscale.services.impl.EvidencesServiceImpl"/>
@@ -35,6 +39,7 @@
 
     <bean id="ActiveDirectoryGroupsHelper" class="fortscale.services.impl.ActiveDirectoryGroupsHelper" scope="singleton" />
 
+    <bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
     <bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
     <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
@@ -100,6 +105,7 @@
     <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
     <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
+
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
 
     <!--Event wrapper -->

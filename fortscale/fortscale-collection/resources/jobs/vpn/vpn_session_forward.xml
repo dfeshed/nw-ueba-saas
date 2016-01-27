@@ -9,7 +9,7 @@
 		<job>
 			<name>FORWARD</name>
 			<group>VPN_SESSION</group>
-			<description>forward scored amt session events to splunk </description>
+			<description>forward scored vpn session events to splunk </description>
 			<job-class>fortscale.collection.jobs.event.forward.EventForwardJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>

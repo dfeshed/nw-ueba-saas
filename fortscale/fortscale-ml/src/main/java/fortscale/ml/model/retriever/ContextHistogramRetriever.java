@@ -1,11 +1,9 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.aggregation.feature.bucket.*;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -14,6 +12,7 @@ import org.springframework.util.Assert;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Configurable(preConstruction = true)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
@@ -61,5 +60,21 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	/**
+	 *
+	 * @return a list of names as they appear in the events, of the features which are the base for the data that this
+	 * retriever retrieves.
+     */
+	@Override
+	public Set<String> getEventFeatureNames() {
+		AggregatedFeatureConf aggregatedFeatureConf = featureBucketConf.getAggregatedFeatureConf(featureName);
+		return aggregatedFeatureConf.getAllFeatureNames();
+	}
+
+	@Override
+	public List<String> getContextFieldNames() {
+		return featureBucketConf.getContextFieldNames();
 	}
 }

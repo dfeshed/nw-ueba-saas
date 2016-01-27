@@ -57,7 +57,7 @@ public class ModelStoreTest {
         IndexOperations indexOperations = mock(IndexOperations.class);
         when(mongoTemplate.indexOps(collectionName)).thenReturn(indexOperations);
 
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date());
+        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date(), new Date());
         verify(mongoDbUtilService).createCollection(collectionName);
         verify(indexOperations, times(2)).ensureIndex(any(IndexDefinition.class));
     }
@@ -66,7 +66,7 @@ public class ModelStoreTest {
     public void shouldNotCreateCollectionIfDoesExist() {
         mockCollectionExistence(collectionName, true);
 
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date());
+        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date(), new Date());
         verify(mongoDbUtilService, times(0)).createCollection(collectionName);
         verify(mongoTemplate, times(0)).indexOps(anyString());
     }
@@ -76,8 +76,9 @@ public class ModelStoreTest {
         mockCollectionExistence(collectionName, true);
 
         String contextId = "contextId";
+        Date startTime = new Date();
         Date endTime = new Date();
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, contextId, model, endTime);
+        modelStore.save(modelConf, DEFAULT_SESSION_ID, contextId, model, startTime, endTime);
 
         Query expectedQuery = new Query();
         expectedQuery.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(DEFAULT_SESSION_ID));

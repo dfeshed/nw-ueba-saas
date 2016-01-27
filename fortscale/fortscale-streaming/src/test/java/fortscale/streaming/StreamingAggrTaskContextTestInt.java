@@ -3,13 +3,16 @@ package fortscale.streaming;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.samza.Partition;
 import org.apache.samza.config.MapConfig;
+import org.apache.samza.container.TaskName;
 import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.TaskContext;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,7 +41,7 @@ public class StreamingAggrTaskContextTestInt {
 		configMap.put("fortscale.feature.buckets.store.name", "feature_buckets_store");
 		MapConfig mapConfig = new MapConfig(configMap);
 		@SuppressWarnings("unused")
-		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig));
+		AggregatorManager aggregatorManager = new AggregatorManager(mapConfig, new ExtendedSamzaTaskContext(new TaskContextImpl(), mapConfig), true);
 	}
 	
 	private static class TaskContextImpl implements TaskContext{
@@ -49,7 +52,7 @@ public class StreamingAggrTaskContextTestInt {
 		}
 
 		@Override
-		public Partition getPartition() {
+		public Set<SystemStreamPartition> getSystemStreamPartitions() {
 			return null;
 		}
 
@@ -57,7 +60,17 @@ public class StreamingAggrTaskContextTestInt {
 		public Object getStore(String name) {
 			return new KeyValueStoreImpl();
 		}
-		
+
+		@Override
+		public TaskName getTaskName() {
+			return null;
+		}
+
+		@Override
+		public void setStartingOffset(SystemStreamPartition systemStreamPartition, String s) {
+
+		}
+
 	}
 	
 	private static class KeyValueStoreImpl implements KeyValueStore<String, FeatureBucket>{

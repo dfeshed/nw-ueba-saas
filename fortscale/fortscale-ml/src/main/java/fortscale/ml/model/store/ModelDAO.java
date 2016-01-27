@@ -11,6 +11,7 @@ public class ModelDAO {
 	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String CREATION_TIME_FIELD = "creationTime";
 	public static final String MODEL_FIELD = "model";
+	public static final String START_TIME_FILED = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 
 	@Id
@@ -24,13 +25,16 @@ public class ModelDAO {
 	private final Date creationTime;
 	@Field(MODEL_FIELD)
 	private Model model;
+	@Field(START_TIME_FILED)
+	private Date startTime;
 	@Field(END_TIME_FIELD)
 	private Date endTime;
 
-	public ModelDAO(String sessionId, String contextId, Model model, Date endTime) {
+	public ModelDAO(String sessionId, String contextId, Model model, Date startTime, Date endTime) {
 		this.sessionId = sessionId;
 		this.contextId = contextId;
 		this.model = model;
+		this.startTime = startTime;
 		this.endTime = endTime;
 		this.creationTime = new Date(System.currentTimeMillis());
 	}
@@ -49,6 +53,14 @@ public class ModelDAO {
 
 	public Model getModel() {
 		return model;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
 	public Date getEndTime() {

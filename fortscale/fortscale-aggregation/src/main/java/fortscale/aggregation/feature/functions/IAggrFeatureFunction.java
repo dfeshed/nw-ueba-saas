@@ -2,8 +2,8 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureValue;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 
 import java.util.Map;
@@ -15,8 +15,8 @@ import java.util.Map;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = AggrFeatureHistogramFunc.class, name = AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE),
 		@JsonSubTypes.Type(value = AggrFeatureAvgStdNFunc.class, name = AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE),
-		@JsonSubTypes.Type(value = AggrFeatureEventsCounterFunc.class, name = AggrFeatureEventsCounterFunc.AGGR_FEATURE_FUNCTION_TYPE),
-		@JsonSubTypes.Type(value = AggrFeatureMaxIntegerFunc.class, name = AggrFeatureMaxIntegerFunc.AGGR_FEATURE_FUNCTION_TYPE)
+		@JsonSubTypes.Type(value = AggrFeatureSumFunc.class, name = AggrFeatureSumFunc.AGGR_FEATURE_FUNCTION_TYPE),
+		@JsonSubTypes.Type(value = AggrFeatureFeatureToMaxMapFunc.class, name = AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 
 public interface IAggrFeatureFunction {

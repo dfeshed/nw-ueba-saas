@@ -62,7 +62,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
-		<samza.version>0.7.0</samza.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.13</logback.version>
 		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
@@ -105,6 +104,35 @@
                 </exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_${scala-kafka.version}</artifactId>
+			<version>${kafka.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+                	<groupId>org.apache.zookeeper</groupId>
+                	<artifactId>zookeeper</artifactId>
+                </exclusion>
+			</exclusions>
+			<classifier>test</classifier>
+			<scope>test</scope>
+		</dependency>
 		<!-- scala library required for kafka client -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -127,17 +155,22 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
+			<artifactId>samza-log4j</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.samza</groupId>
+			<artifactId>samza-kv-rocksdb_${scala-kafka.version}</artifactId>
+			<version>${samza.version}</version>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.apache.samza</groupId>
+			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
+			<version>${samza.version}</version>
+		</dependency>-->
 		<dependency>
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-core_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-serializers_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 		<dependency>
@@ -200,8 +233,41 @@
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>${kafka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_${scala-kafka.version}</artifactId>
+			<version>2.2.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.fakemongo</groupId>
+			<artifactId>fongo</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-		<!-- Spring dependencies -->
+
+
+	<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -259,6 +325,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 
@@ -308,6 +379,63 @@
 				<configuration>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
+				</configuration>
+			</plugin>
+			<!-- ignore copy dependencies plugin in m2e as it is not supported -->
+			<plugin>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-dependency-plugin</artifactId>
+									<versionRange>[2.8,)</versionRange>
+									<goals>
+										<goal>copy-dependencies</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>com.googlecode.maven-download-plugin</groupId>
+									<artifactId>maven-download-plugin</artifactId>
+									<versionRange>[${maven-download-plugin.version},)</versionRange>
+									<goals>
+										<goal>wget</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore/>
+								</action>
+							</pluginExecution>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>
+										org.codehaus.mojo
+									</groupId>
+									<artifactId>
+										aspectj-maven-plugin
+									</artifactId>
+									<versionRange>
+										[1.5,)
+									</versionRange>
+									<goals>
+										<goal>test-compile</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
 				</configuration>
 			</plugin>
 			<!-- Use aspectj compile load weaver to inject spring bean into non managed 
