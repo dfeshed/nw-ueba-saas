@@ -163,7 +163,11 @@
 			<artifactId>samza-kv-rocksdb_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
-
+		<!--<dependency>
+			<groupId>org.apache.samza</groupId>
+			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
+			<version>${samza.version}</version>
+		</dependency>-->
 		<dependency>
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-core_${scala-kafka.version}</artifactId>
@@ -255,7 +259,11 @@
 			<artifactId>jsonassert</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.github.fakemongo</groupId>
+			<artifactId>fongo</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 
 
