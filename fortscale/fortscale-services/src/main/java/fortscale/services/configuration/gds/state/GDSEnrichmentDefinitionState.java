@@ -16,7 +16,12 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
     private ComputerTaggingState computerTaggingState = new ComputerTaggingState();
     private List<GeoLocationState> geoLocationStates = new ArrayList<>();
     private UserMongoUpdateState userMongoUpdateState = new UserMongoUpdateState();
-    private HDFSWriterState hdfsWriterState = new HDFSWriterState();
+    private HDFSWriterState hdfsWriterEnrichedState = new HDFSWriterState();
+
+    private HDFSWriterState hdfsWriterScoreState = new HDFSWriterState();
+
+
+    private HDFSWriterState hdfsWriterTopScoreState = new HDFSWriterState();
 
     public List<UserNormalizationState> getUserNormalizationStates() {
         return userNormalizationStates;
@@ -34,9 +39,26 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         return userMongoUpdateState;
     }
 
-    public HDFSWriterState getHdfsWriterState() {
-        return hdfsWriterState;
+    public HDFSWriterState getHdfsWriterEnrichedState() {
+        return hdfsWriterEnrichedState;
     }
+
+    public HDFSWriterState getHdfsWriterScoreState() {
+        return hdfsWriterScoreState;
+    }
+
+    public HDFSWriterState getHdfsWriterTopScoreState() {
+        return hdfsWriterTopScoreState;
+    }
+
+    public void setHdfsWriterTopScoreState(HDFSWriterState hdfsWriterTopScoreState) {
+        this.hdfsWriterTopScoreState = hdfsWriterTopScoreState;
+    }
+
+    public void setHdfsWriterScoreState(HDFSWriterState hdfsWriterScoreState) {
+        this.hdfsWriterScoreState = hdfsWriterScoreState;
+    }
+
 
     public ComputerTaggingState getComputerTaggingState() {
         return computerTaggingState;
@@ -443,6 +465,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         private String tableName;
         private String partitionStrategy;
         private String discriminatorsFields;
+        private String levelDBSuffix;
 
         public String getFieldList() {
             return fieldList;
@@ -500,6 +523,15 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
             this.discriminatorsFields = discriminatorsFields;
         }
 
+        public String getLevelDBSuffix() {
+            return levelDBSuffix;
+        }
+
+        public void setLevelDBSuffix(String levelDBSuffix) {
+            this.levelDBSuffix = levelDBSuffix;
+        }
+
+
         @Override
         public void reset() {
             super.reset();
@@ -521,6 +553,6 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         computerTaggingState.reset();
         geoLocationStates.clear();
         userMongoUpdateState.reset();
-        hdfsWriterState.reset();
+        hdfsWriterEnrichedState.reset();
     }
 }

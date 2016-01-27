@@ -1,8 +1,12 @@
-package fortscale.utils.email;
+package fortscale.services.impl;
 
+import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -17,20 +21,26 @@ import java.util.Properties;
 /**
  * Created by Amir Keren on 15/01/2016.
  */
-public class EmailUtils {
+@Service("emailService")
+public class EmailServiceImpl implements EmailService, InitializingBean {
 
-    private static Logger logger = Logger.getLogger(EmailUtils.class);
+    private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
-    @Value("${smtp.username:}")
-    private String username;
-    @Value("${smtp.password:}")
-    private String password;
-    @Value("${smtp.host:}")
+    private static final String CONFIGURATION_NAMESPACE = "system.email";
+    private static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
+    private static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
+    private static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+    private static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
+    private static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
+
+    @Autowired
+    private ApplicationConfigurationService applicationConfigurationService;
+
     private String host;
-    @Value("${smtp.port:}")
-    private String port;
-    @Value("${smtp.auth:}")
+    private String username;
+    private String password;
     private String auth;
+    private String port;
 
 	/**
      *
@@ -38,6 +48,7 @@ public class EmailUtils {
      *
      * @return
      */
+    @Override
     public boolean isEmailConfigured() {
         return !StringUtils.isBlank(host);
     }
@@ -56,6 +67,7 @@ public class EmailUtils {
      * @throws MessagingException
      * @throws IOException
 	 */
+    @Override
     public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
             cidToFilePath, boolean isHTML) throws MessagingException, IOException {
         logger.info("Preparing to send email");
@@ -161,6 +173,29 @@ public class EmailUtils {
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
         return props;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        loadEmailConfiguration();
+    }
+
+    /**
+     *
+     * This method loads the email configuration from the database
+     *
+     * @throws IOException
+     */
+    private void loadEmailConfiguration() {
+        Map<String, String> applicationConfiguration = applicationConfigurationService.
+                getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
+        if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
+            username = applicationConfiguration.get(USERNAME_KEY);
+            password = applicationConfiguration.get(PASSWORD_KEY);
+            host = applicationConfiguration.get(HOST_KEY);
+            port = applicationConfiguration.get(PORT_KEY);
+            auth = applicationConfiguration.get(AUTH_KEY);
+        }
     }
 
 }
