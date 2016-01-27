@@ -1,8 +1,9 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
-import org.eclipse.jdt.internal.core.Assert;
+
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +20,16 @@ public class ReductionScorer extends AbstractScorer {
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductingWeight, Double reductingZeroScoreWeight) {
 		this(scorerName, mainScorer, reductionScorer, reductingWeight);
-        Assert.isNotNull(reductingZeroScoreWeight);
+        Assert.notNull(reductingZeroScoreWeight);
 		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductionZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
 		this.reductionZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductionWeight) {
 		super(scorerName);
-		Assert.isNotNull(mainScorer, "Main scorer must not be null");
-		Assert.isNotNull(reductionScorer, "Reduction scorer must not be null");
-        Assert.isNotNull(reductionWeight);
+		Assert.notNull(mainScorer, "Main scorer must not be null");
+		Assert.notNull(reductionScorer, "Reduction scorer must not be null");
+        Assert.notNull(reductionWeight);
 		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
 		this.reductionScorer = reductionScorer;

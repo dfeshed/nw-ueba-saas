@@ -109,18 +109,18 @@ public class ReductionScorerTest {
         ReductionScorer reductionScorer = createReductionScorer(params);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_zeroScoreWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionZeroScoreWeight(null);
         ReductionScorer reductionScorer = createReductionScorer(params);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_zero_zeroScoreWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionZeroScoreWeight(0.0);
         ReductionScorer reductionScorer = createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_one_zeroScoreWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionZeroScoreWeight(1.0);
         ReductionScorer reductionScorer = createReductionScorer(params);
@@ -131,17 +131,17 @@ public class ReductionScorerTest {
         ReductionScorer reductionScorer = createReductionScorer(params);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(null);
         ReductionScorer reductionScorer = createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_zero_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(0.0);
         ReductionScorer reductionScorer = createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_one_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(1.0);
         ReductionScorer reductionScorer = createReductionScorer(params);
@@ -152,27 +152,27 @@ public class ReductionScorerTest {
         ReductionScorer reductionScorer = createReductionScorer(params);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_mainScorer_test() {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(null);
         createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_reductionScorer_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionScorerScore(null);
         createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName(null);
         createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_empty_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName("");
         createReductionScorer(params);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_blank_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName("   ");
         createReductionScorer(params);
@@ -187,17 +187,17 @@ public class ReductionScorerTest {
         ReductionScorer reductionScorer = createReductionScorer(params, false);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_null_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(null);
         ReductionScorer reductionScorer = createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_zero_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(0.0);
         ReductionScorer reductionScorer = createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_one_reductionWeight_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionWeight(1.0);
         ReductionScorer reductionScorer = createReductionScorer(params, false);
@@ -208,27 +208,27 @@ public class ReductionScorerTest {
         ReductionScorer reductionScorer = createReductionScorer(params, false);
         assertScorerParams(params, reductionScorer);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_null_mainScorer_test() {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(null).setReductionZeroScoreWeight(null);;
         createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_null_reductionScorer_test() {
         ReductionScorerParams params = new ReductionScorerParams().setReductionScorerScore(null).setReductionZeroScoreWeight(null);;
         createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_null_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName(null).setReductionZeroScoreWeight(null);;
         createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_empty_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName("").setReductionZeroScoreWeight(null);;
         createReductionScorer(params, false);
     }
-    @Test(expected = org.eclipse.jdt.internal.core.Assert.AssertionFailedException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_4params_blank_name_test() {
         ReductionScorerParams params = new ReductionScorerParams().setName("   ").setReductionZeroScoreWeight(null);;
         createReductionScorer(params, false);
