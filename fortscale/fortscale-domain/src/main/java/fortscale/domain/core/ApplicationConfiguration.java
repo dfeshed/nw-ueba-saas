@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = ApplicationConfiguration.COLLECTION_NAME)
-public class ApplicationConfiguration {
+public class ApplicationConfiguration extends AbstractDocument {
 
     private static final long serialVersionUID = 4314533976059073710L;
 
