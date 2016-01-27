@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import com.google.api.client.util.Value;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EmailEvidenceDecorator;
@@ -38,7 +39,9 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
     private static final String DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME = "data_bucket";
     private static final String EVENT_TIME_ANOMALY_TYPE_FIELD_NAME = "event_time";
-    private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
+
+    @Value("${locale.config.key")
+    private String localizationConfigKey;
 
     /**
      * Return a decorated indicator name
@@ -51,7 +54,7 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
         // Get locale
         Locale locale = new Locale(Locale.ENGLISH.getLanguage());
         ApplicationConfiguration localeConfig = applicationConfigurationService
-                .getApplicationConfigurationByKey(LOCALIZATION_CONFIG_KEY);
+                .getApplicationConfigurationByKey(localizationConfigKey);
         // If no locale is set, default on US, otherwise set the locale
         if (localeConfig != null) {
             locale = new Locale(localeConfig.getValue());

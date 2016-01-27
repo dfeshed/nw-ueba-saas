@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import com.google.api.client.util.Value;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.spring.SpringPropertiesUtil;
@@ -21,7 +22,9 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     private static final String FORTSCALE_MESSAGES_PREFIX = "fortscale.message";
     private static final String FORTSCALE_MESSAGES_SEPERATOR = ".";
-    private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
+
+    @Value("${locale.config.key")
+    private String localizationConfigKey;
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
@@ -95,7 +98,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, String> localizationConfig = new HashMap();
-        localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage().toLowerCase());
+        localizationConfig.put(localizationConfigKey, DEFAULT_LOCALE.getLanguage().toLowerCase());
         applicationConfigurationService.updateConfigItems(localizationConfig);
         Map<String, String> localizationStrings = getAllLocalizationStrings(DEFAULT_LOCALE);
         Map<String, String> messagesForConfiguration = new HashMap();
