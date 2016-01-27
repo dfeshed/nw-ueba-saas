@@ -2,32 +2,27 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.email.AlertSummary;
 import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;
 import fortscale.domain.email.NewAlert;
 import fortscale.services.*;
-import fortscale.utils.email.EmailUtils;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -41,17 +36,21 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
+	private static final String USER_HOME_DIR = System.getProperty("user.home");
+
+	@Value("${jade.resources.folder}")
+	private String resourcesFolder;
 
 	@Autowired
 	private AlertsService alertsService;
 	@Autowired
-	private EmailUtils emailUtils;
+	private EmailServiceImpl emailServiceImpl;
 	@Autowired
 	private JadeUtils jadeUtils;
 	@Autowired
 	private ImageUtils imageUtils;
 	@Autowired
-	private AlertPrettifierService alertPrettifierService;
+	private AlertPrettifierService<EmailAlertDecorator> alertPrettifierService;
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired
@@ -102,10 +101,10 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
-		if (!emailUtils.isEmailConfigured()) {
+		if (!emailServiceImpl.isEmailConfigured()) {
 			return;
 		}
-		emailConfiguration = loadEmailConfiguration();
+		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
 			logger.warn("no email configuration found");
 			return;
@@ -125,9 +124,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			return;
 		}
 		Map<String, Object> model = new HashMap();
-		alertPrettifierService.prettify(alert);
+		EmailAlertDecorator emailAlert = alertPrettifierService.prettify(alert);
 		model.put("baseUrl", baseUrl);
-		model.put("alert", alert);
+		model.put("alert", emailAlert);
 		model.put("user", user);
 		String html;
 		try {
@@ -156,7 +155,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -232,12 +231,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		if (!emailUtils.isEmailConfigured()) {
+		if (!emailServiceImpl.isEmailConfigured()) {
+			logger.warn("no email configuration found");
 			return;
 		}
-		emailConfiguration = loadEmailConfiguration();
+		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
-			logger.warn("no email configuration found");
+			logger.warn("no alert email configuration found");
 			return;
 		}
 		if (!isEmailConfigurationValid(false)) {
@@ -249,10 +249,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			if (alertSummary.getFrequencies().contains(frequency)) {
 				DateTime startTime = getDateTimeByFrequency(frequency);
 				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
+				List<EmailAlertDecorator> emailAlerts = new ArrayList<>();
 				if (alerts.isEmpty()) {
 					continue;
 				}
-				alerts.forEach(alertPrettifierService::prettify);
+				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
 				Map<String, Object> model = new HashMap();
 				String dateRange = getDateRangeByTimeFrequency(frequency);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
@@ -260,7 +261,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				model.put("baseUrl", baseUrl);
 				model.put("dateRange", dateRange);
 				model.put("alertsSeverity", getAlertsSeverityHistogram(alerts));
-				model.put("alerts", alerts);
+				model.put("alerts", emailAlerts);
 				String html;
 				try {
 					html = jadeUtils.renderHTML(alertSummaryJadeIndex, model);
@@ -269,7 +270,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 					return;
 				}
 				try {
-					emailUtils.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
 							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
@@ -340,7 +341,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @return
 	 * @throws Exception
 	 */
-	private List<EmailGroup> loadEmailConfiguration() {
+	private List<EmailGroup> loadAlertEmailConfiguration() {
 		List<EmailGroup> emailConfiguration = null;
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 				getApplicationConfigurationByKey(CONFIGURATION_KEY);
@@ -360,13 +361,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 *
 	 * @throws Exception
 	 */
-	@Override public void afterPropertiesSet() throws Exception {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		File file = new File(location.getPath());
-		String resourcesFolder = file.getParentFile().getParent() + "/resources/dynamic-html";
+		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
