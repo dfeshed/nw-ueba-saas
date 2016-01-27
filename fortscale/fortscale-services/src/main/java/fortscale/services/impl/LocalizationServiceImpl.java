@@ -95,7 +95,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, String> localizationConfig = new HashMap();
-        localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage().toLowerCase());
+        localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage());
         applicationConfigurationService.updateConfigItems(localizationConfig);
         Map<String, String> localizationStrings = getAllLocalizationStrings(DEFAULT_LOCALE);
         Map<String, String> messagesForConfiguration = new HashMap();
