@@ -1,6 +1,8 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.DuplicateKeyException;
 import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -10,6 +12,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.util.Map;
 
 public class ApplicationConfigurationRepositoryImpl implements ApplicationConfigurationRepositoryCustom {
+
+    private static final Logger logger = Logger.getLogger(ApplicationConfigurationRepositoryImpl.class);
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -34,9 +38,11 @@ public class ApplicationConfigurationRepositoryImpl implements ApplicationConfig
         for(String key: configItems.keySet()) {
             ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(key, configItems.get(key));
             try {
-                mongoTemplate.insert(applicationConfiguration, ApplicationConfiguration.COLLECTION_NAME);
-            } catch (Exception ex) {
+                mongoTemplate.insert(applicationConfiguration);
+            } catch (DuplicateKeyException ex) {
                 //ignore duplicate key errors
+            } catch (Exception ex) {
+                logger.error("failed to insert config item {}={} - {}", key, configItems.get(key), ex);
             }
         }
     }
