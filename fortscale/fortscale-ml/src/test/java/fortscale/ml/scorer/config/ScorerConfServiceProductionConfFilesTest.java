@@ -15,9 +15,10 @@ public class ScorerConfServiceProductionConfFilesTest {
 
     @Test
     public void get4769DataSourceScorerConfsTest() throws Exception {
-        DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs("4769");
+        String dataSource="kerberos_logins";
+        DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs(dataSource);
         Assert.assertNotNull(dataSourceScorerConfs);
-        Assert.assertEquals("4769", dataSourceScorerConfs.getDataSource());
+        Assert.assertEquals(dataSource, dataSourceScorerConfs.getDataSource());
         Assert.assertEquals(1, dataSourceScorerConfs.getScorerConfs().size());
         Assert.assertEquals(2, ((ParetoScorerConf)dataSourceScorerConfs.getScorerConfs().get(0)).getScorerConfList().size());
     }
