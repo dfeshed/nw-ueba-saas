@@ -1,6 +1,8 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.EventMessage;
+import fortscale.common.event.RawEvent;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
@@ -35,6 +37,10 @@ public class ScorersService{
     @Autowired
     private ScorersFactoryService scorerFactoryService;
 
+    @Autowired
+    private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
+
+
     private Map<String, List<Scorer>> dataSourceToScorerListMap = new HashMap<>();
 
     private boolean isScorersLoaded = false;
@@ -62,7 +68,7 @@ public class ScorersService{
         }
 
         List<FeatureScore> featureScores = new ArrayList<>();
-        EventMessage eventMessage = new EventMessage(event);
+        RawEvent eventMessage = new RawEvent(event, dataEntitiesConfigWithBlackList, dataSource);
 
         for(Scorer scorer: dataSourceScorers) {
             FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);

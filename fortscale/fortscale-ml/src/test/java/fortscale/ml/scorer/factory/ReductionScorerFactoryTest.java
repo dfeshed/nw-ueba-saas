@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.factory;
 
 
+import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ReductionScorer;
@@ -61,7 +62,7 @@ public class ReductionScorerFactoryTest {
 
         when(scorersFactoryService.getProduct(any())).thenReturn(new Scorer() {
             @Override
-            public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
             }
         });

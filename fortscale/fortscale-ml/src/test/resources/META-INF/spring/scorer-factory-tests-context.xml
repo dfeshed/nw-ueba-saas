@@ -9,6 +9,7 @@
 
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
 
     <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService"/>
     <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate" />

@@ -2,9 +2,9 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.extraction.FeatureExtractService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.derby.iapi.util.StringUtil;
-import org.eclipse.jdt.internal.core.Assert;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 
 abstract public class AbstractScorer implements Scorer {

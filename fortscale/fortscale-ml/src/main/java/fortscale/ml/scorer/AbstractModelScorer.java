@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
@@ -120,7 +121,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		this.enoughNumOfSamplesToInfluence = Math.max(enoughNumOfSamplesToInfluence, minNumOfSamplesToInfluence);
 	}
 
-	protected Map<String, Feature> resolveContext(EventMessage eventMessage){
+	protected Map<String, Feature> resolveContext(Event eventMessage){
 		Set<String> contextFields = new HashSet<>(contextFieldNames);
 		Map<String, Feature> contextFieldNamesToValuesMap =  featureExtractService.extract(contextFields, eventMessage);
 		
@@ -128,7 +129,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	}
 
 	@Override
-	public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
 		// get the context, so that we can get the model
 		Map<String, Feature> contextFieldNamesToValuesMap = resolveContext(eventMessage);
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap)) {
