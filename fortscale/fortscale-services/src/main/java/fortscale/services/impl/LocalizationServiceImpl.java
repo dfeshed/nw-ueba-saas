@@ -18,9 +18,10 @@ import java.util.Map;
 @Component
 public class LocalizationServiceImpl implements LocalizationService, InitializingBean {
 
-    private static final Locale DEFAULT_LOCALE = Locale.US;
-    private final String FORTSCALE_MESSAGES_PREFIX = "fortscale.message";
-    private final String FORTSCALE_MESSAGES_SEPERATOR = ".";
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    private static final String FORTSCALE_MESSAGES_PREFIX = "fortscale.message";
+    private static final String FORTSCALE_MESSAGES_SEPERATOR = ".";
+    private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
@@ -93,7 +94,17 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        Map<String, String> localizationConfig = new HashMap();
+        localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage().toLowerCase());
+        applicationConfigurationService.updateConfigItems(localizationConfig);
         Map<String, String> localizationStrings = getAllLocalizationStrings(DEFAULT_LOCALE);
+        Map<String, String> messagesForConfiguration = new HashMap();
+        for (Map.Entry<String, String> message: localizationStrings.entrySet()) {
+            String key = message.getKey().replaceAll(FORTSCALE_MESSAGES_PREFIX, "");
+            key = "messages." + DEFAULT_LOCALE.getLanguage().toLowerCase() + key;
+            messagesForConfiguration.put(key, message.getValue());
+        }
+        applicationConfigurationService.insertConfigItems(messagesForConfiguration);
     }
 
 }
