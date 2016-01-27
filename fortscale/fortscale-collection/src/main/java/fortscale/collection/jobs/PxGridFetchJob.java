@@ -39,22 +39,14 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
 
-	@Value("${pxgrid.hosts.key}")
-	private String hostsKey;
-	@Value("${pxgrid.username.key}")
-	private String usernameKey;
-	@Value("${pxgrid.group.key}")
-	private String groupKey;
-	@Value("${pxgrid.keystorepath.key}")
-	private String keystorePathKey;
-	@Value("${pxgrid.keystorepassphrase.key}")
-	private String keystorePassphraseKey;
-	@Value("${pxgrid.truststorepath.key}")
-	private String trusestorePathKey;
-	@Value("${pxgrid.truststorepassphrase.key}")
-	private String truststorePassphraseKey;
-	@Value("${pxgrid.connectionretry.key}")
-	private String connectionRetryKey;
+	private final static String HOSTS_KEY = "system.pxgrid.hosts";
+	private final static String USERNAME_KEY = "system.pxgrid.username";
+	private final static String GROUP_KEY = "system.pxgrid.group";
+	private final static String KEYSTOREPATH_KEY = "system.pxgrid.keystorepath";
+	private final static String KEYSTORE_PASSPHARSE_KEY = "system.pxgrid.keystorepasspharse";
+	private final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
+	private final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
+	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
@@ -193,14 +185,14 @@ public class PxGridFetchJob extends FortscaleJob {
 	}
 
 	private void loadPxGridParams() {
-		String hosts = readFromConfigurationService(hostsKey);
-		String userName = readFromConfigurationService(usernameKey);
-		String group = readFromConfigurationService(groupKey);
-		String keystorePath = readFromConfigurationService(keystorePathKey);
-		String keystorePassphrase = readFromConfigurationService(keystorePassphraseKey);
-		String truststorePath = readFromConfigurationService(trusestorePathKey);
-		String truststorePassphrase = readFromConfigurationService(truststorePassphraseKey);
-		String retryMillisecond = readFromConfigurationService(connectionRetryKey);
+		String hosts = readFromConfigurationService(HOSTS_KEY);
+		String userName = readFromConfigurationService(USERNAME_KEY);
+		String group = readFromConfigurationService(GROUP_KEY);
+		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
+		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
+		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
+		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
+		String retryMillisecond = readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY);
 		int connectionRetryMillisecond = 0;
 		if (retryMillisecond != null && !retryMillisecond.isEmpty()){
 			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
