@@ -77,7 +77,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.feedback = alert.getFeedback();
 		this.comment = alert.getComment();
 		this.entityId = alert.getEntityId();
-		this.setId(UUID.randomUUID().toString());
+		this.setId(alert.getId());
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
