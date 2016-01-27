@@ -1,8 +1,5 @@
 package fortscale.collection.jobs;
 
-import com.cisco.pxgrid.GridConnection;
-import com.cisco.pxgrid.ReconnectionManager;
-import com.cisco.pxgrid.TLSConfiguration;
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
 import com.cisco.pxgrid.model.net.Session;
 import com.cisco.pxgrid.model.net.User;
@@ -26,11 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,14 +39,22 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
 
-	public final static String HOSTS_KEY = "system.pxgrid.hosts";
-	public final static String USERNAME_KEY = "system.pxgrid.username";
-	public final static String GROUP_KEY = "system.pxgrid.group";
-	public final static String KEYSTOREPATH_KEY = "system.pxgrid.keystorepath";
-	public final static String KEYSTORE_PASSPHARSE_KEY = "system.pxgrid.keystorepasspharse";
-	public final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
-	public final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
-	public final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
+	@Value("${pxgrid.hosts.key}")
+	private String hostsKey;
+	@Value("${pxgrid.username.key}")
+	private String usernameKey;
+	@Value("${pxgrid.group.key}")
+	private String groupKey;
+	@Value("${pxgrid.keystorepath.key}")
+	private String keystorePathKey;
+	@Value("${pxgrid.keystorepassphrase.key}")
+	private String keystorePassphraseKey;
+	@Value("${pxgrid.truststorepath.key}")
+	private String trusestorePathKey;
+	@Value("${pxgrid.truststorepassphrase.key}")
+	private String truststorePassphraseKey;
+	@Value("${pxgrid.connectionretry.key}")
+	private String connectionRetryKey;
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
@@ -137,7 +139,8 @@ public class PxGridFetchJob extends FortscaleJob {
 				end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
 
 				// Create iterator
-				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.getGridConnection());
+				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.
+						getGridConnection());
 				SessionIterator iterator = sd.getSessionsByTime(begin, end);
 				iterator.open();
 
@@ -190,20 +193,21 @@ public class PxGridFetchJob extends FortscaleJob {
 	}
 
 	private void loadPxGridParams() {
-		String hosts = readFromConfigurationService(HOSTS_KEY);
-		String userName = readFromConfigurationService(USERNAME_KEY);
-		String group = readFromConfigurationService(GROUP_KEY);
-		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
-		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
-		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
-		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
-		String retryMillisecond = readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY);
+		String hosts = readFromConfigurationService(hostsKey);
+		String userName = readFromConfigurationService(usernameKey);
+		String group = readFromConfigurationService(groupKey);
+		String keystorePath = readFromConfigurationService(keystorePathKey);
+		String keystorePassphrase = readFromConfigurationService(keystorePassphraseKey);
+		String truststorePath = readFromConfigurationService(trusestorePathKey);
+		String truststorePassphrase = readFromConfigurationService(truststorePassphraseKey);
+		String retryMillisecond = readFromConfigurationService(connectionRetryKey);
 		int connectionRetryMillisecond = 0;
 		if (retryMillisecond != null && !retryMillisecond.isEmpty()){
 			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
 		}
 
-		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath, truststorePassphrase, connectionRetryMillisecond);
+		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond);
 	}
 
 	private String readFromConfigurationService(String key) {
