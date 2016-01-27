@@ -7,11 +7,10 @@ import fortscale.ml.scorer.config.DataSourceScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.factory.ScorersFactoryService;
-import fortscale.utils.factory.FactoryService;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.InitializingBean;
+import org.apache.hive.com.esotericsoftware.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ import java.util.Map;
 
 
 public class ScorersService{
+    private static final Logger logger = Logger.getLogger(ScorersService.class);
+    private static final java.lang.String NO_SCORERS_FOR_DATA_SOURCE_ERROR_MSG = "No scorers are defined for data source: %s. Processed message: %s";
 
     @Autowired
     private ModelsCacheService modelsCacheService;
@@ -55,6 +56,11 @@ public class ScorersService{
         Assert.notNull(event);
         loadScorers();
         List<Scorer> dataSourceScorers = dataSourceToScorerListMap.get(dataSource);
+        if(dataSource==null) {
+            Log.error(String.format(NO_SCORERS_FOR_DATA_SOURCE_ERROR_MSG, dataSource, event.toJSONString()));
+            return null;
+        }
+
         List<FeatureScore> featureScores = new ArrayList<>();
         EventMessage eventMessage = new EventMessage(event);
 

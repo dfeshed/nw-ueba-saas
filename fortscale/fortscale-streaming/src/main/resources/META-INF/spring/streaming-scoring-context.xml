@@ -16,12 +16,10 @@
 
 	<bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
 	<bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
-
 	<bean id="modelsCacheService" class="fortscale.streaming.service.model.ModelsCacheServiceSamza"/>
-
 	<bean id="scorerConfService" class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration" />
-
-
+	<bean id="featureScoreJsonEventConfService" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventConfService"/>
+	<bean id="featureScoreJsonEventHandler" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventHandler"/>
 
     <context:annotation-config />
     <context:spring-configured />

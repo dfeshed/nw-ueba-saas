@@ -32,12 +32,10 @@ public class ScoringTask extends AbstractStreamTask {
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
         // get task configuration parameters
-        String sourceType = getConfigString(config, "fortscale.source.type");
-        String entityType = getConfigString(config, "fortscale.entity.type");
         timestampField = getConfigString(config, "fortscale.timestamp.field");
         // create counter metric for processed messages
-        processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-count", sourceType, entityType));
-        lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-epochime", sourceType, entityType));
+        processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-score-message-count");
+        lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-score-message-epochime");
 
         scoringTaskService = new ScoringTaskService(config, context);
     }

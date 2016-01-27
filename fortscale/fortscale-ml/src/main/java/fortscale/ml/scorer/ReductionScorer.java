@@ -1,8 +1,9 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
-import org.eclipse.jdt.internal.core.Assert;
+
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,24 +14,26 @@ public class ReductionScorer extends AbstractScorer {
 	public static final double REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
 	
 	private Scorer mainScorer;
-	private Scorer reductingScorer;
-	private double reductingWeight;
-	private double reductingZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
+	private Scorer reductionScorer;
+	private double reductionWeight;
+	private double reductionZeroScoreWeight = REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT;
 
-	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductingScorer, double reductingWeight, double reductingZeroScoreWeight) {
-		this(scorerName, mainScorer, reductingScorer, reductingWeight);
-		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductingZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
-		this.reductingZeroScoreWeight = reductingZeroScoreWeight;
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductingWeight, Double reductingZeroScoreWeight) {
+		this(scorerName, mainScorer, reductionScorer, reductingWeight);
+        Assert.notNull(reductingZeroScoreWeight);
+		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductionZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
+		this.reductionZeroScoreWeight = reductingZeroScoreWeight;
 	}
 
-	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, double reductionWeight) {
+	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductionWeight) {
 		super(scorerName);
-		Assert.isNotNull(mainScorer, "Main scorer must not be null");
-		Assert.isNotNull(reductionScorer, "Reduction scorer must not be null");
+		Assert.notNull(mainScorer, "Main scorer must not be null");
+		Assert.notNull(reductionScorer, "Reduction scorer must not be null");
+        Assert.notNull(reductionWeight);
 		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
-		this.reductingScorer = reductionScorer;
-		this.reductingWeight = reductionWeight;
+		this.reductionScorer = reductionScorer;
+		this.reductionWeight = reductionWeight;
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class ReductionScorer extends AbstractScorer {
 				// get the score from the main scorer, but replace the output field name
 				featureScore = new FeatureScore(getName(), mainScore.getScore());
 			} else{
-				FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+				FeatureScore reducingScore = reductionScorer.calculateScore(eventMessage, eventEpochTimeInSec);
 				if(reducingScore == null){
 					// get the score from the main scorer, but replace the output field name
 					featureScore = new FeatureScore(getName(), mainScore.getScore());
@@ -55,9 +58,9 @@ public class ReductionScorer extends AbstractScorer {
 						// The weight of the reducting score depends on the certainty of the score.
 						double reductingWeightMulitiplyCertainty;
 						if(reducingScore.getScore() == 0){
-							reductingWeightMulitiplyCertainty = reductingZeroScoreWeight * reducingScore.getCertainty();
+							reductingWeightMulitiplyCertainty = reductionZeroScoreWeight * reducingScore.getCertainty();
 						} else{
-							reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty();
+							reductingWeightMulitiplyCertainty = reductionWeight * reducingScore.getCertainty();
 						}
 						score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
 					}
@@ -69,4 +72,19 @@ public class ReductionScorer extends AbstractScorer {
 		return featureScore;
 	}
 
+	public Scorer getMainScorer() {
+		return mainScorer;
+	}
+
+	public Scorer getReductionScorer() {
+		return reductionScorer;
+	}
+
+	public double getReductionWeight() {
+		return reductionWeight;
+	}
+
+	public double getReductionZeroScoreWeight() {
+		return reductionZeroScoreWeight;
+	}
 }

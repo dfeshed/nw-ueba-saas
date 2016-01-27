@@ -29,7 +29,7 @@ public class ScorerServiceTest {
     public void ScorerServiceTest() throws Exception {
         JSONObject event = new JSONObject();
         long eventTime = 1453334400L; //2016-01-21T00:00:00
-        String dataSource = "4769";
+        String dataSource = "kerberos_logins";
         List<FeatureScore> featureScores = scorersService.calculateScores(event, eventTime, dataSource);
 
         Assert.assertNotNull(featureScores);
