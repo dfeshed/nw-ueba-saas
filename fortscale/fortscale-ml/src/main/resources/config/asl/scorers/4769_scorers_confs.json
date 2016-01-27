@@ -1,7 +1,7 @@
 {
   "data-source-scorers":  [
     {
-      "data-source": "4769",
+      "data-source": "kerberos_logins",
       "scorers": [
         {
           "name": "4769-event-scorer",
