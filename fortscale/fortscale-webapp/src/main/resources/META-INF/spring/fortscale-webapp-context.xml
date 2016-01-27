@@ -14,7 +14,7 @@
             <list>
                 <value>classpath:META-INF/application-config.properties</value>
                 <value>classpath:META-INF/entities-overriding.properties</value>
-                <value>classpath:META-INF/messages.properties</value>
+                <value>classpath:META-INF/messages.en.properties</value>
             </list>
         </property>
 		<property name="order"
