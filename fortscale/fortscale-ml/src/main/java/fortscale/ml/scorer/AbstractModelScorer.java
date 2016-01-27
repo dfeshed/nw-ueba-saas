@@ -162,20 +162,20 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 
 	private boolean isNullOrMissingValues(Map<String, Feature> contextFieldNamesToValuesMap) {
 		if(contextFieldNamesToValuesMap==null) {
-			return false;
+			return true;
 		}
 		if(contextFieldNamesToValuesMap.values().size()!=contextFieldNames.size()) {
-			return false;
+			return true;
 		}
 		for(Feature feature: contextFieldNamesToValuesMap.values()) {
 			if(feature==null ||
 				feature.getValue()==null ||
 				((FeatureStringValue)feature.getValue()).getValue()==null ||
 				StringUtils.isEmpty(((FeatureStringValue)feature.getValue()).getValue())) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	
