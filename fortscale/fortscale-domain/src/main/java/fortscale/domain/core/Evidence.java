@@ -159,7 +159,7 @@ public class Evidence extends AbstractDocument{
 		// set retention to start date
 		this.retentionDate = new Date(startDate);
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(UUID.randomUUID().toString());
+		this.setId(evidence.getId());
 	}
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
