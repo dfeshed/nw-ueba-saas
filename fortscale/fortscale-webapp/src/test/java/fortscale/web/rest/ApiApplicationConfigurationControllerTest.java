@@ -53,7 +53,6 @@ public class ApiApplicationConfigurationControllerTest {
     private MockMvc mockMvc;
 
 
-	@Ignore
     @Test
     public void testGetConfigurations() throws Exception {
         // set up alerts repository mocked behavior
