@@ -8,6 +8,8 @@
                            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
     <bean id="reductionScorerFactory" class="fortscale.ml.scorer.factory.ReductionScorerFactory"/>
+    <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
+
     <mockito:mock id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
 
